@@ -7,6 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		342561966FC217124BD9CFE7 /* Pods_GoInfoGame_GoInfoGameUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2D539E22EFF6636F8CBA035A /* Pods_GoInfoGame_GoInfoGameUITests.framework */; };
+		74D8E739AE340D54DEF2E74C /* Pods_GoInfoGameTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 066F85ADCDCE7357368131F8 /* Pods_GoInfoGameTests.framework */; };
+		C8DCA3040FCD4269E5977E45 /* Pods_GoInfoGame.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 66BED441AF03CC04539E8D4A /* Pods_GoInfoGame.framework */; };
+		FAC9E60F2B04F9C800E2C608 /* OverpassRequestManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC9E60E2B04F9C800E2C608 /* OverpassRequestManager.swift */; };
 		FAD5C4F32AFCBE700040C61A /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAD5C4F22AFCBE700040C61A /* AppDelegate.swift */; };
 		FAD5C4F52AFCBE700040C61A /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAD5C4F42AFCBE700040C61A /* SceneDelegate.swift */; };
 		FAD5C4F72AFCBE700040C61A /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAD5C4F62AFCBE700040C61A /* ViewController.swift */; };
@@ -36,6 +40,16 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		066F85ADCDCE7357368131F8 /* Pods_GoInfoGameTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_GoInfoGameTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		2D539E22EFF6636F8CBA035A /* Pods_GoInfoGame_GoInfoGameUITests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_GoInfoGame_GoInfoGameUITests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		3D797A45474D6135AFA24613 /* Pods-GoInfoGameTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-GoInfoGameTests.debug.xcconfig"; path = "Target Support Files/Pods-GoInfoGameTests/Pods-GoInfoGameTests.debug.xcconfig"; sourceTree = "<group>"; };
+		66BED441AF03CC04539E8D4A /* Pods_GoInfoGame.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_GoInfoGame.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		89C2A88A7749F031BCDFE226 /* Pods-GoInfoGameTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-GoInfoGameTests.release.xcconfig"; path = "Target Support Files/Pods-GoInfoGameTests/Pods-GoInfoGameTests.release.xcconfig"; sourceTree = "<group>"; };
+		AE61EC473200AFDA81C2110A /* Pods-GoInfoGame-GoInfoGameUITests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-GoInfoGame-GoInfoGameUITests.release.xcconfig"; path = "Target Support Files/Pods-GoInfoGame-GoInfoGameUITests/Pods-GoInfoGame-GoInfoGameUITests.release.xcconfig"; sourceTree = "<group>"; };
+		C96303080D26026265099E0E /* Pods-GoInfoGame.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-GoInfoGame.release.xcconfig"; path = "Target Support Files/Pods-GoInfoGame/Pods-GoInfoGame.release.xcconfig"; sourceTree = "<group>"; };
+		D76D8E22AC705A38AFEA78B1 /* Pods-GoInfoGame-GoInfoGameUITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-GoInfoGame-GoInfoGameUITests.debug.xcconfig"; path = "Target Support Files/Pods-GoInfoGame-GoInfoGameUITests/Pods-GoInfoGame-GoInfoGameUITests.debug.xcconfig"; sourceTree = "<group>"; };
+		F008D431593E568E75C48C84 /* Pods-GoInfoGame.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-GoInfoGame.debug.xcconfig"; path = "Target Support Files/Pods-GoInfoGame/Pods-GoInfoGame.debug.xcconfig"; sourceTree = "<group>"; };
+		FAC9E60E2B04F9C800E2C608 /* OverpassRequestManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OverpassRequestManager.swift; sourceTree = "<group>"; };
 		FAD5C4EF2AFCBE700040C61A /* GoInfoGame.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GoInfoGame.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		FAD5C4F22AFCBE700040C61A /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		FAD5C4F42AFCBE700040C61A /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -56,6 +70,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C8DCA3040FCD4269E5977E45 /* Pods_GoInfoGame.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -63,6 +78,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				74D8E739AE340D54DEF2E74C /* Pods_GoInfoGameTests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -70,12 +86,36 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				342561966FC217124BD9CFE7 /* Pods_GoInfoGame_GoInfoGameUITests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		416A9A4590B07971607790B0 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				66BED441AF03CC04539E8D4A /* Pods_GoInfoGame.framework */,
+				2D539E22EFF6636F8CBA035A /* Pods_GoInfoGame_GoInfoGameUITests.framework */,
+				066F85ADCDCE7357368131F8 /* Pods_GoInfoGameTests.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		542FC000DFD01277B18A7CDB /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				F008D431593E568E75C48C84 /* Pods-GoInfoGame.debug.xcconfig */,
+				C96303080D26026265099E0E /* Pods-GoInfoGame.release.xcconfig */,
+				D76D8E22AC705A38AFEA78B1 /* Pods-GoInfoGame-GoInfoGameUITests.debug.xcconfig */,
+				AE61EC473200AFDA81C2110A /* Pods-GoInfoGame-GoInfoGameUITests.release.xcconfig */,
+				3D797A45474D6135AFA24613 /* Pods-GoInfoGameTests.debug.xcconfig */,
+				89C2A88A7749F031BCDFE226 /* Pods-GoInfoGameTests.release.xcconfig */,
+			);
+			path = Pods;
+			sourceTree = "<group>";
+		};
 		FAD5C4E62AFCBE700040C61A = {
 			isa = PBXGroup;
 			children = (
@@ -83,6 +123,8 @@
 				FAD5C5082AFCBE720040C61A /* GoInfoGameTests */,
 				FAD5C5122AFCBE720040C61A /* GoInfoGameUITests */,
 				FAD5C4F02AFCBE700040C61A /* Products */,
+				542FC000DFD01277B18A7CDB /* Pods */,
+				416A9A4590B07971607790B0 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -102,6 +144,7 @@
 				FAD5C4F22AFCBE700040C61A /* AppDelegate.swift */,
 				FAD5C4F42AFCBE700040C61A /* SceneDelegate.swift */,
 				FAD5C4F62AFCBE700040C61A /* ViewController.swift */,
+				FAC9E60E2B04F9C800E2C608 /* OverpassRequestManager.swift */,
 				FAD5C4F82AFCBE700040C61A /* Main.storyboard */,
 				FAD5C4FB2AFCBE720040C61A /* Assets.xcassets */,
 				FAD5C4FD2AFCBE720040C61A /* LaunchScreen.storyboard */,
@@ -134,9 +177,11 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = FAD5C5192AFCBE720040C61A /* Build configuration list for PBXNativeTarget "GoInfoGame" */;
 			buildPhases = (
+				3A8B389D639C310AE1E29BEB /* [CP] Check Pods Manifest.lock */,
 				FAD5C4EB2AFCBE700040C61A /* Sources */,
 				FAD5C4EC2AFCBE700040C61A /* Frameworks */,
 				FAD5C4ED2AFCBE700040C61A /* Resources */,
+				04D7AD88F31E8154FD869DC0 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -151,6 +196,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = FAD5C51C2AFCBE720040C61A /* Build configuration list for PBXNativeTarget "GoInfoGameTests" */;
 			buildPhases = (
+				FF862D6335761A29040D8975 /* [CP] Check Pods Manifest.lock */,
 				FAD5C5012AFCBE720040C61A /* Sources */,
 				FAD5C5022AFCBE720040C61A /* Frameworks */,
 				FAD5C5032AFCBE720040C61A /* Resources */,
@@ -169,9 +215,11 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = FAD5C51F2AFCBE720040C61A /* Build configuration list for PBXNativeTarget "GoInfoGameUITests" */;
 			buildPhases = (
+				22470146F9BBAFA50CC4EEB4 /* [CP] Check Pods Manifest.lock */,
 				FAD5C50B2AFCBE720040C61A /* Sources */,
 				FAD5C50C2AFCBE720040C61A /* Frameworks */,
 				FAD5C50D2AFCBE720040C61A /* Resources */,
+				BB49C5A913AD6EC3010537CA /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -253,6 +301,109 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		04D7AD88F31E8154FD869DC0 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-GoInfoGame/Pods-GoInfoGame-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-GoInfoGame/Pods-GoInfoGame-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-GoInfoGame/Pods-GoInfoGame-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		22470146F9BBAFA50CC4EEB4 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-GoInfoGame-GoInfoGameUITests-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		3A8B389D639C310AE1E29BEB /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-GoInfoGame-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		BB49C5A913AD6EC3010537CA /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-GoInfoGame-GoInfoGameUITests/Pods-GoInfoGame-GoInfoGameUITests-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-GoInfoGame-GoInfoGameUITests/Pods-GoInfoGame-GoInfoGameUITests-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-GoInfoGame-GoInfoGameUITests/Pods-GoInfoGame-GoInfoGameUITests-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		FF862D6335761A29040D8975 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-GoInfoGameTests-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		FAD5C4EB2AFCBE700040C61A /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
@@ -260,6 +411,7 @@
 			files = (
 				FAD5C4F72AFCBE700040C61A /* ViewController.swift in Sources */,
 				FAD5C4F32AFCBE700040C61A /* AppDelegate.swift in Sources */,
+				FAC9E60F2B04F9C800E2C608 /* OverpassRequestManager.swift in Sources */,
 				FAD5C4F52AFCBE700040C61A /* SceneDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -432,6 +584,7 @@
 		};
 		FAD5C51A2AFCBE720040C61A /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = F008D431593E568E75C48C84 /* Pods-GoInfoGame.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -460,6 +613,7 @@
 		};
 		FAD5C51B2AFCBE720040C61A /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = C96303080D26026265099E0E /* Pods-GoInfoGame.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -488,6 +642,7 @@
 		};
 		FAD5C51D2AFCBE720040C61A /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 3D797A45474D6135AFA24613 /* Pods-GoInfoGameTests.debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
@@ -508,6 +663,7 @@
 		};
 		FAD5C51E2AFCBE720040C61A /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 89C2A88A7749F031BCDFE226 /* Pods-GoInfoGameTests.release.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
@@ -528,6 +684,7 @@
 		};
 		FAD5C5202AFCBE720040C61A /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = D76D8E22AC705A38AFEA78B1 /* Pods-GoInfoGame-GoInfoGameUITests.debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
@@ -546,6 +703,7 @@
 		};
 		FAD5C5212AFCBE720040C61A /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = AE61EC473200AFDA81C2110A /* Pods-GoInfoGame-GoInfoGameUITests.release.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
