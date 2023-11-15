@@ -6,6 +6,8 @@ target 'GoInfoGame' do
   use_frameworks!
 
   # Pods for GoInfoGame
+  
+  pod 'SwiftOverpassAPI'
 
   target 'GoInfoGameTests' do
     inherit! :search_paths
