@@ -10,32 +10,42 @@ import MapKit
 
 class MapKitViewController: UIViewController {
     
-
-    private let locationManager = CLLocationManager()
-    private var currentCoordinate: CLLocationCoordinate2D?
+    private let locationManager = LocationManager()
+    
+    private let overpassManager = OverpassRequestManager()
     
     @IBOutlet weak var mapView: MKMapView!
     override func viewDidLoad() {
         super.viewDidLoad()
         configureLocationServices()
     }
-    private func configureLocationServices() {
-        locationManager.delegate = self
-        let status = CLLocationManager()
-        switch status.authorizationStatus {
-        case .notDetermined:
-            locationManager.requestAlwaysAuthorization()
-        case .authorizedAlways, .authorizedWhenInUse:
-            beginLocationUpdates(locationManager: locationManager)
-        default: break
-        }
-    }
     
-    private func beginLocationUpdates(locationManager: CLLocationManager) {
-        mapView.showsUserLocation = true
-        locationManager.desiredAccuracy = kCLLocationAccuracyBest
-        locationManager.startUpdatingLocation()
-    }
+    private func configureLocationServices() {
+          locationManager.locationUpdateHandler = { [weak self] coordinate in
+              self?.zoomToLatestLocation(with: coordinate)
+
+              self?.locationManager.getCurrentLocation { [weak self] result in
+                  guard let self = self else { return }
+                  
+                  let minLatitude = result["minLatitude"]!
+                  let minLongitude = result["minLongitude"]!
+                  let maxLatitude = result["maxLatitude"]!
+                  let maxLongitude = result["maxLongitude"]!
+                  
+                  self.overpassManager.makeOverpassRequest(
+                      forBoundingBox: minLatitude, minLongitude, maxLatitude, maxLongitude
+                  ) { [weak self] result in
+                      print(result)
+                      print("Node Count: \(String(describing: result["nodeCount"]))")
+                      print("Way Count: \(String(describing: result["wayCount"]))")
+                      print("Relation Count: \(String(describing: result["relCount"]))")
+
+                      self?.locationManager.setOverpassRequestInProgress(false)
+                  }
+              }
+          }
+      }
+
     
     private func zoomToLatestLocation(with coordinate: CLLocationCoordinate2D) {
         let zoomRegion = MKCoordinateRegion(center: coordinate, latitudinalMeters: 10000, longitudinalMeters: 10000)
@@ -46,22 +56,4 @@ class MapKitViewController: UIViewController {
         self.dismiss(animated: true)
     }
 }
-extension MapKitViewController: CLLocationManagerDelegate {
-    
-    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-        
-        guard let latestLocation = locations.first else { return }
-        
-        if currentCoordinate == nil {
-            zoomToLatestLocation(with: latestLocation.coordinate)
-        }
-        
-        currentCoordinate = latestLocation.coordinate
-    }
-    
-    func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
-        if status == .authorizedAlways || status == .authorizedWhenInUse {
-            beginLocationUpdates(locationManager: manager)
-        }
-    }
-}
+

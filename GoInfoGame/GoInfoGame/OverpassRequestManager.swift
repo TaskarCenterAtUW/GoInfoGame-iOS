@@ -31,8 +31,9 @@ class OverpassRequestManager {
 
         client.endpoint = .kumiSystems
 
-        client.fetchElements(query: query) { [weak self] result in
-            self?.handleOverpassResponse(result, completionHandler: { result in
+        client.fetchElements(query: query) { [weak self] fetchedElements in
+            print(fetchedElements)
+            self?.handleOverpassResponse(fetchedElements, completionHandler: { result in
                 completionHandler(result)
             })
         }
