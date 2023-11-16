@@ -9,7 +9,8 @@
 /* Begin PBXBuildFile section */
 		342561966FC217124BD9CFE7 /* Pods_GoInfoGame_GoInfoGameUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2D539E22EFF6636F8CBA035A /* Pods_GoInfoGame_GoInfoGameUITests.framework */; };
 		74D8E739AE340D54DEF2E74C /* Pods_GoInfoGameTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 066F85ADCDCE7357368131F8 /* Pods_GoInfoGameTests.framework */; };
-		C8DCA3040FCD4269E5977E45 /* Pods_GoInfoGame.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 66BED441AF03CC04539E8D4A /* Pods_GoInfoGame.framework */; };
+		97F2FA8A2B0630A3000B9726 /* Pods_GoInfoGame.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 66BED441AF03CC04539E8D4A /* Pods_GoInfoGame.framework */; };
+		97F2FA932B063C70000B9726 /* MapKitViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97F2FA912B063C70000B9726 /* MapKitViewController.swift */; };
 		FAC9E60F2B04F9C800E2C608 /* OverpassRequestManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC9E60E2B04F9C800E2C608 /* OverpassRequestManager.swift */; };
 		FAD5C4F32AFCBE700040C61A /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAD5C4F22AFCBE700040C61A /* AppDelegate.swift */; };
 		FAD5C4F52AFCBE700040C61A /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAD5C4F42AFCBE700040C61A /* SceneDelegate.swift */; };
@@ -45,6 +46,8 @@
 		3D797A45474D6135AFA24613 /* Pods-GoInfoGameTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-GoInfoGameTests.debug.xcconfig"; path = "Target Support Files/Pods-GoInfoGameTests/Pods-GoInfoGameTests.debug.xcconfig"; sourceTree = "<group>"; };
 		66BED441AF03CC04539E8D4A /* Pods_GoInfoGame.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_GoInfoGame.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		89C2A88A7749F031BCDFE226 /* Pods-GoInfoGameTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-GoInfoGameTests.release.xcconfig"; path = "Target Support Files/Pods-GoInfoGameTests/Pods-GoInfoGameTests.release.xcconfig"; sourceTree = "<group>"; };
+		97F2FA8D2B0630C4000B9726 /* SwiftOverpassAPI.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = SwiftOverpassAPI.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		97F2FA912B063C70000B9726 /* MapKitViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapKitViewController.swift; sourceTree = "<group>"; };
 		AE61EC473200AFDA81C2110A /* Pods-GoInfoGame-GoInfoGameUITests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-GoInfoGame-GoInfoGameUITests.release.xcconfig"; path = "Target Support Files/Pods-GoInfoGame-GoInfoGameUITests/Pods-GoInfoGame-GoInfoGameUITests.release.xcconfig"; sourceTree = "<group>"; };
 		C96303080D26026265099E0E /* Pods-GoInfoGame.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-GoInfoGame.release.xcconfig"; path = "Target Support Files/Pods-GoInfoGame/Pods-GoInfoGame.release.xcconfig"; sourceTree = "<group>"; };
 		D76D8E22AC705A38AFEA78B1 /* Pods-GoInfoGame-GoInfoGameUITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-GoInfoGame-GoInfoGameUITests.debug.xcconfig"; path = "Target Support Files/Pods-GoInfoGame-GoInfoGameUITests/Pods-GoInfoGame-GoInfoGameUITests.debug.xcconfig"; sourceTree = "<group>"; };
@@ -70,7 +73,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				C8DCA3040FCD4269E5977E45 /* Pods_GoInfoGame.framework in Frameworks */,
+				97F2FA8A2B0630A3000B9726 /* Pods_GoInfoGame.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -96,6 +99,7 @@
 		416A9A4590B07971607790B0 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				97F2FA8D2B0630C4000B9726 /* SwiftOverpassAPI.framework */,
 				66BED441AF03CC04539E8D4A /* Pods_GoInfoGame.framework */,
 				2D539E22EFF6636F8CBA035A /* Pods_GoInfoGame_GoInfoGameUITests.framework */,
 				066F85ADCDCE7357368131F8 /* Pods_GoInfoGameTests.framework */,
@@ -149,6 +153,7 @@
 				FAD5C4FB2AFCBE720040C61A /* Assets.xcassets */,
 				FAD5C4FD2AFCBE720040C61A /* LaunchScreen.storyboard */,
 				FAD5C5002AFCBE720040C61A /* Info.plist */,
+				97F2FA912B063C70000B9726 /* MapKitViewController.swift */,
 			);
 			path = GoInfoGame;
 			sourceTree = "<group>";
@@ -410,6 +415,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				FAD5C4F72AFCBE700040C61A /* ViewController.swift in Sources */,
+				97F2FA932B063C70000B9726 /* MapKitViewController.swift in Sources */,
 				FAD5C4F32AFCBE700040C61A /* AppDelegate.swift in Sources */,
 				FAC9E60F2B04F9C800E2C608 /* OverpassRequestManager.swift in Sources */,
 				FAD5C4F52AFCBE700040C61A /* SceneDelegate.swift in Sources */,
@@ -518,7 +524,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 16.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -572,7 +578,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 16.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
@@ -598,6 +604,7 @@
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -627,6 +634,7 @@
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
