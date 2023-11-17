@@ -7,10 +7,10 @@
 
 import CoreLocation
 
+
 class LocationManager: NSObject, CLLocationManagerDelegate {
     private var locationManager = CLLocationManager()
     private var currentCoordinate: CLLocationCoordinate2D?
-    
     var locationUpdateHandler: ((CLLocationCoordinate2D) -> Void)?
     
     private var isOverpassRequestInProgress = false
@@ -45,6 +45,7 @@ class LocationManager: NSObject, CLLocationManagerDelegate {
     private func beginLocationUpdates(locationManager: CLLocationManager) {
         locationManager.desiredAccuracy = kCLLocationAccuracyBest
         locationManager.startUpdatingLocation()
+//        delegate?.locationBeginLocationUpdates(locationManager)
     }
     
     
@@ -52,7 +53,7 @@ class LocationManager: NSObject, CLLocationManagerDelegate {
         let currentLatitude = location.coordinate.latitude
         let currentLongitude = location.coordinate.longitude
 
-        let regionSpan = 0.1
+        let regionSpan = 0.001
         minLatitude = currentLatitude - regionSpan
         maxLatitude = currentLatitude + regionSpan
         minLongitude = currentLongitude - regionSpan
