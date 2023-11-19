@@ -15,7 +15,7 @@ class OverpassRequestManager {
         client = OPClient()
     }
 
-    func makeOverpassRequest(forBoundingBox minLatitude: Double, _ minLongitude: Double, _ maxLatitude: Double, _ maxLongitude: Double, completionHandler: @escaping ([String: Int]) -> ()) {
+    func makeOverpassRequest(forBoundingBox minLatitude: Double, _ minLongitude: Double, _ maxLatitude: Double, _ maxLongitude: Double, completionHandler: @escaping ([Int : OPElement]) -> ()) {
         let boundingBox = OPBoundingBox(minLatitude: minLatitude, minLongitude: minLongitude, maxLatitude: maxLatitude, maxLongitude: maxLongitude)
         var query = ""
         do {
@@ -32,40 +32,29 @@ class OverpassRequestManager {
         client.endpoint = .kumiSystems
 
         client.fetchElements(query: query) { [weak self] fetchedElements in
-            print(fetchedElements)
             self?.handleOverpassResponse(fetchedElements, completionHandler: { result in
                 completionHandler(result)
             })
         }
     }
 
-    private func handleOverpassResponse(_ result: OPClientResult, completionHandler: @escaping ([String: Int]) -> ()) {
-        var nodeCount = 0
-        var wayCount = 0
-        var relCount = 0
-
+    private func handleOverpassResponse(_ result: OPClientResult, completionHandler: @escaping ([Int : OPElement]) -> ()) {
         DispatchQueue.main.async {
             switch result {
             case .failure(let error):
                 print(error.localizedDescription)
 
             case .success(let elements):
-                for element in elements.values {
-                    switch element {
-                    case is OPNode:
-                        nodeCount += 1
-                    case is OPWay:
-                        wayCount += 1
-                    case is OPRelation:
-                        relCount += 1
-                    default:
-                        print("NONE")
-                    }
-                }
-                
-                let resultDict = ["nodeCount": nodeCount, "wayCount": wayCount, "relCount": relCount]
-                 completionHandler(resultDict)
+                    completionHandler(elements)           
             }
         }
     }
+    
+    func visualise(elements: [Int: OPElement]) -> [Int: OPMapKitVisualization] {
+        let visualizations = OPVisualizationGenerator
+            .mapKitVisualizations(forElements: elements)
+        return visualizations
+    }
 }
+
+
