@@ -1,0 +1,16 @@
+PODS:
+  - SwiftOverpassAPI (0.1.3)
+
+DEPENDENCIES:
+  - SwiftOverpassAPI
+
+SPEC REPOS:
+  trunk:
+    - SwiftOverpassAPI
+
+SPEC CHECKSUMS:
+  SwiftOverpassAPI: c6e2f8a8c1caaaabd9f2df97433048ad49264fe5
+
+PODFILE CHECKSUM: 53f6379425f9b444dbf8f9668080f95bd1b6328d
+
+COCOAPODS: 1.13.0
