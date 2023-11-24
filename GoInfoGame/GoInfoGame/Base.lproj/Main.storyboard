@@ -42,7 +42,7 @@
                                             <color key="baseForegroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         </buttonConfiguration>
                                         <connections>
-                                            <segue destination="1L3-Wt-xlh" kind="show" id="3P3-1I-cmy"/>
+                                            <action selector="skipButtonTapped:" destination="Vtf-17-t2l" eventType="touchUpInside" id="zlP-lS-yp9"/>
                                         </connections>
                                     </button>
                                 </subviews>

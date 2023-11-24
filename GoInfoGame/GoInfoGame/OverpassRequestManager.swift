@@ -13,15 +13,19 @@ class OverpassRequestManager {
 
     init() {
         client = OPClient()
+        client.endpoint = .kumiSystems
     }
 
-    func makeOverpassRequest(forBoundingBox minLatitude: Double, _ minLongitude: Double, _ maxLatitude: Double, _ maxLongitude: Double, completionHandler: @escaping ([Int : OPElement]) -> ()) {
+    func makeOverpassRequest(forBoundingBox minLatitude: Double,
+                             _ minLongitude: Double, _ maxLatitude: Double,
+                             _ maxLongitude: Double,
+                             completionHandler: @escaping ([Int : OPElement]) -> ()) {
         let boundingBox = OPBoundingBox(minLatitude: minLatitude, minLongitude: minLongitude, maxLatitude: maxLatitude, maxLongitude: maxLongitude)
         var query = ""
         do {
             query = try OPQueryBuilder()
                 .setTimeOut(180)
-                .setElementTypes([.way, .relation, .node])
+                .setElementTypes([.way, .node])
                 .setBoundingBox(boundingBox)
                 .setOutputType(.geometry)
                 .buildQueryString()
@@ -29,26 +33,27 @@ class OverpassRequestManager {
             print(error.localizedDescription)
         }
 
-        client.endpoint = .kumiSystems
 
         client.fetchElements(query: query) { [weak self] fetchedElements in
-            self?.handleOverpassResponse(fetchedElements, completionHandler: { result in
-                completionHandler(result)
-            })
+                   self?.handleOverpassResponse(fetchedElements, completionHandler: { result in
+                       completionHandler(result)
+                   })
         }
     }
 
-    private func handleOverpassResponse(_ result: OPClientResult, completionHandler: @escaping ([Int : OPElement]) -> ()) {
-        DispatchQueue.main.async {
-            switch result {
-            case .failure(let error):
-                print(error.localizedDescription)
-
-            case .success(let elements):
-                    completionHandler(elements)           
-            }
-        }
-    }
+    private func handleOverpassResponse(_ result: OPClientResult, completionHandler: @escaping ([Int: OPElement]) -> ()) {
+           DispatchQueue.main.async {
+               switch result {
+               case .failure(let error):
+                   print("Overpass API request failed: \(error.localizedDescription)")
+                   completionHandler([:])
+                   
+               case .success(let elements):
+                   completionHandler(elements)
+               }
+           }
+       }
+       
     
     func visualise(elements: [Int: OPElement]) -> [Int: OPMapKitVisualization] {
         let visualizations = OPVisualizationGenerator

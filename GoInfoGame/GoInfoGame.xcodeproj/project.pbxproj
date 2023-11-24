@@ -13,10 +13,15 @@
 		0536DD942B0BD59900B04C4B /* OAuthError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0536DD932B0BD59900B04C4B /* OAuthError.swift */; };
 		0536DD972B0BD95100B04C4B /* URLSession+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0536DD962B0BD95100B04C4B /* URLSession+Extension.swift */; };
 		0536DD992B0BDBFE00B04C4B /* OAuthManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0536DD982B0BDBFE00B04C4B /* OAuthManager.swift */; };
+		058EADD52B10DEAF0017E259 /* MapOverlay+UIViewRepresentable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 058EADD42B10DEAF0017E259 /* MapOverlay+UIViewRepresentable.swift */; };
+		058EADD82B10DF600017E259 /* IdentifiablePointAnnotation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 058EADD72B10DF600017E259 /* IdentifiablePointAnnotation.swift */; };
+		05CB71E02B0FAFD200DED821 /* GenericUIViewControllerRepresentable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05CB71DF2B0FAFD200DED821 /* GenericUIViewControllerRepresentable.swift */; };
+		05CB71EA2B0FBBDE00DED821 /* HomeMapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05CB71E92B0FBBDE00DED821 /* HomeMapView.swift */; };
+		05CB71EC2B0FBC0D00DED821 /* HomeMapViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05CB71EB2B0FBC0D00DED821 /* HomeMapViewModel.swift */; };
 		342561966FC217124BD9CFE7 /* Pods_GoInfoGame_GoInfoGameUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2D539E22EFF6636F8CBA035A /* Pods_GoInfoGame_GoInfoGameUITests.framework */; };
 		74D8E739AE340D54DEF2E74C /* Pods_GoInfoGameTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 066F85ADCDCE7357368131F8 /* Pods_GoInfoGameTests.framework */; };
 		97F2FA8A2B0630A3000B9726 /* Pods_GoInfoGame.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 66BED441AF03CC04539E8D4A /* Pods_GoInfoGame.framework */; };
-		97F2FA932B063C70000B9726 /* MapKitViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97F2FA912B063C70000B9726 /* MapKitViewController.swift */; };
+		97F2FA932B063C70000B9726 /* MapKitViewController_Deprecated.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97F2FA912B063C70000B9726 /* MapKitViewController_Deprecated.swift */; };
 		FAC9E60F2B04F9C800E2C608 /* OverpassRequestManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC9E60E2B04F9C800E2C608 /* OverpassRequestManager.swift */; };
 		FAC9E6112B06811300E2C608 /* LocationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC9E6102B06811300E2C608 /* LocationManager.swift */; };
 		FAD5C4F32AFCBE700040C61A /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAD5C4F22AFCBE700040C61A /* AppDelegate.swift */; };
@@ -53,13 +58,18 @@
 		0536DD932B0BD59900B04C4B /* OAuthError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OAuthError.swift; sourceTree = "<group>"; };
 		0536DD962B0BD95100B04C4B /* URLSession+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "URLSession+Extension.swift"; sourceTree = "<group>"; };
 		0536DD982B0BDBFE00B04C4B /* OAuthManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OAuthManager.swift; sourceTree = "<group>"; };
+		058EADD42B10DEAF0017E259 /* MapOverlay+UIViewRepresentable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MapOverlay+UIViewRepresentable.swift"; sourceTree = "<group>"; };
+		058EADD72B10DF600017E259 /* IdentifiablePointAnnotation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IdentifiablePointAnnotation.swift; sourceTree = "<group>"; };
+		05CB71DF2B0FAFD200DED821 /* GenericUIViewControllerRepresentable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GenericUIViewControllerRepresentable.swift; sourceTree = "<group>"; };
+		05CB71E92B0FBBDE00DED821 /* HomeMapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeMapView.swift; sourceTree = "<group>"; };
+		05CB71EB2B0FBC0D00DED821 /* HomeMapViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeMapViewModel.swift; sourceTree = "<group>"; };
 		066F85ADCDCE7357368131F8 /* Pods_GoInfoGameTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_GoInfoGameTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		2D539E22EFF6636F8CBA035A /* Pods_GoInfoGame_GoInfoGameUITests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_GoInfoGame_GoInfoGameUITests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		3D797A45474D6135AFA24613 /* Pods-GoInfoGameTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-GoInfoGameTests.debug.xcconfig"; path = "Target Support Files/Pods-GoInfoGameTests/Pods-GoInfoGameTests.debug.xcconfig"; sourceTree = "<group>"; };
 		66BED441AF03CC04539E8D4A /* Pods_GoInfoGame.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_GoInfoGame.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		89C2A88A7749F031BCDFE226 /* Pods-GoInfoGameTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-GoInfoGameTests.release.xcconfig"; path = "Target Support Files/Pods-GoInfoGameTests/Pods-GoInfoGameTests.release.xcconfig"; sourceTree = "<group>"; };
 		97F2FA8D2B0630C4000B9726 /* SwiftOverpassAPI.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = SwiftOverpassAPI.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		97F2FA912B063C70000B9726 /* MapKitViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapKitViewController.swift; sourceTree = "<group>"; };
+		97F2FA912B063C70000B9726 /* MapKitViewController_Deprecated.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapKitViewController_Deprecated.swift; sourceTree = "<group>"; };
 		AE61EC473200AFDA81C2110A /* Pods-GoInfoGame-GoInfoGameUITests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-GoInfoGame-GoInfoGameUITests.release.xcconfig"; path = "Target Support Files/Pods-GoInfoGame-GoInfoGameUITests/Pods-GoInfoGame-GoInfoGameUITests.release.xcconfig"; sourceTree = "<group>"; };
 		C96303080D26026265099E0E /* Pods-GoInfoGame.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-GoInfoGame.release.xcconfig"; path = "Target Support Files/Pods-GoInfoGame/Pods-GoInfoGame.release.xcconfig"; sourceTree = "<group>"; };
 		D76D8E22AC705A38AFEA78B1 /* Pods-GoInfoGame-GoInfoGameUITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-GoInfoGame-GoInfoGameUITests.debug.xcconfig"; path = "Target Support Files/Pods-GoInfoGame-GoInfoGameUITests/Pods-GoInfoGame-GoInfoGameUITests.debug.xcconfig"; sourceTree = "<group>"; };
@@ -120,7 +130,11 @@
 		0536DD862B0BD12E00B04C4B /* Map */ = {
 			isa = PBXGroup;
 			children = (
-				97F2FA912B063C70000B9726 /* MapKitViewController.swift */,
+				058EADD62B10DF520017E259 /* Common */,
+				058EADD32B10DE850017E259 /* Overlay */,
+				97F2FA912B063C70000B9726 /* MapKitViewController_Deprecated.swift */,
+				05CB71E92B0FBBDE00DED821 /* HomeMapView.swift */,
+				05CB71EB2B0FBC0D00DED821 /* HomeMapViewModel.swift */,
 			);
 			path = Map;
 			sourceTree = "<group>";
@@ -149,6 +163,53 @@
 				0536DD962B0BD95100B04C4B /* URLSession+Extension.swift */,
 			);
 			path = Network;
+			sourceTree = "<group>";
+		};
+		058EADD32B10DE850017E259 /* Overlay */ = {
+			isa = PBXGroup;
+			children = (
+				058EADD42B10DEAF0017E259 /* MapOverlay+UIViewRepresentable.swift */,
+			);
+			path = Overlay;
+			sourceTree = "<group>";
+		};
+		058EADD62B10DF520017E259 /* Common */ = {
+			isa = PBXGroup;
+			children = (
+				058EADD72B10DF600017E259 /* IdentifiablePointAnnotation.swift */,
+			);
+			path = Common;
+			sourceTree = "<group>";
+		};
+		058EADD92B10E02E0017E259 /* DataBaseConnector */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = DataBaseConnector;
+			sourceTree = "<group>";
+		};
+		058EADDA2B10E09C0017E259 /* Repository */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Repository;
+			sourceTree = "<group>";
+		};
+		05CB71DD2B0FAEC200DED821 /* UI */ = {
+			isa = PBXGroup;
+			children = (
+				0536DD862B0BD12E00B04C4B /* Map */,
+				0536DD832B0BD0ED00B04C4B /* Login */,
+			);
+			path = UI;
+			sourceTree = "<group>";
+		};
+		05CB71DE2B0FAFAA00DED821 /* Bridges */ = {
+			isa = PBXGroup;
+			children = (
+				05CB71DF2B0FAFD200DED821 /* GenericUIViewControllerRepresentable.swift */,
+			);
+			path = Bridges;
 			sourceTree = "<group>";
 		};
 		416A9A4590B07971607790B0 /* Frameworks */ = {
@@ -204,10 +265,12 @@
 				FAD5C4F42AFCBE700040C61A /* SceneDelegate.swift */,
 				FAC9E60E2B04F9C800E2C608 /* OverpassRequestManager.swift */,
 				FAC9E6102B06811300E2C608 /* LocationManager.swift */,
+				05CB71DD2B0FAEC200DED821 /* UI */,
+				05CB71DE2B0FAFAA00DED821 /* Bridges */,
+				058EADD92B10E02E0017E259 /* DataBaseConnector */,
+				058EADDA2B10E09C0017E259 /* Repository */,
 				0536DD952B0BD91F00B04C4B /* Network */,
 				0536DD8A2B0BD2A900B04C4B /* Helpers */,
-				0536DD832B0BD0ED00B04C4B /* Login */,
-				0536DD862B0BD12E00B04C4B /* Map */,
 				FAD5C4F82AFCBE700040C61A /* Main.storyboard */,
 				FAD5C4FB2AFCBE720040C61A /* Assets.xcassets */,
 				FAD5C4FD2AFCBE720040C61A /* LaunchScreen.storyboard */,
@@ -473,16 +536,21 @@
 			buildActionMask = 2147483647;
 			files = (
 				0536DD852B0BD11A00B04C4B /* LoginViewController.swift in Sources */,
-				97F2FA932B063C70000B9726 /* MapKitViewController.swift in Sources */,
+				97F2FA932B063C70000B9726 /* MapKitViewController_Deprecated.swift in Sources */,
 				FAC9E6112B06811300E2C608 /* LocationManager.swift in Sources */,
+				058EADD82B10DF600017E259 /* IdentifiablePointAnnotation.swift in Sources */,
+				05CB71E02B0FAFD200DED821 /* GenericUIViewControllerRepresentable.swift in Sources */,
 				FAD5C4F32AFCBE700040C61A /* AppDelegate.swift in Sources */,
 				FAC9E60F2B04F9C800E2C608 /* OverpassRequestManager.swift in Sources */,
 				0536DD922B0BD58800B04C4B /* OAuthService.swift in Sources */,
+				05CB71EA2B0FBBDE00DED821 /* HomeMapView.swift in Sources */,
+				05CB71EC2B0FBC0D00DED821 /* HomeMapViewModel.swift in Sources */,
 				0536DD972B0BD95100B04C4B /* URLSession+Extension.swift in Sources */,
 				0536DD942B0BD59900B04C4B /* OAuthError.swift in Sources */,
 				FAD5C4F52AFCBE700040C61A /* SceneDelegate.swift in Sources */,
 				0536DD8C2B0BD2C200B04C4B /* Constants.swift in Sources */,
 				0536DD992B0BDBFE00B04C4B /* OAuthManager.swift in Sources */,
+				058EADD52B10DEAF0017E259 /* MapOverlay+UIViewRepresentable.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
