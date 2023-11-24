@@ -66,5 +66,11 @@ struct MapViewWithOverlays: UIViewRepresentable {
         uiView.removeOverlays(uiView.overlays)
         uiView.addOverlays(polylines)
         uiView.addOverlays(polygons)
+        if let userLocation = uiView.userLocation.location?.coordinate {
+               let annotation = MKPointAnnotation()
+               annotation.coordinate = userLocation
+               annotation.title = "Current Location"
+               uiView.addAnnotation(annotation)
+           }
     }
 }
