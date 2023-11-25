@@ -12,6 +12,10 @@ import SwiftUI
 struct MapViewWithOverlays: UIViewRepresentable {
     @Binding var polylines: [MKPolyline]
     @Binding var polygons: [MKPolygon]
+    @Binding var annotations: [IdentifiablePointAnnotation]
+    @State private var selectedOverlay: MKOverlay?
+    @Binding var selectedAnnotation: IdentifiablePointAnnotation?
+    @Binding var showCallout: Bool
     
     @State private var userTrackingMode: MapUserTrackingMode = .follow
     @State private var region: MKCoordinateRegion?
@@ -48,6 +52,31 @@ struct MapViewWithOverlays: UIViewRepresentable {
                 mapView.setRegion(initialRegion, animated: true)
             }
         }
+        
+        
+        func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
+            guard let pointAnnotation = annotation as? IdentifiablePointAnnotation else {
+                return nil
+            }
+            
+            let identifier = "customAnnotation"
+            var annotationView: MKAnnotationView
+            
+            if let dequeuedView = mapView.dequeueReusableAnnotationView(withIdentifier: identifier) {
+                annotationView = dequeuedView
+            } else {
+                annotationView = MKAnnotationView(annotation: annotation, reuseIdentifier: identifier)
+                annotationView.canShowCallout = true
+            }
+            
+            annotationView.image = UIImage(named: "mapicon")
+            
+            let calloutView = CustomCalloutView(annotation: pointAnnotation)
+            annotationView.detailCalloutAccessoryView = UIHostingController(rootView: calloutView).view
+            
+            return annotationView
+        }
+        
     }
     
     func makeCoordinator() -> Coordinator {
@@ -66,11 +95,12 @@ struct MapViewWithOverlays: UIViewRepresentable {
         uiView.removeOverlays(uiView.overlays)
         uiView.addOverlays(polylines)
         uiView.addOverlays(polygons)
+        uiView.addAnnotations(annotations)
         if let userLocation = uiView.userLocation.location?.coordinate {
-               let annotation = MKPointAnnotation()
-               annotation.coordinate = userLocation
-               annotation.title = "Current Location"
-               uiView.addAnnotation(annotation)
-           }
+            let annotation = MKPointAnnotation()
+            annotation.coordinate = userLocation
+            annotation.title = "Current Location"
+            uiView.addAnnotation(annotation)
+        }
     }
 }
