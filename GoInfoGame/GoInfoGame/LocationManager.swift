@@ -97,4 +97,7 @@ class LocationManager: NSObject, CLLocationManagerDelegate {
     func setOverpassRequestInProgress(_ inProgress: Bool) {
             isOverpassRequestInProgress = inProgress
         }
+    func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
+            print("Location manager did fail with error: \(error.localizedDescription)")
+        }
 }

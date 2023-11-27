@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import SwiftUI
 
 class LoginViewController: UIViewController {
     
@@ -43,5 +44,12 @@ class LoginViewController: UIViewController {
                print("Authorization failed with error: \(error.localizedDescription)")
            }
        }
+    
+    @IBAction func skipButtonTapped(_ sender: Any) {
+      
+        let contentView = HomeMapView()
+        let childView = UIHostingController(rootView: contentView)
+        self.navigationController?.pushViewController(childView, animated: false)
+    }
     
 }

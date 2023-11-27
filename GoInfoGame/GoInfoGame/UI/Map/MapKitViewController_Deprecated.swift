@@ -9,7 +9,7 @@ import UIKit
 import MapKit
 import SwiftOverpassAPI
 
-
+//TODO: Deprecated - Dont use
 class MapKitViewController: UIViewController {
     
     private let locationManager = LocationManager()
@@ -23,6 +23,7 @@ class MapKitViewController: UIViewController {
         mapView.delegate = self
         configureLocationServices()
     }
+    //TODO: Deprecated - Dont use
     
     private func configureLocationServices() {        locationManager.locationUpdateHandler = { [weak self] coordinate in
         self?.zoomToLatestLocation(with: coordinate)
@@ -48,7 +49,7 @@ class MapKitViewController: UIViewController {
         }
     }
     }
-    
+    //TODO: Deprecated - Dont use
     private func addVisualizations(_ visualizations: [Int: OPMapKitVisualization]) {
         
         var annotations = [MKAnnotation]()
