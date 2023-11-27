@@ -77,6 +77,32 @@ struct MapViewWithOverlays: UIViewRepresentable {
             return annotationView
         }
         
+        // Method to change the color of polyline when user taps on it
+        @objc func handleTap(sender: UITapGestureRecognizer) {
+            let mapView = sender.view as! MKMapView
+            let tapCoordinate = mapView.convert(sender.location(in: mapView), toCoordinateFrom: mapView)
+            for overlay in mapView.overlays {
+                if let polyline = overlay as? MKPolyline {
+                    /// Checking if the tap coordinate intersects with the polyline
+                    if polyline.intersects(with: tapCoordinate, mapView: mapView) {
+                        /// Resetting the color of all polylines
+                        for otherOverlay in mapView.overlays {
+                            if let otherPolyline = otherOverlay as? MKPolyline,
+                               let otherRenderer = mapView.renderer(for: otherPolyline) as? MKPolylineRenderer {
+                                otherRenderer.strokeColor = .blue
+                                otherRenderer.lineWidth = 3
+                            }
+                        }
+                        /// Updating the color of the tapped polyline
+                        if let renderer = mapView.renderer(for: polyline) as? MKPolylineRenderer {
+                            renderer.strokeColor = .systemGreen
+                            renderer.lineWidth = 6
+                        }
+                        break
+                    }
+                }
+            }
+        }
     }
     
     func makeCoordinator() -> Coordinator {
@@ -86,6 +112,8 @@ struct MapViewWithOverlays: UIViewRepresentable {
     func makeUIView(context: Context) -> MKMapView {
         let mapView = MKMapView()
         mapView.delegate = context.coordinator
+        let tapGesture = UITapGestureRecognizer(target: context.coordinator, action: #selector(Coordinator.handleTap(sender:)))
+        mapView.addGestureRecognizer(tapGesture)
         mapView.showsUserLocation = true
         mapView.userTrackingMode = .follow
         return mapView
