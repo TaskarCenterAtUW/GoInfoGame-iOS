@@ -36,8 +36,11 @@
 		C7900EB42B15BAFC00AEB066 /* QuestResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7900EB32B15BAFC00AEB066 /* QuestResponse.swift */; };
 		C7900EBA2B15C90A00AEB066 /* StepsRampViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7900EB92B15C90A00AEB066 /* StepsRampViewModel.swift */; };
 		C7900EBC2B15F10200AEB066 /* StepsRampOption.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7900EBB2B15F10200AEB066 /* StepsRampOption.swift */; };
-		C7900EBE2B15FE4200AEB066 /* QuestView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7900EBD2B15FE4200AEB066 /* QuestView.swift */; };
+		C7900EBE2B15FE4200AEB066 /* MultipleOptionsQuestView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7900EBD2B15FE4200AEB066 /* MultipleOptionsQuestView.swift */; };
 		C7900EC02B15FE6F00AEB066 /* QuestOptionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7900EBF2B15FE6F00AEB066 /* QuestOptionView.swift */; };
+		C7900EC22B17B45000AEB066 /* QuestTitleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7900EC12B17B45000AEB066 /* QuestTitleView.swift */; };
+		C7900EC42B18FABF00AEB066 /* ConfirmationQuestView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7900EC32B18FABF00AEB066 /* ConfirmationQuestView.swift */; };
+		C7900ECA2B18FC2A00AEB066 /* CrossingIslandViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7900EC92B18FC2A00AEB066 /* CrossingIslandViewModel.swift */; };
 		FAC9E60F2B04F9C800E2C608 /* OverpassRequestManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC9E60E2B04F9C800E2C608 /* OverpassRequestManager.swift */; };
 		FAC9E6112B06811300E2C608 /* LocationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC9E6102B06811300E2C608 /* LocationManager.swift */; };
 		FAD5C4F32AFCBE700040C61A /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAD5C4F22AFCBE700040C61A /* AppDelegate.swift */; };
@@ -101,8 +104,11 @@
 		C7900EB32B15BAFC00AEB066 /* QuestResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuestResponse.swift; sourceTree = "<group>"; };
 		C7900EB92B15C90A00AEB066 /* StepsRampViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StepsRampViewModel.swift; sourceTree = "<group>"; };
 		C7900EBB2B15F10200AEB066 /* StepsRampOption.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StepsRampOption.swift; sourceTree = "<group>"; };
-		C7900EBD2B15FE4200AEB066 /* QuestView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuestView.swift; sourceTree = "<group>"; };
+		C7900EBD2B15FE4200AEB066 /* MultipleOptionsQuestView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MultipleOptionsQuestView.swift; sourceTree = "<group>"; };
 		C7900EBF2B15FE6F00AEB066 /* QuestOptionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuestOptionView.swift; sourceTree = "<group>"; };
+		C7900EC12B17B45000AEB066 /* QuestTitleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuestTitleView.swift; sourceTree = "<group>"; };
+		C7900EC32B18FABF00AEB066 /* ConfirmationQuestView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfirmationQuestView.swift; sourceTree = "<group>"; };
+		C7900EC92B18FC2A00AEB066 /* CrossingIslandViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CrossingIslandViewModel.swift; sourceTree = "<group>"; };
 		C96303080D26026265099E0E /* Pods-GoInfoGame.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-GoInfoGame.release.xcconfig"; path = "Target Support Files/Pods-GoInfoGame/Pods-GoInfoGame.release.xcconfig"; sourceTree = "<group>"; };
 		D76D8E22AC705A38AFEA78B1 /* Pods-GoInfoGame-GoInfoGameUITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-GoInfoGame-GoInfoGameUITests.debug.xcconfig"; path = "Target Support Files/Pods-GoInfoGame-GoInfoGameUITests/Pods-GoInfoGame-GoInfoGameUITests.debug.xcconfig"; sourceTree = "<group>"; };
 		F008D431593E568E75C48C84 /* Pods-GoInfoGame.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-GoInfoGame.debug.xcconfig"; path = "Target Support Files/Pods-GoInfoGame/Pods-GoInfoGame.debug.xcconfig"; sourceTree = "<group>"; };
@@ -286,14 +292,17 @@
 		C7900EAA2B15B14A00AEB066 /* Quests */ = {
 			isa = PBXGroup;
 			children = (
+				C7900EC52B18FBDE00AEB066 /* CrossingIsland */,
 				C7900EB52B15C89C00AEB066 /* StepsRamp */,
 				C7900EAB2B15B17400AEB066 /* Quest.swift */,
 				C7900EAD2B15B95600AEB066 /* ConfirmationQuest.swift */,
 				C7900EAF2B15B9F200AEB066 /* MultipleOptionsQuest.swift */,
 				C7900EB12B15BA2D00AEB066 /* QuestOption.swift */,
 				C7900EB32B15BAFC00AEB066 /* QuestResponse.swift */,
-				C7900EBD2B15FE4200AEB066 /* QuestView.swift */,
+				C7900EBD2B15FE4200AEB066 /* MultipleOptionsQuestView.swift */,
 				C7900EBF2B15FE6F00AEB066 /* QuestOptionView.swift */,
+				C7900EC12B17B45000AEB066 /* QuestTitleView.swift */,
+				C7900EC32B18FABF00AEB066 /* ConfirmationQuestView.swift */,
 			);
 			path = Quests;
 			sourceTree = "<group>";
@@ -327,6 +336,38 @@
 			isa = PBXGroup;
 			children = (
 				C7900EB92B15C90A00AEB066 /* StepsRampViewModel.swift */,
+			);
+			path = ViewModel;
+			sourceTree = "<group>";
+		};
+		C7900EC52B18FBDE00AEB066 /* CrossingIsland */ = {
+			isa = PBXGroup;
+			children = (
+				C7900EC82B18FC0B00AEB066 /* ViewModel */,
+				C7900EC72B18FC0100AEB066 /* Model */,
+				C7900EC62B18FBF600AEB066 /* View */,
+			);
+			path = CrossingIsland;
+			sourceTree = "<group>";
+		};
+		C7900EC62B18FBF600AEB066 /* View */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
+		C7900EC72B18FC0100AEB066 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
+		C7900EC82B18FC0B00AEB066 /* ViewModel */ = {
+			isa = PBXGroup;
+			children = (
+				C7900EC92B18FC2A00AEB066 /* CrossingIslandViewModel.swift */,
 			);
 			path = ViewModel;
 			sourceTree = "<group>";
@@ -638,6 +679,7 @@
 				C7900EBA2B15C90A00AEB066 /* StepsRampViewModel.swift in Sources */,
 				97F2FA932B063C70000B9726 /* MapKitViewController_Deprecated.swift in Sources */,
 				C7900EC02B15FE6F00AEB066 /* QuestOptionView.swift in Sources */,
+				C7900ECA2B18FC2A00AEB066 /* CrossingIslandViewModel.swift in Sources */,
 				FAC9E6112B06811300E2C608 /* LocationManager.swift in Sources */,
 				058EADD82B10DF600017E259 /* IdentifiablePointAnnotation.swift in Sources */,
 				C7900EBC2B15F10200AEB066 /* StepsRampOption.swift in Sources */,
@@ -648,7 +690,7 @@
 				FAC9E60F2B04F9C800E2C608 /* OverpassRequestManager.swift in Sources */,
 				05DBBB642B17204300B6F110 /* RealmOPGeometry.swift in Sources */,
 				C7900EB22B15BA2D00AEB066 /* QuestOption.swift in Sources */,
-				C7900EBE2B15FE4200AEB066 /* QuestView.swift in Sources */,
+				C7900EBE2B15FE4200AEB066 /* MultipleOptionsQuestView.swift in Sources */,
 				0536DD922B0BD58800B04C4B /* OAuthService.swift in Sources */,
 				05CB71EA2B0FBBDE00DED821 /* HomeMapView.swift in Sources */,
 				05CB71EC2B0FBC0D00DED821 /* HomeMapViewModel.swift in Sources */,
@@ -656,6 +698,8 @@
 				0536DD972B0BD95100B04C4B /* URLSession+Extension.swift in Sources */,
 				05DBBB662B17209600B6F110 /* RealmOPMeta.swift in Sources */,
 				0536DD942B0BD59900B04C4B /* OAuthError.swift in Sources */,
+				C7900EC42B18FABF00AEB066 /* ConfirmationQuestView.swift in Sources */,
+				C7900EC22B17B45000AEB066 /* QuestTitleView.swift in Sources */,
 				FAD5C4F52AFCBE700040C61A /* SceneDelegate.swift in Sources */,
 				972454152B14A49A0036B91A /* Extensions.swift in Sources */,
 				0536DD8C2B0BD2C200B04C4B /* Constants.swift in Sources */,

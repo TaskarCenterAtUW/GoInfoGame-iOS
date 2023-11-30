@@ -27,7 +27,16 @@ enum StepsRamp: CaseIterable {
     }
     
     func iconName() -> String {
-        return ""
+        switch self {
+        case .none:
+            return "ramp_none"
+        case .bicycle:
+            return "ramp_bicycle"
+        case .stroller:
+            return "ramp_stroller"
+        case .wheelchair:
+            return "ramp_wheelchair"
+        }
     }
     
     func tagValue() -> String {
