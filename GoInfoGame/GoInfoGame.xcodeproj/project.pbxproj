@@ -21,6 +21,9 @@
 		05DBBB5B2B11EC2A00B6F110 /* CustomCallOut.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05DBBB5A2B11EC2A00B6F110 /* CustomCallOut.swift */; };
 		05DBBB5D2B1262BA00B6F110 /* OverpassRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05DBBB5C2B1262BA00B6F110 /* OverpassRepository.swift */; };
 		05DBBB5F2B1263FF00B6F110 /* DatabaseConnector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05DBBB5E2B1263FF00B6F110 /* DatabaseConnector.swift */; };
+		05DBBB622B164D9A00B6F110 /* RealOPElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05DBBB612B164D9A00B6F110 /* RealOPElement.swift */; };
+		05DBBB642B17204300B6F110 /* RealmOPGeometry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05DBBB632B17204300B6F110 /* RealmOPGeometry.swift */; };
+		05DBBB662B17209600B6F110 /* RealmOPMeta.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05DBBB652B17209600B6F110 /* RealmOPMeta.swift */; };
 		342561966FC217124BD9CFE7 /* Pods_GoInfoGame_GoInfoGameUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2D539E22EFF6636F8CBA035A /* Pods_GoInfoGame_GoInfoGameUITests.framework */; };
 		74D8E739AE340D54DEF2E74C /* Pods_GoInfoGameTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 066F85ADCDCE7357368131F8 /* Pods_GoInfoGameTests.framework */; };
 		972454152B14A49A0036B91A /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 972454142B14A49A0036B91A /* Extensions.swift */; };
@@ -70,6 +73,9 @@
 		05DBBB5A2B11EC2A00B6F110 /* CustomCallOut.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomCallOut.swift; sourceTree = "<group>"; };
 		05DBBB5C2B1262BA00B6F110 /* OverpassRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OverpassRepository.swift; sourceTree = "<group>"; };
 		05DBBB5E2B1263FF00B6F110 /* DatabaseConnector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatabaseConnector.swift; sourceTree = "<group>"; };
+		05DBBB612B164D9A00B6F110 /* RealOPElement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RealOPElement.swift; sourceTree = "<group>"; };
+		05DBBB632B17204300B6F110 /* RealmOPGeometry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RealmOPGeometry.swift; sourceTree = "<group>"; };
+		05DBBB652B17209600B6F110 /* RealmOPMeta.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RealmOPMeta.swift; sourceTree = "<group>"; };
 		066F85ADCDCE7357368131F8 /* Pods_GoInfoGameTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_GoInfoGameTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		2D539E22EFF6636F8CBA035A /* Pods_GoInfoGame_GoInfoGameUITests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_GoInfoGame_GoInfoGameUITests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		3D797A45474D6135AFA24613 /* Pods-GoInfoGameTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-GoInfoGameTests.debug.xcconfig"; path = "Target Support Files/Pods-GoInfoGameTests/Pods-GoInfoGameTests.debug.xcconfig"; sourceTree = "<group>"; };
@@ -191,12 +197,13 @@
 			path = Common;
 			sourceTree = "<group>";
 		};
-		058EADD92B10E02E0017E259 /* DataBaseConnector */ = {
+		058EADD92B10E02E0017E259 /* DataBase */ = {
 			isa = PBXGroup;
 			children = (
+				05DBBB602B164D6F00B6F110 /* DBModels */,
 				05DBBB5E2B1263FF00B6F110 /* DatabaseConnector.swift */,
 			);
-			path = DataBaseConnector;
+			path = DataBase;
 			sourceTree = "<group>";
 		};
 		058EADDA2B10E09C0017E259 /* Repository */ = {
@@ -222,6 +229,16 @@
 				05CB71DF2B0FAFD200DED821 /* GenericUIViewControllerRepresentable.swift */,
 			);
 			path = Bridges;
+			sourceTree = "<group>";
+		};
+		05DBBB602B164D6F00B6F110 /* DBModels */ = {
+			isa = PBXGroup;
+			children = (
+				05DBBB612B164D9A00B6F110 /* RealOPElement.swift */,
+				05DBBB632B17204300B6F110 /* RealmOPGeometry.swift */,
+				05DBBB652B17209600B6F110 /* RealmOPMeta.swift */,
+			);
+			path = DBModels;
 			sourceTree = "<group>";
 		};
 		416A9A4590B07971607790B0 /* Frameworks */ = {
@@ -279,7 +296,7 @@
 				FAC9E6102B06811300E2C608 /* LocationManager.swift */,
 				05CB71DD2B0FAEC200DED821 /* UI */,
 				05CB71DE2B0FAFAA00DED821 /* Bridges */,
-				058EADD92B10E02E0017E259 /* DataBaseConnector */,
+				058EADD92B10E02E0017E259 /* DataBase */,
 				058EADDA2B10E09C0017E259 /* Repository */,
 				0536DD952B0BD91F00B04C4B /* Network */,
 				0536DD8A2B0BD2A900B04C4B /* Helpers */,
@@ -554,12 +571,15 @@
 				058EADD82B10DF600017E259 /* IdentifiablePointAnnotation.swift in Sources */,
 				05CB71E02B0FAFD200DED821 /* GenericUIViewControllerRepresentable.swift in Sources */,
 				FAD5C4F32AFCBE700040C61A /* AppDelegate.swift in Sources */,
+				05DBBB622B164D9A00B6F110 /* RealOPElement.swift in Sources */,
 				FAC9E60F2B04F9C800E2C608 /* OverpassRequestManager.swift in Sources */,
+				05DBBB642B17204300B6F110 /* RealmOPGeometry.swift in Sources */,
 				0536DD922B0BD58800B04C4B /* OAuthService.swift in Sources */,
 				05CB71EA2B0FBBDE00DED821 /* HomeMapView.swift in Sources */,
 				05CB71EC2B0FBC0D00DED821 /* HomeMapViewModel.swift in Sources */,
 				05DBBB5F2B1263FF00B6F110 /* DatabaseConnector.swift in Sources */,
 				0536DD972B0BD95100B04C4B /* URLSession+Extension.swift in Sources */,
+				05DBBB662B17209600B6F110 /* RealmOPMeta.swift in Sources */,
 				0536DD942B0BD59900B04C4B /* OAuthError.swift in Sources */,
 				FAD5C4F52AFCBE700040C61A /* SceneDelegate.swift in Sources */,
 				972454152B14A49A0036B91A /* Extensions.swift in Sources */,

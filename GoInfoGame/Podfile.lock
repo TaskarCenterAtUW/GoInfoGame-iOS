@@ -1,16 +1,26 @@
 PODS:
+  - Realm (10.44.0):
+    - Realm/Headers (= 10.44.0)
+  - Realm/Headers (10.44.0)
+  - RealmSwift (10.44.0):
+    - Realm (= 10.44.0)
   - SwiftOverpassAPI (0.1.3)
 
 DEPENDENCIES:
+  - RealmSwift
   - SwiftOverpassAPI
 
 SPEC REPOS:
   trunk:
+    - Realm
+    - RealmSwift
     - SwiftOverpassAPI
 
 SPEC CHECKSUMS:
+  Realm: 0419a32457873acb720df25bf1d658df36967cf2
+  RealmSwift: 352f85c018b4d0efe961974bfa95bf7a30e079f6
   SwiftOverpassAPI: c6e2f8a8c1caaaabd9f2df97433048ad49264fe5
 
-PODFILE CHECKSUM: 53f6379425f9b444dbf8f9668080f95bd1b6328d
+PODFILE CHECKSUM: 43250635dcf0c7356f07a4f31afdee51f95827d4
 
 COCOAPODS: 1.13.0

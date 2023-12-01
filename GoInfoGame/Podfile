@@ -8,6 +8,7 @@ target 'GoInfoGame' do
   # Pods for GoInfoGame
   
   pod 'SwiftOverpassAPI'
+  pod 'RealmSwift'
 
   target 'GoInfoGameTests' do
     inherit! :search_paths

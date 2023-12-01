@@ -9,12 +9,13 @@ import Foundation
 import MapKit
 
 class IdentifiablePointAnnotation: NSObject, Identifiable, MKAnnotation {
-    var id = UUID()
+    var id: Int
     var coordinate: CLLocationCoordinate2D
     var title: String?
     var subtitle: String?
     
-    init(coordinate: CLLocationCoordinate2D, title: String?, subtitle: String?) {
+    init(id:Int, coordinate: CLLocationCoordinate2D, title: String? = "", subtitle: String? = "") {
+        self.id = id
         self.coordinate = coordinate
         self.title = title
         self.subtitle = subtitle
