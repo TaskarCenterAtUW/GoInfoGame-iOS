@@ -10,11 +10,11 @@ import Foundation
 class CrossingIslandViewModel: ConfirmationQuest {
     var networkRequest: NetworkRequest
     var accpetTitle: String {
-        return "Yes"
+        return NSLocalizedString("Yes", comment: "Yes")
     }
     
     var rejectTitle: String {
-        return "No"
+        return NSLocalizedString("No", comment: "No")
     }
     
     var icon: String {
