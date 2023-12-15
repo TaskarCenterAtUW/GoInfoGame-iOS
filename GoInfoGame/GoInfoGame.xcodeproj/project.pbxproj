@@ -33,6 +33,18 @@
 		972454152B14A49A0036B91A /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 972454142B14A49A0036B91A /* Extensions.swift */; };
 		97F2FA8A2B0630A3000B9726 /* Pods_GoInfoGame.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 66BED441AF03CC04539E8D4A /* Pods_GoInfoGame.framework */; };
 		97F2FA932B063C70000B9726 /* MapKitViewController_Deprecated.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97F2FA912B063C70000B9726 /* MapKitViewController_Deprecated.swift */; };
+		C7900EAC2B15B17400AEB066 /* Quest.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7900EAB2B15B17400AEB066 /* Quest.swift */; };
+		C7900EAE2B15B95700AEB066 /* ConfirmationQuest.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7900EAD2B15B95600AEB066 /* ConfirmationQuest.swift */; };
+		C7900EB02B15B9F200AEB066 /* MultipleOptionsQuest.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7900EAF2B15B9F200AEB066 /* MultipleOptionsQuest.swift */; };
+		C7900EB22B15BA2D00AEB066 /* QuestOption.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7900EB12B15BA2D00AEB066 /* QuestOption.swift */; };
+		C7900EB42B15BAFC00AEB066 /* QuestResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7900EB32B15BAFC00AEB066 /* QuestResponse.swift */; };
+		C7900EBA2B15C90A00AEB066 /* StepsRampViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7900EB92B15C90A00AEB066 /* StepsRampViewModel.swift */; };
+		C7900EBC2B15F10200AEB066 /* StepsRampOption.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7900EBB2B15F10200AEB066 /* StepsRampOption.swift */; };
+		C7900EBE2B15FE4200AEB066 /* MultipleOptionsQuestView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7900EBD2B15FE4200AEB066 /* MultipleOptionsQuestView.swift */; };
+		C7900EC02B15FE6F00AEB066 /* QuestOptionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7900EBF2B15FE6F00AEB066 /* QuestOptionView.swift */; };
+		C7900EC22B17B45000AEB066 /* QuestTitleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7900EC12B17B45000AEB066 /* QuestTitleView.swift */; };
+		C7900EC42B18FABF00AEB066 /* ConfirmationQuestView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7900EC32B18FABF00AEB066 /* ConfirmationQuestView.swift */; };
+		C7900ECA2B18FC2A00AEB066 /* CrossingIslandViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7900EC92B18FC2A00AEB066 /* CrossingIslandViewModel.swift */; };
 		FAC9E60F2B04F9C800E2C608 /* OverpassRequestManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC9E60E2B04F9C800E2C608 /* OverpassRequestManager.swift */; };
 		FAC9E6112B06811300E2C608 /* LocationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC9E6102B06811300E2C608 /* LocationManager.swift */; };
 		FAD5C4F32AFCBE700040C61A /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAD5C4F22AFCBE700040C61A /* AppDelegate.swift */; };
@@ -93,6 +105,18 @@
 		97F2FA8D2B0630C4000B9726 /* SwiftOverpassAPI.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = SwiftOverpassAPI.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		97F2FA912B063C70000B9726 /* MapKitViewController_Deprecated.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapKitViewController_Deprecated.swift; sourceTree = "<group>"; };
 		AE61EC473200AFDA81C2110A /* Pods-GoInfoGame-GoInfoGameUITests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-GoInfoGame-GoInfoGameUITests.release.xcconfig"; path = "Target Support Files/Pods-GoInfoGame-GoInfoGameUITests/Pods-GoInfoGame-GoInfoGameUITests.release.xcconfig"; sourceTree = "<group>"; };
+		C7900EAB2B15B17400AEB066 /* Quest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Quest.swift; sourceTree = "<group>"; };
+		C7900EAD2B15B95600AEB066 /* ConfirmationQuest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfirmationQuest.swift; sourceTree = "<group>"; };
+		C7900EAF2B15B9F200AEB066 /* MultipleOptionsQuest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MultipleOptionsQuest.swift; sourceTree = "<group>"; };
+		C7900EB12B15BA2D00AEB066 /* QuestOption.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuestOption.swift; sourceTree = "<group>"; };
+		C7900EB32B15BAFC00AEB066 /* QuestResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuestResponse.swift; sourceTree = "<group>"; };
+		C7900EB92B15C90A00AEB066 /* StepsRampViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StepsRampViewModel.swift; sourceTree = "<group>"; };
+		C7900EBB2B15F10200AEB066 /* StepsRampOption.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StepsRampOption.swift; sourceTree = "<group>"; };
+		C7900EBD2B15FE4200AEB066 /* MultipleOptionsQuestView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MultipleOptionsQuestView.swift; sourceTree = "<group>"; };
+		C7900EBF2B15FE6F00AEB066 /* QuestOptionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuestOptionView.swift; sourceTree = "<group>"; };
+		C7900EC12B17B45000AEB066 /* QuestTitleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuestTitleView.swift; sourceTree = "<group>"; };
+		C7900EC32B18FABF00AEB066 /* ConfirmationQuestView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfirmationQuestView.swift; sourceTree = "<group>"; };
+		C7900EC92B18FC2A00AEB066 /* CrossingIslandViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CrossingIslandViewModel.swift; sourceTree = "<group>"; };
 		C96303080D26026265099E0E /* Pods-GoInfoGame.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-GoInfoGame.release.xcconfig"; path = "Target Support Files/Pods-GoInfoGame/Pods-GoInfoGame.release.xcconfig"; sourceTree = "<group>"; };
 		D76D8E22AC705A38AFEA78B1 /* Pods-GoInfoGame-GoInfoGameUITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-GoInfoGame-GoInfoGameUITests.debug.xcconfig"; path = "Target Support Files/Pods-GoInfoGame-GoInfoGameUITests/Pods-GoInfoGame-GoInfoGameUITests.debug.xcconfig"; sourceTree = "<group>"; };
 		F008D431593E568E75C48C84 /* Pods-GoInfoGame.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-GoInfoGame.debug.xcconfig"; path = "Target Support Files/Pods-GoInfoGame/Pods-GoInfoGame.debug.xcconfig"; sourceTree = "<group>"; };
@@ -284,6 +308,89 @@
 			path = Pods;
 			sourceTree = "<group>";
 		};
+		C7900EAA2B15B14A00AEB066 /* Quests */ = {
+			isa = PBXGroup;
+			children = (
+				C7900EC52B18FBDE00AEB066 /* CrossingIsland */,
+				C7900EB52B15C89C00AEB066 /* StepsRamp */,
+				C7900EAB2B15B17400AEB066 /* Quest.swift */,
+				C7900EAD2B15B95600AEB066 /* ConfirmationQuest.swift */,
+				C7900EAF2B15B9F200AEB066 /* MultipleOptionsQuest.swift */,
+				C7900EB12B15BA2D00AEB066 /* QuestOption.swift */,
+				C7900EB32B15BAFC00AEB066 /* QuestResponse.swift */,
+				C7900EBD2B15FE4200AEB066 /* MultipleOptionsQuestView.swift */,
+				C7900EBF2B15FE6F00AEB066 /* QuestOptionView.swift */,
+				C7900EC12B17B45000AEB066 /* QuestTitleView.swift */,
+				C7900EC32B18FABF00AEB066 /* ConfirmationQuestView.swift */,
+			);
+			path = Quests;
+			sourceTree = "<group>";
+		};
+		C7900EB52B15C89C00AEB066 /* StepsRamp */ = {
+			isa = PBXGroup;
+			children = (
+				C7900EB82B15C8F500AEB066 /* ViewModel */,
+				C7900EB72B15C8EE00AEB066 /* Model */,
+				C7900EB62B15C8E000AEB066 /* View */,
+			);
+			path = StepsRamp;
+			sourceTree = "<group>";
+		};
+		C7900EB62B15C8E000AEB066 /* View */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
+		C7900EB72B15C8EE00AEB066 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				C7900EBB2B15F10200AEB066 /* StepsRampOption.swift */,
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
+		C7900EB82B15C8F500AEB066 /* ViewModel */ = {
+			isa = PBXGroup;
+			children = (
+				C7900EB92B15C90A00AEB066 /* StepsRampViewModel.swift */,
+			);
+			path = ViewModel;
+			sourceTree = "<group>";
+		};
+		C7900EC52B18FBDE00AEB066 /* CrossingIsland */ = {
+			isa = PBXGroup;
+			children = (
+				C7900EC82B18FC0B00AEB066 /* ViewModel */,
+				C7900EC72B18FC0100AEB066 /* Model */,
+				C7900EC62B18FBF600AEB066 /* View */,
+			);
+			path = CrossingIsland;
+			sourceTree = "<group>";
+		};
+		C7900EC62B18FBF600AEB066 /* View */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
+		C7900EC72B18FC0100AEB066 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
+		C7900EC82B18FC0B00AEB066 /* ViewModel */ = {
+			isa = PBXGroup;
+			children = (
+				C7900EC92B18FC2A00AEB066 /* CrossingIslandViewModel.swift */,
+			);
+			path = ViewModel;
+			sourceTree = "<group>";
+		};
 		FAD5C4E62AFCBE700040C61A = {
 			isa = PBXGroup;
 			children = (
@@ -316,6 +423,7 @@
 				05CB71DD2B0FAEC200DED821 /* UI */,
 				05CB71DE2B0FAFAA00DED821 /* Bridges */,
 				058EADD92B10E02E0017E259 /* DataBase */,
+				C7900EAA2B15B14A00AEB066 /* Quests */,
 				058EADDA2B10E09C0017E259 /* Repository */,
 				0536DD952B0BD91F00B04C4B /* Network */,
 				0536DD8A2B0BD2A900B04C4B /* Helpers */,
@@ -585,18 +693,27 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C7900EAC2B15B17400AEB066 /* Quest.swift in Sources */,
 				05DBBB5D2B1262BA00B6F110 /* OverpassRepository.swift in Sources */,
 				0536DD852B0BD11A00B04C4B /* LoginViewController.swift in Sources */,
+				C7900EB02B15B9F200AEB066 /* MultipleOptionsQuest.swift in Sources */,
+				C7900EBA2B15C90A00AEB066 /* StepsRampViewModel.swift in Sources */,
 				97F2FA932B063C70000B9726 /* MapKitViewController_Deprecated.swift in Sources */,
+				C7900EC02B15FE6F00AEB066 /* QuestOptionView.swift in Sources */,
+				C7900ECA2B18FC2A00AEB066 /* CrossingIslandViewModel.swift in Sources */,
 				FAC9E6112B06811300E2C608 /* LocationManager.swift in Sources */,
 				059D47312B2C81A9000987FA /* Style.swift in Sources */,
 				059D47332B2C83BA000987FA /* Highway.swift in Sources */,
 				058EADD82B10DF600017E259 /* IdentifiablePointAnnotation.swift in Sources */,
+				C7900EBC2B15F10200AEB066 /* StepsRampOption.swift in Sources */,
+				C7900EAE2B15B95700AEB066 /* ConfirmationQuest.swift in Sources */,
 				05CB71E02B0FAFD200DED821 /* GenericUIViewControllerRepresentable.swift in Sources */,
 				FAD5C4F32AFCBE700040C61A /* AppDelegate.swift in Sources */,
 				05DBBB622B164D9A00B6F110 /* RealOPElement.swift in Sources */,
 				FAC9E60F2B04F9C800E2C608 /* OverpassRequestManager.swift in Sources */,
 				05DBBB642B17204300B6F110 /* RealmOPGeometry.swift in Sources */,
+				C7900EB22B15BA2D00AEB066 /* QuestOption.swift in Sources */,
+				C7900EBE2B15FE4200AEB066 /* MultipleOptionsQuestView.swift in Sources */,
 				0536DD922B0BD58800B04C4B /* OAuthService.swift in Sources */,
 				05CB71EA2B0FBBDE00DED821 /* HomeMapView.swift in Sources */,
 				05CB71EC2B0FBC0D00DED821 /* HomeMapViewModel.swift in Sources */,
@@ -604,6 +721,8 @@
 				0536DD972B0BD95100B04C4B /* URLSession+Extension.swift in Sources */,
 				05DBBB662B17209600B6F110 /* RealmOPMeta.swift in Sources */,
 				0536DD942B0BD59900B04C4B /* OAuthError.swift in Sources */,
+				C7900EC42B18FABF00AEB066 /* ConfirmationQuestView.swift in Sources */,
+				C7900EC22B17B45000AEB066 /* QuestTitleView.swift in Sources */,
 				FAD5C4F52AFCBE700040C61A /* SceneDelegate.swift in Sources */,
 				972454152B14A49A0036B91A /* Extensions.swift in Sources */,
 				0536DD8C2B0BD2C200B04C4B /* Constants.swift in Sources */,
@@ -611,6 +730,7 @@
 				058EADD52B10DEAF0017E259 /* MapOverlay+UIViewRepresentable.swift in Sources */,
 				059D472E2B2C7FED000987FA /* SidewalkOverlay.swift in Sources */,
 				05DBBB5B2B11EC2A00B6F110 /* CustomCallOut.swift in Sources */,
+				C7900EB42B15BAFC00AEB066 /* QuestResponse.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
