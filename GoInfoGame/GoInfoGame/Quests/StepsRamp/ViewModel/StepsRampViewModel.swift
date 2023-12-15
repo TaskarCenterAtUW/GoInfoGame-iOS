@@ -64,7 +64,7 @@ class StepsRampViewModel: MultipleOptionsQuest {
         return NSLocalizedString("Do these steps have a ramp? What kind?", comment: "Do these steps have a ramp? What kind?")
     }
     
-    init(networkRequest: NetworkRequest) {
+    init(networkRequest: NetworkRequest = URLSession(configuration: .default)) {
         self.networkRequest = networkRequest
         for ramp in StepsRamp.allCases {
             let option = StepsRampOption(ramp: ramp);

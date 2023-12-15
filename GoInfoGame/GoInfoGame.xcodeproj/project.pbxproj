@@ -33,6 +33,8 @@
 		972454152B14A49A0036B91A /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 972454142B14A49A0036B91A /* Extensions.swift */; };
 		97F2FA8A2B0630A3000B9726 /* Pods_GoInfoGame.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 66BED441AF03CC04539E8D4A /* Pods_GoInfoGame.framework */; };
 		97F2FA932B063C70000B9726 /* MapKitViewController_Deprecated.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97F2FA912B063C70000B9726 /* MapKitViewController_Deprecated.swift */; };
+		C70EC1702B25FFFA00ADAB7C /* QuestManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C70EC16F2B25FFFA00ADAB7C /* QuestManager.swift */; };
+		C70EC1742B26026900ADAB7C /* YetToImplementView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C70EC1732B26026900ADAB7C /* YetToImplementView.swift */; };
 		C7900EAC2B15B17400AEB066 /* Quest.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7900EAB2B15B17400AEB066 /* Quest.swift */; };
 		C7900EAE2B15B95700AEB066 /* ConfirmationQuest.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7900EAD2B15B95600AEB066 /* ConfirmationQuest.swift */; };
 		C7900EB02B15B9F200AEB066 /* MultipleOptionsQuest.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7900EAF2B15B9F200AEB066 /* MultipleOptionsQuest.swift */; };
@@ -105,6 +107,8 @@
 		97F2FA8D2B0630C4000B9726 /* SwiftOverpassAPI.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = SwiftOverpassAPI.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		97F2FA912B063C70000B9726 /* MapKitViewController_Deprecated.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapKitViewController_Deprecated.swift; sourceTree = "<group>"; };
 		AE61EC473200AFDA81C2110A /* Pods-GoInfoGame-GoInfoGameUITests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-GoInfoGame-GoInfoGameUITests.release.xcconfig"; path = "Target Support Files/Pods-GoInfoGame-GoInfoGameUITests/Pods-GoInfoGame-GoInfoGameUITests.release.xcconfig"; sourceTree = "<group>"; };
+		C70EC16F2B25FFFA00ADAB7C /* QuestManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuestManager.swift; sourceTree = "<group>"; };
+		C70EC1732B26026900ADAB7C /* YetToImplementView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YetToImplementView.swift; sourceTree = "<group>"; };
 		C7900EAB2B15B17400AEB066 /* Quest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Quest.swift; sourceTree = "<group>"; };
 		C7900EAD2B15B95600AEB066 /* ConfirmationQuest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfirmationQuest.swift; sourceTree = "<group>"; };
 		C7900EAF2B15B9F200AEB066 /* MultipleOptionsQuest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MultipleOptionsQuest.swift; sourceTree = "<group>"; };
@@ -322,6 +326,8 @@
 				C7900EBF2B15FE6F00AEB066 /* QuestOptionView.swift */,
 				C7900EC12B17B45000AEB066 /* QuestTitleView.swift */,
 				C7900EC32B18FABF00AEB066 /* ConfirmationQuestView.swift */,
+				C70EC16F2B25FFFA00ADAB7C /* QuestManager.swift */,
+				C70EC1732B26026900ADAB7C /* YetToImplementView.swift */,
 			);
 			path = Quests;
 			sourceTree = "<group>";
@@ -710,6 +716,7 @@
 				05CB71E02B0FAFD200DED821 /* GenericUIViewControllerRepresentable.swift in Sources */,
 				FAD5C4F32AFCBE700040C61A /* AppDelegate.swift in Sources */,
 				05DBBB622B164D9A00B6F110 /* RealOPElement.swift in Sources */,
+				C70EC1742B26026900ADAB7C /* YetToImplementView.swift in Sources */,
 				FAC9E60F2B04F9C800E2C608 /* OverpassRequestManager.swift in Sources */,
 				05DBBB642B17204300B6F110 /* RealmOPGeometry.swift in Sources */,
 				C7900EB22B15BA2D00AEB066 /* QuestOption.swift in Sources */,
@@ -717,6 +724,7 @@
 				0536DD922B0BD58800B04C4B /* OAuthService.swift in Sources */,
 				05CB71EA2B0FBBDE00DED821 /* HomeMapView.swift in Sources */,
 				05CB71EC2B0FBC0D00DED821 /* HomeMapViewModel.swift in Sources */,
+				C70EC1702B25FFFA00ADAB7C /* QuestManager.swift in Sources */,
 				05DBBB5F2B1263FF00B6F110 /* DatabaseConnector.swift in Sources */,
 				0536DD972B0BD95100B04C4B /* URLSession+Extension.swift in Sources */,
 				05DBBB662B17209600B6F110 /* RealmOPMeta.swift in Sources */,

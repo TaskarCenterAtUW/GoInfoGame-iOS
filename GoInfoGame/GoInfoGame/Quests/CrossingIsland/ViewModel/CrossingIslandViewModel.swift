@@ -29,7 +29,7 @@ class CrossingIslandViewModel: ConfirmationQuest {
         return NSLocalizedString("Does this pedestrian crossing have an island?", comment: "Does this pedestrian crossing have an island?")
     }
     
-    init(networkRequest: NetworkRequest) {
+    init(networkRequest: NetworkRequest = URLSession(configuration: .default)) {
         self.networkRequest = networkRequest
     }    
 }
