@@ -27,7 +27,7 @@ class OverpassRequestManager {
                 .setTimeOut(180)
                 .setElementTypes([.way, .node])
                 .setBoundingBox(boundingBox)
-                .addTagFilter(key: "footway", value: "sidewalk")
+               // .addTagFilter(key: "footway", value: "sidewalk")
                 .setOutputType(.geometry)
                 .buildQueryString()
         } catch {
