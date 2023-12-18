@@ -27,7 +27,10 @@ class HomeMapViewModel: ObservableObject {
                 let maxLatitude = result["maxLatitude"]!
                 let maxLongitude = result["maxLongitude"]!
                 self.isLoading = true
-                self.overpassManager.makeOverpassRequest(forBoundingBox: minLatitude, minLongitude, maxLatitude, maxLongitude) { [weak self] elements in
+                //Load From DB
+              //  DatabaseConnector.shared.fetchValidHighway();
+               // self.addDatabaseVisualizations();
+               self.overpassManager.makeOverpassRequest(forBoundingBox: minLatitude, minLongitude, maxLatitude, maxLongitude) { [weak self] elements in
                     
                     let elementsArray = Array(elements.values)
                     let opWayArray = elementsArray.compactMap { $0 as? OPWay }
@@ -44,7 +47,8 @@ class HomeMapViewModel: ObservableObject {
                     self?.isLoading = false
                     self?.locationManager.setOverpassRequestInProgress(false)
                 }
-            }
+            
+              }
         }
     }
     
@@ -52,7 +56,7 @@ class HomeMapViewModel: ObservableObject {
     
     private func addDatabaseVisualizations() {
         
-        let visualization = DatabaseConnector.shared.getElements()
+        let visualization = DatabaseConnector.shared.fetchValidHighway()
         
         var newAnnotations = [IdentifiablePointAnnotation]()
         var newPolylines = [MKPolyline]()
