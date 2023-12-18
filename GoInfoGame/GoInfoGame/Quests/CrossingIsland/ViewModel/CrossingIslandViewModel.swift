@@ -8,6 +8,10 @@
 import Foundation
 
 class CrossingIslandViewModel: ConfirmationQuest {
+    func validateElement(element: RealmOPElement) -> Bool {
+        return false
+    }
+    
     var networkRequest: NetworkRequest
     var accpetTitle: String {
         return NSLocalizedString("Yes", comment: "Yes")

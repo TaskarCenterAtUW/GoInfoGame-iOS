@@ -12,4 +12,6 @@ protocol Quest {
     var icon: String { get }
     var tag: String { get }
     var title: String { get }
+    
+    func validateElement(element: RealmOPElement) -> Bool
 }

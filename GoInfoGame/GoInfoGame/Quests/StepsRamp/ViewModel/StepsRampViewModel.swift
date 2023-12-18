@@ -45,6 +45,10 @@ enum StepsRamp: CaseIterable {
 }
 
 class StepsRampViewModel: MultipleOptionsQuest {
+    func validateElement(element: RealmOPElement) -> Bool {
+        return false
+    }
+    
     var options: [QuestOption] = []
     private let networkRequest: NetworkRequest
     
