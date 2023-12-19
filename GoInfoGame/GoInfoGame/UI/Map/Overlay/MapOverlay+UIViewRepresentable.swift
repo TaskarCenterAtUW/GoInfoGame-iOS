@@ -69,7 +69,7 @@ struct MapViewWithOverlays: UIViewRepresentable {
                 annotationView.canShowCallout = true
             }
             
-            annotationView.image = UIImage(named: "mapicon")
+            annotationView.image = UIImage(named: pointAnnotation.questViewModel?.icon ?? "mapicon")
             
             let calloutView = CustomCalloutView(annotation: pointAnnotation)
             annotationView.detailCalloutAccessoryView = UIHostingController(rootView: calloutView).view

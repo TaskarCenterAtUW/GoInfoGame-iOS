@@ -13,11 +13,13 @@ class IdentifiablePointAnnotation: NSObject, Identifiable, MKAnnotation {
     var coordinate: CLLocationCoordinate2D
     var title: String?
     var subtitle: String?
+    var questViewModel: Quest?
     
-    init(id:Int, coordinate: CLLocationCoordinate2D, title: String? = "", subtitle: String? = "") {
+    init(id:Int, coordinate: CLLocationCoordinate2D, title: String? = "", subtitle: String? = "", questViewModel: Quest?) {
         self.id = id
         self.coordinate = coordinate
         self.title = title
         self.subtitle = subtitle
+        self.questViewModel = questViewModel
     }
 }

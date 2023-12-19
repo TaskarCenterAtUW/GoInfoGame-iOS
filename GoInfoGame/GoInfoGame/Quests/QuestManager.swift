@@ -19,12 +19,12 @@ class QuestManager {
         ]
     }
     
-    func viewForQeust(quest: Quest) -> any View {
+    func viewForQeust(quest: Quest) -> some View {
         if let q = quest as? ConfirmationQuest {
-            return ConfirmationQuestView(quest: q)
+            return AnyView(ConfirmationQuestView(quest: q))
         } else if let q = quest as? MultipleOptionsQuest {
-            return MultipleOptionsQuestView(quest: q)
+            return AnyView(MultipleOptionsQuestView(quest: q))
         }
-        return YetToImplementView()
+        return AnyView(YetToImplementView())
     }
 }
