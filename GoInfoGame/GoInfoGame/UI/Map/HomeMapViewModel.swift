@@ -139,6 +139,7 @@ class HomeMapViewModel: ObservableObject {
             self.annotations = newAnnotations
             self.polylines = newPolylines
             self.polygons = newPolygons
+            print("**Total Point== \(self.annotations.count)**");
         }
     }
     

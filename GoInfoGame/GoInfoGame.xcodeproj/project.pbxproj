@@ -19,6 +19,8 @@
 		059D472E2B2C7FED000987FA /* SidewalkOverlay.swift in Sources */ = {isa = PBXBuildFile; fileRef = 059D472D2B2C7FED000987FA /* SidewalkOverlay.swift */; };
 		059D47312B2C81A9000987FA /* Style.swift in Sources */ = {isa = PBXBuildFile; fileRef = 059D47302B2C81A9000987FA /* Style.swift */; };
 		059D47332B2C83BA000987FA /* Highway.swift in Sources */ = {isa = PBXBuildFile; fileRef = 059D47322B2C83BA000987FA /* Highway.swift */; };
+		05AE7A512B320E4B00578AE8 /* CustomAnnotationPointView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05AE7A502B320E4B00578AE8 /* CustomAnnotationPointView.swift */; };
+		05AE7A532B320E7200578AE8 /* CustomAnnotationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05AE7A522B320E7200578AE8 /* CustomAnnotationView.swift */; };
 		05CB71E02B0FAFD200DED821 /* GenericUIViewControllerRepresentable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05CB71DF2B0FAFD200DED821 /* GenericUIViewControllerRepresentable.swift */; };
 		05CB71EA2B0FBBDE00DED821 /* HomeMapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05CB71E92B0FBBDE00DED821 /* HomeMapView.swift */; };
 		05CB71EC2B0FBC0D00DED821 /* HomeMapViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05CB71EB2B0FBC0D00DED821 /* HomeMapViewModel.swift */; };
@@ -89,6 +91,8 @@
 		059D472D2B2C7FED000987FA /* SidewalkOverlay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SidewalkOverlay.swift; sourceTree = "<group>"; };
 		059D47302B2C81A9000987FA /* Style.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Style.swift; sourceTree = "<group>"; };
 		059D47322B2C83BA000987FA /* Highway.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Highway.swift; sourceTree = "<group>"; };
+		05AE7A502B320E4B00578AE8 /* CustomAnnotationPointView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomAnnotationPointView.swift; sourceTree = "<group>"; };
+		05AE7A522B320E7200578AE8 /* CustomAnnotationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomAnnotationView.swift; sourceTree = "<group>"; };
 		05CB71DF2B0FAFD200DED821 /* GenericUIViewControllerRepresentable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GenericUIViewControllerRepresentable.swift; sourceTree = "<group>"; };
 		05CB71E92B0FBBDE00DED821 /* HomeMapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeMapView.swift; sourceTree = "<group>"; };
 		05CB71EB2B0FBC0D00DED821 /* HomeMapViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeMapViewModel.swift; sourceTree = "<group>"; };
@@ -229,6 +233,8 @@
 			children = (
 				058EADD72B10DF600017E259 /* IdentifiablePointAnnotation.swift */,
 				05DBBB5A2B11EC2A00B6F110 /* CustomCallOut.swift */,
+				05AE7A502B320E4B00578AE8 /* CustomAnnotationPointView.swift */,
+				05AE7A522B320E7200578AE8 /* CustomAnnotationView.swift */,
 			);
 			path = Common;
 			sourceTree = "<group>";
@@ -725,6 +731,7 @@
 				05CB71EA2B0FBBDE00DED821 /* HomeMapView.swift in Sources */,
 				05CB71EC2B0FBC0D00DED821 /* HomeMapViewModel.swift in Sources */,
 				C70EC1702B25FFFA00ADAB7C /* QuestManager.swift in Sources */,
+				05AE7A512B320E4B00578AE8 /* CustomAnnotationPointView.swift in Sources */,
 				05DBBB5F2B1263FF00B6F110 /* DatabaseConnector.swift in Sources */,
 				0536DD972B0BD95100B04C4B /* URLSession+Extension.swift in Sources */,
 				05DBBB662B17209600B6F110 /* RealmOPMeta.swift in Sources */,
@@ -738,6 +745,7 @@
 				058EADD52B10DEAF0017E259 /* MapOverlay+UIViewRepresentable.swift in Sources */,
 				059D472E2B2C7FED000987FA /* SidewalkOverlay.swift in Sources */,
 				05DBBB5B2B11EC2A00B6F110 /* CustomCallOut.swift in Sources */,
+				05AE7A532B320E7200578AE8 /* CustomAnnotationView.swift in Sources */,
 				C7900EB42B15BAFC00AEB066 /* QuestResponse.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
