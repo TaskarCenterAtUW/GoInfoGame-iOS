@@ -87,28 +87,30 @@ class StepsRampViewModel: MultipleOptionsQuest {
         }
         
         let indoorTag =  element.tags.filter { tag in
-            return (tag.key == "indoor" && tag.value == "no")
+            return (tag.key == "indoor")
        }
         
-        if indoorTag.count == 0 {
+        if indoorTag.count == 1,
+           indoorTag.first?.value != "no" {
             return false
         }
         
-//        let accessTag =  element.tags.filter { tag in
-//            return (tag.key == "access" && (tag.value == "private" || tag.value == "no"))
-//       }
-//        
-//        if accessTag.count == 0 {
-//            return false
-//        }
+        let accessTag =  element.tags.filter { tag in
+            return !(tag.key == "access" && (tag.value == "private" || tag.value == "no"))
+        }
         
-//        let conveyingTag =  element.tags.filter { tag in
-//            return (tag.key == "conveying" &&  tag.value == "no")
-//       }
-//        
-//        if conveyingTag.count == 0 {
-//            return false
-//        }
+        if accessTag.count == 0 {
+            return false
+        }
+        
+       let conveyingTag =  element.tags.filter { tag in
+            return (tag.key == "conveying")
+       }
+        
+        if conveyingTag.count == 1,
+           conveyingTag.first?.value != "no" {
+            return false
+        }
 //        
         let rampTag =  element.tags.filter { tag in
             return (tag.key == "ramp" &&  tag.value != "separate")
