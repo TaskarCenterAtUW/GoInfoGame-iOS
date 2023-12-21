@@ -49,7 +49,7 @@ class LoginViewController: UIViewController {
     
     @IBAction func skipButtonTapped(_ sender: Any) {
       
-        let contentView = HomeMapView()
+        let contentView = OnboardingView()
         let childView = UIHostingController(rootView: contentView)
         self.navigationController?.pushViewController(childView, animated: false)
     }
