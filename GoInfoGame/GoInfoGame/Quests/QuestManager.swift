@@ -8,15 +8,16 @@
 import Foundation
 import SwiftUI
 
+fileprivate let kQuests: [Quest] = [
+    CrossingIslandViewModel(),
+    StepsRampViewModel()
+]
+
 class QuestManager {
     private(set) var quests: [Quest] = []
     
-    init() {
-        
-        self.quests = [
-            CrossingIslandViewModel(),
-            StepsRampViewModel()
-        ]
+    init(quests: [Quest] = kQuests) {
+        self.quests = quests
     }
     
     func viewForQeust(quest: Quest) -> some View {
