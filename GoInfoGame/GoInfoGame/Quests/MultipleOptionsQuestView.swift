@@ -44,5 +44,5 @@ struct MultipleOptionsQuestView: View {
 }
 
 #Preview {
-    MultipleOptionsQuestView(quest: StepsRampViewModel(networkRequest: URLSession()))
+    MultipleOptionsQuestView(quest: StepsRampViewModel())
 }

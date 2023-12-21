@@ -44,6 +44,6 @@ struct HomeMapView: View {
     }
 }
 
-//#Preview {
-//    HomeMapView()
-//}
+#Preview {
+    HomeMapView()
+}

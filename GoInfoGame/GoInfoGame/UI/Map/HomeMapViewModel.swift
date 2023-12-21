@@ -56,13 +56,33 @@ class HomeMapViewModel: ObservableObject {
     
     private func addDatabaseVisualizations() {
         
-        let visualization = DatabaseConnector.shared.fetchValidHighway()
+        let visualization = DatabaseConnector.shared.getElements()
+        
+        let questViewModels = QuestManager.init().quests
         
         var newAnnotations = [IdentifiablePointAnnotation]()
+        for realmOPElement in visualization {
+            for questViewModel in questViewModels {
+                if questViewModel.validateElement(element: realmOPElement) {
+                    let annotation = IdentifiablePointAnnotation(
+                        id: realmOPElement.id,
+                        coordinate: CLLocationCoordinate2D(
+                            latitude: realmOPElement.geometry[0].polyline.first?.latitude ?? 0.0,
+                            longitude: realmOPElement.geometry[0].polyline.first?.longitude ?? 0.0
+                        ),
+                        questViewModel: questViewModel
+                    )
+                    newAnnotations.append(annotation)
+                    break
+                }
+            }
+        }
+        
+        
         var newPolylines = [MKPolyline]()
         let newPolygons = [MKPolygon]()
         
-        for realmOPElement in visualization {
+     /*   for realmOPElement in visualization {
             guard let realmOPGeometry = realmOPElement.geometry.first else {
                 return
             }
@@ -113,12 +133,13 @@ class HomeMapViewModel: ObservableObject {
             }
         }
         
-      
+      */
         
         DispatchQueue.main.async {
             self.annotations = newAnnotations
             self.polylines = newPolylines
             self.polygons = newPolygons
+            print("**Total Point== \(self.annotations.count)**");
         }
     }
     
@@ -147,7 +168,7 @@ class HomeMapViewModel: ObservableObject {
                     id: 0,
                     coordinate: annotation.coordinate,
                     title: annotation.title ?? "",
-                    subtitle: annotation.subtitle ?? ""
+                    subtitle: annotation.subtitle ?? "", questViewModel: nil
                 )
                 newAnnotations.append(newAnnotation)
             case .polyline(let polyline):
@@ -173,12 +194,12 @@ class HomeMapViewModel: ObservableObject {
     
     private func getAnnotations(from polyline: MKPolyline, id: Int) -> [IdentifiablePointAnnotation] {
         let points = UnsafeBufferPointer(start: polyline.points(), count: Int(polyline.pointCount))
-        return points.map { IdentifiablePointAnnotation(id: id, coordinate: $0.coordinate, title: "", subtitle: "") }
+        return points.map { IdentifiablePointAnnotation(id: id, coordinate: $0.coordinate, title: "", subtitle: "", questViewModel: nil) }
     }
     
     private func getAnnotations(from polygon: MKPolygon,  id: Int) -> [IdentifiablePointAnnotation] {
         let points = UnsafeBufferPointer(start: polygon.points(), count: Int(polygon.pointCount))
-        return points.map { IdentifiablePointAnnotation(id: id, coordinate: $0.coordinate, title: "", subtitle: "") }
+        return points.map { IdentifiablePointAnnotation(id: id, coordinate: $0.coordinate, title: "", subtitle: "", questViewModel: nil) }
     }
     
     private func createCenterAnnotation(from realmOPElement: RealmOPElement) -> IdentifiablePointAnnotation? {
@@ -187,7 +208,7 @@ class HomeMapViewModel: ObservableObject {
             coordinate: CLLocationCoordinate2D(
                 latitude: realmOPElement.geometry[0].centerLatitude,
                 longitude: realmOPElement.geometry[0].centerLongitude
-            )
+            ), questViewModel: nil
         )
     }
     

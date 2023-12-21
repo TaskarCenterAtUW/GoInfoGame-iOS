@@ -41,5 +41,5 @@ struct ConfirmationQuestView: View {
 }
 
 #Preview {
-    ConfirmationQuestView(quest: CrossingIslandViewModel(networkRequest: URLSession()))
+    ConfirmationQuestView(quest: CrossingIslandViewModel())
 }

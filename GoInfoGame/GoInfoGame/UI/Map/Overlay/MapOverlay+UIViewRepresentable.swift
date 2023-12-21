@@ -60,16 +60,19 @@ struct MapViewWithOverlays: UIViewRepresentable {
             }
             
             let identifier = "customAnnotation"
-            var annotationView: MKAnnotationView
+            var annotationView: CustomAnnotationView
             
-            if let dequeuedView = mapView.dequeueReusableAnnotationView(withIdentifier: identifier) {
+            if let dequeuedView = mapView.dequeueReusableAnnotationView(withIdentifier: identifier) as? CustomAnnotationView {
                 annotationView = dequeuedView
             } else {
-                annotationView = MKAnnotationView(annotation: annotation, reuseIdentifier: identifier)
+                annotationView = CustomAnnotationView(annotation: annotation, reuseIdentifier: identifier)
                 annotationView.canShowCallout = true
             }
             
-            annotationView.image = UIImage(named: "mapicon")
+          //  annotationView.image = UIImage(named: pointAnnotation.questViewModel?.icon ?? "mapicon")
+            
+            annotationView.updateDynamicImage(UIImage(named: pointAnnotation.questViewModel?.icon ?? "mapicon"))
+
             
             let calloutView = CustomCalloutView(annotation: pointAnnotation)
             annotationView.detailCalloutAccessoryView = UIHostingController(rootView: calloutView).view

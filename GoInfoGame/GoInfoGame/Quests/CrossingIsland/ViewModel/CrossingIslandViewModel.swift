@@ -8,6 +8,10 @@
 import Foundation
 
 class CrossingIslandViewModel: ConfirmationQuest {
+    func validateElement(element: RealmOPElement) -> Bool {
+        return false
+    }
+    
     var networkRequest: NetworkRequest
     var accpetTitle: String {
         return NSLocalizedString("Yes", comment: "Yes")
@@ -29,7 +33,7 @@ class CrossingIslandViewModel: ConfirmationQuest {
         return NSLocalizedString("Does this pedestrian crossing have an island?", comment: "Does this pedestrian crossing have an island?")
     }
     
-    init(networkRequest: NetworkRequest) {
+    init(networkRequest: NetworkRequest = URLSession(configuration: .default)) {
         self.networkRequest = networkRequest
     }    
 }

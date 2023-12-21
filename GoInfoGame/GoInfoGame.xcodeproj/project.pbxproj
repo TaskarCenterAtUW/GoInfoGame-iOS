@@ -19,6 +19,8 @@
 		059D472E2B2C7FED000987FA /* SidewalkOverlay.swift in Sources */ = {isa = PBXBuildFile; fileRef = 059D472D2B2C7FED000987FA /* SidewalkOverlay.swift */; };
 		059D47312B2C81A9000987FA /* Style.swift in Sources */ = {isa = PBXBuildFile; fileRef = 059D47302B2C81A9000987FA /* Style.swift */; };
 		059D47332B2C83BA000987FA /* Highway.swift in Sources */ = {isa = PBXBuildFile; fileRef = 059D47322B2C83BA000987FA /* Highway.swift */; };
+		05AE7A512B320E4B00578AE8 /* CustomAnnotationPointView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05AE7A502B320E4B00578AE8 /* CustomAnnotationPointView.swift */; };
+		05AE7A532B320E7200578AE8 /* CustomAnnotationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05AE7A522B320E7200578AE8 /* CustomAnnotationView.swift */; };
 		05CB71E02B0FAFD200DED821 /* GenericUIViewControllerRepresentable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05CB71DF2B0FAFD200DED821 /* GenericUIViewControllerRepresentable.swift */; };
 		05CB71EA2B0FBBDE00DED821 /* HomeMapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05CB71E92B0FBBDE00DED821 /* HomeMapView.swift */; };
 		05CB71EC2B0FBC0D00DED821 /* HomeMapViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05CB71EB2B0FBC0D00DED821 /* HomeMapViewModel.swift */; };
@@ -33,6 +35,8 @@
 		972454152B14A49A0036B91A /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 972454142B14A49A0036B91A /* Extensions.swift */; };
 		97F2FA8A2B0630A3000B9726 /* Pods_GoInfoGame.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 66BED441AF03CC04539E8D4A /* Pods_GoInfoGame.framework */; };
 		97F2FA932B063C70000B9726 /* MapKitViewController_Deprecated.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97F2FA912B063C70000B9726 /* MapKitViewController_Deprecated.swift */; };
+		C70EC1702B25FFFA00ADAB7C /* QuestManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C70EC16F2B25FFFA00ADAB7C /* QuestManager.swift */; };
+		C70EC1742B26026900ADAB7C /* YetToImplementView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C70EC1732B26026900ADAB7C /* YetToImplementView.swift */; };
 		C7900EAC2B15B17400AEB066 /* Quest.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7900EAB2B15B17400AEB066 /* Quest.swift */; };
 		C7900EAE2B15B95700AEB066 /* ConfirmationQuest.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7900EAD2B15B95600AEB066 /* ConfirmationQuest.swift */; };
 		C7900EB02B15B9F200AEB066 /* MultipleOptionsQuest.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7900EAF2B15B9F200AEB066 /* MultipleOptionsQuest.swift */; };
@@ -87,6 +91,8 @@
 		059D472D2B2C7FED000987FA /* SidewalkOverlay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SidewalkOverlay.swift; sourceTree = "<group>"; };
 		059D47302B2C81A9000987FA /* Style.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Style.swift; sourceTree = "<group>"; };
 		059D47322B2C83BA000987FA /* Highway.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Highway.swift; sourceTree = "<group>"; };
+		05AE7A502B320E4B00578AE8 /* CustomAnnotationPointView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomAnnotationPointView.swift; sourceTree = "<group>"; };
+		05AE7A522B320E7200578AE8 /* CustomAnnotationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomAnnotationView.swift; sourceTree = "<group>"; };
 		05CB71DF2B0FAFD200DED821 /* GenericUIViewControllerRepresentable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GenericUIViewControllerRepresentable.swift; sourceTree = "<group>"; };
 		05CB71E92B0FBBDE00DED821 /* HomeMapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeMapView.swift; sourceTree = "<group>"; };
 		05CB71EB2B0FBC0D00DED821 /* HomeMapViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeMapViewModel.swift; sourceTree = "<group>"; };
@@ -105,6 +111,8 @@
 		97F2FA8D2B0630C4000B9726 /* SwiftOverpassAPI.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = SwiftOverpassAPI.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		97F2FA912B063C70000B9726 /* MapKitViewController_Deprecated.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapKitViewController_Deprecated.swift; sourceTree = "<group>"; };
 		AE61EC473200AFDA81C2110A /* Pods-GoInfoGame-GoInfoGameUITests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-GoInfoGame-GoInfoGameUITests.release.xcconfig"; path = "Target Support Files/Pods-GoInfoGame-GoInfoGameUITests/Pods-GoInfoGame-GoInfoGameUITests.release.xcconfig"; sourceTree = "<group>"; };
+		C70EC16F2B25FFFA00ADAB7C /* QuestManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuestManager.swift; sourceTree = "<group>"; };
+		C70EC1732B26026900ADAB7C /* YetToImplementView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YetToImplementView.swift; sourceTree = "<group>"; };
 		C7900EAB2B15B17400AEB066 /* Quest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Quest.swift; sourceTree = "<group>"; };
 		C7900EAD2B15B95600AEB066 /* ConfirmationQuest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfirmationQuest.swift; sourceTree = "<group>"; };
 		C7900EAF2B15B9F200AEB066 /* MultipleOptionsQuest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MultipleOptionsQuest.swift; sourceTree = "<group>"; };
@@ -225,6 +233,8 @@
 			children = (
 				058EADD72B10DF600017E259 /* IdentifiablePointAnnotation.swift */,
 				05DBBB5A2B11EC2A00B6F110 /* CustomCallOut.swift */,
+				05AE7A502B320E4B00578AE8 /* CustomAnnotationPointView.swift */,
+				05AE7A522B320E7200578AE8 /* CustomAnnotationView.swift */,
 			);
 			path = Common;
 			sourceTree = "<group>";
@@ -322,6 +332,8 @@
 				C7900EBF2B15FE6F00AEB066 /* QuestOptionView.swift */,
 				C7900EC12B17B45000AEB066 /* QuestTitleView.swift */,
 				C7900EC32B18FABF00AEB066 /* ConfirmationQuestView.swift */,
+				C70EC16F2B25FFFA00ADAB7C /* QuestManager.swift */,
+				C70EC1732B26026900ADAB7C /* YetToImplementView.swift */,
 			);
 			path = Quests;
 			sourceTree = "<group>";
@@ -710,6 +722,7 @@
 				05CB71E02B0FAFD200DED821 /* GenericUIViewControllerRepresentable.swift in Sources */,
 				FAD5C4F32AFCBE700040C61A /* AppDelegate.swift in Sources */,
 				05DBBB622B164D9A00B6F110 /* RealOPElement.swift in Sources */,
+				C70EC1742B26026900ADAB7C /* YetToImplementView.swift in Sources */,
 				FAC9E60F2B04F9C800E2C608 /* OverpassRequestManager.swift in Sources */,
 				05DBBB642B17204300B6F110 /* RealmOPGeometry.swift in Sources */,
 				C7900EB22B15BA2D00AEB066 /* QuestOption.swift in Sources */,
@@ -717,6 +730,8 @@
 				0536DD922B0BD58800B04C4B /* OAuthService.swift in Sources */,
 				05CB71EA2B0FBBDE00DED821 /* HomeMapView.swift in Sources */,
 				05CB71EC2B0FBC0D00DED821 /* HomeMapViewModel.swift in Sources */,
+				C70EC1702B25FFFA00ADAB7C /* QuestManager.swift in Sources */,
+				05AE7A512B320E4B00578AE8 /* CustomAnnotationPointView.swift in Sources */,
 				05DBBB5F2B1263FF00B6F110 /* DatabaseConnector.swift in Sources */,
 				0536DD972B0BD95100B04C4B /* URLSession+Extension.swift in Sources */,
 				05DBBB662B17209600B6F110 /* RealmOPMeta.swift in Sources */,
@@ -730,6 +745,7 @@
 				058EADD52B10DEAF0017E259 /* MapOverlay+UIViewRepresentable.swift in Sources */,
 				059D472E2B2C7FED000987FA /* SidewalkOverlay.swift in Sources */,
 				05DBBB5B2B11EC2A00B6F110 /* CustomCallOut.swift in Sources */,
+				05AE7A532B320E7200578AE8 /* CustomAnnotationView.swift in Sources */,
 				C7900EB42B15BAFC00AEB066 /* QuestResponse.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

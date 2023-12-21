@@ -14,16 +14,14 @@ struct CustomCalloutView: View {
 
     var body: some View {
         VStack {
-            Text("\(annotation.id) - Questions coming soon")
-                .font(.headline)
-                .padding()
+            QuestManager().viewForQeust(quest: annotation.questViewModel ?? StepsRampViewModel())
         }
         .onAppear {
             print(DatabaseConnector.shared.getElementWith(annotation.id) ?? "")
                }
         .background(Color.white)
-        .cornerRadius(10)
-        .shadow(radius: 5)
+        .cornerRadius(5)
+        .shadow(radius: 2)
     }
 }
 
@@ -31,7 +29,7 @@ struct CustomCalloutView_Previews: PreviewProvider {
     static var previews: some View {
         CustomCalloutView(annotation: IdentifiablePointAnnotation(id: 123456,
             coordinate: CLLocationCoordinate2D(latitude: 37.7749, longitude: -122.4194), title: "Title",
-            subtitle: "SubTitle"
+                                                                  subtitle: "SubTitle", questViewModel: StepsRampViewModel()
         ))
         .previewLayout(.sizeThatFits)
         .padding()
