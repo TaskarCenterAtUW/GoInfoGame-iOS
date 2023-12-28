@@ -13,6 +13,8 @@ struct HomeMapView: View {
     @State private var region = MKCoordinateRegion(center: CLLocationCoordinate2D(latitude: 51.507222, longitude: -0.1275), span: MKCoordinateSpan(latitudeDelta: 0.5, longitudeDelta: 0.5))
     @State private var selectedAnnotation: IdentifiablePointAnnotation?
     @State private var showCallout: Bool = false
+    @Environment(\.presentationMode) private var presentationMode
+    @AppStorage("isOnboarding") var isOnboarding: Bool = true
     
     var body: some View {
         NavigationView {
