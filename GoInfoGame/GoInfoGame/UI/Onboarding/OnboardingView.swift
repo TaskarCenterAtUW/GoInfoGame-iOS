@@ -11,6 +11,7 @@ struct OnboardingView: View {
     @AppStorage("isOnboarding") var isOnboarding: Bool = true
     @State private var currentPage: Int = 1
     @State private var isLetsGoButtonClicked: Bool = false
+    @AppStorage("isMapFromOboarding") var isMapFromOboarding: Bool = false
     
     var body: some View {
         VStack {
@@ -45,6 +46,7 @@ struct OnboardingView: View {
                     
                     Button(action: {
                         isOnboarding = false
+                        isMapFromOboarding = true
                         isLetsGoButtonClicked = true
                     }) {
                         HStack(spacing: 8) {
