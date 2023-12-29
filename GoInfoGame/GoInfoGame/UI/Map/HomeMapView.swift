@@ -14,11 +14,11 @@ struct HomeMapView: View {
     @State private var selectedAnnotation: IdentifiablePointAnnotation?
     @State private var showCallout: Bool = false
     @Environment(\.presentationMode) private var presentationMode
-    @AppStorage("isMapFromOboarding") var isMapFromOboarding: Bool = false
+    @AppStorage("isMapFromOnboarding") var isMapFromOnboarding: Bool = false
     
     var btnBack : some View { Button(action: {
-        if isMapFromOboarding {
-            isMapFromOboarding = false
+        if isMapFromOnboarding {
+            isMapFromOnboarding = false
             NavigationUtil.popToRootView()
         } else {
             presentationMode.wrappedValue.dismiss()
