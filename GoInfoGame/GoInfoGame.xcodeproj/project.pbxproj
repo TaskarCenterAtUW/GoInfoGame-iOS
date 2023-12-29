@@ -35,6 +35,7 @@
 		972454152B14A49A0036B91A /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 972454142B14A49A0036B91A /* Extensions.swift */; };
 		97F2FA8A2B0630A3000B9726 /* Pods_GoInfoGame.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 66BED441AF03CC04539E8D4A /* Pods_GoInfoGame.framework */; };
 		97F2FA932B063C70000B9726 /* MapKitViewController_Deprecated.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97F2FA912B063C70000B9726 /* MapKitViewController_Deprecated.swift */; };
+		A477D7512B3E829D003336E3 /* StringWithCursor.swift in Sources */ = {isa = PBXBuildFile; fileRef = A477D7502B3E829D003336E3 /* StringWithCursor.swift */; };
 		C70EC1702B25FFFA00ADAB7C /* QuestManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C70EC16F2B25FFFA00ADAB7C /* QuestManager.swift */; };
 		C70EC1742B26026900ADAB7C /* YetToImplementView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C70EC1732B26026900ADAB7C /* YetToImplementView.swift */; };
 		C7900EAC2B15B17400AEB066 /* Quest.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7900EAB2B15B17400AEB066 /* Quest.swift */; };
@@ -114,6 +115,8 @@
 		972454142B14A49A0036B91A /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		97F2FA8D2B0630C4000B9726 /* SwiftOverpassAPI.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = SwiftOverpassAPI.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		97F2FA912B063C70000B9726 /* MapKitViewController_Deprecated.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapKitViewController_Deprecated.swift; sourceTree = "<group>"; };
+		A477D7502B3E829D003336E3 /* StringWithCursor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StringWithCursor.swift; sourceTree = "<group>"; };
+		A477D7522B3EE707003336E3 /* AppPlayGround.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; path = AppPlayGround.playground; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		AE61EC473200AFDA81C2110A /* Pods-GoInfoGame-GoInfoGameUITests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-GoInfoGame-GoInfoGameUITests.release.xcconfig"; path = "Target Support Files/Pods-GoInfoGame-GoInfoGameUITests/Pods-GoInfoGame-GoInfoGameUITests.release.xcconfig"; sourceTree = "<group>"; };
 		C70EC16F2B25FFFA00ADAB7C /* QuestManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuestManager.swift; sourceTree = "<group>"; };
 		C70EC1732B26026900ADAB7C /* YetToImplementView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YetToImplementView.swift; sourceTree = "<group>"; };
@@ -327,6 +330,14 @@
 			path = Pods;
 			sourceTree = "<group>";
 		};
+		A477D74F2B3E8285003336E3 /* Filters */ = {
+			isa = PBXGroup;
+			children = (
+				A477D7502B3E829D003336E3 /* StringWithCursor.swift */,
+			);
+			path = Filters;
+			sourceTree = "<group>";
+		};
 		C7900EAA2B15B14A00AEB066 /* Quests */ = {
 			isa = PBXGroup;
 			children = (
@@ -448,6 +459,7 @@
 		FAD5C4F12AFCBE700040C61A /* GoInfoGame */ = {
 			isa = PBXGroup;
 			children = (
+				A477D74F2B3E8285003336E3 /* Filters */,
 				FAD5C4F22AFCBE700040C61A /* AppDelegate.swift */,
 				FAD5C4F42AFCBE700040C61A /* SceneDelegate.swift */,
 				FAC9E60E2B04F9C800E2C608 /* OverpassRequestManager.swift */,
@@ -464,6 +476,7 @@
 				0513BE762B2B464800FB61CF /* samplepoint.gpx */,
 				FAD5C4FD2AFCBE720040C61A /* LaunchScreen.storyboard */,
 				FAD5C5002AFCBE720040C61A /* Info.plist */,
+				A477D7522B3EE707003336E3 /* AppPlayGround.playground */,
 			);
 			path = GoInfoGame;
 			sourceTree = "<group>";
@@ -748,6 +761,7 @@
 				C7900EB22B15BA2D00AEB066 /* QuestOption.swift in Sources */,
 				C7900EBE2B15FE4200AEB066 /* MultipleOptionsQuestView.swift in Sources */,
 				0536DD922B0BD58800B04C4B /* OAuthService.swift in Sources */,
+				A477D7512B3E829D003336E3 /* StringWithCursor.swift in Sources */,
 				05CB71EA2B0FBBDE00DED821 /* HomeMapView.swift in Sources */,
 				FA5853C12B21F17F00301CDA /* OnboardingView.swift in Sources */,
 				05CB71EC2B0FBC0D00DED821 /* HomeMapViewModel.swift in Sources */,
