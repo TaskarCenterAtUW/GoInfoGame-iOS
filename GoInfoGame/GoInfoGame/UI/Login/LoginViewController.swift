@@ -48,8 +48,8 @@ class LoginViewController: UIViewController {
        }
     
     @IBAction func skipButtonTapped(_ sender: Any) {
-      
-        let contentView = OnboardingView()
+        @AppStorage("isOnboarding") var isOnboarding: Bool = true
+        let contentView = isOnboarding ? AnyView( OnboardingView()) :   AnyView(HomeMapView())
         let childView = UIHostingController(rootView: contentView)
         self.navigationController?.pushViewController(childView, animated: false)
     }
