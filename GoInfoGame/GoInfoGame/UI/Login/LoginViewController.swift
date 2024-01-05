@@ -54,4 +54,9 @@ class LoginViewController: UIViewController {
         self.navigationController?.pushViewController(childView, animated: false)
     }
     
+    @IBAction func viewQuestsTapped(_ sender: Any) {
+        let childView = UIHostingController(rootView: QuestsListUIView())
+        self.navigationController?.pushViewController(childView, animated: false)
+
+    }
 }
