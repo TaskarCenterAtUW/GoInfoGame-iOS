@@ -1,0 +1,18 @@
+
+/* Class = "UIButton"; configuration.title = "View Quests"; ObjectID = "13P-wz-T0e"; */
+"13P-wz-T0e.configuration.title" = "View Quests";
+
+/* Class = "UIButton"; normalTitle = "Button"; ObjectID = "13P-wz-T0e"; */
+"13P-wz-T0e.normalTitle" = "Button";
+
+/* Class = "UIButton"; configuration.title = "Login"; ObjectID = "gjV-BO-UiV"; */
+"gjV-BO-UiV.configuration.title" = "Login";
+
+/* Class = "UIButton"; normalTitle = "Button"; ObjectID = "gjV-BO-UiV"; */
+"gjV-BO-UiV.normalTitle" = "Button";
+
+/* Class = "UIButton"; configuration.title = "Skip"; ObjectID = "qAs-AP-wC6"; */
+"qAs-AP-wC6.configuration.title" = "Skip";
+
+/* Class = "UIButton"; normalTitle = "Button"; ObjectID = "qAs-AP-wC6"; */
+"qAs-AP-wC6.normalTitle" = "Button";
