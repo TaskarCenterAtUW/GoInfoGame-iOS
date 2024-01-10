@@ -12,7 +12,7 @@ struct QuestAndDescriptionView: View {
     var answerView: some View {
             switch quest.answerType {
             case .WIDTH:
-                AddSideWalksWidthView()
+                AddSideWalksWidthView(selectedQuest: quest)
             }
         }
     var body: some View {
@@ -21,15 +21,15 @@ struct QuestAndDescriptionView: View {
                 Spacer()
                 Image(quest.icon)
                     .foregroundColor(.blue)
-                    .frame(alignment: Alignment.center)
+                    .frame(alignment: Alignment.center).padding(.top,20)
                 Spacer()
             }
             Text(quest.title)
                 .font(.headline)
-                .padding(.top,10)
             Text(quest.subtitle)
                 .font(.subheadline)
                 .foregroundColor(.gray)
+                .padding(.top,2)
             answerView
             Spacer()
         }.padding(20)

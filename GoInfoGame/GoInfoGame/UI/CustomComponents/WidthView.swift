@@ -8,31 +8,48 @@
 import SwiftUI
 
 struct WidthView: View {
-    @State private var feet: Double
-    @State private var inches: Double
-
-    init(feet: Double, inches: Double) {
-        self._feet = State(initialValue: feet)
-        self._inches = State(initialValue: inches)
-    }
+    @Binding var feet: Double
+    @Binding var inches: Double
+    @State private var isInputValid: Bool = false
+    @Binding var isConfirmAlert: Bool
 
     var body: some View {
-        HStack() {
-            TextField("Feet", value: $feet, formatter: NumberFormatter())
+        VStack {
+            HStack {
+                TextField("Feet", value: $feet, formatter: NumberFormatter(), onEditingChanged: { _ in
+                    validateInput()
+                })
                 .frame(width: 20)
                 .padding(.horizontal)
-                .overlay(Rectangle().frame(height: 1).padding(.top, 25).foregroundColor(.blue), alignment: .bottom)
+                .overlay(Rectangle().frame(height: 1).padding(.top, 25).foregroundColor(.orange), alignment: .bottom)
                 .textFieldStyle(PlainTextFieldStyle())
-            Text("'")
-
-            TextField("Inches", value: $inches, formatter: NumberFormatter())
+                .keyboardType(UIKeyboardType.numberPad)
+                Text("'").font(.title)
+                
+                TextField("Inches", value: $inches, formatter: NumberFormatter(), onEditingChanged: { _ in
+                    validateInput()
+                })
                 .frame(width: 20)
                 .padding(.horizontal)
-                .overlay(Rectangle().frame(height: 1).padding(.top, 25).foregroundColor(.blue), alignment: .bottom)
+                .overlay(Rectangle().frame(height: 1).padding(.top, 25).foregroundColor(.orange), alignment: .bottom)
                 .textFieldStyle(PlainTextFieldStyle())
-            Text("\"")
+                .keyboardType(UIKeyboardType.numberPad)
+                Text("\"").font(.title)
+                if isInputValid {
+                    Button() {
+                        isConfirmAlert = true
+                    }label: {
+                        Image(systemName: "checkmark.circle.fill")
+                            .font(Font.system(size: 40))
+                            .foregroundColor(.orange)
+                    }
+                }
+            }
+            
         }
-        .padding()
+    }
+    private func validateInput() {
+        isInputValid = feet > 0 && inches >= 0
     }
 }
 

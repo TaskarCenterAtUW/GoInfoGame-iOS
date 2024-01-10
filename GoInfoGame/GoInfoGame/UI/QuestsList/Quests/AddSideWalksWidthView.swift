@@ -9,26 +9,44 @@ import SwiftUI
 
 struct AddSideWalksWidthView: View {
     @State private var showAlert = false
+    @State private var feet: Double = 0.0
+    @State private var inches: Double = 0.0
+    @State private var isConfirmAlert: Bool = false
+    var selectedQuest: Ques?
     var body: some View {
         VStack{
-            WidthView(feet: 0.0, inches: 0.0)
+            Text(selectedQuest?.answerTitle ?? "").font(.caption)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .fixedSize(horizontal: false, vertical: true)
+                .foregroundColor(.gray)
+                .padding(.top,10)
+            WidthView(feet: $feet, inches: $inches, isConfirmAlert: $isConfirmAlert)
             Divider()
             Button {
                 showAlert = true
             } label: {
-                Text("OTHER ANSWERS...")
+                Text("OTHER ANSWERS...").foregroundColor(.orange)
             }
-            .padding()
+            .padding(.top,10)
             Spacer()
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .padding()
         .alert(isPresented: $showAlert) {
             Alert(title: Text("More Questions"))
+        }
+        .alert(isPresented: $isConfirmAlert) {
+            Alert(
+                title: Text("Are you sure?"),
+                message: Text("This width looks implausible. Remember, this should be the width from curb to curb, including on-street parking, bicycle lanes etc."),
+                primaryButton: .default(Text("YES, IAM SURE")) {
+                    print("OK button tapped")
+                },
+                secondaryButton: .default(Text("I WILL CHECK"))
+            )
         }
     }
 }
 
-#Preview {
-    AddSideWalksWidthView()
-}
+//#Preview {
+//    AddSideWalksWidthView()
+//}
