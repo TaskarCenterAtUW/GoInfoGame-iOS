@@ -16,11 +16,10 @@ struct QuestsListUIView: View {
     var body: some View {
         List{
             if #available(iOS 15.0, *) {
-                Section("Questions List"){
+                Section(LocalizedStrings.questionsList.localized){
                     ForEach(viewModel.quests, id: \.self) { selectedQues in
                         Button(action: {
                             selectedText = selectedQues
-                            print("Clicked: \(selectedQues)")
                         }) {
                             Text(selectedQues.subtitle)
                         }
@@ -28,7 +27,7 @@ struct QuestsListUIView: View {
                 }
             } else {
                 // Fallback on earlier versions
-                Text("Questions List")
+                Text(LocalizedStrings.questionsList.localized)
             }
         }.sheet(item: $selectedText) { selectedText in
             if #available(iOS 16.0, *) {

@@ -22,7 +22,7 @@ class QuestsVM: ObservableObject {
     @Published var quests: [Ques] = []
     init() {
         quests = [
-            Ques(id: "AddSidewalksWidth", title: "What is the width of the most narrow usable path along this footpath? (measure with your phone please)", subtitle: "Determine sidewalk widths", answerType: AnswerType.WIDTH, answerTitle: "The roadway width from curb to curb: This includes anything on the street surface, including on-street parking or bicycle lanes but excluding anything beyond the curb like sidewalks, off-street parking or adjacent bicycle paths.", icon: "sidewalk-width-img")
+            Ques(id: "AddSidewalksWidth", title: LocalizedStrings.questWidthMostNarrowPath.localized, subtitle: LocalizedStrings.questDetermineSidewalkWidth.localized, answerType: AnswerType.WIDTH, answerTitle: LocalizedStrings.questRoadWithExplanation.localized, icon: "sidewalk-width-img")
         ]
     }
 }

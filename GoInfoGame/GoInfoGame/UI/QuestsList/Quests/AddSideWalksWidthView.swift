@@ -25,23 +25,23 @@ struct AddSideWalksWidthView: View {
             Button {
                 showAlert = true
             } label: {
-                Text("OTHER ANSWERS...").foregroundColor(.orange)
+                Text(LocalizedStrings.otherAnswers.localized).foregroundColor(.orange)
+            }
+            .alert(isPresented: $showAlert) {
+                Alert(title: Text("More Questions"))
             }
             .padding(.top,10)
             Spacer()
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .alert(isPresented: $showAlert) {
-            Alert(title: Text("More Questions"))
-        }
         .alert(isPresented: $isConfirmAlert) {
             Alert(
-                title: Text("Are you sure?"),
-                message: Text("This width looks implausible. Remember, this should be the width from curb to curb, including on-street parking, bicycle lanes etc."),
-                primaryButton: .default(Text("YES, IAM SURE")) {
+                title: Text(LocalizedStrings.questGenericConfirmationTitle.localized),
+                message: Text(LocalizedStrings.questRoadWidthUnusualInputConfirmation.localized),
+                primaryButton: .default(Text(LocalizedStrings.questGenericConfirmationYes.localized)) {
                     print("OK button tapped")
                 },
-                secondaryButton: .default(Text("I WILL CHECK"))
+                secondaryButton: .default(Text(LocalizedStrings.questGenericConfirmationNo.localized))
             )
         }
     }
