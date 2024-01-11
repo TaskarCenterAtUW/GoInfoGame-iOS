@@ -9,6 +9,7 @@ import Foundation
 
 enum AnswerType {
     case WIDTH
+    case YESNO
 }
 struct Ques: Identifiable, Hashable {
     var id: String
@@ -22,7 +23,8 @@ class QuestsVM: ObservableObject {
     @Published var quests: [Ques] = []
     init() {
         quests = [
-            Ques(id: "AddSidewalksWidth", title: LocalizedStrings.questWidthMostNarrowPath.localized, subtitle: LocalizedStrings.questDetermineSidewalkWidth.localized, answerType: AnswerType.WIDTH, answerTitle: LocalizedStrings.questRoadWithExplanation.localized, icon: "sidewalk-width-img")
+            Ques(id: "AddSidewalksWidth", title: LocalizedStrings.questWidthMostNarrowPath.localized, subtitle: LocalizedStrings.questDetermineSidewalkWidth.localized, answerType: AnswerType.WIDTH, answerTitle: LocalizedStrings.questRoadWithExplanation.localized, icon: "sidewalk-width-img"),
+            Ques(id: "AddHandrail", title: LocalizedStrings.questHandrailTitle.localized, subtitle: LocalizedStrings.questSpecifyHandrails.localized, answerType: AnswerType.YESNO, icon: "steps_handrail")
         ]
     }
 }

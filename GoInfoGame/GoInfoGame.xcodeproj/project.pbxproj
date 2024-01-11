@@ -41,6 +41,8 @@
 		973FC0142B4D353800878269 /* AddSideWalksWidthView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 973FC0132B4D353800878269 /* AddSideWalksWidthView.swift */; };
 		973FC0172B4D567900878269 /* WidthView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 973FC0162B4D567900878269 /* WidthView.swift */; };
 		973FC0192B4FB17000878269 /* LocalizedStrings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 973FC0182B4FB17000878269 /* LocalizedStrings.swift */; };
+		973FC01B2B4FE5BA00878269 /* AddHandrailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 973FC01A2B4FE5BA00878269 /* AddHandrailView.swift */; };
+		973FC01D2B4FEE1B00878269 /* YesNoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 973FC01C2B4FEE1B00878269 /* YesNoView.swift */; };
 		97F2FA8A2B0630A3000B9726 /* Pods_GoInfoGame.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 66BED441AF03CC04539E8D4A /* Pods_GoInfoGame.framework */; };
 		97F2FA932B063C70000B9726 /* MapKitViewController_Deprecated.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97F2FA912B063C70000B9726 /* MapKitViewController_Deprecated.swift */; };
 		C70EC1702B25FFFA00ADAB7C /* QuestManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C70EC16F2B25FFFA00ADAB7C /* QuestManager.swift */; };
@@ -129,6 +131,8 @@
 		973FC0132B4D353800878269 /* AddSideWalksWidthView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddSideWalksWidthView.swift; sourceTree = "<group>"; };
 		973FC0162B4D567900878269 /* WidthView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidthView.swift; sourceTree = "<group>"; };
 		973FC0182B4FB17000878269 /* LocalizedStrings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalizedStrings.swift; sourceTree = "<group>"; };
+		973FC01A2B4FE5BA00878269 /* AddHandrailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddHandrailView.swift; sourceTree = "<group>"; };
+		973FC01C2B4FEE1B00878269 /* YesNoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YesNoView.swift; sourceTree = "<group>"; };
 		97F2FA8D2B0630C4000B9726 /* SwiftOverpassAPI.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = SwiftOverpassAPI.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		97F2FA912B063C70000B9726 /* MapKitViewController_Deprecated.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapKitViewController_Deprecated.swift; sourceTree = "<group>"; };
 		AE61EC473200AFDA81C2110A /* Pods-GoInfoGame-GoInfoGameUITests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-GoInfoGame-GoInfoGameUITests.release.xcconfig"; path = "Target Support Files/Pods-GoInfoGame-GoInfoGameUITests/Pods-GoInfoGame-GoInfoGameUITests.release.xcconfig"; sourceTree = "<group>"; };
@@ -363,6 +367,7 @@
 			isa = PBXGroup;
 			children = (
 				973FC0132B4D353800878269 /* AddSideWalksWidthView.swift */,
+				973FC01A2B4FE5BA00878269 /* AddHandrailView.swift */,
 			);
 			path = Quests;
 			sourceTree = "<group>";
@@ -371,6 +376,7 @@
 			isa = PBXGroup;
 			children = (
 				973FC0162B4D567900878269 /* WidthView.swift */,
+				973FC01C2B4FEE1B00878269 /* YesNoView.swift */,
 			);
 			path = CustomComponents;
 			sourceTree = "<group>";
@@ -829,6 +835,8 @@
 				05AE7A532B320E7200578AE8 /* CustomAnnotationView.swift in Sources */,
 				C7900EB42B15BAFC00AEB066 /* QuestResponse.swift in Sources */,
 				FAF44FBD2B3084EC004FE664 /* OnboardingView1.swift in Sources */,
+				973FC01D2B4FEE1B00878269 /* YesNoView.swift in Sources */,
+				973FC01B2B4FE5BA00878269 /* AddHandrailView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

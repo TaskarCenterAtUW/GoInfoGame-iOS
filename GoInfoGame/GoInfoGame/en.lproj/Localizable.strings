@@ -14,4 +14,9 @@
 "quest_road_width_unusualInput_confirmation_description" = "This width looks implausible. Remember, this should be the width from curb to curb, including on-street parking, bicycle lanes etc.";
 "quest_generic_confirmation_yes" = "YES, IAM SURE";
 "quest_generic_confirmation_no" = "I WILL CHECK";
+"quest_specify_handrails" = "Specify whether steps have handrails";
+"quest_handrail_title" = "Do these steps have a handrail?";
+"quest_generic_hasFeature_yes" ="Yes";
+"quest_generic_hasFeature_no" = "No";
+"quest_generic_hasFeature_optional" ="Optionally";
     

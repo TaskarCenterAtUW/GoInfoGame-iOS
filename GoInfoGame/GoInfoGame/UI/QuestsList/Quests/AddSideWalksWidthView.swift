@@ -7,16 +7,16 @@
 
 import SwiftUI
 
-struct AddSideWalksWidthView: View {
+struct AddSideWalksWidthView: View, AnswerView {
     @State private var showAlert = false
     @State private var feet: Double = 0.0
     @State private var inches: Double = 0.0
     @State private var isConfirmAlert: Bool = false
-    var selectedQuest: Ques?
+    var selectedQuest: Ques
     var onConfirm: ((_ feet: Double, _ inches: Double, _ isConfirmAlert: Bool) -> Void)?
     var body: some View {
         VStack{
-            Text(selectedQuest?.answerTitle ?? "").font(.caption)
+            Text(selectedQuest.answerTitle ?? "").font(.caption)
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .fixedSize(horizontal: false, vertical: true)
                 .foregroundColor(.gray)
