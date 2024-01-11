@@ -12,6 +12,6 @@
 "questions_list" = "Questions List";
 "quest_generic_confirmation_title" = "Are you sure?";
 "quest_road_width_unusualInput_confirmation_description" = "This width looks implausible. Remember, this should be the width from curb to curb, including on-street parking, bicycle lanes etc.";
-"quest_generic_confirmation_yes" = "YES, IAM SURE"
-"quest_generic_confirmation_no" = "I WILL CHECK"
+"quest_generic_confirmation_yes" = "YES, IAM SURE";
+"quest_generic_confirmation_no" = "I WILL CHECK";
     

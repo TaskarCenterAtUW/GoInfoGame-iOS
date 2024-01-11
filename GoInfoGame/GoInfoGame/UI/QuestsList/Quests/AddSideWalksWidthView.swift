@@ -13,6 +13,7 @@ struct AddSideWalksWidthView: View {
     @State private var inches: Double = 0.0
     @State private var isConfirmAlert: Bool = false
     var selectedQuest: Ques?
+    var onConfirm: ((_ feet: Double, _ inches: Double, _ isConfirmAlert: Bool) -> Void)?
     var body: some View {
         VStack{
             Text(selectedQuest?.answerTitle ?? "").font(.caption)
@@ -40,6 +41,7 @@ struct AddSideWalksWidthView: View {
                 message: Text(LocalizedStrings.questRoadWidthUnusualInputConfirmation.localized),
                 primaryButton: .default(Text(LocalizedStrings.questGenericConfirmationYes.localized)) {
                     print("OK button tapped")
+                    onConfirm?(feet, inches, isConfirmAlert)
                 },
                 secondaryButton: .default(Text(LocalizedStrings.questGenericConfirmationNo.localized))
             )
