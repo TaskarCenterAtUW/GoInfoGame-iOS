@@ -15,14 +15,16 @@ struct QuestAndDescriptionView: View {
     @ViewBuilder
     var answerView:  some View {
             switch quest.answerType {
-            case .WIDTH:
+            case .ADDSIDEWALKWIDTH:
                     AddSideWalksWidthView(selectedQuest: quest) { feet, inches, isConfirmAlert in
                         print("Feet: \(feet), Inches: \(inches), isConfirmAlert: \(isConfirmAlert)")
                     }
-            case .YESNO:
+            case .ADDHANDRAIL:
                     AddHandrailView(selectedQuest: quest)
-            case .IMAGEGRIDLIST:
+            case .ADDSTEPSRAMP:
                 AddStepsRampView()
+            case .ADDSTEPSINCLINE:
+                AddStepsInclineView()
             }
         }
     var body: some  View {

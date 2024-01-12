@@ -45,6 +45,7 @@
 		973FC01D2B4FEE1B00878269 /* YesNoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 973FC01C2B4FEE1B00878269 /* YesNoView.swift */; };
 		973FC01F2B50DE7E00878269 /* ImageGridItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 973FC01E2B50DE7E00878269 /* ImageGridItemView.swift */; };
 		973FC0212B50E06B00878269 /* AddStepsRampView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 973FC0202B50E06B00878269 /* AddStepsRampView.swift */; };
+		973FC0232B51281B00878269 /* AddStepsInclineView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 973FC0222B51281B00878269 /* AddStepsInclineView.swift */; };
 		97F2FA8A2B0630A3000B9726 /* Pods_GoInfoGame.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 66BED441AF03CC04539E8D4A /* Pods_GoInfoGame.framework */; };
 		97F2FA932B063C70000B9726 /* MapKitViewController_Deprecated.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97F2FA912B063C70000B9726 /* MapKitViewController_Deprecated.swift */; };
 		C70EC1702B25FFFA00ADAB7C /* QuestManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C70EC16F2B25FFFA00ADAB7C /* QuestManager.swift */; };
@@ -137,6 +138,7 @@
 		973FC01C2B4FEE1B00878269 /* YesNoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YesNoView.swift; sourceTree = "<group>"; };
 		973FC01E2B50DE7E00878269 /* ImageGridItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageGridItemView.swift; sourceTree = "<group>"; };
 		973FC0202B50E06B00878269 /* AddStepsRampView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddStepsRampView.swift; sourceTree = "<group>"; };
+		973FC0222B51281B00878269 /* AddStepsInclineView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddStepsInclineView.swift; sourceTree = "<group>"; };
 		97F2FA8D2B0630C4000B9726 /* SwiftOverpassAPI.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = SwiftOverpassAPI.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		97F2FA912B063C70000B9726 /* MapKitViewController_Deprecated.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapKitViewController_Deprecated.swift; sourceTree = "<group>"; };
 		AE61EC473200AFDA81C2110A /* Pods-GoInfoGame-GoInfoGameUITests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-GoInfoGame-GoInfoGameUITests.release.xcconfig"; path = "Target Support Files/Pods-GoInfoGame-GoInfoGameUITests/Pods-GoInfoGame-GoInfoGameUITests.release.xcconfig"; sourceTree = "<group>"; };
@@ -373,6 +375,7 @@
 				973FC0132B4D353800878269 /* AddSideWalksWidthView.swift */,
 				973FC01A2B4FE5BA00878269 /* AddHandrailView.swift */,
 				973FC0202B50E06B00878269 /* AddStepsRampView.swift */,
+				973FC0222B51281B00878269 /* AddStepsInclineView.swift */,
 			);
 			path = Quests;
 			sourceTree = "<group>";
@@ -823,6 +826,7 @@
 				05CB71EC2B0FBC0D00DED821 /* HomeMapViewModel.swift in Sources */,
 				C70EC1702B25FFFA00ADAB7C /* QuestManager.swift in Sources */,
 				05AE7A512B320E4B00578AE8 /* CustomAnnotationPointView.swift in Sources */,
+				973FC0232B51281B00878269 /* AddStepsInclineView.swift in Sources */,
 				05DBBB5F2B1263FF00B6F110 /* DatabaseConnector.swift in Sources */,
 				FAF44FC12B30850A004FE664 /* OnboardingView3.swift in Sources */,
 				0536DD972B0BD95100B04C4B /* URLSession+Extension.swift in Sources */,

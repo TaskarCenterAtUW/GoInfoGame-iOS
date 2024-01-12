@@ -13,11 +13,13 @@ struct ImageData: Identifiable {
     let imageName: String
     let tag: String
     let optionName: String
-   
+    
 }
 struct ImageGridItemView: View {
     let gridCount: Int
+    let isLabelBelow : Bool
     let imageData: [ImageData]
+    let isImageRotated: Bool
     let onTap: (String, String) -> Void
     
     var body: some View {
@@ -31,17 +33,26 @@ struct ImageGridItemView: View {
                             Image(data.imageName)
                                 .resizable()
                                 .scaledToFill()
-                                .frame(minWidth: 0, maxWidth: .infinity, minHeight: 150, maxHeight: 150)
+                                .frame(minWidth: isLabelBelow ? 70 : 0, maxWidth: isLabelBelow ? 70 : .infinity, minHeight:isLabelBelow ? 70 : 150, maxHeight: isLabelBelow ? 70 : 150)
                                 .cornerRadius(10)
                                 .clipped()
-                            Text(data.optionName)
-                                .font(.caption)
-                                .fontWeight(.bold)
-                                .foregroundColor(.white)
-                                .padding(20)
-                                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom)
+                                .rotationEffect(.degrees(isImageRotated ? 30: 0))
+                            if !isLabelBelow{
+                                Text(data.optionName)
+                                    .font(.caption)
+                                    .fontWeight(.bold)
+                                    .foregroundColor(.white)
+                                    .padding(20)
+                                    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom)
+                            }
                         }
                         
+                    }
+                    if isLabelBelow{
+                        Text(data.optionName)
+                            .font(.caption)
+                            .foregroundColor(.black)
+                            .multilineTextAlignment(.center)
                     }
                 }
             }

@@ -1,5 +1,5 @@
 //
-//  AddStepsRampView.swift
+//  AddStepsInclineView.swift
 //  GoInfoGame
 //
 //  Created by Lakshmi Shweta Pochiraju on 12/01/24.
@@ -7,18 +7,16 @@
 
 import SwiftUI
 
-struct AddStepsRampView: View {
+struct AddStepsInclineView: View {
     @State private var showAlert = false
     let imageData: [ImageData] = [
-        ImageData(id:"ramp_none",type: "none", imageName: "ramp_none", tag: "none", optionName: LocalizedStrings.questStepsRampNone.localized),
-        ImageData(id:"ramp_bicycle",type: "bicycle", imageName: "ramp_bicycle", tag: "ramp:wheelchair", optionName: LocalizedStrings.questStepsRampBicycle.localized),
-        ImageData(id:"ramp_stroller",type: "stroller", imageName: "ramp_stroller", tag: "ramp:stroller", optionName: LocalizedStrings.questStepsRampStroller.localized),
-        ImageData(id:"ramp_wheelchair",type: "wheelchair", imageName: "ramp_wheelchair", tag: "ramp:bicycle", optionName: LocalizedStrings.questStepsRampWheelchair.localized),
+        ImageData(id:"UP",type: "none", imageName: "steps-incline-up", tag: "up", optionName: LocalizedStrings.questStepsInclineUp.localized),
+        ImageData(id:"UP_REVERSED",type: "bicycle", imageName: "steps-incline-up-reversed", tag: "down", optionName: LocalizedStrings.questStepsInclineUp.localized),
     ]
     var body: some View {
         VStack (alignment: .leading){
             Text(LocalizedStrings.select.localized).font(.caption).foregroundColor(.gray)
-            ImageGridItemView(gridCount: 2, isLabelBelow: false, imageData: imageData, isImageRotated: false, onTap: { (type, tag) in
+            ImageGridItemView(gridCount: 2, isLabelBelow: true, imageData: imageData, isImageRotated: true, onTap: { (type, tag) in
                 print("Clicked: \(type), Tag: \(tag)")})
             Divider()
             HStack() {
@@ -43,5 +41,5 @@ struct AddStepsRampView: View {
 }
 
 #Preview {
-    AddStepsRampView()
+    AddStepsInclineView()
 }

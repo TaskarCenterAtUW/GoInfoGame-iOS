@@ -8,9 +8,10 @@ import SwiftUI
 import Foundation
 
 enum AnswerType {
-    case WIDTH
-    case YESNO
-    case IMAGEGRIDLIST
+    case ADDSIDEWALKWIDTH
+    case ADDHANDRAIL
+    case ADDSTEPSRAMP
+    case ADDSTEPSINCLINE
 }
 enum SheetSize {
     case SMALL
@@ -31,9 +32,10 @@ class QuestsVM: ObservableObject {
     @Published var quests: [Ques] = []
     init() {
         quests = [
-            Ques(id: "AddSidewalksWidth", title: LocalizedStrings.questWidthMostNarrowPath.localized, subtitle: LocalizedStrings.questDetermineSidewalkWidth.localized, answerType: AnswerType.WIDTH, answerTitle: LocalizedStrings.questRoadWithExplanation.localized, icon: "sidewalk-width-img", tag: "width", sheetSize: SheetSize.MEDIUM),
-            Ques(id: "AddHandrail", title: LocalizedStrings.questHandrailTitle.localized, subtitle: LocalizedStrings.questSpecifyHandrails.localized, answerType: AnswerType.YESNO, icon: "steps_handrail", tag: "handrail", sheetSize: SheetSize.SMALL),
-            Ques(id: "AddStepsRamp", title: LocalizedStrings.questHandrailTitle.localized, subtitle: LocalizedStrings.questSpecifyHandrails.localized, answerType: AnswerType.IMAGEGRIDLIST, icon: "ic_quest_steps_ramp", tag: "ramp", sheetSize: SheetSize.LARGE)
+            Ques(id: "AddSidewalksWidth", title: LocalizedStrings.questWidthMostNarrowPath.localized, subtitle: LocalizedStrings.questDetermineSidewalkWidth.localized, answerType: AnswerType.ADDSIDEWALKWIDTH, answerTitle: LocalizedStrings.questRoadWithExplanation.localized, icon: "sidewalk-width-img", tag: "width", sheetSize: SheetSize.MEDIUM),
+            Ques(id: "AddHandrail", title: LocalizedStrings.questHandrailTitle.localized, subtitle: LocalizedStrings.questSpecifyHandrails.localized, answerType: AnswerType.ADDHANDRAIL, icon: "steps_handrail", tag: "handrail", sheetSize: SheetSize.SMALL),
+            Ques(id: "AddStepsRamp", title: LocalizedStrings.questHandrailTitle.localized, subtitle: "Specify whether steps have a ramp", answerType: AnswerType.ADDSTEPSRAMP, icon: "ic_quest_steps_ramp", tag: "ramp", sheetSize: SheetSize.LARGE),
+            Ques(id: "AddStepsIncline", title: LocalizedStrings.questStepsInclineTitle.localized, subtitle: "Specify which way leads up for steps", answerType: AnswerType.ADDSTEPSINCLINE, icon: "steps", tag: "incline", sheetSize: SheetSize.MEDIUM)
         ]
     }
 }

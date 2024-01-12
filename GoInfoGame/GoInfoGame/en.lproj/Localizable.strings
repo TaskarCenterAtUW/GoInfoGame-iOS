@@ -20,8 +20,10 @@
 "quest_generic_hasFeature_no" = "No";
 "quest_generic_hasFeature_optional" ="Optionally";
 "quest_steps_ramp_title" = "Do these steps have a ramp? What kind?";
-"Select" = "Select";
+"Select" = "Select:";
 "quest_steps_ramp_none" = "No (usable) ramp";
 "quest_steps_ramp_bicycle" = "Bicycle ramp";
 "quest_steps_ramp_stroller" = "Stroller ramp";
 "quest_steps_ramp_wheelchair" = "Wheelchair ramp";
+"quest_steps_incline_title" = "Which direction leads upwards for these steps?";
+"quest_steps_incline_up" = "This way up";
