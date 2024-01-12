@@ -11,6 +11,7 @@ protocol AnswerView: View {
     var selectedQuest: Ques { get }
 }
 struct QuestAndDescriptionView: View {
+    @State private var numberOfSteps: Int = 0
     var quest: Ques
     @ViewBuilder
     var answerView:  some View {
@@ -27,6 +28,10 @@ struct QuestAndDescriptionView: View {
                 AddStepsInclineView()
             case .ADDTACTILEPAVINGSTEPS:
                 AddTactilePavingStepsView()
+            case .ADDSTAIRNUMBER:
+                AddStairNumberView(numberOfSteps: $numberOfSteps){numberOfSteps in 
+                    print("numberOfSteps: \(numberOfSteps)")
+                }
             }
         }
     var body: some  View {

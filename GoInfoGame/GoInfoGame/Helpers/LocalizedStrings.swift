@@ -32,9 +32,12 @@ enum LocalizedStrings: String {
     case selectOne = "select_one"
     case questTactilePavingTitleSteps = "quest_tactilePaving_title_steps"
     case usuallyLooksLikeThis = "usually_looks_like_this"
+    case questStepCountTitle = "quest_step_count_title"
     
     var localized: String {
         return NSLocalizedString(rawValue, comment: "")
     }
 }
 
+//"quest_step_count_title"= "How many steps are here?"
+//"quest_step_count_stile_hint" = "Just the number of steps to reach the top. If the step count differs on each side, give the higher number."

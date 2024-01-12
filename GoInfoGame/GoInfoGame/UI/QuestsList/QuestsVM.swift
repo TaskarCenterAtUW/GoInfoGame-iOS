@@ -13,6 +13,7 @@ enum AnswerType {
     case ADDSTEPSRAMP
     case ADDSTEPSINCLINE
     case ADDTACTILEPAVINGSTEPS
+    case ADDSTAIRNUMBER
 }
 enum SheetSize {
     case SMALL
@@ -37,7 +38,9 @@ class QuestsVM: ObservableObject {
             Ques(id: "AddHandrail", title: LocalizedStrings.questHandrailTitle.localized, subtitle: LocalizedStrings.questSpecifyHandrails.localized, answerType: AnswerType.ADDHANDRAIL, icon: "steps_handrail", tag: "handrail", sheetSize: SheetSize.SMALL),
             Ques(id: "AddStepsRamp", title: LocalizedStrings.questHandrailTitle.localized, subtitle: "Specify whether steps have a ramp", answerType: AnswerType.ADDSTEPSRAMP, icon: "ic_quest_steps_ramp", tag: "ramp", sheetSize: SheetSize.LARGE),
             Ques(id: "AddStepsIncline", title: LocalizedStrings.questStepsInclineTitle.localized, subtitle: "Specify which way leads up for steps", answerType: AnswerType.ADDSTEPSINCLINE, icon: "steps", tag: "incline", sheetSize: SheetSize.MEDIUM),
-            Ques(id: "AddTactilePavingSteps", title: LocalizedStrings.questTactilePavingTitleSteps.localized, subtitle: "Survey tactile paving on steps", answerType: AnswerType.ADDTACTILEPAVINGSTEPS, icon: "steps_tactile_paving", tag: "tactile_paving", sheetSize: SheetSize.MEDIUM)
+            Ques(id: "AddTactilePavingSteps", title: LocalizedStrings.questTactilePavingTitleSteps.localized, subtitle: "Survey tactile paving on steps", answerType: AnswerType.ADDTACTILEPAVINGSTEPS, icon: "steps_tactile_paving", tag: "tactile_paving", sheetSize: SheetSize.MEDIUM),
+            Ques(id: "AddStairNumber", title: LocalizedStrings.questStepCountTitle.localized, subtitle: "Specify step counts", answerType: AnswerType.ADDSTAIRNUMBER, icon: "steps_count", tag: "step_count", sheetSize: SheetSize.MEDIUM)
+            
         ]
     }
 }
