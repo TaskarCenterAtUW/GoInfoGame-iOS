@@ -28,3 +28,5 @@
 "quest_steps_incline_title" = "Which direction leads upwards for these steps?";
 "quest_steps_incline_up" = "This way up";
 "select_one" = "Select One:";
+"quest_tactilePaving_title_steps" = "Is there tactile paving at the top and bottom of these steps?";
+"usually_looks_like_this" = "Usually looks like this?";

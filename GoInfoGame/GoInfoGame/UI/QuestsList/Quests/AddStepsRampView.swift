@@ -18,7 +18,7 @@ struct AddStepsRampView: View {
     var body: some View {
         VStack (alignment: .leading){
             Text(LocalizedStrings.select.localized).font(.caption).foregroundColor(.gray)
-            ImageGridItemView(gridCount: 2, isLabelBelow: false, imageData: imageData, isImageRotated: false, onTap: { (type, tag) in
+            ImageGridItemView(gridCount: 2, isLabelBelow: false, imageData: imageData, isImageRotated: false, isDisplayImageOnly: false, onTap: { (type, tag) in
                 print("Clicked: \(type), Tag: \(tag)")})
             Divider()
             HStack() {

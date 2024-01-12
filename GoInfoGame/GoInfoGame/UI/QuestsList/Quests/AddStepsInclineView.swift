@@ -16,7 +16,7 @@ struct AddStepsInclineView: View {
     var body: some View {
         VStack (alignment: .leading){
             Text(LocalizedStrings.selectOne.localized).font(.caption).foregroundColor(.gray)
-            ImageGridItemView(gridCount: 2, isLabelBelow: true, imageData: imageData, isImageRotated: true, onTap: { (type, tag) in
+            ImageGridItemView(gridCount: 2, isLabelBelow: true, imageData: imageData, isImageRotated: true, isDisplayImageOnly: false, onTap: { (type, tag) in
                 print("Clicked: \(type), Tag: \(tag)")})
             Divider()
             HStack() {

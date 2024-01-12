@@ -25,6 +25,8 @@ struct QuestAndDescriptionView: View {
                 AddStepsRampView()
             case .ADDSTEPSINCLINE:
                 AddStepsInclineView()
+            case .ADDTACTILEPAVINGSTEPS:
+                AddTactilePavingStepsView()
             }
         }
     var body: some  View {

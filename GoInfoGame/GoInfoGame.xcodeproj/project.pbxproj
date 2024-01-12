@@ -46,6 +46,7 @@
 		973FC01F2B50DE7E00878269 /* ImageGridItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 973FC01E2B50DE7E00878269 /* ImageGridItemView.swift */; };
 		973FC0212B50E06B00878269 /* AddStepsRampView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 973FC0202B50E06B00878269 /* AddStepsRampView.swift */; };
 		973FC0232B51281B00878269 /* AddStepsInclineView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 973FC0222B51281B00878269 /* AddStepsInclineView.swift */; };
+		973FC0252B51515600878269 /* AddTactilePavingStepsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 973FC0242B51515600878269 /* AddTactilePavingStepsView.swift */; };
 		97F2FA8A2B0630A3000B9726 /* Pods_GoInfoGame.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 66BED441AF03CC04539E8D4A /* Pods_GoInfoGame.framework */; };
 		97F2FA932B063C70000B9726 /* MapKitViewController_Deprecated.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97F2FA912B063C70000B9726 /* MapKitViewController_Deprecated.swift */; };
 		C70EC1702B25FFFA00ADAB7C /* QuestManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C70EC16F2B25FFFA00ADAB7C /* QuestManager.swift */; };
@@ -139,6 +140,7 @@
 		973FC01E2B50DE7E00878269 /* ImageGridItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageGridItemView.swift; sourceTree = "<group>"; };
 		973FC0202B50E06B00878269 /* AddStepsRampView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddStepsRampView.swift; sourceTree = "<group>"; };
 		973FC0222B51281B00878269 /* AddStepsInclineView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddStepsInclineView.swift; sourceTree = "<group>"; };
+		973FC0242B51515600878269 /* AddTactilePavingStepsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddTactilePavingStepsView.swift; sourceTree = "<group>"; };
 		97F2FA8D2B0630C4000B9726 /* SwiftOverpassAPI.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = SwiftOverpassAPI.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		97F2FA912B063C70000B9726 /* MapKitViewController_Deprecated.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapKitViewController_Deprecated.swift; sourceTree = "<group>"; };
 		AE61EC473200AFDA81C2110A /* Pods-GoInfoGame-GoInfoGameUITests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-GoInfoGame-GoInfoGameUITests.release.xcconfig"; path = "Target Support Files/Pods-GoInfoGame-GoInfoGameUITests/Pods-GoInfoGame-GoInfoGameUITests.release.xcconfig"; sourceTree = "<group>"; };
@@ -376,6 +378,7 @@
 				973FC01A2B4FE5BA00878269 /* AddHandrailView.swift */,
 				973FC0202B50E06B00878269 /* AddStepsRampView.swift */,
 				973FC0222B51281B00878269 /* AddStepsInclineView.swift */,
+				973FC0242B51515600878269 /* AddTactilePavingStepsView.swift */,
 			);
 			path = Quests;
 			sourceTree = "<group>";
@@ -841,6 +844,7 @@
 				0536DD8C2B0BD2C200B04C4B /* Constants.swift in Sources */,
 				0536DD992B0BDBFE00B04C4B /* OAuthManager.swift in Sources */,
 				058EADD52B10DEAF0017E259 /* MapOverlay+UIViewRepresentable.swift in Sources */,
+				973FC0252B51515600878269 /* AddTactilePavingStepsView.swift in Sources */,
 				059D472E2B2C7FED000987FA /* SidewalkOverlay.swift in Sources */,
 				973FBFFE2B46BB3800878269 /* Utils.swift in Sources */,
 				05DBBB5B2B11EC2A00B6F110 /* CustomCallOut.swift in Sources */,

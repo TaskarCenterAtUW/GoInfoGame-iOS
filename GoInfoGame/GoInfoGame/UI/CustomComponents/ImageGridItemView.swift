@@ -20,6 +20,7 @@ struct ImageGridItemView: View {
     let isLabelBelow : Bool
     let imageData: [ImageData]
     let isImageRotated: Bool
+    let isDisplayImageOnly : Bool
     let onTap: (String, String) -> Void
     
     var body: some View {
@@ -47,7 +48,7 @@ struct ImageGridItemView: View {
                             }
                         }
                         
-                    }
+                    }.disabled(isDisplayImageOnly)
                     if isLabelBelow{
                         Text(data.optionName)
                             .font(.caption)
