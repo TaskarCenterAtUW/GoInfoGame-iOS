@@ -27,3 +27,4 @@
 "quest_steps_ramp_wheelchair" = "Wheelchair ramp";
 "quest_steps_incline_title" = "Which direction leads upwards for these steps?";
 "quest_steps_incline_up" = "This way up";
+"select_one" = "Select One:";
