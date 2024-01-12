@@ -48,6 +48,8 @@
 		973FC0232B51281B00878269 /* AddStepsInclineView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 973FC0222B51281B00878269 /* AddStepsInclineView.swift */; };
 		973FC0252B51515600878269 /* AddTactilePavingStepsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 973FC0242B51515600878269 /* AddTactilePavingStepsView.swift */; };
 		973FC0272B5168C900878269 /* AddStairNumberView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 973FC0262B5168C900878269 /* AddStairNumberView.swift */; };
+		973FC0292B5195CE00878269 /* AddWayLitView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 973FC0282B5195CE00878269 /* AddWayLitView.swift */; };
+		973FC02B2B5197F900878269 /* AddBusStopLitView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 973FC02A2B5197F900878269 /* AddBusStopLitView.swift */; };
 		97F2FA8A2B0630A3000B9726 /* Pods_GoInfoGame.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 66BED441AF03CC04539E8D4A /* Pods_GoInfoGame.framework */; };
 		97F2FA932B063C70000B9726 /* MapKitViewController_Deprecated.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97F2FA912B063C70000B9726 /* MapKitViewController_Deprecated.swift */; };
 		C70EC1702B25FFFA00ADAB7C /* QuestManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C70EC16F2B25FFFA00ADAB7C /* QuestManager.swift */; };
@@ -143,6 +145,8 @@
 		973FC0222B51281B00878269 /* AddStepsInclineView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddStepsInclineView.swift; sourceTree = "<group>"; };
 		973FC0242B51515600878269 /* AddTactilePavingStepsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddTactilePavingStepsView.swift; sourceTree = "<group>"; };
 		973FC0262B5168C900878269 /* AddStairNumberView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddStairNumberView.swift; sourceTree = "<group>"; };
+		973FC0282B5195CE00878269 /* AddWayLitView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddWayLitView.swift; sourceTree = "<group>"; };
+		973FC02A2B5197F900878269 /* AddBusStopLitView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddBusStopLitView.swift; sourceTree = "<group>"; };
 		97F2FA8D2B0630C4000B9726 /* SwiftOverpassAPI.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = SwiftOverpassAPI.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		97F2FA912B063C70000B9726 /* MapKitViewController_Deprecated.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapKitViewController_Deprecated.swift; sourceTree = "<group>"; };
 		AE61EC473200AFDA81C2110A /* Pods-GoInfoGame-GoInfoGameUITests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-GoInfoGame-GoInfoGameUITests.release.xcconfig"; path = "Target Support Files/Pods-GoInfoGame-GoInfoGameUITests/Pods-GoInfoGame-GoInfoGameUITests.release.xcconfig"; sourceTree = "<group>"; };
@@ -382,6 +386,8 @@
 				973FC0222B51281B00878269 /* AddStepsInclineView.swift */,
 				973FC0242B51515600878269 /* AddTactilePavingStepsView.swift */,
 				973FC0262B5168C900878269 /* AddStairNumberView.swift */,
+				973FC0282B5195CE00878269 /* AddWayLitView.swift */,
+				973FC02A2B5197F900878269 /* AddBusStopLitView.swift */,
 			);
 			path = Quests;
 			sourceTree = "<group>";
@@ -800,7 +806,9 @@
 				C7900EAC2B15B17400AEB066 /* Quest.swift in Sources */,
 				05DBBB5D2B1262BA00B6F110 /* OverpassRepository.swift in Sources */,
 				0536DD852B0BD11A00B04C4B /* LoginViewController.swift in Sources */,
+				973FC02B2B5197F900878269 /* AddBusStopLitView.swift in Sources */,
 				C7900EB02B15B9F200AEB066 /* MultipleOptionsQuest.swift in Sources */,
+				973FC0292B5195CE00878269 /* AddWayLitView.swift in Sources */,
 				C7900EBA2B15C90A00AEB066 /* StepsRampViewModel.swift in Sources */,
 				97F2FA932B063C70000B9726 /* MapKitViewController_Deprecated.swift in Sources */,
 				C7900EC02B15FE6F00AEB066 /* QuestOptionView.swift in Sources */,

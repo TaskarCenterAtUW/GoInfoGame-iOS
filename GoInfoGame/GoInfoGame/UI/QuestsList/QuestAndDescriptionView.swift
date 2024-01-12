@@ -32,6 +32,10 @@ struct QuestAndDescriptionView: View {
                 AddStairNumberView(numberOfSteps: $numberOfSteps){numberOfSteps in 
                     print("numberOfSteps: \(numberOfSteps)")
                 }
+            case .ADDWAYLIT:
+                AddWayLitView()
+            case .ADDSTOPELIT:
+                AddBusStopLitView()
             }
         }
     var body: some  View {
