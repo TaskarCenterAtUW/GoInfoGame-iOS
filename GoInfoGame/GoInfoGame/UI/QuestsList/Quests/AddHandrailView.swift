@@ -27,8 +27,8 @@ struct AddHandrailView: View, AnswerView {
                     .fill(Color.white)
                     .shadow(color: .gray, radius: 2, x: 0, y: 2))
             .padding(.top,20)
-        }
     }
+}
 
 
 //#Preview {

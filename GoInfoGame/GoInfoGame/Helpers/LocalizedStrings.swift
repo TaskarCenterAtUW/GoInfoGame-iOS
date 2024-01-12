@@ -21,6 +21,12 @@ enum LocalizedStrings: String {
     case questGenericHasFeatureYes = "quest_generic_hasFeature_yes"
     case questGenericHasFeatureNo = "quest_generic_hasFeature_no"
     case questGenericHasFeatureOptional = "quest_generic_hasFeature_optional"
+    case questStepsRampTitle = "quest_steps_ramp_title"
+    case select = "Select"
+    case questStepsRampNone = "quest_steps_ramp_none"
+    case questStepsRampBicycle = "quest_steps_ramp_bicycle"
+    case questStepsRampStroller = "quest_steps_ramp_stroller"
+    case questStepsRampWheelchair = "quest_steps_ramp_wheelchair"
 
     var localized: String {
         return NSLocalizedString(rawValue, comment: "")

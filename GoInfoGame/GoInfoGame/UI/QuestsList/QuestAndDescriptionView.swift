@@ -21,6 +21,8 @@ struct QuestAndDescriptionView: View {
                     }
             case .YESNO:
                     AddHandrailView(selectedQuest: quest)
+            case .IMAGEGRIDLIST:
+                AddStepsRampView()
             }
         }
     var body: some  View {

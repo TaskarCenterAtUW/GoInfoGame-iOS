@@ -32,13 +32,23 @@ struct QuestsListUIView: View {
         }.sheet(item: $selectedText) { selectedText in
             if #available(iOS 16.0, *) {
                 QuestAndDescriptionView(quest: selectedText)
-                    .presentationDetents([.medium, .large])
+                    .presentationDetents(getSheetSize(sheetSize: selectedText.sheetSize))
             }
             else{
                 VStack {
                     Text("")
                 }
             }
+        }
+    }
+    @available(iOS 16.0, *)
+    func getSheetSize(sheetSize:SheetSize) -> Set<PresentationDetent> {
+        if selectedText?.sheetSize == .SMALL {
+            return [.height(250)]
+        }else if selectedText?.sheetSize == .LARGE {
+          return [.height(600)]
+        } else {
+            return [.medium, .large]
         }
     }
 }
