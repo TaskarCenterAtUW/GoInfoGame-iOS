@@ -13,13 +13,15 @@ struct ImageData: Identifiable {
     let imageName: String
     let tag: String
     let optionName: String
+   
 }
 struct ImageGridItemView: View {
+    let gridCount: Int
     let imageData: [ImageData]
     let onTap: (String, String) -> Void
     
     var body: some View {
-        LazyVGrid(columns: Array(repeating: GridItem(), count: 2),spacing: 5) {
+        LazyVGrid(columns: Array(repeating: GridItem(spacing: gridCount == 2 ? 5 : 0), count: gridCount),spacing:  gridCount == 2 ? 5 : 0) {
             ForEach(imageData) { data in
                 VStack {
                     Button(action: {
