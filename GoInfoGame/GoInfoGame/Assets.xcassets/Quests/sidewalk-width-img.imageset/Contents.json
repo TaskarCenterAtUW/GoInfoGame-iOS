@@ -1,0 +1,12 @@
+{
+  "images" : [
+    {
+      "filename" : "sidewalk-width-img.pdf",
+      "idiom" : "universal"
+    }
+  ],
+  "info" : {
+    "author" : "xcode",
+    "version" : 1
+  }
+}

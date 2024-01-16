@@ -1,0 +1,36 @@
+/* 
+  Localizable.strings
+  GoInfoGame
+
+  Created by Lakshmi Shweta Pochiraju on 09/01/24.
+  
+*/
+"quest_width_most_narrow_path" = "What is the width of the most narrow usable path along this footpath? (measure with your phone please)";
+"quest_determine_sidewalk_widths" = "Determine sidewalk widths";
+"quest_road_width_explanation" = "The roadway width from curb to curb: This includes anything on the street surface, including on-street parking or bicycle lanes but excluding anything beyond the curb like sidewalks, off-street parking or adjacent bicycle paths.";
+"other_answers" = "OTHER ANSWERS...";
+"questions_list" = "Questions List";
+"quest_generic_confirmation_title" = "Are you sure?";
+"quest_road_width_unusualInput_confirmation_description" = "This width looks implausible. Remember, this should be the width from curb to curb, including on-street parking, bicycle lanes etc.";
+"quest_generic_confirmation_yes" = "YES, IAM SURE";
+"quest_generic_confirmation_no" = "I WILL CHECK";
+"quest_specify_handrails" = "Specify whether steps have handrails";
+"quest_handrail_title" = "Do these steps have a handrail?";
+"quest_generic_hasFeature_yes" ="Yes";
+"quest_generic_hasFeature_no" = "No";
+"quest_generic_hasFeature_optional" ="Optionally";
+"quest_steps_ramp_title" = "Do these steps have a ramp? What kind?";
+"Select" = "Select:";
+"quest_steps_ramp_none" = "No (usable) ramp";
+"quest_steps_ramp_bicycle" = "Bicycle ramp";
+"quest_steps_ramp_stroller" = "Stroller ramp";
+"quest_steps_ramp_wheelchair" = "Wheelchair ramp";
+"quest_steps_incline_title" = "Which direction leads upwards for these steps?";
+"quest_steps_incline_up" = "This way up";
+"select_one" = "Select One:";
+"quest_tactilePaving_title_steps" = "Is there tactile paving at the top and bottom of these steps?";
+"usually_looks_like_this" = "Usually looks like this?";
+"quest_step_count_title"= "How many steps are here?";
+"quest_step_count_stile_hint" = "Just the number of steps to reach the top. If the step count differs on each side, give the higher number.";
+"quest_lit_title" = "Is it lit here?";
+"quest_busStopLit_title" = "Is this stop lit?";

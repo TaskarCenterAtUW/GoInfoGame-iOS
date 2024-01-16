@@ -34,6 +34,22 @@
 		74D8E739AE340D54DEF2E74C /* Pods_GoInfoGameTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 066F85ADCDCE7357368131F8 /* Pods_GoInfoGameTests.framework */; };
 		972454152B14A49A0036B91A /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 972454142B14A49A0036B91A /* Extensions.swift */; };
 		973FBFFE2B46BB3800878269 /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 973FBFFD2B46BB3800878269 /* Utils.swift */; };
+		973FC0012B46CD5D00878269 /* QuestsListUIView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 973FC0002B46CD5D00878269 /* QuestsListUIView.swift */; };
+		973FC0032B47DE0700878269 /* QuestsVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = 973FC0022B47DE0700878269 /* QuestsVM.swift */; };
+		973FC00A2B4D2A6D00878269 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 973FC00C2B4D2A6D00878269 /* Localizable.strings */; };
+		973FC0112B4D2D1C00878269 /* QuestAndDescriptionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 973FC0102B4D2D1C00878269 /* QuestAndDescriptionView.swift */; };
+		973FC0142B4D353800878269 /* AddSideWalksWidthView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 973FC0132B4D353800878269 /* AddSideWalksWidthView.swift */; };
+		973FC0172B4D567900878269 /* WidthView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 973FC0162B4D567900878269 /* WidthView.swift */; };
+		973FC0192B4FB17000878269 /* LocalizedStrings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 973FC0182B4FB17000878269 /* LocalizedStrings.swift */; };
+		973FC01B2B4FE5BA00878269 /* AddHandrailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 973FC01A2B4FE5BA00878269 /* AddHandrailView.swift */; };
+		973FC01D2B4FEE1B00878269 /* YesNoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 973FC01C2B4FEE1B00878269 /* YesNoView.swift */; };
+		973FC01F2B50DE7E00878269 /* ImageGridItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 973FC01E2B50DE7E00878269 /* ImageGridItemView.swift */; };
+		973FC0212B50E06B00878269 /* AddStepsRampView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 973FC0202B50E06B00878269 /* AddStepsRampView.swift */; };
+		973FC0232B51281B00878269 /* AddStepsInclineView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 973FC0222B51281B00878269 /* AddStepsInclineView.swift */; };
+		973FC0252B51515600878269 /* AddTactilePavingStepsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 973FC0242B51515600878269 /* AddTactilePavingStepsView.swift */; };
+		973FC0272B5168C900878269 /* AddStairNumberView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 973FC0262B5168C900878269 /* AddStairNumberView.swift */; };
+		973FC0292B5195CE00878269 /* AddWayLitView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 973FC0282B5195CE00878269 /* AddWayLitView.swift */; };
+		973FC02B2B5197F900878269 /* AddBusStopLitView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 973FC02A2B5197F900878269 /* AddBusStopLitView.swift */; };
 		97F2FA8A2B0630A3000B9726 /* Pods_GoInfoGame.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 66BED441AF03CC04539E8D4A /* Pods_GoInfoGame.framework */; };
 		97F2FA932B063C70000B9726 /* MapKitViewController_Deprecated.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97F2FA912B063C70000B9726 /* MapKitViewController_Deprecated.swift */; };
 		C70EC1702B25FFFA00ADAB7C /* QuestManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C70EC16F2B25FFFA00ADAB7C /* QuestManager.swift */; };
@@ -114,6 +130,23 @@
 		89C2A88A7749F031BCDFE226 /* Pods-GoInfoGameTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-GoInfoGameTests.release.xcconfig"; path = "Target Support Files/Pods-GoInfoGameTests/Pods-GoInfoGameTests.release.xcconfig"; sourceTree = "<group>"; };
 		972454142B14A49A0036B91A /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		973FBFFD2B46BB3800878269 /* Utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Utils.swift; sourceTree = "<group>"; };
+		973FC0002B46CD5D00878269 /* QuestsListUIView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuestsListUIView.swift; sourceTree = "<group>"; };
+		973FC0022B47DE0700878269 /* QuestsVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuestsVM.swift; sourceTree = "<group>"; };
+		973FC00B2B4D2A6D00878269 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
+		973FC00D2B4D2A7900878269 /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/Localizable.strings; sourceTree = "<group>"; };
+		973FC0102B4D2D1C00878269 /* QuestAndDescriptionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuestAndDescriptionView.swift; sourceTree = "<group>"; };
+		973FC0132B4D353800878269 /* AddSideWalksWidthView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddSideWalksWidthView.swift; sourceTree = "<group>"; };
+		973FC0162B4D567900878269 /* WidthView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidthView.swift; sourceTree = "<group>"; };
+		973FC0182B4FB17000878269 /* LocalizedStrings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalizedStrings.swift; sourceTree = "<group>"; };
+		973FC01A2B4FE5BA00878269 /* AddHandrailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddHandrailView.swift; sourceTree = "<group>"; };
+		973FC01C2B4FEE1B00878269 /* YesNoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YesNoView.swift; sourceTree = "<group>"; };
+		973FC01E2B50DE7E00878269 /* ImageGridItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageGridItemView.swift; sourceTree = "<group>"; };
+		973FC0202B50E06B00878269 /* AddStepsRampView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddStepsRampView.swift; sourceTree = "<group>"; };
+		973FC0222B51281B00878269 /* AddStepsInclineView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddStepsInclineView.swift; sourceTree = "<group>"; };
+		973FC0242B51515600878269 /* AddTactilePavingStepsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddTactilePavingStepsView.swift; sourceTree = "<group>"; };
+		973FC0262B5168C900878269 /* AddStairNumberView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddStairNumberView.swift; sourceTree = "<group>"; };
+		973FC0282B5195CE00878269 /* AddWayLitView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddWayLitView.swift; sourceTree = "<group>"; };
+		973FC02A2B5197F900878269 /* AddBusStopLitView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddBusStopLitView.swift; sourceTree = "<group>"; };
 		97F2FA8D2B0630C4000B9726 /* SwiftOverpassAPI.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = SwiftOverpassAPI.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		97F2FA912B063C70000B9726 /* MapKitViewController_Deprecated.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapKitViewController_Deprecated.swift; sourceTree = "<group>"; };
 		AE61EC473200AFDA81C2110A /* Pods-GoInfoGame-GoInfoGameUITests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-GoInfoGame-GoInfoGameUITests.release.xcconfig"; path = "Target Support Files/Pods-GoInfoGame-GoInfoGameUITests/Pods-GoInfoGame-GoInfoGameUITests.release.xcconfig"; sourceTree = "<group>"; };
@@ -209,6 +242,7 @@
 				0536DD8B2B0BD2C200B04C4B /* Constants.swift */,
 				972454142B14A49A0036B91A /* Extensions.swift */,
 				973FBFFD2B46BB3800878269 /* Utils.swift */,
+				973FC0182B4FB17000878269 /* LocalizedStrings.swift */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -280,6 +314,8 @@
 		05CB71DD2B0FAEC200DED821 /* UI */ = {
 			isa = PBXGroup;
 			children = (
+				973FC0152B4D562200878269 /* CustomComponents */,
+				973FBFFF2B46CD4100878269 /* QuestsList */,
 				059D472F2B2C7FF3000987FA /* Overlay */,
 				FA5853BF2B21E3E000301CDA /* Onboarding */,
 				0536DD862B0BD12E00B04C4B /* Map */,
@@ -328,6 +364,42 @@
 				89C2A88A7749F031BCDFE226 /* Pods-GoInfoGameTests.release.xcconfig */,
 			);
 			path = Pods;
+			sourceTree = "<group>";
+		};
+		973FBFFF2B46CD4100878269 /* QuestsList */ = {
+			isa = PBXGroup;
+			children = (
+				973FC0122B4D348500878269 /* Quests */,
+				973FC0002B46CD5D00878269 /* QuestsListUIView.swift */,
+				973FC0022B47DE0700878269 /* QuestsVM.swift */,
+				973FC0102B4D2D1C00878269 /* QuestAndDescriptionView.swift */,
+			);
+			path = QuestsList;
+			sourceTree = "<group>";
+		};
+		973FC0122B4D348500878269 /* Quests */ = {
+			isa = PBXGroup;
+			children = (
+				973FC0132B4D353800878269 /* AddSideWalksWidthView.swift */,
+				973FC01A2B4FE5BA00878269 /* AddHandrailView.swift */,
+				973FC0202B50E06B00878269 /* AddStepsRampView.swift */,
+				973FC0222B51281B00878269 /* AddStepsInclineView.swift */,
+				973FC0242B51515600878269 /* AddTactilePavingStepsView.swift */,
+				973FC0262B5168C900878269 /* AddStairNumberView.swift */,
+				973FC0282B5195CE00878269 /* AddWayLitView.swift */,
+				973FC02A2B5197F900878269 /* AddBusStopLitView.swift */,
+			);
+			path = Quests;
+			sourceTree = "<group>";
+		};
+		973FC0152B4D562200878269 /* CustomComponents */ = {
+			isa = PBXGroup;
+			children = (
+				973FC0162B4D567900878269 /* WidthView.swift */,
+				973FC01C2B4FEE1B00878269 /* YesNoView.swift */,
+				973FC01E2B50DE7E00878269 /* ImageGridItemView.swift */,
+			);
+			path = CustomComponents;
 			sourceTree = "<group>";
 		};
 		C7900EAA2B15B14A00AEB066 /* Quests */ = {
@@ -451,6 +523,7 @@
 		FAD5C4F12AFCBE700040C61A /* GoInfoGame */ = {
 			isa = PBXGroup;
 			children = (
+				973FC00C2B4D2A6D00878269 /* Localizable.strings */,
 				FAD5C4F22AFCBE700040C61A /* AppDelegate.swift */,
 				FAD5C4F42AFCBE700040C61A /* SceneDelegate.swift */,
 				FAC9E60E2B04F9C800E2C608 /* OverpassRequestManager.swift */,
@@ -579,6 +652,7 @@
 			knownRegions = (
 				en,
 				Base,
+				fr,
 			);
 			mainGroup = FAD5C4E62AFCBE700040C61A;
 			productRefGroup = FAD5C4F02AFCBE700040C61A /* Products */;
@@ -597,6 +671,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				973FC00A2B4D2A6D00878269 /* Localizable.strings in Resources */,
 				0513BE772B2B464800FB61CF /* samplepoint.gpx in Resources */,
 				FAD5C4FF2AFCBE720040C61A /* LaunchScreen.storyboard in Resources */,
 				FAD5C4FC2AFCBE720040C61A /* Assets.xcassets in Resources */,
@@ -731,14 +806,21 @@
 				C7900EAC2B15B17400AEB066 /* Quest.swift in Sources */,
 				05DBBB5D2B1262BA00B6F110 /* OverpassRepository.swift in Sources */,
 				0536DD852B0BD11A00B04C4B /* LoginViewController.swift in Sources */,
+				973FC02B2B5197F900878269 /* AddBusStopLitView.swift in Sources */,
 				C7900EB02B15B9F200AEB066 /* MultipleOptionsQuest.swift in Sources */,
+				973FC0292B5195CE00878269 /* AddWayLitView.swift in Sources */,
 				C7900EBA2B15C90A00AEB066 /* StepsRampViewModel.swift in Sources */,
 				97F2FA932B063C70000B9726 /* MapKitViewController_Deprecated.swift in Sources */,
 				C7900EC02B15FE6F00AEB066 /* QuestOptionView.swift in Sources */,
+				973FC0192B4FB17000878269 /* LocalizedStrings.swift in Sources */,
 				C7900ECA2B18FC2A00AEB066 /* CrossingIslandViewModel.swift in Sources */,
 				FAC9E6112B06811300E2C608 /* LocationManager.swift in Sources */,
+				973FC0212B50E06B00878269 /* AddStepsRampView.swift in Sources */,
+				973FC0272B5168C900878269 /* AddStairNumberView.swift in Sources */,
 				059D47312B2C81A9000987FA /* Style.swift in Sources */,
 				059D47332B2C83BA000987FA /* Highway.swift in Sources */,
+				973FC0012B46CD5D00878269 /* QuestsListUIView.swift in Sources */,
+				973FC01F2B50DE7E00878269 /* ImageGridItemView.swift in Sources */,
 				058EADD82B10DF600017E259 /* IdentifiablePointAnnotation.swift in Sources */,
 				C7900EBC2B15F10200AEB066 /* StepsRampOption.swift in Sources */,
 				C7900EAE2B15B95700AEB066 /* ConfirmationQuest.swift in Sources */,
@@ -752,15 +834,20 @@
 				C7900EBE2B15FE4200AEB066 /* MultipleOptionsQuestView.swift in Sources */,
 				0536DD922B0BD58800B04C4B /* OAuthService.swift in Sources */,
 				05CB71EA2B0FBBDE00DED821 /* HomeMapView.swift in Sources */,
+				973FC0112B4D2D1C00878269 /* QuestAndDescriptionView.swift in Sources */,
+				973FC0032B47DE0700878269 /* QuestsVM.swift in Sources */,
+				973FC0142B4D353800878269 /* AddSideWalksWidthView.swift in Sources */,
 				FA5853C12B21F17F00301CDA /* OnboardingView.swift in Sources */,
 				05CB71EC2B0FBC0D00DED821 /* HomeMapViewModel.swift in Sources */,
 				C70EC1702B25FFFA00ADAB7C /* QuestManager.swift in Sources */,
 				05AE7A512B320E4B00578AE8 /* CustomAnnotationPointView.swift in Sources */,
+				973FC0232B51281B00878269 /* AddStepsInclineView.swift in Sources */,
 				05DBBB5F2B1263FF00B6F110 /* DatabaseConnector.swift in Sources */,
 				FAF44FC12B30850A004FE664 /* OnboardingView3.swift in Sources */,
 				0536DD972B0BD95100B04C4B /* URLSession+Extension.swift in Sources */,
 				05DBBB662B17209600B6F110 /* RealmOPMeta.swift in Sources */,
 				0536DD942B0BD59900B04C4B /* OAuthError.swift in Sources */,
+				973FC0172B4D567900878269 /* WidthView.swift in Sources */,
 				C7900EC42B18FABF00AEB066 /* ConfirmationQuestView.swift in Sources */,
 				C7900EC22B17B45000AEB066 /* QuestTitleView.swift in Sources */,
 				FAD5C4F52AFCBE700040C61A /* SceneDelegate.swift in Sources */,
@@ -769,12 +856,15 @@
 				0536DD8C2B0BD2C200B04C4B /* Constants.swift in Sources */,
 				0536DD992B0BDBFE00B04C4B /* OAuthManager.swift in Sources */,
 				058EADD52B10DEAF0017E259 /* MapOverlay+UIViewRepresentable.swift in Sources */,
+				973FC0252B51515600878269 /* AddTactilePavingStepsView.swift in Sources */,
 				059D472E2B2C7FED000987FA /* SidewalkOverlay.swift in Sources */,
 				973FBFFE2B46BB3800878269 /* Utils.swift in Sources */,
 				05DBBB5B2B11EC2A00B6F110 /* CustomCallOut.swift in Sources */,
 				05AE7A532B320E7200578AE8 /* CustomAnnotationView.swift in Sources */,
 				C7900EB42B15BAFC00AEB066 /* QuestResponse.swift in Sources */,
 				FAF44FBD2B3084EC004FE664 /* OnboardingView1.swift in Sources */,
+				973FC01D2B4FEE1B00878269 /* YesNoView.swift in Sources */,
+				973FC01B2B4FE5BA00878269 /* AddHandrailView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -811,6 +901,15 @@
 /* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
+		973FC00C2B4D2A6D00878269 /* Localizable.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				973FC00B2B4D2A6D00878269 /* en */,
+				973FC00D2B4D2A7900878269 /* fr */,
+			);
+			name = Localizable.strings;
+			sourceTree = "<group>";
+		};
 		FAD5C4F82AFCBE700040C61A /* Main.storyboard */ = {
 			isa = PBXVariantGroup;
 			children = (
@@ -834,6 +933,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
@@ -894,6 +994,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
@@ -952,7 +1053,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = AZU4385ZVQ;
+				DEVELOPMENT_TEAM = NPCMG529DV;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = GoInfoGame/Info.plist;
 				INFOPLIST_KEY_NSFileProviderDomainUsageDescription = "";
@@ -985,7 +1086,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = AZU4385ZVQ;
+				DEVELOPMENT_TEAM = NPCMG529DV;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = GoInfoGame/Info.plist;
 				INFOPLIST_KEY_NSFileProviderDomainUsageDescription = "";

@@ -1,0 +1,16 @@
+/* 
+  Localizable.strings
+  GoInfoGame
+
+  Created by Lakshmi Shweta Pochiraju on 09/01/24.
+  
+*/
+"quest_width_most_narrow_path" = "What is the width of the most narrow usable path along this footpath? (measure with your phone please)";
+"quest_determine_sidewalk_widths" = "Determine sidewalk widths";
+"quest_road_width_explanation" = "The roadway width from curb to curb: This includes anything on the street surface, including on-street parking or bicycle lanes but excluding anything beyond the curb like sidewalks, off-street parking or adjacent bicycle paths.";
+"other_answers" = "OTHER ANSWERS...";
+"questions_list" = "Questions List";
+"quest_generic_confirmation_title" = "Are you sure?";
+"quest_road_width_unusualInput_confirmation_description" = "This width looks implausible. Remember, this should be the width from curb to curb, including on-street parking, bicycle lanes etc.";
+"quest_generic_confirmation_yes" = "YES, IAM SURE";
+"quest_generic_confirmation_no" = "I WILL CHECK";
