@@ -42,11 +42,11 @@ struct QuestsListUIView: View {
         }
     }
     @available(iOS 16.0, *)
-    func getSheetSize(sheetSize:SheetSize) -> Set<PresentationDetent> {
-        if selectedText?.sheetSize == .SMALL {
+    func getSheetSize(sheetSize: SheetSize) -> Set<PresentationDetent> {
+        if sheetSize == .SMALL {
             return [.height(250)]
-        }else if selectedText?.sheetSize == .LARGE {
-          return [.height(600)]
+        } else if sheetSize == .LARGE {
+            return [.height(600)]
         } else {
             return [.medium, .large]
         }
