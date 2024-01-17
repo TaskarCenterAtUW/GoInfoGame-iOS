@@ -46,6 +46,7 @@
 		97F2FA8A2B0630A3000B9726 /* Pods_GoInfoGame.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 66BED441AF03CC04539E8D4A /* Pods_GoInfoGame.framework */; };
 		A4E711A22B57A3B400C9DE08 /* SideWalkWidth.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4E711A12B57A3B400C9DE08 /* SideWalkWidth.swift */; };
 		A4E711A42B57B13100C9DE08 /* QuestionHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4E711A32B57B13100C9DE08 /* QuestionHeader.swift */; };
+		A4E711A62B57BBCA00C9DE08 /* QuestProtocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4E711A52B57BBCA00C9DE08 /* QuestProtocols.swift */; };
 		FA5853C12B21F17F00301CDA /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA5853C02B21F17F00301CDA /* OnboardingView.swift */; };
 		FAC9E60F2B04F9C800E2C608 /* OverpassRequestManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC9E60E2B04F9C800E2C608 /* OverpassRequestManager.swift */; };
 		FAC9E6112B06811300E2C608 /* LocationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC9E6102B06811300E2C608 /* LocationManager.swift */; };
@@ -123,6 +124,7 @@
 		97F2FA8D2B0630C4000B9726 /* SwiftOverpassAPI.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = SwiftOverpassAPI.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		A4E711A12B57A3B400C9DE08 /* SideWalkWidth.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SideWalkWidth.swift; sourceTree = "<group>"; };
 		A4E711A32B57B13100C9DE08 /* QuestionHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuestionHeader.swift; sourceTree = "<group>"; };
+		A4E711A52B57BBCA00C9DE08 /* QuestProtocols.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuestProtocols.swift; sourceTree = "<group>"; };
 		AE61EC473200AFDA81C2110A /* Pods-GoInfoGame-GoInfoGameUITests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-GoInfoGame-GoInfoGameUITests.release.xcconfig"; path = "Target Support Files/Pods-GoInfoGame-GoInfoGameUITests/Pods-GoInfoGame-GoInfoGameUITests.release.xcconfig"; sourceTree = "<group>"; };
 		C96303080D26026265099E0E /* Pods-GoInfoGame.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-GoInfoGame.release.xcconfig"; path = "Target Support Files/Pods-GoInfoGame/Pods-GoInfoGame.release.xcconfig"; sourceTree = "<group>"; };
 		D76D8E22AC705A38AFEA78B1 /* Pods-GoInfoGame-GoInfoGameUITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-GoInfoGame-GoInfoGameUITests.debug.xcconfig"; path = "Target Support Files/Pods-GoInfoGame-GoInfoGameUITests/Pods-GoInfoGame-GoInfoGameUITests.debug.xcconfig"; sourceTree = "<group>"; };
@@ -344,6 +346,7 @@
 				A4E7119F2B57A2B900C9DE08 /* StepsRamp */,
 				A4E7119E2B57A27300C9DE08 /* Handrail */,
 				A4E7119D2B57A24000C9DE08 /* SidewalkWidth */,
+				A4E711A52B57BBCA00C9DE08 /* QuestProtocols.swift */,
 			);
 			path = quests;
 			sourceTree = "<group>";
@@ -733,6 +736,7 @@
 				0536DD992B0BDBFE00B04C4B /* OAuthManager.swift in Sources */,
 				973FC0252B51515600878269 /* AddTactilePavingStepsView.swift in Sources */,
 				059D472E2B2C7FED000987FA /* SidewalkOverlay.swift in Sources */,
+				A4E711A62B57BBCA00C9DE08 /* QuestProtocols.swift in Sources */,
 				973FBFFE2B46BB3800878269 /* Utils.swift in Sources */,
 				FAF44FBD2B3084EC004FE664 /* OnboardingView1.swift in Sources */,
 				973FC01D2B4FEE1B00878269 /* YesNoView.swift in Sources */,
