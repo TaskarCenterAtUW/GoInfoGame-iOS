@@ -40,9 +40,9 @@ struct OnboardingView: View {
                 .padding(.top, 8)
                 
                 if currentPage == 3 {
-                    NavigationLink(destination: HomeMapView(), isActive: $isLetsGoButtonClicked) {
-                        EmptyView()
-                    }
+//                    NavigationLink(destination: HomeMapView(), isActive: $isLetsGoButtonClicked) {
+//                        EmptyView()
+//                    }
                     
                     Button(action: {
                         isOnboarding = false
@@ -64,10 +64,10 @@ struct OnboardingView: View {
                     .accentColor(Color.black)
                 }
             } else {
-                NavigationLink(destination: HomeMapView(), isActive: $isLetsGoButtonClicked) {
-                    EmptyView()
-                }
-                .hidden()
+//                NavigationLink(destination: HomeMapView(), isActive: $isLetsGoButtonClicked) {
+//                    EmptyView()
+//                }
+//                .hidden()
             }
         }
         .padding()

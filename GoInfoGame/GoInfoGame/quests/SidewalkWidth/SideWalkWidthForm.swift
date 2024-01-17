@@ -7,16 +7,30 @@
 
 import SwiftUI
 
-struct AddSideWalksWidthView: View, AnswerView {
+struct SideWalkWidthForm: View, QuestForm {
+    
+    func applyAnswer(answer: WidthAnswer) {
+        
+    }
+    
+    typealias AnswerClass = WidthAnswer
+    
     @State private var showAlert = false
     @State private var feet: Double = 0.0
     @State private var inches: Double = 0.0
     @State private var isConfirmAlert: Bool = false
-    var selectedQuest: Ques
+//    var selectedQuest: Ques
     var onConfirm: ((_ feet: Double, _ inches: Double, _ isConfirmAlert: Bool) -> Void)?
+    
+    func processAnswer() {
+        // Generate the answer
+        let answer = WidthAnswer(width: "33", units: "aa", isARMeasurement: false)
+        applyAnswer(answer:answer)
+    }
     var body: some View {
         VStack{
-            Text(selectedQuest.answerTitle ?? "").font(.caption)
+            QuestionHeader(icon: Image("add_way_lit"), title: "How wide is the road here?", subtitle: "Residential Road")
+            Text("").font(.caption)
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .fixedSize(horizontal: false, vertical: true)
                 .foregroundColor(.gray)
@@ -49,6 +63,6 @@ struct AddSideWalksWidthView: View, AnswerView {
     }
 }
 
-//#Preview {
-//    AddSideWalksWidthView()
-//}
+#Preview {
+    SideWalkWidthForm()
+}
