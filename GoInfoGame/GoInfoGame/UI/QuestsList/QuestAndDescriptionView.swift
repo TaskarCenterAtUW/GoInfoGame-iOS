@@ -17,7 +17,7 @@ struct QuestAndDescriptionView: View {
     var answerView:  some View {
             switch quest.answerType {
             case .ADDSIDEWALKWIDTH:
-                    AddSideWalksWidthView(selectedQuest: quest) { feet, inches, isConfirmAlert in
+                    SideWalkWidthForm() { feet, inches, isConfirmAlert in
                         print("Feet: \(feet), Inches: \(inches), isConfirmAlert: \(isConfirmAlert)")
                     }
             case .ADDHANDRAIL:
