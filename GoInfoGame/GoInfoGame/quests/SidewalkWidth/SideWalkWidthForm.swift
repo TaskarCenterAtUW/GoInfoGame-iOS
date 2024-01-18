@@ -29,8 +29,8 @@ struct SideWalkWidthForm: View, QuestForm {
     }
     var body: some View {
         VStack{
-            QuestionHeader(icon: Image("add_way_lit"), title: "How wide is the road here?", subtitle: "Residential Road")
-            Text("").font(.caption)
+            QuestionHeader(icon: Image("sidewalk-width-img"), title: LocalizedStrings.questDetermineSidewalkWidth.localized, subtitle: "Residential Road")
+            Text(LocalizedStrings.questRoadWithExplanation.localized).font(.caption)
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .fixedSize(horizontal: false, vertical: true)
                 .foregroundColor(.gray)
@@ -47,7 +47,7 @@ struct SideWalkWidthForm: View, QuestForm {
             }
             .padding(.top,10)
             Spacer()
-        }
+        }.padding()
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .alert(isPresented: $isConfirmAlert) {
             Alert(

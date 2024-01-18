@@ -31,7 +31,7 @@ struct QuestionHeader: View {
                 .font(.subheadline)
                 .foregroundColor(.gray)
                 .padding(.top,2)
-        }.padding(20)
+        }
     }
 }
 
