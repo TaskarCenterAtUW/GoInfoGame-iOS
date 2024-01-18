@@ -13,7 +13,8 @@ class QuestsRepository {
     
     var applicableQuests: [ any Quest] = [
         SideWalkWidth(),
-        HandRail()
+        HandRail(),
+        StepsIncline()
     ]
     
     var displayQuests: [DisplayUnit] {
