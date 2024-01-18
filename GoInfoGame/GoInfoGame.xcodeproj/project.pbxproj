@@ -36,13 +36,13 @@
 		973FC0192B4FB17000878269 /* LocalizedStrings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 973FC0182B4FB17000878269 /* LocalizedStrings.swift */; };
 		973FC01D2B4FEE1B00878269 /* YesNoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 973FC01C2B4FEE1B00878269 /* YesNoView.swift */; };
 		973FC01F2B50DE7E00878269 /* ImageGridItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 973FC01E2B50DE7E00878269 /* ImageGridItemView.swift */; };
-		973FC0212B50E06B00878269 /* AddStepsRampView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 973FC0202B50E06B00878269 /* AddStepsRampView.swift */; };
 		973FC0252B51515600878269 /* AddTactilePavingStepsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 973FC0242B51515600878269 /* AddTactilePavingStepsView.swift */; };
-		973FC0272B5168C900878269 /* AddStairNumberView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 973FC0262B5168C900878269 /* AddStairNumberView.swift */; };
 		973FC0292B5195CE00878269 /* AddWayLitView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 973FC0282B5195CE00878269 /* AddWayLitView.swift */; };
 		973FC02B2B5197F900878269 /* AddBusStopLitView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 973FC02A2B5197F900878269 /* AddBusStopLitView.swift */; };
 		973FC02D2B58F79B00878269 /* StepsRampForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = 973FC02C2B58F79B00878269 /* StepsRampForm.swift */; };
 		973FC02F2B58F81F00878269 /* StepsRamp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 973FC02E2B58F81F00878269 /* StepsRamp.swift */; };
+		973FC0332B592BFE00878269 /* StairNumber.swift in Sources */ = {isa = PBXBuildFile; fileRef = 973FC0322B592BFE00878269 /* StairNumber.swift */; };
+		973FC0352B592C0F00878269 /* StairNumberForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = 973FC0342B592C0F00878269 /* StairNumberForm.swift */; };
 		97F2FA8A2B0630A3000B9726 /* Pods_GoInfoGame.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 66BED441AF03CC04539E8D4A /* Pods_GoInfoGame.framework */; };
 		A4E711A22B57A3B400C9DE08 /* SideWalkWidth.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4E711A12B57A3B400C9DE08 /* SideWalkWidth.swift */; };
 		A4E711A42B57B13100C9DE08 /* QuestionHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4E711A32B57B13100C9DE08 /* QuestionHeader.swift */; };
@@ -119,13 +119,13 @@
 		973FC0182B4FB17000878269 /* LocalizedStrings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalizedStrings.swift; sourceTree = "<group>"; };
 		973FC01C2B4FEE1B00878269 /* YesNoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YesNoView.swift; sourceTree = "<group>"; };
 		973FC01E2B50DE7E00878269 /* ImageGridItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageGridItemView.swift; sourceTree = "<group>"; };
-		973FC0202B50E06B00878269 /* AddStepsRampView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddStepsRampView.swift; sourceTree = "<group>"; };
 		973FC0242B51515600878269 /* AddTactilePavingStepsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddTactilePavingStepsView.swift; sourceTree = "<group>"; };
-		973FC0262B5168C900878269 /* AddStairNumberView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddStairNumberView.swift; sourceTree = "<group>"; };
 		973FC0282B5195CE00878269 /* AddWayLitView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddWayLitView.swift; sourceTree = "<group>"; };
 		973FC02A2B5197F900878269 /* AddBusStopLitView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddBusStopLitView.swift; sourceTree = "<group>"; };
 		973FC02C2B58F79B00878269 /* StepsRampForm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = StepsRampForm.swift; path = GoInfoGame/UI/QuestsList/Quests/StepsRampForm.swift; sourceTree = SOURCE_ROOT; };
 		973FC02E2B58F81F00878269 /* StepsRamp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = StepsRamp.swift; path = GoInfoGame/UI/QuestsList/Quests/StepsRamp.swift; sourceTree = SOURCE_ROOT; };
+		973FC0322B592BFE00878269 /* StairNumber.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StairNumber.swift; sourceTree = "<group>"; };
+		973FC0342B592C0F00878269 /* StairNumberForm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StairNumberForm.swift; sourceTree = "<group>"; };
 		97F2FA8D2B0630C4000B9726 /* SwiftOverpassAPI.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = SwiftOverpassAPI.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		A4E711A12B57A3B400C9DE08 /* SideWalkWidth.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SideWalkWidth.swift; sourceTree = "<group>"; };
 		A4E711A32B57B13100C9DE08 /* QuestionHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuestionHeader.swift; sourceTree = "<group>"; };
@@ -320,9 +320,7 @@
 		973FC0122B4D348500878269 /* Quests */ = {
 			isa = PBXGroup;
 			children = (
-				973FC0202B50E06B00878269 /* AddStepsRampView.swift */,
 				973FC0242B51515600878269 /* AddTactilePavingStepsView.swift */,
-				973FC0262B5168C900878269 /* AddStairNumberView.swift */,
 				973FC0282B5195CE00878269 /* AddWayLitView.swift */,
 				973FC02A2B5197F900878269 /* AddBusStopLitView.swift */,
 			);
@@ -340,6 +338,15 @@
 			path = CustomComponents;
 			sourceTree = "<group>";
 		};
+		973FC0312B592BDB00878269 /* StairNumber */ = {
+			isa = PBXGroup;
+			children = (
+				973FC0322B592BFE00878269 /* StairNumber.swift */,
+				973FC0342B592C0F00878269 /* StairNumberForm.swift */,
+			);
+			path = StairNumber;
+			sourceTree = "<group>";
+		};
 		A4E7119A2B57A17600C9DE08 /* data */ = {
 			isa = PBXGroup;
 			children = (
@@ -350,6 +357,7 @@
 		A4E7119C2B57A22300C9DE08 /* quests */ = {
 			isa = PBXGroup;
 			children = (
+				973FC0312B592BDB00878269 /* StairNumber */,
 				A4E711A02B57A2EB00C9DE08 /* StepsIncline */,
 				A4E7119F2B57A2B900C9DE08 /* StepsRamp */,
 				A4E7119E2B57A27300C9DE08 /* Handrail */,
@@ -722,11 +730,10 @@
 				FAC9E6112B06811300E2C608 /* LocationManager.swift in Sources */,
 				973FC02F2B58F81F00878269 /* StepsRamp.swift in Sources */,
 				A4E711AA2B58F6FB00C9DE08 /* HandRail.swift in Sources */,
-				973FC0212B50E06B00878269 /* AddStepsRampView.swift in Sources */,
-				973FC0272B5168C900878269 /* AddStairNumberView.swift in Sources */,
 				973FC02D2B58F79B00878269 /* StepsRampForm.swift in Sources */,
 				059D47312B2C81A9000987FA /* Style.swift in Sources */,
 				A4E711A82B57CA4300C9DE08 /* QuestsRepository.swift in Sources */,
+				973FC0332B592BFE00878269 /* StairNumber.swift in Sources */,
 				059D47332B2C83BA000987FA /* Highway.swift in Sources */,
 				973FC0012B46CD5D00878269 /* QuestsListUIView.swift in Sources */,
 				973FC01F2B50DE7E00878269 /* ImageGridItemView.swift in Sources */,
@@ -734,6 +741,7 @@
 				05CB71E02B0FAFD200DED821 /* GenericUIViewControllerRepresentable.swift in Sources */,
 				FAD5C4F32AFCBE700040C61A /* AppDelegate.swift in Sources */,
 				05DBBB622B164D9A00B6F110 /* RealOPElement.swift in Sources */,
+				973FC0352B592C0F00878269 /* StairNumberForm.swift in Sources */,
 				FAC9E60F2B04F9C800E2C608 /* OverpassRequestManager.swift in Sources */,
 				05DBBB642B17204300B6F110 /* RealmOPGeometry.swift in Sources */,
 				0536DD922B0BD58800B04C4B /* OAuthService.swift in Sources */,
