@@ -31,7 +31,7 @@ class HandRail: Quest {
     var relationData: Any? = nil
     
     var displayUnit: DisplayUnit {
-        DisplayUnit(title: self.title, description: "",parent: self)
+        DisplayUnit(title: self.title, description: "",parent: self,sheetSize: .SMALL)
     }
     
 }

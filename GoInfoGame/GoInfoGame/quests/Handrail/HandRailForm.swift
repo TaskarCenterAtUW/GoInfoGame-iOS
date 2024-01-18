@@ -18,9 +18,14 @@ struct HandRailForm: View, QuestForm {
     
     
     var body: some View {
+        VStack{
             QuestionHeader(icon: Image("steps_handrail"), title: "Do these steps have handrail?", subtitle: "")
-        YesNoView()
-        
+            YesNoView()
+                .background(
+                    RoundedRectangle(cornerRadius: 10)
+                        .fill(Color.white)
+                        .shadow(color: .gray, radius: 2, x: 0, y: 2))
+        }.padding()
     }
 }
 
