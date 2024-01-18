@@ -13,7 +13,6 @@ struct ImageData: Identifiable {
     let imageName: String
     let tag: String
     let optionName: String
-    
 }
 struct ImageGridItemView: View {
     let gridCount: Int

@@ -13,27 +13,17 @@ import SwiftUI
 class SideWalkWidth : Quest {
     
     var displayUnit: DisplayUnit {
-        DisplayUnit(title: self.title, description: "",parent: self)
+        DisplayUnit(title: self.title, description: "",parent: self, sheetSize: .MEDIUM)
     }
-    
-    var title: String = "SideWalkWidth"
-    
+    var title: String = "Side Walk Width"
     var filter: String = ""
-    
-    var icon: UIImage = #imageLiteral(resourceName: "add_way_lit.pdf")
-    
+    var icon: UIImage = #imageLiteral(resourceName: "sidewalk-width-img")
     var wikiLink: String = ""
-    
     var changesetComment: String = ""
-    
     var form: AnyView = AnyView(SideWalkWidthForm())
-    
     var relationData: Any? = nil
-    
     func onAnswer(answer: WidthAnswer) {
-         
     }
-    
     typealias AnswerClass = WidthAnswer
 }
 

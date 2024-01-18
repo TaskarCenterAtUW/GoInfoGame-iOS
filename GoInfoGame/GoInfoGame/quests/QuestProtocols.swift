@@ -29,6 +29,7 @@ struct DisplayUnit : Identifiable {
     let description : String
     let id = UUID()
     let parent: (any Quest)?
+    let sheetSize : SheetSize?
 }
 
 protocol QuestForm {
