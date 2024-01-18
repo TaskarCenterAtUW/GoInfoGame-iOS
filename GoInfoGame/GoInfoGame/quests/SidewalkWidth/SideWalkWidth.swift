@@ -13,7 +13,7 @@ import SwiftUI
 class SideWalkWidth : Quest {
     
     var displayUnit: DisplayUnit {
-        DisplayUnit(title: self.title, description: "",parent: self)
+        DisplayUnit(title: self.title, description: "",parent: self, sheetSize: .MEDIUM)
     }
     var title: String = "Side Walk Width"
     var filter: String = ""

@@ -43,6 +43,8 @@
 		973FC0272B5168C900878269 /* AddStairNumberView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 973FC0262B5168C900878269 /* AddStairNumberView.swift */; };
 		973FC0292B5195CE00878269 /* AddWayLitView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 973FC0282B5195CE00878269 /* AddWayLitView.swift */; };
 		973FC02B2B5197F900878269 /* AddBusStopLitView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 973FC02A2B5197F900878269 /* AddBusStopLitView.swift */; };
+		973FC02D2B58F79B00878269 /* StepsRampForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = 973FC02C2B58F79B00878269 /* StepsRampForm.swift */; };
+		973FC02F2B58F81F00878269 /* StepsRamp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 973FC02E2B58F81F00878269 /* StepsRamp.swift */; };
 		97F2FA8A2B0630A3000B9726 /* Pods_GoInfoGame.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 66BED441AF03CC04539E8D4A /* Pods_GoInfoGame.framework */; };
 		A4E711A22B57A3B400C9DE08 /* SideWalkWidth.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4E711A12B57A3B400C9DE08 /* SideWalkWidth.swift */; };
 		A4E711A42B57B13100C9DE08 /* QuestionHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4E711A32B57B13100C9DE08 /* QuestionHeader.swift */; };
@@ -122,6 +124,8 @@
 		973FC0262B5168C900878269 /* AddStairNumberView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddStairNumberView.swift; sourceTree = "<group>"; };
 		973FC0282B5195CE00878269 /* AddWayLitView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddWayLitView.swift; sourceTree = "<group>"; };
 		973FC02A2B5197F900878269 /* AddBusStopLitView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddBusStopLitView.swift; sourceTree = "<group>"; };
+		973FC02C2B58F79B00878269 /* StepsRampForm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = StepsRampForm.swift; path = GoInfoGame/UI/QuestsList/Quests/StepsRampForm.swift; sourceTree = SOURCE_ROOT; };
+		973FC02E2B58F81F00878269 /* StepsRamp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = StepsRamp.swift; path = GoInfoGame/UI/QuestsList/Quests/StepsRamp.swift; sourceTree = SOURCE_ROOT; };
 		97F2FA8D2B0630C4000B9726 /* SwiftOverpassAPI.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = SwiftOverpassAPI.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		A4E711A12B57A3B400C9DE08 /* SideWalkWidth.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SideWalkWidth.swift; sourceTree = "<group>"; };
 		A4E711A32B57B13100C9DE08 /* QuestionHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuestionHeader.swift; sourceTree = "<group>"; };
@@ -373,6 +377,8 @@
 		A4E7119F2B57A2B900C9DE08 /* StepsRamp */ = {
 			isa = PBXGroup;
 			children = (
+				973FC02C2B58F79B00878269 /* StepsRampForm.swift */,
+				973FC02E2B58F81F00878269 /* StepsRamp.swift */,
 			);
 			path = StepsRamp;
 			sourceTree = "<group>";
@@ -708,8 +714,10 @@
 				973FC0292B5195CE00878269 /* AddWayLitView.swift in Sources */,
 				973FC0192B4FB17000878269 /* LocalizedStrings.swift in Sources */,
 				FAC9E6112B06811300E2C608 /* LocationManager.swift in Sources */,
+				973FC02F2B58F81F00878269 /* StepsRamp.swift in Sources */,
 				973FC0212B50E06B00878269 /* AddStepsRampView.swift in Sources */,
 				973FC0272B5168C900878269 /* AddStairNumberView.swift in Sources */,
+				973FC02D2B58F79B00878269 /* StepsRampForm.swift in Sources */,
 				059D47312B2C81A9000987FA /* Style.swift in Sources */,
 				A4E711A82B57CA4300C9DE08 /* QuestsRepository.swift in Sources */,
 				059D47332B2C83BA000987FA /* Highway.swift in Sources */,

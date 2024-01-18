@@ -13,7 +13,7 @@ class QuestsRepository {
     
     var applicableQuests: [ any Quest] = [
         SideWalkWidth(),
-        SideWalkWidth(),// Sidewalk width // 0
+        StepsRamp()
     ]
     
     var displayQuests: [DisplayUnit] {
