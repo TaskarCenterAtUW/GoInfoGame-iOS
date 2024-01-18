@@ -6,9 +6,7 @@
 //
 
 import SwiftUI
-//extension String: Identifiable {
-//    public var id: String { return self }
-//}
+
 struct QuestsListUIView : View {
     let items: [ DisplayUnit] = QuestsRepository.shared.displayQuests
     @State var selectedQuest: DisplayUnit?
@@ -29,23 +27,6 @@ struct QuestsListUIView : View {
             }
 
         }
-//        List{
-//            if #available(iOS 15.0, *) {
-//                Section(LocalizedStrings.questionsList.localized) {
-//                    ForEach(items){ selectedQues in
-//                        Button {
-//                            selectedQuest = selectedQues
-//                        } label: {
-//                            Text(selectedQues.title)
-//                        }
-//                    }
-//                }
-//            } else {
-//                // Fallback on earlier versions
-//            }
-//        }.sheet(item: $selectedQuest) { text in
-//            
-//        }
     }
 }
 

@@ -1,19 +1,27 @@
 //
-//  AddStepsInclineView.swift
+//  StepsInclineForm.swift
 //  GoInfoGame
 //
-//  Created by Lakshmi Shweta Pochiraju on 12/01/24.
+//  Created by Naresh Devalapally on 1/18/24.
 //
 
 import SwiftUI
 
-struct AddStepsInclineView: View {
+struct StepsInclineForm: View, QuestForm {
+    func applyAnswer(answer: StepsInclineDirection) {
+        // TODO
+    }
+    
+    typealias AnswerClass = StepsInclineDirection
+    
+    
     @State private var showAlert = false
     let imageData: [ImageData] = [
         ImageData(id:"UP",type: "none", imageName: "steps-incline-up", tag: "up", optionName: LocalizedStrings.questStepsInclineUp.localized),
         ImageData(id:"UP_REVERSED",type: "bicycle", imageName: "steps-incline-up-reversed", tag: "down", optionName: LocalizedStrings.questStepsInclineUp.localized),
     ]
     var body: some View {
+        QuestionHeader(icon: Image("steps"), title: "Which direction leads upwards for the steps", subtitle: "steps")
         VStack (alignment: .leading){
             Text(LocalizedStrings.selectOne.localized).font(.caption).foregroundColor(.gray)
             ImageGridItemView(gridCount: 2, isLabelBelow: true, imageData: imageData, isImageRotated: true, isDisplayImageOnly: false, onTap: { (type, tag) in
@@ -41,5 +49,5 @@ struct AddStepsInclineView: View {
 }
 
 #Preview {
-    AddStepsInclineView()
+    StepsInclineForm()
 }
