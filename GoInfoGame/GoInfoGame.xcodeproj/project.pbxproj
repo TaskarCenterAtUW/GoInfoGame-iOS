@@ -34,7 +34,6 @@
 		973FC0142B4D353800878269 /* SideWalkWidthForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = 973FC0132B4D353800878269 /* SideWalkWidthForm.swift */; };
 		973FC0172B4D567900878269 /* WidthView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 973FC0162B4D567900878269 /* WidthView.swift */; };
 		973FC0192B4FB17000878269 /* LocalizedStrings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 973FC0182B4FB17000878269 /* LocalizedStrings.swift */; };
-		973FC01B2B4FE5BA00878269 /* AddHandrailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 973FC01A2B4FE5BA00878269 /* AddHandrailView.swift */; };
 		973FC01D2B4FEE1B00878269 /* YesNoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 973FC01C2B4FEE1B00878269 /* YesNoView.swift */; };
 		973FC01F2B50DE7E00878269 /* ImageGridItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 973FC01E2B50DE7E00878269 /* ImageGridItemView.swift */; };
 		973FC0212B50E06B00878269 /* AddStepsRampView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 973FC0202B50E06B00878269 /* AddStepsRampView.swift */; };
@@ -48,6 +47,8 @@
 		A4E711A42B57B13100C9DE08 /* QuestionHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4E711A32B57B13100C9DE08 /* QuestionHeader.swift */; };
 		A4E711A62B57BBCA00C9DE08 /* QuestProtocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4E711A52B57BBCA00C9DE08 /* QuestProtocols.swift */; };
 		A4E711A82B57CA4300C9DE08 /* QuestsRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4E711A72B57CA4300C9DE08 /* QuestsRepository.swift */; };
+		A4E711AA2B58F6FB00C9DE08 /* HandRail.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4E711A92B58F6FB00C9DE08 /* HandRail.swift */; };
+		A4E711AC2B58F7C000C9DE08 /* HandRailForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4E711AB2B58F7C000C9DE08 /* HandRailForm.swift */; };
 		FA5853C12B21F17F00301CDA /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA5853C02B21F17F00301CDA /* OnboardingView.swift */; };
 		FAC9E60F2B04F9C800E2C608 /* OverpassRequestManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC9E60E2B04F9C800E2C608 /* OverpassRequestManager.swift */; };
 		FAC9E6112B06811300E2C608 /* LocationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC9E6102B06811300E2C608 /* LocationManager.swift */; };
@@ -113,7 +114,6 @@
 		973FC0132B4D353800878269 /* SideWalkWidthForm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SideWalkWidthForm.swift; sourceTree = "<group>"; };
 		973FC0162B4D567900878269 /* WidthView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidthView.swift; sourceTree = "<group>"; };
 		973FC0182B4FB17000878269 /* LocalizedStrings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalizedStrings.swift; sourceTree = "<group>"; };
-		973FC01A2B4FE5BA00878269 /* AddHandrailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddHandrailView.swift; sourceTree = "<group>"; };
 		973FC01C2B4FEE1B00878269 /* YesNoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YesNoView.swift; sourceTree = "<group>"; };
 		973FC01E2B50DE7E00878269 /* ImageGridItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageGridItemView.swift; sourceTree = "<group>"; };
 		973FC0202B50E06B00878269 /* AddStepsRampView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddStepsRampView.swift; sourceTree = "<group>"; };
@@ -127,6 +127,8 @@
 		A4E711A32B57B13100C9DE08 /* QuestionHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuestionHeader.swift; sourceTree = "<group>"; };
 		A4E711A52B57BBCA00C9DE08 /* QuestProtocols.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuestProtocols.swift; sourceTree = "<group>"; };
 		A4E711A72B57CA4300C9DE08 /* QuestsRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuestsRepository.swift; sourceTree = "<group>"; };
+		A4E711A92B58F6FB00C9DE08 /* HandRail.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HandRail.swift; sourceTree = "<group>"; };
+		A4E711AB2B58F7C000C9DE08 /* HandRailForm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HandRailForm.swift; sourceTree = "<group>"; };
 		AE61EC473200AFDA81C2110A /* Pods-GoInfoGame-GoInfoGameUITests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-GoInfoGame-GoInfoGameUITests.release.xcconfig"; path = "Target Support Files/Pods-GoInfoGame-GoInfoGameUITests/Pods-GoInfoGame-GoInfoGameUITests.release.xcconfig"; sourceTree = "<group>"; };
 		C96303080D26026265099E0E /* Pods-GoInfoGame.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-GoInfoGame.release.xcconfig"; path = "Target Support Files/Pods-GoInfoGame/Pods-GoInfoGame.release.xcconfig"; sourceTree = "<group>"; };
 		D76D8E22AC705A38AFEA78B1 /* Pods-GoInfoGame-GoInfoGameUITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-GoInfoGame-GoInfoGameUITests.debug.xcconfig"; path = "Target Support Files/Pods-GoInfoGame-GoInfoGameUITests/Pods-GoInfoGame-GoInfoGameUITests.debug.xcconfig"; sourceTree = "<group>"; };
@@ -312,7 +314,6 @@
 		973FC0122B4D348500878269 /* Quests */ = {
 			isa = PBXGroup;
 			children = (
-				973FC01A2B4FE5BA00878269 /* AddHandrailView.swift */,
 				973FC0202B50E06B00878269 /* AddStepsRampView.swift */,
 				973FC0222B51281B00878269 /* AddStepsInclineView.swift */,
 				973FC0242B51515600878269 /* AddTactilePavingStepsView.swift */,
@@ -366,6 +367,8 @@
 		A4E7119E2B57A27300C9DE08 /* Handrail */ = {
 			isa = PBXGroup;
 			children = (
+				A4E711A92B58F6FB00C9DE08 /* HandRail.swift */,
+				A4E711AB2B58F7C000C9DE08 /* HandRailForm.swift */,
 			);
 			path = Handrail;
 			sourceTree = "<group>";
@@ -708,6 +711,7 @@
 				973FC0292B5195CE00878269 /* AddWayLitView.swift in Sources */,
 				973FC0192B4FB17000878269 /* LocalizedStrings.swift in Sources */,
 				FAC9E6112B06811300E2C608 /* LocationManager.swift in Sources */,
+				A4E711AA2B58F6FB00C9DE08 /* HandRail.swift in Sources */,
 				973FC0212B50E06B00878269 /* AddStepsRampView.swift in Sources */,
 				973FC0272B5168C900878269 /* AddStairNumberView.swift in Sources */,
 				059D47312B2C81A9000987FA /* Style.swift in Sources */,
@@ -738,13 +742,13 @@
 				972454152B14A49A0036B91A /* Extensions.swift in Sources */,
 				0536DD8C2B0BD2C200B04C4B /* Constants.swift in Sources */,
 				0536DD992B0BDBFE00B04C4B /* OAuthManager.swift in Sources */,
+				A4E711AC2B58F7C000C9DE08 /* HandRailForm.swift in Sources */,
 				973FC0252B51515600878269 /* AddTactilePavingStepsView.swift in Sources */,
 				059D472E2B2C7FED000987FA /* SidewalkOverlay.swift in Sources */,
 				A4E711A62B57BBCA00C9DE08 /* QuestProtocols.swift in Sources */,
 				973FBFFE2B46BB3800878269 /* Utils.swift in Sources */,
 				FAF44FBD2B3084EC004FE664 /* OnboardingView1.swift in Sources */,
 				973FC01D2B4FEE1B00878269 /* YesNoView.swift in Sources */,
-				973FC01B2B4FE5BA00878269 /* AddHandrailView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

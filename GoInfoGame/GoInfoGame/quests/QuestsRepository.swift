@@ -13,7 +13,7 @@ class QuestsRepository {
     
     var applicableQuests: [ any Quest] = [
         SideWalkWidth(),
-        SideWalkWidth(),// Sidewalk width // 0
+        HandRail()
     ]
     
     var displayQuests: [DisplayUnit] {
