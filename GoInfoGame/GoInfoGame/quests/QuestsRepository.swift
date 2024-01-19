@@ -15,7 +15,11 @@ class QuestsRepository {
         SideWalkWidth(),
         HandRail(),
         StepsRamp(),
-        StepsIncline()
+        StepsIncline(),
+        StairNumber(),
+        TactilePavingSteps(),
+        WayLit(),
+        BusStopLit()
     ]
     
     var displayQuests: [DisplayUnit] {
