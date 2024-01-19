@@ -15,7 +15,6 @@ struct StairNumberForm: View, QuestForm {
     @State private var numberOfSteps: Int = 0
     @State private var showAlert = false
     @State private var isInputValid: Bool = false
-    var onConfirm: ((_ numberOfSteps: Int) -> Void)?
     
     var body: some View {
         VStack{
@@ -46,7 +45,7 @@ struct StairNumberForm: View, QuestForm {
                     Spacer()
                     if isInputValid {
                         Button() {
-                            onConfirm?(numberOfSteps)
+                            applyAnswer(answer: numberOfSteps)
                         }label: {
                             Image(systemName: "checkmark.circle.fill")
                                 .font(Font.system(size: 40))

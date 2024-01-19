@@ -10,7 +10,7 @@ import UIKit
 import SwiftUI
 
 class StairNumber :Quest {
-    func onAnswer(answer: StepsRampAnswer) {
+    func onAnswer(answer: Int) {
     }
     var title: String = "Stair Number"
     var filter: String = ""
@@ -19,10 +19,8 @@ class StairNumber :Quest {
     var changesetComment: String = ""
     var form: AnyView = AnyView(StairNumberForm())
     var relationData: Any? = nil
-    func onAnswer(answer: Int) {
-    }
     var displayUnit: DisplayUnit {
         DisplayUnit(title: self.title, description: "",parent: self,sheetSize:.MEDIUM )
     }
-    typealias AnswerClass = StepsRampAnswer
+    typealias AnswerClass = Int
 }
