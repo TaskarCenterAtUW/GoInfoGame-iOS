@@ -46,6 +46,9 @@
 		973FC03F2B59418B00878269 /* WayLit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 973FC03E2B59418B00878269 /* WayLit.swift */; };
 		973FC0422B59467A00878269 /* BusStopLit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 973FC0412B59467A00878269 /* BusStopLit.swift */; };
 		973FC0442B59468800878269 /* BusStopLitForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = 973FC0432B59468800878269 /* BusStopLitForm.swift */; };
+		973FC0482B5A477E00878269 /* CrossMarking.swift in Sources */ = {isa = PBXBuildFile; fileRef = 973FC0472B5A477E00878269 /* CrossMarking.swift */; };
+		973FC04A2B5A478C00878269 /* CrossMarkingForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = 973FC0492B5A478C00878269 /* CrossMarkingForm.swift */; };
+		973FC04C2B5A5F5F00878269 /* RadioItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 973FC04B2B5A5F5F00878269 /* RadioItem.swift */; };
 		97F2FA8A2B0630A3000B9726 /* Pods_GoInfoGame.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 66BED441AF03CC04539E8D4A /* Pods_GoInfoGame.framework */; };
 		A4E711A22B57A3B400C9DE08 /* SideWalkWidth.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4E711A12B57A3B400C9DE08 /* SideWalkWidth.swift */; };
 		A4E711A42B57B13100C9DE08 /* QuestionHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4E711A32B57B13100C9DE08 /* QuestionHeader.swift */; };
@@ -132,6 +135,9 @@
 		973FC03E2B59418B00878269 /* WayLit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WayLit.swift; sourceTree = "<group>"; };
 		973FC0412B59467A00878269 /* BusStopLit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BusStopLit.swift; sourceTree = "<group>"; };
 		973FC0432B59468800878269 /* BusStopLitForm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BusStopLitForm.swift; sourceTree = "<group>"; };
+		973FC0472B5A477E00878269 /* CrossMarking.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CrossMarking.swift; sourceTree = "<group>"; };
+		973FC0492B5A478C00878269 /* CrossMarkingForm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CrossMarkingForm.swift; sourceTree = "<group>"; };
+		973FC04B2B5A5F5F00878269 /* RadioItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RadioItem.swift; sourceTree = "<group>"; };
 		97F2FA8D2B0630C4000B9726 /* SwiftOverpassAPI.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = SwiftOverpassAPI.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		A4E711A12B57A3B400C9DE08 /* SideWalkWidth.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SideWalkWidth.swift; sourceTree = "<group>"; };
 		A4E711A32B57B13100C9DE08 /* QuestionHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuestionHeader.swift; sourceTree = "<group>"; };
@@ -329,6 +335,7 @@
 				973FC01C2B4FEE1B00878269 /* YesNoView.swift */,
 				973FC01E2B50DE7E00878269 /* ImageGridItemView.swift */,
 				A4E711A32B57B13100C9DE08 /* QuestionHeader.swift */,
+				973FC04B2B5A5F5F00878269 /* RadioItem.swift */,
 			);
 			path = CustomComponents;
 			sourceTree = "<group>";
@@ -378,6 +385,15 @@
 			path = StepsRamp;
 			sourceTree = "<group>";
 		};
+		973FC0462B5A475C00878269 /* CrossingMarking */ = {
+			isa = PBXGroup;
+			children = (
+				973FC0472B5A477E00878269 /* CrossMarking.swift */,
+				973FC0492B5A478C00878269 /* CrossMarkingForm.swift */,
+			);
+			path = CrossingMarking;
+			sourceTree = "<group>";
+		};
 		A4E7119A2B57A17600C9DE08 /* data */ = {
 			isa = PBXGroup;
 			children = (
@@ -388,6 +404,7 @@
 		A4E7119C2B57A22300C9DE08 /* quests */ = {
 			isa = PBXGroup;
 			children = (
+				973FC0462B5A475C00878269 /* CrossingMarking */,
 				973FC0452B59495900878269 /* StepsRamp */,
 				973FC0402B59459A00878269 /* BusStopLit */,
 				973FC03B2B59404D00878269 /* WayLit */,
@@ -770,6 +787,7 @@
 				973FC0422B59467A00878269 /* BusStopLit.swift in Sources */,
 				973FC0352B592C0F00878269 /* StairNumberForm.swift in Sources */,
 				FAC9E60F2B04F9C800E2C608 /* OverpassRequestManager.swift in Sources */,
+				973FC0482B5A477E00878269 /* CrossMarking.swift in Sources */,
 				05DBBB642B17204300B6F110 /* RealmOPGeometry.swift in Sources */,
 				973FC03D2B59417D00878269 /* WayLitForm.swift in Sources */,
 				0536DD922B0BD58800B04C4B /* OAuthService.swift in Sources */,
@@ -777,11 +795,13 @@
 				973FC0032B47DE0700878269 /* QuestsVM.swift in Sources */,
 				A4E711AE2B59004700C9DE08 /* StepsIncline.swift in Sources */,
 				973FC0142B4D353800878269 /* SideWalkWidthForm.swift in Sources */,
+				973FC04A2B5A478C00878269 /* CrossMarkingForm.swift in Sources */,
 				973FC03F2B59418B00878269 /* WayLit.swift in Sources */,
 				FA5853C12B21F17F00301CDA /* OnboardingView.swift in Sources */,
 				05DBBB5F2B1263FF00B6F110 /* DatabaseConnector.swift in Sources */,
 				FAF44FC12B30850A004FE664 /* OnboardingView3.swift in Sources */,
 				0536DD972B0BD95100B04C4B /* URLSession+Extension.swift in Sources */,
+				973FC04C2B5A5F5F00878269 /* RadioItem.swift in Sources */,
 				05DBBB662B17209600B6F110 /* RealmOPMeta.swift in Sources */,
 				0536DD942B0BD59900B04C4B /* OAuthError.swift in Sources */,
 				973FC0172B4D567900878269 /* WidthView.swift in Sources */,

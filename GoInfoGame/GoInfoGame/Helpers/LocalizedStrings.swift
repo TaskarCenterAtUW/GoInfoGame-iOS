@@ -35,6 +35,11 @@ enum LocalizedStrings: String {
     case questStepCountTitle = "quest_step_count_title"
     case questLitTitle = "quest_lit_title"
     case questBusStopLitTitle = "quest_busStopLit_title"
+    case questCrossingTitle = "quest_crossing_title"
+    case questCrossingYes = "quest_crossing_yes"
+    case questCrossingNo = "quest_crossing_no"
+    case questCrossingProhibited = "quest_crossing_prohibited"
+    case cantSay = "cant_say"
 
     
     var localized: String {
