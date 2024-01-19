@@ -19,7 +19,8 @@ class QuestsRepository {
         StairNumber(),
         TactilePavingSteps(),
         WayLit(),
-        BusStopLit()
+        BusStopLit(),
+        CrossMarking()
     ]
     
     var displayQuests: [DisplayUnit] {

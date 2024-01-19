@@ -34,3 +34,8 @@
 "quest_step_count_stile_hint" = "Just the number of steps to reach the top. If the step count differs on each side, give the higher number.";
 "quest_lit_title" = "Is it lit here?";
 "quest_busStopLit_title" = "Is this stop lit?";
+"quest_crossing_title" = "Is there a crossing here?";
+"quest_crossing_yes" = "Yes (e.g. the curb is lowered here or there are markings)";
+"quest_crossing_no" = "No, but crossing is possible";
+"quest_crossing_prohibited"= "No, crossing is prohibited or impossible";
+"cant_say" = "Can't Say";
