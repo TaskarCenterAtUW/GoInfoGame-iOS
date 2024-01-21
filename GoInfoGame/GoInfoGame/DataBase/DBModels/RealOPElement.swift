@@ -24,6 +24,11 @@ class RealmOPElement: Object {
     }
 }
 
+class StoredElement : Object {
+    @Persisted(primaryKey: true) var id: Int = 0
+    @Persisted var tags = Map<String,String>()
+}
+
 class RealmOPElementTag: Object {
     @objc dynamic var key: String = ""
     @objc dynamic var value: String = ""
