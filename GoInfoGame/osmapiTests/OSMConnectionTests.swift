@@ -156,7 +156,7 @@ final class OSMConnectionTests: XCTestCase {
     }
     
     func testPosmCloseChangeset() throws {
-        let changesetId = "57"
+        let changesetId = "58"
         let expectation = expectation(description: "Expect to open changeset")
         posmConnection?.closeChangeSet(id: changesetId) {_ in
             expectation.fulfill()
