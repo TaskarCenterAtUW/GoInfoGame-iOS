@@ -74,7 +74,13 @@ final class OSMConnectionTests: XCTestCase {
         let osmConnection = OSMConnection()
         let expectation = expectation(description: "Expect to open changeset")
         
-        osmConnection.openChangeSet {
+        osmConnection.openChangeSet {result in
+            switch result {
+            case .success(let changesetId):
+                XCTAssert(changesetId != 0)
+            case .failure(let error):
+               XCTFail("Failed to create changeset")
+            }
             expectation.fulfill()
         }
         waitForExpectations(timeout: 10)
@@ -88,6 +94,14 @@ final class OSMConnectionTests: XCTestCase {
         // create db element (changeset, node), do a sync of changesets
         // go through each changeset and upload them (open, upload, close)
         
+    }
+    func testChangesetClose() throws {
+        let osmConnection = OSMConnection()
+        let expectation = expectation(description: "Expect to open changeset")
+        osmConnection.closeChangeSet(id: "146538436") {_ in 
+            expectation.fulfill()
+        }
+        waitForExpectations(timeout: 10)
     }
     
     func testExample() throws {

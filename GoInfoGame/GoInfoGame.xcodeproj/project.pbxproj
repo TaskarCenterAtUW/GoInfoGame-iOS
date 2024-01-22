@@ -68,6 +68,7 @@
 		A475C7D72B5E244400BABEDA /* OSMNodeTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = A475C7D62B5E244400BABEDA /* OSMNodeTest.swift */; };
 		A475C7D92B5E264700BABEDA /* OSMWay.swift in Sources */ = {isa = PBXBuildFile; fileRef = A475C7D82B5E264700BABEDA /* OSMWay.swift */; };
 		A475C7DB2B5E267200BABEDA /* OSMWayTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = A475C7DA2B5E267200BABEDA /* OSMWayTest.swift */; };
+		A475C7DD2B5E3E7C00BABEDA /* OSMPayload.swift in Sources */ = {isa = PBXBuildFile; fileRef = A475C7DC2B5E3E7C00BABEDA /* OSMPayload.swift */; };
 		A4E711A22B57A3B400C9DE08 /* SideWalkWidth.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4E711A12B57A3B400C9DE08 /* SideWalkWidth.swift */; };
 		A4E711A42B57B13100C9DE08 /* QuestionHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4E711A32B57B13100C9DE08 /* QuestionHeader.swift */; };
 		A4E711A62B57BBCA00C9DE08 /* QuestProtocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4E711A52B57BBCA00C9DE08 /* QuestProtocols.swift */; };
@@ -209,6 +210,7 @@
 		A475C7D62B5E244400BABEDA /* OSMNodeTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OSMNodeTest.swift; sourceTree = "<group>"; };
 		A475C7D82B5E264700BABEDA /* OSMWay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OSMWay.swift; sourceTree = "<group>"; };
 		A475C7DA2B5E267200BABEDA /* OSMWayTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OSMWayTest.swift; sourceTree = "<group>"; };
+		A475C7DC2B5E3E7C00BABEDA /* OSMPayload.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OSMPayload.swift; sourceTree = "<group>"; };
 		A4E711A12B57A3B400C9DE08 /* SideWalkWidth.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SideWalkWidth.swift; sourceTree = "<group>"; };
 		A4E711A32B57B13100C9DE08 /* QuestionHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuestionHeader.swift; sourceTree = "<group>"; };
 		A4E711A52B57BBCA00C9DE08 /* QuestProtocols.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuestProtocols.swift; sourceTree = "<group>"; };
@@ -508,6 +510,7 @@
 				A475C7CD2B5D4FE200BABEDA /* OSMChangeset.swift */,
 				A475C7D22B5E22C800BABEDA /* OSMNode.swift */,
 				A475C7D82B5E264700BABEDA /* OSMWay.swift */,
+				A475C7DC2B5E3E7C00BABEDA /* OSMPayload.swift */,
 			);
 			path = models;
 			sourceTree = "<group>";
@@ -977,6 +980,7 @@
 				A40E728B2B5D48A800328848 /* OSMConnection.swift in Sources */,
 				A475C7D32B5E22C800BABEDA /* OSMNode.swift in Sources */,
 				A475C7D92B5E264700BABEDA /* OSMWay.swift in Sources */,
+				A475C7DD2B5E3E7C00BABEDA /* OSMPayload.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -10,7 +10,11 @@ class OSMConnection {
     // Creates a connection
     let baseUrl: String = OSMConfig.baseUrl
     
-    let userCreds: OSMLogin = OSMLogin(username: "nareshd@vindago.in", password: "a$hwa7hamA")
+    var currentChangesetId: Int? = 0
+    
+//    let userCreds: OSMLogin = OSMLogin(username: "nareshd@vindago.in", password: "a$hwa7hamA")
+    let userCreds: OSMLogin = OSMLogin(username: "nareshd@gaussiansolutions.com", password: "ycqzd3_F6rqDEhs")
+    //ycqzd3_F6rqDEhs / nareshd@gaussiansolutions.com
     
     // Lets see if we can start with some authentication or node
     
@@ -32,7 +36,7 @@ class OSMConnection {
         BaseNetworkManager.shared.fetchData(url: url, completion: completion) // Need to improve this one
     }
     
-    func openChangeSet(_ completion: @escaping(()->())) {
+    func openChangeSet(_ completion: @escaping((Result<Int,Error>)->Void)) {
         // Have to open changeset
         let urlString = self.baseUrl.appending("changeset/create")
         guard let url = URL(string: urlString) else {
@@ -40,15 +44,36 @@ class OSMConnection {
                     return
                 }
         BaseNetworkManager.shared.addOrSetHeaders(header: "Authorization", value: "Basic \(self.userCreds.getHeaderData())")
-        BaseNetworkManager.shared.postData(url: url,method: "PUT" ,body: ["tag":"Xyz"]) { (result: Result<Int,Error>) in
+        BaseNetworkManager.shared.postData(url: url,method: "PUT" ,body: OSMChangesetPayload()) { (result: Result<Int,Error>) in
             switch result {
             case .success(let changesetID):
                 print(changesetID)
+                self.currentChangesetId = changesetID
                 
             case .failure(let error):
                 print(error)
             }
-            completion()
+            completion(result)
+        }
+    }
+    
+    func closeChangeSet(id: String,completion: @escaping((Result<Bool,Error>)->Void)) {
+        let urlString = self.baseUrl.appending("changeset/").appending(id).appending("/close")
+        guard let url = URL(string: urlString) else {
+            print("Invalid URL given")
+                    return
+                }
+        BaseNetworkManager.shared.addOrSetHeaders(header: "Authorization", value: "Basic \(self.userCreds.getHeaderData())")
+        BaseNetworkManager.shared.postData(url: url,method: "PUT" ,body: ["tag":"xyz"],expectEmpty: true) { (result: Result<Bool,Error>) in
+            switch result {
+            case .success(let closedResult):
+                print(id)
+                print(closedResult)
+                
+            case .failure(let error):
+                print(error)
+            }
+            completion(result)
         }
     }
     

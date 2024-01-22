@@ -38,3 +38,18 @@ struct OSMChangeset: Codable {
         case uid, user
     }
 }
+
+struct OSMChangesetPayload: OSMPayload {
+    
+    func toPayload() -> String {
+        """
+        <osm>
+        <changeset>
+        </changeset>
+        </osm>
+        """
+    }
+    
+    
+}
+

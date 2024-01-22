@@ -65,6 +65,7 @@ class BaseNetworkManager {
             method: String = "POST",
             body: U,
             headers: [String: String]? = nil,
+            expectEmpty: Bool = false,
             completion: @escaping (Result<T, Error>) -> Void
         ) {
             var request = URLRequest(url: url)
@@ -83,6 +84,64 @@ class BaseNetworkManager {
                 // Encode the request body
                 let jsonData = try JSONEncoder().encode(body)
                 request.httpBody = jsonData
+
+                URLSession.shared.dataTask(with: request) { data, response, error in
+                    if let error = error {
+                        completion(.failure(error))
+                        return
+                    }
+
+                    guard let httpResponse = response as? HTTPURLResponse, (200...299).contains(httpResponse.statusCode) else {
+                        completion(.failure(NetworkError.invalidURL))
+                        return
+                    }
+
+                    guard let data = data else {
+                        completion(.failure(NetworkError.noData))
+                        return
+                    }
+                    if data.isEmpty && expectEmpty {
+                        completion(.success(true as! T))
+                        return
+                    }
+
+                    do {
+                        // Decode the response
+                        let decodedData = try JSONDecoder().decode(T.self, from: data)
+                        completion(.success(decodedData))
+                    } catch {
+                        completion(.failure(NetworkError.decodingError))
+                    }
+                }.resume()
+            } catch {
+                completion(.failure(NetworkError.encodingError))
+            }
+        }
+    
+    /// Posts XML data 
+    func postData<T: Decodable, U: OSMPayload>(
+            url: URL,
+            method: String = "POST",
+            body: U,
+            headers: [String: String]? = nil,
+            completion: @escaping (Result<T, Error>) -> Void
+        ) {
+            var request = URLRequest(url: url)
+            request.httpMethod = method
+            request.addValue("application/xml", forHTTPHeaderField: "Content-Type")
+
+            // Add additional headers if provided for this request only
+            headers?.forEach { key, value in
+                request.addValue(value, forHTTPHeaderField: key)
+            }
+            self.headers.forEach { key,value in
+                request.addValue(value, forHTTPHeaderField: key)
+            }
+
+            do {
+                // Encode the request body
+                let data = body.toPayload()
+                request.httpBody = data.data(using: .utf8)
 
                 URLSession.shared.dataTask(with: request) { data, response, error in
                     if let error = error {
