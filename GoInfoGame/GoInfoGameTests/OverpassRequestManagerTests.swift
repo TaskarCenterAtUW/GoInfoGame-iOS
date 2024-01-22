@@ -67,7 +67,7 @@ final class OverpassRequestManagerTests: XCTestCase {
             expec.fulfill()
         }
         
-        waitForExpectations(timeout: 10)
+        waitForExpectations(timeout: 15)
     }
     
     func testStorage() throws {

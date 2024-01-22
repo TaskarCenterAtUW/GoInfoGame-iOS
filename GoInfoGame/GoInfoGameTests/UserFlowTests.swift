@@ -42,6 +42,12 @@ final class UserFlowTests: XCTestCase {
     func testDataInserts() throws {
         let nodesFromStorage = dbInstance.getNodes()
         XCTAssert(nodesFromStorage.count > 0)
+        // Get the Nodes from the above
+        let testQuest = TestQuest()
+        for singleNode in nodesFromStorage {
+//            testQuest.isApplicable(element: singleNode)
+        }
+        
         
     }
 
