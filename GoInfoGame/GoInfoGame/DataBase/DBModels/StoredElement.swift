@@ -12,4 +12,5 @@ import RealmSwift
 class StoredElement : Object {
     @Persisted(primaryKey: true) var id: Int = 0
     @Persisted var tags = Map<String,String>()
+    @Persisted var version: Int = 0
 }

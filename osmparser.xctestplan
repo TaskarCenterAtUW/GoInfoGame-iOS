@@ -1,0 +1,24 @@
+{
+  "configurations" : [
+    {
+      "id" : "BB31D37C-F385-45CF-B4B5-81D73D64C740",
+      "name" : "Test Scheme Action",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+    "codeCoverage" : false
+  },
+  "testTargets" : [
+    {
+      "target" : {
+        "containerPath" : "container:GoInfoGame.xcodeproj",
+        "identifier" : "A4AD131A2B5E90BD0041A881",
+        "name" : "osmparserTests"
+      }
+    }
+  ],
+  "version" : 1
+}
