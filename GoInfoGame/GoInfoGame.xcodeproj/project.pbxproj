@@ -191,8 +191,8 @@
 		973FC03E2B59418B00878269 /* WayLit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WayLit.swift; sourceTree = "<group>"; };
 		973FC0412B59467A00878269 /* BusStopLit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BusStopLit.swift; sourceTree = "<group>"; };
 		973FC0432B59468800878269 /* BusStopLitForm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BusStopLitForm.swift; sourceTree = "<group>"; };
-		973FC0472B5A477E00878269 /* CrossMarking.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CrossMarking.swift; sourceTree = "<group>"; };
-		973FC0492B5A478C00878269 /* CrossMarkingForm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CrossMarkingForm.swift; sourceTree = "<group>"; };
+		973FC0472B5A477E00878269 /* CrossMarking.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = CrossMarking.swift; path = GoInfoGame/quests/CrossingMarking/CrossMarking.swift; sourceTree = SOURCE_ROOT; };
+		973FC0492B5A478C00878269 /* CrossMarkingForm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = CrossMarkingForm.swift; path = GoInfoGame/quests/CrossingMarking/CrossMarkingForm.swift; sourceTree = SOURCE_ROOT; };
 		973FC04B2B5A5F5F00878269 /* RadioItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RadioItem.swift; sourceTree = "<group>"; };
 		97F2FA8D2B0630C4000B9726 /* SwiftOverpassAPI.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = SwiftOverpassAPI.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		A40E72632B5CD65000328848 /* OverpassRequestManagerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OverpassRequestManagerTests.swift; sourceTree = "<group>"; };
@@ -484,6 +484,8 @@
 				973FC0492B5A478C00878269 /* CrossMarkingForm.swift */,
 			);
 			path = CrossingMarking;
+			sourceTree = "<group>";
+		};
 		A40E726B2B5D462A00328848 /* osmapi */ = {
 			isa = PBXGroup;
 			children = (
