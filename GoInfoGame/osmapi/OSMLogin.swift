@@ -17,4 +17,12 @@ struct OSMLogin {
         let base64LoginString = loginData.base64EncodedString()
         return base64LoginString
     }
+    
+    static var production : OSMLogin {
+         OSMLogin(username: "nareshd@gaussiansolutions.com", password: "ycqzd3_F6rqDEhs")
+    }
+    
+    static var test : OSMLogin {
+        OSMLogin(username: "nareshd@vindago.in", password: "a$hwa7hamA")
+    }
 }

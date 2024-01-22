@@ -8,15 +8,21 @@
 import Foundation
 class OSMConnection {
     // Creates a connection
-    let baseUrl: String = OSMConfig.baseUrl
+    let baseUrl: String// = OSMConfig.baseUrl
     
     var currentChangesetId: Int? = 0
     
 //    let userCreds: OSMLogin = OSMLogin(username: "nareshd@vindago.in", password: "a$hwa7hamA")
-    let userCreds: OSMLogin = OSMLogin(username: "nareshd@gaussiansolutions.com", password: "ycqzd3_F6rqDEhs")
+    let userCreds: OSMLogin
     //ycqzd3_F6rqDEhs / nareshd@gaussiansolutions.com
     
     // Lets see if we can start with some authentication or node
+    
+    init(config: OSMConfig = OSMConfig.production, currentChangesetId: Int? = nil, userCreds: OSMLogin = OSMLogin.production) {
+        self.baseUrl = config.baseUrl
+        self.currentChangesetId = currentChangesetId
+        self.userCreds = userCreds
+    }
     
     func getNode(id: String,_ completion: @escaping (Result<OSMNodeResponse, Error>)-> Void) {
         let urlString = self.baseUrl.appending("node/").appending(id).appending(".json")
@@ -112,7 +118,42 @@ class OSMConnection {
     }
     
     
-    func updateNode(node: OSMNode, tags:[String:String]){
+    func updateNode(node: inout OSMNode, tags:[String:String], completion: @escaping((Result<Int,Error>)->Void)){
+        // Have to do this.
+        let urlString = self.baseUrl.appending("node/").appending(String(node.id))
+        guard let url = URL(string: urlString) else {
+            print("Invalid URL given")
+                    return
+                }
+        BaseNetworkManager.shared.addOrSetHeaders(header: "Authorization", value: "Basic \(self.userCreds.getHeaderData())")
+        // Add nodes to the same
+        if(node.tags == nil){
+            node.tags = [:]
+        }
+        tags.forEach { (key: String, value: String) in
+            
+            node.tags?[key] = value
+        }
+        // Make the call
+        BaseNetworkManager.shared.postData(url: url, method: "PUT",body: node ,completion: completion)
+        
+    }
+    
+    func updateWay(way: inout OSMWay, tags:[String:String], completion: @escaping((Result<Int,Error>)->Void)){
+        // Have to do this.
+        let urlString = self.baseUrl.appending("way/").appending(String(way.id))
+        guard let url = URL(string: urlString) else {
+            print("Invalid URL given")
+                    return
+                }
+        BaseNetworkManager.shared.addOrSetHeaders(header: "Authorization", value: "Basic \(self.userCreds.getHeaderData())")
+        // Add nodes to the same
+        
+        tags.forEach { (key: String, value: String) in
+            way.tags[key] = value
+        }
+        // Make the call
+        BaseNetworkManager.shared.postData(url: url, method: "PUT",body: way ,completion: completion)
         
     }
     

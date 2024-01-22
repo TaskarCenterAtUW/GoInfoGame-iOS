@@ -26,7 +26,7 @@ struct OSMNode: Codable, OSMPayload {
         xmlBuilder.addAttribute(name: "lon", value: "\(lon)")
         xmlBuilder.addAttribute(name: "version", value: "\(version)")
         xmlBuilder.addAttribute(name: "changeset", value: "\(changeset)")
-        tags.forEach { (key: String, value: String) in
+        tags?.forEach { (key: String, value: String) in
             let tagNode = TagPayload(key: key, value: value)
             xmlBuilder.addChild(element: tagNode)
         }
@@ -40,8 +40,9 @@ struct OSMNode: Codable, OSMPayload {
     let id: Int
     let lat, lon: Double
     let timestamp: Date
-    let version, changeset: Int
+    let version: Int
+    var changeset: Int
     let user: String
     let uid: Int
-    let tags: [String:String]
+    var tags: [String:String]?
 }

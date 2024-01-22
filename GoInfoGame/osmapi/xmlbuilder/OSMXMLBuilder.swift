@@ -40,7 +40,7 @@ class OSMXMLBuilder {
         // Try iterator some time
         let attributeMap = attributes.map { (key: String, value: String) in
             "\(key) = \"\(value)\""
-        }.joined(separator: ",")
+        }.joined(separator: " ")
         xmlString += attributeMap
     }
     

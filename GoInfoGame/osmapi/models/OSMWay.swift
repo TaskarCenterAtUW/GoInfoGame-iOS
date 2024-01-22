@@ -16,13 +16,32 @@ struct OSMWayResponse: Codable {
 }
 
 // MARK: - Element
-struct OSMWay: Codable {
+struct OSMWay: Codable, OSMPayload  {
+    func toPayload() -> String {
+         var osmNode = "<osm>"
+        let xmlBuilder = OSMXMLBuilder(rootName: "way")
+        xmlBuilder.addAttribute(name: "id", value: "\(id)")
+//        xmlBuilder.addAttribute(name: "lat", value: "\(lat)")
+//        xmlBuilder.addAttribute(name: "lon", value: "\(lon)")
+        xmlBuilder.addAttribute(name: "version", value: "\(version)")
+        xmlBuilder.addAttribute(name: "changeset", value: "\(changeset)")
+        tags.forEach { (key: String, value: String) in
+            let tagNode = TagPayload(key: key, value: value)
+            xmlBuilder.addChild(element: tagNode)
+        }
+        let builtString = xmlBuilder.buildXML()
+        osmNode.append(builtString)
+        osmNode.append("</osm>")
+        return osmNode
+    }
+    
     let type: String
     let id: Int
     let timestamp: Date
-    let version, changeset: Int
+    let version: Int
+    var changeset: Int
     let user: String
     let uid: Int
     let nodes: [Int]
-    let tags: [String:String]
+    var tags: [String:String]
 }
