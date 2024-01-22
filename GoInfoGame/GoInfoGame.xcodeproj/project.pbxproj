@@ -71,6 +71,7 @@
 		A475C7DD2B5E3E7C00BABEDA /* OSMPayload.swift in Sources */ = {isa = PBXBuildFile; fileRef = A475C7DC2B5E3E7C00BABEDA /* OSMPayload.swift */; };
 		A475C7E02B5E4B6E00BABEDA /* OSMXMLBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = A475C7DF2B5E4B6E00BABEDA /* OSMXMLBuilder.swift */; };
 		A475C7E32B5E4CB600BABEDA /* OSMXMLBuilderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A475C7E22B5E4CB600BABEDA /* OSMXMLBuilderTests.swift */; };
+		A4AD130C2B5E80F20041A881 /* StoredElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4AD130B2B5E80F20041A881 /* StoredElement.swift */; };
 		A4E711A22B57A3B400C9DE08 /* SideWalkWidth.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4E711A12B57A3B400C9DE08 /* SideWalkWidth.swift */; };
 		A4E711A42B57B13100C9DE08 /* QuestionHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4E711A32B57B13100C9DE08 /* QuestionHeader.swift */; };
 		A4E711A62B57BBCA00C9DE08 /* QuestProtocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4E711A52B57BBCA00C9DE08 /* QuestProtocols.swift */; };
@@ -215,6 +216,7 @@
 		A475C7DC2B5E3E7C00BABEDA /* OSMPayload.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OSMPayload.swift; sourceTree = "<group>"; };
 		A475C7DF2B5E4B6E00BABEDA /* OSMXMLBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OSMXMLBuilder.swift; sourceTree = "<group>"; };
 		A475C7E22B5E4CB600BABEDA /* OSMXMLBuilderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OSMXMLBuilderTests.swift; sourceTree = "<group>"; };
+		A4AD130B2B5E80F20041A881 /* StoredElement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoredElement.swift; sourceTree = "<group>"; };
 		A4E711A12B57A3B400C9DE08 /* SideWalkWidth.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SideWalkWidth.swift; sourceTree = "<group>"; };
 		A4E711A32B57B13100C9DE08 /* QuestionHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuestionHeader.swift; sourceTree = "<group>"; };
 		A4E711A52B57BBCA00C9DE08 /* QuestProtocols.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuestProtocols.swift; sourceTree = "<group>"; };
@@ -382,6 +384,7 @@
 				05DBBB612B164D9A00B6F110 /* RealOPElement.swift */,
 				05DBBB632B17204300B6F110 /* RealmOPGeometry.swift */,
 				05DBBB652B17209600B6F110 /* RealmOPMeta.swift */,
+				A4AD130B2B5E80F20041A881 /* StoredElement.swift */,
 			);
 			path = DBModels;
 			sourceTree = "<group>";
@@ -1026,6 +1029,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A4AD130C2B5E80F20041A881 /* StoredElement.swift in Sources */,
 				05DBBB5D2B1262BA00B6F110 /* OverpassRepository.swift in Sources */,
 				0536DD852B0BD11A00B04C4B /* LoginViewController.swift in Sources */,
 				A4E711A42B57B13100C9DE08 /* QuestionHeader.swift in Sources */,

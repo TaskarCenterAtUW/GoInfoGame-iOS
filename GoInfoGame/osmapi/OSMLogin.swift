@@ -19,10 +19,10 @@ struct OSMLogin {
     }
     
     static var production : OSMLogin {
-         OSMLogin(username: "nareshd@gaussiansolutions.com", password: "ycqzd3_F6rqDEhs")
+         OSMLogin(username: "nerope1097@wentcity.com", password: "$$WentCityErwin")
     }
     
     static var test : OSMLogin {
-        OSMLogin(username: "nareshd@vindago.in", password: "a$hwa7hamA")
+        OSMLogin(username: "nareshd@vindago.in", password: "a$hwa7hamA") // Need to change
     }
 }
