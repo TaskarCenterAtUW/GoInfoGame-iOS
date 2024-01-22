@@ -156,7 +156,7 @@ final class OSMConnectionTests: XCTestCase {
     }
     
     func testPosmCloseChangeset() throws {
-        let changesetId = "58"
+        let changesetId = "59"
         let expectation = expectation(description: "Expect to open changeset")
         posmConnection?.closeChangeSet(id: changesetId) {_ in
             expectation.fulfill()
@@ -166,7 +166,7 @@ final class OSMConnectionTests: XCTestCase {
     
     func testPosmUpdateNode() throws {
         let expectation = expectation(description: "Expect to update the node")
-        let newChangeset = "58"
+        let newChangeset = "59"
         let updatedTags = ["highway":"footway","kerb":"lowered"]
         posmConnection?.getNode(id: posmTestNode, { (result : Result<OSMNodeResponse, Error>) in
             switch result{
