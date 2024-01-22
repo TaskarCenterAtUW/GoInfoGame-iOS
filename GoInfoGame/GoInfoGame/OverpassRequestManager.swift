@@ -8,12 +8,49 @@
 import Foundation
 import SwiftOverpassAPI
 
+struct BBox {
+    let minLat: Double
+    let maxLat: Double
+    let minLon: Double
+    let maxLon: Double
+    
+    func toOPBox() -> OPBoundingBox {
+        return OPBoundingBox(minLatitude: minLat, minLongitude: minLon, maxLatitude: maxLat, maxLongitude: maxLon)
+    }
+}
+
 class OverpassRequestManager {
     private let client: OPClient
 
     init() {
         client = OPClient()
         client.endpoint = .kumiSystems
+    }
+    
+    
+    func fetchElements(fromBBox bbox: BBox, completionHandler :  @escaping ([Int : OPElement]) -> ()
+    ){
+        do {
+            let query = try OPQueryBuilder()
+                .setTimeOut(180)
+                .setElementTypes([.way,.node])
+                .setBoundingBox(bbox.toOPBox())
+                .setOutputType(.geometry)
+                .buildQueryString()
+            client.fetchElements(query: query) { result in
+                switch result{
+                case .failure(let error):
+                    print(error)
+                    completionHandler([:])
+                case .success(let elements):
+                    completionHandler(elements)
+                }
+            
+            }
+            
+        } catch {
+            print(error.localizedDescription)
+        }
     }
 
     func makeOverpassRequest(forBoundingBox minLatitude: Double,

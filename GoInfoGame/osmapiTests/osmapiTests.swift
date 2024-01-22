@@ -1,14 +1,14 @@
 //
-//  GoInfoGameTests.swift
-//  GoInfoGameTests
+//  osmapiTests.swift
+//  osmapiTests
 //
-//  Created by Achyut Kumar M on 09/11/23.
+//  Created by Naresh Devalapally on 1/21/24.
 //
 
 import XCTest
-@testable import GoInfoGame
+@testable import osmapi
 
-final class GoInfoGameTests: XCTestCase {
+final class osmapiTests: XCTestCase {
 
     override func setUpWithError() throws {
         // Put setup code here. This method is called before the invocation of each test method in the class.
@@ -24,7 +24,6 @@ final class GoInfoGameTests: XCTestCase {
         // Any test you write for XCTest can be annotated as throws and async.
         // Mark your test throws to produce an unexpected failure when your test encounters an uncaught error.
         // Mark your test async to allow awaiting for asynchronous code to complete. Check the results with assertions afterwards.
-        XCTAssertEqual(1, 1)
     }
 
     func testPerformanceExample() throws {

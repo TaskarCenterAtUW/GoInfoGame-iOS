@@ -50,6 +50,27 @@
 		973FC04A2B5A478C00878269 /* CrossMarkingForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = 973FC0492B5A478C00878269 /* CrossMarkingForm.swift */; };
 		973FC04C2B5A5F5F00878269 /* RadioItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 973FC04B2B5A5F5F00878269 /* RadioItem.swift */; };
 		97F2FA8A2B0630A3000B9726 /* Pods_GoInfoGame.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 66BED441AF03CC04539E8D4A /* Pods_GoInfoGame.framework */; };
+		A40E72642B5CD65000328848 /* OverpassRequestManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A40E72632B5CD65000328848 /* OverpassRequestManagerTests.swift */; };
+		A40E726E2B5D462A00328848 /* osmapi.docc in Sources */ = {isa = PBXBuildFile; fileRef = A40E726D2B5D462A00328848 /* osmapi.docc */; };
+		A40E72742B5D462A00328848 /* osmapi.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A40E726A2B5D462A00328848 /* osmapi.framework */; };
+		A40E727B2B5D462A00328848 /* osmapiTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A40E727A2B5D462A00328848 /* osmapiTests.swift */; };
+		A40E727C2B5D462A00328848 /* osmapi.h in Headers */ = {isa = PBXBuildFile; fileRef = A40E726C2B5D462A00328848 /* osmapi.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		A40E727F2B5D462A00328848 /* osmapi.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A40E726A2B5D462A00328848 /* osmapi.framework */; };
+		A40E72802B5D462A00328848 /* osmapi.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = A40E726A2B5D462A00328848 /* osmapi.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		A40E72892B5D487C00328848 /* OSMConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = A40E72882B5D487C00328848 /* OSMConfig.swift */; };
+		A40E728B2B5D48A800328848 /* OSMConnection.swift in Sources */ = {isa = PBXBuildFile; fileRef = A40E728A2B5D48A800328848 /* OSMConnection.swift */; };
+		A40E728D2B5D494100328848 /* OSMLogin.swift in Sources */ = {isa = PBXBuildFile; fileRef = A40E728C2B5D494100328848 /* OSMLogin.swift */; };
+		A40E728F2B5D4A3800328848 /* OSMConnectionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A40E728E2B5D4A3800328848 /* OSMConnectionTests.swift */; };
+		A475C7CB2B5D4EE000BABEDA /* BaseNetworkManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A475C7CA2B5D4EE000BABEDA /* BaseNetworkManager.swift */; };
+		A475C7CE2B5D4FE200BABEDA /* OSMChangeset.swift in Sources */ = {isa = PBXBuildFile; fileRef = A475C7CD2B5D4FE200BABEDA /* OSMChangeset.swift */; };
+		A475C7D12B5D554100BABEDA /* OSMChangesetTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A475C7D02B5D554100BABEDA /* OSMChangesetTests.swift */; };
+		A475C7D32B5E22C800BABEDA /* OSMNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = A475C7D22B5E22C800BABEDA /* OSMNode.swift */; };
+		A475C7D72B5E244400BABEDA /* OSMNodeTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = A475C7D62B5E244400BABEDA /* OSMNodeTest.swift */; };
+		A475C7D92B5E264700BABEDA /* OSMWay.swift in Sources */ = {isa = PBXBuildFile; fileRef = A475C7D82B5E264700BABEDA /* OSMWay.swift */; };
+		A475C7DB2B5E267200BABEDA /* OSMWayTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = A475C7DA2B5E267200BABEDA /* OSMWayTest.swift */; };
+		A475C7DD2B5E3E7C00BABEDA /* OSMPayload.swift in Sources */ = {isa = PBXBuildFile; fileRef = A475C7DC2B5E3E7C00BABEDA /* OSMPayload.swift */; };
+		A475C7E02B5E4B6E00BABEDA /* OSMXMLBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = A475C7DF2B5E4B6E00BABEDA /* OSMXMLBuilder.swift */; };
+		A475C7E32B5E4CB600BABEDA /* OSMXMLBuilderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A475C7E22B5E4CB600BABEDA /* OSMXMLBuilderTests.swift */; };
 		A4E711A22B57A3B400C9DE08 /* SideWalkWidth.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4E711A12B57A3B400C9DE08 /* SideWalkWidth.swift */; };
 		A4E711A42B57B13100C9DE08 /* QuestionHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4E711A32B57B13100C9DE08 /* QuestionHeader.swift */; };
 		A4E711A62B57BBCA00C9DE08 /* QuestProtocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4E711A52B57BBCA00C9DE08 /* QuestProtocols.swift */; };
@@ -75,6 +96,27 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		A40E72752B5D462A00328848 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = FAD5C4E72AFCBE700040C61A /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = A40E72692B5D462A00328848;
+			remoteInfo = osmapi;
+		};
+		A40E72772B5D462A00328848 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = FAD5C4E72AFCBE700040C61A /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = FAD5C4EE2AFCBE700040C61A;
+			remoteInfo = GoInfoGame;
+		};
+		A40E727D2B5D462A00328848 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = FAD5C4E72AFCBE700040C61A /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = A40E72692B5D462A00328848;
+			remoteInfo = osmapi;
+		};
 		FAD5C5062AFCBE720040C61A /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = FAD5C4E72AFCBE700040C61A /* Project object */;
@@ -90,6 +132,20 @@
 			remoteInfo = GoInfoGame;
 		};
 /* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		A40E72842B5D462A00328848 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				A40E72802B5D462A00328848 /* osmapi.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		0513BE762B2B464800FB61CF /* samplepoint.gpx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = samplepoint.gpx; sourceTree = "<group>"; };
@@ -135,10 +191,30 @@
 		973FC03E2B59418B00878269 /* WayLit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WayLit.swift; sourceTree = "<group>"; };
 		973FC0412B59467A00878269 /* BusStopLit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BusStopLit.swift; sourceTree = "<group>"; };
 		973FC0432B59468800878269 /* BusStopLitForm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BusStopLitForm.swift; sourceTree = "<group>"; };
-		973FC0472B5A477E00878269 /* CrossMarking.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CrossMarking.swift; sourceTree = "<group>"; };
-		973FC0492B5A478C00878269 /* CrossMarkingForm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CrossMarkingForm.swift; sourceTree = "<group>"; };
+		973FC0472B5A477E00878269 /* CrossMarking.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = CrossMarking.swift; path = GoInfoGame/quests/CrossingMarking/CrossMarking.swift; sourceTree = SOURCE_ROOT; };
+		973FC0492B5A478C00878269 /* CrossMarkingForm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = CrossMarkingForm.swift; path = GoInfoGame/quests/CrossingMarking/CrossMarkingForm.swift; sourceTree = SOURCE_ROOT; };
 		973FC04B2B5A5F5F00878269 /* RadioItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RadioItem.swift; sourceTree = "<group>"; };
 		97F2FA8D2B0630C4000B9726 /* SwiftOverpassAPI.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = SwiftOverpassAPI.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		A40E72632B5CD65000328848 /* OverpassRequestManagerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OverpassRequestManagerTests.swift; sourceTree = "<group>"; };
+		A40E726A2B5D462A00328848 /* osmapi.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = osmapi.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		A40E726C2B5D462A00328848 /* osmapi.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = osmapi.h; sourceTree = "<group>"; };
+		A40E726D2B5D462A00328848 /* osmapi.docc */ = {isa = PBXFileReference; lastKnownFileType = folder.documentationcatalog; path = osmapi.docc; sourceTree = "<group>"; };
+		A40E72732B5D462A00328848 /* osmapiTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = osmapiTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		A40E727A2B5D462A00328848 /* osmapiTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = osmapiTests.swift; sourceTree = "<group>"; };
+		A40E72882B5D487C00328848 /* OSMConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OSMConfig.swift; sourceTree = "<group>"; };
+		A40E728A2B5D48A800328848 /* OSMConnection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OSMConnection.swift; sourceTree = "<group>"; };
+		A40E728C2B5D494100328848 /* OSMLogin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OSMLogin.swift; sourceTree = "<group>"; };
+		A40E728E2B5D4A3800328848 /* OSMConnectionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OSMConnectionTests.swift; sourceTree = "<group>"; };
+		A475C7CA2B5D4EE000BABEDA /* BaseNetworkManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseNetworkManager.swift; sourceTree = "<group>"; };
+		A475C7CD2B5D4FE200BABEDA /* OSMChangeset.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OSMChangeset.swift; sourceTree = "<group>"; };
+		A475C7D02B5D554100BABEDA /* OSMChangesetTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OSMChangesetTests.swift; sourceTree = "<group>"; };
+		A475C7D22B5E22C800BABEDA /* OSMNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OSMNode.swift; sourceTree = "<group>"; };
+		A475C7D62B5E244400BABEDA /* OSMNodeTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OSMNodeTest.swift; sourceTree = "<group>"; };
+		A475C7D82B5E264700BABEDA /* OSMWay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OSMWay.swift; sourceTree = "<group>"; };
+		A475C7DA2B5E267200BABEDA /* OSMWayTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OSMWayTest.swift; sourceTree = "<group>"; };
+		A475C7DC2B5E3E7C00BABEDA /* OSMPayload.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OSMPayload.swift; sourceTree = "<group>"; };
+		A475C7DF2B5E4B6E00BABEDA /* OSMXMLBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OSMXMLBuilder.swift; sourceTree = "<group>"; };
+		A475C7E22B5E4CB600BABEDA /* OSMXMLBuilderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OSMXMLBuilderTests.swift; sourceTree = "<group>"; };
 		A4E711A12B57A3B400C9DE08 /* SideWalkWidth.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SideWalkWidth.swift; sourceTree = "<group>"; };
 		A4E711A32B57B13100C9DE08 /* QuestionHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuestionHeader.swift; sourceTree = "<group>"; };
 		A4E711A52B57BBCA00C9DE08 /* QuestProtocols.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuestProtocols.swift; sourceTree = "<group>"; };
@@ -172,11 +248,27 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		A40E72672B5D462A00328848 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A40E72702B5D462A00328848 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A40E72742B5D462A00328848 /* osmapi.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		FAD5C4EC2AFCBE700040C61A /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 				97F2FA8A2B0630A3000B9726 /* Pods_GoInfoGame.framework in Frameworks */,
+				A40E727F2B5D462A00328848 /* osmapi.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -394,6 +486,69 @@
 			path = CrossingMarking;
 			sourceTree = "<group>";
 		};
+		A40E726B2B5D462A00328848 /* osmapi */ = {
+			isa = PBXGroup;
+			children = (
+				A475C7DE2B5E4B5800BABEDA /* xmlbuilder */,
+				A475C7CC2B5D4FD500BABEDA /* models */,
+				A40E726C2B5D462A00328848 /* osmapi.h */,
+				A40E726D2B5D462A00328848 /* osmapi.docc */,
+				A40E72882B5D487C00328848 /* OSMConfig.swift */,
+				A40E728A2B5D48A800328848 /* OSMConnection.swift */,
+				A40E728C2B5D494100328848 /* OSMLogin.swift */,
+				A475C7CA2B5D4EE000BABEDA /* BaseNetworkManager.swift */,
+			);
+			path = osmapi;
+			sourceTree = "<group>";
+		};
+		A40E72792B5D462A00328848 /* osmapiTests */ = {
+			isa = PBXGroup;
+			children = (
+				A475C7E12B5E4CA000BABEDA /* xmlbuilder */,
+				A475C7CF2B5D552F00BABEDA /* models */,
+				A40E727A2B5D462A00328848 /* osmapiTests.swift */,
+				A40E728E2B5D4A3800328848 /* OSMConnectionTests.swift */,
+			);
+			path = osmapiTests;
+			sourceTree = "<group>";
+		};
+		A475C7CC2B5D4FD500BABEDA /* models */ = {
+			isa = PBXGroup;
+			children = (
+				A475C7CD2B5D4FE200BABEDA /* OSMChangeset.swift */,
+				A475C7D22B5E22C800BABEDA /* OSMNode.swift */,
+				A475C7D82B5E264700BABEDA /* OSMWay.swift */,
+				A475C7DC2B5E3E7C00BABEDA /* OSMPayload.swift */,
+			);
+			path = models;
+			sourceTree = "<group>";
+		};
+		A475C7CF2B5D552F00BABEDA /* models */ = {
+			isa = PBXGroup;
+			children = (
+				A475C7D02B5D554100BABEDA /* OSMChangesetTests.swift */,
+				A475C7D62B5E244400BABEDA /* OSMNodeTest.swift */,
+				A475C7DA2B5E267200BABEDA /* OSMWayTest.swift */,
+			);
+			path = models;
+			sourceTree = "<group>";
+		};
+		A475C7DE2B5E4B5800BABEDA /* xmlbuilder */ = {
+			isa = PBXGroup;
+			children = (
+				A475C7DF2B5E4B6E00BABEDA /* OSMXMLBuilder.swift */,
+			);
+			path = xmlbuilder;
+			sourceTree = "<group>";
+		};
+		A475C7E12B5E4CA000BABEDA /* xmlbuilder */ = {
+			isa = PBXGroup;
+			children = (
+				A475C7E22B5E4CB600BABEDA /* OSMXMLBuilderTests.swift */,
+			);
+			path = xmlbuilder;
+			sourceTree = "<group>";
+		};
 		A4E7119A2B57A17600C9DE08 /* data */ = {
 			isa = PBXGroup;
 			children = (
@@ -463,6 +618,8 @@
 				FAD5C4F12AFCBE700040C61A /* GoInfoGame */,
 				FAD5C5082AFCBE720040C61A /* GoInfoGameTests */,
 				FAD5C5122AFCBE720040C61A /* GoInfoGameUITests */,
+				A40E726B2B5D462A00328848 /* osmapi */,
+				A40E72792B5D462A00328848 /* osmapiTests */,
 				FAD5C4F02AFCBE700040C61A /* Products */,
 				542FC000DFD01277B18A7CDB /* Pods */,
 				416A9A4590B07971607790B0 /* Frameworks */,
@@ -475,6 +632,8 @@
 				FAD5C4EF2AFCBE700040C61A /* GoInfoGame.app */,
 				FAD5C5052AFCBE720040C61A /* GoInfoGameTests.xctest */,
 				FAD5C50F2AFCBE720040C61A /* GoInfoGameUITests.xctest */,
+				A40E726A2B5D462A00328848 /* osmapi.framework */,
+				A40E72732B5D462A00328848 /* osmapiTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -508,6 +667,7 @@
 			isa = PBXGroup;
 			children = (
 				FAD5C5092AFCBE720040C61A /* GoInfoGameTests.swift */,
+				A40E72632B5CD65000328848 /* OverpassRequestManagerTests.swift */,
 			);
 			path = GoInfoGameTests;
 			sourceTree = "<group>";
@@ -523,7 +683,55 @@
 		};
 /* End PBXGroup section */
 
+/* Begin PBXHeadersBuildPhase section */
+		A40E72652B5D462A00328848 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A40E727C2B5D462A00328848 /* osmapi.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXHeadersBuildPhase section */
+
 /* Begin PBXNativeTarget section */
+		A40E72692B5D462A00328848 /* osmapi */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = A40E72812B5D462A00328848 /* Build configuration list for PBXNativeTarget "osmapi" */;
+			buildPhases = (
+				A40E72652B5D462A00328848 /* Headers */,
+				A40E72662B5D462A00328848 /* Sources */,
+				A40E72672B5D462A00328848 /* Frameworks */,
+				A40E72682B5D462A00328848 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = osmapi;
+			productName = osmapi;
+			productReference = A40E726A2B5D462A00328848 /* osmapi.framework */;
+			productType = "com.apple.product-type.framework";
+		};
+		A40E72722B5D462A00328848 /* osmapiTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = A40E72852B5D462A00328848 /* Build configuration list for PBXNativeTarget "osmapiTests" */;
+			buildPhases = (
+				A40E726F2B5D462A00328848 /* Sources */,
+				A40E72702B5D462A00328848 /* Frameworks */,
+				A40E72712B5D462A00328848 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				A40E72762B5D462A00328848 /* PBXTargetDependency */,
+				A40E72782B5D462A00328848 /* PBXTargetDependency */,
+			);
+			name = osmapiTests;
+			productName = osmapiTests;
+			productReference = A40E72732B5D462A00328848 /* osmapiTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 		FAD5C4EE2AFCBE700040C61A /* GoInfoGame */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = FAD5C5192AFCBE720040C61A /* Build configuration list for PBXNativeTarget "GoInfoGame" */;
@@ -533,10 +741,12 @@
 				FAD5C4EC2AFCBE700040C61A /* Frameworks */,
 				FAD5C4ED2AFCBE700040C61A /* Resources */,
 				04D7AD88F31E8154FD869DC0 /* [CP] Embed Pods Frameworks */,
+				A40E72842B5D462A00328848 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				A40E727E2B5D462A00328848 /* PBXTargetDependency */,
 			);
 			name = GoInfoGame;
 			productName = GoInfoGame;
@@ -589,9 +799,16 @@
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
-				LastSwiftUpdateCheck = 1410;
+				LastSwiftUpdateCheck = 1510;
 				LastUpgradeCheck = 1410;
 				TargetAttributes = {
+					A40E72692B5D462A00328848 = {
+						CreatedOnToolsVersion = 15.1;
+					};
+					A40E72722B5D462A00328848 = {
+						CreatedOnToolsVersion = 15.1;
+						TestTargetID = FAD5C4EE2AFCBE700040C61A;
+					};
 					FAD5C4EE2AFCBE700040C61A = {
 						CreatedOnToolsVersion = 14.1;
 					};
@@ -622,11 +839,27 @@
 				FAD5C4EE2AFCBE700040C61A /* GoInfoGame */,
 				FAD5C5042AFCBE720040C61A /* GoInfoGameTests */,
 				FAD5C50E2AFCBE720040C61A /* GoInfoGameUITests */,
+				A40E72692B5D462A00328848 /* osmapi */,
+				A40E72722B5D462A00328848 /* osmapiTests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		A40E72682B5D462A00328848 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A40E72712B5D462A00328848 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		FAD5C4ED2AFCBE700040C61A /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -759,6 +992,36 @@
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		A40E72662B5D462A00328848 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A40E726E2B5D462A00328848 /* osmapi.docc in Sources */,
+				A40E728D2B5D494100328848 /* OSMLogin.swift in Sources */,
+				A40E72892B5D487C00328848 /* OSMConfig.swift in Sources */,
+				A475C7E02B5E4B6E00BABEDA /* OSMXMLBuilder.swift in Sources */,
+				A475C7CB2B5D4EE000BABEDA /* BaseNetworkManager.swift in Sources */,
+				A475C7CE2B5D4FE200BABEDA /* OSMChangeset.swift in Sources */,
+				A40E728B2B5D48A800328848 /* OSMConnection.swift in Sources */,
+				A475C7D32B5E22C800BABEDA /* OSMNode.swift in Sources */,
+				A475C7D92B5E264700BABEDA /* OSMWay.swift in Sources */,
+				A475C7DD2B5E3E7C00BABEDA /* OSMPayload.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A40E726F2B5D462A00328848 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A475C7DB2B5E267200BABEDA /* OSMWayTest.swift in Sources */,
+				A475C7D12B5D554100BABEDA /* OSMChangesetTests.swift in Sources */,
+				A475C7D72B5E244400BABEDA /* OSMNodeTest.swift in Sources */,
+				A475C7E32B5E4CB600BABEDA /* OSMXMLBuilderTests.swift in Sources */,
+				A40E727B2B5D462A00328848 /* osmapiTests.swift in Sources */,
+				A40E728F2B5D4A3800328848 /* OSMConnectionTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		FAD5C4EB2AFCBE700040C61A /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -824,6 +1087,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A40E72642B5CD65000328848 /* OverpassRequestManagerTests.swift in Sources */,
 				FAD5C50A2AFCBE720040C61A /* GoInfoGameTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -840,6 +1104,21 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		A40E72762B5D462A00328848 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = A40E72692B5D462A00328848 /* osmapi */;
+			targetProxy = A40E72752B5D462A00328848 /* PBXContainerItemProxy */;
+		};
+		A40E72782B5D462A00328848 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = FAD5C4EE2AFCBE700040C61A /* GoInfoGame */;
+			targetProxy = A40E72772B5D462A00328848 /* PBXContainerItemProxy */;
+		};
+		A40E727E2B5D462A00328848 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = A40E72692B5D462A00328848 /* osmapi */;
+			targetProxy = A40E727D2B5D462A00328848 /* PBXContainerItemProxy */;
+		};
 		FAD5C5072AFCBE720040C61A /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = FAD5C4EE2AFCBE700040C61A /* GoInfoGame */;
@@ -881,6 +1160,128 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
+		A40E72822B5D462A00328848 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				DEVELOPMENT_TEAM = NPCMG529DV;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				ENABLE_MODULE_VERIFIER = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.2;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MARKETING_VERSION = 1.0;
+				MODULE_VERIFIER_SUPPORTED_LANGUAGES = "objective-c objective-c++";
+				MODULE_VERIFIER_SUPPORTED_LANGUAGE_STANDARDS = "gnu17 gnu++20";
+				PRODUCT_BUNDLE_IDENTIFIER = com.gaussiansolutions.osmapi;
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				SKIP_INSTALL = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Debug;
+		};
+		A40E72832B5D462A00328848 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				DEVELOPMENT_TEAM = NPCMG529DV;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				ENABLE_MODULE_VERIFIER = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.2;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MARKETING_VERSION = 1.0;
+				MODULE_VERIFIER_SUPPORTED_LANGUAGES = "objective-c objective-c++";
+				MODULE_VERIFIER_SUPPORTED_LANGUAGE_STANDARDS = "gnu17 gnu++20";
+				PRODUCT_BUNDLE_IDENTIFIER = com.gaussiansolutions.osmapi;
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Release;
+		};
+		A40E72862B5D462A00328848 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.2;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.gaussiansolutions.osmapiTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/GoInfoGame.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/GoInfoGame";
+			};
+			name = Debug;
+		};
+		A40E72872B5D462A00328848 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.2;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.gaussiansolutions.osmapiTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/GoInfoGame.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/GoInfoGame";
+			};
+			name = Release;
+		};
 		FAD5C5172AFCBE720040C61A /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -1001,6 +1402,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = F008D431593E568E75C48C84 /* Pods-GoInfoGame.debug.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
@@ -1034,6 +1436,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = C96303080D26026265099E0E /* Pods-GoInfoGame.release.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
@@ -1146,6 +1549,24 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		A40E72812B5D462A00328848 /* Build configuration list for PBXNativeTarget "osmapi" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A40E72822B5D462A00328848 /* Debug */,
+				A40E72832B5D462A00328848 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		A40E72852B5D462A00328848 /* Build configuration list for PBXNativeTarget "osmapiTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A40E72862B5D462A00328848 /* Debug */,
+				A40E72872B5D462A00328848 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		FAD5C4EA2AFCBE700040C61A /* Build configuration list for PBXProject "GoInfoGame" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (

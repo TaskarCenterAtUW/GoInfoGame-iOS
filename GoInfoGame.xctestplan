@@ -1,0 +1,29 @@
+{
+  "configurations" : [
+    {
+      "id" : "ACFC8A5C-935E-437D-ABE0-EAA09480D4F0",
+      "name" : "Test Scheme Action",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+    "codeCoverage" : false,
+    "targetForVariableExpansion" : {
+      "containerPath" : "container:GoInfoGame.xcodeproj",
+      "identifier" : "FAD5C4EE2AFCBE700040C61A",
+      "name" : "GoInfoGame"
+    }
+  },
+  "testTargets" : [
+    {
+      "target" : {
+        "containerPath" : "container:GoInfoGame.xcodeproj",
+        "identifier" : "FAD5C5042AFCBE720040C61A",
+        "name" : "GoInfoGameTests"
+      }
+    }
+  ],
+  "version" : 1
+}

@@ -22,6 +22,26 @@ class DatabaseConnector {
         }
     }
     
+    func saveElements(_ elements: [OPElement]) {
+        // Save the elements appropriately
+        // Get only the nodes out
+        let nodes = elements.filter({$0 is OPNode}).filter({!$0.tags.isEmpty})
+        do {
+            try realm.write {
+                for node in nodes {
+                    let storedElement = StoredElement()
+                    storedElement.id = node.id
+                    for tag in node.tags {
+                        storedElement.tags.setValue(tag.value, forKey: tag.key)
+                    }
+                    realm.add(storedElement, update: .modified)
+                }
+            }
+        } catch {
+            print("Elements to be skipped or something happened")
+        }
+    }
+    
     func saveElements(_ elements: [OPWay]) {
         do {
             try realm.write {
@@ -64,6 +84,10 @@ class DatabaseConnector {
         } catch {
             print("Error saving elements to Realm: \(error)")
         }
+    }
+    
+    func getNodes() -> Results<StoredElement> {
+        return realm.objects(StoredElement.self)
     }
     
     func getElements() -> Results<RealmOPElement> {

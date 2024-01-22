@@ -7,6 +7,8 @@
 
 import Foundation
 import MapKit
+import RealmSwift
+
 
 // Extension to check if a polyline intersects with a coordinate
 extension MKPolyline {
@@ -18,4 +20,24 @@ extension MKPolyline {
         let polylineBounds = polylineRenderer.path.boundingBox
         return polylineBounds.contains(polylinePoint)
     }
+}
+
+extension CLLocationCoordinate2D: CustomPersistable {
+    
+    public static func == (lhs: CLLocationCoordinate2D, rhs: CLLocationCoordinate2D) -> Bool {
+        (lhs.latitude == rhs.latitude) && (lhs.longitude == rhs.longitude)
+    }
+    
+    public typealias PersistedType = Location
+    public init(persistedValue: PersistedType) {
+        self.init(latitude: persistedValue.latitude, longitude: persistedValue.longitude)
+    }
+    public var persistableValue: PersistedType {
+        Location(value: [self.latitude,self.longitude])
+    }
+}
+
+public class Location: EmbeddedObject {
+    @Persisted var latitude: Double
+    @Persisted var longitude: Double
 }

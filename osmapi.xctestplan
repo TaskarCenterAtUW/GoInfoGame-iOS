@@ -1,0 +1,24 @@
+{
+  "configurations" : [
+    {
+      "id" : "98A2E7AB-3E00-47AA-94EF-ABC286DED5CA",
+      "name" : "Test Scheme Action",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+    "codeCoverage" : false
+  },
+  "testTargets" : [
+    {
+      "target" : {
+        "containerPath" : "container:GoInfoGame.xcodeproj",
+        "identifier" : "A40E72722B5D462A00328848",
+        "name" : "osmapiTests"
+      }
+    }
+  ],
+  "version" : 1
+}
