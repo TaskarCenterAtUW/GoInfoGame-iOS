@@ -10,3 +10,12 @@ protocol OSMPayload {
     
      func toPayload() -> String
 }
+
+struct TagPayload: OSMPayload {
+    let key:String
+    let value:String
+    
+    func toPayload() -> String {
+         return "<tag k=\"\(key)\" v=\"\(value)\"/>"
+    }
+}

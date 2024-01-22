@@ -112,4 +112,8 @@ class OSMConnection {
     }
     
     
+    func updateNode(node: OSMNode, tags:[String:String]){
+        
+    }
+    
 }

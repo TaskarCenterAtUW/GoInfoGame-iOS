@@ -69,6 +69,8 @@
 		A475C7D92B5E264700BABEDA /* OSMWay.swift in Sources */ = {isa = PBXBuildFile; fileRef = A475C7D82B5E264700BABEDA /* OSMWay.swift */; };
 		A475C7DB2B5E267200BABEDA /* OSMWayTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = A475C7DA2B5E267200BABEDA /* OSMWayTest.swift */; };
 		A475C7DD2B5E3E7C00BABEDA /* OSMPayload.swift in Sources */ = {isa = PBXBuildFile; fileRef = A475C7DC2B5E3E7C00BABEDA /* OSMPayload.swift */; };
+		A475C7E02B5E4B6E00BABEDA /* OSMXMLBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = A475C7DF2B5E4B6E00BABEDA /* OSMXMLBuilder.swift */; };
+		A475C7E32B5E4CB600BABEDA /* OSMXMLBuilderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A475C7E22B5E4CB600BABEDA /* OSMXMLBuilderTests.swift */; };
 		A4E711A22B57A3B400C9DE08 /* SideWalkWidth.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4E711A12B57A3B400C9DE08 /* SideWalkWidth.swift */; };
 		A4E711A42B57B13100C9DE08 /* QuestionHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4E711A32B57B13100C9DE08 /* QuestionHeader.swift */; };
 		A4E711A62B57BBCA00C9DE08 /* QuestProtocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4E711A52B57BBCA00C9DE08 /* QuestProtocols.swift */; };
@@ -211,6 +213,8 @@
 		A475C7D82B5E264700BABEDA /* OSMWay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OSMWay.swift; sourceTree = "<group>"; };
 		A475C7DA2B5E267200BABEDA /* OSMWayTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OSMWayTest.swift; sourceTree = "<group>"; };
 		A475C7DC2B5E3E7C00BABEDA /* OSMPayload.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OSMPayload.swift; sourceTree = "<group>"; };
+		A475C7DF2B5E4B6E00BABEDA /* OSMXMLBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OSMXMLBuilder.swift; sourceTree = "<group>"; };
+		A475C7E22B5E4CB600BABEDA /* OSMXMLBuilderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OSMXMLBuilderTests.swift; sourceTree = "<group>"; };
 		A4E711A12B57A3B400C9DE08 /* SideWalkWidth.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SideWalkWidth.swift; sourceTree = "<group>"; };
 		A4E711A32B57B13100C9DE08 /* QuestionHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuestionHeader.swift; sourceTree = "<group>"; };
 		A4E711A52B57BBCA00C9DE08 /* QuestProtocols.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuestProtocols.swift; sourceTree = "<group>"; };
@@ -483,6 +487,7 @@
 		A40E726B2B5D462A00328848 /* osmapi */ = {
 			isa = PBXGroup;
 			children = (
+				A475C7DE2B5E4B5800BABEDA /* xmlbuilder */,
 				A475C7CC2B5D4FD500BABEDA /* models */,
 				A40E726C2B5D462A00328848 /* osmapi.h */,
 				A40E726D2B5D462A00328848 /* osmapi.docc */,
@@ -497,6 +502,7 @@
 		A40E72792B5D462A00328848 /* osmapiTests */ = {
 			isa = PBXGroup;
 			children = (
+				A475C7E12B5E4CA000BABEDA /* xmlbuilder */,
 				A475C7CF2B5D552F00BABEDA /* models */,
 				A40E727A2B5D462A00328848 /* osmapiTests.swift */,
 				A40E728E2B5D4A3800328848 /* OSMConnectionTests.swift */,
@@ -523,6 +529,22 @@
 				A475C7DA2B5E267200BABEDA /* OSMWayTest.swift */,
 			);
 			path = models;
+			sourceTree = "<group>";
+		};
+		A475C7DE2B5E4B5800BABEDA /* xmlbuilder */ = {
+			isa = PBXGroup;
+			children = (
+				A475C7DF2B5E4B6E00BABEDA /* OSMXMLBuilder.swift */,
+			);
+			path = xmlbuilder;
+			sourceTree = "<group>";
+		};
+		A475C7E12B5E4CA000BABEDA /* xmlbuilder */ = {
+			isa = PBXGroup;
+			children = (
+				A475C7E22B5E4CB600BABEDA /* OSMXMLBuilderTests.swift */,
+			);
+			path = xmlbuilder;
 			sourceTree = "<group>";
 		};
 		A4E7119A2B57A17600C9DE08 /* data */ = {
@@ -975,6 +997,7 @@
 				A40E726E2B5D462A00328848 /* osmapi.docc in Sources */,
 				A40E728D2B5D494100328848 /* OSMLogin.swift in Sources */,
 				A40E72892B5D487C00328848 /* OSMConfig.swift in Sources */,
+				A475C7E02B5E4B6E00BABEDA /* OSMXMLBuilder.swift in Sources */,
 				A475C7CB2B5D4EE000BABEDA /* BaseNetworkManager.swift in Sources */,
 				A475C7CE2B5D4FE200BABEDA /* OSMChangeset.swift in Sources */,
 				A40E728B2B5D48A800328848 /* OSMConnection.swift in Sources */,
@@ -991,6 +1014,7 @@
 				A475C7DB2B5E267200BABEDA /* OSMWayTest.swift in Sources */,
 				A475C7D12B5D554100BABEDA /* OSMChangesetTests.swift in Sources */,
 				A475C7D72B5E244400BABEDA /* OSMNodeTest.swift in Sources */,
+				A475C7E32B5E4CB600BABEDA /* OSMXMLBuilderTests.swift in Sources */,
 				A40E727B2B5D462A00328848 /* osmapiTests.swift in Sources */,
 				A40E728F2B5D4A3800328848 /* OSMConnectionTests.swift in Sources */,
 			);
