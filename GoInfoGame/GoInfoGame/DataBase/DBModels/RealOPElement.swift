@@ -24,6 +24,7 @@ class RealmOPElement: Object {
     }
 }
 
+// Base class for storing stuff. Not sure what @Persisted means
 class StoredElement : Object {
     @Persisted(primaryKey: true) var id: Int = 0
     @Persisted var tags = Map<String,String>()

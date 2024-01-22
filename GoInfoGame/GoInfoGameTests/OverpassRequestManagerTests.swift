@@ -64,9 +64,6 @@ final class OverpassRequestManagerTests: XCTestCase {
             
             let nodes = allValues.filter({$0 is OPNode}).filter({!$0.tags.isEmpty})
             let ways = allValues.filter({$0  is OPWay}).filter({!$0.tags.isEmpty})
-            // Try to look at the first node and way
-            let firstNode = nodes.first
-            let firstWay = ways.first
             expec.fulfill()
         }
         

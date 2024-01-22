@@ -14,9 +14,9 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "FAD5C4EE2AFCBE700040C61A"
-               BuildableName = "GoInfoGame.app"
-               BlueprintName = "GoInfoGame"
+               BlueprintIdentifier = "A40E72692B5D462A00328848"
+               BuildableName = "osmapi.framework"
+               BlueprintName = "osmapi"
                ReferencedContainer = "container:GoInfoGame.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -29,23 +29,10 @@
       shouldUseLaunchSchemeArgsEnv = "YES">
       <TestPlans>
          <TestPlanReference
-            reference = "container:../GoInfoGame.xctestplan"
+            reference = "container:../osmapi.xctestplan"
             default = "YES">
          </TestPlanReference>
       </TestPlans>
-      <Testables>
-         <TestableReference
-            skipped = "NO"
-            parallelizable = "YES">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "A40E72722B5D462A00328848"
-               BuildableName = "osmapiTests.xctest"
-               BlueprintName = "osmapiTests"
-               ReferencedContainer = "container:GoInfoGame.xcodeproj">
-            </BuildableReference>
-         </TestableReference>
-      </Testables>
    </TestAction>
    <LaunchAction
       buildConfiguration = "Debug"
@@ -57,16 +44,6 @@
       debugDocumentVersioning = "YES"
       debugServiceExtension = "internal"
       allowLocationSimulation = "YES">
-      <BuildableProductRunnable
-         runnableDebuggingMode = "0">
-         <BuildableReference
-            BuildableIdentifier = "primary"
-            BlueprintIdentifier = "FAD5C4EE2AFCBE700040C61A"
-            BuildableName = "GoInfoGame.app"
-            BlueprintName = "GoInfoGame"
-            ReferencedContainer = "container:GoInfoGame.xcodeproj">
-         </BuildableReference>
-      </BuildableProductRunnable>
    </LaunchAction>
    <ProfileAction
       buildConfiguration = "Release"
@@ -74,16 +51,15 @@
       savedToolIdentifier = ""
       useCustomWorkingDirectory = "NO"
       debugDocumentVersioning = "YES">
-      <BuildableProductRunnable
-         runnableDebuggingMode = "0">
+      <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "FAD5C4EE2AFCBE700040C61A"
-            BuildableName = "GoInfoGame.app"
-            BlueprintName = "GoInfoGame"
+            BlueprintIdentifier = "A40E72692B5D462A00328848"
+            BuildableName = "osmapi.framework"
+            BlueprintName = "osmapi"
             ReferencedContainer = "container:GoInfoGame.xcodeproj">
          </BuildableReference>
-      </BuildableProductRunnable>
+      </MacroExpansion>
    </ProfileAction>
    <AnalyzeAction
       buildConfiguration = "Debug">
