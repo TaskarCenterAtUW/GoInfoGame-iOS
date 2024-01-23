@@ -37,7 +37,8 @@ class OverpassRequestManager {
                 .setBoundingBox(bbox.toOPBox())
                 .setOutputType(.geometry)
                 .buildQueryString()
-            client.fetchElements(query: query) { result in
+          let changedQuery =  query.replacingOccurrences(of: "geom", with: "meta") // get meta
+            client.fetchElements(query: changedQuery) { result in
                 switch result{
                 case .failure(let error):
                     print(error)

@@ -34,6 +34,9 @@ class DatabaseConnector {
                     for tag in node.tags {
                         storedElement.tags.setValue(tag.value, forKey: tag.key)
                     }
+                    if let meta = node.meta {
+                        storedElement.version = meta.version
+                    }
                     realm.add(storedElement, update: .modified)
                 }
             }

@@ -16,7 +16,12 @@ class SideWalkWidth : Quest {
         DisplayUnit(title: self.title, description: "",parent: self, sheetSize: .MEDIUM)
     }
     var title: String = "Side Walk Width"
-    var filter: String = ""
+    var filter: String = """
+                        ways with
+                        ( highway = footway
+                        or foot = yes)
+                        and !width
+                        """
     var icon: UIImage = #imageLiteral(resourceName: "sidewalk-width-img")
     var wikiLink: String = ""
     var changesetComment: String = ""
