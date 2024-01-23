@@ -21,13 +21,13 @@ public protocol Element : Codable {
     var type: ElementType {get}
 }
 
-class LatLon: Codable {
+public class LatLon: Codable {
     
-    let latitude: Double
+    public let latitude: Double
     
-    let longitude: Double
+   public let longitude: Double
     
-    init(latitude: Double, longitude: Double) {
+    public init(latitude: Double, longitude: Double) {
         Self.checkValidity(latitude: latitude, longitude: longitude)
         self.latitude = latitude
         self.longitude = longitude
@@ -114,20 +114,20 @@ class Way: Element {
     
 }
 
-class Node : Element {
-    var id: Int64
+public class Node : Element {
+    public var id: Int64
     
-    var version: Int
+    public var version: Int
     
-    var tags: [String : String]
+    public var tags: [String : String]
     
-    var timestampEdited: Int64
+    public var timestampEdited: Int64
     
-    var type: ElementType = .node
+    public var type: ElementType = .node
     
     let position: LatLon
     
-    init(id: Int64, version: Int, tags: [String : String], timestampEdited: Int64, position: LatLon, type: ElementType = .node) {
+   public init(id: Int64, version: Int, tags: [String : String], timestampEdited: Int64, position: LatLon, type: ElementType = .node) {
         self.id = id
         self.version = version
         self.tags = tags

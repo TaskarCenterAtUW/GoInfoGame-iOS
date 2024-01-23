@@ -15,6 +15,15 @@ class StoredElement : Object {
     @Persisted var version: Int = 0
     
     // Give another method that gives node
+    public func asNode() -> Node {
+        let position = LatLon(latitude: 0.0, longitude: 0.0)
+        var theTags: [String:String] = [:]
+        for (key,value) in tags.asKeyValueSequence(){
+            theTags[key] = value
+        }
+        let n = Node(id: Int64(id), version: version, tags: theTags, timestampEdited: 0, position: position)
+        return n
+    }
 //    public func asNode() -> Node {
 //        return Node(id: id, version: version, tags: tags, timestampEdited: 0, position: )
 //        

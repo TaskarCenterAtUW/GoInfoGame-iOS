@@ -8,7 +8,7 @@
 import XCTest
 @testable import GoInfoGame
 @testable import SwiftOverpassAPI
-
+@testable import osmparser
 /**
  Used to test the flow of information
   This fetches the information and sends things down
@@ -21,6 +21,10 @@ final class UserFlowTests: XCTestCase {
     
     override func setUpWithError() throws {
         // Put setup code here. This method is called before the invocation of each test method in the class.
+//       seedData()
+    }
+    
+    func seedData() {
         let expec = expectation(description: "Fetches the elements from Overpass Manager and stores in Database")
         let kirklandBBox = BBox(minLat: 47.70312160869372, maxLat: 47.718964653825054, minLon: -122.20866792353317, maxLon: -122.18570621653987)
         opManager.fetchElements(fromBBox: kirklandBBox) { fetchedElements in
@@ -30,9 +34,6 @@ final class UserFlowTests: XCTestCase {
             let nodes = allValues.filter({$0 is OPNode}).filter({!$0.tags.isEmpty})
             let ways = allValues.filter({$0  is OPWay}).filter({!$0.tags.isEmpty})
             self.dbInstance.saveElements(nodes) // Save nodes
-//            let nodesFromStorage = dbInstance.getNodes()
-//            XCTAssertEqual(nodes.count, nodesFromStorage.count)
-            
             expec.fulfill()
         }
         
@@ -43,11 +44,23 @@ final class UserFlowTests: XCTestCase {
         let nodesFromStorage = dbInstance.getNodes()
         XCTAssert(nodesFromStorage.count > 0)
         // Get the Nodes from the above
+        let nodeElements = nodesFromStorage.map({$0.asNode()})
         let testQuest = TestQuest()
-        for singleNode in nodesFromStorage {
+        var applicableElements: [Element] = []
+        for singleNode in nodeElements {
 //            testQuest.isApplicable(element: singleNode)
+            let isApplicable = testQuest.isApplicable(element: singleNode)
+            if (isApplicable){
+                applicableElements.append(singleNode)
+                print(singleNode.tags)
+            }
         }
-        
+        print(applicableElements.count)
+////        print(applicableElements)
+//        if(!applicableElements.isEmpty){
+//            let firstNode = applicableElements.first
+//            print(firstNode?.tags)
+//        }
         
     }
 

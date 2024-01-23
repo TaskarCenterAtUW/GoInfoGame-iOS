@@ -24,21 +24,14 @@ class TestQuest : Quest {
     var title: String = ""
     
     var filter: String = """
-nodes, ways, relations with
-    (
-      public_transport = platform
-      or (highway = bus_stop and public_transport != stop_position)
-    )
-    and physically_present != no and naptan:BusStopType != HAR
-    and location !~ underground|indoor
-    and indoor != yes
-    and (!level or level >= 0)
-    and (
-      !lit
-      or lit = no and lit older today -8 years
-      or lit older today -16 years
-    )
+    nodes with
+                (highway=bus_stop and public_transport!=stop_position)
+                 and !lit
 """
+    /*
+     ["ref": "74078", "source": "King County GIS", "public_transport": "platform", "highway": "bus_stop", "name": "NE 124th St & 107th Pl NE", "gtfs:dataset_id": "KCGIS", "bus": "yes", "gtfs:stop_id": "74078"]
+     ["source": "King County GIS", "bus": "yes", "highway": "bus_stop", "gtfs:stop_id": "74078", "public_transport": "platform", "ref": "74078", "gtfs:dataset_id": "KCGIS", "name": "NE 124th St & 107th Pl NE"]
+     */
     
     var icon: UIImage = #imageLiteral(resourceName: "add_way_lit.pdf")
     
