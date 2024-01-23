@@ -13,7 +13,4 @@
    <FileRef
       location = "group:../osmapi.xctestplan">
    </FileRef>
-   <FileRef
-      location = "group:../osmparser.xctestplan">
-   </FileRef>
 </Workspace>
