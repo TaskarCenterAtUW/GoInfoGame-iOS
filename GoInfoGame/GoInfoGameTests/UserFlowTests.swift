@@ -33,7 +33,8 @@ final class UserFlowTests: XCTestCase {
             
             let nodes = allValues.filter({$0 is OPNode}).filter({!$0.tags.isEmpty})
             let ways = allValues.filter({$0  is OPWay}).filter({!$0.tags.isEmpty})
-            self.dbInstance.saveElements(nodes) // Save nodes
+            let allElements = allValues.filter({!$0.tags.isEmpty})
+            self.dbInstance.saveElements(allElements) // Save all where there are tags
             expec.fulfill()
         }
         
@@ -42,9 +43,11 @@ final class UserFlowTests: XCTestCase {
     
     func testDataInserts() throws {
         let nodesFromStorage = dbInstance.getNodes()
+        let waysFromStorage = dbInstance.getWays()
         XCTAssert(nodesFromStorage.count > 0)
         // Get the Nodes from the above
         let nodeElements = nodesFromStorage.map({$0.asNode()})
+        let wayElements = waysFromStorage.map({$0.asWay()})
         let testQuest = TestQuest()
         var applicableElements: [Element] = []
         for singleNode in nodeElements {
@@ -53,6 +56,13 @@ final class UserFlowTests: XCTestCase {
             if (isApplicable){
                 applicableElements.append(singleNode)
                 print(singleNode.tags)
+            }
+        }
+        for singleWay in wayElements {
+            let isApplicable = testQuest.isApplicable(element: singleWay)
+            if (isApplicable){
+                applicableElements.append(singleWay)
+                print(singleWay.tags)
             }
         }
         print(applicableElements.count)

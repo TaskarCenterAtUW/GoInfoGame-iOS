@@ -64,6 +64,11 @@ final class OverpassRequestManagerTests: XCTestCase {
             
             let nodes = allValues.filter({$0 is OPNode}).filter({!$0.tags.isEmpty})
             let ways = allValues.filter({$0  is OPWay}).filter({!$0.tags.isEmpty})
+            if(nodes.count > 0){
+                if let firstNode = nodes.first as? OPNode {
+                    print(firstNode.geometry)
+                }
+            }
             expec.fulfill()
         }
         
@@ -82,9 +87,12 @@ final class OverpassRequestManagerTests: XCTestCase {
             
             let nodes = allValues.filter({$0 is OPNode}).filter({!$0.tags.isEmpty})
             let ways = allValues.filter({$0  is OPWay}).filter({!$0.tags.isEmpty})
-            dbInstance.saveElements(nodes) // Save nodes
+            let allElements = allValues.filter({!$0.tags.isEmpty})
+            dbInstance.saveElements(allElements) // Save nodes
             let nodesFromStorage = dbInstance.getNodes()
+            let waysFromStorage = dbInstance.getWays()
             XCTAssertEqual(nodes.count, nodesFromStorage.count)
+            XCTAssertEqual(ways.count, waysFromStorage.count)
             
             expec.fulfill()
         }

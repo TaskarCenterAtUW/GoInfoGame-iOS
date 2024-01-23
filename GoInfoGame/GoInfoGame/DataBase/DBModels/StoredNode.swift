@@ -1,18 +1,23 @@
 //
-//  StoredElement.swift
+//  StoredNode.swift
 //  GoInfoGame
 //
-//  Created by Naresh Devalapally on 1/22/24.
+//  Created by Naresh Devalapally on 1/23/24.
 //
 
 import Foundation
 import RealmSwift
 import osmparser
-// Base class for storing stuff. Not sure what @Persisted means
-class StoredElement : Object {
+import MapKit
+
+// Stores a node instance
+class StoredNode : Object {
+    
     @Persisted(primaryKey: true) var id: Int = 0
     @Persisted var tags = Map<String,String>()
     @Persisted var version: Int = 0
+    @Persisted var timestamp : String = ""
+    @Persisted var point: CLLocationCoordinate2D = CLLocationCoordinate2D(latitude: 0.0, longitude: 0.0)
     
     // Give another method that gives node
     public func asNode() -> Node {

@@ -124,6 +124,8 @@
 		A4AD138C2B5E92080041A881 /* ElementFiltersTestUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4AD137C2B5E92080041A881 /* ElementFiltersTestUtils.swift */; };
 		A4AD138D2B5E92080041A881 /* HasKeyTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4AD137D2B5E92080041A881 /* HasKeyTest.swift */; };
 		A4AD138E2B5E92080041A881 /* HasDateTagLessThanTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4AD137E2B5E92080041A881 /* HasDateTagLessThanTest.swift */; };
+		A4B83AF12B5F92FA006684CA /* StoredNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4B83AF02B5F92FA006684CA /* StoredNode.swift */; };
+		A4B83AF32B5F9385006684CA /* StoredWay.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4B83AF22B5F9385006684CA /* StoredWay.swift */; };
 		A4E711A22B57A3B400C9DE08 /* SideWalkWidth.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4E711A12B57A3B400C9DE08 /* SideWalkWidth.swift */; };
 		A4E711A42B57B13100C9DE08 /* QuestionHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4E711A32B57B13100C9DE08 /* QuestionHeader.swift */; };
 		A4E711A62B57BBCA00C9DE08 /* QuestProtocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4E711A52B57BBCA00C9DE08 /* QuestProtocols.swift */; };
@@ -342,6 +344,8 @@
 		A4AD137C2B5E92080041A881 /* ElementFiltersTestUtils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ElementFiltersTestUtils.swift; sourceTree = "<group>"; };
 		A4AD137D2B5E92080041A881 /* HasKeyTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HasKeyTest.swift; sourceTree = "<group>"; };
 		A4AD137E2B5E92080041A881 /* HasDateTagLessThanTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HasDateTagLessThanTest.swift; sourceTree = "<group>"; };
+		A4B83AF02B5F92FA006684CA /* StoredNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoredNode.swift; sourceTree = "<group>"; };
+		A4B83AF22B5F9385006684CA /* StoredWay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoredWay.swift; sourceTree = "<group>"; };
 		A4E711A12B57A3B400C9DE08 /* SideWalkWidth.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SideWalkWidth.swift; sourceTree = "<group>"; };
 		A4E711A32B57B13100C9DE08 /* QuestionHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuestionHeader.swift; sourceTree = "<group>"; };
 		A4E711A52B57BBCA00C9DE08 /* QuestProtocols.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuestProtocols.swift; sourceTree = "<group>"; };
@@ -526,6 +530,8 @@
 				05DBBB632B17204300B6F110 /* RealmOPGeometry.swift */,
 				05DBBB652B17209600B6F110 /* RealmOPMeta.swift */,
 				A4AD130B2B5E80F20041A881 /* StoredElement.swift */,
+				A4B83AF02B5F92FA006684CA /* StoredNode.swift */,
+				A4B83AF22B5F9385006684CA /* StoredWay.swift */,
 			);
 			path = DBModels;
 			sourceTree = "<group>";
@@ -1440,6 +1446,7 @@
 			files = (
 				A4AD130C2B5E80F20041A881 /* StoredElement.swift in Sources */,
 				05DBBB5D2B1262BA00B6F110 /* OverpassRepository.swift in Sources */,
+				A4B83AF12B5F92FA006684CA /* StoredNode.swift in Sources */,
 				0536DD852B0BD11A00B04C4B /* LoginViewController.swift in Sources */,
 				A4E711A42B57B13100C9DE08 /* QuestionHeader.swift in Sources */,
 				973FC0442B59468800878269 /* BusStopLitForm.swift in Sources */,
@@ -1474,6 +1481,7 @@
 				973FC04A2B5A478C00878269 /* CrossMarkingForm.swift in Sources */,
 				973FC03F2B59418B00878269 /* WayLit.swift in Sources */,
 				FA5853C12B21F17F00301CDA /* OnboardingView.swift in Sources */,
+				A4B83AF32B5F9385006684CA /* StoredWay.swift in Sources */,
 				05DBBB5F2B1263FF00B6F110 /* DatabaseConnector.swift in Sources */,
 				FAF44FC12B30850A004FE664 /* OnboardingView3.swift in Sources */,
 				0536DD972B0BD95100B04C4B /* URLSession+Extension.swift in Sources */,

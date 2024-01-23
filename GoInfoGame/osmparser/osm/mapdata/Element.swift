@@ -87,23 +87,23 @@ class Relation: Element {
     
 }
 
-class Way: Element {
-    var id: Int64
+public class Way: Element {
+    public var id: Int64
     
-    var version: Int
+    public var version: Int
     
-    var tags: [String : String]
+    public var tags: [String : String]
     
-    var timestampEdited: Int64
+    public var timestampEdited: Int64
     
-    var type: ElementType = .way
+    public var type: ElementType = .way
     
     var nodeIds: [Int64] = []
     
     var isClosed: Bool {
         nodeIds.count >= 3 && nodeIds.first == nodeIds.last
     }
-    init(id: Int64, version: Int, tags: [String : String], timestampEdited: Int64, type: ElementType, nodeIds: [Int64]) {
+   public init(id: Int64, version: Int, tags: [String : String], timestampEdited: Int64, type: ElementType, nodeIds: [Int64]) {
         self.id = id
         self.version = version
         self.tags = tags
