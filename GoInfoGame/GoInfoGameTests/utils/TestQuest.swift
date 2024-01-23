@@ -24,9 +24,12 @@ class TestQuest : Quest {
     var title: String = ""
     
     var filter: String = """
-    nodes with
-                (highway=bus_stop and public_transport!=stop_position)
-                 and !lit
+    ways with (
+        (
+            highway = footway
+        or foot = yes)
+        and !width
+    )
 """
     /*
      ["ref": "74078", "source": "King County GIS", "public_transport": "platform", "highway": "bus_stop", "name": "NE 124th St & 107th Pl NE", "gtfs:dataset_id": "KCGIS", "bus": "yes", "gtfs:stop_id": "74078"]

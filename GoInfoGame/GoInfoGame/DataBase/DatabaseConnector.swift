@@ -24,20 +24,47 @@ class DatabaseConnector {
     
     func saveElements(_ elements: [OPElement]) {
         // Save the elements appropriately
-        // Get only the nodes out
+        // Get the ways and nodes out
         let nodes = elements.filter({$0 is OPNode}).filter({!$0.tags.isEmpty})
+        let ways = elements.filter({$0 is OPWay}).filter({!$0.tags.isEmpty})
         do {
             try realm.write {
                 for node in nodes {
-                    let storedElement = StoredElement()
+                    let storedElement = StoredNode()
                     storedElement.id = node.id
                     for tag in node.tags {
                         storedElement.tags.setValue(tag.value, forKey: tag.key)
                     }
                     if let meta = node.meta {
                         storedElement.version = meta.version
+                        storedElement.timestamp = meta.timestamp
+                    }
+                    if let asNode = node as? OPNode{
+                        switch asNode.geometry {
+                        case .center(let coordinate):
+                            storedElement.point = coordinate
+                        default:
+                            continue
+                        }
                     }
                     realm.add(storedElement, update: .modified)
+                }
+                // Store the ways
+                for way in ways {
+                    let storedWay = StoredWay()
+                    storedWay.id = way.id
+                    for tag in way.tags {
+                        storedWay.tags.setValue(tag.value, forKey: tag.key)
+                    }
+                    
+                    if let meta = way.meta {
+                        storedWay.version = meta.version
+                        storedWay.timestamp = meta.timestamp
+                    }
+                    if let asWay = way as? OPWay {
+                        storedWay.nodes.append(objectsIn: asWay.nodes.map({Int64($0)}))
+                    }
+                    realm.add(storedWay, update: .modified)
                 }
             }
         } catch {
@@ -89,9 +116,14 @@ class DatabaseConnector {
         }
     }
     
-    func getNodes() -> Results<StoredElement> {
-        return realm.objects(StoredElement.self)
+    func getNodes() -> Results<StoredNode> {
+        return realm.objects(StoredNode.self)
     }
+    func getWays() -> Results<StoredWay> {
+        return realm.objects(StoredWay.self)
+    }
+    
+    
     
     func getElements() -> Results<RealmOPElement> {
         return realm.objects(RealmOPElement.self)
