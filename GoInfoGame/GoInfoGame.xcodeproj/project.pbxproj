@@ -23,6 +23,8 @@
 		05DBBB622B164D9A00B6F110 /* RealOPElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05DBBB612B164D9A00B6F110 /* RealOPElement.swift */; };
 		05DBBB642B17204300B6F110 /* RealmOPGeometry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05DBBB632B17204300B6F110 /* RealmOPGeometry.swift */; };
 		05DBBB662B17209600B6F110 /* RealmOPMeta.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05DBBB652B17209600B6F110 /* RealmOPMeta.swift */; };
+		188843AD2B5FA2DF0008DCF8 /* TactilePavingStepsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 188843AC2B5FA2DF0008DCF8 /* TactilePavingStepsTests.swift */; };
+		188843AF2B5FB32D0008DCF8 /* WayLitTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 188843AE2B5FB32D0008DCF8 /* WayLitTests.swift */; };
 		342561966FC217124BD9CFE7 /* Pods_GoInfoGame_GoInfoGameUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2D539E22EFF6636F8CBA035A /* Pods_GoInfoGame_GoInfoGameUITests.framework */; };
 		74D8E739AE340D54DEF2E74C /* Pods_GoInfoGameTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 066F85ADCDCE7357368131F8 /* Pods_GoInfoGameTests.framework */; };
 		972454152B14A49A0036B91A /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 972454142B14A49A0036B91A /* Extensions.swift */; };
@@ -242,6 +244,8 @@
 		05DBBB632B17204300B6F110 /* RealmOPGeometry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RealmOPGeometry.swift; sourceTree = "<group>"; };
 		05DBBB652B17209600B6F110 /* RealmOPMeta.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RealmOPMeta.swift; sourceTree = "<group>"; };
 		066F85ADCDCE7357368131F8 /* Pods_GoInfoGameTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_GoInfoGameTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		188843AC2B5FA2DF0008DCF8 /* TactilePavingStepsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TactilePavingStepsTests.swift; sourceTree = "<group>"; };
+		188843AE2B5FB32D0008DCF8 /* WayLitTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WayLitTests.swift; sourceTree = "<group>"; };
 		2D539E22EFF6636F8CBA035A /* Pods_GoInfoGame_GoInfoGameUITests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_GoInfoGame_GoInfoGameUITests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		3D797A45474D6135AFA24613 /* Pods-GoInfoGameTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-GoInfoGameTests.debug.xcconfig"; path = "Target Support Files/Pods-GoInfoGameTests/Pods-GoInfoGameTests.debug.xcconfig"; sourceTree = "<group>"; };
 		66BED441AF03CC04539E8D4A /* Pods_GoInfoGame.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_GoInfoGame.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -534,6 +538,15 @@
 				A4B83AF22B5F9385006684CA /* StoredWay.swift */,
 			);
 			path = DBModels;
+			sourceTree = "<group>";
+		};
+		188843AB2B5FA2BC0008DCF8 /* quests */ = {
+			isa = PBXGroup;
+			children = (
+				188843AC2B5FA2DF0008DCF8 /* TactilePavingStepsTests.swift */,
+				188843AE2B5FB32D0008DCF8 /* WayLitTests.swift */,
+			);
+			path = quests;
 			sourceTree = "<group>";
 		};
 		416A9A4590B07971607790B0 /* Frameworks */ = {
@@ -953,6 +966,7 @@
 		FAD5C5082AFCBE720040C61A /* GoInfoGameTests */ = {
 			isa = PBXGroup;
 			children = (
+				188843AB2B5FA2BC0008DCF8 /* quests */,
 				A444AC8D2B5E943E006C74F7 /* utils */,
 				FAD5C5092AFCBE720040C61A /* GoInfoGameTests.swift */,
 				A40E72632B5CD65000328848 /* OverpassRequestManagerTests.swift */,
@@ -1509,6 +1523,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				A444AC8F2B5E944E006C74F7 /* TestQuest.swift in Sources */,
+				188843AF2B5FB32D0008DCF8 /* WayLitTests.swift in Sources */,
+				188843AD2B5FA2DF0008DCF8 /* TactilePavingStepsTests.swift in Sources */,
 				A40E72642B5CD65000328848 /* OverpassRequestManagerTests.swift in Sources */,
 				A444AC8C2B5E934B006C74F7 /* UserFlowTests.swift in Sources */,
 				FAD5C50A2AFCBE720040C61A /* GoInfoGameTests.swift in Sources */,

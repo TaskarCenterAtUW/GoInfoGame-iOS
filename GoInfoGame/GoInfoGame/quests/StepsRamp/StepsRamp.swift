@@ -11,7 +11,19 @@ import SwiftUI
 
 class StepsRamp :Quest {
     var title: String = "Steps Ramp"
-    var filter: String = ""
+    var filter: String = """
+    ways with highway = steps
+             and (!indoor or indoor = no)
+             and access !~ private|no
+             and (!conveying or conveying = no)
+             and ramp != separate
+             and (
+               !ramp
+               or (ramp = yes and !ramp:stroller and !ramp:bicycle and !ramp:wheelchair)
+               or ramp = no and ramp older today -4 years
+               or ramp older today -8 years
+             )
+    """
     var icon: UIImage = #imageLiteral(resourceName: "ic_quest_steps_ramp")
     var wikiLink: String = ""
     var changesetComment: String = ""

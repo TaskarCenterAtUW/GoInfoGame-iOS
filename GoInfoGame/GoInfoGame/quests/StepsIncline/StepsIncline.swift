@@ -18,7 +18,13 @@ class StepsIncline: Quest{
     
     var title: String = "StepsIncline"
     
-    var filter: String = ""
+    var filter: String = """
+        ways with highway = steps
+         and (!indoor or indoor = no)
+         and area != yes
+         and access !~ private|no
+         and !incline
+    """
     
     var icon: UIImage = #imageLiteral(resourceName: "steps.pdf")
     
