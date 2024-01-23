@@ -8,20 +8,21 @@
 import Foundation
 import UIKit
 import SwiftUI
+import osmparser
 
-class WayLit: Quest{
+class WayLit: Quest {
     var title: String = "Way Lit"
     var filter: String = """
     ways with
             (
-              highway ~ \(RoadTypes.litResidentialRoads.joined(separator: "|"))
-              or highway ~ \(RoadTypes.litNonResidentialRoads.joined(separator: "|")) and
+              highway ~ \(WayLit.litResidentialRoads.joined(separator: "|"))
+              or highway ~ \(WayLit.litNonResidentialRoads.joined(separator: "|")) and
               (
                 sidewalk ~ both|left|right|yes|separate
-                or ~"\((MaxSpeedConstants.maxSpeedTypeKeys.union(["maxspeed"])).joined(separator:"|"))" ~ ".*:(urban|.*zone.*|nsl_restricted)"
+                or ~"\((WayLit.maxSpeedTypeKeys.union(["maxspeed"])).joined(separator:"|"))" ~ ".*:(urban|.*zone.*|nsl_restricted)"
                 or maxspeed <= 60
               )
-              or highway ~ \(RoadTypes.litWays.joined(separator: "|"))
+              or highway ~ \(WayLit.litWays.joined(separator: "|"))
               or highway = path and (foot = designated or bicycle = designated)
             )
             and
@@ -45,6 +46,33 @@ class WayLit: Quest{
         DisplayUnit(title: self.title, description: "",parent: self,sheetSize:.SMALL )
     }
     typealias AnswerClass = WayLitOrIsStepsAnswer
+    
+    private static let litResidentialRoads =  ["residential", "living_street", "pedestrian"]
+    private  static let litNonResidentialRoads = [
+        "motorway", "motorway_link", "trunk", "trunk_link", "primary", "primary_link",
+        "secondary", "secondary_link", "tertiary", "tertiary_link", "unclassified", "service"
+    ]
+    private static let litWays = ["footway", "cycleway", "steps"]
+    private  static let maxSpeedTypeKeys: Set<String> = [
+        "source:maxspeed",
+        "zone:maxspeed",
+        "maxspeed:type",
+        "zone:traffic"
+    ]
+    
+    var _internalExpression: ElementFilterExpression?
+    
+    var filterExpression: ElementFilterExpression? {
+        if(_internalExpression != nil){
+            return _internalExpression
+        }
+        else {
+            print("<>")
+            _internalExpression = try? filter.toElementFilterExpression()
+            return _internalExpression
+        }
+    }
+    
 }
 
 protocol WayLitOrIsStepsAnswer {}
@@ -61,24 +89,4 @@ enum LitStatus {
 
 struct WayLitAnswer: WayLitOrIsStepsAnswer {
     var litStatus: LitStatus
-}
-
-struct RoadTypes {
-    static let litResidentialRoads = ["residential", "living_street", "pedestrian"]
-    
-    static let litNonResidentialRoads = [
-        "motorway", "motorway_link", "trunk", "trunk_link", "primary", "primary_link",
-        "secondary", "secondary_link", "tertiary", "tertiary_link", "unclassified", "service"
-    ]
-    
-    static let litWays = ["footway", "cycleway", "steps"]
-}
-
-struct MaxSpeedConstants {
-    static let maxSpeedTypeKeys: Set<String> = [
-        "source:maxspeed",
-        "zone:maxspeed",
-        "maxspeed:type",
-        "zone:traffic"
-    ]
 }

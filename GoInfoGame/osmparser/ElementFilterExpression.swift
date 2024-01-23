@@ -16,13 +16,13 @@ public class ElementFilterExpression {
         self.elementExprRoot = elementExprRoot
     }
     
-    func matches(element: Element) -> Bool {
+    public func matches(element: Element) -> Bool {
         includesElementType(elementType: element.type)
         && ( !element.tags.isEmpty || mayEvaluateToTrueWithNoTags)
         && (elementExprRoot?.matches(element) ?? true)
     }
 //    
-    func includesElementType(elementType :ElementType) -> Bool {
+    public func includesElementType(elementType :ElementType) -> Bool {
         switch (elementType){
         case .node :
           return  elementTypes.contains(.NODES)

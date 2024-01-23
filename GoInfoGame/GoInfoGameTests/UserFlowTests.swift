@@ -66,12 +66,61 @@ final class UserFlowTests: XCTestCase {
             }
         }
         print(applicableElements.count)
-////        print(applicableElements)
-//        if(!applicableElements.isEmpty){
-//            let firstNode = applicableElements.first
-//            print(firstNode?.tags)
-//        }
+    }
+    
+    func testPerformanceDBFetch() throws {
+        self.measure {
+            let nodesFromStorage = dbInstance.getNodes()
+            let nodeElements = nodesFromStorage.map({$0.asNode()})
+        }
         
+    }
+    
+    // Fetches and generates the quests out of the database
+    func testUserQuestsGeneration() throws {
+        let nodesFromStorage = dbInstance.getNodes()
+        print(nodesFromStorage.count)
+        let waysFromStorage = dbInstance.getWays()
+        
+        let nodeElements = nodesFromStorage.map({$0.asNode()})
+        let wayElements = waysFromStorage.map({$0.asWay()})
+        
+        // Get the quests for nodes
+        var nodeQuests: [any Quest] = []
+        var wayQuests: [any Quest] = []
+        let allQuests = QuestsRepository.shared.applicableQuests
+        
+        self.measure {
+            // Get the quests for ways
+            for node in nodeElements {
+                // Get the quests and try to iterate
+                for quest in allQuests {
+                    if quest.filter.isEmpty {continue} // Ignore quest
+                    if quest.isApplicable(element: node){
+                        // Create a duplicate of the quest
+                        nodeQuests.append(quest)
+                        print(quest)
+                        break
+                    }
+                }
+            }
+            print(nodeQuests.count)
+             
+        }
+      
+//        print(nodeQuests.count)
+//        for way in wayElements{
+//            for quest in allQuests {
+//                if quest.filter.isEmpty {continue} // Ignore quest
+//                if quest.isApplicable(element: way){
+//                    // Create a duplicate of the quest
+//                    wayQuests.append(quest)
+//                    print(quest)
+//                    break
+//                }
+//            }
+//        }
+//        print(wayQuests.count)
     }
 
     override func tearDownWithError() throws {

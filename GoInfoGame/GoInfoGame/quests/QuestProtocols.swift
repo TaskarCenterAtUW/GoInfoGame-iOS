@@ -8,7 +8,7 @@
 import Foundation
 import UIKit
 import SwiftUI
-
+import osmparser
 
 protocol Quest {
     associatedtype AnswerClass // The class that represents answer
@@ -22,6 +22,27 @@ protocol Quest {
     func onAnswer(answer:AnswerClass)
     
     var displayUnit: DisplayUnit { get}
+    var filterExpression : ElementFilterExpression? { get  }
+}
+// Adds default method and implementation
+extension Quest {
+    
+    func isApplicable(element:Element) ->  Bool {
+        
+        guard let filterExpression = filterExpression else {
+            return false
+        }
+        if((filterExpression.includesElementType(elementType: .node) && element is Node)
+           || (filterExpression.includesElementType(elementType: .way) && element is Way)){
+            return filterExpression.matches(element: element)
+        }
+        return false
+    }
+    
+    var filterExpression : ElementFilterExpression? {
+        
+        return try? filter.toElementFilterExpression() // This is a costly operation
+    }
 }
 
 struct DisplayUnit : Identifiable {
