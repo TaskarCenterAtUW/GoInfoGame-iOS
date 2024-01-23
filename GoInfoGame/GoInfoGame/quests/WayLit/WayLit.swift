@@ -18,7 +18,7 @@ class WayLit: Quest{
               or highway ~ \(RoadTypes.litNonResidentialRoads.joined(separator: "|")) and
               (
                 sidewalk ~ both|left|right|yes|separate
-                or ~"${(MAXSPEED_TYPE_KEYS + "maxspeed").joinToString("|")}" ~ ".*:(urban|.*zone.*|nsl_restricted)"
+                or ~"\((MaxSpeedConstants.maxSpeedTypeKeys.union(["maxspeed"])).joined(separator:"|"))" ~ ".*:(urban|.*zone.*|nsl_restricted)"
                 or maxspeed <= 60
               )
               or highway ~ \(RoadTypes.litWays.joined(separator: "|"))
@@ -72,4 +72,13 @@ struct RoadTypes {
     ]
     
     static let litWays = ["footway", "cycleway", "steps"]
+}
+
+struct MaxSpeedConstants {
+    static let maxSpeedTypeKeys: Set<String> = [
+        "source:maxspeed",
+        "zone:maxspeed",
+        "maxspeed:type",
+        "zone:traffic"
+    ]
 }
