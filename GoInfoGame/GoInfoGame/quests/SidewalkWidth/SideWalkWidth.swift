@@ -8,6 +8,7 @@
 import Foundation
 import UIKit
 import SwiftUI
+import osmparser
 
 
 class SideWalkWidth : Quest {
@@ -30,6 +31,18 @@ class SideWalkWidth : Quest {
     func onAnswer(answer: WidthAnswer) {
     }
     typealias AnswerClass = WidthAnswer
+    
+    var _internalExpression: ElementFilterExpression?
+    
+    var filterExpression: ElementFilterExpression? {
+        if(_internalExpression != nil){
+            return _internalExpression
+        }
+        else {
+            _internalExpression = try? filter.toElementFilterExpression()
+            return _internalExpression
+        }
+    }
 }
 
 class WidthAnswer {

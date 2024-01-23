@@ -8,6 +8,7 @@
 import Foundation
 import UIKit
 import SwiftUI
+import osmparser
 
 class StepsRamp :Quest {
     var title: String = "Steps Ramp"
@@ -35,6 +36,19 @@ class StepsRamp :Quest {
         DisplayUnit(title: self.title, description: "",parent: self,sheetSize:.LARGE )
     }
     typealias AnswerClass = StepsRampAnswer
+    
+    var _internalExpression: ElementFilterExpression?
+    
+    var filterExpression: ElementFilterExpression? {
+        if(_internalExpression != nil){
+            return _internalExpression
+        }
+        else {
+            print("<>")
+            _internalExpression = try? filter.toElementFilterExpression()
+            return _internalExpression
+        }
+    }
 }
 
 class StepsRampAnswer {

@@ -8,6 +8,7 @@
 import Foundation
 import UIKit
 import SwiftUI
+import osmparser
 
 class TactilePavingSteps :Quest {
     var title: String = "Tactile Paving Steps"
@@ -34,6 +35,19 @@ class TactilePavingSteps :Quest {
         DisplayUnit(title: self.title, description: "",parent: self,sheetSize:.MEDIUM )
     }
     typealias AnswerClass = TactilePavingStepsAnswer
+    
+    var _internalExpression: ElementFilterExpression?
+    
+    var filterExpression: ElementFilterExpression? {
+        if(_internalExpression != nil){
+            return _internalExpression
+        }
+        else {
+            print("<>")
+            _internalExpression = try? filter.toElementFilterExpression()
+            return _internalExpression
+        }
+    }
 }
 
 enum TactilePavingStepsAnswer: String {

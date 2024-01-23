@@ -8,6 +8,7 @@
 import Foundation
 import UIKit
 import SwiftUI
+import osmparser
 
 class BusStopLit: Quest{
     func onAnswer(answer: Bool) {
@@ -40,4 +41,17 @@ class BusStopLit: Quest{
         DisplayUnit(title: self.title, description: "",parent: self,sheetSize:.SMALL )
     }
     typealias AnswerClass = Bool
+    
+    var _internalExpression: ElementFilterExpression?
+    
+    var filterExpression: ElementFilterExpression? {
+        if(_internalExpression != nil){
+            return _internalExpression
+        }
+        else {
+            print("<>")
+            _internalExpression = try? filter.toElementFilterExpression()
+            return _internalExpression
+        }
+    }
 }

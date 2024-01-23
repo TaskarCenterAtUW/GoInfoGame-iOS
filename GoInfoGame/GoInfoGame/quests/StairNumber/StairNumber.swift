@@ -8,6 +8,7 @@
 import Foundation
 import UIKit
 import SwiftUI
+import osmparser
 
 class StairNumber :Quest {
     func onAnswer(answer: Int) {
@@ -23,4 +24,16 @@ class StairNumber :Quest {
         DisplayUnit(title: self.title, description: "",parent: self,sheetSize:.MEDIUM )
     }
     typealias AnswerClass = Int
+    
+    var _internalExpression: ElementFilterExpression?
+    
+    var filterExpression: ElementFilterExpression? {
+        if(_internalExpression != nil){
+            return _internalExpression
+        }
+        else {
+            _internalExpression = try? filter.toElementFilterExpression()
+            return _internalExpression
+        }
+    }
 }

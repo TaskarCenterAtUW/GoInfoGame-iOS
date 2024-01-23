@@ -7,6 +7,7 @@
 import UIKit
 import SwiftUI
 import Foundation
+import osmparser
 
 class HandRail: Quest {
     
@@ -45,4 +46,15 @@ class HandRail: Quest {
         DisplayUnit(title: self.title, description: "",parent: self,sheetSize: .SMALL)
     }
     
+    var _internalExpression: ElementFilterExpression?
+    
+    var filterExpression: ElementFilterExpression? {
+        if(_internalExpression != nil){
+            return _internalExpression
+        }
+        else {
+            _internalExpression = try? filter.toElementFilterExpression()
+            return _internalExpression
+        }
+    }
 }

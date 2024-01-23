@@ -105,22 +105,23 @@ final class UserFlowTests: XCTestCase {
                 }
             }
             print(nodeQuests.count)
-             
+            
+            
+            
+            //        print(nodeQuests.count)
+            for way in wayElements{
+                for quest in allQuests {
+                    if quest.filter.isEmpty {continue} // Ignore quest
+                    if quest.isApplicable(element: way){
+                        // Create a duplicate of the quest
+                        wayQuests.append(quest)
+                        print(quest)
+                        break
+                    }
+                }
+            }
+            print(wayQuests.count)
         }
-      
-//        print(nodeQuests.count)
-//        for way in wayElements{
-//            for quest in allQuests {
-//                if quest.filter.isEmpty {continue} // Ignore quest
-//                if quest.isApplicable(element: way){
-//                    // Create a duplicate of the quest
-//                    wayQuests.append(quest)
-//                    print(quest)
-//                    break
-//                }
-//            }
-//        }
-//        print(wayQuests.count)
     }
 
     override func tearDownWithError() throws {
