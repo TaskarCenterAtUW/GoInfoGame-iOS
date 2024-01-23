@@ -30,7 +30,7 @@ class LoginViewController: UIViewController {
             }
         }
         
-        DatabaseConnector.shared.fetchValidHighway()
+        
     }
     
     // Handle the result of the authorization request

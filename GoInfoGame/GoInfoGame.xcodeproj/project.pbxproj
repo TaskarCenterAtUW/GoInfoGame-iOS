@@ -14,7 +14,6 @@
 		0536DD942B0BD59900B04C4B /* OAuthError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0536DD932B0BD59900B04C4B /* OAuthError.swift */; };
 		0536DD972B0BD95100B04C4B /* URLSession+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0536DD962B0BD95100B04C4B /* URLSession+Extension.swift */; };
 		0536DD992B0BDBFE00B04C4B /* OAuthManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0536DD982B0BDBFE00B04C4B /* OAuthManager.swift */; };
-		059D472E2B2C7FED000987FA /* SidewalkOverlay.swift in Sources */ = {isa = PBXBuildFile; fileRef = 059D472D2B2C7FED000987FA /* SidewalkOverlay.swift */; };
 		059D47312B2C81A9000987FA /* Style.swift in Sources */ = {isa = PBXBuildFile; fileRef = 059D47302B2C81A9000987FA /* Style.swift */; };
 		059D47332B2C83BA000987FA /* Highway.swift in Sources */ = {isa = PBXBuildFile; fileRef = 059D47322B2C83BA000987FA /* Highway.swift */; };
 		05CB71E02B0FAFD200DED821 /* GenericUIViewControllerRepresentable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05CB71DF2B0FAFD200DED821 /* GenericUIViewControllerRepresentable.swift */; };
@@ -234,7 +233,6 @@
 		0536DD932B0BD59900B04C4B /* OAuthError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OAuthError.swift; sourceTree = "<group>"; };
 		0536DD962B0BD95100B04C4B /* URLSession+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "URLSession+Extension.swift"; sourceTree = "<group>"; };
 		0536DD982B0BDBFE00B04C4B /* OAuthManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OAuthManager.swift; sourceTree = "<group>"; };
-		059D472D2B2C7FED000987FA /* SidewalkOverlay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SidewalkOverlay.swift; sourceTree = "<group>"; };
 		059D47302B2C81A9000987FA /* Style.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Style.swift; sourceTree = "<group>"; };
 		059D47322B2C83BA000987FA /* Highway.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Highway.swift; sourceTree = "<group>"; };
 		05CB71DF2B0FAFD200DED821 /* GenericUIViewControllerRepresentable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GenericUIViewControllerRepresentable.swift; sourceTree = "<group>"; };
@@ -500,7 +498,6 @@
 		059D472F2B2C7FF3000987FA /* Overlay */ = {
 			isa = PBXGroup;
 			children = (
-				059D472D2B2C7FED000987FA /* SidewalkOverlay.swift */,
 				059D47302B2C81A9000987FA /* Style.swift */,
 				059D47322B2C83BA000987FA /* Highway.swift */,
 			);
@@ -1510,7 +1507,6 @@
 				0536DD8C2B0BD2C200B04C4B /* Constants.swift in Sources */,
 				0536DD992B0BDBFE00B04C4B /* OAuthManager.swift in Sources */,
 				A4E711AC2B58F7C000C9DE08 /* HandRailForm.swift in Sources */,
-				059D472E2B2C7FED000987FA /* SidewalkOverlay.swift in Sources */,
 				A4E711A62B57BBCA00C9DE08 /* QuestProtocols.swift in Sources */,
 				973FBFFE2B46BB3800878269 /* Utils.swift in Sources */,
 				FAF44FBD2B3084EC004FE664 /* OnboardingView1.swift in Sources */,
