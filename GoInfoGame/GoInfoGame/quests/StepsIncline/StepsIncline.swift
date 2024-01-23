@@ -8,6 +8,7 @@
 import Foundation
 import UIKit
 import SwiftUI
+import osmparser
 
 class StepsIncline: Quest{
     func onAnswer(answer: StepsInclineDirection) {
@@ -40,6 +41,17 @@ class StepsIncline: Quest{
         DisplayUnit(title: self.title, description: "",parent: self, sheetSize: .MEDIUM)
     }
     
+    var _internalExpression: ElementFilterExpression?
+    
+    var filterExpression: ElementFilterExpression? {
+        if(_internalExpression != nil){
+            return _internalExpression
+        }
+        else {
+            _internalExpression = try? filter.toElementFilterExpression()
+            return _internalExpression
+        }
+    }
     
 }
 
