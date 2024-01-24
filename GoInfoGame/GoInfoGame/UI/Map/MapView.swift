@@ -7,6 +7,7 @@
 
 import SwiftUI
 import MapKit
+import UIKit
 import CoreLocation
 
 struct MapView: View {
@@ -42,7 +43,14 @@ struct MapView: View {
                     selectedQuest = item.displayUnit
                     print(selectedQuest as Any,"selectedQuest quest")
                 } label: {
-                    Image(systemName:  "mappin.circle.fill")
+                    Image(uiImage: item.displayUnit.parent?.icon ?? UIImage(imageLiteralResourceName: "mapPoint"))
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .clipShape(Circle())
+                        .overlay(Circle().stroke(Color.white, lineWidth: 2))
+                        .shadow(radius: 10)
+                        .frame(width: 40, height: 40)
+                        .offset(y: -10)
                 }
             }
             
