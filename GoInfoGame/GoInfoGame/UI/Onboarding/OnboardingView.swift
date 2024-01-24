@@ -64,10 +64,14 @@ struct OnboardingView: View {
                     .accentColor(Color.black)
                 }
             } else {
-//                NavigationLink(destination: HomeMapView(), isActive: $isLetsGoButtonClicked) {
-//                    EmptyView()
-//                }
-//                .hidden()
+                NavigationLink(
+                                   destination: MapView(),
+                                   isActive: $isLetsGoButtonClicked,
+                                   label: {
+                                       EmptyView()
+                                   }
+                               )
+                .hidden()
             }
         }
         .padding()
