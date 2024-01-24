@@ -12,10 +12,13 @@ import CoreLocation
 struct MapView: View {
     @Environment(\.presentationMode) private var presentationMode
     @AppStorage("isMapFromOnboarding") var isMapFromOnboarding: Bool = false
+    @State private var userTrackingMode: MapUserTrackingMode = .follow
     @State private var coordinateRegion = MKCoordinateRegion(
-        center: CLLocationCoordinate2D(latitude: 37.7749, longitude: -122.4194),
+        center: CLLocationCoordinate2D(latitude: 47.6062, longitude: -122.3321),
         span: MKCoordinateSpan(latitudeDelta: 0.05, longitudeDelta: 0.05)
     )
+    let items: [ DisplayUnitWithCoordinate] = QuestsRepository.shared.displayCoordQuests
+    @State var selectedQuest: DisplayUnit?
     var btnBack : some View { Button(action: {
         if isMapFromOnboarding {
             isMapFromOnboarding = false
@@ -33,23 +36,43 @@ struct MapView: View {
         }
     }}
     var body: some View {
-        Map(coordinateRegion: $coordinateRegion, showsUserLocation: true, userTrackingMode: $userTrackingMode)
-            .onAppear {
-                requestLocation()
-            }.navigationBarBackButtonHidden(true)
+        Map(coordinateRegion: .constant(MKCoordinateRegion(center: CLLocationCoordinate2D(latitude: 47.6062, longitude: -122.3321), span: MKCoordinateSpan(latitudeDelta: 0.05, longitudeDelta: 0.05))), showsUserLocation: true, userTrackingMode: $userTrackingMode, annotationItems: items) { item in
+            MapAnnotation(coordinate: item.coordinateInfo) {
+                Button {
+                    selectedQuest = item.displayUnit
+                    print(selectedQuest as Any,"selectedQuest quest")
+                } label: {
+                    Image(systemName:  "mappin.circle.fill")
+                }
+            }
+            
+        }.sheet(item: $selectedQuest) { selectedQuest in
+            if #available(iOS 16.0, *) {
+                selectedQuest.parent?.form.presentationDetents(getSheetSize(sheetSize: selectedQuest.sheetSize ?? .MEDIUM))
+            } else {
+                // Nothing here
+            }
+            
+        }
+        .onAppear {
+            centerMapOnDefaultLocation()
+        }.navigationBarBackButtonHidden(true)
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
                     btnBack
                 }
             }
     }
-
-    @State private var userTrackingMode: MapUserTrackingMode = .follow
     @State private var locationManager = CLLocationManager()
 }
 
 
 extension MapView {
+    private func centerMapOnDefaultLocation() {
+        let userLocation = CLLocationCoordinate2D(latitude: 47.6062, longitude: -122.3321)
+        coordinateRegion.center = userLocation
+        coordinateRegion.span = MKCoordinateSpan(latitudeDelta: 0.02, longitudeDelta: 0.02)
+    }
     func centerMapOnLocation(location: CLLocation) {
         let region = MKCoordinateRegion(
             center: location.coordinate,
@@ -57,13 +80,17 @@ extension MapView {
         )
         coordinateRegion = region
     }
-
     private func requestLocation() {
         let coordinator = LocationManagerCoordinator(parent: self)
         locationManager.delegate = coordinator
         locationManager.requestWhenInUseAuthorization()
         locationManager.startUpdatingLocation()
     }
+}
+struct CustomLocation: Identifiable {
+    let id = UUID()
+    let iconName: String
+    let coordinate: CLLocationCoordinate2D
 }
 
 #Preview {

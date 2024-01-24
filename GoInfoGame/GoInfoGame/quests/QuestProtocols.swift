@@ -9,6 +9,7 @@ import Foundation
 import UIKit
 import SwiftUI
 import osmparser
+import MapKit
 
 protocol Quest {
     associatedtype AnswerClass // The class that represents answer
@@ -59,3 +60,9 @@ protocol QuestForm {
     
     func applyAnswer(answer:AnswerClass)
 }
+
+//struct DisplayUnitWithCoordinate: Identifiable {
+//    let displayUnit: DisplayUnit
+//    let coordinateInfo: CLLocationCoordinate2D
+//    let id = UUID()
+//}
