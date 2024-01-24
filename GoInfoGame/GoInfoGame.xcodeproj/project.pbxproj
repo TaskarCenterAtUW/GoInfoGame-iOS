@@ -127,6 +127,7 @@
 		A4AD138E2B5E92080041A881 /* HasDateTagLessThanTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4AD137E2B5E92080041A881 /* HasDateTagLessThanTest.swift */; };
 		A4B83AF12B5F92FA006684CA /* StoredNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4B83AF02B5F92FA006684CA /* StoredNode.swift */; };
 		A4B83AF32B5F9385006684CA /* StoredWay.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4B83AF22B5F9385006684CA /* StoredWay.swift */; };
+		A4E149B32B5FDDC700E86F05 /* BaseMapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4E149B22B5FDDC700E86F05 /* BaseMapView.swift */; };
 		A4E711A22B57A3B400C9DE08 /* SideWalkWidth.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4E711A12B57A3B400C9DE08 /* SideWalkWidth.swift */; };
 		A4E711A42B57B13100C9DE08 /* QuestionHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4E711A32B57B13100C9DE08 /* QuestionHeader.swift */; };
 		A4E711A62B57BBCA00C9DE08 /* QuestProtocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4E711A52B57BBCA00C9DE08 /* QuestProtocols.swift */; };
@@ -348,6 +349,7 @@
 		A4AD137E2B5E92080041A881 /* HasDateTagLessThanTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HasDateTagLessThanTest.swift; sourceTree = "<group>"; };
 		A4B83AF02B5F92FA006684CA /* StoredNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoredNode.swift; sourceTree = "<group>"; };
 		A4B83AF22B5F9385006684CA /* StoredWay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoredWay.swift; sourceTree = "<group>"; };
+		A4E149B22B5FDDC700E86F05 /* BaseMapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseMapView.swift; sourceTree = "<group>"; };
 		A4E711A12B57A3B400C9DE08 /* SideWalkWidth.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SideWalkWidth.swift; sourceTree = "<group>"; };
 		A4E711A32B57B13100C9DE08 /* QuestionHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuestionHeader.swift; sourceTree = "<group>"; };
 		A4E711A52B57BBCA00C9DE08 /* QuestProtocols.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuestProtocols.swift; sourceTree = "<group>"; };
@@ -507,6 +509,7 @@
 		05CB71DD2B0FAEC200DED821 /* UI */ = {
 			isa = PBXGroup;
 			children = (
+				A4E149B12B5FDD9C00E86F05 /* Map */,
 				973FC0152B4D562200878269 /* CustomComponents */,
 				973FBFFF2B46CD4100878269 /* QuestsList */,
 				059D472F2B2C7FF3000987FA /* Overlay */,
@@ -840,6 +843,14 @@
 				A4AD137A2B5E92070041A881 /* RegexOrSetTest.swift */,
 			);
 			path = filters;
+			sourceTree = "<group>";
+		};
+		A4E149B12B5FDD9C00E86F05 /* Map */ = {
+			isa = PBXGroup;
+			children = (
+				A4E149B22B5FDDC700E86F05 /* BaseMapView.swift */,
+			);
+			path = Map;
 			sourceTree = "<group>";
 		};
 		A4E7119A2B57A17600C9DE08 /* data */ = {
@@ -1479,6 +1490,7 @@
 				FAD5C4F32AFCBE700040C61A /* AppDelegate.swift in Sources */,
 				05DBBB622B164D9A00B6F110 /* RealOPElement.swift in Sources */,
 				973FC0422B59467A00878269 /* BusStopLit.swift in Sources */,
+				A4E149B32B5FDDC700E86F05 /* BaseMapView.swift in Sources */,
 				973FC0352B592C0F00878269 /* StairNumberForm.swift in Sources */,
 				FAC9E60F2B04F9C800E2C608 /* OverpassRequestManager.swift in Sources */,
 				973FC0482B5A477E00878269 /* CrossMarking.swift in Sources */,

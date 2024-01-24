@@ -41,3 +41,4 @@ public class Location: EmbeddedObject {
     @Persisted var latitude: Double
     @Persisted var longitude: Double
 }
+
