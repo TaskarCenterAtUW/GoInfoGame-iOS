@@ -9,6 +9,8 @@ import Foundation
 
 import RealmSwift
 import osmparser
+import MapKit
+
 // Represents one stored way
 class StoredWay: Object {
     
@@ -17,6 +19,9 @@ class StoredWay: Object {
     @Persisted var version: Int = 0
     @Persisted var timestamp : String = ""
     @Persisted var nodes: List<Int64> = List<Int64>()
+    // Need to persist the points
+    @Persisted var polyline: List<CLLocationCoordinate2D> = List<CLLocationCoordinate2D>()
+    
     
     public func asWay() -> Way {
         var theTags: [String:String] = [:]

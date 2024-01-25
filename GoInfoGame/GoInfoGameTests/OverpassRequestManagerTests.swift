@@ -69,6 +69,12 @@ final class OverpassRequestManagerTests: XCTestCase {
                     print(firstNode.geometry)
                 }
             }
+            if (ways.count > 0){
+                if let firstWay = ways.first as? OPWay {
+                    // Try to get the geometry
+                    print(firstWay.geometry)
+                }
+            }
             expec.fulfill()
         }
         

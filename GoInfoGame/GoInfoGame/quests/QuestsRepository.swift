@@ -34,7 +34,8 @@ class QuestsRepository {
                 let randomCoordinate = generateRandomCoordinates()
                 return DisplayUnitWithCoordinate(
                     displayUnit: quest.displayUnit,
-                    coordinateInfo: randomCoordinate
+                    coordinateInfo: randomCoordinate,
+                    id:Int64.random(in: 2...90000)
                 )
             }
     }
@@ -46,9 +47,12 @@ class QuestsRepository {
             return CLLocationCoordinate2D(latitude: randomLat, longitude: randomLon)
         }
     
+    
+    
 }
+// Probably move somewhere else
 struct DisplayUnitWithCoordinate: Identifiable {
     let displayUnit: DisplayUnit
     let coordinateInfo: CLLocationCoordinate2D
-    let id = UUID()
+    let id: Int64
 }

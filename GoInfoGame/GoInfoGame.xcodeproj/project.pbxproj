@@ -53,6 +53,7 @@
 		973FC04A2B5A478C00878269 /* CrossMarkingForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = 973FC0492B5A478C00878269 /* CrossMarkingForm.swift */; };
 		973FC04C2B5A5F5F00878269 /* RadioItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 973FC04B2B5A5F5F00878269 /* RadioItem.swift */; };
 		97F2FA8A2B0630A3000B9726 /* Pods_GoInfoGame.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 66BED441AF03CC04539E8D4A /* Pods_GoInfoGame.framework */; };
+		A40004EC2B62338400AF21FB /* AppQuestManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A40004EB2B62338400AF21FB /* AppQuestManager.swift */; };
 		A40E72642B5CD65000328848 /* OverpassRequestManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A40E72632B5CD65000328848 /* OverpassRequestManagerTests.swift */; };
 		A40E726E2B5D462A00328848 /* osmapi.docc in Sources */ = {isa = PBXBuildFile; fileRef = A40E726D2B5D462A00328848 /* osmapi.docc */; };
 		A40E72742B5D462A00328848 /* osmapi.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A40E726A2B5D462A00328848 /* osmapi.framework */; };
@@ -278,6 +279,7 @@
 		973FC0492B5A478C00878269 /* CrossMarkingForm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = CrossMarkingForm.swift; path = GoInfoGame/quests/CrossingMarking/CrossMarkingForm.swift; sourceTree = SOURCE_ROOT; };
 		973FC04B2B5A5F5F00878269 /* RadioItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RadioItem.swift; sourceTree = "<group>"; };
 		97F2FA8D2B0630C4000B9726 /* SwiftOverpassAPI.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = SwiftOverpassAPI.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		A40004EB2B62338400AF21FB /* AppQuestManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppQuestManager.swift; sourceTree = "<group>"; };
 		A40E72632B5CD65000328848 /* OverpassRequestManagerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OverpassRequestManagerTests.swift; sourceTree = "<group>"; };
 		A40E726A2B5D462A00328848 /* osmapi.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = osmapi.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		A40E726C2B5D462A00328848 /* osmapi.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = osmapi.h; sourceTree = "<group>"; };
@@ -970,6 +972,7 @@
 				0513BE762B2B464800FB61CF /* samplepoint.gpx */,
 				FAD5C4FD2AFCBE720040C61A /* LaunchScreen.storyboard */,
 				FAD5C5002AFCBE720040C61A /* Info.plist */,
+				A40004EB2B62338400AF21FB /* AppQuestManager.swift */,
 			);
 			path = GoInfoGame;
 			sourceTree = "<group>";
@@ -1507,6 +1510,7 @@
 				971575172B5FFD6F0044797C /* MapView.swift in Sources */,
 				973FC04A2B5A478C00878269 /* CrossMarkingForm.swift in Sources */,
 				973FC03F2B59418B00878269 /* WayLit.swift in Sources */,
+				A40004EC2B62338400AF21FB /* AppQuestManager.swift in Sources */,
 				FA5853C12B21F17F00301CDA /* OnboardingView.swift in Sources */,
 				A4B83AF32B5F9385006684CA /* StoredWay.swift in Sources */,
 				05DBBB5F2B1263FF00B6F110 /* DatabaseConnector.swift in Sources */,

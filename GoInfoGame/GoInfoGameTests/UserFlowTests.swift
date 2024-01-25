@@ -11,7 +11,7 @@ import XCTest
 @testable import osmparser
 /**
  Used to test the flow of information
-  This fetches the information and sends things down
+  This fetches the information and sends things down 
  */
 final class UserFlowTests: XCTestCase {
 
@@ -21,7 +21,7 @@ final class UserFlowTests: XCTestCase {
     
     override func setUpWithError() throws {
         // Put setup code here. This method is called before the invocation of each test method in the class.
-//       seedData()
+       seedData()
     }
     
     func seedData() {
@@ -90,7 +90,7 @@ final class UserFlowTests: XCTestCase {
         var wayQuests: [any Quest] = []
         let allQuests = QuestsRepository.shared.applicableQuests
         
-        self.measure {
+        self.measure { // 3106 nodes -> 46 seconds after optimization..0.5seconds
             // Get the quests for ways
             for node in nodeElements {
                 // Get the quests and try to iterate

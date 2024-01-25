@@ -15,9 +15,13 @@ class LocationManagerCoordinator: NSObject, CLLocationManagerDelegate {
     }
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         guard let location = locations.first else { return }
+        print("Location received")
         parent?.centerMapOnLocation(location: location)
+        // Try to load the quests
+       
     }
     func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
         print("Error requesting location: \(error.localizedDescription)")
+       
     }
 }

@@ -98,7 +98,7 @@ public class Way: Element {
     
     public var type: ElementType = .way
     
-    var nodeIds: [Int64] = []
+    public var nodeIds: [Int64] = []
     
     var isClosed: Bool {
         nodeIds.count >= 3 && nodeIds.first == nodeIds.last
@@ -125,7 +125,7 @@ public class Node : Element {
     
     public var type: ElementType = .node
     
-    let position: LatLon
+    public let position: LatLon
     
    public init(id: Int64, version: Int, tags: [String : String], timestampEdited: Int64, position: LatLon, type: ElementType = .node) {
         self.id = id
