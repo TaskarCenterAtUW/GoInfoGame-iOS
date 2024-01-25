@@ -19,7 +19,7 @@ struct MapView: View {
     )
     let items: [DisplayUnitWithCoordinate] = AppQuestManager.shared.fetchQuestsFromDB()
     @State private var selectedQuest: DisplayUnit?
-    @StateObject var manager = LocationManager()
+    @StateObject var manager = LocationManagerCoordinator()
     @State private var currentLocation: CLLocation?
     
     var btnBack: some View {
@@ -70,8 +70,8 @@ struct MapView: View {
         }
         .onAppear {
             manager.locationUpdateHandler = { location in
-                self.currentLocation =  CLLocation(latitude: location.latitude, longitude: location.longitude)
-//                centerMapOnLocation(location: location)
+                self.currentLocation = location
+                centerMapOnLocation(location: location)
             }
         }
         .navigationBarBackButtonHidden(true)
@@ -85,6 +85,7 @@ struct MapView: View {
 }
 
 extension MapView {
+
      func centerMapOnLocation(location: CLLocation) {
         let userLocation = location.coordinate
         coordinateRegion.center = userLocation
