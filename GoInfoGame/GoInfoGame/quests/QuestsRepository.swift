@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import MapKit
 // singleton class that has all the quest type instances
 class QuestsRepository {
     static let shared = QuestsRepository()
@@ -28,4 +29,26 @@ class QuestsRepository {
             q.displayUnit
         }
     }
+    var displayCoordQuests: [DisplayUnitWithCoordinate] {
+            self.applicableQuests.map { quest in
+                let randomCoordinate = generateRandomCoordinates()
+                return DisplayUnitWithCoordinate(
+                    displayUnit: quest.displayUnit,
+                    coordinateInfo: randomCoordinate
+                )
+            }
+    }
+    private func generateRandomCoordinates() -> CLLocationCoordinate2D {
+            let seattleCoordinate = CLLocationCoordinate2D(latitude: 47.6062, longitude: -122.3321)
+            let randomLat = seattleCoordinate.latitude + Double.random(in: -0.1...0.1)
+            let randomLon = seattleCoordinate.longitude + Double.random(in: -0.1...0.1)
+            
+            return CLLocationCoordinate2D(latitude: randomLat, longitude: randomLon)
+        }
+    
+}
+struct DisplayUnitWithCoordinate: Identifiable {
+    let displayUnit: DisplayUnit
+    let coordinateInfo: CLLocationCoordinate2D
+    let id = UUID()
 }
