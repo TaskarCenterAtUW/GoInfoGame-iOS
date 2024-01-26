@@ -90,10 +90,7 @@ extension MapView {
         let userLocation = location.coordinate
         coordinateRegion.center = userLocation
         let boundingBox = boundingBoxAroundLocation(location: location, distance: 1000)
-         let center = CLLocationCoordinate2D(latitude: (boundingBox.minLat + boundingBox.maxLat) / 2, longitude: (boundingBox.minLon + boundingBox.maxLon) / 2)
-             let span = MKCoordinateSpan(latitudeDelta: boundingBox.maxLat - boundingBox.minLat, longitudeDelta: boundingBox.maxLon - boundingBox.minLon)
-             coordinateRegion = MKCoordinateRegion(center: center, span: span)
-
+         // TODO state management. Remove below line:
          var _: () = AppQuestManager.shared.fetchData(fromBBOx: boundingBox)
     }
      func boundingBoxAroundLocation(location: CLLocation, distance: CLLocationDistance) -> BBox {
