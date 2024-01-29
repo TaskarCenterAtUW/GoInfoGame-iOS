@@ -79,6 +79,7 @@
 		A475C7DD2B5E3E7C00BABEDA /* OSMPayload.swift in Sources */ = {isa = PBXBuildFile; fileRef = A475C7DC2B5E3E7C00BABEDA /* OSMPayload.swift */; };
 		A475C7E02B5E4B6E00BABEDA /* OSMXMLBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = A475C7DF2B5E4B6E00BABEDA /* OSMXMLBuilder.swift */; };
 		A475C7E32B5E4CB600BABEDA /* OSMXMLBuilderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A475C7E22B5E4CB600BABEDA /* OSMXMLBuilderTests.swift */; };
+		A4834A3F2B67737500D4F0AA /* StoredChangeset.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4834A3E2B67737500D4F0AA /* StoredChangeset.swift */; };
 		A4AD130C2B5E80F20041A881 /* StoredElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4AD130B2B5E80F20041A881 /* StoredElement.swift */; };
 		A4AD13162B5E90BD0041A881 /* osmparser.docc in Sources */ = {isa = PBXBuildFile; fileRef = A4AD13152B5E90BD0041A881 /* osmparser.docc */; };
 		A4AD131C2B5E90BD0041A881 /* osmparser.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A4AD13122B5E90BD0041A881 /* osmparser.framework */; };
@@ -307,6 +308,7 @@
 		A475C7DC2B5E3E7C00BABEDA /* OSMPayload.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OSMPayload.swift; sourceTree = "<group>"; };
 		A475C7DF2B5E4B6E00BABEDA /* OSMXMLBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OSMXMLBuilder.swift; sourceTree = "<group>"; };
 		A475C7E22B5E4CB600BABEDA /* OSMXMLBuilderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OSMXMLBuilderTests.swift; sourceTree = "<group>"; };
+		A4834A3E2B67737500D4F0AA /* StoredChangeset.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoredChangeset.swift; sourceTree = "<group>"; };
 		A4AD130B2B5E80F20041A881 /* StoredElement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoredElement.swift; sourceTree = "<group>"; };
 		A4AD13122B5E90BD0041A881 /* osmparser.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = osmparser.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		A4AD13142B5E90BD0041A881 /* osmparser.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = osmparser.h; sourceTree = "<group>"; };
@@ -548,6 +550,7 @@
 				A4AD130B2B5E80F20041A881 /* StoredElement.swift */,
 				A4B83AF02B5F92FA006684CA /* StoredNode.swift */,
 				A4B83AF22B5F9385006684CA /* StoredWay.swift */,
+				A4834A3E2B67737500D4F0AA /* StoredChangeset.swift */,
 			);
 			path = DBModels;
 			sourceTree = "<group>";
@@ -1499,6 +1502,7 @@
 				973FC0382B59363C00878269 /* TactilePavingSteps.swift in Sources */,
 				973FC0192B4FB17000878269 /* LocalizedStrings.swift in Sources */,
 				FAC9E6112B06811300E2C608 /* LocationManager.swift in Sources */,
+				A4834A3F2B67737500D4F0AA /* StoredChangeset.swift in Sources */,
 				973FC02F2B58F81F00878269 /* StepsRamp.swift in Sources */,
 				A4E711AA2B58F6FB00C9DE08 /* HandRail.swift in Sources */,
 				973FC02D2B58F79B00878269 /* StepsRampForm.swift in Sources */,
