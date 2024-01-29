@@ -15,7 +15,7 @@ class MapViewModel: ObservableObject {
     @Published var items: [DisplayUnitWithCoordinate] = []
     @Published var selectedQuest: DisplayUnit?
     private let locationManager = LocationManagerCoordinator()
-    
+
     init() {
         self.coordinateRegion = MKCoordinateRegion()
         locationManager.locationUpdateHandler = { [weak self] location in
@@ -26,21 +26,31 @@ class MapViewModel: ObservableObject {
         }
         fetchData()
     }
+
     func fetchData() {
         let boundingBox = boundingBoxAroundLocation(location: locationManager.currentLocation ?? CLLocation(latitude: coordinateRegion.center.latitude, longitude: coordinateRegion.center.longitude), distance: 1000)
-        AppQuestManager.shared.fetchData(fromBBOx: boundingBox){
+        AppQuestManager.shared.fetchData(fromBBOx: boundingBox) { [weak self] in
+            guard let self = self else { return }
             self.items = AppQuestManager.shared.fetchQuestsFromDB()
         }
     }
     
     func centerMapOnLocation(_ location: CLLocation) {
-        let userLocation = location.coordinate
-        DispatchQueue.main.async {
-            self.coordinateRegion.center = userLocation
-            self.fetchData()
+        // Update coordinate region only if necessary
+        let region = MKCoordinateRegion(center: location.coordinate, latitudinalMeters: coordinateRegion.span.latitudeDelta, longitudinalMeters: coordinateRegion.span.longitudeDelta)
+        if !coordinateRegionIsEqual(region, coordinateRegion) {
+            coordinateRegion = region
+            fetchData() // Fetch data when the map region changes
         }
     }
-    
+
+    private func coordinateRegionIsEqual(_ region1: MKCoordinateRegion, _ region2: MKCoordinateRegion) -> Bool {
+        return region1.center.latitude == region2.center.latitude &&
+               region1.center.longitude == region2.center.longitude &&
+               region1.span.latitudeDelta == region2.span.latitudeDelta &&
+               region1.span.longitudeDelta == region2.span.longitudeDelta
+    }
+
     private func boundingBoxAroundLocation(location: CLLocation, distance: CLLocationDistance) -> BBox {
         let latDelta = 0.008
         let lonDelta = 0.008
@@ -52,3 +62,4 @@ class MapViewModel: ObservableObject {
         return BBox(minLat: minLat, maxLat: maxLat, minLon: minLon, maxLon: maxLon)
     }
 }
+

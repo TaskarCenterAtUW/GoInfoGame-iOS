@@ -13,6 +13,7 @@ struct MapView: View {
     @Environment(\.presentationMode) private var presentationMode
     @AppStorage("isMapFromOnboarding") var isMapFromOnboarding: Bool = false
     @StateObject var viewModel = MapViewModel()
+    @State private var userTrackingMode: MapUserTrackingMode = .follow
 
     var btnBack: some View {
         Button(action: {
@@ -34,7 +35,7 @@ struct MapView: View {
 
     var body: some View {
         VStack {
-            Map(coordinateRegion: $viewModel.coordinateRegion, showsUserLocation: true, userTrackingMode: .constant(.follow), annotationItems: viewModel.items) { item in
+            Map(coordinateRegion: $viewModel.coordinateRegion, showsUserLocation: true, userTrackingMode: $userTrackingMode, annotationItems: viewModel.items) { item in
                 MapAnnotation(coordinate: item.coordinateInfo) {
                     Button {
                         viewModel.selectedQuest = item.displayUnit

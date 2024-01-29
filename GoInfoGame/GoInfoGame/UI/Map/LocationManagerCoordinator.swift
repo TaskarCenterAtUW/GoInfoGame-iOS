@@ -13,9 +13,7 @@ final class LocationManagerCoordinator: NSObject, ObservableObject {
     
     private let locationManager = CLLocationManager()
     var currentLocation: CLLocation?
-    @Published var region = MKCoordinateRegion(
-        center: CLLocationCoordinate2D(latitude: 47.6062, longitude: -122.3321),
-        span: MKCoordinateSpan(latitudeDelta: 0.05, longitudeDelta: 0.05))
+    @Published var region = MKCoordinateRegion()
     var locationUpdateHandler: ((CLLocation) -> Void)?
     override init() {
         super.init()
