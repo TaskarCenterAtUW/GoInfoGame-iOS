@@ -156,5 +156,41 @@ class OSMConnection {
         BaseNetworkManager.shared.postData(url: url, method: "PUT",body: way ,completion: completion)
         
     }
+    func getUserDetailsWithId(id: String,_ completion: @escaping (Result<OSMUserDataResponse, Error>)-> Void) {
+        let urlString =  self.baseUrl.appending("user/").appending(id).appending(".json")
+        print(urlString)
+        guard let url = URL(string: urlString) else {
+            print("Invalid URL given")
+                    return
+                }
+        BaseNetworkManager.shared.fetchData(url: url, completion: completion)
+    }
+    func getUserDetails(_ completion: @escaping (Result<OSMUserDataResponse, Error>)-> Void) {
+        let urlString =  self.baseUrl.appending("user/details.json")
+        print(urlString)
+        guard let url = URL(string: urlString) else {
+            print("Invalid URL given")
+                    return
+                }
+        BaseNetworkManager.shared.addOrSetHeaders(header: "Authorization", value: "Basic \(self.userCreds.getHeaderData())")
+        BaseNetworkManager.shared.fetchData(url: url, completion: completion)
+    }
+    func getDummyUser(_ completion: @escaping (Result<String, Error>)-> Void){
+        var request = URLRequest(url: URL(string: "https://waylyticsposm.westus2.cloudapp.azure.com/api/0.6/user/details.json")!,timeoutInterval: Double.infinity)
+        request.addValue("Basic bmFyZXNoZEB2aW5kYWdvLmluOmEkaHdhN2hhbUE=", forHTTPHeaderField: "Authorization")
+        request.httpMethod = "GET"
+
+        let task = URLSession.shared.dataTask(with: request) { data, response, error in
+          guard let data = data else {
+            print(String(describing: error))
+              completion(.failure(error!))
+            return
+          }
+          print(String(data: data, encoding: .utf8)!)
+            completion(.success(String(data: data, encoding: .utf8)!))
+        }
+
+        task.resume()
+    }
     
 }

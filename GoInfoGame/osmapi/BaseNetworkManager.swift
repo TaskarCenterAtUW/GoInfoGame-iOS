@@ -31,7 +31,7 @@ class BaseNetworkManager {
             request.addValue(value, forHTTPHeaderField: key)
         }
         
-        URLSession.shared.dataTask(with: url) { data, response, error in
+        URLSession.shared.dataTask(with:request) { data, response, error in
             if let error = error {
                 completion(.failure(error))
                 return
