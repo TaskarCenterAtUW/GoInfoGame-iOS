@@ -12,16 +12,8 @@ import CoreLocation
 struct MapView: View {
     @Environment(\.presentationMode) private var presentationMode
     @AppStorage("isMapFromOnboarding") var isMapFromOnboarding: Bool = false
-    @State private var userTrackingMode: MapUserTrackingMode = .follow
-    @State private var coordinateRegion = MKCoordinateRegion(
-        center: CLLocationCoordinate2D(latitude: 47.6062, longitude: -122.3321),
-        span: MKCoordinateSpan(latitudeDelta: 0.05, longitudeDelta: 0.05)
-    )
-    let items: [DisplayUnitWithCoordinate] = AppQuestManager.shared.fetchQuestsFromDB()
-    @State private var selectedQuest: DisplayUnit?
-    @StateObject var manager = LocationManagerCoordinator()
-    @State private var currentLocation: CLLocation?
-    
+    @StateObject var viewModel = MapViewModel()
+
     var btnBack: some View {
         Button(action: {
             if isMapFromOnboarding {
@@ -31,7 +23,7 @@ struct MapView: View {
                 presentationMode.wrappedValue.dismiss()
             }
         }) {
-            HStack(spacing: 0){
+            HStack(spacing: 0) {
                 Image(systemName: "chevron.left")
                     .scaleEffect(0.50)
                     .font(Font.title.weight(.medium))
@@ -39,14 +31,14 @@ struct MapView: View {
             }
         }
     }
-    
+
     var body: some View {
         VStack {
-            Map(coordinateRegion: $coordinateRegion, showsUserLocation: true, userTrackingMode: $userTrackingMode, annotationItems: items) { item in
+            Map(coordinateRegion: $viewModel.coordinateRegion, showsUserLocation: true, userTrackingMode: .constant(.follow), annotationItems: viewModel.items) { item in
                 MapAnnotation(coordinate: item.coordinateInfo) {
                     Button {
-                        selectedQuest = item.displayUnit
-                        print(selectedQuest as Any,"selectedQuest quest")
+                        viewModel.selectedQuest = item.displayUnit
+                        print(viewModel.selectedQuest as Any, "selectedQuest quest")
                     } label: {
                         Image(uiImage: item.displayUnit.parent?.icon ?? UIImage(imageLiteralResourceName: "mapPoint"))
                             .resizable()
@@ -61,7 +53,7 @@ struct MapView: View {
             }
             Spacer()
         }
-        .sheet(item: $selectedQuest) { selectedQuest in
+        .sheet(item: $viewModel.selectedQuest) { selectedQuest in
             if #available(iOS 16.0, *) {
                 selectedQuest.parent?.form.presentationDetents(getSheetSize(sheetSize: selectedQuest.sheetSize ?? .MEDIUM))
             } else {
@@ -69,10 +61,7 @@ struct MapView: View {
             }
         }
         .onAppear {
-            manager.locationUpdateHandler = { location in
-                self.currentLocation = location
-                centerMapOnLocation(location: location)
-            }
+            viewModel.fetchData()
         }
         .navigationBarBackButtonHidden(true)
         .toolbar {
@@ -80,28 +69,6 @@ struct MapView: View {
                 btnBack
             }
         }
-    }
-   
-}
-
-extension MapView {
-
-     func centerMapOnLocation(location: CLLocation) {
-        let userLocation = location.coordinate
-        coordinateRegion.center = userLocation
-        let boundingBox = boundingBoxAroundLocation(location: location, distance: 1000)
-         // TODO state management. Remove below line:
-         var _: () = AppQuestManager.shared.fetchData(fromBBOx: boundingBox)
-    }
-     func boundingBoxAroundLocation(location: CLLocation, distance: CLLocationDistance) -> BBox {
-        let latDelta = 0.008
-        let lonDelta = 0.008
-        let coordinate = location.coordinate
-        let minLat = coordinate.latitude - latDelta
-        let maxLat = coordinate.latitude + latDelta
-        let minLon = coordinate.longitude - lonDelta
-        let maxLon = coordinate.longitude + lonDelta
-        return BBox(minLat: minLat, maxLat: maxLat, minLon: minLon, maxLon: maxLon)
     }
 }
 #Preview {

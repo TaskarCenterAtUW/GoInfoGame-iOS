@@ -27,6 +27,7 @@
 		342561966FC217124BD9CFE7 /* Pods_GoInfoGame_GoInfoGameUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2D539E22EFF6636F8CBA035A /* Pods_GoInfoGame_GoInfoGameUITests.framework */; };
 		74D8E739AE340D54DEF2E74C /* Pods_GoInfoGameTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 066F85ADCDCE7357368131F8 /* Pods_GoInfoGameTests.framework */; };
 		970D5BD12B62B61300C20BE7 /* MapViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 970D5BD02B62B61300C20BE7 /* MapViewController.swift */; };
+		970D5BD32B67638500C20BE7 /* MapViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 970D5BD22B67638400C20BE7 /* MapViewModel.swift */; };
 		971575172B5FFD6F0044797C /* MapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 971575162B5FFD6F0044797C /* MapView.swift */; };
 		971575192B5FFE910044797C /* LocationManagerCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 971575182B5FFE910044797C /* LocationManagerCoordinator.swift */; };
 		972454152B14A49A0036B91A /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 972454142B14A49A0036B91A /* Extensions.swift */; };
@@ -253,6 +254,7 @@
 		66BED441AF03CC04539E8D4A /* Pods_GoInfoGame.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_GoInfoGame.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		89C2A88A7749F031BCDFE226 /* Pods-GoInfoGameTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-GoInfoGameTests.release.xcconfig"; path = "Target Support Files/Pods-GoInfoGameTests/Pods-GoInfoGameTests.release.xcconfig"; sourceTree = "<group>"; };
 		970D5BD02B62B61300C20BE7 /* MapViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapViewController.swift; sourceTree = "<group>"; };
+		970D5BD22B67638400C20BE7 /* MapViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapViewModel.swift; sourceTree = "<group>"; };
 		971575162B5FFD6F0044797C /* MapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapView.swift; sourceTree = "<group>"; };
 		971575182B5FFE910044797C /* LocationManagerCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationManagerCoordinator.swift; sourceTree = "<group>"; };
 		972454142B14A49A0036B91A /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
@@ -585,6 +587,7 @@
 			children = (
 				971575182B5FFE910044797C /* LocationManagerCoordinator.swift */,
 				971575162B5FFD6F0044797C /* MapView.swift */,
+				970D5BD22B67638400C20BE7 /* MapViewModel.swift */,
 			);
 			path = Map;
 			sourceTree = "<group>";
@@ -1529,6 +1532,7 @@
 				A4E711B02B59011000C9DE08 /* StepsInclineForm.swift in Sources */,
 				972454152B14A49A0036B91A /* Extensions.swift in Sources */,
 				0536DD8C2B0BD2C200B04C4B /* Constants.swift in Sources */,
+				970D5BD32B67638500C20BE7 /* MapViewModel.swift in Sources */,
 				0536DD992B0BDBFE00B04C4B /* OAuthManager.swift in Sources */,
 				A4E711AC2B58F7C000C9DE08 /* HandRailForm.swift in Sources */,
 				A4E711A62B57BBCA00C9DE08 /* QuestProtocols.swift in Sources */,
