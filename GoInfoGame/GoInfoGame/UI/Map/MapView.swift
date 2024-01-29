@@ -12,7 +12,7 @@ import CoreLocation
 struct MapView: View {
     @Environment(\.presentationMode) private var presentationMode
     @AppStorage("isMapFromOnboarding") var isMapFromOnboarding: Bool = false
-    @StateObject var viewModel = MapViewModel()
+    @StateObject private var viewModel = MapViewModel()
     @State private var userTrackingMode: MapUserTrackingMode = .follow
 
     var btnBack: some View {
@@ -34,7 +34,7 @@ struct MapView: View {
     }
 
     var body: some View {
-        VStack {
+        ZStack {
             Map(coordinateRegion: $viewModel.coordinateRegion, showsUserLocation: true, userTrackingMode: $userTrackingMode, annotationItems: viewModel.items) { item in
                 MapAnnotation(coordinate: item.coordinateInfo) {
                     Button {
@@ -52,7 +52,12 @@ struct MapView: View {
                     }
                 }
             }
-            Spacer()
+            
+            if viewModel.isLoading {
+                Color.black.opacity(0.3)
+                    .edgesIgnoringSafeArea(.all)
+                LoadingView()
+            }
         }
         .sheet(item: $viewModel.selectedQuest) { selectedQuest in
             if #available(iOS 16.0, *) {
