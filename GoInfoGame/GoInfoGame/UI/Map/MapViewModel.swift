@@ -25,7 +25,6 @@ class MapViewModel: ObservableObject {
                 self.centerMapOnLocation(location)
             }
         }
-       // fetchData()
     }
 
     func fetchData() {
