@@ -9,6 +9,8 @@ import XCTest
 @testable import GoInfoGame
 @testable import SwiftOverpassAPI
 @testable import osmparser
+@testable import osmapi
+
 /**
  Used to test the flow of information
   This fetches the information and sends things down 
@@ -21,7 +23,7 @@ final class UserFlowTests: XCTestCase {
     
     override func setUpWithError() throws {
         // Put setup code here. This method is called before the invocation of each test method in the class.
-       seedData()
+//       seedData()
     }
     
     func seedData() {
@@ -126,6 +128,71 @@ final class UserFlowTests: XCTestCase {
 
     override func tearDownWithError() throws {
         // Put teardown code here. This method is called after the invocation of each test method in the class.
+    }
+    
+    // Tests if we can add an element in the directory
+    func testChangesetCreation() throws {
+        // Get one node element
+        // Add a tag and see if we can create an element
+        guard let oneNode = dbInstance.getNodes().first else {
+            XCTFail("No nodes available")
+            return
+        }
+        let nodeId = oneNode.id
+        let addedTags = ["lit":"yes"]
+        let changedNode = dbInstance.addNodeTags(id: String(nodeId), tags: addedTags)
+        // Create a changeset
+        let newChangeset = dbInstance.createChangeset(id: String(nodeId), type: .node, tags: addedTags)
+        // Need to figure out the id of the changeset
+        XCTAssertEqual(newChangeset?.elementType, .node)
+        XCTAssertEqual(newChangeset?.elementId, String(nodeId))
+    }
+    
+    
+    func testChangesetFetch() throws {
+        let changesets = dbInstance.getChangesets(synced: true)
+        XCTAssert(changesets.count != 0)
+        // Get the changesetId of the first one
+        for changeset in changesets {
+            print(changeset.changesetId)
+        }
+    }
+    
+    func testPublishChangeset() throws {
+        
+        let expectation = expectation(description: "Expect to create changesetID")
+        // Get the changesets
+        let changesets = dbInstance.getChangesets()
+        // Get the elements based on the type
+        for changeset in changesets {
+            // Get the element type
+            if changeset.elementType == .node {
+                // Get the node
+                if let node  = dbInstance.getNode(id: changeset.elementId) {
+                    XCTAssert(node.tags.keys.contains("width"))
+                    // Publish the node here.
+                    let osmConnection = OSMConnection()
+                    osmConnection.openChangeSet { result in
+                        switch result {
+                        case .success(let changesetId):
+                            DispatchQueue.main.async {
+                              // your code here
+                                self.dbInstance.assignChangesetId(obj: changeset.id, changesetId: changesetId)
+                            }
+                            
+                            print("opened successfully")
+                        case .failure(let error):
+                            print("Failed to open ")
+                        }
+                        expectation.fulfill()
+                    }
+                }
+                else{
+                    XCTFail("No node obtained for changeset ")
+                }
+            }
+        }
+        waitForExpectations(timeout: 10)
     }
 
     func testExample() throws {

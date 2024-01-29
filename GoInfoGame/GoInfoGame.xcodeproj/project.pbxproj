@@ -80,6 +80,8 @@
 		A475C7E02B5E4B6E00BABEDA /* OSMXMLBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = A475C7DF2B5E4B6E00BABEDA /* OSMXMLBuilder.swift */; };
 		A475C7E32B5E4CB600BABEDA /* OSMXMLBuilderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A475C7E22B5E4CB600BABEDA /* OSMXMLBuilderTests.swift */; };
 		A4834A3F2B67737500D4F0AA /* StoredChangeset.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4834A3E2B67737500D4F0AA /* StoredChangeset.swift */; };
+		A4834A412B67885E00D4F0AA /* DatasyncManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4834A402B67885E00D4F0AA /* DatasyncManager.swift */; };
+		A4834A442B679CE000D4F0AA /* DatasyncManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4834A432B679CE000D4F0AA /* DatasyncManagerTests.swift */; };
 		A4AD130C2B5E80F20041A881 /* StoredElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4AD130B2B5E80F20041A881 /* StoredElement.swift */; };
 		A4AD13162B5E90BD0041A881 /* osmparser.docc in Sources */ = {isa = PBXBuildFile; fileRef = A4AD13152B5E90BD0041A881 /* osmparser.docc */; };
 		A4AD131C2B5E90BD0041A881 /* osmparser.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A4AD13122B5E90BD0041A881 /* osmparser.framework */; };
@@ -309,6 +311,8 @@
 		A475C7DF2B5E4B6E00BABEDA /* OSMXMLBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OSMXMLBuilder.swift; sourceTree = "<group>"; };
 		A475C7E22B5E4CB600BABEDA /* OSMXMLBuilderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OSMXMLBuilderTests.swift; sourceTree = "<group>"; };
 		A4834A3E2B67737500D4F0AA /* StoredChangeset.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoredChangeset.swift; sourceTree = "<group>"; };
+		A4834A402B67885E00D4F0AA /* DatasyncManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatasyncManager.swift; sourceTree = "<group>"; };
+		A4834A432B679CE000D4F0AA /* DatasyncManagerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatasyncManagerTests.swift; sourceTree = "<group>"; };
 		A4AD130B2B5E80F20041A881 /* StoredElement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoredElement.swift; sourceTree = "<group>"; };
 		A4AD13122B5E90BD0041A881 /* osmparser.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = osmparser.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		A4AD13142B5E90BD0041A881 /* osmparser.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = osmparser.h; sourceTree = "<group>"; };
@@ -745,6 +749,14 @@
 			path = xmlbuilder;
 			sourceTree = "<group>";
 		};
+		A4834A422B679CD400D4F0AA /* data */ = {
+			isa = PBXGroup;
+			children = (
+				A4834A432B679CE000D4F0AA /* DatasyncManagerTests.swift */,
+			);
+			path = data;
+			sourceTree = "<group>";
+		};
 		A4AD13132B5E90BD0041A881 /* osmparser */ = {
 			isa = PBXGroup;
 			children = (
@@ -873,6 +885,7 @@
 		A4E7119A2B57A17600C9DE08 /* data */ = {
 			isa = PBXGroup;
 			children = (
+				A4834A402B67885E00D4F0AA /* DatasyncManager.swift */,
 			);
 			path = data;
 			sourceTree = "<group>";
@@ -1000,6 +1013,7 @@
 		FAD5C5082AFCBE720040C61A /* GoInfoGameTests */ = {
 			isa = PBXGroup;
 			children = (
+				A4834A422B679CD400D4F0AA /* data */,
 				188843AB2B5FA2BC0008DCF8 /* quests */,
 				A444AC8D2B5E943E006C74F7 /* utils */,
 				FAD5C5092AFCBE720040C61A /* GoInfoGameTests.swift */,
@@ -1495,6 +1509,7 @@
 				A4AD130C2B5E80F20041A881 /* StoredElement.swift in Sources */,
 				05DBBB5D2B1262BA00B6F110 /* OverpassRepository.swift in Sources */,
 				A4B83AF12B5F92FA006684CA /* StoredNode.swift in Sources */,
+				A4834A412B67885E00D4F0AA /* DatasyncManager.swift in Sources */,
 				0536DD852B0BD11A00B04C4B /* LoginViewController.swift in Sources */,
 				A4E711A42B57B13100C9DE08 /* QuestionHeader.swift in Sources */,
 				973FC0442B59468800878269 /* BusStopLitForm.swift in Sources */,
@@ -1565,6 +1580,7 @@
 				A444AC8F2B5E944E006C74F7 /* TestQuest.swift in Sources */,
 				188843AF2B5FB32D0008DCF8 /* WayLitTests.swift in Sources */,
 				188843AD2B5FA2DF0008DCF8 /* TactilePavingStepsTests.swift in Sources */,
+				A4834A442B679CE000D4F0AA /* DatasyncManagerTests.swift in Sources */,
 				A40E72642B5CD65000328848 /* OverpassRequestManagerTests.swift in Sources */,
 				A444AC8C2B5E934B006C74F7 /* UserFlowTests.swift in Sources */,
 				FAD5C50A2AFCBE720040C61A /* GoInfoGameTests.swift in Sources */,

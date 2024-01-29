@@ -9,12 +9,19 @@ import Foundation
 
 import RealmSwift
 import osmparser
+
+enum StoredElementEnum: String, PersistableEnum {
+    case node
+    case way
+    case unknown
+}
+
 // Represents one stored way
 class StoredChangeset: Object {
-    @Persisted(primaryKey: true) var id: Int = 0 // Internal ID
+    @Persisted(primaryKey: true) var id: String = UUID().uuidString // Internal ID
     // Type of change -> can be node or way
-    
-    @Persisted var elementId: Int = 0 // The ID of the element
+    @Persisted var elementType : StoredElementEnum = .unknown
+    @Persisted var elementId: String = "" // The ID of the element
     @Persisted var tags = Map<String,String>()
     @Persisted var changesetId: Int = -1 // Initial value of changeset // To be figured out later as index
     @Persisted var timestamp : String = "" // User time stamp
