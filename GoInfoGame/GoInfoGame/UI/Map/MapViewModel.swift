@@ -15,6 +15,7 @@ class MapViewModel: ObservableObject {
     @Published var items: [DisplayUnitWithCoordinate] = []
     @Published var selectedQuest: DisplayUnit?
     private let locationManager = LocationManagerCoordinator()
+    @Published var isLoading: Bool = false
 
     init() {
         self.coordinateRegion = MKCoordinateRegion()
@@ -24,14 +25,16 @@ class MapViewModel: ObservableObject {
                 self.centerMapOnLocation(location)
             }
         }
-        fetchData()
+       // fetchData()
     }
 
     func fetchData() {
+        isLoading = true
         let boundingBox = boundingBoxAroundLocation(location: locationManager.currentLocation ?? CLLocation(latitude: coordinateRegion.center.latitude, longitude: coordinateRegion.center.longitude), distance: 1000)
         AppQuestManager.shared.fetchData(fromBBOx: boundingBox) { [weak self] in
             guard let self = self else { return }
             self.items = AppQuestManager.shared.fetchQuestsFromDB()
+            isLoading = false
         }
     }
     
