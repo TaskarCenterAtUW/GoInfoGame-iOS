@@ -23,6 +23,13 @@ class DatasyncManager {
     
     func syncData() async  {
         
+        if(isSynching){
+            print("Already syncing")
+            return
+        }
+        else {
+            isSynching = true
+        }
         let changesets = dbInstance.getChangesets()
         print("Starting to sync data")
         var nodesToSync: [String:StoredNode] = [:]
@@ -38,7 +45,7 @@ class DatasyncManager {
         }
         
         // sync each
-        for (key,node) in nodesToSync{
+        for (key,node) in nodesToSync {
             var payload = node.asOSMNode()
             let result = await syncNode(node: &payload)
             switch result{
@@ -53,6 +60,7 @@ class DatasyncManager {
                 print("Failed to sync \(payload)")
             }
         }
+        isSynching = false 
         
     }
     

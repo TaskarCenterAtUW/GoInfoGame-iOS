@@ -44,6 +44,17 @@ final class DatasyncManagerTests: XCTestCase {
 //        await dbSyncManager.syncDataDummy()
         
     }
+    
+    func testDualDataSync()  async throws {
+        // TO be done. Need to check two calls on the same thing.
+        let dbSyncManager  = DatasyncManager.shared
+        Task {
+           await dbSyncManager.syncData()
+        }
+        Task {
+            await dbSyncManager.syncData()
+        }
+    }
 
     func testPerformanceExample() throws {
         // This is an example of a performance test case.
