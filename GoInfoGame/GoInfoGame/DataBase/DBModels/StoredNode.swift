@@ -21,7 +21,7 @@ class StoredNode : Object {
     
     // Give another method that gives node
     public func asNode() -> Node {
-        let position = LatLon(latitude: 0.0, longitude: 0.0)
+        let position = LatLon(latitude: point.latitude , longitude: point.longitude)
         var theTags: [String:String] = [:]
         for (key,value) in tags.asKeyValueSequence(){
             theTags[key] = value

@@ -44,7 +44,6 @@ class StepsRamp :Quest {
             return _internalExpression
         }
         else {
-            print("<>")
             _internalExpression = try? filter.toElementFilterExpression()
             return _internalExpression
         }

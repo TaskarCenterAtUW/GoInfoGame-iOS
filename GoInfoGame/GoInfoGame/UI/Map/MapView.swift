@@ -18,7 +18,7 @@ struct MapView: View {
         center: CLLocationCoordinate2D(latitude: 47.6062, longitude: -122.3321),
         span: MKCoordinateSpan(latitudeDelta: 0.05, longitudeDelta: 0.05)
     )
-    let items: [ DisplayUnitWithCoordinate] = QuestsRepository.shared.displayCoordQuests
+    let items: [ DisplayUnitWithCoordinate] = AppQuestManager.shared.fetchQuestsFromDB()
     @State var selectedQuest: DisplayUnit?
     var btnBack : some View { Button(action: {
         if isMapFromOnboarding {
@@ -63,7 +63,7 @@ struct MapView: View {
             
         }
         .onAppear {
-            centerMapOnDefaultLocation()
+//            centerMapOnDefaultLocation()
         }.navigationBarBackButtonHidden(true)
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
@@ -94,11 +94,6 @@ extension MapView {
         locationManager.requestWhenInUseAuthorization()
         locationManager.startUpdatingLocation()
     }
-}
-struct CustomLocation: Identifiable {
-    let id = UUID()
-    let iconName: String
-    let coordinate: CLLocationCoordinate2D
 }
 
 #Preview {

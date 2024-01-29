@@ -8,6 +8,7 @@
 import Foundation
 import RealmSwift
 import SwiftOverpassAPI
+import MapKit
 
 class DatabaseConnector {
     static let shared = DatabaseConnector()
@@ -57,12 +58,20 @@ class DatabaseConnector {
                         storedWay.tags.setValue(tag.value, forKey: tag.key)
                     }
                     
+                    
                     if let meta = way.meta {
                         storedWay.version = meta.version
                         storedWay.timestamp = meta.timestamp
                     }
                     if let asWay = way as? OPWay {
                         storedWay.nodes.append(objectsIn: asWay.nodes.map({Int64($0)}))
+                        // Store the coordinates
+                        switch asWay.geometry {
+                        case .polygon(let coordinates):
+                            storedWay.polyline.append(objectsIn: coordinates)
+                        default:
+                            print("Ignoring geometry")
+                        }
                     }
                     realm.add(storedWay, update: .modified)
                 }
@@ -119,8 +128,33 @@ class DatabaseConnector {
     func getNodes() -> Results<StoredNode> {
         return realm.objects(StoredNode.self)
     }
+    
     func getWays() -> Results<StoredWay> {
         return realm.objects(StoredWay.self)
     }
+    
+    func getCenterForWay(id: String) -> CLLocationCoordinate2D? {
+        // Get all the objects for the way
+        guard let way = realm.object(ofType: StoredWay.self, forPrimaryKey: Int(id))  else {
+            return nil
+        }
+        let nodeIds = way.nodes
+        // Get the nodes for each
+        var nodeCoords: [CLLocationCoordinate2D] = []
+        for nodeId in nodeIds {
+            if let node = realm.object(ofType: StoredNode.self , forPrimaryKey: Int(nodeId)){
+                nodeCoords.append(node.point)
+            }
+        }
+        if (!nodeCoords.isEmpty) {
+            let latitudeSum = nodeCoords.map({$0.latitude}).reduce(0, +)  / Double(nodeCoords.count)
+            let longitudeSum = nodeCoords.map({$0.longitude}).reduce(0, +)  / Double(nodeCoords.count)
+            
+            return CLLocationCoordinate2D(latitude: latitudeSum, longitude: longitudeSum)
+        }
+        return CLLocationCoordinate2D(latitude: 0, longitude: 0)
+        
+    }
+    
     
 }
