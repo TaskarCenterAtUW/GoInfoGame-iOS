@@ -238,5 +238,35 @@ final class OSMConnectionTests: XCTestCase {
             // Put the code you want to measure the time of here.
         }
     }
-
+    func testGetUserDataWithId() throws {
+        let osmConnection = OSMConnection()
+        let expectation = expectation(description: "Expect to get user details")
+        osmConnection.getUserDetailsWithId(id: "20924840") { result in
+            switch result {
+            case .success(let userDataResponse):
+                let user = userDataResponse.user.id
+                XCTAssertEqual(user, 20924840)
+            case .failure(let error):
+                XCTFail("Failed while getting the user details: \(error)")
+            }
+            expectation.fulfill()
+        }
+        waitForExpectations(timeout: 10)
+    }
+    func testGetUserData() throws {
+        let osmConnection = self.posmConnection
+        let expectation = expectation(description: "Expect to get user details")
+        osmConnection?.getUserDetails() { result in
+            switch result {
+            case .success(let userDataResponse):
+                let user = userDataResponse.user.id
+                print(userDataResponse)
+                XCTAssertEqual(user, 1)
+            case .failure(let error):
+                XCTFail("Failed while getting the user details: \(error)")
+            }
+            expectation.fulfill()
+        }
+        waitForExpectations(timeout: 12)
+    }
 }

@@ -156,7 +156,23 @@ public class OSMConnection {
         BaseNetworkManager.shared.postData(url: url, method: "PUT",body: way ,completion: completion)
         
     }
-    
-    
-    
+    func getUserDetailsWithId(id: String,_ completion: @escaping (Result<OSMUserDataResponse, Error>)-> Void) {
+        let urlString =  self.baseUrl.appending("user/").appending(id).appending(".json")
+        print(urlString)
+        guard let url = URL(string: urlString) else {
+            print("Invalid URL given")
+                    return
+                }
+        BaseNetworkManager.shared.fetchData(url: url, completion: completion)
+    }
+    func getUserDetails(_ completion: @escaping (Result<OSMUserDataResponse, Error>)-> Void) {
+        let urlString =  self.baseUrl.appending("user/details.json")
+        print(urlString)
+        guard let url = URL(string: urlString) else {
+            print("Invalid URL given")
+                    return
+                }
+        BaseNetworkManager.shared.addOrSetHeaders(header: "Authorization", value: "Basic \(self.userCreds.getHeaderData())")
+        BaseNetworkManager.shared.fetchData(url: url, completion: completion)
+    }
 }
