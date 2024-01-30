@@ -15,6 +15,7 @@ final class WayLitTests: XCTestCase {
     let dbInstance = DatabaseConnector.shared
     var nodes:[Node] = []
     var ways:[Way] = []
+    let wayLit = WayLit()
     
     override func setUpWithError() throws {
         // Put setup code here. This method is called before the invocation of each test method in the class.
@@ -65,7 +66,50 @@ final class WayLitTests: XCTestCase {
         XCTAssert(applicableNodes.isEmpty)
         
     }
+    
+    /** Testing the query
+     ways with
+             (
+               highway ~ residential|living_street|pedestrian
+               or highway ~ motorway|motorway_link|trunk|trunk_link|primary|primary_link|secondary|secondary_link|tertiary|tertiary_link|unclassified|service and
+               (
+                 sidewalk ~ both|left|right|yes|separate
+                 or ~"source:maxspeed|zone:traffic|maxspeed:type|zone:maxspeed|maxspeed" ~ ".*:(urban|.*zone.*|nsl_restricted)"
+                 or maxspeed <= 60
+               )
+               or highway ~ footway|cycleway|steps
+               or highway = path and (foot = designated or bicycle = designated)
+             )
+             and
+             (
+               !lit
+               or lit = no and lit older today -8 years
+               or lit older today -16 years
+             )
+             and (access !~ private|no or (foot and foot !~ private|no))
+             and indoor != yes
+             and ~path|footway|cycleway !~ link
+     
+     */
+    
+    func testWayLitQuery() throws {
+        assertIsNotApplicable(element: TestQuestUtils.node(tags: ["" : ""]))
+        assertIsApplicable(element: TestQuestUtils.way(tags: ["highway":"pedestrian"]))
+        assertIsNotApplicable(element: TestQuestUtils.way(tags: ["highway":"pedestrian","access":"no"])) // no access to the path
+        assertIsNotApplicable(element: TestQuestUtils.way(tags: ["highway":"pedestrian","indoor":"yes"])) // path is indoor
+        assertIsApplicable(element: TestQuestUtils.way(tags: ["highway":"pedestrian","footway":"link"]))
+        assertIsNotApplicable(element: TestQuestUtils.way(tags: ["highway":"pedestrian","lit":"yes"])) // lit tag already exists
+        
+        
+    }
 
+    private func assertIsApplicable(element: Element) {
+        XCTAssertTrue(wayLit.isApplicable(element: element))
+    }
+    
+    private func assertIsNotApplicable(element: Element) {
+        XCTAssertFalse(wayLit.isApplicable(element: element))
+    }
     func testExample() throws {
         // This is an example of a functional test case.
         // Use XCTAssert and related functions to verify your tests produce the correct results.

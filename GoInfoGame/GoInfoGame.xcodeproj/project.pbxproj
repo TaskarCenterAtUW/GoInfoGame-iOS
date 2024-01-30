@@ -84,6 +84,7 @@
 		A4834A412B67885E00D4F0AA /* DatasyncManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4834A402B67885E00D4F0AA /* DatasyncManager.swift */; };
 		A4834A442B679CE000D4F0AA /* DatasyncManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4834A432B679CE000D4F0AA /* DatasyncManagerTests.swift */; };
 		A495DF2D2B6A190400478E44 /* CustomMapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A495DF2C2B6A190400478E44 /* CustomMapView.swift */; };
+		A495DF2B2B68D6EC00478E44 /* TestQuestUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = A495DF2A2B68D6EC00478E44 /* TestQuestUtils.swift */; };
 		A4AD130C2B5E80F20041A881 /* StoredElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4AD130B2B5E80F20041A881 /* StoredElement.swift */; };
 		A4AD13162B5E90BD0041A881 /* osmparser.docc in Sources */ = {isa = PBXBuildFile; fileRef = A4AD13152B5E90BD0041A881 /* osmparser.docc */; };
 		A4AD131C2B5E90BD0041A881 /* osmparser.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A4AD13122B5E90BD0041A881 /* osmparser.framework */; };
@@ -317,6 +318,7 @@
 		A4834A402B67885E00D4F0AA /* DatasyncManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatasyncManager.swift; sourceTree = "<group>"; };
 		A4834A432B679CE000D4F0AA /* DatasyncManagerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatasyncManagerTests.swift; sourceTree = "<group>"; };
 		A495DF2C2B6A190400478E44 /* CustomMapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomMapView.swift; sourceTree = "<group>"; };
+		A495DF2A2B68D6EC00478E44 /* TestQuestUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestQuestUtils.swift; sourceTree = "<group>"; };
 		A4AD130B2B5E80F20041A881 /* StoredElement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoredElement.swift; sourceTree = "<group>"; };
 		A4AD13122B5E90BD0041A881 /* osmparser.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = osmparser.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		A4AD13142B5E90BD0041A881 /* osmparser.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = osmparser.h; sourceTree = "<group>"; };
@@ -568,6 +570,7 @@
 			children = (
 				188843AC2B5FA2DF0008DCF8 /* TactilePavingStepsTests.swift */,
 				188843AE2B5FB32D0008DCF8 /* WayLitTests.swift */,
+				A495DF2A2B68D6EC00478E44 /* TestQuestUtils.swift */,
 			);
 			path = quests;
 			sourceTree = "<group>";
@@ -1587,6 +1590,7 @@
 			files = (
 				A444AC8F2B5E944E006C74F7 /* TestQuest.swift in Sources */,
 				188843AF2B5FB32D0008DCF8 /* WayLitTests.swift in Sources */,
+				A495DF2B2B68D6EC00478E44 /* TestQuestUtils.swift in Sources */,
 				188843AD2B5FA2DF0008DCF8 /* TactilePavingStepsTests.swift in Sources */,
 				A4834A442B679CE000D4F0AA /* DatasyncManagerTests.swift in Sources */,
 				A40E72642B5CD65000328848 /* OverpassRequestManagerTests.swift in Sources */,
