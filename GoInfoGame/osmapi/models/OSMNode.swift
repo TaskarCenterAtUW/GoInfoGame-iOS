@@ -16,7 +16,7 @@ struct OSMNodeResponse: Codable {
 }
 
 // MARK: - Element
-struct OSMNode: Codable, OSMPayload {
+public struct OSMNode: Codable, OSMPayload {
     
     func toPayload() -> String {
          var osmNode = "<osm>"
@@ -36,13 +36,26 @@ struct OSMNode: Codable, OSMPayload {
         return osmNode
     }
     
-    let type: String
-    let id: Int
-    let lat, lon: Double
-    let timestamp: Date
-    let version: Int
-    var changeset: Int
-    let user: String
-    let uid: Int
-    var tags: [String:String]?
+    public let type: String
+    public let id: Int
+    public let lat, lon: Double
+    public let timestamp: Date
+    public var version: Int
+    public var changeset: Int
+    public let user: String
+    public let uid: Int
+    public  var tags: [String:String]?
+    
+   public init(type: String, id: Int, lat: Double, lon: Double, timestamp: Date, version: Int, changeset: Int, user: String, uid: Int, tags: [String : String]? = nil) {
+        self.type = type
+        self.id = id
+        self.lat = lat
+        self.lon = lon
+        self.timestamp = timestamp
+        self.version = version
+        self.changeset = changeset
+        self.user = user
+        self.uid = uid
+        self.tags = tags
+    }
 }

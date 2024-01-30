@@ -1,111 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="22155" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="5oO-NF-Hms">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="22505" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="5oO-NF-Hms">
     <device id="retina6_12" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="22131"/>
-        <capability name="Map view configurations" minToolsVersion="14.0"/>
-        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
-        <capability name="System colors in document resources" minToolsVersion="11.0"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="22504"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
-        <!--Login View Controller-->
-        <scene sceneID="dVk-Jz-ghd">
+        <!--Map View Controller-->
+        <scene sceneID="eS8-T4-bVR">
             <objects>
-                <viewController storyboardIdentifier="LoginViewController" id="Vtf-17-t2l" customClass="LoginViewController" customModule="GoInfoGame" customModuleProvider="target" sceneMemberID="viewController">
-                    <view key="view" contentMode="scaleToFill" id="95N-EQ-3Ua">
-                        <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <subviews>
-                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="31" translatesAutoresizingMaskIntoConstraints="NO" id="Zgw-Yn-61d">
-                                <rect key="frame" x="20" y="314" width="353" height="224"/>
-                                <subviews>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="gjV-BO-UiV">
-                                        <rect key="frame" x="0.0" y="0.0" width="353" height="54"/>
-                                        <color key="backgroundColor" systemColor="systemTealColor"/>
-                                        <state key="normal" title="Button"/>
-                                        <buttonConfiguration key="configuration" style="plain" title="Login" buttonSize="large">
-                                            <fontDescription key="titleFontDescription" type="system" weight="medium" pointSize="20"/>
-                                            <color key="baseForegroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                        </buttonConfiguration>
-                                        <connections>
-                                            <action selector="loginMethod:" destination="Vtf-17-t2l" eventType="touchUpInside" id="4nE-pU-sEN"/>
-                                        </connections>
-                                    </button>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="qAs-AP-wC6">
-                                        <rect key="frame" x="0.0" y="85" width="353" height="54"/>
-                                        <color key="backgroundColor" systemColor="systemOrangeColor"/>
-                                        <state key="normal" title="Button"/>
-                                        <buttonConfiguration key="configuration" style="plain" title="Skip" buttonSize="large">
-                                            <fontDescription key="titleFontDescription" type="system" weight="medium" pointSize="20"/>
-                                            <color key="baseForegroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                        </buttonConfiguration>
-                                        <connections>
-                                            <action selector="skipButtonTapped:" destination="Vtf-17-t2l" eventType="touchUpInside" id="zlP-lS-yp9"/>
-                                        </connections>
-                                    </button>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="13P-wz-T0e">
-                                        <rect key="frame" x="0.0" y="170" width="353" height="54"/>
-                                        <color key="backgroundColor" systemColor="systemGreenColor"/>
-                                        <constraints>
-                                            <constraint firstAttribute="height" constant="54" id="LXy-a0-FhY"/>
-                                        </constraints>
-                                        <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                        <state key="normal" title="Button"/>
-                                        <buttonConfiguration key="configuration" style="plain" title="View Quests"/>
-                                        <connections>
-                                            <action selector="viewQuestsTapped:" destination="Vtf-17-t2l" eventType="touchUpInside" id="QIg-dV-JvK"/>
-                                        </connections>
-                                    </button>
-                                </subviews>
-                            </stackView>
-                        </subviews>
-                        <viewLayoutGuide key="safeArea" id="GEU-ML-3Er"/>
-                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
-                        <constraints>
-                            <constraint firstItem="GEU-ML-3Er" firstAttribute="trailing" secondItem="Zgw-Yn-61d" secondAttribute="trailing" constant="20" id="Dbw-SY-U1j"/>
-                            <constraint firstItem="Zgw-Yn-61d" firstAttribute="centerX" secondItem="95N-EQ-3Ua" secondAttribute="centerX" id="FQj-xY-UdH"/>
-                            <constraint firstItem="Zgw-Yn-61d" firstAttribute="leading" secondItem="GEU-ML-3Er" secondAttribute="leading" constant="20" id="GUo-k3-ifo"/>
-                            <constraint firstItem="Zgw-Yn-61d" firstAttribute="centerY" secondItem="95N-EQ-3Ua" secondAttribute="centerY" id="Kth-yw-qmk"/>
-                        </constraints>
-                    </view>
-                    <navigationItem key="navigationItem" id="xce-x7-wdy"/>
-                </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="th5-ly-XH8" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+                <hostingController id="oB8-mI-y0B" customClass="MapViewController" customModule="GoInfoGame" customModuleProvider="target" sceneMemberID="viewController">
+                    <navigationItem key="navigationItem" id="yQo-Up-QSM"/>
+                </hostingController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="s7U-Gu-uwn" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="185" y="-68"/>
-        </scene>
-        <!--Map Kit View Controller-->
-        <scene sceneID="fpw-f4-IkK">
-            <objects>
-                <viewController storyboardIdentifier="MapKitViewController" id="1L3-Wt-xlh" customClass="MapKitViewController" customModule="GoInfoGame" customModuleProvider="target" sceneMemberID="viewController">
-                    <view key="view" contentMode="scaleToFill" id="3U7-qf-FxD">
-                        <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <subviews>
-                            <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" showsUserLocation="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Rn4-dd-HRy">
-                                <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
-                                <standardMapConfiguration key="preferredConfiguration"/>
-                            </mapView>
-                        </subviews>
-                        <viewLayoutGuide key="safeArea" id="eDm-NJ-P9V"/>
-                        <color key="backgroundColor" systemColor="systemGray6Color"/>
-                        <constraints>
-                            <constraint firstItem="Rn4-dd-HRy" firstAttribute="trailing" secondItem="eDm-NJ-P9V" secondAttribute="trailing" id="0SH-hw-g5u"/>
-                            <constraint firstItem="Rn4-dd-HRy" firstAttribute="leading" secondItem="eDm-NJ-P9V" secondAttribute="leading" id="dRx-nX-dBs"/>
-                            <constraint firstAttribute="bottom" secondItem="Rn4-dd-HRy" secondAttribute="bottom" id="dpb-p2-Tbg"/>
-                            <constraint firstItem="Rn4-dd-HRy" firstAttribute="top" secondItem="3U7-qf-FxD" secondAttribute="top" id="mPW-tZ-rmE"/>
-                        </constraints>
-                    </view>
-                    <navigationItem key="navigationItem" id="XyE-ar-GiN"/>
-                    <connections>
-                        <outlet property="mapView" destination="Rn4-dd-HRy" id="YtE-RL-Hy7"/>
-                    </connections>
-                </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="8mj-mX-D55" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="1068" y="-68"/>
+            <point key="canvasLocation" x="305" y="-68"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="Oj0-5X-njE">
@@ -121,7 +31,7 @@
                     </navigationBar>
                     <nil name="viewControllers"/>
                     <connections>
-                        <segue destination="Vtf-17-t2l" kind="relationship" relationship="rootViewController" id="R05-Pi-WSD"/>
+                        <segue destination="oB8-mI-y0B" kind="relationship" relationship="rootViewController" id="HWc-8q-aQu"/>
                     </connections>
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="33d-6L-4ci" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
@@ -129,21 +39,4 @@
             <point key="canvasLocation" x="-688" y="-68"/>
         </scene>
     </scenes>
-    <resources>
-        <systemColor name="systemBackgroundColor">
-            <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-        </systemColor>
-        <systemColor name="systemGray6Color">
-            <color red="0.94901960780000005" green="0.94901960780000005" blue="0.96862745100000003" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-        </systemColor>
-        <systemColor name="systemGreenColor">
-            <color red="0.20392156859999999" green="0.78039215689999997" blue="0.34901960780000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-        </systemColor>
-        <systemColor name="systemOrangeColor">
-            <color red="1" green="0.58431372550000005" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-        </systemColor>
-        <systemColor name="systemTealColor">
-            <color red="0.18823529410000001" green="0.69019607839999997" blue="0.78039215689999997" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-        </systemColor>
-    </resources>
 </document>

@@ -6,7 +6,7 @@
 //
 
 import Foundation
-class OSMConnection {
+public class OSMConnection {
     // Creates a connection
     let baseUrl: String// = OSMConfig.baseUrl
     
@@ -18,7 +18,7 @@ class OSMConnection {
     
     // Lets see if we can start with some authentication or node
     
-    init(config: OSMConfig = OSMConfig.production, currentChangesetId: Int? = nil, userCreds: OSMLogin = OSMLogin.production) {
+ public   init(config: OSMConfig = OSMConfig.test, currentChangesetId: Int? = nil, userCreds: OSMLogin = OSMLogin.test) {
         self.baseUrl = config.baseUrl
         self.currentChangesetId = currentChangesetId
         self.userCreds = userCreds
@@ -42,7 +42,7 @@ class OSMConnection {
         BaseNetworkManager.shared.fetchData(url: url, completion: completion) // Need to improve this one
     }
     
-    func openChangeSet(_ completion: @escaping((Result<Int,Error>)->Void)) {
+    public func openChangeSet(_ completion: @escaping((Result<Int,Error>)->Void)) {
         // Have to open changeset
         let urlString = self.baseUrl.appending("changeset/create")
         guard let url = URL(string: urlString) else {
@@ -63,7 +63,7 @@ class OSMConnection {
         }
     }
     
-    func closeChangeSet(id: String,completion: @escaping((Result<Bool,Error>)->Void)) {
+   public func closeChangeSet(id: String,completion: @escaping((Result<Bool,Error>)->Void)) {
         let urlString = self.baseUrl.appending("changeset/").appending(id).appending("/close")
         guard let url = URL(string: urlString) else {
             print("Invalid URL given")
@@ -107,7 +107,7 @@ class OSMConnection {
     // Updated method
     func getChangesets2(completion: @escaping (Result<OSMChangesetResponse, Error>)->Void) {
         // Get the base URL
-        let urlString = self.baseUrl.appending("changesets.json")
+        let urlString = self.baseUrl.appending("changesets.json?open=true")
         guard let url = URL(string: urlString) else {
             print("Invalid URL given")
                     return
@@ -118,7 +118,7 @@ class OSMConnection {
     }
     
     
-    func updateNode(node: inout OSMNode, tags:[String:String], completion: @escaping((Result<Int,Error>)->Void)){
+    public func updateNode(node: inout OSMNode, tags:[String:String], completion: @escaping((Result<Int,Error>)->Void)){
         // Have to do this.
         let urlString = self.baseUrl.appending("node/").appending(String(node.id))
         guard let url = URL(string: urlString) else {
@@ -192,5 +192,7 @@ class OSMConnection {
 
         task.resume()
     }
+    
+    
     
 }

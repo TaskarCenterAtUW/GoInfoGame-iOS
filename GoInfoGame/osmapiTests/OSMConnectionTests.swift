@@ -139,6 +139,20 @@ final class OSMConnectionTests: XCTestCase {
         waitForExpectations(timeout: 10)
     }
     
+    func testGetUserChangesets() throws {
+        let expectation = expectation(description: "Expect to get changeset details")
+        posmConnection?.getChangesets2(completion: { result in
+            switch result {
+            case .success(let response):
+                print(response)
+            case .failure(let error):
+                print(error)
+            }
+            expectation.fulfill()
+        })
+        waitForExpectations(timeout: 10)
+    }
+    
     func testPosmOpenChangeset() throws{
         let expectation = expectation(description: "Expect to open changeset")
         
@@ -156,7 +170,7 @@ final class OSMConnectionTests: XCTestCase {
     }
     
     func testPosmCloseChangeset() throws {
-        let changesetId = "59"
+        let changesetId = "67"
         let expectation = expectation(description: "Expect to open changeset")
         posmConnection?.closeChangeSet(id: changesetId) {_ in
             expectation.fulfill()
