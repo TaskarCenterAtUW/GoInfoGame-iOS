@@ -25,11 +25,11 @@ class AppQuestManager {
     private let seedBox = BBox(minLat: 47.70312160869372, maxLat: 47.718964653825054, minLon: -122.20866792353317, maxLon: -122.18570621653987)
     
     func addSeedData() {
-        fetchData(fromBBOx: seedBox )
+        fetchData(fromBBOx: seedBox ){}
     }
     
     // Fetch the quests for a bounding box
-    func fetchData(fromBBOx bbox: BBox){
+    func fetchData(fromBBOx bbox: BBox,completion: @escaping () -> Void){
         // Get the data from bbox
         opManager.fetchElements(fromBBox: bbox) { fetchedElements in
             // Get the count of nodes and ways
@@ -37,6 +37,7 @@ class AppQuestManager {
             let allElements = allValues.filter({!$0.tags.isEmpty})
             print("Saving tags")
             self.dbInstance.saveElements(allElements) // Save all where there are tags
+            completion()
         }
     }
     

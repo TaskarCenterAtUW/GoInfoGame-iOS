@@ -34,7 +34,9 @@ class DatabaseConnector {
                     let storedElement = StoredNode()
                     storedElement.id = node.id
                     for tag in node.tags {
-                        storedElement.tags.setValue(tag.value, forKey: tag.key)
+                        if (!tag.key.contains(".")) { // Do a utility function
+                            storedElement.tags.setValue(tag.value, forKey: tag.key)
+                        }
                     }
                     if let meta = node.meta {
                         storedElement.version = meta.version
@@ -55,7 +57,9 @@ class DatabaseConnector {
                     let storedWay = StoredWay()
                     storedWay.id = way.id
                     for tag in way.tags {
-                        storedWay.tags.setValue(tag.value, forKey: tag.key)
+                        if(!tag.key.contains(".")){ // Do a utility function
+                            storedWay.tags.setValue(tag.value, forKey: tag.key)
+                        }
                     }
                     
                     
