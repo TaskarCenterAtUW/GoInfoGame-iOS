@@ -6,7 +6,7 @@
 //
 
 import Foundation
-struct OSMLogin {
+public struct OSMLogin {
     let username: String
     let password: String
     
@@ -18,11 +18,11 @@ struct OSMLogin {
         return base64LoginString
     }
     
-    static var production : OSMLogin {
+    public static var production : OSMLogin {
          OSMLogin(username: "nerope1097@wentcity.com", password: "$$WentCityErwin")
     }
     
-    static var test : OSMLogin {
+    public static var test : OSMLogin {
         OSMLogin(username: "nareshd@vindago.in", password: "a$hwa7hamA") // Need to change
     }
 }

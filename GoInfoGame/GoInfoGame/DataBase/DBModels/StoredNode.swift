@@ -9,6 +9,7 @@ import Foundation
 import RealmSwift
 import osmparser
 import MapKit
+import osmapi
 
 // Stores a node instance
 class StoredNode : Object {
@@ -28,5 +29,9 @@ class StoredNode : Object {
         }
         let n = Node(id: Int64(id), version: version, tags: theTags, timestampEdited: 0, position: position)
         return n
+    }
+    
+    public func asOSMNode() -> OSMNode {
+        return OSMNode(type: "node", id: id, lat: point.latitude, lon: point.longitude, timestamp: Date(), version: version, changeset: -1, user: "", uid: -1)
     }
 }
