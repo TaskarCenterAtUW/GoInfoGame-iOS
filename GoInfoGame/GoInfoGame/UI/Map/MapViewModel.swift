@@ -11,7 +11,7 @@ import MapKit
 import CoreLocation
 
 class MapViewModel: ObservableObject {
-    @Published var coordinateRegion = MKCoordinateRegion()
+    @Published var coordinateRegion = MKCoordinateRegion(center: CLLocationCoordinate2D(latitude: 37.7749, longitude: -122.4194), span: MKCoordinateSpan(latitudeDelta: 0.003, longitudeDelta: 0.003))
     @Published var items: [DisplayUnitWithCoordinate] = []
     @Published var selectedQuest: DisplayUnit?
     private let locationManager = LocationManagerCoordinator()
@@ -29,17 +29,20 @@ class MapViewModel: ObservableObject {
 
     func fetchData() {
         isLoading = true
-        let boundingBox = boundingBoxAroundLocation(location: locationManager.currentLocation ?? CLLocation(latitude: coordinateRegion.center.latitude, longitude: coordinateRegion.center.longitude), distance: 1000)
+        let boundingBox = boundingBoxAroundLocation(location: locationManager.currentLocation ?? CLLocation(latitude: coordinateRegion.center.latitude, longitude: coordinateRegion.center.longitude), distance: 50)
         AppQuestManager.shared.fetchData(fromBBOx: boundingBox) { [weak self] in
             guard let self = self else { return }
             self.items = AppQuestManager.shared.fetchQuestsFromDB()
-            isLoading = false
+            self.isLoading = false
         }
     }
     
     func centerMapOnLocation(_ location: CLLocation) {
         // Update coordinate region only if necessary
-        let region = MKCoordinateRegion(center: location.coordinate, latitudinalMeters: coordinateRegion.span.latitudeDelta, longitudinalMeters: coordinateRegion.span.longitudeDelta)
+        let region = MKCoordinateRegion(center: location.coordinate, span: MKCoordinateSpan(
+            latitudeDelta: 0.003,
+            longitudeDelta: 0.003
+         ))
         if !coordinateRegionIsEqual(region, coordinateRegion) {
             coordinateRegion = region
             fetchData() // Fetch data when the map region changes
@@ -52,15 +55,15 @@ class MapViewModel: ObservableObject {
                region1.span.latitudeDelta == region2.span.latitudeDelta &&
                region1.span.longitudeDelta == region2.span.longitudeDelta
     }
-
     private func boundingBoxAroundLocation(location: CLLocation, distance: CLLocationDistance) -> BBox {
-        let latDelta = 0.008
-        let lonDelta = 0.008
-        let coordinate = location.coordinate
-        let minLat = coordinate.latitude - latDelta
-        let maxLat = coordinate.latitude + latDelta
-        let minLon = coordinate.longitude - lonDelta
-        let maxLon = coordinate.longitude + lonDelta
+        let region = MKCoordinateRegion(center: location.coordinate, latitudinalMeters: distance, longitudinalMeters: distance)
+        let center = region.center
+        let span = region.span
+        let minLat = center.latitude - span.latitudeDelta / 2
+        let maxLat = center.latitude + span.latitudeDelta / 2
+        let minLon = center.longitude - span.longitudeDelta / 2
+        let maxLon = center.longitude + span.longitudeDelta / 2
+        
         return BBox(minLat: minLat, maxLat: maxLat, minLon: minLon, maxLon: maxLon)
     }
 }

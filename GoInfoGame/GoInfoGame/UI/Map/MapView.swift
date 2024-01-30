@@ -51,7 +51,7 @@ struct MapView: View {
                             .offset(y: -10)
                     }
                 }
-            }
+            }.ignoresSafeArea()
             
             if viewModel.isLoading {
                 Color.black.opacity(0.3)
