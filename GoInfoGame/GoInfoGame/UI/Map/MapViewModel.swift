@@ -11,17 +11,19 @@ import MapKit
 import CoreLocation
 
 class MapViewModel: ObservableObject {
-    @Published var coordinateRegion = MKCoordinateRegion()
+    @Published var coordinateRegion: MKCoordinateRegion = MKCoordinateRegion()
     @Published var items: [DisplayUnitWithCoordinate] = []
     @Published var selectedQuest: DisplayUnit?
     private let locationManager = LocationManagerCoordinator()
     @Published var isLoading: Bool = false
+    let spanDelta = 0.0004
 
     init() {
-        self.coordinateRegion = MKCoordinateRegion()
+//        self.coordinateRegion = MKCoordinateRegion()
         locationManager.locationUpdateHandler = { [weak self] location in
             guard let self = self else { return }
             DispatchQueue.main.async {
+                print("Centering map on location")
                 self.centerMapOnLocation(location)
             }
         }
@@ -40,9 +42,10 @@ class MapViewModel: ObservableObject {
     func centerMapOnLocation(_ location: CLLocation) {
         // Update coordinate region only if necessary
         let region = MKCoordinateRegion(center: location.coordinate, span: MKCoordinateSpan(
-            latitudeDelta: 0.003,
-            longitudeDelta: 0.003
-         ))
+            latitudeDelta: spanDelta,
+            longitudeDelta: spanDelta
+        ))
+        
         if !coordinateRegionIsEqual(region, coordinateRegion) {
             coordinateRegion = region
             fetchData() // Fetch data when the map region changes
