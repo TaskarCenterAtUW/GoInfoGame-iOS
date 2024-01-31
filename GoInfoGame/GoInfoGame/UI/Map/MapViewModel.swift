@@ -11,7 +11,7 @@ import MapKit
 import CoreLocation
 
 class MapViewModel: ObservableObject {
-    @Published var coordinateRegion = MKCoordinateRegion(center: CLLocationCoordinate2D(latitude: 37.7749, longitude: -122.4194), span: MKCoordinateSpan(latitudeDelta: 0.003, longitudeDelta: 0.003))
+    @Published var coordinateRegion = MKCoordinateRegion()
     @Published var items: [DisplayUnitWithCoordinate] = []
     @Published var selectedQuest: DisplayUnit?
     private let locationManager = LocationManagerCoordinator()
