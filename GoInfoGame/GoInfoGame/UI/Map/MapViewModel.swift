@@ -11,17 +11,20 @@ import MapKit
 import CoreLocation
 
 class MapViewModel: ObservableObject {
-    @Published var coordinateRegion = MKCoordinateRegion()
+    @Published var coordinateRegion: MKCoordinateRegion = MKCoordinateRegion()
     @Published var items: [DisplayUnitWithCoordinate] = []
     @Published var selectedQuest: DisplayUnit?
     private let locationManager = LocationManagerCoordinator()
     @Published var isLoading: Bool = false
+    let viewSpanDelta = 0.0004 // Delta lat/lng to show to the user
+    let dataSpanDistance: CLLocationDistance = 100 // Distance from user location to get the data
 
     init() {
-        self.coordinateRegion = MKCoordinateRegion()
+//        self.coordinateRegion = MKCoordinateRegion()
         locationManager.locationUpdateHandler = { [weak self] location in
             guard let self = self else { return }
             DispatchQueue.main.async {
+                print("Centering map on location")
                 self.centerMapOnLocation(location)
             }
         }
@@ -29,7 +32,7 @@ class MapViewModel: ObservableObject {
 
     func fetchData() {
         isLoading = true
-        let boundingBox = boundingBoxAroundLocation(location: locationManager.currentLocation ?? CLLocation(latitude: coordinateRegion.center.latitude, longitude: coordinateRegion.center.longitude), distance: 50)
+        let boundingBox = boundingBoxAroundLocation(location: locationManager.currentLocation ?? CLLocation(latitude: coordinateRegion.center.latitude, longitude: coordinateRegion.center.longitude), distance: dataSpanDistance)
         AppQuestManager.shared.fetchData(fromBBOx: boundingBox) { [weak self] in
             guard let self = self else { return }
             self.items = AppQuestManager.shared.fetchQuestsFromDB()
@@ -40,9 +43,10 @@ class MapViewModel: ObservableObject {
     func centerMapOnLocation(_ location: CLLocation) {
         // Update coordinate region only if necessary
         let region = MKCoordinateRegion(center: location.coordinate, span: MKCoordinateSpan(
-            latitudeDelta: 0.003,
-            longitudeDelta: 0.003
-         ))
+            latitudeDelta: viewSpanDelta,
+            longitudeDelta: viewSpanDelta
+        ))
+        
         if !coordinateRegionIsEqual(region, coordinateRegion) {
             coordinateRegion = region
             fetchData() // Fetch data when the map region changes

@@ -13,7 +13,7 @@ struct MapView: View {
     @Environment(\.presentationMode) private var presentationMode
     @AppStorage("isMapFromOnboarding") var isMapFromOnboarding: Bool = false
     @StateObject private var viewModel = MapViewModel()
-    @State private var userTrackingMode: MapUserTrackingMode = .follow
+    @State private var userTrackingMode: MapUserTrackingMode = .none
 
     var btnBack: some View {
         Button(action: {
@@ -69,12 +69,7 @@ struct MapView: View {
         .onAppear {
             viewModel.fetchData()
         }
-        .navigationBarBackButtonHidden(true)
-        .toolbar {
-            ToolbarItem(placement: .topBarLeading) {
-                btnBack
-            }
-        }
+        
     }
 }
 #Preview {
