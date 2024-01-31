@@ -6,34 +6,49 @@
 //
 
 import SwiftUI
+enum YesNoAnswer {
+    case yes
+    case no
+    case other
+    case unknown
+}
+
 
 struct YesNoView: View {
-    @State private var showAlert = false
+
+    var action: ((_ answer:YesNoAnswer) -> Void)?
+    
+    init(action: ((_ answer: YesNoAnswer) -> Void)? = nil) {
+        self.action = action
+    }
     var body: some View {
         HStack(spacing: 0) {
             Spacer()
             Button {
-                showAlert = true
+                action?(.other)
             } label: {
                 Text(LocalizedStrings.otherAnswers.localized)
                     .foregroundColor(.orange).font(.body)
                     .frame(maxWidth: .infinity)
             }
-            .alert(isPresented: $showAlert) {
-                Alert(title: Text("More Questions"))
-            }
             .frame(minHeight: 50)
             Spacer()
             Divider().background(Color.gray).frame(height: 30)
             Button(LocalizedStrings.questGenericHasFeatureYes.localized) {
+                action?(.yes)
             }
             .foregroundColor(.orange)
             .frame(minWidth: 20, maxWidth: 80, minHeight: 50)
             Divider().background(Color.gray).frame(height: 30)
-            Button(LocalizedStrings.questGenericHasFeatureNo.localized) {
+            Button {
+                
+                action?(.no)
+            } label: {
+                Text(LocalizedStrings.questGenericHasFeatureNo.localized)
+                    .foregroundColor(.orange).font(.body)
+                    .frame(maxWidth: .infinity)
             }
-            .foregroundColor(.orange)
-            .frame(minWidth: 20, maxWidth: 80, minHeight: 50)
+             
         }
     }
 }
