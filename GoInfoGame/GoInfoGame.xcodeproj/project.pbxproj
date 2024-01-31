@@ -149,6 +149,7 @@
 		FA5853C12B21F17F00301CDA /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA5853C02B21F17F00301CDA /* OnboardingView.swift */; };
 		FA87A8102B68142F000A6BEA /* LoadingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA87A80F2B68142F000A6BEA /* LoadingView.swift */; };
 		FA87A8132B6AC019000A6BEA /* StepsRampTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA87A8112B6AC019000A6BEA /* StepsRampTests.swift */; };
+		FA87A8152B6AC4E2000A6BEA /* BusStopLitTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA87A8142B6AC4E2000A6BEA /* BusStopLitTests.swift */; };
 		FAC9E60F2B04F9C800E2C608 /* OverpassRequestManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC9E60E2B04F9C800E2C608 /* OverpassRequestManager.swift */; };
 		FAC9E6112B06811300E2C608 /* LocationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC9E6102B06811300E2C608 /* LocationManager.swift */; };
 		FAD5C4F32AFCBE700040C61A /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAD5C4F22AFCBE700040C61A /* AppDelegate.swift */; };
@@ -387,6 +388,7 @@
 		FA5853C02B21F17F00301CDA /* OnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingView.swift; sourceTree = "<group>"; };
 		FA87A80F2B68142F000A6BEA /* LoadingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingView.swift; sourceTree = "<group>"; };
 		FA87A8112B6AC019000A6BEA /* StepsRampTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StepsRampTests.swift; sourceTree = "<group>"; };
+		FA87A8142B6AC4E2000A6BEA /* BusStopLitTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BusStopLitTests.swift; sourceTree = "<group>"; };
 		FAC9E60E2B04F9C800E2C608 /* OverpassRequestManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OverpassRequestManager.swift; sourceTree = "<group>"; };
 		FAC9E6102B06811300E2C608 /* LocationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationManager.swift; sourceTree = "<group>"; };
 		FAD5C4EF2AFCBE700040C61A /* GoInfoGame.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GoInfoGame.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -571,6 +573,7 @@
 			isa = PBXGroup;
 			children = (
 				188843AC2B5FA2DF0008DCF8 /* TactilePavingStepsTests.swift */,
+				FA87A8142B6AC4E2000A6BEA /* BusStopLitTests.swift */,
 				FA87A8112B6AC019000A6BEA /* StepsRampTests.swift */,
 				188843AE2B5FB32D0008DCF8 /* WayLitTests.swift */,
 				A495DF2A2B68D6EC00478E44 /* TestQuestUtils.swift */,
@@ -1599,6 +1602,7 @@
 				A4834A442B679CE000D4F0AA /* DatasyncManagerTests.swift in Sources */,
 				A40E72642B5CD65000328848 /* OverpassRequestManagerTests.swift in Sources */,
 				A444AC8C2B5E934B006C74F7 /* UserFlowTests.swift in Sources */,
+				FA87A8152B6AC4E2000A6BEA /* BusStopLitTests.swift in Sources */,
 				FAD5C50A2AFCBE720040C61A /* GoInfoGameTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
