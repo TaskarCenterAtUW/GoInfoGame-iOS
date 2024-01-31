@@ -48,7 +48,6 @@ final class TactilePavingStepsTests: XCTestCase {
         assertIsNotApplicable(element: TestQuestUtils.node(tags: ["" : ""]))
         assertIsNotApplicable(element: TestQuestUtils.way(tags: ["highway" : "steps", "access": "no"]))
         assertIsNotApplicable(element: TestQuestUtils.node(tags: ["highway": "residential"]))
-//        assertIsApplicable(element: TestQuestUtils.way(tags: ["highway": "steps", "tactile_paving": "unknown"]))
         assertIsApplicable(element: TestQuestUtils.way(tags: ["highway": "steps", "surface": "paved"]))
         assertIsNotApplicable(element: TestQuestUtils.way(tags: ["highway": "steps", "tactile_paving": "yes", "tactile_paving:date": "2023-01-31"])) // tactile_paving older than 8 years
         assertIsNotApplicable(element: TestQuestUtils.way(tags: ["highway": "steps", "tactile_paving": "partial", "tactile_paving:date": "2023-01-31"])) // tactile_paving older than 4 years
