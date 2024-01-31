@@ -59,6 +59,8 @@ protocol QuestForm {
     associatedtype AnswerClass
     
     func applyAnswer(answer:AnswerClass)
+    
+    var action: ((_ answer:AnswerClass)->Void)? {get set}
 }
 
 //struct DisplayUnitWithCoordinate: Identifiable {

@@ -9,6 +9,8 @@ import Foundation
 import SwiftUI
 
 struct StepsRampForm: View, QuestForm {
+    var action: ((StepsRampAnswer) -> Void)?
+    
     func applyAnswer(answer: StepsRampAnswer) {
     }
     typealias AnswerClass = StepsRampAnswer

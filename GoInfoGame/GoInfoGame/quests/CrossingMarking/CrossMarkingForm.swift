@@ -9,6 +9,8 @@ import Foundation
 import SwiftUI
 
 struct CrossMarkingForm : View,QuestForm{
+    var action: ((CrossingAnswer) -> Void)?
+    
     @State private var selectedAnswer: CrossingAnswer?
     @State private var showAlert = false
     func applyAnswer(answer: CrossingAnswer) {

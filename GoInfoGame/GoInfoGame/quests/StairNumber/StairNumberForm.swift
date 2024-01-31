@@ -9,6 +9,8 @@ import Foundation
 import SwiftUI
 
 struct StairNumberForm: View, QuestForm {
+    var action: ((Int) -> Void)?
+    
     func applyAnswer(answer: Int) {
     }
     typealias AnswerClass = Int

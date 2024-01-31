@@ -26,7 +26,9 @@ class SideWalkWidth : Quest {
     var icon: UIImage = #imageLiteral(resourceName: "sidewalk-width-img")
     var wikiLink: String = ""
     var changesetComment: String = ""
+    
     var form: AnyView = AnyView(SideWalkWidthForm())
+    
     var relationData: Any? = nil
     func onAnswer(answer: WidthAnswer) {
     }

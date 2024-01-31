@@ -8,6 +8,8 @@
 import SwiftUI
 
 struct SideWalkWidthForm: View, QuestForm {
+    var action: ((WidthAnswer) -> Void)?
+    
     
     func applyAnswer(answer: WidthAnswer) {
         
