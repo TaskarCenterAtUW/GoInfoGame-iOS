@@ -46,10 +46,13 @@ final class StepsRampTests: XCTestCase {
         assertIsNotApplicable(element: TestQuestUtils.way(tags: ["highway": "steps", "ramp": "seperate"]))
         assertIsApplicable(element: TestQuestUtils.way(tags: ["highway" : "steps", "ramp": "yes", "ramp:date": "2023-01-31"]))
         assertIsApplicable(element: TestQuestUtils.way(tags: ["highway" : "steps", "indoor": "no", "ramp:date": "2023-01-31"]))
-       
+        assertIsNotApplicable(element: TestQuestUtils.way(tags: ["highway": "steps", "ramp": "yes", "ramp:stroller": "yes", "ramp:bicycle": "yes", "ramp:wheelchair": "yes"])) // all ramp types are not allowed
+        assertIsNotApplicable(element: TestQuestUtils.way(tags: ["highway": "steps", "conveying": "yes"])) // conveying is not allowed
+
 
     }
     
+   
     private func assertIsApplicable(element: Element) {
         XCTAssertTrue(stepsRamp.isApplicable(element: element))
     }
