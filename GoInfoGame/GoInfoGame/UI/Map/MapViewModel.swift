@@ -16,7 +16,8 @@ class MapViewModel: ObservableObject {
     @Published var selectedQuest: DisplayUnit?
     private let locationManager = LocationManagerCoordinator()
     @Published var isLoading: Bool = false
-    let spanDelta = 0.0004
+    let viewSpanDelta = 0.0004
+    let dataSpanDistance: CLLocationDistance = 100
 
     init() {
 //        self.coordinateRegion = MKCoordinateRegion()
@@ -31,7 +32,7 @@ class MapViewModel: ObservableObject {
 
     func fetchData() {
         isLoading = true
-        let boundingBox = boundingBoxAroundLocation(location: locationManager.currentLocation ?? CLLocation(latitude: coordinateRegion.center.latitude, longitude: coordinateRegion.center.longitude), distance: 50)
+        let boundingBox = boundingBoxAroundLocation(location: locationManager.currentLocation ?? CLLocation(latitude: coordinateRegion.center.latitude, longitude: coordinateRegion.center.longitude), distance: dataSpanDistance)
         AppQuestManager.shared.fetchData(fromBBOx: boundingBox) { [weak self] in
             guard let self = self else { return }
             self.items = AppQuestManager.shared.fetchQuestsFromDB()
@@ -42,8 +43,8 @@ class MapViewModel: ObservableObject {
     func centerMapOnLocation(_ location: CLLocation) {
         // Update coordinate region only if necessary
         let region = MKCoordinateRegion(center: location.coordinate, span: MKCoordinateSpan(
-            latitudeDelta: spanDelta,
-            longitudeDelta: spanDelta
+            latitudeDelta: viewSpanDelta,
+            longitudeDelta: viewSpanDelta
         ))
         
         if !coordinateRegionIsEqual(region, coordinateRegion) {
