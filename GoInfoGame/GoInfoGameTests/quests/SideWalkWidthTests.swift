@@ -6,8 +6,12 @@
 //
 
 import XCTest
+@testable import GoInfoGame
+@testable import osmparser
 
 final class SideWalkWidthTests: XCTestCase {
+    
+    let sideWalkWidth = SideWalkWidth()
 
     override func setUpWithError() throws {
         // Put setup code here. This method is called before the invocation of each test method in the class.
@@ -15,6 +19,30 @@ final class SideWalkWidthTests: XCTestCase {
 
     override func tearDownWithError() throws {
         // Put teardown code here. This method is called after the invocation of each test method in the class.
+    }
+    
+    /** Testing the query
+         ways with
+         ( highway = footway
+         or foot = yes)
+         and !width
+     */
+    
+    func testFootwayQuery() throws {
+        assertIsNotApplicable(element: TestQuestUtils.way(tags: ["" : ""]))
+        assertIsNotApplicable(element: TestQuestUtils.node(tags: ["highway": "residential"]))
+        assertIsApplicable(element: TestQuestUtils.way(tags: ["highway": "footway"]))
+        assertIsApplicable(element: TestQuestUtils.way(tags: ["foot": "yes"]))
+        assertIsApplicable(element: TestQuestUtils.way(tags: ["highway": "footway", "foot": "no"]))
+        assertIsNotApplicable(element: TestQuestUtils.way(tags: ["highway": "footway", "width": "no"]))
+    }
+
+    private func assertIsApplicable(element: Element) {
+        XCTAssertTrue(sideWalkWidth.isApplicable(element: element))
+    }
+
+    private func assertIsNotApplicable(element: Element) {
+        XCTAssertFalse(sideWalkWidth.isApplicable(element: element))
     }
 
     func testExample() throws {
