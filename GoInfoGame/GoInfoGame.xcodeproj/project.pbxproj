@@ -55,6 +55,8 @@
 		973FC0482B5A477E00878269 /* CrossMarking.swift in Sources */ = {isa = PBXBuildFile; fileRef = 973FC0472B5A477E00878269 /* CrossMarking.swift */; };
 		973FC04A2B5A478C00878269 /* CrossMarkingForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = 973FC0492B5A478C00878269 /* CrossMarkingForm.swift */; };
 		973FC04C2B5A5F5F00878269 /* RadioItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 973FC04B2B5A5F5F00878269 /* RadioItem.swift */; };
+		97AC1C062B6A45B0004F0BF4 /* SideWalkValidation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97AC1C052B6A45B0004F0BF4 /* SideWalkValidation.swift */; };
+		97AC1C082B6A45C9004F0BF4 /* SideWalkValidationForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97AC1C072B6A45C9004F0BF4 /* SideWalkValidationForm.swift */; };
 		97F2FA8A2B0630A3000B9726 /* Pods_GoInfoGame.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 66BED441AF03CC04539E8D4A /* Pods_GoInfoGame.framework */; };
 		A40004EC2B62338400AF21FB /* AppQuestManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A40004EB2B62338400AF21FB /* AppQuestManager.swift */; };
 		A40E72642B5CD65000328848 /* OverpassRequestManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A40E72632B5CD65000328848 /* OverpassRequestManagerTests.swift */; };
@@ -289,6 +291,8 @@
 		973FC0472B5A477E00878269 /* CrossMarking.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = CrossMarking.swift; path = GoInfoGame/quests/CrossingMarking/CrossMarking.swift; sourceTree = SOURCE_ROOT; };
 		973FC0492B5A478C00878269 /* CrossMarkingForm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = CrossMarkingForm.swift; path = GoInfoGame/quests/CrossingMarking/CrossMarkingForm.swift; sourceTree = SOURCE_ROOT; };
 		973FC04B2B5A5F5F00878269 /* RadioItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RadioItem.swift; sourceTree = "<group>"; };
+		97AC1C052B6A45B0004F0BF4 /* SideWalkValidation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SideWalkValidation.swift; sourceTree = "<group>"; };
+		97AC1C072B6A45C9004F0BF4 /* SideWalkValidationForm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SideWalkValidationForm.swift; sourceTree = "<group>"; };
 		97F2FA8D2B0630C4000B9726 /* SwiftOverpassAPI.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = SwiftOverpassAPI.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		A40004EB2B62338400AF21FB /* AppQuestManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppQuestManager.swift; sourceTree = "<group>"; };
 		A40E72632B5CD65000328848 /* OverpassRequestManagerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OverpassRequestManagerTests.swift; sourceTree = "<group>"; };
@@ -683,6 +687,15 @@
 			path = CrossingMarking;
 			sourceTree = "<group>";
 		};
+		97AC1C042B6A44C1004F0BF4 /* SideWalkValidation */ = {
+			isa = PBXGroup;
+			children = (
+				97AC1C052B6A45B0004F0BF4 /* SideWalkValidation.swift */,
+				97AC1C072B6A45C9004F0BF4 /* SideWalkValidationForm.swift */,
+			);
+			path = SideWalkValidation;
+			sourceTree = "<group>";
+		};
 		A40E726B2B5D462A00328848 /* osmapi */ = {
 			isa = PBXGroup;
 			children = (
@@ -899,6 +912,7 @@
 		A4E7119C2B57A22300C9DE08 /* quests */ = {
 			isa = PBXGroup;
 			children = (
+				97AC1C042B6A44C1004F0BF4 /* SideWalkValidation */,
 				973FC0462B5A475C00878269 /* CrossingMarking */,
 				973FC0452B59495900878269 /* StepsRamp */,
 				973FC0402B59459A00878269 /* BusStopLit */,
@@ -1537,6 +1551,7 @@
 				973FC01F2B50DE7E00878269 /* ImageGridItemView.swift in Sources */,
 				A4E711A22B57A3B400C9DE08 /* SideWalkWidth.swift in Sources */,
 				05CB71E02B0FAFD200DED821 /* GenericUIViewControllerRepresentable.swift in Sources */,
+				97AC1C062B6A45B0004F0BF4 /* SideWalkValidation.swift in Sources */,
 				FAD5C4F32AFCBE700040C61A /* AppDelegate.swift in Sources */,
 				05DBBB622B164D9A00B6F110 /* RealOPElement.swift in Sources */,
 				973FC0422B59467A00878269 /* BusStopLit.swift in Sources */,
@@ -1566,6 +1581,7 @@
 				05DBBB662B17209600B6F110 /* RealmOPMeta.swift in Sources */,
 				0536DD942B0BD59900B04C4B /* OAuthError.swift in Sources */,
 				973FC0172B4D567900878269 /* WidthView.swift in Sources */,
+				97AC1C082B6A45C9004F0BF4 /* SideWalkValidationForm.swift in Sources */,
 				FAD5C4F52AFCBE700040C61A /* SceneDelegate.swift in Sources */,
 				FAF44FBF2B3084FB004FE664 /* OnboardingView2.swift in Sources */,
 				A4E711B02B59011000C9DE08 /* StepsInclineForm.swift in Sources */,

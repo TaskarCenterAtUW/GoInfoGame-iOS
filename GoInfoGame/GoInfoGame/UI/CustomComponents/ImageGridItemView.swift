@@ -22,12 +22,15 @@ struct ImageGridItemView: View {
     let isDisplayImageOnly : Bool
     let onTap: (String, String) -> Void
     
+    @State private var selectedImage: String?
+    
     var body: some View {
         LazyVGrid(columns: Array(repeating: GridItem(spacing: gridCount == 2 ? 5 : 0), count: gridCount),spacing:  gridCount == 2 ? 5 : 0) {
             ForEach(imageData) { data in
                 VStack {
                     Button(action: {
                         onTap(data.type, data.tag)
+                        selectedImage = data.imageName
                     }) {
                         ZStack(){
                             Image(data.imageName)
@@ -37,6 +40,7 @@ struct ImageGridItemView: View {
                                 .cornerRadius(10)
                                 .clipped()
                                 .rotationEffect(.degrees(isImageRotated ? 30: 0))
+                                .border(selectedImage == data.imageName ? Color.orange : Color.clear, width: selectedImage == data.imageName ? 3 : 0)
                             if !isLabelBelow{
                                 Text(data.optionName)
                                     .font(.caption)

@@ -39,3 +39,10 @@
 "quest_crossing_no" = "No, but crossing is possible";
 "quest_crossing_prohibited"= "No, crossing is prohibited or impossible";
 "cant_say" = "Can't Say";
+"quest_generic_answer_differs_along_the_way" = "Differs along the way…";
+"quest_sidewalk_title" = "Does this street have a sidewalk?";
+"quest_sidewalk_value_left" = "sidewalk on the left";
+"quest_sidewalk_value_right" = "sidewalk on the right";
+"quest_sidewalk_value_no" = "no sidewalk";
+"quest_sidewalk_value_both" = "sidewalk on both the sides";
+"quest_sidewalk_value_separate" = "sidewalk, but displayed separately on map";
