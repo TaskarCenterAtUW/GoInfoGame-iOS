@@ -47,6 +47,7 @@ enum LocalizedStrings: String {
     case questSidewalkValueNo = "quest_sidewalk_value_no"
     case questSidewalkValueBoth = "quest_sidewalk_value_both"
     case questSidewalkValueSeparate = "quest_sidewalk_value_separate"
+    case questSidewalkValueNoSidewalkAtAll = "quest_sidewalk_value_no_sidewalk_at_all"
 
     
     var localized: String {

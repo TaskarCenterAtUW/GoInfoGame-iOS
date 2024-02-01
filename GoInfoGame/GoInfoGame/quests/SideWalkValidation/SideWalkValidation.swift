@@ -20,7 +20,7 @@ class SideWalkValidation :Quest {
     var form : AnyView = AnyView(SideWalkValidationForm())
     var relationData: Any? = nil
     var displayUnit: DisplayUnit {
-        DisplayUnit(title: self.title, description: "",parent: self,sheetSize:.MEDIUM )
+        DisplayUnit(title: self.title, description: "",parent: self,sheetSize:.LARGE )
     }
 }
 enum SideWalkValidationAnswer: String, CaseIterable {
@@ -42,6 +42,11 @@ enum SideWalkValidationAnswer: String, CaseIterable {
 let SideWalksImageData: [ImageData] = [
     ImageData(id:SideWalkValidationAnswer.left.description,type: "yes", imageName: "select-left-side", tag: SideWalkValidationAnswer.left.description, optionName: LocalizedStrings.questSidewalkValueLeft.localized),
     ImageData(id:SideWalkValidationAnswer.right.description,type: "yes", imageName: "select-right-side", tag: SideWalkValidationAnswer.right.description, optionName: LocalizedStrings.questSidewalkValueRight.localized),
-    ImageData(id:SideWalkValidationAnswer.both.description,type: "yes", imageName: "steps-incline-up", tag: SideWalkValidationAnswer.both.description, optionName: LocalizedStrings.questSidewalkValueBoth.localized),
+    ImageData(id:SideWalkValidationAnswer.both.description,type: "yes", imageName: "both", tag: SideWalkValidationAnswer.both.description, optionName: LocalizedStrings.questSidewalkValueBoth.localized),
     ImageData(id:SideWalkValidationAnswer.none.description,type: "no", imageName: "no-sidewalk", tag: SideWalkValidationAnswer.none.description, optionName: LocalizedStrings.questSidewalkValueNo.localized),
+]
+let SidewalkOtherAnswerButtons = [
+    ButtonInfo(id: 1, label: LocalizedStrings.cantSay.localized),
+    ButtonInfo(id: 2, label: LocalizedStrings.questGenericAnswerDiffersAlongTheWay.localized),
+    ButtonInfo(id: 3, label: LocalizedStrings.questSidewalkValueNoSidewalkAtAll.localized)
 ]

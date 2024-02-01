@@ -46,3 +46,4 @@
 "quest_sidewalk_value_no" = "no sidewalk";
 "quest_sidewalk_value_both" = "sidewalk on both the sides";
 "quest_sidewalk_value_separate" = "sidewalk, but displayed separately on map";
+"quest_sidewalk_value_no_sidewalk_at_all" = "No sidewalk at all";

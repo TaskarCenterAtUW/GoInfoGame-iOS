@@ -10,9 +10,9 @@ import SwiftUI
 struct SideWalkValidationForm: QuestForm ,View {
     func applyAnswer(answer: SideWalkValidationAnswer) {
     }
-    
-    @State private var showAlert = false
     typealias AnswerClass = SideWalkValidationAnswer
+    @State private var selectedButton: ButtonInfo?
+    @State private var showAlert = false
     
     var body: some View {
         VStack (alignment: .leading){
