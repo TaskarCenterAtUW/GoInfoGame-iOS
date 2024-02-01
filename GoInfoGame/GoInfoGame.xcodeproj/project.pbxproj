@@ -84,6 +84,7 @@
 		A4834A412B67885E00D4F0AA /* DatasyncManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4834A402B67885E00D4F0AA /* DatasyncManager.swift */; };
 		A4834A442B679CE000D4F0AA /* DatasyncManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4834A432B679CE000D4F0AA /* DatasyncManagerTests.swift */; };
 		A495DF2D2B6A190400478E44 /* CustomMapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A495DF2C2B6A190400478E44 /* CustomMapView.swift */; };
+		A495DF2B2B68D6EC00478E44 /* TestQuestUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = A495DF2A2B68D6EC00478E44 /* TestQuestUtils.swift */; };
 		A4AD130C2B5E80F20041A881 /* StoredElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4AD130B2B5E80F20041A881 /* StoredElement.swift */; };
 		A4AD13162B5E90BD0041A881 /* osmparser.docc in Sources */ = {isa = PBXBuildFile; fileRef = A4AD13152B5E90BD0041A881 /* osmparser.docc */; };
 		A4AD131C2B5E90BD0041A881 /* osmparser.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A4AD13122B5E90BD0041A881 /* osmparser.framework */; };
@@ -147,6 +148,11 @@
 		A4E711B02B59011000C9DE08 /* StepsInclineForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4E711AF2B59011000C9DE08 /* StepsInclineForm.swift */; };
 		FA5853C12B21F17F00301CDA /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA5853C02B21F17F00301CDA /* OnboardingView.swift */; };
 		FA87A8102B68142F000A6BEA /* LoadingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA87A80F2B68142F000A6BEA /* LoadingView.swift */; };
+		FA87A8132B6AC019000A6BEA /* StepsRampTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA87A8112B6AC019000A6BEA /* StepsRampTests.swift */; };
+		FA87A8152B6AC4E2000A6BEA /* BusStopLitTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA87A8142B6AC4E2000A6BEA /* BusStopLitTests.swift */; };
+		FA87A8172B6AC885000A6BEA /* StepsInclineTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA87A8162B6AC885000A6BEA /* StepsInclineTests.swift */; };
+		FA87A8192B6B01A4000A6BEA /* HandRailTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA87A8182B6B01A4000A6BEA /* HandRailTests.swift */; };
+		FA87A81B2B6B042E000A6BEA /* SideWalkWidthTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA87A81A2B6B042E000A6BEA /* SideWalkWidthTests.swift */; };
 		FAC9E60F2B04F9C800E2C608 /* OverpassRequestManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC9E60E2B04F9C800E2C608 /* OverpassRequestManager.swift */; };
 		FAC9E6112B06811300E2C608 /* LocationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC9E6102B06811300E2C608 /* LocationManager.swift */; };
 		FAD5C4F32AFCBE700040C61A /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAD5C4F22AFCBE700040C61A /* AppDelegate.swift */; };
@@ -317,6 +323,7 @@
 		A4834A402B67885E00D4F0AA /* DatasyncManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatasyncManager.swift; sourceTree = "<group>"; };
 		A4834A432B679CE000D4F0AA /* DatasyncManagerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatasyncManagerTests.swift; sourceTree = "<group>"; };
 		A495DF2C2B6A190400478E44 /* CustomMapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomMapView.swift; sourceTree = "<group>"; };
+		A495DF2A2B68D6EC00478E44 /* TestQuestUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestQuestUtils.swift; sourceTree = "<group>"; };
 		A4AD130B2B5E80F20041A881 /* StoredElement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoredElement.swift; sourceTree = "<group>"; };
 		A4AD13122B5E90BD0041A881 /* osmparser.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = osmparser.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		A4AD13142B5E90BD0041A881 /* osmparser.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = osmparser.h; sourceTree = "<group>"; };
@@ -383,6 +390,11 @@
 		F008D431593E568E75C48C84 /* Pods-GoInfoGame.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-GoInfoGame.debug.xcconfig"; path = "Target Support Files/Pods-GoInfoGame/Pods-GoInfoGame.debug.xcconfig"; sourceTree = "<group>"; };
 		FA5853C02B21F17F00301CDA /* OnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingView.swift; sourceTree = "<group>"; };
 		FA87A80F2B68142F000A6BEA /* LoadingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingView.swift; sourceTree = "<group>"; };
+		FA87A8112B6AC019000A6BEA /* StepsRampTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StepsRampTests.swift; sourceTree = "<group>"; };
+		FA87A8142B6AC4E2000A6BEA /* BusStopLitTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BusStopLitTests.swift; sourceTree = "<group>"; };
+		FA87A8162B6AC885000A6BEA /* StepsInclineTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StepsInclineTests.swift; sourceTree = "<group>"; };
+		FA87A8182B6B01A4000A6BEA /* HandRailTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HandRailTests.swift; sourceTree = "<group>"; };
+		FA87A81A2B6B042E000A6BEA /* SideWalkWidthTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SideWalkWidthTests.swift; sourceTree = "<group>"; };
 		FAC9E60E2B04F9C800E2C608 /* OverpassRequestManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OverpassRequestManager.swift; sourceTree = "<group>"; };
 		FAC9E6102B06811300E2C608 /* LocationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationManager.swift; sourceTree = "<group>"; };
 		FAD5C4EF2AFCBE700040C61A /* GoInfoGame.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GoInfoGame.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -567,7 +579,13 @@
 			isa = PBXGroup;
 			children = (
 				188843AC2B5FA2DF0008DCF8 /* TactilePavingStepsTests.swift */,
+				FA87A8182B6B01A4000A6BEA /* HandRailTests.swift */,
+				FA87A81A2B6B042E000A6BEA /* SideWalkWidthTests.swift */,
+				FA87A8162B6AC885000A6BEA /* StepsInclineTests.swift */,
+				FA87A8142B6AC4E2000A6BEA /* BusStopLitTests.swift */,
+				FA87A8112B6AC019000A6BEA /* StepsRampTests.swift */,
 				188843AE2B5FB32D0008DCF8 /* WayLitTests.swift */,
+				A495DF2A2B68D6EC00478E44 /* TestQuestUtils.swift */,
 			);
 			path = quests;
 			sourceTree = "<group>";
@@ -1586,12 +1604,18 @@
 			buildActionMask = 2147483647;
 			files = (
 				A444AC8F2B5E944E006C74F7 /* TestQuest.swift in Sources */,
+				FA87A8132B6AC019000A6BEA /* StepsRampTests.swift in Sources */,
 				188843AF2B5FB32D0008DCF8 /* WayLitTests.swift in Sources */,
+				A495DF2B2B68D6EC00478E44 /* TestQuestUtils.swift in Sources */,
+				FA87A8192B6B01A4000A6BEA /* HandRailTests.swift in Sources */,
+				FA87A8172B6AC885000A6BEA /* StepsInclineTests.swift in Sources */,
 				188843AD2B5FA2DF0008DCF8 /* TactilePavingStepsTests.swift in Sources */,
 				A4834A442B679CE000D4F0AA /* DatasyncManagerTests.swift in Sources */,
 				A40E72642B5CD65000328848 /* OverpassRequestManagerTests.swift in Sources */,
 				A444AC8C2B5E934B006C74F7 /* UserFlowTests.swift in Sources */,
+				FA87A8152B6AC4E2000A6BEA /* BusStopLitTests.swift in Sources */,
 				FAD5C50A2AFCBE720040C61A /* GoInfoGameTests.swift in Sources */,
+				FA87A81B2B6B042E000A6BEA /* SideWalkWidthTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
