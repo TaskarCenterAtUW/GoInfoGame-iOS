@@ -41,13 +41,18 @@ final class BusStopLitTests: XCTestCase {
      */
     
     func testBusStopLitQuery() throws {
+        let eightYearsAgo = TestQuestUtils.olderThan(years: -8)
+        let sixteenYearsAgo = TestQuestUtils.olderThan(years: 8)
+        
+
         assertIsNotApplicable(element: TestQuestUtils.way(tags: ["" : ""]))
         assertIsNotApplicable(element: TestQuestUtils.rel(tags: ["public_transport" :"platform", "indoor" : "no" ]))
         assertIsApplicable(element: TestQuestUtils.node(tags: ["public_transport": "platform"]))
         assertIsNotApplicable(element: TestQuestUtils.node(tags: ["highway": "bus_stop", "public_transport": "stop_position", "physically_present": "yes", "naptan:BusStopType": "HAR", "location": "underground", "indoor": "no", "level": "1", "lit": "no"]))
         assertIsNotApplicable(element: TestQuestUtils.node(tags: ["public_transport": "platform", "physically_present": "no"])) // physically_present is not allowed to be 'no'
-        assertIsNotApplicable(element: TestQuestUtils.node(tags: ["public_transport": "platform", "lit": "yes", "lit:date": "2015-01-31"])) // lit older than 8 years
-        assertIsApplicable(element: TestQuestUtils.node(tags: ["public_transport": "platform", "level": "0"]))
+        
+        assertIsApplicable(element: TestQuestUtils.way(tags: ["public_transport": "platform", "highway": "bus_stop", "naptan:BusStopType": "HA", "location": "outdoor", "level": "0"]))
+        assertIsApplicable(element: TestQuestUtils.way(tags: ["public_transport": "platform", "highway": "bus_stop", "naptan:BusStopType": "HA", "location": "outdoor", "level": "0", "lit": "no"], timestamp: eightYearsAgo))
     }
     
     

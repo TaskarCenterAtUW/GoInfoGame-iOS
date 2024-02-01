@@ -40,15 +40,20 @@ final class StepsRampTests: XCTestCase {
      */
     
     func testStepsRampQuery() throws {
+        let fourYearsAgo = TestQuestUtils.olderThan(years: -4)
+        let eightYearsAgo = TestQuestUtils.olderThan(years: -4)
+
         assertIsNotApplicable(element: TestQuestUtils.node(tags: ["" : ""]))
         assertIsNotApplicable(element: TestQuestUtils.way(tags: ["highway": "steps", "access": "private"]))
         assertIsApplicable(element: TestQuestUtils.way(tags: ["highway": "steps", "conveying": "no"]))
         assertIsNotApplicable(element: TestQuestUtils.way(tags: ["highway": "steps", "ramp": "seperate"]))
-        assertIsApplicable(element: TestQuestUtils.way(tags: ["highway" : "steps", "ramp": "yes", "ramp:date": "2023-01-31"]))
-        assertIsApplicable(element: TestQuestUtils.way(tags: ["highway" : "steps", "indoor": "no", "ramp:date": "2023-01-31"]))
         assertIsNotApplicable(element: TestQuestUtils.way(tags: ["highway": "steps", "ramp": "yes", "ramp:stroller": "yes", "ramp:bicycle": "yes", "ramp:wheelchair": "yes"])) // all ramp types are not allowed
         assertIsNotApplicable(element: TestQuestUtils.way(tags: ["highway": "steps", "conveying": "yes"])) // conveying is not allowed
-
+        
+        assertIsApplicable(element: TestQuestUtils.way(tags: ["highway" : "steps", "indoor": "no", "access": "yes", "conveying": "no"]))
+        assertIsApplicable(element: TestQuestUtils.way(tags: ["highway" : "steps", "indoor": "no", "access": "yes", "conveying": "no", "ramp": "yes"]))
+        assertIsApplicable(element: TestQuestUtils.way(tags: ["highway" : "steps", "indoor": "no", "access": "yes", "conveying": "no", "ramp": "no"], timestamp: fourYearsAgo))
+        assertIsApplicable(element: TestQuestUtils.way(tags: ["highway" : "steps", "indoor": "no", "access": "yes", "conveying": "no"], timestamp: eightYearsAgo))
 
     }
     
