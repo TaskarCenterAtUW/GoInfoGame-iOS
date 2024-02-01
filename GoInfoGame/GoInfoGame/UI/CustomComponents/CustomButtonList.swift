@@ -9,19 +9,18 @@ import SwiftUI
 
 struct CustomButtonList: View {
     let buttons: [ButtonInfo]
-    @Binding var selectedButton: ButtonInfo?
+    let selectionChanged: (ButtonInfo?) -> Void
     
     var body: some View {
-        VStack {
+        VStack(alignment: .leading,spacing: 10) {
             ForEach(buttons) { buttonInfo in
                 Button(action: {
-                    self.selectedButton = buttonInfo
+                    selectionChanged(buttonInfo)
                 }) {
                     Text(buttonInfo.label)
                 }
-                .padding()
             }
-        }
+        }.padding(.top, 20)
     }
 }
 

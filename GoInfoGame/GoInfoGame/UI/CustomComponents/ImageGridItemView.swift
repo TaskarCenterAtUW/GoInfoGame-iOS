@@ -22,7 +22,7 @@ struct ImageGridItemView: View {
     let isDisplayImageOnly : Bool
     let onTap: (String, String) -> Void
     
-    @State private var selectedImage: String?
+    @Binding var selectedImage: String?
     
     var body: some View {
         LazyVGrid(columns: Array(repeating: GridItem(spacing: gridCount == 2 ? 5 : 0), count: gridCount),spacing:  gridCount == 2 ? 5 : 0) {

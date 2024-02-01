@@ -13,7 +13,7 @@ struct StepsInclineForm: View, QuestForm {
     }
     
     typealias AnswerClass = StepsInclineDirection
-    
+    @State private var selectedImage : String?
     
     @State private var showAlert = false
     let imageData: [ImageData] = [
@@ -28,7 +28,7 @@ struct StepsInclineForm: View, QuestForm {
             VStack (alignment: .leading){
                 Text(LocalizedStrings.selectOne.localized).font(.caption).foregroundColor(.gray)
                 ImageGridItemView(gridCount: 2, isLabelBelow: true, imageData: imageData, isImageRotated: true, isDisplayImageOnly: false, onTap: { (type, tag) in
-                    print("Clicked: \(type), Tag: \(tag)")})
+                    print("Clicked: \(type), Tag: \(tag)")}, selectedImage:$selectedImage)
                 Divider()
                 HStack() {
                     Spacer()

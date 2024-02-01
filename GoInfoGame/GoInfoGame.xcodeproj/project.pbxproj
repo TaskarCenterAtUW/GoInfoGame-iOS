@@ -58,6 +58,7 @@
 		97AC1C062B6A45B0004F0BF4 /* SideWalkValidation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97AC1C052B6A45B0004F0BF4 /* SideWalkValidation.swift */; };
 		97AC1C082B6A45C9004F0BF4 /* SideWalkValidationForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97AC1C072B6A45C9004F0BF4 /* SideWalkValidationForm.swift */; };
 		97AC1C0A2B6B7F10004F0BF4 /* CustomButtonList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97AC1C092B6B7F10004F0BF4 /* CustomButtonList.swift */; };
+		97AC1C0C2B6B843C004F0BF4 /* CustomAlert.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97AC1C0B2B6B843C004F0BF4 /* CustomAlert.swift */; };
 		97F2FA8A2B0630A3000B9726 /* Pods_GoInfoGame.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 66BED441AF03CC04539E8D4A /* Pods_GoInfoGame.framework */; };
 		A40004EC2B62338400AF21FB /* AppQuestManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A40004EB2B62338400AF21FB /* AppQuestManager.swift */; };
 		A40E72642B5CD65000328848 /* OverpassRequestManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A40E72632B5CD65000328848 /* OverpassRequestManagerTests.swift */; };
@@ -301,6 +302,7 @@
 		97AC1C052B6A45B0004F0BF4 /* SideWalkValidation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SideWalkValidation.swift; sourceTree = "<group>"; };
 		97AC1C072B6A45C9004F0BF4 /* SideWalkValidationForm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SideWalkValidationForm.swift; sourceTree = "<group>"; };
 		97AC1C092B6B7F10004F0BF4 /* CustomButtonList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomButtonList.swift; sourceTree = "<group>"; };
+		97AC1C0B2B6B843C004F0BF4 /* CustomAlert.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomAlert.swift; sourceTree = "<group>"; };
 		97F2FA8D2B0630C4000B9726 /* SwiftOverpassAPI.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = SwiftOverpassAPI.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		A40004EB2B62338400AF21FB /* AppQuestManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppQuestManager.swift; sourceTree = "<group>"; };
 		A40E72632B5CD65000328848 /* OverpassRequestManagerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OverpassRequestManagerTests.swift; sourceTree = "<group>"; };
@@ -650,6 +652,7 @@
 				A4E711A32B57B13100C9DE08 /* QuestionHeader.swift */,
 				973FC04B2B5A5F5F00878269 /* RadioItem.swift */,
 				97AC1C092B6B7F10004F0BF4 /* CustomButtonList.swift */,
+				97AC1C0B2B6B843C004F0BF4 /* CustomAlert.swift */,
 			);
 			path = CustomComponents;
 			sourceTree = "<group>";
@@ -1551,6 +1554,7 @@
 				A4AD130C2B5E80F20041A881 /* StoredElement.swift in Sources */,
 				05DBBB5D2B1262BA00B6F110 /* OverpassRepository.swift in Sources */,
 				A4B83AF12B5F92FA006684CA /* StoredNode.swift in Sources */,
+				97AC1C0C2B6B843C004F0BF4 /* CustomAlert.swift in Sources */,
 				A4834A412B67885E00D4F0AA /* DatasyncManager.swift in Sources */,
 				0536DD852B0BD11A00B04C4B /* LoginViewController.swift in Sources */,
 				A4E711A42B57B13100C9DE08 /* QuestionHeader.swift in Sources */,
