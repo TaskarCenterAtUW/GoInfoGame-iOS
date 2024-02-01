@@ -16,8 +16,8 @@ class MapViewModel: ObservableObject {
     @Published var selectedQuest: DisplayUnit?
     private let locationManager = LocationManagerCoordinator()
     @Published var isLoading: Bool = false
-    let viewSpanDelta = 0.0004
-    let dataSpanDistance: CLLocationDistance = 100
+    let viewSpanDelta = 0.0004 // Delta lat/lng to show to the user
+    let dataSpanDistance: CLLocationDistance = 100 // Distance from user location to get the data
 
     init() {
 //        self.coordinateRegion = MKCoordinateRegion()
