@@ -48,6 +48,7 @@ final class TactilePavingStepsTests: XCTestCase {
         
         let fourYearsAgo = TestQuestUtils.olderThan(years: -4)
         let eightYearsAgo = TestQuestUtils.olderThan(years: -8)
+        let twoTwoYearsAgo = TestQuestUtils.olderThan(years: -2)
         
 
         assertIsNotApplicable(element: TestQuestUtils.node(tags: ["" : ""]))
@@ -57,6 +58,7 @@ final class TactilePavingStepsTests: XCTestCase {
         assertIsApplicable(element: TestQuestUtils.way(tags: ["highway" : "steps", "surface": "paved", "tactile_paving": "unknown"]))
         assertIsApplicable(element: TestQuestUtils.way(tags: ["highway" : "steps", "surface": "paved", "tactile_paving": "incorrect"], timestamp: fourYearsAgo))
         assertIsApplicable(element: TestQuestUtils.way(tags: ["highway" : "steps", "surface": "paved", "tactile_paving": "yes"], timestamp: eightYearsAgo))
+        assertIsNotApplicable(element: TestQuestUtils.way(tags: ["highway" : "steps", "surface": "paved", "tactile_paving": "yes"], timestamp: twoTwoYearsAgo))
 
         
     }
