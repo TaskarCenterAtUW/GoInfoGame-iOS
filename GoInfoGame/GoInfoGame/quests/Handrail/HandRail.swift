@@ -21,7 +21,7 @@ class HandRail: Quest {
     
     var filter: String = """
         ways with highway = steps
-        and (!indoor and indoor = no)
+        and (!indoor or indoor = no)
         and access !~ private|no
         and (!conveying or conveying = no)
         and (
