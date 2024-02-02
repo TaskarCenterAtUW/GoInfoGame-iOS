@@ -65,7 +65,7 @@ struct SideWalkValidationForm: QuestForm ,View {
             }
             .padding()
             if showAlert {
-                CustomAlert(title: "", content: {CustomButtonList(buttons: SidewalkOtherAnswerButtons, selectionChanged: { selectedOtherAnswerOption in
+                CustomAlert(title: "", content: {CustomVerticalButtonsList(buttons: SidewalkOtherAnswerButtons, selectionChanged: { selectedOtherAnswerOption in
                     /// To Dismiss alert when selectedButton value changes
                     showAlert = false
                     /// deselecting image option if any other answer is selected

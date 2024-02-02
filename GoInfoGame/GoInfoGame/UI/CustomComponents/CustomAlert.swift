@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+// A custom alert view that allows customization of its title, content, buttons, and dimensions.
 struct CustomAlert<ContentItem: View>: View {
     let title: String
     let content: ContentItem
@@ -17,6 +18,7 @@ struct CustomAlert<ContentItem: View>: View {
     let height: CGFloat
     let width: CGFloat
     
+    // Initializer
     init(title: String, @ViewBuilder content: () -> ContentItem, leftActionText: String?, rightActionText: String, leftButtonAction: (() -> Void)? = nil, rightButtonAction: @escaping () -> Void, height: CGFloat, width: CGFloat) {
         self.title = title
         self.content = content()
@@ -28,13 +30,15 @@ struct CustomAlert<ContentItem: View>: View {
         self.width = width
     }
     
+    // The body of the alert, defined as a ZStack to overlay content on a semi-transparent background.
     var body: some View {
         ZStack {
-            Color.black.opacity(0.50)
-                .edgesIgnoringSafeArea(.all)
+            Color.black.opacity(0.50) // Semi-transparent black background to dim the rest of the UI.
+                .edgesIgnoringSafeArea(.all) // Ignore safe area to cover the entire screen.
             
             VStack(spacing: 0) {
                 if !title.isEmpty {
+                    // Display the alert title if provided.
                     Text(title)
                         .font(.system(size: 16, weight: .bold))
                         .foregroundColor(.black)
@@ -45,16 +49,18 @@ struct CustomAlert<ContentItem: View>: View {
                         .fixedSize(horizontal: false, vertical: true)
                 }
                 
+                // Display the custom content of the alert.
                 content
                     .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: .infinity, alignment: .leading)
                     .font(.system(size: 14))
                     .foregroundColor(.black)
                     .multilineTextAlignment(.leading)
                     .padding(.horizontal, 16)
-                   
                 
+                // Horizontal stack to hold the action buttons.
                 HStack(spacing: 0) {
                     if let leftActionText = leftActionText {
+                        // Left button with optional action.
                         Button(action: {
                             leftButtonAction?()
                         }) {
@@ -66,6 +72,7 @@ struct CustomAlert<ContentItem: View>: View {
                         }
                     }
                     
+                    // Right button with required action.
                     Button(action: {
                         rightButtonAction()
                     }) {
@@ -76,14 +83,14 @@ struct CustomAlert<ContentItem: View>: View {
                             .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: .infinity)
                     }
                 }
-                .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: 50)
+                .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: 50) // Set fixed height for the button row.
                 .padding([.horizontal, .bottom], 0)
             }
-            .frame(width: width, height: height)
+            .frame(width: width, height: height) // Set dimensions for the alert.
             .background(Color.white)
             .cornerRadius(10)
         }
-        .zIndex(2)
+        .zIndex(2) // Set the z-index to ensure the alert is displayed above other views.
     }
 }
 
