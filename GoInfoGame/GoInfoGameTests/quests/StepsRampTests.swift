@@ -41,7 +41,7 @@ final class StepsRampTests: XCTestCase {
     
     func testStepsRampQuery() throws {
         let fourYearsAgo = TestQuestUtils.olderThan(years: -4)
-        let eightYearsAgo = TestQuestUtils.olderThan(years: -4)
+        let eightYearsAgo = TestQuestUtils.olderThan(years: -8)
 
         assertIsNotApplicable(element: TestQuestUtils.node(tags: ["" : ""]))
         assertIsNotApplicable(element: TestQuestUtils.way(tags: ["highway": "steps", "access": "private"]))
