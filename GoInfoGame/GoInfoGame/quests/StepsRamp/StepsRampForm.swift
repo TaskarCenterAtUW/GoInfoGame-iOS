@@ -12,7 +12,7 @@ struct StepsRampForm: View, QuestForm {
     func applyAnswer(answer: StepsRampAnswer) {
     }
     typealias AnswerClass = StepsRampAnswer
-    
+    @State private var selectedImage:String?
     @State private var showAlert = false
     let imageData: [ImageData] = [
         ImageData(id:"ramp_none",type: "none", imageName: "ramp_none", tag: "none", optionName: LocalizedStrings.questStepsRampNone.localized),
@@ -26,7 +26,7 @@ struct StepsRampForm: View, QuestForm {
             VStack(alignment: .leading){
                 Text(LocalizedStrings.select.localized).font(.caption).foregroundColor(.gray)
                 ImageGridItemView(gridCount: 2, isLabelBelow: false, imageData: imageData, isImageRotated: false, isDisplayImageOnly: false, onTap: { (type, tag) in
-                    print("Clicked: \(type), Tag: \(tag)")})
+                    print("Clicked: \(type), Tag: \(tag)")}, selectedImage: $selectedImage)
                 Divider()
                 HStack() {
                     Spacer()

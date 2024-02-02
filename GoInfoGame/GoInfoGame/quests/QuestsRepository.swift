@@ -21,7 +21,8 @@ class QuestsRepository {
         TactilePavingSteps(),
         WayLit(),
         BusStopLit(),
-        CrossMarking()
+        CrossMarking(),
+        SideWalkValidation()
     ]
     
     var displayQuests: [DisplayUnit] {

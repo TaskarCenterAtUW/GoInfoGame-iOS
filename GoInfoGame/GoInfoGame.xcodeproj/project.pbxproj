@@ -55,6 +55,10 @@
 		973FC0482B5A477E00878269 /* CrossMarking.swift in Sources */ = {isa = PBXBuildFile; fileRef = 973FC0472B5A477E00878269 /* CrossMarking.swift */; };
 		973FC04A2B5A478C00878269 /* CrossMarkingForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = 973FC0492B5A478C00878269 /* CrossMarkingForm.swift */; };
 		973FC04C2B5A5F5F00878269 /* RadioItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 973FC04B2B5A5F5F00878269 /* RadioItem.swift */; };
+		97AC1C062B6A45B0004F0BF4 /* SideWalkValidation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97AC1C052B6A45B0004F0BF4 /* SideWalkValidation.swift */; };
+		97AC1C082B6A45C9004F0BF4 /* SideWalkValidationForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97AC1C072B6A45C9004F0BF4 /* SideWalkValidationForm.swift */; };
+		97AC1C0A2B6B7F10004F0BF4 /* CustomVerticalButtonsList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97AC1C092B6B7F10004F0BF4 /* CustomVerticalButtonsList.swift */; };
+		97AC1C0C2B6B843C004F0BF4 /* CustomAlert.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97AC1C0B2B6B843C004F0BF4 /* CustomAlert.swift */; };
 		97F2FA8A2B0630A3000B9726 /* Pods_GoInfoGame.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 66BED441AF03CC04539E8D4A /* Pods_GoInfoGame.framework */; };
 		A40004EC2B62338400AF21FB /* AppQuestManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A40004EB2B62338400AF21FB /* AppQuestManager.swift */; };
 		A40E72642B5CD65000328848 /* OverpassRequestManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A40E72632B5CD65000328848 /* OverpassRequestManagerTests.swift */; };
@@ -83,8 +87,8 @@
 		A4834A3F2B67737500D4F0AA /* StoredChangeset.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4834A3E2B67737500D4F0AA /* StoredChangeset.swift */; };
 		A4834A412B67885E00D4F0AA /* DatasyncManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4834A402B67885E00D4F0AA /* DatasyncManager.swift */; };
 		A4834A442B679CE000D4F0AA /* DatasyncManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4834A432B679CE000D4F0AA /* DatasyncManagerTests.swift */; };
-		A495DF2D2B6A190400478E44 /* CustomMapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A495DF2C2B6A190400478E44 /* CustomMapView.swift */; };
 		A495DF2B2B68D6EC00478E44 /* TestQuestUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = A495DF2A2B68D6EC00478E44 /* TestQuestUtils.swift */; };
+		A495DF2D2B6A190400478E44 /* CustomMapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A495DF2C2B6A190400478E44 /* CustomMapView.swift */; };
 		A4AD130C2B5E80F20041A881 /* StoredElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4AD130B2B5E80F20041A881 /* StoredElement.swift */; };
 		A4AD13162B5E90BD0041A881 /* osmparser.docc in Sources */ = {isa = PBXBuildFile; fileRef = A4AD13152B5E90BD0041A881 /* osmparser.docc */; };
 		A4AD131C2B5E90BD0041A881 /* osmparser.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A4AD13122B5E90BD0041A881 /* osmparser.framework */; };
@@ -295,6 +299,10 @@
 		973FC0472B5A477E00878269 /* CrossMarking.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = CrossMarking.swift; path = GoInfoGame/quests/CrossingMarking/CrossMarking.swift; sourceTree = SOURCE_ROOT; };
 		973FC0492B5A478C00878269 /* CrossMarkingForm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = CrossMarkingForm.swift; path = GoInfoGame/quests/CrossingMarking/CrossMarkingForm.swift; sourceTree = SOURCE_ROOT; };
 		973FC04B2B5A5F5F00878269 /* RadioItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RadioItem.swift; sourceTree = "<group>"; };
+		97AC1C052B6A45B0004F0BF4 /* SideWalkValidation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SideWalkValidation.swift; sourceTree = "<group>"; };
+		97AC1C072B6A45C9004F0BF4 /* SideWalkValidationForm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SideWalkValidationForm.swift; sourceTree = "<group>"; };
+		97AC1C092B6B7F10004F0BF4 /* CustomVerticalButtonsList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomVerticalButtonsList.swift; sourceTree = "<group>"; };
+		97AC1C0B2B6B843C004F0BF4 /* CustomAlert.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomAlert.swift; sourceTree = "<group>"; };
 		97F2FA8D2B0630C4000B9726 /* SwiftOverpassAPI.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = SwiftOverpassAPI.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		A40004EB2B62338400AF21FB /* AppQuestManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppQuestManager.swift; sourceTree = "<group>"; };
 		A40E72632B5CD65000328848 /* OverpassRequestManagerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OverpassRequestManagerTests.swift; sourceTree = "<group>"; };
@@ -322,8 +330,8 @@
 		A4834A3E2B67737500D4F0AA /* StoredChangeset.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoredChangeset.swift; sourceTree = "<group>"; };
 		A4834A402B67885E00D4F0AA /* DatasyncManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatasyncManager.swift; sourceTree = "<group>"; };
 		A4834A432B679CE000D4F0AA /* DatasyncManagerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatasyncManagerTests.swift; sourceTree = "<group>"; };
-		A495DF2C2B6A190400478E44 /* CustomMapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomMapView.swift; sourceTree = "<group>"; };
 		A495DF2A2B68D6EC00478E44 /* TestQuestUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestQuestUtils.swift; sourceTree = "<group>"; };
+		A495DF2C2B6A190400478E44 /* CustomMapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomMapView.swift; sourceTree = "<group>"; };
 		A4AD130B2B5E80F20041A881 /* StoredElement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoredElement.swift; sourceTree = "<group>"; };
 		A4AD13122B5E90BD0041A881 /* osmparser.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = osmparser.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		A4AD13142B5E90BD0041A881 /* osmparser.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = osmparser.h; sourceTree = "<group>"; };
@@ -643,6 +651,8 @@
 				973FC01E2B50DE7E00878269 /* ImageGridItemView.swift */,
 				A4E711A32B57B13100C9DE08 /* QuestionHeader.swift */,
 				973FC04B2B5A5F5F00878269 /* RadioItem.swift */,
+				97AC1C092B6B7F10004F0BF4 /* CustomVerticalButtonsList.swift */,
+				97AC1C0B2B6B843C004F0BF4 /* CustomAlert.swift */,
 			);
 			path = CustomComponents;
 			sourceTree = "<group>";
@@ -699,6 +709,15 @@
 				973FC0492B5A478C00878269 /* CrossMarkingForm.swift */,
 			);
 			path = CrossingMarking;
+			sourceTree = "<group>";
+		};
+		97AC1C042B6A44C1004F0BF4 /* SideWalkValidation */ = {
+			isa = PBXGroup;
+			children = (
+				97AC1C052B6A45B0004F0BF4 /* SideWalkValidation.swift */,
+				97AC1C072B6A45C9004F0BF4 /* SideWalkValidationForm.swift */,
+			);
+			path = SideWalkValidation;
 			sourceTree = "<group>";
 		};
 		A40E726B2B5D462A00328848 /* osmapi */ = {
@@ -917,6 +936,7 @@
 		A4E7119C2B57A22300C9DE08 /* quests */ = {
 			isa = PBXGroup;
 			children = (
+				97AC1C042B6A44C1004F0BF4 /* SideWalkValidation */,
 				973FC0462B5A475C00878269 /* CrossingMarking */,
 				973FC0452B59495900878269 /* StepsRamp */,
 				973FC0402B59459A00878269 /* BusStopLit */,
@@ -1534,6 +1554,7 @@
 				A4AD130C2B5E80F20041A881 /* StoredElement.swift in Sources */,
 				05DBBB5D2B1262BA00B6F110 /* OverpassRepository.swift in Sources */,
 				A4B83AF12B5F92FA006684CA /* StoredNode.swift in Sources */,
+				97AC1C0C2B6B843C004F0BF4 /* CustomAlert.swift in Sources */,
 				A4834A412B67885E00D4F0AA /* DatasyncManager.swift in Sources */,
 				0536DD852B0BD11A00B04C4B /* LoginViewController.swift in Sources */,
 				A4E711A42B57B13100C9DE08 /* QuestionHeader.swift in Sources */,
@@ -1555,9 +1576,11 @@
 				973FC01F2B50DE7E00878269 /* ImageGridItemView.swift in Sources */,
 				A4E711A22B57A3B400C9DE08 /* SideWalkWidth.swift in Sources */,
 				05CB71E02B0FAFD200DED821 /* GenericUIViewControllerRepresentable.swift in Sources */,
+				97AC1C062B6A45B0004F0BF4 /* SideWalkValidation.swift in Sources */,
 				FAD5C4F32AFCBE700040C61A /* AppDelegate.swift in Sources */,
 				05DBBB622B164D9A00B6F110 /* RealOPElement.swift in Sources */,
 				973FC0422B59467A00878269 /* BusStopLit.swift in Sources */,
+				97AC1C0A2B6B7F10004F0BF4 /* CustomVerticalButtonsList.swift in Sources */,
 				973FC0352B592C0F00878269 /* StairNumberForm.swift in Sources */,
 				FAC9E60F2B04F9C800E2C608 /* OverpassRequestManager.swift in Sources */,
 				973FC0482B5A477E00878269 /* CrossMarking.swift in Sources */,
@@ -1584,6 +1607,7 @@
 				05DBBB662B17209600B6F110 /* RealmOPMeta.swift in Sources */,
 				0536DD942B0BD59900B04C4B /* OAuthError.swift in Sources */,
 				973FC0172B4D567900878269 /* WidthView.swift in Sources */,
+				97AC1C082B6A45C9004F0BF4 /* SideWalkValidationForm.swift in Sources */,
 				FAD5C4F52AFCBE700040C61A /* SceneDelegate.swift in Sources */,
 				FAF44FBF2B3084FB004FE664 /* OnboardingView2.swift in Sources */,
 				A4E711B02B59011000C9DE08 /* StepsInclineForm.swift in Sources */,
