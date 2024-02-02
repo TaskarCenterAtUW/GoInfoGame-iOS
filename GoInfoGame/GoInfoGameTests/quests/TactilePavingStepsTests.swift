@@ -46,9 +46,9 @@ final class TactilePavingStepsTests: XCTestCase {
     
     func testtactilePavingStepsQuery() throws {
         
-        let fourYearsAgo = TestQuestUtils.olderThan(years: -4)
-        let eightYearsAgo = TestQuestUtils.olderThan(years: -8)
-        let twoTwoYearsAgo = TestQuestUtils.olderThan(years: -2)
+        let fourYearsAgo = TestQuestUtils.addTime(years: -4)
+        let eightYearsAgo = TestQuestUtils.addTime(years: -8)
+        let twoTwoYearsAgo = TestQuestUtils.addTime(years: -2)
         
 
         assertIsNotApplicable(element: TestQuestUtils.node(tags: ["" : ""]))

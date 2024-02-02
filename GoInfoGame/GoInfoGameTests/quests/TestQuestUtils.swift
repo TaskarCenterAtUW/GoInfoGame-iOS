@@ -13,7 +13,7 @@ class TestQuestUtils {
         return Int64(Date().timeIntervalSince1970)
     }
     
-    static func olderThan(years: Int) -> Int64 {
+    static func addTime(years: Int) -> Int64 {
         if let calendar =  Calendar.current.date(byAdding: .year, value: years, to: Date()) {
             let timeStamp = Int64(calendar.timeIntervalSince1970)
             return timeStamp

@@ -41,7 +41,7 @@ final class BusStopLitTests: XCTestCase {
      */
     
     func testBusStopLitQuery() throws {
-        let eightYearsAgo = TestQuestUtils.olderThan(years: -8)
+        let eightYearsAgo = TestQuestUtils.addTime(years: -8)
         
         assertIsNotApplicable(element: TestQuestUtils.way(tags: ["" : ""]))
         assertIsNotApplicable(element: TestQuestUtils.rel(tags: ["public_transport" :"platform", "indoor" : "no" ]))

@@ -93,7 +93,7 @@ final class WayLitTests: XCTestCase {
      */
     
     func testWayLitQuery() throws {
-        let eightYearsAgo = TestQuestUtils.olderThan(years: -8)
+        let eightYearsAgo = TestQuestUtils.addTime(years: -8)
 
         assertIsNotApplicable(element: TestQuestUtils.node(tags: ["" : ""]))
         assertIsApplicable(element: TestQuestUtils.way(tags: ["highway":"pedestrian"]))

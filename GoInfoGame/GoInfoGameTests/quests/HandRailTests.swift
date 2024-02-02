@@ -36,7 +36,7 @@ final class HandRailTests: XCTestCase {
      */
     
     func testHandRailQuery() throws {
-        let fourYearsAgo = TestQuestUtils.olderThan(years: -4)
+        let fourYearsAgo = TestQuestUtils.addTime(years: -4)
 
         assertIsNotApplicable(element: TestQuestUtils.way(tags: ["" : ""]))
         assertIsNotApplicable(element: TestQuestUtils.way(tags: ["highway": "residential"]))
