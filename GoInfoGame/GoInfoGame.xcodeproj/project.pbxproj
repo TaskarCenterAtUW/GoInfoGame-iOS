@@ -59,6 +59,9 @@
 		97AC1C082B6A45C9004F0BF4 /* SideWalkValidationForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97AC1C072B6A45C9004F0BF4 /* SideWalkValidationForm.swift */; };
 		97AC1C0A2B6B7F10004F0BF4 /* CustomVerticalButtonsList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97AC1C092B6B7F10004F0BF4 /* CustomVerticalButtonsList.swift */; };
 		97AC1C0C2B6B843C004F0BF4 /* CustomAlert.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97AC1C0B2B6B843C004F0BF4 /* CustomAlert.swift */; };
+		97AC1C0F2B70CEF5004F0BF4 /* SidewalkSurface.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97AC1C0E2B70CEF5004F0BF4 /* SidewalkSurface.swift */; };
+		97AC1C112B70CF03004F0BF4 /* SidewalkSurfaceForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97AC1C102B70CF03004F0BF4 /* SidewalkSurfaceForm.swift */; };
+		97AC1C132B70EF0A004F0BF4 /* Surfaces.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97AC1C122B70EF0A004F0BF4 /* Surfaces.swift */; };
 		97F2FA8A2B0630A3000B9726 /* Pods_GoInfoGame.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 66BED441AF03CC04539E8D4A /* Pods_GoInfoGame.framework */; };
 		A40004EC2B62338400AF21FB /* AppQuestManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A40004EB2B62338400AF21FB /* AppQuestManager.swift */; };
 		A40E72642B5CD65000328848 /* OverpassRequestManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A40E72632B5CD65000328848 /* OverpassRequestManagerTests.swift */; };
@@ -303,6 +306,9 @@
 		97AC1C072B6A45C9004F0BF4 /* SideWalkValidationForm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SideWalkValidationForm.swift; sourceTree = "<group>"; };
 		97AC1C092B6B7F10004F0BF4 /* CustomVerticalButtonsList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomVerticalButtonsList.swift; sourceTree = "<group>"; };
 		97AC1C0B2B6B843C004F0BF4 /* CustomAlert.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomAlert.swift; sourceTree = "<group>"; };
+		97AC1C0E2B70CEF5004F0BF4 /* SidewalkSurface.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SidewalkSurface.swift; sourceTree = "<group>"; };
+		97AC1C102B70CF03004F0BF4 /* SidewalkSurfaceForm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SidewalkSurfaceForm.swift; sourceTree = "<group>"; };
+		97AC1C122B70EF0A004F0BF4 /* Surfaces.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Surfaces.swift; sourceTree = "<group>"; };
 		97F2FA8D2B0630C4000B9726 /* SwiftOverpassAPI.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = SwiftOverpassAPI.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		A40004EB2B62338400AF21FB /* AppQuestManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppQuestManager.swift; sourceTree = "<group>"; };
 		A40E72632B5CD65000328848 /* OverpassRequestManagerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OverpassRequestManagerTests.swift; sourceTree = "<group>"; };
@@ -720,6 +726,15 @@
 			path = SideWalkValidation;
 			sourceTree = "<group>";
 		};
+		97AC1C0D2B70CED0004F0BF4 /* SidewalkSurface */ = {
+			isa = PBXGroup;
+			children = (
+				97AC1C0E2B70CEF5004F0BF4 /* SidewalkSurface.swift */,
+				97AC1C102B70CF03004F0BF4 /* SidewalkSurfaceForm.swift */,
+			);
+			path = SidewalkSurface;
+			sourceTree = "<group>";
+		};
 		A40E726B2B5D462A00328848 /* osmapi */ = {
 			isa = PBXGroup;
 			children = (
@@ -936,6 +951,7 @@
 		A4E7119C2B57A22300C9DE08 /* quests */ = {
 			isa = PBXGroup;
 			children = (
+				97AC1C0D2B70CED0004F0BF4 /* SidewalkSurface */,
 				97AC1C042B6A44C1004F0BF4 /* SideWalkValidation */,
 				973FC0462B5A475C00878269 /* CrossingMarking */,
 				973FC0452B59495900878269 /* StepsRamp */,
@@ -948,6 +964,7 @@
 				A4E7119D2B57A24000C9DE08 /* SidewalkWidth */,
 				A4E711A52B57BBCA00C9DE08 /* QuestProtocols.swift */,
 				A4E711A72B57CA4300C9DE08 /* QuestsRepository.swift */,
+				97AC1C122B70EF0A004F0BF4 /* Surfaces.swift */,
 			);
 			path = quests;
 			sourceTree = "<group>";
@@ -1569,6 +1586,7 @@
 				973FC02D2B58F79B00878269 /* StepsRampForm.swift in Sources */,
 				059D47312B2C81A9000987FA /* Style.swift in Sources */,
 				A4E711A82B57CA4300C9DE08 /* QuestsRepository.swift in Sources */,
+				97AC1C112B70CF03004F0BF4 /* SidewalkSurfaceForm.swift in Sources */,
 				973FC03A2B59364F00878269 /* TactilePavingStepsForm.swift in Sources */,
 				973FC0332B592BFE00878269 /* StairNumber.swift in Sources */,
 				059D47332B2C83BA000987FA /* Highway.swift in Sources */,
@@ -1588,6 +1606,7 @@
 				FA87A8102B68142F000A6BEA /* LoadingView.swift in Sources */,
 				973FC03D2B59417D00878269 /* WayLitForm.swift in Sources */,
 				0536DD922B0BD58800B04C4B /* OAuthService.swift in Sources */,
+				97AC1C0F2B70CEF5004F0BF4 /* SidewalkSurface.swift in Sources */,
 				973FC0112B4D2D1C00878269 /* QuestAndDescriptionView.swift in Sources */,
 				973FC0032B47DE0700878269 /* QuestsVM.swift in Sources */,
 				A4E711AE2B59004700C9DE08 /* StepsIncline.swift in Sources */,
@@ -1610,6 +1629,7 @@
 				97AC1C082B6A45C9004F0BF4 /* SideWalkValidationForm.swift in Sources */,
 				FAD5C4F52AFCBE700040C61A /* SceneDelegate.swift in Sources */,
 				FAF44FBF2B3084FB004FE664 /* OnboardingView2.swift in Sources */,
+				97AC1C132B70EF0A004F0BF4 /* Surfaces.swift in Sources */,
 				A4E711B02B59011000C9DE08 /* StepsInclineForm.swift in Sources */,
 				972454152B14A49A0036B91A /* Extensions.swift in Sources */,
 				0536DD8C2B0BD2C200B04C4B /* Constants.swift in Sources */,

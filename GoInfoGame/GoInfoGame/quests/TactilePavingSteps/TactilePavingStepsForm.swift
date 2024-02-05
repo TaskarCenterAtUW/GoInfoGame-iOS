@@ -15,7 +15,7 @@ struct TactilePavingStepsForm: View, QuestForm {
     
     var body: some View {
         VStack{
-            QuestionHeader(icon:Image("steps_tactile_paving"), title: LocalizedStrings.questStepCountTitle.localized, subtitle: "Stair Number")
+            QuestionHeader(icon:Image("steps_tactile_paving"), title: LocalizedStrings.questTactilePavingTitleSteps.localized, subtitle: "Stair Number")
             VStack(alignment:.leading){
                 Text(LocalizedStrings.usuallyLooksLikeThis.localized).font(.caption).foregroundColor(.gray)
                 Image("tactile_paving_illustration")

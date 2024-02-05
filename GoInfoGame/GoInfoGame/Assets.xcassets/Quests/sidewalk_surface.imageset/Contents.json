@@ -1,0 +1,12 @@
+{
+  "images" : [
+    {
+      "filename" : "sidewalk_surface.pdf",
+      "idiom" : "universal"
+    }
+  ],
+  "info" : {
+    "author" : "xcode",
+    "version" : 1
+  }
+}
