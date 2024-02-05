@@ -38,6 +38,9 @@ final class StepsInclineTests: XCTestCase {
         assertIsNotApplicable(element: TestQuestUtils.way(tags: ["incline": "false"]))
         assertIsNotApplicable(element: TestQuestUtils.way(tags: ["highway": "steps", "indoor": "yes"])) // indoor is not allowed
         assertIsNotApplicable(element: TestQuestUtils.way(tags: ["highway": "steps", "area": "yes"])) // area is not allowed
+        
+        assertIsApplicable(element: TestQuestUtils.way(tags: ["highway": "steps", "indoor": "no"]))
+        assertIsApplicable(element: TestQuestUtils.way(tags: ["highway": "steps", "indoor": "no", "area": "no", "access": "yes"]))
     }
     
     

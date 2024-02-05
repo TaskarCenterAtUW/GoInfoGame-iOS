@@ -23,7 +23,7 @@ final class HandRailTests: XCTestCase {
     
     /** Testing the query
      ways with highway = steps
-     and (!indoor and indoor = no)
+     and (!indoor or indoor = no)
      and access !~ private|no
      and (!conveying or conveying = no)
      and (
@@ -36,12 +36,14 @@ final class HandRailTests: XCTestCase {
      */
     
     func testHandRailQuery() throws {
+        let fourYearsAgo = TestQuestUtils.addTime(years: -4)
+
         assertIsNotApplicable(element: TestQuestUtils.way(tags: ["" : ""]))
         assertIsNotApplicable(element: TestQuestUtils.way(tags: ["highway": "residential"]))
         assertIsNotApplicable(element: TestQuestUtils.way(tags: ["highway": "steps", "conveying": "yes"])) // conveying is not allowed
         assertIsNotApplicable(element: TestQuestUtils.way(tags: ["highway": "steps", "indoor": "yes"])) // indoor is not allowed
-        assertIsNotApplicable(element: TestQuestUtils.way(tags: ["highway": "steps", "handrail": "no", "handrail:date": "2019-01-31"])) // handrail older than 8 years
-//        assertIsApplicable(element: TestQuestUtils.way(tags: ["highway": "steps", "handrail": "no", "handrail:date": "2013-01-31"])) // older than 8 years
+        
+        assertIsApplicable(element: TestQuestUtils.way(tags: ["highway": "steps", "indoor" : "no", "handrail" : "no"], timestamp: fourYearsAgo))
     }
 
     private func assertIsApplicable(element: Element) {

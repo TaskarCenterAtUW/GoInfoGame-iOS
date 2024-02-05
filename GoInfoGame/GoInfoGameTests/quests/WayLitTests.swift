@@ -93,6 +93,8 @@ final class WayLitTests: XCTestCase {
      */
     
     func testWayLitQuery() throws {
+        let eightYearsAgo = TestQuestUtils.addTime(years: -8)
+
         assertIsNotApplicable(element: TestQuestUtils.node(tags: ["" : ""]))
         assertIsApplicable(element: TestQuestUtils.way(tags: ["highway":"pedestrian"]))
         assertIsNotApplicable(element: TestQuestUtils.way(tags: ["highway":"pedestrian","access":"no"])) // no access to the path
@@ -100,7 +102,7 @@ final class WayLitTests: XCTestCase {
         assertIsApplicable(element: TestQuestUtils.way(tags: ["highway":"pedestrian","footway":"link"]))
         assertIsNotApplicable(element: TestQuestUtils.way(tags: ["highway":"pedestrian","lit":"yes"])) // lit tag already exists
         
-        
+        assertIsApplicable(element: TestQuestUtils.way(tags: ["highway": "path", "sidewalk": "separate", "maxspeed": "60", "bicycle": "designated", "lit": "no"], timestamp: eightYearsAgo))
     }
 
     private func assertIsApplicable(element: Element) {

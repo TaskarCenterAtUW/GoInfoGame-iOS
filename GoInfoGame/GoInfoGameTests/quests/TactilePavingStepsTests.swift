@@ -44,13 +44,23 @@ final class TactilePavingStepsTests: XCTestCase {
     
 
     
-    func testStepsQuery() throws {
+    func testtactilePavingStepsQuery() throws {
+        
+        let fourYearsAgo = TestQuestUtils.addTime(years: -4)
+        let eightYearsAgo = TestQuestUtils.addTime(years: -8)
+        let twoTwoYearsAgo = TestQuestUtils.addTime(years: -2)
+        
+
         assertIsNotApplicable(element: TestQuestUtils.node(tags: ["" : ""]))
         assertIsNotApplicable(element: TestQuestUtils.way(tags: ["highway" : "steps", "access": "no"]))
         assertIsNotApplicable(element: TestQuestUtils.node(tags: ["highway": "residential"]))
-        assertIsApplicable(element: TestQuestUtils.way(tags: ["highway": "steps", "surface": "paved"]))
-        assertIsNotApplicable(element: TestQuestUtils.way(tags: ["highway": "steps", "tactile_paving": "yes", "tactile_paving:date": "2023-01-31"])) // tactile_paving older than 8 years
-        assertIsNotApplicable(element: TestQuestUtils.way(tags: ["highway": "steps", "tactile_paving": "partial", "tactile_paving:date": "2023-01-31"])) // tactile_paving older than 4 years
+        assertIsApplicable(element: TestQuestUtils.way(tags: ["highway" : "steps", "surface": "paved"]))
+        assertIsApplicable(element: TestQuestUtils.way(tags: ["highway" : "steps", "surface": "paved", "tactile_paving": "unknown"]))
+        assertIsApplicable(element: TestQuestUtils.way(tags: ["highway" : "steps", "surface": "paved", "tactile_paving": "incorrect"], timestamp: fourYearsAgo))
+        assertIsApplicable(element: TestQuestUtils.way(tags: ["highway" : "steps", "surface": "paved", "tactile_paving": "yes"], timestamp: eightYearsAgo))
+        assertIsNotApplicable(element: TestQuestUtils.way(tags: ["highway" : "steps", "surface": "paved", "tactile_paving": "yes"], timestamp: twoTwoYearsAgo))
+
+        
     }
     
 

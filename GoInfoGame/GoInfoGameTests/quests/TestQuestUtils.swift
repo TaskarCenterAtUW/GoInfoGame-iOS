@@ -13,6 +13,14 @@ class TestQuestUtils {
         return Int64(Date().timeIntervalSince1970)
     }
     
+    static func addTime(years: Int) -> Int64 {
+        if let calendar =  Calendar.current.date(byAdding: .year, value: years, to: Date()) {
+            let timeStamp = Int64(calendar.timeIntervalSince1970)
+            return timeStamp
+        }
+        return -86400
+    }
+    
     static func node(id:Int64 = 1, pos: LatLon = TestQuestUtils.pos(), tags: [String:String], version: Int = 1, timestamp: Int64? = nil) -> Node {
         return Node(id: id, version: version, tags: tags, timestampEdited: timestamp ?? epochMillis(), position: pos)
     }
