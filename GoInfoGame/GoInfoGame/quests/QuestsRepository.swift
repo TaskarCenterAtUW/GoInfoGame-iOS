@@ -22,7 +22,8 @@ class QuestsRepository {
         WayLit(),
         BusStopLit(),
         CrossMarking(),
-        SideWalkValidation()
+        SideWalkValidation(),
+        SidewalkSurface()
     ]
     
     var displayQuests: [DisplayUnit] {

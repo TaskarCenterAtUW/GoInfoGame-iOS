@@ -1,0 +1,12 @@
+{
+  "images" : [
+    {
+      "filename" : "surface_unpaved_impassable.pdf",
+      "idiom" : "universal"
+    }
+  ],
+  "info" : {
+    "author" : "xcode",
+    "version" : 1
+  }
+}
