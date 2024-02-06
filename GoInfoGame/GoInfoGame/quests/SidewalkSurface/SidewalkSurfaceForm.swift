@@ -6,48 +6,87 @@
 //
 
 import SwiftUI
-
+// View representing a form for sidewalk surface selection
 struct SidewalkSurfaceForm: QuestForm ,View {
     func applyAnswer(answer: SidewalkSurfaceAnswer) {
     }
     typealias AnswerClass = SidewalkSurfaceAnswer
     @State private var selectedImage : String?
     @State private var showAlert = false
+    @State private var selectedAnswer : SidewalkSurfaceAnswer = SidewalkSurfaceAnswer(value: SurfaceAndNote(surface: Surface.none,note: ""))
     let imagesFromSurfaces: [ImageData] = SELECTABLE_WAY_SURFACES.compactMap { surfaceString in
-        let lowercaseSurfaceString = surfaceString.lowercased()
-        
-        if let surface = Surface(rawValue: lowercaseSurfaceString) {
-            return ImageData(id: surfaceString, type: lowercaseSurfaceString, imageName: "surface_\(lowercaseSurfaceString)", tag: surface.rawValue, optionName: "\(lowercaseSurfaceString)")
+        if let surface = Surface(rawValue: surfaceString) {
+            return ImageData(
+                id: surfaceString,
+                type: surfaceString,
+                imageName: surface.iconResId,
+                tag: surface.rawValue,
+                optionName:  surface.titleResId
+            )
         } else {
             print("Invalid Surface: \(surfaceString)")
             return nil
         }
     }
-
+    let SidewalkSurfaceOtherAnswerButtons = [
+        ButtonInfo(id: 1, label: LocalizedStrings.cantSay.localized),
+        ButtonInfo(id: 2, label: LocalizedStrings.questGenericAnswerDiffersAlongTheWay.localized),
+    ]
     var body: some View {
-        VStack (alignment: .leading){
-            QuestionHeader(icon: Image("sidewalk_surface"), title: LocalizedStrings.questSidewalkSurfaceTitle.localized, subtitle: "Street").padding(.bottom,10)
-            VStack(alignment: .leading){
-                Text(LocalizedStrings.select.localized).font(.caption).foregroundColor(.gray)
-                ImageGridItemView(gridCount: 4, isLabelBelow: true, imageData: imagesFromSurfaces, isImageRotated: false, isDisplayImageOnly: false, onTap: { (type, tag) in
-                    print("Clicked: \(type), Tag: \(tag)")}, selectedImage: $selectedImage)
-                Divider()
-                HStack() {
-                    Spacer()
-                    Button {
-                        showAlert = true
-                    } label: {
-                        Text(LocalizedStrings.otherAnswers.localized).foregroundColor(.orange)
-                    }.frame(alignment: .center)
-                    Spacer()
-                }.padding(.top,10)
-            }        .padding()
-                .background(
-                    RoundedRectangle(cornerRadius: 10)
-                        .fill(Color.white)
-                        .shadow(color: .gray, radius: 2, x: 0, y: 2))
+        ZStack{
+            VStack (alignment: .leading){
+                // Question header
+                QuestionHeader(icon: Image("sidewalk_surface"), title: LocalizedStrings.questSidewalkSurfaceTitle.localized, subtitle: "Street").padding(.bottom,10)
+                // Quest Body
+                VStack(alignment: .leading){
+                    Text(LocalizedStrings.select.localized).font(.caption).foregroundColor(.gray)
+                    /// Grid view for displaying selectable surfaces
+                    ImageGridItemView(gridCount: 3, isLabelBelow: true, imageData: imagesFromSurfaces, isImageRotated: false, isDisplayImageOnly: false, onTap: { (type, tag) in
+                        selectedAnswer = SidewalkSurfaceAnswer(value: SurfaceAndNote(surface: Surface(rawValue: tag),note: ""))
+                        print("selectedAnswer:", selectedAnswer)
+                        print("Clicked: \(type), Tag: \(tag)")}, selectedImage: $selectedImage)
+                    Divider()
+                    HStack() {
+                        Spacer()
+                        Button {
+                            showAlert = true
+                        } label: {
+                            Text(LocalizedStrings.otherAnswers.localized).foregroundColor(.orange)
+                        }.frame(alignment: .center)
+                        Spacer()
+                        if selectedAnswer.value.surface != Surface.none {
+                            Button() {
+                            /// applying final selected answer
+                               applyAnswer(answer: selectedAnswer)
+                            }label: {
+                                Image(systemName: "checkmark.circle.fill")
+                                    .font(Font.system(size: 40))
+                                    .foregroundColor(.orange)
+                            }
+                        }
+                    }.padding(.top,10)
+                }        .padding()
+                    .background(
+                        RoundedRectangle(cornerRadius: 10)
+                            .fill(Color.white)
+                            .shadow(color: .gray, radius: 2, x: 0, y: 2))
+            }
+            .padding()
+            if showAlert {
+                CustomAlert(title: "", content: {CustomVerticalButtonsList(buttons: SidewalkSurfaceOtherAnswerButtons, selectionChanged: { selectedOtherAnswerOption in
+                    /// To Dismiss alert when selectedButton value changes
+                    showAlert = false
+                    /// deselecting image option if any other answer is selected
+                    selectedImage = ""
+                    print("selectedButton value", selectedOtherAnswerOption?.label ?? "")
+                    /// To select other answers option as SidewalkSurfaceAnswer
+                    selectedAnswer = SidewalkSurfaceAnswer(value: SurfaceAndNote(surface: Surface.none,note: selectedOtherAnswerOption?.label ?? ""))
+                })}, leftActionText: "", rightActionText: "", rightButtonAction: {}, height: 100, width: 200)
+            }
+        }.onTapGesture {
+            showAlert = false
         }
-        .padding()
+        .allowsHitTesting(true)
     }
 }
 
