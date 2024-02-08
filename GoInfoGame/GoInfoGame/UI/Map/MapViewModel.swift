@@ -11,54 +11,41 @@ import MapKit
 import CoreLocation
 
 class MapViewModel: ObservableObject {
-    @Published var coordinateRegion: MKCoordinateRegion = MKCoordinateRegion()
+
+    let locationManagerDelegate = LocationManagerDelegate()
+    
+    @Published var region = MKCoordinateRegion(center: CLLocationCoordinate2D(latitude: 17.4254, longitude: 78.4505), span: MKCoordinateSpan(latitudeDelta: 0.08, longitudeDelta: 0.08))
+
+    
     @Published var items: [DisplayUnitWithCoordinate] = []
     @Published var selectedQuest: DisplayUnit?
-    private let locationManager = LocationManagerCoordinator()
     @Published var isLoading: Bool = false
-    let viewSpanDelta = 0.0004 // Delta lat/lng to show to the user
     let dataSpanDistance: CLLocationDistance = 100 // Distance from user location to get the data
-
+    
     init() {
-//        self.coordinateRegion = MKCoordinateRegion()
-        locationManager.locationUpdateHandler = { [weak self] location in
-            guard let self = self else { return }
-            DispatchQueue.main.async {
-                print("Centering map on location")
-                self.centerMapOnLocation(location)
-            }
-        }
+        locationManagerDelegate.locationManager.delegate = locationManagerDelegate
+        locationManagerDelegate.locationManager.requestWhenInUseAuthorization()
+        locationManagerDelegate.locationManager.startUpdatingLocation()
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(locationDidChange), name: Notification.Name("userLocationDidChange"), object: nil)
+        
+    }
+    
+    @objc private func locationDidChange() {
+        guard let userLocation = locationManagerDelegate.location else { return }
+        fetchOSMDataFor(currentLocation: userLocation)
     }
 
-    func fetchData() {
+    func fetchOSMDataFor(currentLocation: CLLocation) {
         isLoading = true
-        let boundingBox = boundingBoxAroundLocation(location: locationManager.currentLocation ?? CLLocation(latitude: coordinateRegion.center.latitude, longitude: coordinateRegion.center.longitude), distance: dataSpanDistance)
-        AppQuestManager.shared.fetchData(fromBBOx: boundingBox) { [weak self] in
+        let bBox = boundingBoxAroundLocation(location: currentLocation, distance: dataSpanDistance)
+        AppQuestManager.shared.fetchData(fromBBOx: bBox) { [weak self] in
             guard let self = self else { return }
             self.items = AppQuestManager.shared.fetchQuestsFromDB()
             self.isLoading = false
         }
     }
-    
-    func centerMapOnLocation(_ location: CLLocation) {
-        // Update coordinate region only if necessary
-        let region = MKCoordinateRegion(center: location.coordinate, span: MKCoordinateSpan(
-            latitudeDelta: viewSpanDelta,
-            longitudeDelta: viewSpanDelta
-        ))
         
-        if !coordinateRegionIsEqual(region, coordinateRegion) {
-            coordinateRegion = region
-            fetchData() // Fetch data when the map region changes
-        }
-    }
-
-    private func coordinateRegionIsEqual(_ region1: MKCoordinateRegion, _ region2: MKCoordinateRegion) -> Bool {
-        return region1.center.latitude == region2.center.latitude &&
-               region1.center.longitude == region2.center.longitude &&
-               region1.span.latitudeDelta == region2.span.latitudeDelta &&
-               region1.span.longitudeDelta == region2.span.longitudeDelta
-    }
     private func boundingBoxAroundLocation(location: CLLocation, distance: CLLocationDistance) -> BBox {
         let region = MKCoordinateRegion(center: location.coordinate, latitudinalMeters: distance, longitudinalMeters: distance)
         let center = region.center
