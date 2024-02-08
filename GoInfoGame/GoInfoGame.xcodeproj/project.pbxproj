@@ -32,6 +32,8 @@
 		971575172B5FFD6F0044797C /* MapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 971575162B5FFD6F0044797C /* MapView.swift */; };
 		971575192B5FFE910044797C /* LocationManagerCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 971575182B5FFE910044797C /* LocationManagerCoordinator.swift */; };
 		972454152B14A49A0036B91A /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 972454142B14A49A0036B91A /* Extensions.swift */; };
+		9739C67C2B74DE590031E561 /* CrossingIsland.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9739C67B2B74DE590031E561 /* CrossingIsland.swift */; };
+		9739C67E2B74DE660031E561 /* CrossingIslandForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9739C67D2B74DE660031E561 /* CrossingIslandForm.swift */; };
 		973FBFFE2B46BB3800878269 /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 973FBFFD2B46BB3800878269 /* Utils.swift */; };
 		973FC0012B46CD5D00878269 /* QuestsListUIView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 973FC0002B46CD5D00878269 /* QuestsListUIView.swift */; };
 		973FC0032B47DE0700878269 /* QuestsVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = 973FC0022B47DE0700878269 /* QuestsVM.swift */; };
@@ -278,6 +280,8 @@
 		971575162B5FFD6F0044797C /* MapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapView.swift; sourceTree = "<group>"; };
 		971575182B5FFE910044797C /* LocationManagerCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationManagerCoordinator.swift; sourceTree = "<group>"; };
 		972454142B14A49A0036B91A /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
+		9739C67B2B74DE590031E561 /* CrossingIsland.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CrossingIsland.swift; sourceTree = "<group>"; };
+		9739C67D2B74DE660031E561 /* CrossingIslandForm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CrossingIslandForm.swift; sourceTree = "<group>"; };
 		973FBFFD2B46BB3800878269 /* Utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Utils.swift; sourceTree = "<group>"; };
 		973FC0002B46CD5D00878269 /* QuestsListUIView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuestsListUIView.swift; sourceTree = "<group>"; };
 		973FC0022B47DE0700878269 /* QuestsVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuestsVM.swift; sourceTree = "<group>"; };
@@ -639,6 +643,15 @@
 			path = Map;
 			sourceTree = "<group>";
 		};
+		9739C67A2B74DE420031E561 /* CrossingIsland */ = {
+			isa = PBXGroup;
+			children = (
+				9739C67B2B74DE590031E561 /* CrossingIsland.swift */,
+				9739C67D2B74DE660031E561 /* CrossingIslandForm.swift */,
+			);
+			path = CrossingIsland;
+			sourceTree = "<group>";
+		};
 		973FBFFF2B46CD4100878269 /* QuestsList */ = {
 			isa = PBXGroup;
 			children = (
@@ -951,6 +964,7 @@
 		A4E7119C2B57A22300C9DE08 /* quests */ = {
 			isa = PBXGroup;
 			children = (
+				9739C67A2B74DE420031E561 /* CrossingIsland */,
 				97AC1C0D2B70CED0004F0BF4 /* SidewalkSurface */,
 				97AC1C042B6A44C1004F0BF4 /* SideWalkValidation */,
 				973FC0462B5A475C00878269 /* CrossingMarking */,
@@ -1579,6 +1593,7 @@
 				971575192B5FFE910044797C /* LocationManagerCoordinator.swift in Sources */,
 				973FC0382B59363C00878269 /* TactilePavingSteps.swift in Sources */,
 				973FC0192B4FB17000878269 /* LocalizedStrings.swift in Sources */,
+				9739C67C2B74DE590031E561 /* CrossingIsland.swift in Sources */,
 				FAC9E6112B06811300E2C608 /* LocationManager.swift in Sources */,
 				A4834A3F2B67737500D4F0AA /* StoredChangeset.swift in Sources */,
 				973FC02F2B58F81F00878269 /* StepsRamp.swift in Sources */,
@@ -1632,6 +1647,7 @@
 				97AC1C132B70EF0A004F0BF4 /* Surfaces.swift in Sources */,
 				A4E711B02B59011000C9DE08 /* StepsInclineForm.swift in Sources */,
 				972454152B14A49A0036B91A /* Extensions.swift in Sources */,
+				9739C67E2B74DE660031E561 /* CrossingIslandForm.swift in Sources */,
 				0536DD8C2B0BD2C200B04C4B /* Constants.swift in Sources */,
 				970D5BD32B67638500C20BE7 /* MapViewModel.swift in Sources */,
 				0536DD992B0BDBFE00B04C4B /* OAuthManager.swift in Sources */,
