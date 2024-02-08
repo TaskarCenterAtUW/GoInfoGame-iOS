@@ -20,7 +20,7 @@ struct HandRailForm: View, QuestForm {
     var body: some View {
         VStack{
             QuestionHeader(icon: Image("steps_handrail"), title: "Do these steps have handrail?", subtitle: "")
-            YesNoView()
+            YesNoView(actionButton3Label: LocalizedStrings.otherAnswers.localized, onYesNoAnswerSelected: {_ in })
                 .background(
                     RoundedRectangle(cornerRadius: 10)
                         .fill(Color.white)

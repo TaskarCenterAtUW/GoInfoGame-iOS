@@ -22,7 +22,7 @@ struct TactilePavingStepsForm: View, QuestForm {
                     .resizable()
                     .scaledToFill()
                 Divider()
-                YesNoView()
+                YesNoView(actionButton3Label: LocalizedStrings.otherAnswers.localized, onYesNoAnswerSelected: {_ in })
             } .padding(10)
                 .background(
                     RoundedRectangle(cornerRadius: 10)

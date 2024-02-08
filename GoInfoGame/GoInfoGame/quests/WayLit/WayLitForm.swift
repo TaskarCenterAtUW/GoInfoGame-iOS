@@ -17,7 +17,8 @@ struct WayLitForm: View, QuestForm {
     var body: some View {
         VStack{
             QuestionHeader(icon: Image("add_way_lit"), title: LocalizedStrings.questLitTitle.localized, subtitle: "SideWalk")
-            YesNoView().padding(10)
+            YesNoView(actionButton3Label: LocalizedStrings.otherAnswers.localized, onYesNoAnswerSelected: {_ in })
+                .padding(10)
                 .background(
                     RoundedRectangle(cornerRadius: 10)
                         .fill(Color.white)
