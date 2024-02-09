@@ -14,7 +14,7 @@ class MapViewModel: ObservableObject {
 
     let locationManagerDelegate = LocationManagerDelegate()
     
-    @Published var region = MKCoordinateRegion(center: CLLocationCoordinate2D(latitude: 37.3318, longitude: -122.0312), span: MKCoordinateSpan(latitudeDelta: 0.08, longitudeDelta: 0.08))
+     var region = MKCoordinateRegion(center: CLLocationCoordinate2D(latitude: 37.3318, longitude: -122.0312), span: MKCoordinateSpan(latitudeDelta: 0.0004 , longitudeDelta: 0.0004 ))
 
     
     @Published var items: [DisplayUnitWithCoordinate] = []
