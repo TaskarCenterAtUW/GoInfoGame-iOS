@@ -11,7 +11,7 @@ import CoreLocation
 
 struct MapView: View {
     
-    @State var trackingMode: MapUserTrackingMode = MapUserTrackingMode.follow
+    @State var trackingMode: MapUserTrackingMode = MapUserTrackingMode.none
     @StateObject var locationManagerDelegate = LocationManagerDelegate()
     
     @Environment(\.presentationMode) private var presentationMode
