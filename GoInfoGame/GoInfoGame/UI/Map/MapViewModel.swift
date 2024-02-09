@@ -28,7 +28,10 @@ class MapViewModel: ObservableObject {
         locationManagerDelegate.locationManager.requestWhenInUseAuthorization()
         locationManagerDelegate.locationManager.startUpdatingLocation()
         
-        NotificationCenter.default.addObserver(self, selector: #selector(locationDidChange), name: Notification.Name("userLocationDidChange"), object: nil)
+        locationManagerDelegate.locationUpdateHandler = { [weak self] location in
+            guard let self = self else { return }
+            fetchOSMDataFor(currentLocation: location)
+        }
         
     }
     

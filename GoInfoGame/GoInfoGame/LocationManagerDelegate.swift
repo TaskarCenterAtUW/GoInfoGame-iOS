@@ -10,8 +10,9 @@ import MapKit
 
 class LocationManagerDelegate: NSObject, ObservableObject, CLLocationManagerDelegate {
         
-     var locationManager = CLLocationManager()
+    var locationManager = CLLocationManager()
     @Published var location: CLLocation?
+    var locationUpdateHandler: ((CLLocation) -> Void)?
     
     override init() {
         super.init()
@@ -56,7 +57,7 @@ class LocationManagerDelegate: NSObject, ObservableObject, CLLocationManagerDele
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         guard let mostRecentLocation = locations.last else { return }
         location = mostRecentLocation
-        NotificationCenter.default.post(name: Notification.Name("userLocationDidChange"), object: nil)
+        locationUpdateHandler?(mostRecentLocation)
         stopUpdatingLocation()
     }
 }
