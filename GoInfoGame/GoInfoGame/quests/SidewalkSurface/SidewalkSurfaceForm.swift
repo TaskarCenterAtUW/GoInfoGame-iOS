@@ -8,6 +8,8 @@
 import SwiftUI
 // View representing a form for sidewalk surface selection
 struct SidewalkSurfaceForm: QuestForm ,View {
+    var action: ((SidewalkSurfaceAnswer) -> Void)?
+    
     func applyAnswer(answer: SidewalkSurfaceAnswer) {
     }
     typealias AnswerClass = SidewalkSurfaceAnswer
