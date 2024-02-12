@@ -80,7 +80,11 @@ class AppQuestManager {
                     let position  = dbInstance.getCenterForWay(id: String(way.id)) ?? CLLocationCoordinate2D()
                     let unit = DisplayUnitWithCoordinate(displayUnit: quest.displayUnit, coordinateInfo: position, id: way.id)
                     displayUnits.append(unit)
-                    
+//                    if(quest is SideWalkWidth){
+//                        if let q = quest as? SideWalkWidth {
+//                            q.assignAnsweringHandler()
+//                        }
+//                    }
                     wayQuests.append(quest)
                     break
                 }

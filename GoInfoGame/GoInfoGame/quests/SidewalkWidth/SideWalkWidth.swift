@@ -11,7 +11,7 @@ import SwiftUI
 import osmparser
 
 
-class SideWalkWidth : Quest {
+class SideWalkWidth : QuestBase, Quest {
     
     var displayUnit: DisplayUnit {
         DisplayUnit(title: self.title, description: "",parent: self, sheetSize: .MEDIUM)
@@ -27,14 +27,36 @@ class SideWalkWidth : Quest {
     var wikiLink: String = ""
     var changesetComment: String = ""
     
-    var form: AnyView = AnyView(SideWalkWidthForm())
+    var form: AnyView {
+        get{
+            return AnyView(self.internalForm as! SideWalkWidthForm)
+        }
+    }
     
     var relationData: Any? = nil
+    
+    
     func onAnswer(answer: WidthAnswer) {
+        // Do whatever you need here.
     }
     typealias AnswerClass = WidthAnswer
     
     var _internalExpression: ElementFilterExpression?
+
+    override init() {
+        super.init()
+        self.internalForm = SideWalkWidthForm { [self] answer in
+            print("Wow!!")
+            self.onAnswer(answer: answer)
+            
+        } onConfirm: { feet, inches, isConfirmAlert in
+            print("Whatever") // Not needed but addeed for consistency
+        }
+        
+
+        
+    }
+    
     
     var filterExpression: ElementFilterExpression? {
         if(_internalExpression != nil){

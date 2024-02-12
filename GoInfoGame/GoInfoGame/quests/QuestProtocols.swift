@@ -18,12 +18,17 @@ protocol Quest {
     var icon: UIImage {get}
     var wikiLink: String {get}
     var changesetComment: String {get}
-    var form : AnyView {get set}
+    var form : AnyView {get}
     var relationData : Any? {get set}
     func onAnswer(answer:AnswerClass)
     
     var displayUnit: DisplayUnit { get}
     var filterExpression : ElementFilterExpression? { get  }
+}
+
+class QuestBase {
+   public var internalForm: (any QuestForm)? = nil
+    
 }
 // Adds default method and implementation
 extension Quest {
