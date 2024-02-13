@@ -34,6 +34,7 @@ struct WayLitForm: View, QuestForm {
                     self.shouldShowAreYouSureAlert = true
                 case .yes :
                     print("Lit")
+                    self.shouldShowAreYouSureAlert = true
                 case .other:
                     print("Present other options")
                 case .unknown:
@@ -51,6 +52,8 @@ struct WayLitForm: View, QuestForm {
                             self.shouldShowAreYouSureAlert = false
                         }, onConfirm: {
                             self.shouldShowAreYouSureAlert = false
+                            //TODO: Submit answer
+                            
                         })
 
                     }
