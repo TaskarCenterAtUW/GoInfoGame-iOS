@@ -23,6 +23,11 @@ class DatabaseConnector {
         }
     }
     
+    /**
+        Saves the OPElements into the database. This method does not remove the old data. However, it updates the
+         data with same id
+        @param elements  List of OPElement
+     */
     func saveElements(_ elements: [OPElement]) {
         // Save the elements appropriately
         // Get the ways and nodes out
@@ -84,7 +89,10 @@ class DatabaseConnector {
             print("Elements to be skipped or something happened")
         }
     }
-    
+    /**
+            Earlier implementation of saveElements. This used to save only the Way type of objects.
+            This is not used anymore
+     */
     func saveElements(_ elements: [OPWay]) {
         do {
             try realm.write {
@@ -128,15 +136,25 @@ class DatabaseConnector {
             print("Error saving elements to Realm: \(error)")
         }
     }
-    
+    /**
+     Fetches all the StoredNodes in the Database
+     @returns a Results object containing StoredNodes
+     */
     func getNodes() -> Results<StoredNode> {
         return realm.objects(StoredNode.self)
     }
-    
+    /**
+    Fetches all the storedWays in the Database
+     @returns a Results object containing StoredWay
+     */
     func getWays() -> Results<StoredWay> {
         return realm.objects(StoredWay.self)
     }
-    
+    /**
+     Fetches the center of a given StoredWay
+     @param id String value of the way ID
+     @returns CLLocationCoordinate2D the center location
+     */
     func getCenterForWay(id: String) -> CLLocationCoordinate2D? {
         // Get all the objects for the way
         guard let way = realm.object(ofType: StoredWay.self, forPrimaryKey: Int(id))  else {
@@ -159,15 +177,28 @@ class DatabaseConnector {
         return CLLocationCoordinate2D(latitude: 0, longitude: 0)
         
     }
-    
+    /**
+     Fetches a single node from the database
+     @param id: String value of the node ID
+     @return StoredNode
+     */
     func getNode(id:String) -> StoredNode? {
         return realm.object(ofType: StoredNode.self, forPrimaryKey: Int(id))
     }
-    
+    /**
+     Fetches single Way from the database
+     @param id: String value of the wayId
+     @return StoredWay
+     */
     func getWay(id: String) -> StoredWay? {
         return realm.object(ofType: StoredWay.self, forPrimaryKey: Int(id))
     }
-    
+    /**
+     Adds tags to the existing node and stores the same
+     @param id : String value of the node ID
+     @param tags [String:String] map of the added tags
+     @return StoredNode
+     */
     func addNodeTags(id: String, tags:[String: String]) -> StoredNode? {
         guard let theNode = getNode(id: id) else { return nil }
         do {
@@ -185,7 +216,12 @@ class DatabaseConnector {
         return theNode
     }
     
-    
+    /**
+     Adds tags to the existing way and stores the same
+     @param id: String value of the way ID
+     @param tags `[String:String]` map of the added tags
+     @return `StoredWay`
+     */
     func addWayTags(id: String, tags:[String:String]) -> StoredWay? {
         guard let theWay = getWay(id: id) else { return nil }
         
@@ -196,7 +232,13 @@ class DatabaseConnector {
         realm.add(theWay, update: .all) // Test this
         return theWay
     }
-    
+    /**
+     Creates a changeset for an element with specific ID. This does not store the updated nodes. That is to be done separately
+     - parameter id: String id of the changed element
+     - parameter type: StoredElementEnum type of the changed element (either way or node)
+     - parameter tags [String:String] tags changed with this
+     - Returns: An instance of `StoredChangeset`
+        */
     func createChangeset(id:String, type: StoredElementEnum, tags:[String:String]) -> StoredChangeset? {
         let storedChangeset = StoredChangeset()
         storedChangeset.elementId = id
@@ -215,7 +257,9 @@ class DatabaseConnector {
         }
         return storedChangeset
     }
-    
+    /// Fetches the changeset objects from the database
+    /// - parameter synced: Optional variable of whether synced or non synced
+    /// - Returns: an instance of `Results<StoredChangeset>`
     func getChangesets(synced: Bool = false) -> Results<StoredChangeset> {
         
         if (synced == true){
@@ -223,7 +267,10 @@ class DatabaseConnector {
         }
         return realm.objects(StoredChangeset.self).where({$0.changesetId == -1 })
     }
-    
+    /// Assigns changesetId for a stored changeset
+    /// - parameter obj: Internal id for the changeset in the database (unique ID)
+    /// - parameter changesetId: Assigned changeset ID from the server
+    /// - Returns updated `StoredChangeset`
     func assignChangesetId(obj:String, changesetId: Int) -> StoredChangeset? {
         guard let changeset = realm.object(ofType: StoredChangeset.self, forPrimaryKey: obj) else {
             return nil

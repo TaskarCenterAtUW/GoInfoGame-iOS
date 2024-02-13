@@ -8,10 +8,8 @@
 import SwiftUI
 
 struct SideWalkWidthForm: View, QuestForm {
+    var action: ((WidthAnswer) -> Void)?
     
-    func applyAnswer(answer: WidthAnswer) {
-        
-    }
     
     typealias AnswerClass = WidthAnswer
     
@@ -23,9 +21,10 @@ struct SideWalkWidthForm: View, QuestForm {
     var onConfirm: ((_ feet: Double, _ inches: Double, _ isConfirmAlert: Bool) -> Void)?
     
     func processAnswer() {
+        print("Process this answer")
         // Generate the answer
         let answer = WidthAnswer(width: "33", units: "aa", isARMeasurement: false)
-        applyAnswer(answer:answer)
+        action?(answer)
     }
     var body: some View {
         VStack{
@@ -55,7 +54,9 @@ struct SideWalkWidthForm: View, QuestForm {
                 message: Text(LocalizedStrings.questRoadWidthUnusualInputConfirmation.localized),
                 primaryButton: .default(Text(LocalizedStrings.questGenericConfirmationYes.localized)) {
                     print("OK button tapped")
-                    onConfirm?(feet, inches, isConfirmAlert)
+                    processAnswer()
+                    onConfirm?(feet, inches, isConfirmAlert) // Remove this
+                    
                 },
                 secondaryButton: .default(Text(LocalizedStrings.questGenericConfirmationNo.localized))
             )

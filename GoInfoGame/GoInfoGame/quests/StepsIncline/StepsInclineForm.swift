@@ -8,9 +8,8 @@
 import SwiftUI
 
 struct StepsInclineForm: View, QuestForm {
-    func applyAnswer(answer: StepsInclineDirection) {
-        // TODO
-    }
+    var action: ((StepsInclineDirection) -> Void)?
+    
     
     typealias AnswerClass = StepsInclineDirection
     @State private var selectedImage : String?

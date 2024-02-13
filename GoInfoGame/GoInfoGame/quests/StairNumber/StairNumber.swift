@@ -19,7 +19,7 @@ class StairNumber :Quest {
     var wikiLink: String = ""
     var changesetComment: String = ""
     var form: AnyView = AnyView(StairNumberForm())
-    var relationData: Any? = nil
+    var relationData: Element? = nil
     var displayUnit: DisplayUnit {
         DisplayUnit(title: self.title, description: "",parent: self,sheetSize:.MEDIUM )
     }
@@ -35,5 +35,11 @@ class StairNumber :Quest {
             _internalExpression = try? filter.toElementFilterExpression()
             return _internalExpression
         }
+    }
+    
+    func copyWithElement(element: Element) -> any Quest {
+        let q = StairNumber()
+        q.relationData = element
+        return q
     }
 }

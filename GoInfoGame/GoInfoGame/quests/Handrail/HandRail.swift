@@ -9,7 +9,7 @@ import SwiftUI
 import Foundation
 import osmparser
 
-class HandRail: Quest {
+class HandRail: QuestBase,Quest {
     
     func onAnswer(answer: Bool) {
          
@@ -38,9 +38,13 @@ class HandRail: Quest {
     
     var changesetComment: String = "Specify whether steps have handrails"
     
-    var form: AnyView = AnyView(HandRailForm())
+    var form: AnyView {
+        get{
+            return AnyView(self.internalForm as! HandRailForm)
+        }
+    }
     
-    var relationData: Any? = nil
+    var relationData: Element? = nil
     
     var displayUnit: DisplayUnit {
         DisplayUnit(title: self.title, description: "",parent: self,sheetSize: .SMALL)
@@ -56,5 +60,17 @@ class HandRail: Quest {
             _internalExpression = try? filter.toElementFilterExpression()
             return _internalExpression
         }
+    }
+    override init() {
+        super.init()
+        self.internalForm = HandRailForm(action: { [self] yesNo in
+            onAnswer(answer: yesNo)
+        })
+    }
+    
+    func copyWithElement(element: Element) -> any Quest {
+        let q = HandRail()
+        q.relationData = element
+        return q
     }
 }

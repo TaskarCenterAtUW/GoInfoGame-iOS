@@ -10,7 +10,7 @@ import UIKit
 import SwiftUI
 import osmparser
 
-class StepsIncline: Quest{
+class StepsIncline: Quest {
     func onAnswer(answer: StepsInclineDirection) {
          
     }
@@ -35,7 +35,7 @@ class StepsIncline: Quest{
     
     var form: AnyView = AnyView(StepsInclineForm()) // temporary
     
-    var relationData: Any? = nil
+    var relationData: Element? = nil
     
     var displayUnit: DisplayUnit {
         DisplayUnit(title: self.title, description: "",parent: self, sheetSize: .MEDIUM)
@@ -51,6 +51,12 @@ class StepsIncline: Quest{
             _internalExpression = try? filter.toElementFilterExpression()
             return _internalExpression
         }
+    }
+    
+    func copyWithElement(element: Element) -> any Quest {
+        let q = StepsIncline()
+        q.relationData = element
+        return q
     }
     
 }

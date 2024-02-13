@@ -39,7 +39,7 @@ class WayLit: Quest {
     var wikiLink: String = ""
     var changesetComment: String = ""
     var form: AnyView = AnyView(WayLitForm())
-    var relationData: Any? = nil
+    var relationData: Element? = nil
     func onAnswer(answer: WayLitOrIsStepsAnswer) {
     }
     var displayUnit: DisplayUnit {
@@ -71,6 +71,12 @@ class WayLit: Quest {
             _internalExpression = try? filter.toElementFilterExpression()
             return _internalExpression
         }
+    }
+    
+    func copyWithElement(element: Element) -> any Quest {
+        let q = WayLit()
+        q.relationData = element
+        return q
     }
     
 }

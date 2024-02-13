@@ -9,8 +9,8 @@ import Foundation
 import SwiftUI
 
 struct TactilePavingStepsForm: View, QuestForm {
-    func applyAnswer(answer: TactilePavingStepsAnswer) {
-    }
+    var action: ((TactilePavingStepsAnswer) -> Void)?
+    
     typealias AnswerClass = TactilePavingStepsAnswer
     
     var body: some View {

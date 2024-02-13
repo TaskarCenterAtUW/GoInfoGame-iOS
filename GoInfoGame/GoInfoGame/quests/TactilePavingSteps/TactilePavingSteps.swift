@@ -28,7 +28,7 @@ class TactilePavingSteps :Quest {
     var wikiLink: String = ""
     var changesetComment: String = ""
     var form: AnyView = AnyView(TactilePavingStepsForm())
-    var relationData: Any? = nil
+    var relationData: Element? = nil
     func onAnswer(answer: TactilePavingStepsAnswer) {
     }
     var displayUnit: DisplayUnit {
@@ -47,6 +47,12 @@ class TactilePavingSteps :Quest {
             _internalExpression = try? filter.toElementFilterExpression()
             return _internalExpression
         }
+    }
+    
+    func copyWithElement(element: Element) -> any Quest {
+        let q = TactilePavingSteps()
+        q.relationData = element
+        return q
     }
 }
 

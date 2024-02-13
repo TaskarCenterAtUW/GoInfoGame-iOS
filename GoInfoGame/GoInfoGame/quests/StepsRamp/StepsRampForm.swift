@@ -9,8 +9,8 @@ import Foundation
 import SwiftUI
 
 struct StepsRampForm: View, QuestForm {
-    func applyAnswer(answer: StepsRampAnswer) {
-    }
+    var action: ((StepsRampAnswer) -> Void)?
+   
     typealias AnswerClass = StepsRampAnswer
     @State private var selectedImage:String?
     @State private var showAlert = false
