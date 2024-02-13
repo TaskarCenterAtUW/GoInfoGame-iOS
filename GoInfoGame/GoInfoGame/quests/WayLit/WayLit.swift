@@ -10,7 +10,8 @@ import UIKit
 import SwiftUI
 import osmparser
 
-class WayLit: Quest {
+class WayLit: QuestBase, Quest {
+    
     var title: String = "Way Lit"
     var filter: String = """
     ways with
@@ -38,14 +39,13 @@ class WayLit: Quest {
     var icon: UIImage = #imageLiteral(resourceName: "add_way_lit")
     var wikiLink: String = ""
     var changesetComment: String = ""
-    var form: AnyView = AnyView(WayLitForm())
+
     var relationData: Element? = nil
-    func onAnswer(answer: WayLitOrIsStepsAnswer) {
-    }
+   
     var displayUnit: DisplayUnit {
         DisplayUnit(title: self.title, description: "",parent: self,sheetSize:.SMALL )
     }
-    typealias AnswerClass = WayLitOrIsStepsAnswer
+    typealias AnswerClass = YesNoAnswer
     
     private static let litResidentialRoads =  ["residential", "living_street", "pedestrian"]
     private  static let litNonResidentialRoads = [
@@ -73,12 +73,28 @@ class WayLit: Quest {
         }
     }
     
+    var form: AnyView {
+        get{
+            return AnyView(self.internalForm as! WayLitForm)
+        }
+    }
+    
+    override init() {
+        super.init()
+        self.internalForm = WayLitForm(action: { [self] answer in
+            self.onAnswer(answer: answer)
+        })
+    }
+    
+    func onAnswer(answer: YesNoAnswer) {
+        
+    }
+    
     func copyWithElement(element: Element) -> any Quest {
         let q = WayLit()
         q.relationData = element
         return q
     }
-    
 }
 
 protocol WayLitOrIsStepsAnswer {}

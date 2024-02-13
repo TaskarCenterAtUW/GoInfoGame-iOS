@@ -26,7 +26,11 @@ struct StepsRampForm: View, QuestForm {
             VStack(alignment: .leading){
                 Text(LocalizedStrings.select.localized).font(.caption).foregroundColor(.gray)
                 ImageGridItemView(gridCount: 2, isLabelBelow: false, imageData: imageData, isImageRotated: false, isDisplayImageOnly: false, onTap: { (type, tag) in
-                    print("Clicked: \(type), Tag: \(tag)")}, selectedImage: $selectedImage)
+                    print("Clicked: \(type), Tag: \(tag)")
+                    let answer = StepsRampAnswer(bicycleRamp: true, strollerRamp: true, wheelchairRamp: .NO)
+                    action?(answer)
+                }, selectedImage: $selectedImage)
+                
                 Divider()
                 HStack() {
                     Spacer()

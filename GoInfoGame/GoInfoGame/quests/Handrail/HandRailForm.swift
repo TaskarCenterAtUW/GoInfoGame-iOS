@@ -8,17 +8,13 @@
 import SwiftUI
 
 struct HandRailForm: View, QuestForm {
-    var action: ((Bool) -> Void)?
-    
-    
-    typealias AnswerClass = Bool
-    
-    
+    typealias AnswerClass = YesNoAnswer
+    var action: ((YesNoAnswer) -> Void)?
     
     var body: some View {
         VStack{
             QuestionHeader(icon: Image("steps_handrail"), title: "Do these steps have handrail?", subtitle: "")
-            YesNoView()
+            YesNoView(action: action)
                 .background(
                     RoundedRectangle(cornerRadius: 10)
                         .fill(Color.white)

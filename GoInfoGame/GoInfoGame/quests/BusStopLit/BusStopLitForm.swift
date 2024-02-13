@@ -9,13 +9,13 @@ import Foundation
 import SwiftUI
 
 struct BusStopLitForm: View, QuestForm {
-    var action: ((Bool) -> Void)?
-    
-    typealias AnswerClass = Bool
+    var action: ((YesNoAnswer) -> Void)?
+        
+    typealias AnswerClass = YesNoAnswer
     var body: some View {
         VStack{
             QuestionHeader(icon: Image("stop_lit"), title: LocalizedStrings.questBusStopLitTitle.localized, subtitle: "SideWalk")
-            YesNoView().padding(10)
+            YesNoView(action: action).padding(10)
                 .background(
                     RoundedRectangle(cornerRadius: 10)
                         .fill(Color.white)

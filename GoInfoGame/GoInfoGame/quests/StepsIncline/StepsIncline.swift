@@ -10,10 +10,7 @@ import UIKit
 import SwiftUI
 import osmparser
 
-class StepsIncline: Quest {
-    func onAnswer(answer: StepsInclineDirection) {
-         
-    }
+class StepsIncline: QuestBase, Quest {
     
     typealias AnswerClass = StepsInclineDirection
     
@@ -33,8 +30,6 @@ class StepsIncline: Quest {
     
     var changesetComment: String = ""
     
-    var form: AnyView = AnyView(StepsInclineForm()) // temporary
-    
     var relationData: Element? = nil
     
     var displayUnit: DisplayUnit {
@@ -51,6 +46,22 @@ class StepsIncline: Quest {
             _internalExpression = try? filter.toElementFilterExpression()
             return _internalExpression
         }
+    }
+    var form: AnyView {
+        get{
+            return AnyView(self.internalForm as! StepsInclineForm)
+        }
+    }
+    
+    override init() {
+        super.init()
+        self.internalForm = StepsInclineForm(action: { [self] answer in
+            self.onAnswer(answer: answer)
+        })
+    }
+    
+    func onAnswer(answer: StepsInclineDirection) {
+         
     }
     
     func copyWithElement(element: Element) -> any Quest {

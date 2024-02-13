@@ -10,9 +10,7 @@ import UIKit
 import SwiftUI
 import osmparser
 
-class BusStopLit: Quest{
-    func onAnswer(answer: Bool) {
-    }
+class BusStopLit: QuestBase, Quest {
     var title: String = "Bus Stop Lit"
     var filter: String = """
     nodes, ways, relations with
@@ -33,15 +31,12 @@ class BusStopLit: Quest{
     var icon: UIImage = #imageLiteral(resourceName: "stop_lit")
     var wikiLink: String = ""
     var changesetComment: String = ""
-    var form: AnyView = AnyView(BusStopLitForm())
+    
     var relationData: Element? = nil
-    func onAnswer(answer: WayLitOrIsStepsAnswer) {
-        
-    }
     var displayUnit: DisplayUnit {
         DisplayUnit(title: self.title, description: "",parent: self,sheetSize:.SMALL )
     }
-    typealias AnswerClass = Bool
+    typealias AnswerClass = YesNoAnswer
     
     var _internalExpression: ElementFilterExpression?
     
@@ -54,6 +49,22 @@ class BusStopLit: Quest{
             _internalExpression = try? filter.toElementFilterExpression()
             return _internalExpression
         }
+    }
+    var form: AnyView {
+        get{
+            return AnyView(self.internalForm as! BusStopLitForm)
+        }
+    }
+  
+    override init() {
+        super.init()
+        self.internalForm = BusStopLitForm(action: { [self] answer in
+            self.onAnswer(answer: answer)
+        })
+    }
+    
+    func onAnswer(answer: YesNoAnswer) {
+        
     }
     
     func copyWithElement(element: Element) -> any Quest {
