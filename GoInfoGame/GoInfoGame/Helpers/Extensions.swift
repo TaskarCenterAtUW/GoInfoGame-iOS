@@ -41,3 +41,24 @@ public class Location: EmbeddedObject {
     @Persisted var latitude: Double
     @Persisted var longitude: Double
 }
+extension CLLocation {
+    // Calculate bounding box points given a distance in meters
+    func boundingCoordinates(distance: CLLocationDistance) -> (left: CLLocation, bottom: CLLocation, right: CLLocation, top: CLLocation) {
+        // Earth radius in meters
+        let earthRadius = 6_371_000.0
+
+        // Convert distance to radians
+        let latRadians = distance / earthRadius
+        let lonRadians = distance / (earthRadius * cos(Double.pi * self.coordinate.latitude / 180.0))
+        let latDegrees = latRadians * 180.0 / Double.pi
+        let lonDegrees = lonRadians * 180.0 / Double.pi
+
+        // Calculate bounding box coordinates
+        let left = CLLocation(latitude: self.coordinate.latitude, longitude: self.coordinate.longitude - lonDegrees)
+        let bottom = CLLocation(latitude: self.coordinate.latitude - latDegrees, longitude: self.coordinate.longitude)
+        let right = CLLocation(latitude: self.coordinate.latitude, longitude: self.coordinate.longitude + lonDegrees)
+        let top = CLLocation(latitude: self.coordinate.latitude + latDegrees, longitude: self.coordinate.longitude)
+
+        return (left, bottom, right, top)
+    }
+}

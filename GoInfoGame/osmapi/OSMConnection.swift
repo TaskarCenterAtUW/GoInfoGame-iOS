@@ -175,4 +175,13 @@ public class OSMConnection {
         BaseNetworkManager.shared.addOrSetHeaders(header: "Authorization", value: "Basic \(self.userCreds.getHeaderData())")
         BaseNetworkManager.shared.fetchData(url: url, completion: completion)
     }
+    func getOSMMapData(left: Double, bottom: Double, right: Double, top: Double,_ completion: @escaping (Result<OSMMapData, Error>)-> Void) {
+        let urlString =  "https://api.openstreetmap.org/api/0.6/map.json?bbox=\(left),\(bottom),\(right),\(top)"
+        print(urlString)
+        guard let url = URL(string: urlString) else {
+            print("Invalid URL given")
+                    return
+                }
+        BaseNetworkManager.shared.fetchData(url: url, completion: completion)
+    }
 }

@@ -8,6 +8,7 @@
 import XCTest
 
 @testable import osmapi
+import CoreLocation
 
 
 final class OSMConnectionTests: XCTestCase {
@@ -268,5 +269,50 @@ final class OSMConnectionTests: XCTestCase {
             expectation.fulfill()
         }
         waitForExpectations(timeout: 12)
+    }
+    func testGetMapData() throws {
+        let osmConnection = self.posmConnection
+        let expectation = expectation(description: "Expect to get map data details from bbox")
+        let centralLocation = CLLocation(latitude: 37.7749, longitude: -122.4194) // San Francisco coords
+        let distance = 100
+        let boundingCoordinates = centralLocation.boundingCoordinates(distance: CLLocationDistance(distance))
+        print("Left:", boundingCoordinates.left.coordinate.longitude)
+        print("Bottom:", boundingCoordinates.bottom.coordinate.latitude)
+        print("Right:", boundingCoordinates.right.coordinate.longitude)
+        print("Top:", boundingCoordinates.top.coordinate.latitude)
+
+        osmConnection?.getOSMMapData(left:boundingCoordinates.left.coordinate.longitude , bottom:boundingCoordinates.bottom.coordinate.latitude , right:boundingCoordinates.right.coordinate.longitude , top:boundingCoordinates.top.coordinate.latitude ) { result in
+            switch result {
+            case .success(let mapData):
+                let response = mapData.elements.count
+                print(response)
+            case .failure(let error):
+                XCTFail("Failed while getting the map data details: \(error)")
+            }
+            expectation.fulfill()
+        }
+        waitForExpectations(timeout: 15)
+    }
+}
+
+extension CLLocation {
+    // Calculate bounding box points given a distance in meters
+    func boundingCoordinates(distance: CLLocationDistance) -> (left: CLLocation, bottom: CLLocation, right: CLLocation, top: CLLocation) {
+        // Earth radius in meters
+        let earthRadius = 6_371_000.0
+
+        // Convert distance to radians
+        let latRadians = distance / earthRadius
+        let lonRadians = distance / (earthRadius * cos(Double.pi * self.coordinate.latitude / 180.0))
+        let latDegrees = latRadians * 180.0 / Double.pi
+        let lonDegrees = lonRadians * 180.0 / Double.pi
+
+        // Calculate bounding box coordinates
+        let left = CLLocation(latitude: self.coordinate.latitude, longitude: self.coordinate.longitude - lonDegrees)
+        let bottom = CLLocation(latitude: self.coordinate.latitude - latDegrees, longitude: self.coordinate.longitude)
+        let right = CLLocation(latitude: self.coordinate.latitude, longitude: self.coordinate.longitude + lonDegrees)
+        let top = CLLocation(latitude: self.coordinate.latitude + latDegrees, longitude: self.coordinate.longitude)
+
+        return (left, bottom, right, top)
     }
 }
