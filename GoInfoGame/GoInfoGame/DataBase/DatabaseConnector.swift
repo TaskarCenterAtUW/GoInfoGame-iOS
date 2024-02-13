@@ -225,11 +225,16 @@ class DatabaseConnector {
     func addWayTags(id: String, tags:[String:String]) -> StoredWay? {
         guard let theWay = getWay(id: id) else { return nil }
         
-        tags.forEach { (key: String, value: String) in
-            theWay.tags.setValue(value, forKey: key)
+        do {
+            try realm.write {
+                tags.forEach { (key: String, value: String) in
+                    theWay.tags.setValue(value, forKey: key)
+                }
+            }
         }
-        
-        realm.add(theWay, update: .all) // Test this
+        catch {
+            print("Error while writing tags")
+        }
         return theWay
     }
     /**
