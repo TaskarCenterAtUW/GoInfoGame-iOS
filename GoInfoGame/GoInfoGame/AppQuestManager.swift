@@ -64,9 +64,10 @@ class AppQuestManager {
                 if quest.isApplicable(element: node){
                     // Create a duplicate of the quest
                     // Create a display Unit
-                    let unit = DisplayUnitWithCoordinate(displayUnit: quest.displayUnit, coordinateInfo:  CLLocationCoordinate2D(latitude: node.position.latitude, longitude: node.position.longitude), id: node.id)
+                    let duplicateQuest = quest.copyWithElement(element: node)
+                    let unit = DisplayUnitWithCoordinate(displayUnit: duplicateQuest.displayUnit, coordinateInfo:  CLLocationCoordinate2D(latitude: node.position.latitude, longitude: node.position.longitude), id: node.id)
                     displayUnits.append(unit)
-                    nodeQuests.append(quest)
+                    nodeQuests.append(duplicateQuest)
                     break
                 }
             }
@@ -77,15 +78,16 @@ class AppQuestManager {
                 if quest.isApplicable(element: way){
                     // Create a duplicate of the quest
                     // Need to add another here.
+                    let duplicateQuest = quest.copyWithElement(element: way)
                     let position  = dbInstance.getCenterForWay(id: String(way.id)) ?? CLLocationCoordinate2D()
-                    let unit = DisplayUnitWithCoordinate(displayUnit: quest.displayUnit, coordinateInfo: position, id: way.id)
+                    let unit = DisplayUnitWithCoordinate(displayUnit: duplicateQuest.displayUnit, coordinateInfo: position, id: way.id)
                     displayUnits.append(unit)
 //                    if(quest is SideWalkWidth){
 //                        if let q = quest as? SideWalkWidth {
 //                            q.assignAnsweringHandler()
 //                        }
 //                    }
-                    wayQuests.append(quest)
+                    wayQuests.append(duplicateQuest)
                     break
                 }
             }

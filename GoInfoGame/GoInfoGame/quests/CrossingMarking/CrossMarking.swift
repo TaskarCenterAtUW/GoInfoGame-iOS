@@ -20,7 +20,7 @@ class CrossMarking :Quest {
     var wikiLink: String = ""
     var changesetComment: String = ""
     var form: AnyView = AnyView(CrossMarkingForm())
-    var relationData: Any? = nil
+    var relationData: Element? = nil
     var displayUnit: DisplayUnit {
         DisplayUnit(title: self.title, description: "",parent: self,sheetSize:.MEDIUM )
     }
@@ -37,6 +37,12 @@ class CrossMarking :Quest {
             _internalExpression = try? filter.toElementFilterExpression()
             return _internalExpression
         }
+    }
+    
+    func copyWithElement(element: Element) -> any Quest {
+        let q = CrossMarking()
+        q.relationData = element
+        return q
     }
 }
 

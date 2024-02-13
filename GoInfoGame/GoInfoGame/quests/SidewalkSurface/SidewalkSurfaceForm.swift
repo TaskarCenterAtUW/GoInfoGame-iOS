@@ -10,8 +10,6 @@ import SwiftUI
 struct SidewalkSurfaceForm: QuestForm ,View {
     var action: ((SidewalkSurfaceAnswer) -> Void)?
     
-    func applyAnswer(answer: SidewalkSurfaceAnswer) {
-    }
     typealias AnswerClass = SidewalkSurfaceAnswer
     @State private var selectedImage : String?
     @State private var showAlert = false
@@ -59,7 +57,7 @@ struct SidewalkSurfaceForm: QuestForm ,View {
                         if selectedAnswer.value.surface != Surface.none {
                             Button() {
                             /// applying final selected answer
-                               applyAnswer(answer: selectedAnswer)
+                                action?(selectedAnswer)
                             }label: {
                                 Image(systemName: "checkmark.circle.fill")
                                     .font(Font.system(size: 40))

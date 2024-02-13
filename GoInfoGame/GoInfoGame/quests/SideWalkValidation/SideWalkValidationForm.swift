@@ -25,8 +25,7 @@ struct SideWalkValidationForm: QuestForm ,View {
         ButtonInfo(id: 2, label: LocalizedStrings.questGenericAnswerDiffersAlongTheWay.localized),
         ButtonInfo(id: 3, label: LocalizedStrings.questSidewalkValueNoSidewalkAtAll.localized)
     ]
-    func applyAnswer(answer: SideWalkValidationAnswer) {
-    }
+    
     var body: some View {
         ZStack{
             VStack (alignment: .leading){
@@ -51,7 +50,8 @@ struct SideWalkValidationForm: QuestForm ,View {
                         if selectedAnswer.description != SideWalkValidationAnswer.noAnswerSelected.description {
                             Button() {
                             /// applying final selected answer
-                               applyAnswer(answer: selectedAnswer)
+                                ///
+                                action?(selectedAnswer)
                             }label: {
                                 Image(systemName: "checkmark.circle.fill")
                                     .font(Font.system(size: 40))

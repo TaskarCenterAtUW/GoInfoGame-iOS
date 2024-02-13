@@ -29,7 +29,7 @@ class StepsRamp :Quest {
     var wikiLink: String = ""
     var changesetComment: String = ""
     var form: AnyView = AnyView(StepsRampForm())
-    var relationData: Any? = nil
+    var relationData: Element? = nil
     func onAnswer(answer: StepsRampAnswer) {
     }
     var displayUnit: DisplayUnit {
@@ -47,6 +47,12 @@ class StepsRamp :Quest {
             _internalExpression = try? filter.toElementFilterExpression()
             return _internalExpression
         }
+    }
+    
+    func copyWithElement(element: Element) -> any Quest {
+        let q = StepsRamp()
+        q.relationData = element
+        return q
     }
 }
 

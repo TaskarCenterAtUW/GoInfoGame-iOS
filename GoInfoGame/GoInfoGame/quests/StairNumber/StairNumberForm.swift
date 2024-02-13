@@ -11,8 +11,6 @@ import SwiftUI
 struct StairNumberForm: View, QuestForm {
     var action: ((Int) -> Void)?
     
-    func applyAnswer(answer: Int) {
-    }
     typealias AnswerClass = Int
     @State private var numberOfSteps: Int = 0
     @State private var showAlert = false
@@ -47,7 +45,7 @@ struct StairNumberForm: View, QuestForm {
                     Spacer()
                     if isInputValid {
                         Button() {
-                            applyAnswer(answer: numberOfSteps)
+                            action?(numberOfSteps)
                         }label: {
                             Image(systemName: "checkmark.circle.fill")
                                 .font(Font.system(size: 40))

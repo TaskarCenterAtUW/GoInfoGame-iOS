@@ -33,11 +33,13 @@ class SideWalkWidth : QuestBase, Quest {
         }
     }
     
-    var relationData: Any? = nil
+    var relationData: Element? = nil
     
     
-    func onAnswer(answer: WidthAnswer) {
-        // Do whatever you need here.
+    func onAnswer(answer: WidthAnswer)  {
+        if let rData = self.relationData {
+            self.updateTags(id: rData.id, tags: ["width":"11m"], type: rData.type) // TODO: Convert WidthAnswer to string
+        }
     }
     typealias AnswerClass = WidthAnswer
     
@@ -53,8 +55,6 @@ class SideWalkWidth : QuestBase, Quest {
             print("Whatever") // Not needed but addeed for consistency
         }
         
-
-        
     }
     
     
@@ -66,6 +66,12 @@ class SideWalkWidth : QuestBase, Quest {
             _internalExpression = try? filter.toElementFilterExpression()
             return _internalExpression
         }
+    }
+    
+    func copyWithElement(element: Element) ->  any Quest {
+        let q = SideWalkWidth()
+        q.relationData = element
+        return q
     }
 }
 

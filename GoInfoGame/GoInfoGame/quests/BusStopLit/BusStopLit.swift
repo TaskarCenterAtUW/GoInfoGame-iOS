@@ -34,8 +34,9 @@ class BusStopLit: Quest{
     var wikiLink: String = ""
     var changesetComment: String = ""
     var form: AnyView = AnyView(BusStopLitForm())
-    var relationData: Any? = nil
+    var relationData: Element? = nil
     func onAnswer(answer: WayLitOrIsStepsAnswer) {
+        
     }
     var displayUnit: DisplayUnit {
         DisplayUnit(title: self.title, description: "",parent: self,sheetSize:.SMALL )
@@ -53,5 +54,11 @@ class BusStopLit: Quest{
             _internalExpression = try? filter.toElementFilterExpression()
             return _internalExpression
         }
+    }
+    
+    func copyWithElement(element: Element) -> any Quest {
+        let q = BusStopLit()
+        q.relationData = element
+        return q
     }
 }

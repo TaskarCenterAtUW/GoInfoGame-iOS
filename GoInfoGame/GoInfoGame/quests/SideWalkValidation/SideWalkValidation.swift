@@ -7,6 +7,7 @@
 
 import Foundation
 import SwiftUI
+import osmparser
 
 class SideWalkValidation :Quest {
     func onAnswer(answer: SideWalkValidationAnswer) {
@@ -18,9 +19,15 @@ class SideWalkValidation :Quest {
     var wikiLink: String = ""
     var changesetComment: String = ""
     var form : AnyView = AnyView(SideWalkValidationForm())
-    var relationData: Any? = nil
+    var relationData: Element? = nil
     var displayUnit: DisplayUnit {
         DisplayUnit(title: self.title, description: "",parent: self,sheetSize:.LARGE )
+    }
+    
+    func copyWithElement(element: Element) -> any Quest {
+        let q = SideWalkValidation()
+        q.relationData = element
+        return q
     }
 }
 enum SideWalkValidationAnswer {

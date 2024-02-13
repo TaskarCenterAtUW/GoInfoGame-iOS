@@ -11,10 +11,6 @@ struct SideWalkWidthForm: View, QuestForm {
     var action: ((WidthAnswer) -> Void)?
     
     
-    func applyAnswer(answer: WidthAnswer) {
-        
-    }
-    
     typealias AnswerClass = WidthAnswer
     
     @State private var showAlert = false
@@ -28,7 +24,6 @@ struct SideWalkWidthForm: View, QuestForm {
         print("Process this answer")
         // Generate the answer
         let answer = WidthAnswer(width: "33", units: "aa", isARMeasurement: false)
-        applyAnswer(answer:answer)
         action?(answer)
     }
     var body: some View {

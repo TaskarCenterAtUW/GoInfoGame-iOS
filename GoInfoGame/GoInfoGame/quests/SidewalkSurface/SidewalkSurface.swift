@@ -8,6 +8,7 @@
 import Foundation
 import UIKit
 import SwiftUI
+import osmparser
 class SidewalkSurface :Quest {
     typealias AnswerClass = SidewalkSurfaceAnswer
     
@@ -19,9 +20,15 @@ class SidewalkSurface :Quest {
     var wikiLink: String = ""
     var changesetComment: String = ""
     var form : AnyView = AnyView(SidewalkSurfaceForm())
-    var relationData: Any? = nil
+    var relationData: Element? = nil
     var displayUnit: DisplayUnit {
         DisplayUnit(title: self.title, description: "",parent: self,sheetSize:.LARGE )
+    }
+    
+    func copyWithElement(element: Element) -> any Quest {
+        let surface = SidewalkSurface()
+        surface.relationData = element
+        return surface
     }
 }
 

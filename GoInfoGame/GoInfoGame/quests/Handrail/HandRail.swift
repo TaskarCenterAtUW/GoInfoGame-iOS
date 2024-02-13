@@ -44,7 +44,7 @@ class HandRail: QuestBase,Quest {
         }
     }
     
-    var relationData: Any? = nil
+    var relationData: Element? = nil
     
     var displayUnit: DisplayUnit {
         DisplayUnit(title: self.title, description: "",parent: self,sheetSize: .SMALL)
@@ -66,5 +66,11 @@ class HandRail: QuestBase,Quest {
         self.internalForm = HandRailForm(action: { [self] yesNo in
             onAnswer(answer: yesNo)
         })
+    }
+    
+    func copyWithElement(element: Element) -> any Quest {
+        let q = HandRail()
+        q.relationData = element
+        return q
     }
 }

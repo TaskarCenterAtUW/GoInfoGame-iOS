@@ -11,8 +11,6 @@ import SwiftUI
 struct WayLitForm: View, QuestForm {
     var action: ((AnswerClass) -> Void)?
     
-    func applyAnswer(answer: WayLitOrIsStepsAnswer) {
-    }
     
     typealias AnswerClass = WayLitOrIsStepsAnswer
     

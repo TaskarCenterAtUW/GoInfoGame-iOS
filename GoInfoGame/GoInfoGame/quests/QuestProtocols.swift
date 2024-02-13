@@ -19,15 +19,35 @@ protocol Quest {
     var wikiLink: String {get}
     var changesetComment: String {get}
     var form : AnyView {get}
-    var relationData : Any? {get set}
+    var relationData : Element? {get set}
     func onAnswer(answer:AnswerClass)
-    
     var displayUnit: DisplayUnit { get}
     var filterExpression : ElementFilterExpression? { get  }
+    
+    func copyWithElement(element: Element) -> any Quest // Not sure.
 }
 
 class QuestBase {
    public var internalForm: (any QuestForm)? = nil
+    // Add a custom implementation
+    
+   public func updateTags(id: Int64, tags:[String:String], type: ElementType){
+       // Convert from ElementType enum to StoredElementEnum
+       let storedElementType: StoredElementEnum = type == .way ? .way : .node
+       let storedId = String(id)
+       // Create a changeset
+       let newChangeset = DatabaseConnector.shared.createChangeset(id: storedId, type: storedElementType, tags: tags)
+       switch (storedElementType){
+       case .way:
+           DatabaseConnector.shared.addWayTags(id: storedId, tags: tags)
+       case .node:
+           DatabaseConnector.shared.addNodeTags(id: storedId, tags: tags)
+       case .unknown:
+           print("Unknown Stored element type received")
+       }
+       // Sync using datasyncmanager
+
+    }
     
 }
 // Adds default method and implementation
@@ -49,6 +69,7 @@ extension Quest {
         
         return try? filter.toElementFilterExpression() // This is a costly operation
     }
+    
 }
 
 
@@ -62,8 +83,6 @@ struct DisplayUnit : Identifiable {
 
 protocol QuestForm {
     associatedtype AnswerClass
-    
-    func applyAnswer(answer:AnswerClass)
     
     var action: ((_ answer:AnswerClass)->Void)? {get set}
 }
