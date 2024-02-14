@@ -48,7 +48,7 @@ public struct OSMNode: Codable, OSMPayload, OSMElement {
     public let user: String
     public let uid: Int
     
-    public init(type: String, id: Int, lat: Double, lon: Double, timestamp: Date, version: Int, changeset: Int, user: String, uid: Int, tags: [String : String]? = nil) {
+    public init(type: String, id: Int, lat: Double, lon: Double, timestamp: Date, version: Int, changeset: Int, user: String, uid: Int, tags: [String : String] = [:]) {
         self.type = type
         self.id = id
         self.lat = lat
@@ -58,6 +58,6 @@ public struct OSMNode: Codable, OSMPayload, OSMElement {
         self.changeset = changeset
         self.user = user
         self.uid = uid
-        self.tags = tags ?? ["":""]
+        self.tags = tags
     }
 }

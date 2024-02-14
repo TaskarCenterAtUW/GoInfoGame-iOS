@@ -46,7 +46,7 @@ public struct OSMWay: Codable, OSMPayload, OSMElement  {
     public let uid: Int
     public let nodes: [Int]
     public var tags: [String:String]
-    public init(type: String, id: Int, timestamp: Date, version: Int, changeset: Int, user: String, uid: Int, nodes: [Int], tags: [String : String]? = nil) {
+    public init(type: String, id: Int, timestamp: Date, version: Int, changeset: Int, user: String, uid: Int, nodes: [Int], tags: [String : String] = [:]) {
         self.type = type
         self.id = id
         self.timestamp = timestamp
@@ -55,6 +55,6 @@ public struct OSMWay: Codable, OSMPayload, OSMElement  {
         self.user = user
         self.uid = uid
         self.nodes = nodes
-        self.tags = tags ?? ["":""]
+        self.tags = tags
     }
 }
