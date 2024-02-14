@@ -9,9 +9,8 @@ import Foundation
 import SwiftUI
 
 struct TactilePavingStepsForm: View, QuestForm {
-    var action: ((TactilePavingStepsAnswer) -> Void)?
-    
-    typealias AnswerClass = TactilePavingStepsAnswer
+    var action: ((YesNoAnswer) -> Void)?
+    typealias AnswerClass = YesNoAnswer
     
     var body: some View {
         VStack{
@@ -22,7 +21,7 @@ struct TactilePavingStepsForm: View, QuestForm {
                     .resizable()
                     .scaledToFill()
                 Divider()
-                YesNoView()
+                YesNoView(action: action)
             } .padding(10)
                 .background(
                     RoundedRectangle(cornerRadius: 10)

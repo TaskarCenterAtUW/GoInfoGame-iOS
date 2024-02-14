@@ -10,16 +10,12 @@ import UIKit
 import SwiftUI
 import osmparser
 
-class CrossMarking :Quest {
-    func onAnswer(answer: CrossingAnswer) {
-        
-    }
+class CrossMarking: QuestBase, Quest {
     var title: String = "Cross Marking"
     var filter: String = ""
     var icon: UIImage = #imageLiteral(resourceName: "pedestrian")
     var wikiLink: String = ""
     var changesetComment: String = ""
-    var form: AnyView = AnyView(CrossMarkingForm())
     var relationData: Element? = nil
     var displayUnit: DisplayUnit {
         DisplayUnit(title: self.title, description: "",parent: self,sheetSize:.MEDIUM )
@@ -37,6 +33,22 @@ class CrossMarking :Quest {
             _internalExpression = try? filter.toElementFilterExpression()
             return _internalExpression
         }
+    }
+    var form: AnyView {
+        get{
+            return AnyView(self.internalForm as! CrossMarkingForm)
+        }
+    }
+    
+    override init() {
+        super.init()
+        self.internalForm = CrossMarkingForm(action: { [self] answer in
+            self.onAnswer(answer: answer)
+        })
+    }
+    
+    func onAnswer(answer: CrossingAnswer) {
+        
     }
     
     func copyWithElement(element: Element) -> any Quest {

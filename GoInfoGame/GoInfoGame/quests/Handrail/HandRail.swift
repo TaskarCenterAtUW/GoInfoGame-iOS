@@ -10,12 +10,7 @@ import Foundation
 import osmparser
 
 class HandRail: QuestBase,Quest {
-    
-    func onAnswer(answer: Bool) {
-         
-    }
-    
-    typealias AnswerClass = Bool
+    typealias AnswerClass = YesNoAnswer
     
     var title: String = "HandRail"
     
@@ -66,6 +61,10 @@ class HandRail: QuestBase,Quest {
         self.internalForm = HandRailForm(action: { [self] yesNo in
             onAnswer(answer: yesNo)
         })
+    }
+    
+    func onAnswer(answer: YesNoAnswer) {
+        
     }
     
     func copyWithElement(element: Element) -> any Quest {

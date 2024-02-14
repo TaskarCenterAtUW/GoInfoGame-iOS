@@ -10,7 +10,8 @@ import UIKit
 import SwiftUI
 import osmparser
 
-class TactilePavingSteps :Quest {
+class TactilePavingSteps :QuestBase, Quest {
+    
     var title: String = "Tactile Paving Steps"
     var filter: String = """
     ways with highway = steps
@@ -27,14 +28,11 @@ class TactilePavingSteps :Quest {
     var icon: UIImage = #imageLiteral(resourceName: "steps_tactile_paving.pdf")
     var wikiLink: String = ""
     var changesetComment: String = ""
-    var form: AnyView = AnyView(TactilePavingStepsForm())
     var relationData: Element? = nil
-    func onAnswer(answer: TactilePavingStepsAnswer) {
-    }
     var displayUnit: DisplayUnit {
         DisplayUnit(title: self.title, description: "",parent: self,sheetSize:.MEDIUM )
     }
-    typealias AnswerClass = TactilePavingStepsAnswer
+    typealias AnswerClass = YesNoAnswer
     
     var _internalExpression: ElementFilterExpression?
     
@@ -47,6 +45,22 @@ class TactilePavingSteps :Quest {
             _internalExpression = try? filter.toElementFilterExpression()
             return _internalExpression
         }
+    }
+    var form: AnyView {
+        get{
+            return AnyView(self.internalForm as! TactilePavingStepsForm)
+        }
+    }
+
+    override init() {
+        super.init()
+        self.internalForm = TactilePavingStepsForm(action: { [self] answer in
+            self.onAnswer(answer: answer)
+        })
+    }
+    
+    func onAnswer(answer: YesNoAnswer) {
+        
     }
     
     func copyWithElement(element: Element) -> any Quest {

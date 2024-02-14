@@ -10,7 +10,7 @@ import UIKit
 import SwiftUI
 import osmparser
 
-class StepsRamp :Quest {
+class StepsRamp: QuestBase, Quest {
     var title: String = "Steps Ramp"
     var filter: String = """
     ways with highway = steps
@@ -28,10 +28,8 @@ class StepsRamp :Quest {
     var icon: UIImage = #imageLiteral(resourceName: "ic_quest_steps_ramp")
     var wikiLink: String = ""
     var changesetComment: String = ""
-    var form: AnyView = AnyView(StepsRampForm())
     var relationData: Element? = nil
-    func onAnswer(answer: StepsRampAnswer) {
-    }
+    
     var displayUnit: DisplayUnit {
         DisplayUnit(title: self.title, description: "",parent: self,sheetSize:.LARGE )
     }
@@ -47,6 +45,22 @@ class StepsRamp :Quest {
             _internalExpression = try? filter.toElementFilterExpression()
             return _internalExpression
         }
+    }
+    var form: AnyView {
+        get{
+            return AnyView(self.internalForm as! StepsRampForm)
+        }
+    }
+    
+    override init() {
+        super.init()
+        self.internalForm = StepsRampForm(action: { [self] answer in
+            self.onAnswer(answer: answer)
+        })
+    }
+    
+    func onAnswer(answer: StepsRampAnswer) {
+        
     }
     
     func copyWithElement(element: Element) -> any Quest {
