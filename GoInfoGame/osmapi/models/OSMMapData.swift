@@ -8,40 +8,42 @@
 import Foundation
 
 // MARK: - OSMMapData
-struct OSMMapData: Codable {
-    let version, generator, copyright: String
-    let attribution, license: String
-    let bounds: Bounds
-    let elements: [Element]
+public struct OSMMapDataResponse: Codable {
+    public let version, generator, copyright: String
+    public let attribution, license: String
+    public let bounds: Bounds
+    public let elements: [Element]
 }
 
 // MARK: - Bounds
-struct Bounds: Codable {
-    let minlat, minlon, maxlat, maxlon: Double
+public struct Bounds: Codable {
+    public let minlat, minlon, maxlat, maxlon: Double
 }
 
 // MARK: - Element
-struct Element: Codable {
-    let type: TypeEnum
-    let id: Int
-    let lat, lon: Double?
-    let timestamp: Date
-    let version, changeset: Int
-    let user: String
-    let uid: Int
-    let tags: [String: String]?
-    let nodes: [Int]?
-    let members: [Member]?
+public struct Element: Codable, OSMElement {
+    public var isInteresting: Bool = false
+    public var isSkippable: Bool = false
+    public let type: TypeEnum
+    public let id: Int
+    public let lat, lon: Double?
+    public let timestamp: Date
+    public var version, changeset: Int
+    public let user: String
+    public let uid: Int
+    public let tags: [String: String]
+    public let nodes: [Int]?
+    public let members: [Member]?
 }
 
 // MARK: - Member
-struct Member: Codable {
-    let type: TypeEnum
-    let ref: Int
-    let role: Role
+public struct Member: Codable {
+    public let type: TypeEnum
+    public let ref: Int
+    public let role: Role
 }
 
-enum Role: String, Codable {
+public enum Role: String, Codable {
     case backward = "backward"
     case empty = ""
     case entrance = "entrance"
@@ -61,7 +63,7 @@ enum Role: String, Codable {
     case via = "via"
 }
 
-enum TypeEnum: String, Codable {
+public enum TypeEnum: String, Codable {
     case node = "node"
     case relation = "relation"
     case way = "way"

@@ -132,7 +132,7 @@ public class OSMConnection {
         }
         tags.forEach { (key: String, value: String) in
             
-            node.tags?[key] = value
+            node.tags[key] = value
         }
         // Make the call
         BaseNetworkManager.shared.postData(url: url, method: "PUT",body: node ,completion: completion)
@@ -175,7 +175,7 @@ public class OSMConnection {
         BaseNetworkManager.shared.addOrSetHeaders(header: "Authorization", value: "Basic \(self.userCreds.getHeaderData())")
         BaseNetworkManager.shared.fetchData(url: url, completion: completion)
     }
-    func getOSMMapData(left: Double, bottom: Double, right: Double, top: Double,_ completion: @escaping (Result<OSMMapData, Error>)-> Void) {
+     public func getOSMMapData(left: Double, bottom: Double, right: Double, top: Double,_ completion: @escaping (Result<OSMMapDataResponse, Error>)-> Void) {
         let urlString =  "https://api.openstreetmap.org/api/0.6/map.json?bbox=\(left),\(bottom),\(right),\(top)"
         print(urlString)
         guard let url = URL(string: urlString) else {

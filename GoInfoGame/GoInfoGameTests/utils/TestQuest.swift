@@ -13,51 +13,56 @@ import SwiftUI
 @testable import osmparser
 
 
-
-class TestQuest : Quest {
-    func onAnswer(answer: String) {
-         
-    }
-    
-    typealias AnswerClass = String
-    
-    var title: String = ""
-    
-    var filter: String = """
-    ways with (
-        (
-            highway = footway
-        or foot = yes)
-        and !width
-    )
-"""
-    /*
-     ["ref": "74078", "source": "King County GIS", "public_transport": "platform", "highway": "bus_stop", "name": "NE 124th St & 107th Pl NE", "gtfs:dataset_id": "KCGIS", "bus": "yes", "gtfs:stop_id": "74078"]
-     ["source": "King County GIS", "bus": "yes", "highway": "bus_stop", "gtfs:stop_id": "74078", "public_transport": "platform", "ref": "74078", "gtfs:dataset_id": "KCGIS", "name": "NE 124th St & 107th Pl NE"]
-     */
-    
-    var icon: UIImage = #imageLiteral(resourceName: "add_way_lit.pdf")
-    
-    var wikiLink: String = ""
-    
-    var changesetComment: String = ""
-    
-    var form: AnyView = AnyView(YesNoView())
-    
-    var relationData: Any?
-    
-    var displayUnit: GoInfoGame.DisplayUnit {
-        DisplayUnit(title: "", description: "", parent: self, sheetSize: .MEDIUM)
-    }
-    
-    func isApplicable(element:Element) ->  Bool {
-        do {
-            let elementFilter = try filter.toElementFilterExpression()
-            return elementFilter.matches(element: element)
-        } catch (let error){
-            print(error)
-            return false
-        }
-    }
-    
-}
+//
+//class TestQuest : Quest {
+//    var relationData: osmparser.Element?
+//    
+//    func copyWithElement(element: osmparser.Element) -> GoInfoGame.Quest {
+//    }
+//    
+//    func onAnswer(answer: String) {
+//         
+//    }
+//    
+//    typealias AnswerClass = String
+//    
+//    var title: String = ""
+//    
+//    var filter: String = """
+//    ways with (
+//        (
+//            highway = footway
+//        or foot = yes)
+//        and !width
+//    )
+//"""
+//    /*
+//     ["ref": "74078", "source": "King County GIS", "public_transport": "platform", "highway": "bus_stop", "name": "NE 124th St & 107th Pl NE", "gtfs:dataset_id": "KCGIS", "bus": "yes", "gtfs:stop_id": "74078"]
+//     ["source": "King County GIS", "bus": "yes", "highway": "bus_stop", "gtfs:stop_id": "74078", "public_transport": "platform", "ref": "74078", "gtfs:dataset_id": "KCGIS", "name": "NE 124th St & 107th Pl NE"]
+//     */
+//    
+//    var icon: UIImage = #imageLiteral(resourceName: "add_way_lit.pdf")
+//    
+//    var wikiLink: String = ""
+//    
+//    var changesetComment: String = ""
+//    
+//    var form: AnyView = AnyView(YesNoView())
+//    
+////    var relationData: Any?
+//    
+//    var displayUnit: GoInfoGame.DisplayUnit {
+//        DisplayUnit(title: "", description: "", parent: self, sheetSize: .MEDIUM)
+//    }
+//    
+//    func isApplicable(element:Element) ->  Bool {
+//        do {
+//            let elementFilter = try filter.toElementFilterExpression()
+//            return elementFilter.matches(element: element)
+//        } catch (let error){
+//            print(error)
+//            return false
+//        }
+//    }
+//    
+//}
