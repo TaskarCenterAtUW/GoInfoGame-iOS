@@ -9,7 +9,8 @@ import XCTest
 
 @testable import GoInfoGame
 //import SwiftOverpassAPI
-
+import osmapi
+import CoreLocation
 
 
 final class OverpassRequestManagerTests: XCTestCase {
@@ -111,6 +112,30 @@ final class OverpassRequestManagerTests: XCTestCase {
         self.measure {
             // Put the code you want to measure the time of here.
         }
+    }
+    
+    func testOSMApiFetchElements() throws {
+        let osmConnection = OSMConnection()
+        let expec = expectation(description: "Fetches the elements from Overpass Manager and stores in Database")
+        let dbInstance = DatabaseConnector.shared
+        let centralLocation = CLLocation(latitude: 37.7749, longitude: -122.4194) // San Francisco coords
+        let distance = 100
+        let boundingCoordinates = centralLocation.boundingCoordinates(distance: CLLocationDistance(distance))
+        osmConnection.getOSMMapData(left:boundingCoordinates.left.coordinate.longitude , bottom:boundingCoordinates.bottom.coordinate.latitude , right:boundingCoordinates.right.coordinate.longitude , top:boundingCoordinates.top.coordinate.latitude ) { result in
+            switch result {
+            case .success(let mapData):
+                let response = mapData.elements
+                let allValues = response
+                let allElements = allValues.filter({!$0.tags.isEmpty})
+                print("Saving tags")
+                dbInstance.saveElements(allElements) // Save all where there are tags
+                print(response)
+            case .failure(let error):
+                print("error")
+            }
+           
+        }
+        waitForExpectations(timeout: 15)
     }
 
 }

@@ -22,8 +22,8 @@ public struct Bounds: Codable {
 
 // MARK: - Element
 public struct Element: Codable, OSMElement {
-    public var isInteresting: Bool = false
-    public var isSkippable: Bool = false
+    public var isInteresting: Bool? = false
+    public var isSkippable: Bool? = false
     public let type: TypeEnum
     public let id: Int
     public let lat, lon: Double?
@@ -34,6 +34,24 @@ public struct Element: Codable, OSMElement {
     public let tags: [String: String]
     public let nodes: [Int]?
     public let members: [Member]?
+    
+    public init(from decoder: Decoder) throws {
+        let values = try decoder.container(keyedBy: CodingKeys.self)
+        isInteresting = try values.decodeIfPresent(Bool.self, forKey: .isInteresting) ?? false
+        isSkippable = try values.decodeIfPresent(Bool.self, forKey: .isSkippable) ?? false
+        id = try values.decodeIfPresent(Int.self, forKey: .id) ?? 0
+        lat = try values.decodeIfPresent(Double.self, forKey: .lat) ?? 0.0
+        lon = try values.decodeIfPresent(Double.self, forKey: .lon) ?? 0.0
+        timestamp = try values.decodeIfPresent(Date.self, forKey: .timestamp) ?? Date()
+        version = try values.decodeIfPresent(Int.self, forKey: .version) ?? 0
+        changeset = try values.decodeIfPresent(Int.self, forKey: .changeset) ?? 0
+        user = try values.decodeIfPresent(String.self, forKey: .user) ?? ""
+        uid = try values.decodeIfPresent(Int.self, forKey: .uid) ?? 0
+        tags = try values.decodeIfPresent([String: String].self, forKey: .tags) ?? [:]
+        nodes = try values.decodeIfPresent([Int].self, forKey: .nodes) ?? []
+        type = try values.decodeIfPresent(TypeEnum.self, forKey: .type) ?? TypeEnum.node
+        members = try values.decodeIfPresent([Member].self, forKey: .members) ?? []
+    }
 }
 
 // MARK: - Member

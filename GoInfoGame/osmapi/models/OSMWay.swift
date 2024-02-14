@@ -17,8 +17,8 @@ struct OSMWayResponse: Codable {
 
 // MARK: - Element
 public struct OSMWay: Codable, OSMPayload, OSMElement  {
-    public var isInteresting: Bool = false
-    public var isSkippable: Bool = false
+    public var isInteresting: Bool? = false
+    public var isSkippable: Bool? = false
     func toPayload() -> String {
         var osmNode = "<osm>"
         let xmlBuilder = OSMXMLBuilder(rootName: "way")

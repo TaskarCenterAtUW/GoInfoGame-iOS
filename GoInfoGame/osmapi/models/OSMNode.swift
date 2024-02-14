@@ -18,8 +18,8 @@ struct OSMNodeResponse: Codable {
 // MARK: - Element
 public struct OSMNode: Codable, OSMPayload, OSMElement {
     public var tags: [String : String]
-    public var isInteresting: Bool = false
-    public var isSkippable: Bool = false
+    public var isInteresting: Bool? = false
+    public var isSkippable: Bool? = false
     
     func toPayload() -> String {
         var osmNode = "<osm>"

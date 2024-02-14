@@ -41,9 +41,7 @@ class DatabaseConnector {
                     let storedElement = StoredNode()
                     storedElement.id = node.id
                     for tag in node.tags {
-                        if (!tag.key.contains(".")) { // Do a utility function
-                            storedElement.tags.setValue(tag.value, forKey: tag.key)
-                        }
+                        storedElement.tags.setValue(tag.value, forKey: tag.key)
                     }
 //                    if let meta = node {
                         let timestampString = dateFormatter.string(from: node.timestamp)
@@ -145,8 +143,8 @@ class DatabaseConnector {
                 for element in elements {
                     let realmElement = RealmOPElement()
                     realmElement.id = element.id
-                    realmElement.isInteresting = element.isInteresting
-                    realmElement.isSkippable = element.isSkippable
+                    realmElement.isInteresting = element.isInteresting ?? false
+                    realmElement.isSkippable = element.isSkippable ?? false
                     
                     let realmTags = element.tags.map { key, value in
                         let realmTag = RealmOPElementTag()
