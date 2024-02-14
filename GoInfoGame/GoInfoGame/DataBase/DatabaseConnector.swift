@@ -28,7 +28,7 @@ class DatabaseConnector {
          data with same id
         @param elements  List of OPElement
      */
-    func saveElements(_ elements: [OSMElement]) {
+    func saveOSMElements(_ elements: [OSMElement]) {
         // Save the elements appropriately
         // Get the ways and nodes out
         let nodes = elements.filter({$0 is OSMNode}).filter({!$0.tags.isEmpty})

@@ -35,16 +35,17 @@ class AppQuestManager {
         let centralLocation = CLLocation(latitude: 37.7749, longitude: -122.4194) // San Francisco coords
         let distance = 100
         let boundingCoordinates = centralLocation.boundingCoordinates(distance: CLLocationDistance(distance))
-        osmConnection.getOSMMapData(left:boundingCoordinates.left.coordinate.longitude , bottom:boundingCoordinates.bottom.coordinate.latitude , right:boundingCoordinates.right.coordinate.longitude , top:boundingCoordinates.top.coordinate.latitude ) { result in
+        osmConnection.fetchMapData(left:boundingCoordinates.left.coordinate.longitude , bottom:boundingCoordinates.bottom.coordinate.latitude , right:boundingCoordinates.right.coordinate.longitude , top:boundingCoordinates.top.coordinate.latitude ) { result in
             switch result {
             case .success(let mapData):
-                let response = mapData.elements
+                let response = Array(mapData.values)
                 let allValues = response
                 let allElements = allValues.filter({!$0.tags.isEmpty})
                 print("Saving tags")
-                self.dbInstance.saveElements(allElements) // Save all where there are tags
-                completion()
-                print(response)
+                DispatchQueue.main.async {
+                    self.dbInstance.saveOSMElements(allElements) // Save all where there are tags
+                    completion()
+                }
             case .failure(let error):
                 print("error")
             }

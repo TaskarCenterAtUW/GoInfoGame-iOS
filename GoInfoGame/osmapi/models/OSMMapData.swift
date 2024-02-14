@@ -13,15 +13,26 @@ public struct OSMMapDataResponse: Codable {
     public let attribution, license: String
     public let bounds: Bounds
     public let elements: [Element]
+    
+    func getOSMElements() -> [Int:OSMElement]{
+        var newMap :[Int: OSMElement] = [:]
+        elements.forEach { ele in
+            if let osmElement = ele.toOSMElement() {
+                newMap[osmElement.id] = osmElement
+            }
+        }
+        // Try to see if we can figure out way locations as well.
+        return newMap
+    }
 }
 
 // MARK: - Bounds
-public struct Bounds: Codable {
+public struct Bounds: Codable { // use this for bounds in the map
     public let minlat, minlon, maxlat, maxlon: Double
 }
 
 // MARK: - Element
-public struct Element: Codable, OSMElement {
+public struct Element: Codable {
     public var isInteresting: Bool? = false
     public var isSkippable: Bool? = false
     public let type: TypeEnum
@@ -51,6 +62,24 @@ public struct Element: Codable, OSMElement {
         nodes = try values.decodeIfPresent([Int].self, forKey: .nodes) ?? []
         type = try values.decodeIfPresent(TypeEnum.self, forKey: .type) ?? TypeEnum.node
         members = try values.decodeIfPresent([Member].self, forKey: .members) ?? []
+    }
+    
+    func toOSMElement() -> OSMElement? {
+        switch type {
+        case .node:
+            return toOSMNode()
+        case .way:
+            return toOSMWay()
+        case .relation:
+            return nil
+        }
+    }
+    
+    internal func toOSMNode() -> OSMNode {
+        OSMNode(type: "node", id: id, lat: lat!, lon: lon!, timestamp: timestamp, version: version, changeset: changeset, user: user, uid: uid,tags: tags)
+    }
+    internal func toOSMWay() -> OSMWay {
+        OSMWay(type: "way", id: id, timestamp: timestamp, version: version, changeset: changeset, user: user, uid: uid, nodes: nodes ?? [], tags: tags)
     }
 }
 

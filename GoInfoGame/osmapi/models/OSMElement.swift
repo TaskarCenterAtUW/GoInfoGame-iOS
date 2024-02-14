@@ -7,7 +7,7 @@
 
 import Foundation
 // A protocol that defines all the properties shared by nodes, ways, and relations
-public protocol OSMElement {
+public protocol OSMElement: Codable {
     var id: Int { get } // The element's identifier
     var tags: [String: String] { get } // Tags that add additional details
     var isInteresting: Bool? { get } // Does the element have one or more interesting tags?
