@@ -6,13 +6,13 @@
 //
 
 import SwiftUI
-enum YesNoAnswer {
+
+enum YesNoAnswer: String {
     case yes
     case no
     case other
     case unknown
 }
-
 
 struct YesNoView: View {
 
@@ -21,6 +21,7 @@ struct YesNoView: View {
     init(action: ((_ answer: YesNoAnswer) -> Void)? = nil) {
         self.action = action
     }
+    
     var body: some View {
         HStack(spacing: 0) {
             Spacer()
@@ -41,14 +42,12 @@ struct YesNoView: View {
             .frame(minWidth: 20, maxWidth: 80, minHeight: 50)
             Divider().background(Color.gray).frame(height: 30)
             Button {
-                
                 action?(.no)
             } label: {
                 Text(LocalizedStrings.questGenericHasFeatureNo.localized)
                     .foregroundColor(.orange).font(.body)
                     .frame(maxWidth: .infinity)
             }
-             
         }
     }
 }

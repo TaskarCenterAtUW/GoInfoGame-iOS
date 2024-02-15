@@ -36,7 +36,10 @@ struct SidewalkSurfaceForm: QuestForm ,View {
         ZStack{
             VStack (alignment: .leading){
                 // Question header
-                QuestionHeader(icon: Image("sidewalk_surface"), title: LocalizedStrings.questSidewalkSurfaceTitle.localized, subtitle: "Street").padding(.bottom,10)
+                QuestionHeader(icon: Image("sidewalk_surface"),
+                               title: LocalizedStrings.questSidewalkSurfaceTitle.localized,
+                               subtitle: "Street")
+                .padding(.bottom,10)
                 // Quest Body
                 VStack(alignment: .leading){
                     Text(LocalizedStrings.select.localized).font(.caption).foregroundColor(.gray)

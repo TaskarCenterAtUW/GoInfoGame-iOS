@@ -11,6 +11,12 @@ import SwiftUI
 import osmparser
 
 class StepsRamp: QuestBase, Quest {
+    typealias AnswerClass = StepsRampAnswer
+    var _internalExpression: ElementFilterExpression?
+    var relationData: Element? = nil
+    var icon: UIImage = #imageLiteral(resourceName: "ic_quest_steps_ramp")
+    var wikiLink: String = ""
+    var changesetComment: String = ""
     var title: String = "Steps Ramp"
     var filter: String = """
     ways with highway = steps
@@ -25,23 +31,13 @@ class StepsRamp: QuestBase, Quest {
                or ramp older today -8 years
              )
     """
-    var icon: UIImage = #imageLiteral(resourceName: "ic_quest_steps_ramp")
-    var wikiLink: String = ""
-    var changesetComment: String = ""
-    var relationData: Element? = nil
-    
     var displayUnit: DisplayUnit {
         DisplayUnit(title: self.title, description: "",parent: self,sheetSize:.LARGE )
     }
-    typealias AnswerClass = StepsRampAnswer
-    
-    var _internalExpression: ElementFilterExpression?
-    
     var filterExpression: ElementFilterExpression? {
         if(_internalExpression != nil){
             return _internalExpression
-        }
-        else {
+        }else {
             _internalExpression = try? filter.toElementFilterExpression()
             return _internalExpression
         }
@@ -60,7 +56,10 @@ class StepsRamp: QuestBase, Quest {
     }
     
     func onAnswer(answer: StepsRampAnswer) {
-        
+        if let rData = self.relationData {
+            
+          //  self.updateTags(id: rData.id, tags: ["ramp":"s"], type: rData.type)
+        }
     }
     
     func copyWithElement(element: Element) -> any Quest {

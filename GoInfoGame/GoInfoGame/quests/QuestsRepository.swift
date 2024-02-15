@@ -48,9 +48,6 @@ class QuestsRepository {
             
             return CLLocationCoordinate2D(latitude: randomLat, longitude: randomLon)
         }
-    
-    
-    
 }
 // Probably move somewhere else
 struct DisplayUnitWithCoordinate: Identifiable {

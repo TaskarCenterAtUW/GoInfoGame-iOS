@@ -8,7 +8,7 @@
 import UIKit
 import SwiftUI
 
-class MapViewController: UIHostingController<MapView> {
+class MapViewController: UIHostingController<QuestsListUIView> {
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -16,6 +16,6 @@ class MapViewController: UIHostingController<MapView> {
         // Do any additional setup after loading the view.
     }
     required init?(coder aDecoder: NSCoder) {
-            super.init(coder: aDecoder, rootView: MapView())
+            super.init(coder: aDecoder, rootView: QuestsListUIView())
         }
 }
