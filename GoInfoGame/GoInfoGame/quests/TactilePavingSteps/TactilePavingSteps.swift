@@ -60,7 +60,9 @@ class TactilePavingSteps :QuestBase, Quest {
     }
     
     func onAnswer(answer: YesNoAnswer) {
-        
+        if let rData = self.relationData {
+            self.updateTags(id: rData.id, tags: ["tactile_paving":answer.rawValue], type: rData.type)
+        }
     }
     
     func copyWithElement(element: Element) -> any Quest {

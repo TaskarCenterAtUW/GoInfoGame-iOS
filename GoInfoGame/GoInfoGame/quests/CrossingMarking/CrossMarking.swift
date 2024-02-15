@@ -11,6 +11,8 @@ import SwiftUI
 import osmparser
 
 class CrossMarking: QuestBase, Quest {
+    typealias AnswerClass = CrossingAnswer
+    var _internalExpression: ElementFilterExpression?
     var title: String = "Cross Marking"
     var filter: String = ""
     var icon: UIImage = #imageLiteral(resourceName: "pedestrian")
@@ -20,16 +22,11 @@ class CrossMarking: QuestBase, Quest {
     var displayUnit: DisplayUnit {
         DisplayUnit(title: self.title, description: "",parent: self,sheetSize:.MEDIUM )
     }
-    typealias AnswerClass = CrossingAnswer
-    
-    var _internalExpression: ElementFilterExpression?
-    
     var filterExpression: ElementFilterExpression? {
         if(_internalExpression != nil){
             return _internalExpression
         }
         else {
-            print("<>")
             _internalExpression = try? filter.toElementFilterExpression()
             return _internalExpression
         }
@@ -48,7 +45,9 @@ class CrossMarking: QuestBase, Quest {
     }
     
     func onAnswer(answer: CrossingAnswer) {
-        
+        if let rData = self.relationData {
+            self.updateTags(id: rData.id, tags: ["crossing":answer.rawValue], type: rData.type)
+        }
     }
     
     func copyWithElement(element: Element) -> any Quest {
@@ -58,18 +57,10 @@ class CrossMarking: QuestBase, Quest {
     }
 }
 
-enum CrossingAnswer: String, CaseIterable {
-    case yes
-    case no
-    case prohibited
-
-    var description: String {
-        switch self {
-        case .yes: return "Yes"
-        case .no: return "No"
-        case .prohibited: return "Prohibited"
-        }
-    }
+enum CrossingAnswer: String {
+    case yes = "Yes"
+    case no = "No"
+    case prohibited = "Prohibited"
 }
 
 struct TextItem<T> {

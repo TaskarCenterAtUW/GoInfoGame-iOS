@@ -14,12 +14,13 @@ struct WayLitForm: View, QuestForm {
     
     var body: some View {
         VStack{
-            QuestionHeader(icon: Image("add_way_lit"), title: LocalizedStrings.questLitTitle.localized, subtitle: "SideWalk")
+            QuestionHeader(icon: Image("add_way_lit"),
+                           title: LocalizedStrings.questLitTitle.localized,
+                           subtitle: "SideWalk")
             YesNoView(action: action)
-             .background(
-                RoundedRectangle(cornerRadius: 10)
-                    .fill(Color.white)
-                    .shadow(color: .gray, radius: 2, x: 0, y: 2))
+             .background(RoundedRectangle(cornerRadius: 10)
+                .fill(Color.white)
+                .shadow(color: .gray, radius: 2, x: 0, y: 2))
         }.padding()
     }
 }

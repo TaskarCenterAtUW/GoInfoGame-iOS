@@ -21,7 +21,7 @@ struct StepsInclineForm: View, QuestForm {
             QuestionHeader(icon: Image("steps"), title: "Which direction leads upwards for the steps", subtitle: "steps")
             VStack (alignment: .leading){
                 Text(LocalizedStrings.selectOne.localized).font(.caption).foregroundColor(.gray)
-                ImageGridItemView(gridCount: 2, isLabelBelow: true, imageData: imageData, isImageRotated: true, isDisplayImageOnly: false, allowMultipleSelection: false, onTap: { (selectedImage) in
+                ImageGridItemView(gridCount: 2, isLabelBelow: true, imageData: imageData, isImageRotated: true, isDisplayImageOnly: false, isScrollable: false, allowMultipleSelection: false, onTap: { (selectedImage) in
                     action?(.down)
                 }, selectedImages:$selectedImage)
                 Divider()

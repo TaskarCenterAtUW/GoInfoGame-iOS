@@ -14,7 +14,9 @@ struct BusStopLitForm: View, QuestForm {
     typealias AnswerClass = YesNoAnswer
     var body: some View {
         VStack{
-            QuestionHeader(icon: Image("stop_lit"), title: LocalizedStrings.questBusStopLitTitle.localized, subtitle: "SideWalk")
+            QuestionHeader(icon: Image("stop_lit"),
+                           title: LocalizedStrings.questBusStopLitTitle.localized,
+                           subtitle: "SideWalk")
             YesNoView(action: action).padding(10)
                 .background(
                     RoundedRectangle(cornerRadius: 10)

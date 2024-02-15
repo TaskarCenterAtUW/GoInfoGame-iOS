@@ -22,10 +22,11 @@ struct StairNumberForm: View, QuestForm {
             VStack{
                 HStack {
                     Spacer()
-                    
                     TextField("NoOfSteps", value: $numberOfSteps, formatter: NumberFormatter(),onEditingChanged: { Bool in
+                        print("$numberOfSteps",numberOfSteps)
                         validateInput()
-                    })
+                    }
+                    )
                     .frame(width: 20)
                     .padding(.horizontal)
                     .overlay(Rectangle().frame(height: 1).padding(.top, 25).foregroundColor(.black), alignment: .bottom)
@@ -74,6 +75,7 @@ struct StairNumberForm: View, QuestForm {
             
         }.padding()
     }
+    
     private func validateInput() {
         isInputValid = numberOfSteps > 0
     }

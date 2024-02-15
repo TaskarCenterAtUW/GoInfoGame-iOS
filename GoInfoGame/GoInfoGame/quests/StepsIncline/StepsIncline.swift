@@ -13,9 +13,12 @@ import osmparser
 class StepsIncline: QuestBase, Quest {
     
     typealias AnswerClass = StepsInclineDirection
-    
+    var _internalExpression: ElementFilterExpression?
+    var relationData: Element? = nil
+    var icon: UIImage = #imageLiteral(resourceName: "steps.pdf")
+    var wikiLink: String = ""
+    var changesetComment: String = ""
     var title: String = "StepsIncline"
-    
     var filter: String = """
         ways with highway = steps
          and (!indoor or indoor = no)
@@ -23,21 +26,9 @@ class StepsIncline: QuestBase, Quest {
          and access !~ private|no
          and !incline
     """
-    
-    var icon: UIImage = #imageLiteral(resourceName: "steps.pdf")
-    
-    var wikiLink: String = ""
-    
-    var changesetComment: String = ""
-    
-    var relationData: Element? = nil
-    
     var displayUnit: DisplayUnit {
         DisplayUnit(title: self.title, description: "",parent: self, sheetSize: .MEDIUM)
     }
-    
-    var _internalExpression: ElementFilterExpression?
-    
     var filterExpression: ElementFilterExpression? {
         if(_internalExpression != nil){
             return _internalExpression
@@ -61,7 +52,9 @@ class StepsIncline: QuestBase, Quest {
     }
     
     func onAnswer(answer: StepsInclineDirection) {
-         
+        if let rData = self.relationData {
+            self.updateTags(id: rData.id, tags: ["incline":answer.rawValue], type: rData.type)
+        }
     }
     
     func copyWithElement(element: Element) -> any Quest {
@@ -72,8 +65,7 @@ class StepsIncline: QuestBase, Quest {
     
 }
 
-enum StepsInclineDirection {
+enum StepsInclineDirection: String {
     case up
     case down
-    
 }

@@ -34,7 +34,9 @@ class SideWalkValidation: QuestBase, Quest {
     }
     
     func onAnswer(answer: SideWalkValidationAnswer) {
-        
+        if let rData = self.relationData {
+            self.updateTags(id: rData.id, tags: ["sidewalk":answer.description], type: rData.type)
+        }
     }
     
     func copyWithElement(element: Element) -> any Quest {
