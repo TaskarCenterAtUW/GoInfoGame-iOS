@@ -25,7 +25,7 @@ struct StepsRampForm: View, QuestForm {
             QuestionHeader(icon: Image("ic_quest_steps_ramp"), title: LocalizedStrings.questDetermineSidewalkWidth.localized, subtitle: "North 88th Street").padding(.bottom,10)
             VStack(alignment: .leading){
                 Text(LocalizedStrings.select.localized).font(.caption).foregroundColor(.gray)
-                ImageGridItemView(gridCount: 2, isLabelBelow: false, imageData: imageData, isImageRotated: false, isDisplayImageOnly: false, allowMultipleSelection: true, onTap: { (selectedImage) in
+                ImageGridItemView(gridCount: 2, isLabelBelow: false, imageData: imageData, isImageRotated: false, isDisplayImageOnly: false, isScrollable: false, allowMultipleSelection: true, onTap: { (selectedImage) in
                     print("Clicked Tag: \(selectedImage)")
                 }, selectedImages: $selectedImage)
                 

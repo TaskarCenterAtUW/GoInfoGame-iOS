@@ -44,7 +44,7 @@ struct SidewalkSurfaceForm: QuestForm ,View {
                 VStack(alignment: .leading){
                     Text(LocalizedStrings.select.localized).font(.caption).foregroundColor(.gray)
                     /// Grid view for displaying selectable surfaces
-                    ImageGridItemView(gridCount: 3, isLabelBelow: true, imageData: imagesFromSurfaces, isImageRotated: false, isDisplayImageOnly: false, allowMultipleSelection: false, onTap: { (selectedImage) in
+                    ImageGridItemView(gridCount: 3, isLabelBelow: true, imageData: imagesFromSurfaces, isImageRotated: false, isDisplayImageOnly: false, isScrollable: true, allowMultipleSelection: false, onTap: { (selectedImage) in
                         selectedAnswer = SidewalkSurfaceAnswer(value: SurfaceAndNote(surface: Surface(rawValue: selectedImage.first ?? ""),note: ""))
                         print("selectedAnswer:", selectedAnswer)
                         print("Clicked Tag: \(selectedImage)")}, selectedImages: $selectedImage)

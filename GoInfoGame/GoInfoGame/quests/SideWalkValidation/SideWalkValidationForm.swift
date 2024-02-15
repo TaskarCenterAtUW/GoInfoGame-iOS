@@ -35,7 +35,7 @@ struct SideWalkValidationForm: QuestForm ,View {
                 .padding(.bottom,10)
                 VStack(alignment: .leading){
                     Text(LocalizedStrings.select.localized).font(.caption).foregroundColor(.gray)
-                    ImageGridItemView(gridCount: 2, isLabelBelow: true, imageData: SideWalksImageData, isImageRotated: false, isDisplayImageOnly: false, allowMultipleSelection: false, onTap: { (selectedImage) in
+                    ImageGridItemView(gridCount: 2, isLabelBelow: true, imageData: SideWalksImageData, isImageRotated: false, isDisplayImageOnly: false, isScrollable: false, allowMultipleSelection: false, onTap: { (selectedImage) in
                         /// To select selected image option as SideWalkValidationAnswer
                         selectedAnswer = SideWalkValidationAnswer.fromString(selectedImage.first ?? "") ?? SideWalkValidationAnswer.none
                         print("Clicked Tag: \(selectedImage)")}, selectedImages: $selectedImage)
