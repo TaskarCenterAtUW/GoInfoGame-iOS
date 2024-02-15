@@ -34,15 +34,16 @@ class SidewalkSurface: QuestBase, Quest {
         })
     }
     
+    func onAnswer(answer: SidewalkSurfaceAnswer) {
+        if let rData = self.relationData , let surface = answer.value.surface?.rawValue {
+            self.updateTags(id: rData.id, tags: ["sidewalk:Surface":surface], type: rData.type)
+        }
+    }
+    
     func copyWithElement(element: Element) -> any Quest {
         let surface = SidewalkSurface()
         surface.relationData = element
         return surface
-    }
-
-    func onAnswer(answer: SidewalkSurfaceAnswer) {
-       
-
     }
 }
 

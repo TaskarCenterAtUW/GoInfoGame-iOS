@@ -29,7 +29,10 @@ struct SideWalkValidationForm: QuestForm ,View {
     var body: some View {
         ZStack{
             VStack (alignment: .leading){
-                QuestionHeader(icon: Image("sidewalk"), title: LocalizedStrings.questSidewalkTitle.localized, subtitle: "Street").padding(.bottom,10)
+                QuestionHeader(icon: Image("sidewalk"),
+                               title: LocalizedStrings.questSidewalkTitle.localized,
+                               subtitle: "Street")
+                .padding(.bottom,10)
                 VStack(alignment: .leading){
                     Text(LocalizedStrings.select.localized).font(.caption).foregroundColor(.gray)
                     ImageGridItemView(gridCount: 2, isLabelBelow: true, imageData: SideWalksImageData, isImageRotated: false, isDisplayImageOnly: false, onTap: { (type, tag) in
@@ -83,8 +86,6 @@ struct SideWalkValidationForm: QuestForm ,View {
         .allowsHitTesting(true)
     }
 }
-
-
 
 #Preview {
     SideWalkValidationForm()

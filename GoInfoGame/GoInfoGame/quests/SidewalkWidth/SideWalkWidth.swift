@@ -10,12 +10,10 @@ import UIKit
 import SwiftUI
 import osmparser
 
-
 class SideWalkWidth : QuestBase, Quest {
-    
-    var displayUnit: DisplayUnit {
-        DisplayUnit(title: self.title, description: "",parent: self, sheetSize: .MEDIUM)
-    }
+    typealias AnswerClass = WidthAnswer
+    var _internalExpression: ElementFilterExpression?
+    var relationData: Element? = nil
     var title: String = "Side Walk Width"
     var filter: String = """
                         ways with
@@ -26,45 +24,33 @@ class SideWalkWidth : QuestBase, Quest {
     var icon: UIImage = #imageLiteral(resourceName: "sidewalk-width-img")
     var wikiLink: String = ""
     var changesetComment: String = ""
-    
+    var displayUnit: DisplayUnit {
+        DisplayUnit(title: self.title, description: "",parent: self, sheetSize: .MEDIUM)
+    }
+    var filterExpression: ElementFilterExpression? {
+        if(_internalExpression != nil){
+            return _internalExpression
+        }else {
+            _internalExpression = try? filter.toElementFilterExpression()
+            return _internalExpression
+        }
+    }
     var form: AnyView {
         get{
             return AnyView(self.internalForm as! SideWalkWidthForm)
         }
     }
     
-    var relationData: Element? = nil
-    
-    
-    func onAnswer(answer: WidthAnswer)  {
-        if let rData = self.relationData {
-            self.updateTags(id: rData.id, tags: ["width":"11m"], type: rData.type) // TODO: Convert WidthAnswer to string
-        }
-    }
-    typealias AnswerClass = WidthAnswer
-    
-    var _internalExpression: ElementFilterExpression?
-
     override init() {
         super.init()
         self.internalForm = SideWalkWidthForm { [self] answer in
-            print("Wow!!")
             self.onAnswer(answer: answer)
-            
-        } onConfirm: { feet, inches, isConfirmAlert in
-            print("Whatever") // Not needed but addeed for consistency
         }
-        
     }
     
-    
-    var filterExpression: ElementFilterExpression? {
-        if(_internalExpression != nil){
-            return _internalExpression
-        }
-        else {
-            _internalExpression = try? filter.toElementFilterExpression()
-            return _internalExpression
+    func onAnswer(answer: WidthAnswer)  {
+        if let rData = self.relationData {
+            self.updateTags(id: rData.id, tags: ["width":answer.width], type: rData.type)
         }
     }
     
@@ -85,5 +71,3 @@ class WidthAnswer {
         self.isARMeasurement = isARMeasurement
     }
 }
-
-

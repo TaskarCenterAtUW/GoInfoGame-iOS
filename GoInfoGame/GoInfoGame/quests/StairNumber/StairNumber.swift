@@ -11,7 +11,9 @@ import SwiftUI
 import osmparser
 
 class StairNumber: QuestBase, Quest {
-   
+    typealias AnswerClass = Int
+    var relationData: Element? = nil
+    var _internalExpression: ElementFilterExpression?
     var title: String = "Stair Number"
     var filter: String = ""
     var icon: UIImage = #imageLiteral(resourceName: "steps_count")
@@ -22,14 +24,9 @@ class StairNumber: QuestBase, Quest {
             return AnyView(self.internalForm as! StairNumberForm)
         }
     }
-    var relationData: Element? = nil
     var displayUnit: DisplayUnit {
         DisplayUnit(title: self.title, description: "",parent: self,sheetSize:.MEDIUM )
     }
-    typealias AnswerClass = Int
-    
-    var _internalExpression: ElementFilterExpression?
-    
     var filterExpression: ElementFilterExpression? {
         if(_internalExpression != nil){
             return _internalExpression
@@ -48,6 +45,9 @@ class StairNumber: QuestBase, Quest {
     }
     
     func onAnswer(answer: Int) {
+        if let rData = self.relationData {
+            self.updateTags(id: rData.id, tags: ["step_count":"\(answer)"], type: rData.type)
+        }
     }
     
     func copyWithElement(element: Element) -> any Quest {

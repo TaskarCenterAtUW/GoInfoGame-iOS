@@ -13,7 +13,6 @@ struct StepsInclineForm: View, QuestForm {
     
     typealias AnswerClass = StepsInclineDirection
     @State private var selectedImage : String?
-    
     @State private var showAlert = false
     let imageData: [ImageData] = [
         ImageData(id:"UP",type: "none", imageName: "steps-incline-up", tag: "up", optionName: LocalizedStrings.questStepsInclineUp.localized),
@@ -21,13 +20,12 @@ struct StepsInclineForm: View, QuestForm {
     ]
     var body: some View {
         VStack{
-            
-            
-            QuestionHeader(icon: Image("steps"), title: "Which direction leads upwards for the steps", subtitle: "steps")
+            QuestionHeader(icon: Image("steps"),
+                           title: "Which direction leads upwards for the steps",
+                           subtitle: "steps")
             VStack (alignment: .leading){
                 Text(LocalizedStrings.selectOne.localized).font(.caption).foregroundColor(.gray)
                 ImageGridItemView(gridCount: 2, isLabelBelow: true, imageData: imageData, isImageRotated: true, isDisplayImageOnly: false, onTap: { (type, tag) in
-                    print("Clicked: \(type), Tag: \(tag)")
                     action?(.down)
                 }, selectedImage:$selectedImage)
                 Divider()

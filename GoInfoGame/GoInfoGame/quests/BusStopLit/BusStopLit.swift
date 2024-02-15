@@ -11,6 +11,12 @@ import SwiftUI
 import osmparser
 
 class BusStopLit: QuestBase, Quest {
+    typealias AnswerClass = YesNoAnswer
+    var relationData: Element? = nil
+    var _internalExpression: ElementFilterExpression?
+    var icon: UIImage = #imageLiteral(resourceName: "stop_lit")
+    var wikiLink: String = ""
+    var changesetComment: String = ""
     var title: String = "Bus Stop Lit"
     var filter: String = """
     nodes, ways, relations with
@@ -28,24 +34,14 @@ class BusStopLit: QuestBase, Quest {
               or lit older today -16 years
             )
     """
-    var icon: UIImage = #imageLiteral(resourceName: "stop_lit")
-    var wikiLink: String = ""
-    var changesetComment: String = ""
-    
-    var relationData: Element? = nil
     var displayUnit: DisplayUnit {
         DisplayUnit(title: self.title, description: "",parent: self,sheetSize:.SMALL )
     }
-    typealias AnswerClass = YesNoAnswer
-    
-    var _internalExpression: ElementFilterExpression?
-    
     var filterExpression: ElementFilterExpression? {
         if(_internalExpression != nil){
             return _internalExpression
         }
         else {
-            print("<>")
             _internalExpression = try? filter.toElementFilterExpression()
             return _internalExpression
         }
@@ -64,7 +60,9 @@ class BusStopLit: QuestBase, Quest {
     }
     
     func onAnswer(answer: YesNoAnswer) {
-        
+        if let rData = self.relationData {
+            self.updateTags(id: rData.id, tags: ["lit":answer.rawValue], type: rData.type)
+        }
     }
     
     func copyWithElement(element: Element) -> any Quest {
