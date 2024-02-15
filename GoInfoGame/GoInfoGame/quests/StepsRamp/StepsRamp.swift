@@ -57,10 +57,10 @@ class StepsRamp: QuestBase, Quest {
     
     func onAnswer(answer: StepsRampAnswer) {
         if let rData = self.relationData {
-            
           //  self.updateTags(id: rData.id, tags: ["ramp":"s"], type: rData.type)
         }
     }
+    
     
     func copyWithElement(element: Element) -> any Quest {
         let q = StepsRamp()
