@@ -14,8 +14,18 @@ class MapViewController: UIHostingController<MapView> {
         super.viewDidLoad()
 
         // Do any additional setup after loading the view.
+        
+        let questListButton = UIBarButtonItem(barButtonSystemItem: .search, target: self, action: #selector(questListButtonTapped))
+        navigationItem.rightBarButtonItem = questListButton
     }
+    
     required init?(coder aDecoder: NSCoder) {
-            super.init(coder: aDecoder, rootView: MapView())
-        }
+        super.init(coder: aDecoder, rootView: MapView())
+    }
+    
+    @objc func questListButtonTapped() {
+         let questListView = QuestsListUIView()
+         let hostingController = UIHostingController(rootView: questListView)
+         present(hostingController, animated: true, completion: nil)
+     }
 }
