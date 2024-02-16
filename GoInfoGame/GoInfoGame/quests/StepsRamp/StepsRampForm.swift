@@ -20,15 +20,19 @@ struct StepsRampForm: View, QuestForm {
         ImageData(id:"ramp_stroller",type: "stroller", imageName: "ramp_stroller", tag: "ramp:stroller", optionName: LocalizedStrings.questStepsRampStroller.localized),
         ImageData(id:"ramp_wheelchair",type: "wheelchair", imageName: "ramp_wheelchair", tag: "ramp:wheelchair", optionName: LocalizedStrings.questStepsRampWheelchair.localized),
     ]
+    var isBicycleRamp:Bool {
+        selectedImage.contains("ramp:bicycle")
+    }
+    var isStrollerRamp:Bool {
+        selectedImage.contains("ramp:stroller")
+    }
     var body: some View {
         VStack (alignment: .leading){
             QuestionHeader(icon: Image("ic_quest_steps_ramp"), title: LocalizedStrings.questStepsRampTitle.localized, subtitle: "North 88th Street").padding(.bottom,10)
             VStack(alignment: .leading){
                 Text(LocalizedStrings.select.localized).font(.caption).foregroundColor(.gray)
                 ImageGridItemView(gridCount: 2, isLabelBelow: false, imageData: imageData, isImageRotated: false, isDisplayImageOnly: false, isScrollable: false, allowMultipleSelection: true, onTap: { (selectedImage) in
-                    print("Clicked Tag: \(selectedImage)")
                 }, selectedImages: $selectedImage)
-                
                 Divider()
                 HStack() {
                     Spacer()
@@ -43,12 +47,10 @@ struct StepsRampForm: View, QuestForm {
                     Spacer()
                     if !selectedImage.isEmpty {
                         Button() {
-                            /// applying final selected answer
                             if selectedImage.contains("ramp:wheelchair") {
                                 showWheelchairAlert = true
                             }else {
-                                //TODO: none/bicycle/stroller type answer
-                                let answer = StepsRampAnswer(bicycleRamp: true, strollerRamp: true, wheelchairRamp: .NO)
+                                let answer = StepsRampAnswer(bicycleRamp: isBicycleRamp, strollerRamp: isStrollerRamp, wheelchairRamp: .NO)
                                 action?(answer)
                             }
                         }label: {
@@ -59,10 +61,12 @@ struct StepsRampForm: View, QuestForm {
                         /// displayed only when selected answers contains wheelchair
                         .alert(LocalizedStrings.questStepsRampSeparateWheelchair.localized, isPresented: $showWheelchairAlert) {
                             Button(LocalizedStrings.questStepsRampSeparateWheelchairConfirm.localized.uppercased(), action: {
-                                //TODO: wheelchair type answer separate
+                                let answer = StepsRampAnswer(bicycleRamp: isBicycleRamp, strollerRamp: isStrollerRamp, wheelchairRamp: WheelchairRampStatus.SEPARATE)
+                                action?(answer)
                             })
                             Button(LocalizedStrings.questStepsRampSeparateWheelchairDecline.localized.uppercased(), action: {
-                                //TODO: wheelchair type answer not separate
+                                let answer = StepsRampAnswer(bicycleRamp: isBicycleRamp, strollerRamp: isStrollerRamp, wheelchairRamp: WheelchairRampStatus.YES)
+                                action?(answer)
                             })
                             /// no action to be taken
                             Button(LocalizedStrings.questGenericConfirmationNo.localized, role: .cancel, action: {})

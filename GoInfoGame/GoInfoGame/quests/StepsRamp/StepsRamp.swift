@@ -57,10 +57,12 @@ class StepsRamp: QuestBase, Quest {
     
     func onAnswer(answer: StepsRampAnswer) {
         if let rData = self.relationData {
-          //  self.updateTags(id: rData.id, tags: ["ramp":"s"], type: rData.type)
+            let tags = ["ramp:bicycle": answer.bicycleRamp ? "yes" : "no",
+                        "ramp:wheelchair": answer.wheelchairRamp.rawValue,
+                        "ramp:stroller": answer.strollerRamp ? "yes" : "no"]
+            self.updateTags(id: rData.id, tags: tags, type: rData.type)
         }
     }
-    
     
     func copyWithElement(element: Element) -> any Quest {
         let q = StepsRamp()
@@ -85,8 +87,8 @@ class StepsRampAnswer {
     }
 }
 
-enum  WheelchairRampStatus {
-    case YES
-    case NO
-    case SEPARATE
+enum  WheelchairRampStatus: String {
+    case YES = "yes"
+    case NO = "no"
+    case SEPARATE = "separate"
 }
