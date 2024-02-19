@@ -10,48 +10,57 @@ import UIKit
 import SwiftUI
 import osmparser
 
-class CrossMarking :Quest {
-    func onAnswer(answer: CrossingAnswer) {
-        
-    }
+class CrossMarking: QuestBase, Quest {
+    typealias AnswerClass = CrossingAnswer
+    var _internalExpression: ElementFilterExpression?
     var title: String = "Cross Marking"
     var filter: String = ""
     var icon: UIImage = #imageLiteral(resourceName: "pedestrian")
     var wikiLink: String = ""
     var changesetComment: String = ""
-    var form: AnyView = AnyView(CrossMarkingForm())
-    var relationData: Any? = nil
+    var relationData: Element? = nil
     var displayUnit: DisplayUnit {
         DisplayUnit(title: self.title, description: "",parent: self,sheetSize:.MEDIUM )
     }
-    typealias AnswerClass = CrossingAnswer
-    
-    var _internalExpression: ElementFilterExpression?
-    
     var filterExpression: ElementFilterExpression? {
         if(_internalExpression != nil){
             return _internalExpression
         }
         else {
-            print("<>")
             _internalExpression = try? filter.toElementFilterExpression()
             return _internalExpression
         }
     }
-}
-
-enum CrossingAnswer: String, CaseIterable {
-    case yes
-    case no
-    case prohibited
-
-    var description: String {
-        switch self {
-        case .yes: return "Yes"
-        case .no: return "No"
-        case .prohibited: return "Prohibited"
+    var form: AnyView {
+        get{
+            return AnyView(self.internalForm as! CrossMarkingForm)
         }
     }
+    
+    override init() {
+        super.init()
+        self.internalForm = CrossMarkingForm(action: { [self] answer in
+            self.onAnswer(answer: answer)
+        })
+    }
+    
+    func onAnswer(answer: CrossingAnswer) {
+        if let rData = self.relationData {
+            self.updateTags(id: rData.id, tags: ["crossing":answer.rawValue], type: rData.type)
+        }
+    }
+    
+    func copyWithElement(element: Element) -> any Quest {
+        let q = CrossMarking()
+        q.relationData = element
+        return q
+    }
+}
+
+enum CrossingAnswer: String {
+    case yes = "Yes"
+    case no = "No"
+    case prohibited = "Prohibited"
 }
 
 struct TextItem<T> {

@@ -7,31 +7,26 @@
 
 import SwiftUI
 
-enum YesNoButtonAction {
+enum YesNoAnswer: String {
     case yes
     case no
     case other
+    case unknown
 }
-func getYesNoBoolValue(_ action: YesNoButtonAction) -> Bool {
-    switch action {
-    case .yes:
-        return true
-    default:
-        return false
-    }
-}
+
 struct YesNoView: View {
-    let onYesNoAnswerSelected: (YesNoButtonAction) -> Void
-    let actionButton3Label: String
-    init(actionButton3Label: String, onYesNoAnswerSelected: @escaping (YesNoButtonAction) -> Void) {
-            self.actionButton3Label = actionButton3Label
-            self.onYesNoAnswerSelected = onYesNoAnswerSelected
-        }
+
+    var action: ((_ answer:YesNoAnswer) -> Void)?
+    
+    init(action: ((_ answer: YesNoAnswer) -> Void)? = nil) {
+        self.action = action
+    }
+    
     var body: some View {
         HStack(spacing: 0) {
             Spacer()
             Button {
-                onYesNoAnswerSelected(.other)
+                action?(.other)
             } label: {
                 Text(actionButton3Label)
                     .foregroundColor(.orange).font(.body)
@@ -41,16 +36,18 @@ struct YesNoView: View {
             Spacer()
             Divider().background(Color.gray).frame(height: 30)
             Button(LocalizedStrings.questGenericHasFeatureYes.localized) {
-                onYesNoAnswerSelected(.yes)
+                action?(.yes)
             }
             .foregroundColor(.orange)
             .frame(minWidth: 20, maxWidth: 80, minHeight: 50)
             Divider().background(Color.gray).frame(height: 30)
-            Button(LocalizedStrings.questGenericHasFeatureNo.localized) {
-                onYesNoAnswerSelected(.no)
+            Button {
+                action?(.no)
+            } label: {
+                Text(LocalizedStrings.questGenericHasFeatureNo.localized)
+                    .foregroundColor(.orange).font(.body)
+                    .frame(maxWidth: .infinity)
             }
-            .foregroundColor(.orange)
-            .frame(minWidth: 20, maxWidth: 80, minHeight: 50)
         }
     }
 }

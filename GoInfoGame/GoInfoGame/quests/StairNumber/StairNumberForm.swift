@@ -9,8 +9,8 @@ import Foundation
 import SwiftUI
 
 struct StairNumberForm: View, QuestForm {
-    func applyAnswer(answer: Int) {
-    }
+    var action: ((Int) -> Void)?
+    
     typealias AnswerClass = Int
     @State private var numberOfSteps: Int = 0
     @State private var showAlert = false
@@ -22,10 +22,11 @@ struct StairNumberForm: View, QuestForm {
             VStack{
                 HStack {
                     Spacer()
-                    
                     TextField("NoOfSteps", value: $numberOfSteps, formatter: NumberFormatter(),onEditingChanged: { Bool in
+                        print("$numberOfSteps",numberOfSteps)
                         validateInput()
-                    })
+                    }
+                    )
                     .frame(width: 20)
                     .padding(.horizontal)
                     .overlay(Rectangle().frame(height: 1).padding(.top, 25).foregroundColor(.black), alignment: .bottom)
@@ -45,7 +46,7 @@ struct StairNumberForm: View, QuestForm {
                     Spacer()
                     if isInputValid {
                         Button() {
-                            applyAnswer(answer: numberOfSteps)
+                            action?(numberOfSteps)
                         }label: {
                             Image(systemName: "checkmark.circle.fill")
                                 .font(Font.system(size: 40))
@@ -74,6 +75,7 @@ struct StairNumberForm: View, QuestForm {
             
         }.padding()
     }
+    
     private func validateInput() {
         isInputValid = numberOfSteps > 0
     }

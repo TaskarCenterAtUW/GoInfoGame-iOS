@@ -10,32 +10,19 @@ import MapKit
 import CoreLocation
 
 struct MapView: View {
+    
+    @State var trackingMode: MapUserTrackingMode = MapUserTrackingMode.none
+    @StateObject var locationManagerDelegate = LocationManagerDelegate()
+    
     @Environment(\.presentationMode) private var presentationMode
     @AppStorage("isMapFromOnboarding") var isMapFromOnboarding: Bool = false
     @StateObject private var viewModel = MapViewModel()
-    @State private var userTrackingMode: MapUserTrackingMode = .none
-
-    var btnBack: some View {
-        Button(action: {
-            if isMapFromOnboarding {
-                isMapFromOnboarding = false
-                NavigationUtil.popToRootView()
-            } else {
-                presentationMode.wrappedValue.dismiss()
-            }
-        }) {
-            HStack(spacing: 0) {
-                Image(systemName: "chevron.left")
-                    .scaleEffect(0.50)
-                    .font(Font.title.weight(.medium))
-                Text("Back")
-            }
-        }
-    }
-
+    
     var body: some View {
+        
         ZStack {
-            Map(coordinateRegion: $viewModel.coordinateRegion, showsUserLocation: true, userTrackingMode: $userTrackingMode, annotationItems: viewModel.items) { item in
+            Map(coordinateRegion: $viewModel.region, showsUserLocation: true, userTrackingMode: $trackingMode, annotationItems: viewModel.items) { item in
+                
                 MapAnnotation(coordinate: item.coordinateInfo) {
                     Button {
                         viewModel.selectedQuest = item.displayUnit
@@ -66,12 +53,9 @@ struct MapView: View {
                 // Nothing here
             }
         }
-        .onAppear {
-            viewModel.fetchData()
-        }
-        
     }
 }
+
 #Preview {
     MapView()
 }

@@ -9,11 +9,10 @@ import Foundation
 import SwiftUI
 
 struct CrossMarkingForm : View,QuestForm{
+    var action: ((CrossingAnswer) -> Void)?
+    typealias AnswerClass = CrossingAnswer
     @State private var selectedAnswer: CrossingAnswer?
     @State private var showAlert = false
-    func applyAnswer(answer: CrossingAnswer) {
-    }
-    typealias AnswerClass = CrossingAnswer
     let items = [
         TextItem(value: CrossingAnswer.yes, titleId: LocalizedStrings.questCrossingYes.localized),
         TextItem(value: CrossingAnswer.no, titleId: LocalizedStrings.questCrossingNo.localized),
@@ -22,13 +21,15 @@ struct CrossMarkingForm : View,QuestForm{
     
     var body: some View {
         VStack{
-            QuestionHeader(icon: Image("pedestrian"), title: LocalizedStrings.questCrossingTitle.localized, subtitle: "")
+            QuestionHeader(icon: Image("pedestrian"),
+                           title: LocalizedStrings.questCrossingTitle.localized,
+                           subtitle: "")
             VStack{
                 VStack (alignment: .leading){
                     ForEach(items, id: \.titleId) { item in
                         RadioItem(textItem: item, isSelected: item.value == selectedAnswer) {
                             selectedAnswer = item.value
-                            applyAnswer(answer: selectedAnswer ?? .no)
+                            action?(selectedAnswer ?? .no)
                         }
                     }}.padding(.top,10)
                 Divider()

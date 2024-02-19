@@ -10,8 +10,26 @@ import UIKit
 import SwiftUI
 import osmparser
 
-class WayLit: Quest {
+class WayLit: QuestBase, Quest {
+    typealias AnswerClass = YesNoAnswer
+    var _internalExpression: ElementFilterExpression?
+    var relationData: Element? = nil
+    var icon: UIImage = #imageLiteral(resourceName: "add_way_lit")
+    var wikiLink: String = ""
+    var changesetComment: String = ""
     var title: String = "Way Lit"
+    private static let litResidentialRoads =  ["residential", "living_street", "pedestrian"]
+    private static let litWays = ["footway", "cycleway", "steps"]
+    private  static let litNonResidentialRoads = [
+        "motorway", "motorway_link", "trunk", "trunk_link", "primary", "primary_link",
+        "secondary", "secondary_link", "tertiary", "tertiary_link", "unclassified", "service"
+    ]
+    private  static let maxSpeedTypeKeys: Set<String> = [
+        "source:maxspeed",
+        "zone:maxspeed",
+        "maxspeed:type",
+        "zone:traffic"
+    ]
     var filter: String = """
     ways with
             (
@@ -35,33 +53,9 @@ class WayLit: Quest {
             and indoor != yes
             and ~path|footway|cycleway !~ link
     """
-    var icon: UIImage = #imageLiteral(resourceName: "add_way_lit")
-    var wikiLink: String = ""
-    var changesetComment: String = ""
-    var form: AnyView = AnyView(WayLitForm())
-    var relationData: Any? = nil
-    func onAnswer(answer: WayLitOrIsStepsAnswer) {
-    }
     var displayUnit: DisplayUnit {
         DisplayUnit(title: self.title, description: "",parent: self,sheetSize:.SMALL )
     }
-    typealias AnswerClass = WayLitOrIsStepsAnswer
-    
-    private static let litResidentialRoads =  ["residential", "living_street", "pedestrian"]
-    private  static let litNonResidentialRoads = [
-        "motorway", "motorway_link", "trunk", "trunk_link", "primary", "primary_link",
-        "secondary", "secondary_link", "tertiary", "tertiary_link", "unclassified", "service"
-    ]
-    private static let litWays = ["footway", "cycleway", "steps"]
-    private  static let maxSpeedTypeKeys: Set<String> = [
-        "source:maxspeed",
-        "zone:maxspeed",
-        "maxspeed:type",
-        "zone:traffic"
-    ]
-    
-    var _internalExpression: ElementFilterExpression?
-    
     var filterExpression: ElementFilterExpression? {
         if(_internalExpression != nil){
             return _internalExpression
@@ -73,6 +67,30 @@ class WayLit: Quest {
         }
     }
     
+    var form: AnyView {
+        get{
+            return AnyView(self.internalForm as! WayLitForm)
+        }
+    }
+    
+    override init() {
+        super.init()
+        self.internalForm = WayLitForm(action: { [self] answer in
+            self.onAnswer(answer: answer)
+        })
+    }
+    
+    func onAnswer(answer: YesNoAnswer) {
+        if let rData = self.relationData {
+            self.updateTags(id: rData.id, tags: ["lit":answer.rawValue], type: rData.type)
+        }
+    }
+    
+    func copyWithElement(element: Element) -> any Quest {
+        let q = WayLit()
+        q.relationData = element
+        return q
+    }
 }
 
 protocol WayLitOrIsStepsAnswer {}
