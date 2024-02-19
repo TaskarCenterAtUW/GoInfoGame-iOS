@@ -8,15 +8,22 @@
 import Foundation
 import UIKit
 import SwiftUI
+import osmparser
+
 typealias AnswerClass = Bool
 class TactilePavingKerb :Quest {
+    var relationData: Element? = nil
+    func copyWithElement(element: Element) -> any Quest {
+        let tactilePavingKerb = TactilePavingKerb()
+        tactilePavingKerb.relationData = element
+        return tactilePavingKerb
+    }
     var title: String = "Tactile Paving Kerb"
     var filter: String = ""
     var icon: UIImage = #imageLiteral(resourceName: "steps_tactile_paving")
     var wikiLink: String = ""
     var changesetComment: String = ""
     var form: AnyView = AnyView(TactilePavingKerbForm())
-    var relationData: Any? = nil
     var displayUnit: DisplayUnit {
         DisplayUnit(title: self.title, description: "",parent: self,sheetSize:.MEDIUM )
     }

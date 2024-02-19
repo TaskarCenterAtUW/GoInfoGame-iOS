@@ -28,7 +28,7 @@ struct YesNoView: View {
             Button {
                 action?(.other)
             } label: {
-                Text(actionButton3Label)
+                Text(LocalizedStrings.otherAnswers.localized)
                     .foregroundColor(.orange).font(.body)
                     .frame(maxWidth: .infinity)
             }
@@ -53,7 +53,5 @@ struct YesNoView: View {
 }
 
 #Preview {
-    YesNoView(actionButton3Label: ""){ test in
-        print(test)
-    }
+    YesNoView()
 }

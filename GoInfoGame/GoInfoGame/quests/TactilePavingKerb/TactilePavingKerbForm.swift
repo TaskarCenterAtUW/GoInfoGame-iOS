@@ -8,6 +8,8 @@
 import SwiftUI
 
 struct TactilePavingKerbForm: View, QuestForm {
+    var action: ((Bool) -> Void)?
+    
     func applyAnswer(answer: Bool) {
     }
     typealias AnswerClass = Bool
@@ -27,17 +29,11 @@ struct TactilePavingKerbForm: View, QuestForm {
                         .resizable()
                         .scaledToFill()
                     Divider()
-                    YesNoView(actionButton3Label: LocalizedStrings.cantSay.localized){ yesNoAnswer in
-                        showAlert = true
-                        switch yesNoAnswer {
-                        case .yes, .no:
-                            configureAlert(title:  LocalizedStrings.questSourceDialogTitle.localized, content: LocalizedStrings.questSourceDialogNote.localized, leftButton: LocalizedStrings.undoConfirmNegative.localized, rightButton: LocalizedStrings.questGenericConfirmationYes.localized)
-                            selectedAnswer = yesNoAnswer == .yes ? getYesNoBoolValue(.yes) : getYesNoBoolValue(.no)
-                        case .other:
-                            configureAlert(title: LocalizedStrings.questLeaveNewNoteTitle.localized, content: LocalizedStrings.questLeaveNewNoteDescription.localized, leftButton: LocalizedStrings.questLeaveNewNoteNo.localized, rightButton: LocalizedStrings.questLeaveNewNoteYes.localized)
-                            selectedAnswer = getYesNoBoolValue(.no)
+                    YesNoView(action: { answer in
+                        if answer == .yes || answer == .no {
+                            self.showAlert.toggle()
                         }
-                    }
+                    })
                 } .padding(10)
                     .background(
                         RoundedRectangle(cornerRadius: 10)
@@ -45,14 +41,13 @@ struct TactilePavingKerbForm: View, QuestForm {
                             .shadow(color: .gray, radius: 2, x: 0, y: 2))
             }.padding()
             if showAlert {
-                CustomAlert(title: alertTitleText, content: {Text(alertContentText)}, leftActionText: leftAlertText, rightActionText: rightAlertText, leftButtonAction: {
-                    showAlert = false
-                    print("cancel tapped")
-                }, rightButtonAction: {
-                    showAlert = false
-                    applyAnswer(answer: selectedAnswer)
-                    print("selected answer",selectedAnswer)
-                }, height: 200, width: 250)
+                CustomSureAlert(onCancel: {
+                    self.showAlert = false
+                }, onConfirm: {
+                    self.showAlert = false
+                    self.action?(selectedAnswer)
+                })
+                .zIndex(1)
             }
         }.onTapGesture {
             showAlert = false
