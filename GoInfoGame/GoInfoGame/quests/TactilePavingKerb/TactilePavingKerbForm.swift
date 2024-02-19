@@ -15,10 +15,7 @@ struct TactilePavingKerbForm: View, QuestForm {
     typealias AnswerClass = Bool
     @State private var selectedAnswer:Bool = false
     @State private var showAlert = false
-    @State private var alertContentText: String = ""
-    @State private var alertTitleText: String = ""
-    @State private var leftAlertText: String = ""
-    @State private var rightAlertText: String = ""
+    @State private var showOtherAlert = false
     var body: some View {
         ZStack{
             VStack{
@@ -29,9 +26,11 @@ struct TactilePavingKerbForm: View, QuestForm {
                         .resizable()
                         .scaledToFill()
                     Divider()
-                    YesNoView(action: { answer in
+                    YesNoView(actionBtnLabel: LocalizedStrings.cantSay.localized, action: { answer in
                         if answer == .yes || answer == .no {
                             self.showAlert.toggle()
+                        } else if answer == .other{
+                            self.showOtherAlert.toggle()
                         }
                     })
                 } .padding(10)
@@ -40,7 +39,9 @@ struct TactilePavingKerbForm: View, QuestForm {
                             .fill(Color.white)
                             .shadow(color: .gray, radius: 2, x: 0, y: 2))
             }.padding()
+            /// if user selects yes/no option
             if showAlert {
+                /// display are you sure alert
                 CustomSureAlert(onCancel: {
                     self.showAlert = false
                 }, onConfirm: {
@@ -49,17 +50,19 @@ struct TactilePavingKerbForm: View, QuestForm {
                 })
                 .zIndex(1)
             }
+            /// if user selects other answers option
+            if showOtherAlert {
+                /// display leave a note instead alert
+                CustomNoteAlert {
+                    self.showOtherAlert = false
+                } onConfirm: {
+                    self.showOtherAlert = false
+                }
+            }
         }.onTapGesture {
             showAlert = false
         }
         .allowsHitTesting(true)
-
-    }
-    private func configureAlert(title: String, content: String, leftButton: String, rightButton: String) {
-        alertTitleText = title
-        alertContentText = content
-        leftAlertText = leftButton
-        rightAlertText = rightButton
     }
 }
 

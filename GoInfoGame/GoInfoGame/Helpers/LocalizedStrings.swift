@@ -85,6 +85,7 @@ enum LocalizedStrings: String {
     case questStepsRampSeparateWheelchair = "quest_steps_ramp_separate_wheelchair"
     case questStepsRampSeparateWheelchairConfirm = "quest_steps_ramp_separate_wheelchair_confirm"
     case questStepsRampSeparateWheelchairDecline = "quest_steps_ramp_separate_wheelchair_decline"
+    case dontShowAgain = "dont_show_again"
     
     var localized: String {
         return NSLocalizedString(rawValue, comment: "")

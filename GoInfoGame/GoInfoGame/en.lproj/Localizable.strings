@@ -84,4 +84,5 @@
 "quest_steps_ramp_separate_wheelchair" = "Is the wheelchair ramp displayed as a separate way on the map?";
 "quest_steps_ramp_separate_wheelchair_confirm" = "separate";
 "quest_steps_ramp_separate_wheelchair_decline" = "not separate";
+"dont_show_again" = "Don't show again for this session";
 
