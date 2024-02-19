@@ -46,7 +46,6 @@ struct TactilePavingStepsForm: View, QuestForm {
                 }, onConfirm: {
                     self.isShowingAreYouSure = false
                     self.action?(selectedAnswer)
-                    print("Answer is: \(selectedAnswer)")
                 })
                 .zIndex(1)
             }
