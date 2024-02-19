@@ -1,5 +1,5 @@
 //
-//  CrossMarkingForm.swift
+//  CrossingForm.swift
 //  GoInfoGame
 //
 //  Created by Lakshmi Shweta Pochiraju on 19/01/24.
@@ -8,7 +8,7 @@
 import Foundation
 import SwiftUI
 
-struct CrossMarkingForm : View,QuestForm{
+struct CrossingForm : View,QuestForm{
     var action: ((CrossingAnswer) -> Void)?
     typealias AnswerClass = CrossingAnswer
     @State private var selectedAnswer: CrossingAnswer?

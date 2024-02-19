@@ -1,5 +1,5 @@
 //
-//  CrossMarking.swift
+//  Crossing.swift
 //  GoInfoGame
 //
 //  Created by Lakshmi Shweta Pochiraju on 19/01/24.
@@ -10,7 +10,7 @@ import UIKit
 import SwiftUI
 import osmparser
 
-class CrossMarking: QuestBase, Quest {
+class Crossing: QuestBase, Quest {
     typealias AnswerClass = CrossingAnswer
     var _internalExpression: ElementFilterExpression?
     var title: String = "Cross Marking"
@@ -33,13 +33,13 @@ class CrossMarking: QuestBase, Quest {
     }
     var form: AnyView {
         get{
-            return AnyView(self.internalForm as! CrossMarkingForm)
+            return AnyView(self.internalForm as! CrossingForm)
         }
     }
     
     override init() {
         super.init()
-        self.internalForm = CrossMarkingForm(action: { [self] answer in
+        self.internalForm = CrossingForm(action: { [self] answer in
             self.onAnswer(answer: answer)
         })
     }
@@ -51,7 +51,7 @@ class CrossMarking: QuestBase, Quest {
     }
     
     func copyWithElement(element: Element) -> any Quest {
-        let q = CrossMarking()
+        let q = Crossing()
         q.relationData = element
         return q
     }

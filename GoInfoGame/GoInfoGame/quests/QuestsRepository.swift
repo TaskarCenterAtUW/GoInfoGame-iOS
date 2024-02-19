@@ -21,7 +21,7 @@ class QuestsRepository {
         TactilePavingSteps(),
         WayLit(),
         BusStopLit(),
-        CrossMarking(),
+        Crossing(),
         SideWalkValidation(),
         SidewalkSurface()
     ]

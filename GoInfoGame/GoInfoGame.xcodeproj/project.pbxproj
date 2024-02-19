@@ -52,8 +52,8 @@
 		973FC03F2B59418B00878269 /* WayLit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 973FC03E2B59418B00878269 /* WayLit.swift */; };
 		973FC0422B59467A00878269 /* BusStopLit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 973FC0412B59467A00878269 /* BusStopLit.swift */; };
 		973FC0442B59468800878269 /* BusStopLitForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = 973FC0432B59468800878269 /* BusStopLitForm.swift */; };
-		973FC0482B5A477E00878269 /* CrossMarking.swift in Sources */ = {isa = PBXBuildFile; fileRef = 973FC0472B5A477E00878269 /* CrossMarking.swift */; };
-		973FC04A2B5A478C00878269 /* CrossMarkingForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = 973FC0492B5A478C00878269 /* CrossMarkingForm.swift */; };
+		973FC0482B5A477E00878269 /* Crossing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 973FC0472B5A477E00878269 /* Crossing.swift */; };
+		973FC04A2B5A478C00878269 /* CrossingForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = 973FC0492B5A478C00878269 /* CrossingForm.swift */; };
 		973FC04C2B5A5F5F00878269 /* RadioItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 973FC04B2B5A5F5F00878269 /* RadioItem.swift */; };
 		97AC1C062B6A45B0004F0BF4 /* SideWalkValidation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97AC1C052B6A45B0004F0BF4 /* SideWalkValidation.swift */; };
 		97AC1C082B6A45C9004F0BF4 /* SideWalkValidationForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97AC1C072B6A45C9004F0BF4 /* SideWalkValidationForm.swift */; };
@@ -300,8 +300,8 @@
 		973FC03E2B59418B00878269 /* WayLit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WayLit.swift; sourceTree = "<group>"; };
 		973FC0412B59467A00878269 /* BusStopLit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BusStopLit.swift; sourceTree = "<group>"; };
 		973FC0432B59468800878269 /* BusStopLitForm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BusStopLitForm.swift; sourceTree = "<group>"; };
-		973FC0472B5A477E00878269 /* CrossMarking.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = CrossMarking.swift; path = GoInfoGame/quests/CrossingMarking/CrossMarking.swift; sourceTree = SOURCE_ROOT; };
-		973FC0492B5A478C00878269 /* CrossMarkingForm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = CrossMarkingForm.swift; path = GoInfoGame/quests/CrossingMarking/CrossMarkingForm.swift; sourceTree = SOURCE_ROOT; };
+		973FC0472B5A477E00878269 /* Crossing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = Crossing.swift; path = GoInfoGame/quests/CrossingMarking/Crossing.swift; sourceTree = SOURCE_ROOT; };
+		973FC0492B5A478C00878269 /* CrossingForm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = CrossingForm.swift; path = GoInfoGame/quests/CrossingMarking/CrossingForm.swift; sourceTree = SOURCE_ROOT; };
 		973FC04B2B5A5F5F00878269 /* RadioItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RadioItem.swift; sourceTree = "<group>"; };
 		97AC1C052B6A45B0004F0BF4 /* SideWalkValidation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SideWalkValidation.swift; sourceTree = "<group>"; };
 		97AC1C072B6A45C9004F0BF4 /* SideWalkValidationForm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SideWalkValidationForm.swift; sourceTree = "<group>"; };
@@ -710,13 +710,13 @@
 			path = StepsRamp;
 			sourceTree = "<group>";
 		};
-		973FC0462B5A475C00878269 /* CrossingMarking */ = {
+		973FC0462B5A475C00878269 /* Crossing */ = {
 			isa = PBXGroup;
 			children = (
-				973FC0472B5A477E00878269 /* CrossMarking.swift */,
-				973FC0492B5A478C00878269 /* CrossMarkingForm.swift */,
+				973FC0472B5A477E00878269 /* Crossing.swift */,
+				973FC0492B5A478C00878269 /* CrossingForm.swift */,
 			);
-			path = CrossingMarking;
+			path = Crossing;
 			sourceTree = "<group>";
 		};
 		97AC1C042B6A44C1004F0BF4 /* SideWalkValidation */ = {
@@ -955,7 +955,7 @@
 			children = (
 				97AC1C0D2B70CED0004F0BF4 /* SidewalkSurface */,
 				97AC1C042B6A44C1004F0BF4 /* SideWalkValidation */,
-				973FC0462B5A475C00878269 /* CrossingMarking */,
+				973FC0462B5A475C00878269 /* Crossing */,
 				973FC0452B59495900878269 /* StepsRamp */,
 				973FC0402B59459A00878269 /* BusStopLit */,
 				973FC03B2B59404D00878269 /* WayLit */,
@@ -1605,7 +1605,7 @@
 				97AC1C0A2B6B7F10004F0BF4 /* CustomVerticalButtonsList.swift in Sources */,
 				973FC0352B592C0F00878269 /* StairNumberForm.swift in Sources */,
 				FAC9E60F2B04F9C800E2C608 /* OverpassRequestManager.swift in Sources */,
-				973FC0482B5A477E00878269 /* CrossMarking.swift in Sources */,
+				973FC0482B5A477E00878269 /* Crossing.swift in Sources */,
 				05DBBB642B17204300B6F110 /* RealmOPGeometry.swift in Sources */,
 				FA87A8102B68142F000A6BEA /* LoadingView.swift in Sources */,
 				973FC03D2B59417D00878269 /* WayLitForm.swift in Sources */,
@@ -1616,7 +1616,7 @@
 				A4E711AE2B59004700C9DE08 /* StepsIncline.swift in Sources */,
 				973FC0142B4D353800878269 /* SideWalkWidthForm.swift in Sources */,
 				971575172B5FFD6F0044797C /* MapView.swift in Sources */,
-				973FC04A2B5A478C00878269 /* CrossMarkingForm.swift in Sources */,
+				973FC04A2B5A478C00878269 /* CrossingForm.swift in Sources */,
 				973FC03F2B59418B00878269 /* WayLit.swift in Sources */,
 				A40004EC2B62338400AF21FB /* AppQuestManager.swift in Sources */,
 				FA5853C12B21F17F00301CDA /* OnboardingView.swift in Sources */,
