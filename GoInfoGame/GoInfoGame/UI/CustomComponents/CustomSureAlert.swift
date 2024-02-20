@@ -8,18 +8,23 @@
 import SwiftUI
 
 struct CustomSureAlert: View {
+    let alertTitle: String
+    let content: String
+    let isDontShowCheckVisible: Bool
     let onCancel: () -> Void
     let onConfirm: () -> Void
     
     var body: some View {
-        CustomAlert(title: LocalizedStrings.questSourceDialogTitle.localized, content: {
+        CustomAlert(title: alertTitle, content: {
             VStack {
-                Text(LocalizedStrings.questSourceDialogNote.localized)
+                Text(content)
                 Spacer()
-                HStack {
-                    Image(systemName: "square")
-                        .foregroundColor(.gray)
-                    Text(LocalizedStrings.dontShowAgain.localized)
+                if isDontShowCheckVisible {
+                    HStack {
+                        Image(systemName: "square")
+                            .foregroundColor(.gray)
+                        Text(LocalizedStrings.dontShowAgain.localized)
+                    }
                 }
             }
         }, leftActionText: LocalizedStrings.undoConfirmNegative.localized, rightActionText: LocalizedStrings.questGenericConfirmationYes.localized, leftButtonAction: onCancel, rightButtonAction: onConfirm, height: 200, width: 270)
@@ -27,5 +32,5 @@ struct CustomSureAlert: View {
 }
 
 #Preview {
-    CustomSureAlert(onCancel: {}, onConfirm: {})
+    CustomSureAlert(alertTitle: "", content: LocalizedStrings.questSourceDialogNote.localized,isDontShowCheckVisible: true, onCancel: {}, onConfirm: {})
 }

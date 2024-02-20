@@ -41,7 +41,7 @@ struct TactilePavingStepsForm: View, QuestForm {
                             .shadow(color: .gray, radius: 2, x: 0, y: 2))
             }.padding()
             if isShowingAreYouSure {
-                CustomSureAlert(onCancel: {
+                CustomSureAlert(alertTitle: LocalizedStrings.questSourceDialogTitle.localized, content: LocalizedStrings.questSourceDialogNote.localized, isDontShowCheckVisible: true,onCancel: {
                     self.isShowingAreYouSure = false
                 }, onConfirm: {
                     self.isShowingAreYouSure = false

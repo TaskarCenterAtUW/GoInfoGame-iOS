@@ -86,4 +86,5 @@
 "quest_steps_ramp_separate_wheelchair_decline" = "not separate";
 "quest_pedestrian_crossing_island" = "Does this pedestrian crossing have an island?";
 "dont_show_again" = "Don't show again for this session";
+"quest_tactile_paving_kerb_title" = "Is there tactile paving on this curb here?";
 

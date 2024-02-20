@@ -19,7 +19,7 @@ struct TactilePavingKerbForm: View, QuestForm {
     var body: some View {
         ZStack{
             VStack{
-                QuestionHeader(icon:Image("kerb_tactile_paving"), title: LocalizedStrings.questStepCountTitle.localized, subtitle: "Lowered Curb")
+                QuestionHeader(icon:Image("kerb_tactile_paving"), title: LocalizedStrings.questTactilePavingKerbTitle.localized, subtitle: "Lowered Curb")
                 VStack(alignment:.leading){
                     Text(LocalizedStrings.usuallyLooksLikeThis.localized).font(.caption).foregroundColor(.gray)
                     Image("tactile_paving_illustration")
@@ -42,7 +42,7 @@ struct TactilePavingKerbForm: View, QuestForm {
             /// if user selects yes/no option
             if showAlert {
                 /// display are you sure alert
-                CustomSureAlert(onCancel: {
+                CustomSureAlert(alertTitle: LocalizedStrings.questSourceDialogTitle.localized, content: LocalizedStrings.questSourceDialogNote.localized, isDontShowCheckVisible: true, onCancel: {
                     self.showAlert = false
                 }, onConfirm: {
                     self.showAlert = false
@@ -53,11 +53,11 @@ struct TactilePavingKerbForm: View, QuestForm {
             /// if user selects other answers option
             if showOtherAlert {
                 /// display leave a note instead alert
-                CustomNoteAlert {
+                CustomSureAlert(alertTitle: LocalizedStrings.questLeaveNewNoteTitle.localized, content: LocalizedStrings.questLeaveNewNoteDescription.localized, isDontShowCheckVisible: false, onCancel: {
                     self.showOtherAlert = false
-                } onConfirm: {
+                }, onConfirm: {
                     self.showOtherAlert = false
-                }
+                })
             }
         }.onTapGesture {
             showAlert = false

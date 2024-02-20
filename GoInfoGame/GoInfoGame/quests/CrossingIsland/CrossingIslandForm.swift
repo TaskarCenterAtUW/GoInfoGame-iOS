@@ -15,6 +15,7 @@ struct CrossingIslandForm: View, QuestForm {
     typealias AnswerClass = YesNoAnswer
     @State private var isShowingAreYouSure = false
     @State private var selectedAnswer: YesNoAnswer = .unknown
+    @State private var showOtherAlert = false
     
     var body: some View {
         ZStack {
@@ -26,6 +27,8 @@ struct CrossingIslandForm: View, QuestForm {
                     self.selectedAnswer = answer
                     if answer == .yes || answer == .no {
                         self.isShowingAreYouSure.toggle()
+                    } else if answer == .other {
+                        self.showOtherAlert.toggle()
                     }
                 })
                 .background(
@@ -34,13 +37,22 @@ struct CrossingIslandForm: View, QuestForm {
                         .shadow(color: .gray, radius: 2, x: 0, y: 2))
             }.padding()
             if isShowingAreYouSure {
-                CustomSureAlert(onCancel: {
+                CustomSureAlert(alertTitle: LocalizedStrings.questSourceDialogTitle.localized, content: LocalizedStrings.questSourceDialogNote.localized, isDontShowCheckVisible: true,onCancel: {
                     self.isShowingAreYouSure = false
                 }, onConfirm: {
                     self.isShowingAreYouSure = false
                     self.action?(selectedAnswer)
                 })
                 .zIndex(1)
+            }
+            /// if user selects other answers option
+            if showOtherAlert {
+                /// display leave a note instead alert
+                CustomSureAlert(alertTitle: LocalizedStrings.questLeaveNewNoteTitle.localized, content: LocalizedStrings.questLeaveNewNoteDescription.localized, isDontShowCheckVisible: false, onCancel: {
+                    self.showOtherAlert = false
+                }, onConfirm: {
+                    self.showOtherAlert = false
+                })
             }
         }
     }
