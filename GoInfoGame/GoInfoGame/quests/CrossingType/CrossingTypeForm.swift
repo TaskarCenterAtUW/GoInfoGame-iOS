@@ -1,18 +1,17 @@
 //
-//  TactilePavingKerbForm.swift
+//  CrossingTypeForm.swift
 //  GoInfoGame
 //
-//  Created by Lakshmi Shweta Pochiraju on 06/02/24.
+//  Created by Lakshmi Shweta Pochiraju on 20/02/24.
 //
 
 import SwiftUI
 
-struct TactilePavingKerbForm: View, QuestForm {
-    var action: ((Bool) -> Void)?
-    
-    func applyAnswer(answer: Bool) {
+struct CrossingTypeForm: View, QuestForm {
+    var action: ((CrossingTypeAnswer) -> Void)?
+    func applyAnswer(answer: CrossingTypeAnswer) {
     }
-    typealias AnswerClass = Bool
+    typealias AnswerClass = CrossingTypeAnswer
     @State private var selectedAnswer:Bool = false
     @State private var showAlert = false
     @State private var showOtherAlert = false
@@ -46,7 +45,7 @@ struct TactilePavingKerbForm: View, QuestForm {
                     self.showAlert = false
                 }, onConfirm: {
                     self.showAlert = false
-                    self.action?(selectedAnswer)
+//                    self.action?(selectedAnswer)
                 })
                 .zIndex(1)
             }
@@ -65,5 +64,5 @@ struct TactilePavingKerbForm: View, QuestForm {
 }
 
 #Preview {
-    TactilePavingKerbForm()
+    CrossingTypeForm()
 }
