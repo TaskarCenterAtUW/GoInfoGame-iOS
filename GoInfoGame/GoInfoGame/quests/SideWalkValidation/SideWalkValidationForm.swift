@@ -78,7 +78,7 @@ struct SideWalkValidationForm: QuestForm ,View {
                     print("selectedButton value", selectedOtherAnswerOption?.label ?? "")
                     /// To select other answers option as SideWalkValidationAnswer
                     selectedAnswer = SideWalkValidationAnswer.fromString(selectedOtherAnswerOption?.label ?? "", id: selectedOtherAnswerOption?.id) ?? SideWalkValidationAnswer.none
-                })}, leftActionText: "", rightActionText: "", rightButtonAction: {}, height: 150, width: 200)
+                })}, leftActionText: "", rightActionText: "", leftButtonAction: {}, rightButtonAction: {}, height: 150, width: 200)
             }
         }.onTapGesture {
             showAlert = false

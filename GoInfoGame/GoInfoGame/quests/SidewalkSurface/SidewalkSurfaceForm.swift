@@ -84,7 +84,7 @@ struct SidewalkSurfaceForm: QuestForm ,View {
                     print("selectedButton value", selectedOtherAnswerOption?.label ?? "")
                     /// To select other answers option as SidewalkSurfaceAnswer
                     selectedAnswer = SidewalkSurfaceAnswer(value: SurfaceAndNote(surface: Surface.none,note: selectedOtherAnswerOption?.label ?? ""))
-                })}, leftActionText: "", rightActionText: "", rightButtonAction: {}, height: 100, width: 200)
+                })}, leftActionText: "", rightActionText: "", leftButtonAction: {}, rightButtonAction: {}, height: 100, width: 200)
             }
         }.onTapGesture {
             showAlert = false

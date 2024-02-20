@@ -13,13 +13,13 @@ struct CustomAlert<ContentItem: View>: View {
     let content: ContentItem
     let leftActionText: String?
     let rightActionText: String
-    let leftButtonAction: (() -> Void)?
+    let leftButtonAction: () -> Void
     let rightButtonAction: () -> Void
     let height: CGFloat
     let width: CGFloat
     
     // Initializer
-    init(title: String, @ViewBuilder content: () -> ContentItem, leftActionText: String?, rightActionText: String, leftButtonAction: (() -> Void)? = nil, rightButtonAction: @escaping () -> Void, height: CGFloat, width: CGFloat) {
+    init(title: String, @ViewBuilder content: () -> ContentItem, leftActionText: String?, rightActionText: String, leftButtonAction: @escaping () -> Void, rightButtonAction: @escaping () -> Void, height: CGFloat, width: CGFloat) {
         self.title = title
         self.content = content()
         self.leftActionText = leftActionText
@@ -47,6 +47,7 @@ struct CustomAlert<ContentItem: View>: View {
                         .padding(.bottom, 8)
                         .padding(.horizontal, 16)
                         .fixedSize(horizontal: false, vertical: true)
+                        .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: .infinity, alignment: .leading)
                 }
                 
                 // Display the custom content of the alert.
@@ -62,7 +63,7 @@ struct CustomAlert<ContentItem: View>: View {
                     if let leftActionText = leftActionText {
                         // Left button with optional action.
                         Button(action: {
-                            leftButtonAction?()
+                            leftButtonAction()
                         }) {
                             Text(leftActionText)
                                 .font(.system(size: 14, weight: .bold))
@@ -95,5 +96,5 @@ struct CustomAlert<ContentItem: View>: View {
 }
 
 #Preview {
-    CustomAlert(title: "", content: {Text("Test")}, leftActionText: "", rightActionText: "", rightButtonAction: {}, height: 200,width: 270)
+    CustomAlert(title: "", content: {Text("Test")}, leftActionText: "", rightActionText: "", leftButtonAction: {}, rightButtonAction: {}, height: 200,width: 270)
 }

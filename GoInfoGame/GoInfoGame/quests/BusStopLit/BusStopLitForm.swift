@@ -21,7 +21,7 @@ struct BusStopLitForm: View, QuestForm {
                 QuestionHeader(icon: Image("stop_lit"),
                                title: LocalizedStrings.questBusStopLitTitle.localized,
                                subtitle: "SideWalk")
-                YesNoView(action: { answer in
+                YesNoView(actionBtnLabel: LocalizedStrings.otherAnswers.localized, action: { answer in
                     self.selectedAnswer = answer
                     if answer == .yes || answer == .no {
                         self.isShowingAreYouSure.toggle()
