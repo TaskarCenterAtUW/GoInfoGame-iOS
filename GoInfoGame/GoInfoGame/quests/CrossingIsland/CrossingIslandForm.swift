@@ -22,7 +22,7 @@ struct CrossingIslandForm: View, QuestForm {
                 QuestionHeader(icon: Image("ic_quest_pedestrian_crossing_island"),
                                title: LocalizedStrings.questPedestrianCrossingIsland.localized,
                                subtitle: "Unmarked Crossing")
-                YesNoView(action: { answer in
+                YesNoView(actionBtnLabel: LocalizedStrings.cantSay.localized, action: { answer in
                     self.selectedAnswer = answer
                     if answer == .yes || answer == .no {
                         self.isShowingAreYouSure.toggle()
