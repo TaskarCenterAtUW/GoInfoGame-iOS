@@ -28,7 +28,7 @@ struct TactilePavingStepsForm: View, QuestForm {
                         .resizable()
                         .scaledToFill()
                     Divider()
-                    YesNoView(action: { answer in
+                    YesNoView(actionBtnLabel: LocalizedStrings.otherAnswers.localized, action: { answer in
                         self.selectedAnswer = answer
                         if answer == .yes || answer == .no {
                             self.isShowingAreYouSure.toggle()

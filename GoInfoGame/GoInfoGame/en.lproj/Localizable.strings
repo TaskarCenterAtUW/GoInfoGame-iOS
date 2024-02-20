@@ -1,4 +1,4 @@
-/* 
+/*
   Localizable.strings
   GoInfoGame
 
@@ -12,7 +12,6 @@
 "questions_list" = "Questions List";
 "quest_generic_confirmation_title" = "Are you sure?";
 "quest_road_width_unusualInput_confirmation_description" = "This width looks implausible. Remember, this should be the width from curb to curb, including on-street parking, bicycle lanes etc.";
-"quest_generic_confirmation_yes" = "YES, IAM SURE";
 "quest_generic_confirmation_no" = "I WILL CHECK";
 "quest_specify_handrails" = "Specify whether steps have handrails";
 "quest_handrail_title" = "Do these steps have a handrail?";
@@ -74,8 +73,17 @@
 "quest_surface_value_tartan" = "Tartan";
 "quest_surface_value_paved" = "Paved (generic)";
 "quest_surface_value_unpaved" = "Unpaved (generic)";
+"quest_leave_new_note_title" = "Leave a note instead?";
+"quest_leave_new_note_description" = "You can leave a public note for other mappers to resolve at this location, or hide this quest for yourself only";
+ "quest_leave_new_note_yes" = "Leave note";
+"quest_leave_new_note_no" = "Hide";
+"quest_source_dialog_title" = "Are you sure you checked this on-site?";
+"quest_source_dialog_note" = "Only information that was verified in-person should be entered.";
+"undo_confirm_negative" = "Cancel";
+"quest_generic_confirmation_yes" = "Yes, I am sure";
 "quest_steps_ramp_separate_wheelchair" = "Is the wheelchair ramp displayed as a separate way on the map?";
 "quest_steps_ramp_separate_wheelchair_confirm" = "separate";
 "quest_steps_ramp_separate_wheelchair_decline" = "not separate";
 "quest_pedestrian_crossing_island" = "Does this pedestrian crossing have an island?";
+"dont_show_again" = "Don't show again for this session";
 

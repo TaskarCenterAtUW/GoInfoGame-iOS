@@ -16,11 +16,13 @@ enum YesNoAnswer: String {
 
 struct YesNoView: View {
 
-    var action: ((_ answer:YesNoAnswer) -> Void)?
-    
-    init(action: ((_ answer: YesNoAnswer) -> Void)? = nil) {
-        self.action = action
-    }
+    var actionBtnLabel: String
+        var action: ((_ answer: YesNoAnswer) -> Void)?
+        
+        init(actionBtnLabel: String, action: ((_ answer: YesNoAnswer) -> Void)? = nil) {
+            self.actionBtnLabel = actionBtnLabel
+            self.action = action
+        }
     
     var body: some View {
         HStack(spacing: 0) {
@@ -28,7 +30,7 @@ struct YesNoView: View {
             Button {
                 action?(.other)
             } label: {
-                Text(LocalizedStrings.otherAnswers.localized)
+                Text(actionBtnLabel)
                     .foregroundColor(.orange).font(.body)
                     .frame(maxWidth: .infinity)
             }
@@ -53,5 +55,5 @@ struct YesNoView: View {
 }
 
 #Preview {
-    YesNoView()
+    YesNoView(actionBtnLabel: "")
 }

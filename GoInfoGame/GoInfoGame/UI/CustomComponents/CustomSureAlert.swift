@@ -12,17 +12,17 @@ struct CustomSureAlert: View {
     let onConfirm: () -> Void
     
     var body: some View {
-        CustomAlert(title: "Are you sure you checked this on-site?", content: {
+        CustomAlert(title: LocalizedStrings.questSourceDialogTitle.localized, content: {
             VStack {
-                Text("Only information that was found on a survey should be entered.")
+                Text(LocalizedStrings.questSourceDialogNote.localized)
                 Spacer()
                 HStack {
                     Image(systemName: "square")
                         .foregroundColor(.gray)
-                    Text("Don't show again for this session")
+                    Text(LocalizedStrings.dontShowAgain.localized)
                 }
             }
-        }, leftActionText: "CANCEL", rightActionText: "YES, I AM SURE", leftButtonAction: onCancel, rightButtonAction: onConfirm, height: 200, width: 270)
+        }, leftActionText: LocalizedStrings.undoConfirmNegative.localized, rightActionText: LocalizedStrings.questGenericConfirmationYes.localized, leftButtonAction: onCancel, rightButtonAction: onConfirm, height: 200, width: 270)
     }
 }
 
