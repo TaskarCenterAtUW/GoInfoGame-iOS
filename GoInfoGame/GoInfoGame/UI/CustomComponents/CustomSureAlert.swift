@@ -8,24 +8,31 @@
 import SwiftUI
 
 struct CustomSureAlert: View {
-    let onCancel: () -> Void
-    let onConfirm: () -> Void
+    let alertTitle: String /// Title of the alert
+    let content: String /// Main content of the alert
+    let leftBtnLabel: String /// Label for the left button (usually cancel)
+    let rightBtnLabel: String /// Label for the right button (usually confirm)
+    let isDontShowCheckVisible: Bool /// Flag indicating if the "Don't show again" checkbox should be visible
+    let onCancel: () -> Void /// Closure to handle cancel action
+    let onConfirm: () -> Void /// Closure to handle confirm action
     
     var body: some View {
-        CustomAlert(title: LocalizedStrings.questSourceDialogTitle.localized, content: {
+        CustomAlert(title: alertTitle, content: {
             VStack {
-                Text(LocalizedStrings.questSourceDialogNote.localized)
+                Text(content)
                 Spacer()
-                HStack {
-                    Image(systemName: "square")
-                        .foregroundColor(.gray)
-                    Text(LocalizedStrings.dontShowAgain.localized)
+                if isDontShowCheckVisible {
+                    HStack {
+                        Image(systemName: "square")
+                            .foregroundColor(.gray)
+                        Text(LocalizedStrings.dontShowAgain.localized)
+                    }
                 }
             }
-        }, leftActionText: LocalizedStrings.undoConfirmNegative.localized, rightActionText: LocalizedStrings.questGenericConfirmationYes.localized, leftButtonAction: onCancel, rightButtonAction: onConfirm, height: 200, width: 270)
+        }, leftActionText: leftBtnLabel, rightActionText: rightBtnLabel, leftButtonAction: onCancel, rightButtonAction: onConfirm, height: 200, width: 270)
     }
 }
 
 #Preview {
-    CustomSureAlert(onCancel: {}, onConfirm: {})
+    CustomSureAlert(alertTitle: "", content: LocalizedStrings.questSourceDialogNote.localized,leftBtnLabel: "", rightBtnLabel: "", isDontShowCheckVisible: true, onCancel: {}, onConfirm: {})
 }

@@ -85,12 +85,11 @@ enum LocalizedStrings: String {
     case questStepsRampSeparateWheelchair = "quest_steps_ramp_separate_wheelchair"
     case questStepsRampSeparateWheelchairConfirm = "quest_steps_ramp_separate_wheelchair_confirm"
     case questStepsRampSeparateWheelchairDecline = "quest_steps_ramp_separate_wheelchair_decline"
+    case questPedestrianCrossingIsland = "quest_pedestrian_crossing_island"
     case dontShowAgain = "dont_show_again"
+    case questTactilePavingKerbTitle = "quest_tactile_paving_kerb_title"
     
     var localized: String {
         return NSLocalizedString(rawValue, comment: "")
     }
 }
-
-//"quest_step_count_title"= "How many steps are here?"
-//"quest_step_count_stile_hint" = "Just the number of steps to reach the top. If the step count differs on each side, give the higher number."

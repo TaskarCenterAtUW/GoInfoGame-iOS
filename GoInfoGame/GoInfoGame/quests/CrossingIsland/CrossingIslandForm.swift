@@ -1,30 +1,34 @@
 //
-//  BusStopLitForm.swift
+//  CrossingIslandForm.swift
 //  GoInfoGame
 //
-//  Created by Lakshmi Shweta Pochiraju on 18/01/24.
+//  Created by Lakshmi Shweta Pochiraju on 20/02/24.
 //
 
-import Foundation
 import SwiftUI
 
-struct BusStopLitForm: View, QuestForm {
+import SwiftUI
+
+struct CrossingIslandForm: View, QuestForm {
     var action: ((YesNoAnswer) -> Void)?
         
     typealias AnswerClass = YesNoAnswer
     @State private var isShowingAreYouSure = false
     @State private var selectedAnswer: YesNoAnswer = .unknown
+    @State private var showOtherAlert = false
     
     var body: some View {
         ZStack {
             VStack{
-                QuestionHeader(icon: Image("stop_lit"),
-                               title: LocalizedStrings.questBusStopLitTitle.localized,
-                               subtitle: "SideWalk")
-                YesNoView(actionBtnLabel: LocalizedStrings.otherAnswers.localized, action: { answer in
+                QuestionHeader(icon: Image("ic_quest_pedestrian_crossing_island"),
+                               title: LocalizedStrings.questPedestrianCrossingIsland.localized,
+                               subtitle: "Unmarked Crossing")
+                YesNoView(actionBtnLabel: LocalizedStrings.cantSay.localized, action: { answer in
                     self.selectedAnswer = answer
                     if answer == .yes || answer == .no {
                         self.isShowingAreYouSure.toggle()
+                    } else if answer == .other {
+                        self.showOtherAlert.toggle()
                     }
                 })
                 .background(
@@ -41,10 +45,19 @@ struct BusStopLitForm: View, QuestForm {
                 })
                 .zIndex(1)
             }
+            /// if user selects other answers option
+            if showOtherAlert {
+                /// display leave a note instead alert
+                CustomSureAlert(alertTitle: LocalizedStrings.questLeaveNewNoteTitle.localized, content: LocalizedStrings.questLeaveNewNoteDescription.localized,leftBtnLabel: LocalizedStrings.questLeaveNewNoteNo.localized, rightBtnLabel:LocalizedStrings.questLeaveNewNoteYes.localized, isDontShowCheckVisible: false, onCancel: {
+                    self.showOtherAlert = false
+                }, onConfirm: {
+                    self.showOtherAlert = false
+                })
+            }
         }
     }
 }
 
 #Preview {
-    BusStopLitForm()
+    CrossingIslandForm()
 }

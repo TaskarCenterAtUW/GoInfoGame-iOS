@@ -32,7 +32,7 @@ struct WayLitForm: View, QuestForm {
                     .shadow(color: .gray, radius: 2, x: 0, y: 2))
             }.padding()
             if isShowingAreYouSure {
-                CustomSureAlert(onCancel: {
+                CustomSureAlert(alertTitle: LocalizedStrings.questSourceDialogTitle.localized, content: LocalizedStrings.questSourceDialogNote.localized,leftBtnLabel: LocalizedStrings.undoConfirmNegative.localized, rightBtnLabel:LocalizedStrings.questGenericConfirmationYes.localized, isDontShowCheckVisible: true,onCancel: {
                     self.isShowingAreYouSure = false
                 }, onConfirm: {
                     self.isShowingAreYouSure = false
