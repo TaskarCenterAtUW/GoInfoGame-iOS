@@ -11,7 +11,7 @@ import SwiftUI
 import osmparser
 
 class CrossingType: QuestBase, Quest {
-    var title: String = ""
+    var title: String = "Crossing Type"
     var filter: String = ""
     var icon: UIImage = #imageLiteral(resourceName: "pedestrian_crossing.pdf")
     var wikiLink: String = ""
@@ -19,7 +19,7 @@ class CrossingType: QuestBase, Quest {
     var relationData: Element? = nil
     var _internalExpression: ElementFilterExpression?
     var displayUnit: DisplayUnit {
-        DisplayUnit(title: self.title, description: "",parent: self,sheetSize:.SMALL )
+        DisplayUnit(title: self.title, description: "",parent: self,sheetSize:.MEDIUM )
     }
     var filterExpression: ElementFilterExpression? {
         if(_internalExpression != nil){
@@ -58,4 +58,5 @@ enum CrossingTypeAnswer: String {
     case trafficSignals = "traffic_signals"
     case marked = "marked"
     case unmarked = "unmarked"
+    case none = "none"
 }
