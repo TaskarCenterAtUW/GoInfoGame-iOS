@@ -6,10 +6,8 @@
 //
 
 import XCTest
-
 @testable import osmapi
 import CoreLocation
-
 
 final class OSMConnectionTests: XCTestCase {
     
@@ -17,8 +15,8 @@ final class OSMConnectionTests: XCTestCase {
     let osmTestNode = "4977475294"
     let posmTestWay = "18441"
     
-    let posmConfig = OSMConfig.test
-    let posmCreds = OSMLogin.test
+    let posmConfig = OSMConfig.testOSM
+    let posmCreds = OSMLogin.testOSM
     
     var posmConnection : OSMConnection?
     
@@ -41,7 +39,6 @@ final class OSMConnectionTests: XCTestCase {
             case .success(let responses):
                 XCTAssert(responses is OSMChangesetResponse)
             case .failure(let err):
-                print(err)
                 XCTFail("Error occured while getting message")
             }
             expectation.fulfill()
@@ -66,7 +63,6 @@ final class OSMConnectionTests: XCTestCase {
     }
     
     func testGetWay() throws {
-        
         let osmConnection = OSMConnection()
         let expectation = expectation(description: "Expect to get node details")
         osmConnection.getWay(id: "508700858") { (result : Result<OSMWayResponse, Error>) in
@@ -242,11 +238,11 @@ final class OSMConnectionTests: XCTestCase {
     func testGetUserDataWithId() throws {
         let osmConnection = OSMConnection()
         let expectation = expectation(description: "Expect to get user details")
-        osmConnection.getUserDetailsWithId(id: "20924840") { result in
+        osmConnection.getUserDetailsWithId(id: "20018") { result in
             switch result {
             case .success(let userDataResponse):
                 let user = userDataResponse.user.id
-                XCTAssertEqual(user, 20924840)
+                XCTAssertEqual(user, 20018)
             case .failure(let error):
                 XCTFail("Failed while getting the user details: \(error)")
             }
@@ -262,7 +258,7 @@ final class OSMConnectionTests: XCTestCase {
             case .success(let userDataResponse):
                 let user = userDataResponse.user.id
                 print(userDataResponse)
-                XCTAssertEqual(user, 1)
+                XCTAssertEqual(user, 20018)
             case .failure(let error):
                 XCTFail("Failed while getting the user details: \(error)")
             }

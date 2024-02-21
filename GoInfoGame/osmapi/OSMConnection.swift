@@ -18,7 +18,7 @@ public class OSMConnection {
     
     // Lets see if we can start with some authentication or node
     
- public   init(config: OSMConfig = OSMConfig.test, currentChangesetId: Int? = nil, userCreds: OSMLogin = OSMLogin.test) {
+    public init(config: OSMConfig = OSMConfig.testOSM, currentChangesetId: Int? = nil, userCreds: OSMLogin = OSMLogin.testOSM) {
         self.baseUrl = config.baseUrl
         self.currentChangesetId = currentChangesetId
         self.userCreds = userCreds
@@ -85,8 +85,8 @@ public class OSMConnection {
     
     // Original method with everything from postman
     func getChangesets(_ completion: @escaping(()->())) {
-        
-        var request = URLRequest(url: URL(string: "https://waylyticsposm.westus2.cloudapp.azure.com/api/0.6/changesets.json")!,timeoutInterval: Double.infinity)
+        //"https://waylyticsposm.westus2.cloudapp.azure.com/api/0.6/changesets.json" 
+        var request = URLRequest(url: URL(string: "https://master.apis.dev.openstreetmap.org/changesets.json")!,timeoutInterval: Double.infinity)
         request.addValue("Basic bmFyZXNoZEB2aW5kYWdvLmluOmEkaHdhN2hhbUE=", forHTTPHeaderField: "Authorization")
 
         request.httpMethod = "GET"
