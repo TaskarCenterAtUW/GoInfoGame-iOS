@@ -31,6 +31,7 @@ enum LocalizedStrings: String {
     case questStepsInclineUp = "quest_steps_incline_up"
     case selectOne = "select_one"
     case questTactilePavingTitleSteps = "quest_tactilePaving_title_steps"
+    case questTactilePavingCrossing = "quest_tactilePaving_crosswalk"
     case usuallyLooksLikeThis = "usually_looks_like_this"
     case questStepCountTitle = "quest_step_count_title"
     case questLitTitle = "quest_lit_title"
