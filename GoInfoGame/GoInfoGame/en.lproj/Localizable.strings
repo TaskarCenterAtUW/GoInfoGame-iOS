@@ -87,4 +87,8 @@
 "quest_pedestrian_crossing_island" = "Does this pedestrian crossing have an island?";
 "dont_show_again" = "Don't show again for this session";
 "quest_tactile_paving_kerb_title" = "Is there tactile paving on this curb here?";
+"quest_crossing_type_title" = "What kind of crossing is this?";
+"quest_crossing_type_signals_controlled" = "Controlled by traffic lights";
+"quest_crossing_type_marked" = "Marked";
+"quest_crossing_type_unmarked" = "Without road markings";
 

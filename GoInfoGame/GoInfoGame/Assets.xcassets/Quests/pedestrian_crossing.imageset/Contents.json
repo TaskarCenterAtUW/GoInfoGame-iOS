@@ -1,0 +1,12 @@
+{
+  "images" : [
+    {
+      "filename" : "pedestrian_crossing.pdf",
+      "idiom" : "universal"
+    }
+  ],
+  "info" : {
+    "author" : "xcode",
+    "version" : 1
+  }
+}

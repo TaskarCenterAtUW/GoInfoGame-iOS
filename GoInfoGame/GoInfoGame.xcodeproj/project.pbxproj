@@ -33,6 +33,8 @@
 		971575192B5FFE910044797C /* LocationManagerCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 971575182B5FFE910044797C /* LocationManagerCoordinator.swift */; };
 		971F9FDF2B847349005397CC /* CrossingIslandForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = 971F9FDE2B847349005397CC /* CrossingIslandForm.swift */; };
 		971F9FE12B847358005397CC /* CrossingIsland.swift in Sources */ = {isa = PBXBuildFile; fileRef = 971F9FE02B847358005397CC /* CrossingIsland.swift */; };
+		971F9FE42B84CDBF005397CC /* CrossingType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 971F9FE32B84CDBF005397CC /* CrossingType.swift */; };
+		971F9FE62B84CDCE005397CC /* CrossingTypeForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = 971F9FE52B84CDCE005397CC /* CrossingTypeForm.swift */; };
 		972454152B14A49A0036B91A /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 972454142B14A49A0036B91A /* Extensions.swift */; };
 		973FBFFE2B46BB3800878269 /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 973FBFFD2B46BB3800878269 /* Utils.swift */; };
 		973FC0012B46CD5D00878269 /* QuestsListUIView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 973FC0002B46CD5D00878269 /* QuestsListUIView.swift */; };
@@ -285,6 +287,8 @@
 		971575182B5FFE910044797C /* LocationManagerCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationManagerCoordinator.swift; sourceTree = "<group>"; };
 		971F9FDE2B847349005397CC /* CrossingIslandForm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CrossingIslandForm.swift; sourceTree = "<group>"; };
 		971F9FE02B847358005397CC /* CrossingIsland.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CrossingIsland.swift; sourceTree = "<group>"; };
+		971F9FE32B84CDBF005397CC /* CrossingType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CrossingType.swift; sourceTree = "<group>"; };
+		971F9FE52B84CDCE005397CC /* CrossingTypeForm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CrossingTypeForm.swift; sourceTree = "<group>"; };
 		972454142B14A49A0036B91A /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		973FBFFD2B46BB3800878269 /* Utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Utils.swift; sourceTree = "<group>"; };
 		973FC0002B46CD5D00878269 /* QuestsListUIView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuestsListUIView.swift; sourceTree = "<group>"; };
@@ -660,6 +664,15 @@
 			path = CrossingIsland;
 			sourceTree = "<group>";
 		};
+		971F9FE22B84ABA6005397CC /* CrossingType */ = {
+			isa = PBXGroup;
+			children = (
+				971F9FE32B84CDBF005397CC /* CrossingType.swift */,
+				971F9FE52B84CDCE005397CC /* CrossingTypeForm.swift */,
+			);
+			path = CrossingType;
+			sourceTree = "<group>";
+		};
 		973FBFFF2B46CD4100878269 /* QuestsList */ = {
 			isa = PBXGroup;
 			children = (
@@ -982,6 +995,7 @@
 		A4E7119C2B57A22300C9DE08 /* quests */ = {
 			isa = PBXGroup;
 			children = (
+				971F9FE22B84ABA6005397CC /* CrossingType */,
 				971F9FDD2B847318005397CC /* CrossingIsland */,
 				97AC1C1F2B726A9F004F0BF4 /* TactilePavingKerb */,
 				97AC1C0D2B70CED0004F0BF4 /* SidewalkSurface */,
@@ -1617,6 +1631,7 @@
 				FAC9E6112B06811300E2C608 /* LocationManager.swift in Sources */,
 				A4834A3F2B67737500D4F0AA /* StoredChangeset.swift in Sources */,
 				973FC02F2B58F81F00878269 /* StepsRamp.swift in Sources */,
+				971F9FE62B84CDCE005397CC /* CrossingTypeForm.swift in Sources */,
 				A4E711AA2B58F6FB00C9DE08 /* HandRail.swift in Sources */,
 				973FC02D2B58F79B00878269 /* StepsRampForm.swift in Sources */,
 				059D47312B2C81A9000987FA /* Style.swift in Sources */,
@@ -1630,6 +1645,7 @@
 				97AC1C212B726AC9004F0BF4 /* TactilePavingKerb.swift in Sources */,
 				A4E711A22B57A3B400C9DE08 /* SideWalkWidth.swift in Sources */,
 				05CB71E02B0FAFD200DED821 /* GenericUIViewControllerRepresentable.swift in Sources */,
+				971F9FE42B84CDBF005397CC /* CrossingType.swift in Sources */,
 				97AC1C062B6A45B0004F0BF4 /* SideWalkValidation.swift in Sources */,
 				FAD5C4F32AFCBE700040C61A /* AppDelegate.swift in Sources */,
 				05DBBB622B164D9A00B6F110 /* RealOPElement.swift in Sources */,
