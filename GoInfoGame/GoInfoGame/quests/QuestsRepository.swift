@@ -26,7 +26,7 @@ class QuestsRepository {
         SidewalkSurface(),
         TactilePavingKerb(),
         CrossingIsland(),
-        CrossingType()
+        CrossingType(),
         TactilePavingCrosswalk()
     ]
     
