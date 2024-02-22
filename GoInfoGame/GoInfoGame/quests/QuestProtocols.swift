@@ -47,7 +47,7 @@ class QuestBase {
        }
        // Sync using datasyncmanager
 
-       DatasyncManager.shared.syncData {
+       DatasyncManager.shared.syncDataToOSM {
            print("SYNC DONE")
        }
     }

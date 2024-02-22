@@ -21,7 +21,7 @@ class DatasyncManager {
     
     private let osmConnection = OSMConnection(config: OSMConfig.testOSM, currentChangesetId: nil, userCreds: OSMLogin.testOSM)
     
-    func syncData( completionHandler: @escaping ()-> Void?)  {
+    func syncDataToOSM( completionHandler: @escaping ()-> Void?)  {
         Task {
             await syncData()
             completionHandler()
@@ -31,7 +31,7 @@ class DatasyncManager {
     /// *** Terminating app due to uncaught exception 'RLMException', reason: 'Realm accessed from incorrect thread.'
     ///  To fix the above error added @mainActor
     @MainActor
-    private func syncData() async  {
+    func syncData() async  {
         if(isSynching){
             print("Already syncing")
             return
