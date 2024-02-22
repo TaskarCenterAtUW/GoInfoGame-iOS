@@ -8,7 +8,7 @@
 import UIKit
 import SwiftUI
 
-class MapViewController: UIHostingController<MapView> {
+class MapViewController: UIHostingController<MeasureSidewalkView> {
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -23,7 +23,7 @@ class MapViewController: UIHostingController<MapView> {
     }
     
     required init?(coder aDecoder: NSCoder) {
-        super.init(coder: aDecoder, rootView: MapView())
+        super.init(coder: aDecoder, rootView: MeasureSidewalkView())
     }
     
     @objc func questListButtonTapped() {

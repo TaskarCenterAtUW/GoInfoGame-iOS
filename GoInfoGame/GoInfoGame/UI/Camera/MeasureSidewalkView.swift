@@ -8,13 +8,13 @@
 import SwiftUI
 
 struct MeasureSidewalkView: View {
+    
+    @State private var measuring = false
+    
     var body: some View {
         VStack {
-            CameraView()
-                .frame(height: 300)
-            Button("Measure sidewalk") {
-                
-            }
+            ARMeasuringView(measuring: $measuring)
+            
         }
     }
 }
