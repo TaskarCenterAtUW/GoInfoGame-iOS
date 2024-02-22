@@ -31,6 +31,7 @@ enum LocalizedStrings: String {
     case questStepsInclineUp = "quest_steps_incline_up"
     case selectOne = "select_one"
     case questTactilePavingTitleSteps = "quest_tactilePaving_title_steps"
+    case questTactilePavingCrossing = "quest_tactilePaving_crosswalk"
     case usuallyLooksLikeThis = "usually_looks_like_this"
     case questStepCountTitle = "quest_step_count_title"
     case questLitTitle = "quest_lit_title"
@@ -94,7 +95,11 @@ enum LocalizedStrings: String {
     case questKerbHeightRaised = "quest_kerb_height_raised"
     case questKerbHeightLoweredRamp = "quest_kerb_height_lowered_ramp"
     case questKerbHeightNo = "quest_kerb_height_no"
-
+    case questCrossingTypeTitle = "quest_crossing_type_title"
+    case questCrossingTypeSignalsControlled = "quest_crossing_type_signals_controlled"
+    case questCrossingTypeMarked = "quest_crossing_type_marked"
+    case questCrossingTypeUnmarked = "quest_crossing_type_unmarked"
+    
     var localized: String {
         return NSLocalizedString(rawValue, comment: "")
     }

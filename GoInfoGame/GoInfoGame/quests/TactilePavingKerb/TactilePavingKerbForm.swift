@@ -59,8 +59,6 @@ struct TactilePavingKerbForm: View, QuestForm {
                     self.showOtherAlert = false
                 })
             }
-        }.onTapGesture {
-            showAlert = false
         }
         .allowsHitTesting(true)
     }
