@@ -21,8 +21,17 @@ class DatasyncManager {
     
     private let osmConnection = OSMConnection(config: OSMConfig.testOSM, currentChangesetId: nil, userCreds: OSMLogin.testOSM)
     
-    func syncData() async  {
-        
+    func syncData( completionHandler: @escaping ()-> Void?)  {
+        Task {
+            await syncData()
+            completionHandler()
+        }
+    }
+    
+    /// *** Terminating app due to uncaught exception 'RLMException', reason: 'Realm accessed from incorrect thread.'
+    ///  To fix the above error added @mainActor
+    @MainActor
+    private func syncData() async  {
         if(isSynching){
             print("Already syncing")
             return
@@ -33,6 +42,7 @@ class DatasyncManager {
         let changesets = dbInstance.getChangesets()
         print("Starting to sync data")
         var nodesToSync: [String:StoredNode] = [:]
+        var waysToSync: [String:StoredWay] = [:]
         for changeset in changesets {
             // Get the element type
             if changeset.elementType == .node {
@@ -40,6 +50,12 @@ class DatasyncManager {
                 // Get the node
                 if let node  = dbInstance.getNode(id: changeset.elementId) {
                     nodesToSync[changeset.id] = node
+                }
+            }else if changeset.elementType == .way {
+                print("Syncing Way")
+                // Get the way
+                if let way = dbInstance.getWay(id: changeset.elementId) {
+                    waysToSync[changeset.id] = way
                 }
             }
         }
@@ -52,7 +68,7 @@ class DatasyncManager {
             case .success(let isFinished):
                 print("Synced \(payload)")
                 DispatchQueue.main.async {
-                  // your code here
+                    // your code here
                     self.dbInstance.assignChangesetId(obj: key, changesetId: payload.changeset)
                 }
                 
@@ -60,7 +76,8 @@ class DatasyncManager {
                 print("Failed to sync \(payload)")
             }
         }
-        isSynching = false 
+        // TODO: Add logic to sync Way
+        isSynching = false
         
     }
     
@@ -103,7 +120,7 @@ class DatasyncManager {
     // utility function to act as substitute for osmConnection functions
     func updateNode(node: inout OSMNode) async -> Result<Int,Error> {
         await withCheckedContinuation { continuation in
-            osmConnection.updateNode(node: &node, tags: [:]) { result in
+            osmConnection.updateNode(node: &node, tags: node.tags ?? [:]) { result in
                 continuation.resume(returning: result)
             }
         }
