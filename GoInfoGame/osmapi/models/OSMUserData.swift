@@ -7,16 +7,16 @@
 import Foundation
 
 // MARK: - OSMUserData
-struct OSMUserDataResponse: Codable {
+public struct OSMUserDataResponse: Codable {
     let version, generator, copyright: String
     let attribution, license: String
-    let user: OSMUserData
+    public let user: OSMUserData
 }
 
 // MARK: - User
-struct OSMUserData: Codable {
-    let id: Int
-    let displayName: String
+public struct OSMUserData: Codable {
+    public let id: Int
+    public let displayName: String
     let accountCreated: Date
     let description: String
     let contributorTerms: ContributorTerms
