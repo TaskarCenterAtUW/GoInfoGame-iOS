@@ -12,14 +12,12 @@ import CoreLocation
 final class OSMConnectionTests: XCTestCase {
     
     let posmTestNode = "31419"
-    let osmTestNode = "4977475294"
-    let posmTestWay = "18441"
+    let osmTestNode = "4316662656"
+    let posmTestWay = "4305301937"
     
     let posmConfig = OSMConfig.testOSM
     let posmCreds = OSMLogin.testOSM
-    
     var posmConnection : OSMConnection?
-    
 
     override func setUpWithError() throws {
         // Put setup code here. This method is called before the invocation of each test method in the class.
@@ -33,7 +31,6 @@ final class OSMConnectionTests: XCTestCase {
     func testConnection() throws {
         let osmConnection = OSMConnection()
         let expectation = expectation(description: "Expect to get some data")
-
         osmConnection.getChangesets2 { result in
             switch result {
             case .success(let responses):
@@ -49,11 +46,11 @@ final class OSMConnectionTests: XCTestCase {
     func testGetNode() throws {
         let osmConnection = OSMConnection()
         let expectation = expectation(description: "Expect to get node details")
-        osmConnection.getNode(id: "4977475294") { (result : Result<OSMNodeResponse, Error>) in
+        osmConnection.getNode(id: osmTestNode) { (result : Result<OSMNodeResponse, Error>) in
             switch result {
             case .success(let nodeResponse):
                 let element = nodeResponse.elements.first
-                XCTAssertEqual(element!.id, 4977475294)
+                XCTAssertEqual(element!.id, Int(self.osmTestNode))
             case .failure(let error):
                 XCTFail("Failed while getting the node")
             }
@@ -65,11 +62,11 @@ final class OSMConnectionTests: XCTestCase {
     func testGetWay() throws {
         let osmConnection = OSMConnection()
         let expectation = expectation(description: "Expect to get node details")
-        osmConnection.getWay(id: "508700858") { (result : Result<OSMWayResponse, Error>) in
+        osmConnection.getWay(id: posmTestWay) { (result : Result<OSMWayResponse, Error>) in
             switch result {
             case .success(let nodeResponse):
                 let element = nodeResponse.elements.first
-                XCTAssertEqual(element!.id, 508700858)
+                XCTAssertEqual(element!.id, Int(self.posmTestWay))
             case .failure(let error):
                 XCTFail("Failed while getting the node")
             }
@@ -81,7 +78,6 @@ final class OSMConnectionTests: XCTestCase {
     func testChangesetOpen() throws {
         let osmConnection = OSMConnection()
         let expectation = expectation(description: "Expect to open changeset")
-        
         osmConnection.openChangeSet {result in
             switch result {
             case .success(let changesetId):
@@ -152,7 +148,6 @@ final class OSMConnectionTests: XCTestCase {
     
     func testPosmOpenChangeset() throws{
         let expectation = expectation(description: "Expect to open changeset")
-        
         posmConnection?.openChangeSet {result in
             switch result {
             case .success(let changesetId):
@@ -257,7 +252,6 @@ final class OSMConnectionTests: XCTestCase {
             switch result {
             case .success(let userDataResponse):
                 let user = userDataResponse.user.id
-                print(userDataResponse)
                 XCTAssertEqual(user, 20018)
             case .failure(let error):
                 XCTFail("Failed while getting the user details: \(error)")
