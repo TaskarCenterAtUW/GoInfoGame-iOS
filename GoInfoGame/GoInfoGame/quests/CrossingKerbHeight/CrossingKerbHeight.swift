@@ -53,7 +53,7 @@ class CrossingKerbHeight: QuestBase, Quest {
         var finalTags:[String:String] = [:]
         if let rData = self.relationData {
         /// expected tag for .kerbRamp & .lowered is same
-        /// changing tag from "lowered_and_sloped" to "lowered_and_sloped"  for kerbRamp
+        /// changing tag from "lowered_and_sloped" to "lowered"  for kerbRamp
             if answer == CrossingKerbHeightAnswer.kerbRamp {
                 finalTags = ["kerb": "lowered_and_sloped"]
             } else {
