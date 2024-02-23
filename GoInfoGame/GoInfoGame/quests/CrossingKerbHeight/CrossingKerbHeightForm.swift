@@ -62,7 +62,7 @@ struct CrossingKerbHeightForm: View, QuestForm {
                     self.showAlert = false
                 }, onConfirm: {
                     self.showAlert = false
-                    var answer = CrossingKerbHeightAnswer.fromString(selectedImage.first ?? "")
+                    let answer = CrossingKerbHeightAnswer.fromString(selectedImage.first ?? "")
                     action?(answer ?? CrossingKerbHeightAnswer.none)
                 })
                 .zIndex(1)
