@@ -47,15 +47,27 @@ struct ProfileView: View {
         
     }
     
+    @ViewBuilder
     private var profileImage: some View {
-        AsyncImage(url: self.viewModel.imageUrl) { image in
-            image.resizable()
-        } placeholder: {
+        if self.viewModel.imageUrl == nil {
             Image(systemName: "person.circle.fill")
                 .resizable()
+                .frame(width: 120, height: 120, alignment: .center)
+                .cornerRadius(60)
+        }else {
+            AsyncImage(url: self.viewModel.imageUrl) { phase in
+                if let image = phase.image {
+                    image.resizable()
+                } else if phase.error != nil {
+                    Image(systemName: "person.circle.fill")
+                        .resizable()
+                } else {
+                    ProgressView().progressViewStyle(.circular)
+                }
+            }
+            .frame(width: 120, height: 120, alignment: .center)
+            .cornerRadius(60)
         }
-        .frame(width: 120, height: 120, alignment: .center)
-        .cornerRadius(60)
     }
     
     private var profileButton: some View {
