@@ -87,7 +87,7 @@ public struct Element: Codable {
 public struct Member: Codable {
     public let type: TypeEnum
     public let ref: Int
-    public let role: Role
+    public let role: String
 }
 
 public enum Role: String, Codable {

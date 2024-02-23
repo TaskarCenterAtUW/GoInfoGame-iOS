@@ -168,7 +168,7 @@ public class OSMConnection {
     
     /// Internal function for getting the map data
      public func getOSMMapData(left: Double, bottom: Double, right: Double, top: Double,_ completion: @escaping (Result<OSMMapDataResponse, Error>)-> Void) {
-        let urlString =  "https://api.openstreetmap.org/api/0.6/map.json?bbox=\(left),\(bottom),\(right),\(top)"
+         let urlString =  self.baseUrl.appending("map.json?bbox=\(left),\(bottom),\(right),\(top)")
         print(urlString)
         guard let url = URL(string: urlString) else {
             print("Invalid URL given")
