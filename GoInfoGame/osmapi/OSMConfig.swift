@@ -7,7 +7,7 @@
 
 import Foundation
 public struct OSMConfig {
-    let baseUrl: String
+    public let baseUrl: String
     //https://waylyticsposm.westus2.cloudapp.azure.com/api/0.6/
     // For testing data upload
     
@@ -21,6 +21,10 @@ public struct OSMConfig {
     }
     
     public static var testOSM : OSMConfig {
-        OSMConfig(baseUrl: "https://master.apis.dev.openstreetmap.org/api/0.6/")
+        OSMConfig(baseUrl: "\(url)api/0.6/")
+    }
+    
+    public static var url: String {
+        "https://master.apis.dev.openstreetmap.org/"
     }
 }

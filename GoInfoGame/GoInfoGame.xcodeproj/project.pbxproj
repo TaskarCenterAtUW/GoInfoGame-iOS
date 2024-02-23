@@ -589,8 +589,7 @@
 			children = (
 				FA87A80E2B681416000A6BEA /* Utils */,
 				970D5BD02B62B61300C20BE7 /* MapViewController.swift */,
-				B0CCB98B2B8626AE00AA73DE /* ProfileView.swift */,
-				B0CCB98D2B8626C600AA73DE /* ProfileViewVM.swift */,
+				B0CBEA902B88980A00C430F3 /* Profile */,
 				971575152B5FFD5F0044797C /* Map */,
 				973FC0152B4D562200878269 /* CustomComponents */,
 				973FBFFF2B46CD4100878269 /* QuestsList */,
@@ -1081,6 +1080,15 @@
 				A4E711AF2B59011000C9DE08 /* StepsInclineForm.swift */,
 			);
 			path = StepsIncline;
+			sourceTree = "<group>";
+		};
+		B0CBEA902B88980A00C430F3 /* Profile */ = {
+			isa = PBXGroup;
+			children = (
+				B0CCB98B2B8626AE00AA73DE /* ProfileView.swift */,
+				B0CCB98D2B8626C600AA73DE /* ProfileViewVM.swift */,
+			);
+			path = Profile;
 			sourceTree = "<group>";
 		};
 		FA5853BF2B21E3E000301CDA /* Onboarding */ = {
