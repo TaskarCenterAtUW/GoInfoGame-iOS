@@ -131,7 +131,7 @@ public class OSMConnection {
         
     }
     
-    func updateWay(way: inout OSMWay, tags:[String:String], completion: @escaping((Result<Int,Error>)->Void)){
+    public func updateWay(way: inout OSMWay, tags:[String:String], completion: @escaping((Result<Int,Error>)->Void)){
         // Have to do this.
         let urlString = self.baseUrl.appending("way/").appending(String(way.id))
         guard let url = URL(string: urlString) else {

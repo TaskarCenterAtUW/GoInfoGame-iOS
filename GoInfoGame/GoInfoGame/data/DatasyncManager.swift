@@ -77,6 +77,23 @@ class DatasyncManager {
             }
         }
         // TODO: Add logic to sync Way
+        for (key,way) in waysToSync {
+            var payload = way.asOSMWay()
+            // update the way
+            let result = await syncWay(way: &payload)
+            switch result{
+            case .success(let isFinished):
+                print("Synced \(payload)")
+                DispatchQueue.main.async {
+                    // your code here
+                    self.dbInstance.assignChangesetId(obj: key, changesetId: payload.changeset)
+                }
+                
+            case .failure(let error):
+                print("Failed to sync \(payload)")
+            }
+            
+        }
         isSynching = false
         
     }
@@ -126,6 +143,16 @@ class DatasyncManager {
         }
     }
     
+    // utility function to act as substitute for osmConnection functions
+    func updateWay(way: inout OSMWay) async -> Result<Int,Error> {
+        await withCheckedContinuation { continuation in
+            osmConnection.updateWay(way: &way, tags: way.tags) { result in
+                continuation.resume(returning:result)
+            }
+        }
+    }
+    
+    
     
     /**
             Syncs the node along with the updated
@@ -139,6 +166,26 @@ class DatasyncManager {
                 // close changeset
                 let newVersion = try await updateNode(node: &node).get()
                 node.version = newVersion
+                // Give back the new version and other stuff.
+                let closeResult = try await closeChangeset(id: String(changesetId)).get()
+            
+            return .success(true)
+            
+        } catch (let error){
+            print(error)
+            return .failure(error)
+        }
+    }
+    
+    func syncWay(way: inout OSMWay)  async -> Result<Bool,Error> {
+        do {
+                // open changeset
+                let changesetId = try await openChangeset().get()
+                // update node
+                way.changeset = changesetId
+                // close changeset
+                let newVersion = try await updateWay(way: &way).get()
+                way.version = newVersion
                 // Give back the new version and other stuff.
                 let closeResult = try await closeChangeset(id: String(changesetId)).get()
             
