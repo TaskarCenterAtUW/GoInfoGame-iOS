@@ -63,6 +63,8 @@
 		973FC04C2B5A5F5F00878269 /* RadioItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 973FC04B2B5A5F5F00878269 /* RadioItem.swift */; };
 		97439F782B87444200DA43E1 /* CrossingKerbHeightForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97439F772B87444200DA43E1 /* CrossingKerbHeightForm.swift */; };
 		97439F7A2B87447400DA43E1 /* CrossingKerbHeight.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97439F792B87447400DA43E1 /* CrossingKerbHeight.swift */; };
+		97A014BF2B7B580700F7C277 /* OSMMapData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97A014BE2B7B580700F7C277 /* OSMMapData.swift */; };
+		97A014C12B7C95A500F7C277 /* OSMElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97A014C02B7C95A500F7C277 /* OSMElement.swift */; };
 		97AC1C062B6A45B0004F0BF4 /* SideWalkValidation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97AC1C052B6A45B0004F0BF4 /* SideWalkValidation.swift */; };
 		97AC1C082B6A45C9004F0BF4 /* SideWalkValidationForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97AC1C072B6A45C9004F0BF4 /* SideWalkValidationForm.swift */; };
 		97AC1C0A2B6B7F10004F0BF4 /* CustomVerticalButtonsList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97AC1C092B6B7F10004F0BF4 /* CustomVerticalButtonsList.swift */; };
@@ -322,6 +324,8 @@
 		973FC04B2B5A5F5F00878269 /* RadioItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RadioItem.swift; sourceTree = "<group>"; };
 		97439F772B87444200DA43E1 /* CrossingKerbHeightForm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CrossingKerbHeightForm.swift; sourceTree = "<group>"; };
 		97439F792B87447400DA43E1 /* CrossingKerbHeight.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CrossingKerbHeight.swift; sourceTree = "<group>"; };
+		97A014BE2B7B580700F7C277 /* OSMMapData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OSMMapData.swift; sourceTree = "<group>"; };
+		97A014C02B7C95A500F7C277 /* OSMElement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OSMElement.swift; sourceTree = "<group>"; };
 		97AC1C052B6A45B0004F0BF4 /* SideWalkValidation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SideWalkValidation.swift; sourceTree = "<group>"; };
 		97AC1C072B6A45C9004F0BF4 /* SideWalkValidationForm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SideWalkValidationForm.swift; sourceTree = "<group>"; };
 		97AC1C092B6B7F10004F0BF4 /* CustomVerticalButtonsList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomVerticalButtonsList.swift; sourceTree = "<group>"; };
@@ -847,6 +851,8 @@
 				A475C7D82B5E264700BABEDA /* OSMWay.swift */,
 				A475C7DC2B5E3E7C00BABEDA /* OSMPayload.swift */,
 				970D5BD42B677CC500C20BE7 /* OSMUserData.swift */,
+				97A014BE2B7B580700F7C277 /* OSMMapData.swift */,
+				97A014C02B7C95A500F7C277 /* OSMElement.swift */,
 			);
 			path = models;
 			sourceTree = "<group>";
@@ -1554,6 +1560,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				A40E726E2B5D462A00328848 /* osmapi.docc in Sources */,
+				97A014C12B7C95A500F7C277 /* OSMElement.swift in Sources */,
 				A40E728D2B5D494100328848 /* OSMLogin.swift in Sources */,
 				A40E72892B5D487C00328848 /* OSMConfig.swift in Sources */,
 				A475C7E02B5E4B6E00BABEDA /* OSMXMLBuilder.swift in Sources */,
@@ -1563,6 +1570,7 @@
 				A475C7D32B5E22C800BABEDA /* OSMNode.swift in Sources */,
 				A475C7D92B5E264700BABEDA /* OSMWay.swift in Sources */,
 				A475C7DD2B5E3E7C00BABEDA /* OSMPayload.swift in Sources */,
+				97A014BF2B7B580700F7C277 /* OSMMapData.swift in Sources */,
 				970D5BD52B677CC500C20BE7 /* OSMUserData.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

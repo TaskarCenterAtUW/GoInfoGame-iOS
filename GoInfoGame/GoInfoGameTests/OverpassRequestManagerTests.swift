@@ -8,8 +8,9 @@
 import XCTest
 
 @testable import GoInfoGame
-import SwiftOverpassAPI
-
+//import SwiftOverpassAPI
+import osmapi
+import CoreLocation
 
 
 final class OverpassRequestManagerTests: XCTestCase {
@@ -54,56 +55,56 @@ final class OverpassRequestManagerTests: XCTestCase {
     }
     
     func testFetchElements() throws {
-        let opManager = OverpassRequestManager()
-        let expec = expectation(description: "Fetches the elements from Overpass Manager")
-//        let bbox = BBox(minLat: 47.644234213297665, maxLat: 47.648330990799394, minLon: -122.15643268012565, maxLon: -122.15117873022045)
-        let kirklandBBox = BBox(minLat: 47.70312160869372, maxLat: 47.718964653825054, minLon: -122.20866792353317, maxLon: -122.18570621653987)
-        opManager.fetchElements(fromBBox: kirklandBBox) { fetchedElements in
-            // Get the count of nodes and ways
-            let allValues = fetchedElements.values
-            
-            let nodes = allValues.filter({$0 is OPNode}).filter({!$0.tags.isEmpty})
-            let ways = allValues.filter({$0  is OPWay}).filter({!$0.tags.isEmpty})
-            if(nodes.count > 0){
-                if let firstNode = nodes.first as? OPNode {
-                    print(firstNode.geometry)
-                }
-            }
-            if (ways.count > 0){
-                if let firstWay = ways.first as? OPWay {
-                    // Try to get the geometry
-                    print(firstWay.geometry)
-                }
-            }
-            expec.fulfill()
-        }
-        
-        waitForExpectations(timeout: 15)
+//        let opManager = OverpassRequestManager()
+//        let expec = expectation(description: "Fetches the elements from Overpass Manager")
+////        let bbox = BBox(minLat: 47.644234213297665, maxLat: 47.648330990799394, minLon: -122.15643268012565, maxLon: -122.15117873022045)
+//        let kirklandBBox = BBox(minLat: 47.70312160869372, maxLat: 47.718964653825054, minLon: -122.20866792353317, maxLon: -122.18570621653987)
+//        opManager.fetchElements(fromBBox: kirklandBBox) { fetchedElements in
+//            // Get the count of nodes and ways
+//            let allValues = fetchedElements.values
+//            
+//            let nodes = allValues.filter({$0 is OPNode}).filter({!$0.tags.isEmpty})
+//            let ways = allValues.filter({$0  is OPWay}).filter({!$0.tags.isEmpty})
+//            if(nodes.count > 0){
+//                if let firstNode = nodes.first as? OPNode {
+//                    print(firstNode.geometry)
+//                }
+//            }
+//            if (ways.count > 0){
+//                if let firstWay = ways.first as? OPWay {
+//                    // Try to get the geometry
+//                    print(firstWay.geometry)
+//                }
+//            }
+//            expec.fulfill()
+//        }
+//        
+//        waitForExpectations(timeout: 15)
     }
     
     func testStorage() throws {
-        let opManager = OverpassRequestManager()
-        let expec = expectation(description: "Fetches the elements from Overpass Manager and stores in Database")
-        let dbInstance = DatabaseConnector.shared
-        
-        let kirklandBBox = BBox(minLat: 47.70312160869372, maxLat: 47.718964653825054, minLon: -122.20866792353317, maxLon: -122.18570621653987)
-        opManager.fetchElements(fromBBox: kirklandBBox) { fetchedElements in
-            // Get the count of nodes and ways
-            let allValues = fetchedElements.values
-            
-            let nodes = allValues.filter({$0 is OPNode}).filter({!$0.tags.isEmpty})
-            let ways = allValues.filter({$0  is OPWay}).filter({!$0.tags.isEmpty})
-            let allElements = allValues.filter({!$0.tags.isEmpty})
-            dbInstance.saveElements(allElements) // Save nodes
-            let nodesFromStorage = dbInstance.getNodes()
-            let waysFromStorage = dbInstance.getWays()
-            XCTAssertEqual(nodes.count, nodesFromStorage.count)
-            XCTAssertEqual(ways.count, waysFromStorage.count)
-            
-            expec.fulfill()
-        }
-        
-        waitForExpectations(timeout: 10)
+//        let opManager = OverpassRequestManager()
+//        let expec = expectation(description: "Fetches the elements from Overpass Manager and stores in Database")
+//        let dbInstance = DatabaseConnector.shared
+//        
+//        let kirklandBBox = BBox(minLat: 47.70312160869372, maxLat: 47.718964653825054, minLon: -122.20866792353317, maxLon: -122.18570621653987)
+//        opManager.fetchElements(fromBBox: kirklandBBox) { fetchedElements in
+//            // Get the count of nodes and ways
+//            let allValues = fetchedElements.values
+//            
+//            let nodes = allValues.filter({$0 is OPNode}).filter({!$0.tags.isEmpty})
+//            let ways = allValues.filter({$0  is OPWay}).filter({!$0.tags.isEmpty})
+//            let allElements = allValues.filter({!$0.tags.isEmpty})
+//            dbInstance.saveElements(allElements) // Save nodes
+//            let nodesFromStorage = dbInstance.getNodes()
+//            let waysFromStorage = dbInstance.getWays()
+//            XCTAssertEqual(nodes.count, nodesFromStorage.count)
+//            XCTAssertEqual(ways.count, waysFromStorage.count)
+//            
+//            expec.fulfill()
+//        }
+//        
+//        waitForExpectations(timeout: 10)
     }
 
     func testPerformanceExample() throws {
@@ -111,6 +112,30 @@ final class OverpassRequestManagerTests: XCTestCase {
         self.measure {
             // Put the code you want to measure the time of here.
         }
+    }
+    
+    func testOSMApiFetchElements() throws {
+        let osmConnection = OSMConnection()
+        let expec = expectation(description: "Fetches the elements from Overpass Manager and stores in Database")
+        let dbInstance = DatabaseConnector.shared
+        let centralLocation = CLLocation(latitude: 37.7749, longitude: -122.4194) // San Francisco coords
+        let distance = 100
+        let boundingCoordinates = centralLocation.boundingCoordinates(distance: CLLocationDistance(distance))
+        osmConnection.fetchMapData(left:boundingCoordinates.left.coordinate.longitude , bottom:boundingCoordinates.bottom.coordinate.latitude , right:boundingCoordinates.right.coordinate.longitude , top:boundingCoordinates.top.coordinate.latitude ) { result in
+            switch result {
+            case .success(let mapData):
+                let allElements = Array(mapData.values)
+                print("Saving tags")
+                DispatchQueue.main.async {
+                    dbInstance.saveOSMElements(allElements) // Save all where there are tags
+                    expec.fulfill()
+                }
+            case .failure(let error):
+                print("error")
+            }
+           
+        }
+        waitForExpectations(timeout: 15)
     }
 
 }

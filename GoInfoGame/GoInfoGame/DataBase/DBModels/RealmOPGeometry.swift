@@ -7,7 +7,7 @@
 
 import Foundation
 import RealmSwift
-import SwiftOverpassAPI
+//import SwiftOverpassAPI
 import Realm
 
 class RealmOPGeometry: Object {
@@ -19,37 +19,37 @@ class RealmOPGeometry: Object {
     let multiPolyline = List<RealmNestedPolyCoordinate>()
     @objc dynamic var type: String = ""
 
-    convenience init(geometry: OPGeometry?) {
-        self.init()
-
-        guard let geometry = geometry else {
-            self.type = Constants.kNone
-            return
-        }
-
-        switch geometry {
-        case .center(let coordinate):
-            self.centerLatitude = coordinate.latitude
-            self.centerLongitude = coordinate.longitude
-            self.type = Constants.kCenter
-        case .polyline(let coordinates):
-            self.polyline.append(objectsIn: coordinates.map(RealmCLLocationCoordinate2D.init))
-            self.type = Constants.kPolyline
-        case .polygon(let coordinates):
-            self.polygon.append(objectsIn: coordinates.map(RealmCLLocationCoordinate2D.init))
-            self.type = Constants.kPolygon
-        case .multiPolygon(let nestedCoordinates):
-            self.multiPolygon.append(objectsIn: nestedCoordinates.map(RealmNestedPolygonCoordinates.init))
-            self.type = Constants.kMultiPolygon
-        case .multiPolyline(let nestedCoordinates):
-            let realmNestedPolyline = RealmNestedPolyCoordinate()
-            realmNestedPolyline.coordinates.append(objectsIn: nestedCoordinates.map(RealmCLLocationCoordinate2D.init))
-                       self.multiPolyline.append(realmNestedPolyline)
-            self.type = Constants.kMultiPolyline
-        case .none:
-            self.type = Constants.kNone
-        }
-    }
+//    convenience init(geometry: OPGeometry?) {
+//        self.init()
+//
+//        guard let geometry = geometry else {
+//            self.type = Constants.kNone
+//            return
+//        }
+//
+//        switch geometry {
+//        case .center(let coordinate):
+//            self.centerLatitude = coordinate.latitude
+//            self.centerLongitude = coordinate.longitude
+//            self.type = Constants.kCenter
+//        case .polyline(let coordinates):
+//            self.polyline.append(objectsIn: coordinates.map(RealmCLLocationCoordinate2D.init))
+//            self.type = Constants.kPolyline
+//        case .polygon(let coordinates):
+//            self.polygon.append(objectsIn: coordinates.map(RealmCLLocationCoordinate2D.init))
+//            self.type = Constants.kPolygon
+//        case .multiPolygon(let nestedCoordinates):
+//            self.multiPolygon.append(objectsIn: nestedCoordinates.map(RealmNestedPolygonCoordinates.init))
+//            self.type = Constants.kMultiPolygon
+//        case .multiPolyline(let nestedCoordinates):
+//            let realmNestedPolyline = RealmNestedPolyCoordinate()
+//            realmNestedPolyline.coordinates.append(objectsIn: nestedCoordinates.map(RealmCLLocationCoordinate2D.init))
+//                       self.multiPolyline.append(realmNestedPolyline)
+//            self.type = Constants.kMultiPolyline
+//        case .none:
+//            self.type = Constants.kNone
+//        }
+//    }
 }
 
 class RealmNestedPolyCoordinate: Object {
