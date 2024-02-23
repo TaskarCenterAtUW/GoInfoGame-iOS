@@ -23,9 +23,9 @@ struct CrossingKerbHeightForm: View, QuestForm {
     var body: some View {
         ZStack{
             VStack (alignment: .leading){
-                QuestionHeader(icon: Image("kerb_type"), title: LocalizedStrings.questStepsRampTitle.localized, subtitle: "North 88th Street").padding(.bottom,10)
+                QuestionHeader(icon: Image("kerb_type"), title: LocalizedStrings.questCrossingKerbHeightTitle.localized, subtitle: "").padding(.bottom,10)
                 VStack(alignment: .leading){
-                    Text(LocalizedStrings.select.localized).font(.caption).foregroundColor(.gray)
+                    Text(LocalizedStrings.selectOne.localized).font(.caption).foregroundColor(.gray)
                     ImageGridItemView(gridCount: 2, isLabelBelow: false, imageData: imageData, isImageRotated: false, isDisplayImageOnly: false, isScrollable: false, allowMultipleSelection: false, onTap: { (selectedImage) in
                     }, selectedImages: $selectedImage)
                     Divider()
