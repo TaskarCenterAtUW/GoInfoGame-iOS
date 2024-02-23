@@ -31,6 +31,7 @@ enum LocalizedStrings: String {
     case questStepsInclineUp = "quest_steps_incline_up"
     case selectOne = "select_one"
     case questTactilePavingTitleSteps = "quest_tactilePaving_title_steps"
+    case questTactilePavingCrossing = "quest_tactilePaving_crosswalk"
     case usuallyLooksLikeThis = "usually_looks_like_this"
     case questStepCountTitle = "quest_step_count_title"
     case questLitTitle = "quest_lit_title"
@@ -75,12 +76,25 @@ enum LocalizedStrings: String {
     case questSurfaceValueTartan = "quest_surface_value_tartan"
     case questSurfaceValuePaved = "quest_surface_value_paved"
     case questSurfaceValueUnpaved = "quest_surface_value_unpaved"
-
+    case questLeaveNewNoteTitle = "quest_leave_new_note_title";
+    case questLeaveNewNoteDescription = "quest_leave_new_note_description";
+    case questLeaveNewNoteYes = "quest_leave_new_note_yes";
+    case questLeaveNewNoteNo = "quest_leave_new_note_no";
+    case questSourceDialogTitle = "quest_source_dialog_title";
+    case questSourceDialogNote = "quest_source_dialog_note";
+    case undoConfirmNegative = "undo_confirm_negative";
+    case questStepsRampSeparateWheelchair = "quest_steps_ramp_separate_wheelchair"
+    case questStepsRampSeparateWheelchairConfirm = "quest_steps_ramp_separate_wheelchair_confirm"
+    case questStepsRampSeparateWheelchairDecline = "quest_steps_ramp_separate_wheelchair_decline"
+    case questPedestrianCrossingIsland = "quest_pedestrian_crossing_island"
+    case dontShowAgain = "dont_show_again"
+    case questTactilePavingKerbTitle = "quest_tactile_paving_kerb_title"
+    case questCrossingTypeTitle = "quest_crossing_type_title"
+    case questCrossingTypeSignalsControlled = "quest_crossing_type_signals_controlled"
+    case questCrossingTypeMarked = "quest_crossing_type_marked"
+    case questCrossingTypeUnmarked = "quest_crossing_type_unmarked"
     
     var localized: String {
         return NSLocalizedString(rawValue, comment: "")
     }
 }
-
-//"quest_step_count_title"= "How many steps are here?"
-//"quest_step_count_stile_hint" = "Just the number of steps to reach the top. If the step count differs on each side, give the higher number."

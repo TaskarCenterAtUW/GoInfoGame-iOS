@@ -1,8 +1,8 @@
 //
-//  CrossMarking.swift
+//  CrossingType.swift
 //  GoInfoGame
 //
-//  Created by Lakshmi Shweta Pochiraju on 19/01/24.
+//  Created by Lakshmi Shweta Pochiraju on 20/02/24.
 //
 
 import Foundation
@@ -10,15 +10,14 @@ import UIKit
 import SwiftUI
 import osmparser
 
-class CrossMarking: QuestBase, Quest {
-    typealias AnswerClass = CrossingAnswer
-    var _internalExpression: ElementFilterExpression?
-    var title: String = "Cross Marking"
+class CrossingType: QuestBase, Quest {
+    var title: String = "Crossing Type"
     var filter: String = ""
-    var icon: UIImage = #imageLiteral(resourceName: "pedestrian")
+    var icon: UIImage = #imageLiteral(resourceName: "pedestrian_crossing.pdf")
     var wikiLink: String = ""
     var changesetComment: String = ""
     var relationData: Element? = nil
+    var _internalExpression: ElementFilterExpression?
     var displayUnit: DisplayUnit {
         DisplayUnit(title: self.title, description: "",parent: self,sheetSize:.MEDIUM )
     }
@@ -33,37 +32,31 @@ class CrossMarking: QuestBase, Quest {
     }
     var form: AnyView {
         get{
-            return AnyView(self.internalForm as! CrossMarkingForm)
+            return AnyView(self.internalForm as! CrossingTypeForm)
         }
     }
-    
     override init() {
         super.init()
-        self.internalForm = CrossMarkingForm(action: { [self] answer in
+        self.internalForm = CrossingTypeForm(action: { [self] answer in
             self.onAnswer(answer: answer)
         })
     }
-    
-    func onAnswer(answer: CrossingAnswer) {
+    func onAnswer(answer: CrossingTypeAnswer) {
         if let rData = self.relationData {
             self.updateTags(id: rData.id, tags: ["crossing":answer.rawValue], type: rData.type)
         }
     }
-    
     func copyWithElement(element: Element) -> any Quest {
-        let q = CrossMarking()
+        let q = CrossingIsland()
         q.relationData = element
         return q
     }
+    typealias AnswerClass = CrossingTypeAnswer
 }
 
-enum CrossingAnswer: String {
-    case yes = "Yes"
-    case no = "No"
-    case prohibited = "Prohibited"
-}
-
-struct TextItem<T> {
-    let value: T
-    let titleId: String
+enum CrossingTypeAnswer: String {
+    case trafficSignals = "traffic_signals"
+    case marked = "marked"
+    case unmarked = "unmarked"
+    case none = "none"
 }

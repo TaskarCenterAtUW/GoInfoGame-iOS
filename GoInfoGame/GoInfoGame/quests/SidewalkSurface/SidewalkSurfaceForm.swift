@@ -11,7 +11,7 @@ struct SidewalkSurfaceForm: QuestForm ,View {
     var action: ((SidewalkSurfaceAnswer) -> Void)?
     
     typealias AnswerClass = SidewalkSurfaceAnswer
-    @State private var selectedImage : String?
+    @State private var selectedImage : [String] = []
     @State private var showAlert = false
     @State private var selectedAnswer : SidewalkSurfaceAnswer = SidewalkSurfaceAnswer(value: SurfaceAndNote(surface: Surface.none,note: ""))
     let imagesFromSurfaces: [ImageData] = SELECTABLE_WAY_SURFACES.compactMap { surfaceString in
@@ -36,15 +36,18 @@ struct SidewalkSurfaceForm: QuestForm ,View {
         ZStack{
             VStack (alignment: .leading){
                 // Question header
-                QuestionHeader(icon: Image("sidewalk_surface"), title: LocalizedStrings.questSidewalkSurfaceTitle.localized, subtitle: "Street").padding(.bottom,10)
+                QuestionHeader(icon: Image("sidewalk_surface"),
+                               title: LocalizedStrings.questSidewalkSurfaceTitle.localized,
+                               subtitle: "Street")
+                .padding(.bottom,10)
                 // Quest Body
                 VStack(alignment: .leading){
                     Text(LocalizedStrings.select.localized).font(.caption).foregroundColor(.gray)
                     /// Grid view for displaying selectable surfaces
-                    ImageGridItemView(gridCount: 3, isLabelBelow: true, imageData: imagesFromSurfaces, isImageRotated: false, isDisplayImageOnly: false, onTap: { (type, tag) in
-                        selectedAnswer = SidewalkSurfaceAnswer(value: SurfaceAndNote(surface: Surface(rawValue: tag),note: ""))
+                    ImageGridItemView(gridCount: 3, isLabelBelow: true, imageData: imagesFromSurfaces, isImageRotated: false, isDisplayImageOnly: false, isScrollable: true, allowMultipleSelection: false, onTap: { (selectedImage) in
+                        selectedAnswer = SidewalkSurfaceAnswer(value: SurfaceAndNote(surface: Surface(rawValue: selectedImage.first ?? ""),note: ""))
                         print("selectedAnswer:", selectedAnswer)
-                        print("Clicked: \(type), Tag: \(tag)")}, selectedImage: $selectedImage)
+                        print("Clicked Tag: \(selectedImage)")}, selectedImages: $selectedImage)
                     Divider()
                     HStack() {
                         Spacer()
@@ -77,11 +80,11 @@ struct SidewalkSurfaceForm: QuestForm ,View {
                     /// To Dismiss alert when selectedButton value changes
                     showAlert = false
                     /// deselecting image option if any other answer is selected
-                    selectedImage = ""
+                    selectedImage = [""]
                     print("selectedButton value", selectedOtherAnswerOption?.label ?? "")
                     /// To select other answers option as SidewalkSurfaceAnswer
                     selectedAnswer = SidewalkSurfaceAnswer(value: SurfaceAndNote(surface: Surface.none,note: selectedOtherAnswerOption?.label ?? ""))
-                })}, leftActionText: "", rightActionText: "", rightButtonAction: {}, height: 100, width: 200)
+                })}, leftActionText: "", rightActionText: "", leftButtonAction: {}, rightButtonAction: {}, height: 100, width: 200)
             }
         }.onTapGesture {
             showAlert = false

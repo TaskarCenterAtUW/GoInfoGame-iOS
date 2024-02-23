@@ -13,7 +13,7 @@ struct SideWalkValidationForm: QuestForm ,View {
     typealias AnswerClass = SideWalkValidationAnswer
     @State private var showAlert = false
     @State private var selectedAnswer : SideWalkValidationAnswer = SideWalkValidationAnswer.noAnswerSelected
-    @State private var selectedImage : String?
+    @State private var selectedImage : [String] = []
     let SideWalksImageData: [ImageData] = [
         ImageData(id:SideWalkValidationAnswer.left.description,type: "yes", imageName: "select-left-side", tag: SideWalkValidationAnswer.left.description, optionName: LocalizedStrings.questSidewalkValueLeft.localized),
         ImageData(id:SideWalkValidationAnswer.right.description,type: "yes", imageName: "select-right-side", tag: SideWalkValidationAnswer.right.description, optionName: LocalizedStrings.questSidewalkValueRight.localized),
@@ -29,13 +29,16 @@ struct SideWalkValidationForm: QuestForm ,View {
     var body: some View {
         ZStack{
             VStack (alignment: .leading){
-                QuestionHeader(icon: Image("sidewalk"), title: LocalizedStrings.questSidewalkTitle.localized, subtitle: "Street").padding(.bottom,10)
+                QuestionHeader(icon: Image("sidewalk"),
+                               title: LocalizedStrings.questSidewalkTitle.localized,
+                               subtitle: "Street")
+                .padding(.bottom,10)
                 VStack(alignment: .leading){
                     Text(LocalizedStrings.select.localized).font(.caption).foregroundColor(.gray)
-                    ImageGridItemView(gridCount: 2, isLabelBelow: true, imageData: SideWalksImageData, isImageRotated: false, isDisplayImageOnly: false, onTap: { (type, tag) in
+                    ImageGridItemView(gridCount: 2, isLabelBelow: true, imageData: SideWalksImageData, isImageRotated: false, isDisplayImageOnly: false, isScrollable: false, allowMultipleSelection: false, onTap: { (selectedImage) in
                         /// To select selected image option as SideWalkValidationAnswer
-                        selectedAnswer = SideWalkValidationAnswer.fromString(tag) ?? SideWalkValidationAnswer.none
-                        print("Clicked: \(type), Tag: \(tag)")}, selectedImage: $selectedImage)
+                        selectedAnswer = SideWalkValidationAnswer.fromString(selectedImage.first ?? "") ?? SideWalkValidationAnswer.none
+                        print("Clicked Tag: \(selectedImage)")}, selectedImages: $selectedImage)
                     Divider()
                     HStack() {
                         Spacer()
@@ -71,11 +74,11 @@ struct SideWalkValidationForm: QuestForm ,View {
                     /// To Dismiss alert when selectedButton value changes
                     showAlert = false
                     /// deselecting image option if any other answer is selected
-                    selectedImage = ""
+                    selectedImage = [""]
                     print("selectedButton value", selectedOtherAnswerOption?.label ?? "")
                     /// To select other answers option as SideWalkValidationAnswer
                     selectedAnswer = SideWalkValidationAnswer.fromString(selectedOtherAnswerOption?.label ?? "", id: selectedOtherAnswerOption?.id) ?? SideWalkValidationAnswer.none
-                })}, leftActionText: "", rightActionText: "", rightButtonAction: {}, height: 150, width: 200)
+                })}, leftActionText: "", rightActionText: "", leftButtonAction: {}, rightButtonAction: {}, height: 150, width: 200)
             }
         }.onTapGesture {
             showAlert = false
@@ -83,8 +86,6 @@ struct SideWalkValidationForm: QuestForm ,View {
         .allowsHitTesting(true)
     }
 }
-
-
 
 #Preview {
     SideWalkValidationForm()

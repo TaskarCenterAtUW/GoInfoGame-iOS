@@ -24,6 +24,8 @@
 		05DBBB662B17209600B6F110 /* RealmOPMeta.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05DBBB652B17209600B6F110 /* RealmOPMeta.swift */; };
 		188843AD2B5FA2DF0008DCF8 /* TactilePavingStepsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 188843AC2B5FA2DF0008DCF8 /* TactilePavingStepsTests.swift */; };
 		188843AF2B5FB32D0008DCF8 /* WayLitTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 188843AE2B5FB32D0008DCF8 /* WayLitTests.swift */; };
+		18EC425C2B84987200DE05D7 /* TactilePavingCrosswalkForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18EC425B2B84987200DE05D7 /* TactilePavingCrosswalkForm.swift */; };
+		18EC425E2B849FE000DE05D7 /* TactilePavingCrosswalk.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18EC425D2B849FE000DE05D7 /* TactilePavingCrosswalk.swift */; };
 		342561966FC217124BD9CFE7 /* Pods_GoInfoGame_GoInfoGameUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2D539E22EFF6636F8CBA035A /* Pods_GoInfoGame_GoInfoGameUITests.framework */; };
 		74D8E739AE340D54DEF2E74C /* Pods_GoInfoGameTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 066F85ADCDCE7357368131F8 /* Pods_GoInfoGameTests.framework */; };
 		970D5BD12B62B61300C20BE7 /* MapViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 970D5BD02B62B61300C20BE7 /* MapViewController.swift */; };
@@ -31,6 +33,10 @@
 		970D5BD52B677CC500C20BE7 /* OSMUserData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 970D5BD42B677CC500C20BE7 /* OSMUserData.swift */; };
 		971575172B5FFD6F0044797C /* MapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 971575162B5FFD6F0044797C /* MapView.swift */; };
 		971575192B5FFE910044797C /* LocationManagerCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 971575182B5FFE910044797C /* LocationManagerCoordinator.swift */; };
+		971F9FDF2B847349005397CC /* CrossingIslandForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = 971F9FDE2B847349005397CC /* CrossingIslandForm.swift */; };
+		971F9FE12B847358005397CC /* CrossingIsland.swift in Sources */ = {isa = PBXBuildFile; fileRef = 971F9FE02B847358005397CC /* CrossingIsland.swift */; };
+		971F9FE42B84CDBF005397CC /* CrossingType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 971F9FE32B84CDBF005397CC /* CrossingType.swift */; };
+		971F9FE62B84CDCE005397CC /* CrossingTypeForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = 971F9FE52B84CDCE005397CC /* CrossingTypeForm.swift */; };
 		972454152B14A49A0036B91A /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 972454142B14A49A0036B91A /* Extensions.swift */; };
 		973FBFFE2B46BB3800878269 /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 973FBFFD2B46BB3800878269 /* Utils.swift */; };
 		973FC0012B46CD5D00878269 /* QuestsListUIView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 973FC0002B46CD5D00878269 /* QuestsListUIView.swift */; };
@@ -64,6 +70,8 @@
 		97AC1C0F2B70CEF5004F0BF4 /* SidewalkSurface.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97AC1C0E2B70CEF5004F0BF4 /* SidewalkSurface.swift */; };
 		97AC1C112B70CF03004F0BF4 /* SidewalkSurfaceForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97AC1C102B70CF03004F0BF4 /* SidewalkSurfaceForm.swift */; };
 		97AC1C132B70EF0A004F0BF4 /* Surfaces.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97AC1C122B70EF0A004F0BF4 /* Surfaces.swift */; };
+		97AC1C212B726AC9004F0BF4 /* TactilePavingKerb.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97AC1C202B726AC9004F0BF4 /* TactilePavingKerb.swift */; };
+		97AC1C232B726ADC004F0BF4 /* TactilePavingKerbForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97AC1C222B726ADC004F0BF4 /* TactilePavingKerbForm.swift */; };
 		97F2FA8A2B0630A3000B9726 /* Pods_GoInfoGame.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 66BED441AF03CC04539E8D4A /* Pods_GoInfoGame.framework */; };
 		A40004EC2B62338400AF21FB /* AppQuestManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A40004EB2B62338400AF21FB /* AppQuestManager.swift */; };
 		A40E72642B5CD65000328848 /* OverpassRequestManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A40E72632B5CD65000328848 /* OverpassRequestManagerTests.swift */; };
@@ -163,6 +171,7 @@
 		FA87A8192B6B01A4000A6BEA /* HandRailTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA87A8182B6B01A4000A6BEA /* HandRailTests.swift */; };
 		FA87A81B2B6B042E000A6BEA /* SideWalkWidthTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA87A81A2B6B042E000A6BEA /* SideWalkWidthTests.swift */; };
 		FABF3CF42B7419BB0080EAC9 /* LocationManagerDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = FABF3CF32B7419BB0080EAC9 /* LocationManagerDelegate.swift */; };
+		FABF3CF82B822F120080EAC9 /* CustomSureAlert.swift in Sources */ = {isa = PBXBuildFile; fileRef = FABF3CF72B822F120080EAC9 /* CustomSureAlert.swift */; };
 		FAC9E60F2B04F9C800E2C608 /* OverpassRequestManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC9E60E2B04F9C800E2C608 /* OverpassRequestManager.swift */; };
 		FAC9E6112B06811300E2C608 /* LocationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC9E6102B06811300E2C608 /* LocationManager.swift */; };
 		FAD5C4F32AFCBE700040C61A /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAD5C4F22AFCBE700040C61A /* AppDelegate.swift */; };
@@ -271,6 +280,8 @@
 		066F85ADCDCE7357368131F8 /* Pods_GoInfoGameTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_GoInfoGameTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		188843AC2B5FA2DF0008DCF8 /* TactilePavingStepsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TactilePavingStepsTests.swift; sourceTree = "<group>"; };
 		188843AE2B5FB32D0008DCF8 /* WayLitTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WayLitTests.swift; sourceTree = "<group>"; };
+		18EC425B2B84987200DE05D7 /* TactilePavingCrosswalkForm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TactilePavingCrosswalkForm.swift; sourceTree = "<group>"; };
+		18EC425D2B849FE000DE05D7 /* TactilePavingCrosswalk.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TactilePavingCrosswalk.swift; sourceTree = "<group>"; };
 		2D539E22EFF6636F8CBA035A /* Pods_GoInfoGame_GoInfoGameUITests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_GoInfoGame_GoInfoGameUITests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		3D797A45474D6135AFA24613 /* Pods-GoInfoGameTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-GoInfoGameTests.debug.xcconfig"; path = "Target Support Files/Pods-GoInfoGameTests/Pods-GoInfoGameTests.debug.xcconfig"; sourceTree = "<group>"; };
 		66BED441AF03CC04539E8D4A /* Pods_GoInfoGame.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_GoInfoGame.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -280,6 +291,10 @@
 		970D5BD42B677CC500C20BE7 /* OSMUserData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OSMUserData.swift; sourceTree = "<group>"; };
 		971575162B5FFD6F0044797C /* MapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapView.swift; sourceTree = "<group>"; };
 		971575182B5FFE910044797C /* LocationManagerCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationManagerCoordinator.swift; sourceTree = "<group>"; };
+		971F9FDE2B847349005397CC /* CrossingIslandForm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CrossingIslandForm.swift; sourceTree = "<group>"; };
+		971F9FE02B847358005397CC /* CrossingIsland.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CrossingIsland.swift; sourceTree = "<group>"; };
+		971F9FE32B84CDBF005397CC /* CrossingType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CrossingType.swift; sourceTree = "<group>"; };
+		971F9FE52B84CDCE005397CC /* CrossingTypeForm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CrossingTypeForm.swift; sourceTree = "<group>"; };
 		972454142B14A49A0036B91A /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		973FBFFD2B46BB3800878269 /* Utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Utils.swift; sourceTree = "<group>"; };
 		973FC0002B46CD5D00878269 /* QuestsListUIView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuestsListUIView.swift; sourceTree = "<group>"; };
@@ -314,6 +329,8 @@
 		97AC1C0E2B70CEF5004F0BF4 /* SidewalkSurface.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SidewalkSurface.swift; sourceTree = "<group>"; };
 		97AC1C102B70CF03004F0BF4 /* SidewalkSurfaceForm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SidewalkSurfaceForm.swift; sourceTree = "<group>"; };
 		97AC1C122B70EF0A004F0BF4 /* Surfaces.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Surfaces.swift; sourceTree = "<group>"; };
+		97AC1C202B726AC9004F0BF4 /* TactilePavingKerb.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TactilePavingKerb.swift; sourceTree = "<group>"; };
+		97AC1C222B726ADC004F0BF4 /* TactilePavingKerbForm.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TactilePavingKerbForm.swift; sourceTree = "<group>"; };
 		97F2FA8D2B0630C4000B9726 /* SwiftOverpassAPI.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = SwiftOverpassAPI.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		A40004EB2B62338400AF21FB /* AppQuestManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppQuestManager.swift; sourceTree = "<group>"; };
 		A40E72632B5CD65000328848 /* OverpassRequestManagerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OverpassRequestManagerTests.swift; sourceTree = "<group>"; };
@@ -415,6 +432,7 @@
 		FA87A8182B6B01A4000A6BEA /* HandRailTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HandRailTests.swift; sourceTree = "<group>"; };
 		FA87A81A2B6B042E000A6BEA /* SideWalkWidthTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SideWalkWidthTests.swift; sourceTree = "<group>"; };
 		FABF3CF32B7419BB0080EAC9 /* LocationManagerDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationManagerDelegate.swift; sourceTree = "<group>"; };
+		FABF3CF72B822F120080EAC9 /* CustomSureAlert.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomSureAlert.swift; sourceTree = "<group>"; };
 		FAC9E60E2B04F9C800E2C608 /* OverpassRequestManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OverpassRequestManager.swift; sourceTree = "<group>"; };
 		FAC9E6102B06811300E2C608 /* LocationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationManager.swift; sourceTree = "<group>"; };
 		FAD5C4EF2AFCBE700040C61A /* GoInfoGame.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GoInfoGame.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -610,6 +628,15 @@
 			path = quests;
 			sourceTree = "<group>";
 		};
+		18EC425A2B8497F200DE05D7 /* TactilePavingCrosswalk */ = {
+			isa = PBXGroup;
+			children = (
+				18EC425D2B849FE000DE05D7 /* TactilePavingCrosswalk.swift */,
+				18EC425B2B84987200DE05D7 /* TactilePavingCrosswalkForm.swift */,
+			);
+			path = TactilePavingCrosswalk;
+			sourceTree = "<group>";
+		};
 		416A9A4590B07971607790B0 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
@@ -645,6 +672,24 @@
 			path = Map;
 			sourceTree = "<group>";
 		};
+		971F9FDD2B847318005397CC /* CrossingIsland */ = {
+			isa = PBXGroup;
+			children = (
+				971F9FDE2B847349005397CC /* CrossingIslandForm.swift */,
+				971F9FE02B847358005397CC /* CrossingIsland.swift */,
+			);
+			path = CrossingIsland;
+			sourceTree = "<group>";
+		};
+		971F9FE22B84ABA6005397CC /* CrossingType */ = {
+			isa = PBXGroup;
+			children = (
+				971F9FE32B84CDBF005397CC /* CrossingType.swift */,
+				971F9FE52B84CDCE005397CC /* CrossingTypeForm.swift */,
+			);
+			path = CrossingType;
+			sourceTree = "<group>";
+		};
 		973FBFFF2B46CD4100878269 /* QuestsList */ = {
 			isa = PBXGroup;
 			children = (
@@ -665,6 +710,7 @@
 				973FC04B2B5A5F5F00878269 /* RadioItem.swift */,
 				97AC1C092B6B7F10004F0BF4 /* CustomVerticalButtonsList.swift */,
 				97AC1C0B2B6B843C004F0BF4 /* CustomAlert.swift */,
+				FABF3CF72B822F120080EAC9 /* CustomSureAlert.swift */,
 			);
 			path = CustomComponents;
 			sourceTree = "<group>";
@@ -739,6 +785,15 @@
 				97AC1C102B70CF03004F0BF4 /* SidewalkSurfaceForm.swift */,
 			);
 			path = SidewalkSurface;
+			sourceTree = "<group>";
+		};
+		97AC1C1F2B726A9F004F0BF4 /* TactilePavingKerb */ = {
+			isa = PBXGroup;
+			children = (
+				97AC1C222B726ADC004F0BF4 /* TactilePavingKerbForm.swift */,
+				97AC1C202B726AC9004F0BF4 /* TactilePavingKerb.swift */,
+			);
+			path = TactilePavingKerb;
 			sourceTree = "<group>";
 		};
 		A40E726B2B5D462A00328848 /* osmapi */ = {
@@ -959,6 +1014,10 @@
 		A4E7119C2B57A22300C9DE08 /* quests */ = {
 			isa = PBXGroup;
 			children = (
+				971F9FE22B84ABA6005397CC /* CrossingType */,
+				971F9FDD2B847318005397CC /* CrossingIsland */,
+				18EC425A2B8497F200DE05D7 /* TactilePavingCrosswalk */,
+				97AC1C1F2B726A9F004F0BF4 /* TactilePavingKerb */,
 				97AC1C0D2B70CED0004F0BF4 /* SidewalkSurface */,
 				97AC1C042B6A44C1004F0BF4 /* SideWalkValidation */,
 				973FC0462B5A475C00878269 /* CrossingMarking */,
@@ -1594,6 +1653,7 @@
 				FAC9E6112B06811300E2C608 /* LocationManager.swift in Sources */,
 				A4834A3F2B67737500D4F0AA /* StoredChangeset.swift in Sources */,
 				973FC02F2B58F81F00878269 /* StepsRamp.swift in Sources */,
+				971F9FE62B84CDCE005397CC /* CrossingTypeForm.swift in Sources */,
 				A4E711AA2B58F6FB00C9DE08 /* HandRail.swift in Sources */,
 				973FC02D2B58F79B00878269 /* StepsRampForm.swift in Sources */,
 				059D47312B2C81A9000987FA /* Style.swift in Sources */,
@@ -1604,15 +1664,20 @@
 				059D47332B2C83BA000987FA /* Highway.swift in Sources */,
 				973FC0012B46CD5D00878269 /* QuestsListUIView.swift in Sources */,
 				973FC01F2B50DE7E00878269 /* ImageGridItemView.swift in Sources */,
+				97AC1C212B726AC9004F0BF4 /* TactilePavingKerb.swift in Sources */,
 				A4E711A22B57A3B400C9DE08 /* SideWalkWidth.swift in Sources */,
 				05CB71E02B0FAFD200DED821 /* GenericUIViewControllerRepresentable.swift in Sources */,
+				971F9FE42B84CDBF005397CC /* CrossingType.swift in Sources */,
 				97AC1C062B6A45B0004F0BF4 /* SideWalkValidation.swift in Sources */,
 				FAD5C4F32AFCBE700040C61A /* AppDelegate.swift in Sources */,
+				18EC425C2B84987200DE05D7 /* TactilePavingCrosswalkForm.swift in Sources */,
 				05DBBB622B164D9A00B6F110 /* RealOPElement.swift in Sources */,
 				973FC0422B59467A00878269 /* BusStopLit.swift in Sources */,
 				97AC1C0A2B6B7F10004F0BF4 /* CustomVerticalButtonsList.swift in Sources */,
 				973FC0352B592C0F00878269 /* StairNumberForm.swift in Sources */,
 				FAC9E60F2B04F9C800E2C608 /* OverpassRequestManager.swift in Sources */,
+				18EC425E2B849FE000DE05D7 /* TactilePavingCrosswalk.swift in Sources */,
+				FABF3CF82B822F120080EAC9 /* CustomSureAlert.swift in Sources */,
 				973FC0482B5A477E00878269 /* CrossMarking.swift in Sources */,
 				05DBBB642B17204300B6F110 /* RealmOPGeometry.swift in Sources */,
 				FA87A8102B68142F000A6BEA /* LoadingView.swift in Sources */,
@@ -1629,8 +1694,10 @@
 				A40004EC2B62338400AF21FB /* AppQuestManager.swift in Sources */,
 				FA5853C12B21F17F00301CDA /* OnboardingView.swift in Sources */,
 				A4B83AF32B5F9385006684CA /* StoredWay.swift in Sources */,
+				971F9FDF2B847349005397CC /* CrossingIslandForm.swift in Sources */,
 				05DBBB5F2B1263FF00B6F110 /* DatabaseConnector.swift in Sources */,
 				FAF44FC12B30850A004FE664 /* OnboardingView3.swift in Sources */,
+				971F9FE12B847358005397CC /* CrossingIsland.swift in Sources */,
 				970D5BD12B62B61300C20BE7 /* MapViewController.swift in Sources */,
 				0536DD972B0BD95100B04C4B /* URLSession+Extension.swift in Sources */,
 				973FC04C2B5A5F5F00878269 /* RadioItem.swift in Sources */,
@@ -1640,6 +1707,7 @@
 				973FC0172B4D567900878269 /* WidthView.swift in Sources */,
 				97AC1C082B6A45C9004F0BF4 /* SideWalkValidationForm.swift in Sources */,
 				FAD5C4F52AFCBE700040C61A /* SceneDelegate.swift in Sources */,
+				97AC1C232B726ADC004F0BF4 /* TactilePavingKerbForm.swift in Sources */,
 				FAF44FBF2B3084FB004FE664 /* OnboardingView2.swift in Sources */,
 				97AC1C132B70EF0A004F0BF4 /* Surfaces.swift in Sources */,
 				A4E711B02B59011000C9DE08 /* StepsInclineForm.swift in Sources */,
@@ -2130,9 +2198,11 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_IDENTITY = "Apple Development";
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2;
-				DEVELOPMENT_TEAM = NPCMG529DV;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
+				CODE_SIGN_STYLE = Manual;
+				CURRENT_PROJECT_VERSION = 4;
+				DEVELOPMENT_TEAM = "";
+				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = NPCMG529DV;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = GoInfoGame/Info.plist;
 				INFOPLIST_KEY_NSFileProviderDomainUsageDescription = "";
@@ -2152,6 +2222,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.vindago.goinfogame;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = "GoInfoGame AdHoc";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -2166,9 +2237,11 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_IDENTITY = "Apple Development";
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2;
-				DEVELOPMENT_TEAM = NPCMG529DV;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
+				CODE_SIGN_STYLE = Manual;
+				CURRENT_PROJECT_VERSION = 4;
+				DEVELOPMENT_TEAM = "";
+				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = NPCMG529DV;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = GoInfoGame/Info.plist;
 				INFOPLIST_KEY_NSFileProviderDomainUsageDescription = "";
@@ -2188,6 +2261,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.vindago.goinfogame;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = "GoInfoGame AdHoc";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";

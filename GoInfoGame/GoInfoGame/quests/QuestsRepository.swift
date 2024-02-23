@@ -23,7 +23,11 @@ class QuestsRepository {
         BusStopLit(),
         CrossMarking(),
         SideWalkValidation(),
-        SidewalkSurface()
+        SidewalkSurface(),
+        TactilePavingKerb(),
+        CrossingIsland(),
+        CrossingType(),
+        TactilePavingCrosswalk()
     ]
     
     var displayQuests: [DisplayUnit] {
@@ -48,9 +52,6 @@ class QuestsRepository {
             
             return CLLocationCoordinate2D(latitude: randomLat, longitude: randomLon)
         }
-    
-    
-    
 }
 // Probably move somewhere else
 struct DisplayUnitWithCoordinate: Identifiable {

@@ -1,14 +1,14 @@
 //
-//  TactilePavingStepsForm.swift
+//  TactilePavingCrosswalkForm.swift
 //  GoInfoGame
 //
-//  Created by Lakshmi Shweta Pochiraju on 18/01/24.
+//  Created by Rajesh Kantipudi on 20/02/24.
 //
 
 import Foundation
 import SwiftUI
 
-struct TactilePavingStepsForm: View, QuestForm {
+struct TactilePavingCrosswalkForm: View, QuestForm {
     var action: ((YesNoAnswer) -> Void)?
     typealias AnswerClass = YesNoAnswer
     @State private var isShowingAreYouSure = false
@@ -17,9 +17,9 @@ struct TactilePavingStepsForm: View, QuestForm {
     var body: some View {
         ZStack {
             VStack{
-                QuestionHeader(icon:Image("steps_tactile_paving"),
-                               title: LocalizedStrings.questTactilePavingTitleSteps.localized,
-                               subtitle: "Stair Number")
+                QuestionHeader(icon:Image("tactile_crossing"),
+                               title: LocalizedStrings.questTactilePavingCrossing.localized,
+                               subtitle: "Marked Crossing")
                 VStack(alignment:.leading){
                     Text(LocalizedStrings.usuallyLooksLikeThis.localized)
                         .font(.caption)
@@ -49,10 +49,10 @@ struct TactilePavingStepsForm: View, QuestForm {
                 })
                 .zIndex(1)
             }
-        }
+        }.frame(maxHeight: .leastNormalMagnitude)
     }
 }
 
 #Preview {
-    TactilePavingStepsForm()
+    TactilePavingCrosswalkForm()
 }

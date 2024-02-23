@@ -62,3 +62,14 @@ extension CLLocation {
         return (left, bottom, right, top)
     }
 }
+// Extension of Array with a method to remove an element
+extension Array where Element: Equatable {
+    // Check if the element exists in the array
+    mutating func removeObject(element: Element) {
+        if let index = firstIndex(of: element) {
+            // If the element is found, remove it from the array
+            remove(at: index)
+        }
+    
+}
+}

@@ -1,8 +1,8 @@
 //
-//  BusStopLit.swift
+//  CrossingIsland.swift
 //  GoInfoGame
 //
-//  Created by Lakshmi Shweta Pochiraju on 18/01/24.
+//  Created by Lakshmi Shweta Pochiraju on 20/02/24.
 //
 
 import Foundation
@@ -10,30 +10,15 @@ import UIKit
 import SwiftUI
 import osmparser
 
-class BusStopLit: QuestBase, Quest {
+class CrossingIsland: QuestBase, Quest {
     typealias AnswerClass = YesNoAnswer
     var relationData: Element? = nil
     var _internalExpression: ElementFilterExpression?
-    var icon: UIImage = #imageLiteral(resourceName: "stop_lit")
+    var icon: UIImage = #imageLiteral(resourceName: "ic_quest_pedestrian_crossing_island.pdf")
     var wikiLink: String = ""
     var changesetComment: String = ""
-    var title: String = "Bus Stop Lit"
-    var filter: String = """
-    nodes, ways, relations with
-            (
-              public_transport = platform
-              or (highway = bus_stop and public_transport != stop_position)
-            )
-            and physically_present != no and naptan:BusStopType != HAR
-            and location !~ underground|indoor
-            and indoor != yes
-            and (!level or level >= 0)
-            and (
-              !lit
-              or lit = no and lit older today -8 years
-              or lit older today -16 years
-            )
-    """
+    var title: String = "Crossing Island"
+    var filter: String = ""
     var displayUnit: DisplayUnit {
         DisplayUnit(title: self.title, description: "",parent: self,sheetSize:.SMALL )
     }
@@ -48,25 +33,25 @@ class BusStopLit: QuestBase, Quest {
     }
     var form: AnyView {
         get{
-            return AnyView(self.internalForm as! BusStopLitForm)
+            return AnyView(self.internalForm as! CrossingIslandForm)
         }
     }
   
     override init() {
         super.init()
-        self.internalForm = BusStopLitForm(action: { [self] answer in
+        self.internalForm = CrossingIslandForm(action: { [self] answer in
             self.onAnswer(answer: answer)
         })
     }
     
     func onAnswer(answer: YesNoAnswer) {
         if let rData = self.relationData {
-            self.updateTags(id: rData.id, tags: ["lit":answer.rawValue], type: rData.type)
+            self.updateTags(id: rData.id, tags: ["crossing:island":answer.rawValue], type: rData.type)
         }
     }
     
     func copyWithElement(element: Element) -> any Quest {
-        let q = BusStopLit()
+        let q = CrossingIsland()
         q.relationData = element
         return q
     }

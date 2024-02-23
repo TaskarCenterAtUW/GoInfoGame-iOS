@@ -10,15 +10,13 @@ import Foundation
 import osmparser
 
 class HandRail: QuestBase,Quest {
-    
-    func onAnswer(answer: Bool) {
-         
-    }
-    
-    typealias AnswerClass = Bool
-    
+    typealias AnswerClass = YesNoAnswer
+    var _internalExpression: ElementFilterExpression?
+    var relationData: Element? = nil
+    var icon: UIImage = #imageLiteral(resourceName: "steps_handrail.pdf")
+    var wikiLink: String = "Key:handrail"
+    var changesetComment: String = "Specify whether steps have handrails"
     var title: String = "HandRail"
-    
     var filter: String = """
         ways with highway = steps
         and (!indoor or indoor = no)
@@ -31,41 +29,34 @@ class HandRail: QuestBase,Quest {
             or older today -8 years
         )
 """
-    
-    var icon: UIImage = #imageLiteral(resourceName: "steps_handrail.pdf")
-    
-    var wikiLink: String = "Key:handrail"
-    
-    var changesetComment: String = "Specify whether steps have handrails"
-    
     var form: AnyView {
         get{
             return AnyView(self.internalForm as! HandRailForm)
         }
     }
-    
-    var relationData: Element? = nil
-    
     var displayUnit: DisplayUnit {
         DisplayUnit(title: self.title, description: "",parent: self,sheetSize: .SMALL)
     }
-    
-    var _internalExpression: ElementFilterExpression?
-    
     var filterExpression: ElementFilterExpression? {
         if(_internalExpression != nil){
             return _internalExpression
-        }
-        else {
+        } else {
             _internalExpression = try? filter.toElementFilterExpression()
             return _internalExpression
         }
     }
+    
     override init() {
         super.init()
         self.internalForm = HandRailForm(action: { [self] yesNo in
             onAnswer(answer: yesNo)
         })
+    }
+    
+    func onAnswer(answer: YesNoAnswer) {
+        if let rData = self.relationData {
+            self.updateTags(id: rData.id, tags: ["handrail":answer.rawValue], type: rData.type)
+        }
     }
     
     func copyWithElement(element: Element) -> any Quest {
