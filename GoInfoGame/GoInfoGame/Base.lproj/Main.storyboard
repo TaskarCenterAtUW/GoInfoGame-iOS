@@ -16,12 +16,6 @@
                     <view key="view" contentMode="scaleToFill" id="WIL-R2-Zwd">
                         <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                        <subviews>
-                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="sta" translatesAutoresizingMaskIntoConstraints="NO" id="eFu-Od-x7K">
-                                <rect key="frame" x="114" y="400" width="240" height="128"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                            </imageView>
-                        </subviews>
                         <viewLayoutGuide key="safeArea" id="YrN-Z6-zFT"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                     </view>
@@ -54,7 +48,6 @@
         </scene>
     </scenes>
     <resources>
-        <image name="sta" width="128" height="128"/>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>
