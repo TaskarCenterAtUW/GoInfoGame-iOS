@@ -25,7 +25,7 @@ struct ProfileView: View {
                             Image(systemName: "star.fill")
                                 .resizable()
                                 .frame(width: 25, height: 25)
-                            Text("0")
+                            Text("\(viewModel.user?.changesets.count ?? 0)")
                                 .font(.title)
                         }
                     }
@@ -48,15 +48,11 @@ struct ProfileView: View {
     }
     
     private var profileImage: some View {
-        AsyncImage(url: URL(string: "https://picsum.photos/200/300")) { phase in
-            if let image = phase.image {
-                image.resizable()
-            } else if phase.error != nil {
-                Image(systemName: "person.circle.fill")
-                    .resizable()
-            } else {
-                ProgressView().progressViewStyle(.circular)
-            }
+        AsyncImage(url: self.viewModel.imageUrl) { image in
+            image.resizable()
+        } placeholder: {
+            Image(systemName: "person.circle.fill")
+                .resizable()
         }
         .frame(width: 120, height: 120, alignment: .center)
         .cornerRadius(60)

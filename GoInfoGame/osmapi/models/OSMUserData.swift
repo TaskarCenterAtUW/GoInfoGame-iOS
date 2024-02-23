@@ -21,8 +21,9 @@ public struct OSMUserData: Codable {
     let description: String
     let contributorTerms: ContributorTerms
     let roles: [String]
-    let changesets, traces: Changesets
+    public let changesets, traces: Changesets
     let blocks: Blocks
+    public let profileImage: profileImage?
 
     enum CodingKeys: String, CodingKey {
         case id
@@ -31,6 +32,7 @@ public struct OSMUserData: Codable {
         case description
         case contributorTerms = "contributor_terms"
         case roles, changesets, traces, blocks
+        case profileImage = "img"
     }
 }
 
@@ -45,11 +47,15 @@ struct Received: Codable {
 }
 
 // MARK: - Changesets
-struct Changesets: Codable {
-    let count: Int
+public struct Changesets: Codable {
+    public let count: Int
 }
 
 // MARK: - ContributorTerms
 struct ContributorTerms: Codable {
     let agreed: Bool
+}
+
+public struct profileImage: Codable {
+    public let href: String
 }

@@ -9,7 +9,8 @@ import Foundation
 import osmapi
 
 class ProfileViewVM: ObservableObject {
-   @Published var user: OSMUserData?
+    @Published var user: OSMUserData?
+    
     init() {
         let posmConnection = OSMConnection(config: OSMConfig.testOSM,userCreds: OSMLogin.testOSM)
         posmConnection.getUserDetails() { [weak self]result in
@@ -19,7 +20,7 @@ class ProfileViewVM: ObservableObject {
                 print(userDataResponse)
                 DispatchQueue.main.async {
                     self?.user = user
-                }                
+                }
             case .failure(let error):
                 print("---error", error)
             }
@@ -29,6 +30,13 @@ class ProfileViewVM: ObservableObject {
     var profileUrl: URL? {
         if let userName = self.user?.displayName {
             return URL(string:OSMConfig.url.appending("user/").appending(userName))
+        }
+        return nil
+    }
+    
+    var imageUrl: URL? {
+        if let imageString = self.user?.profileImage?.href {
+            return URL(string: imageString)
         }
         return nil
     }
