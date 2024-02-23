@@ -25,7 +25,9 @@ class QuestsRepository {
         SideWalkValidation(),
         SidewalkSurface(),
         TactilePavingKerb(),
-        CrossingIsland()
+        CrossingIsland(),
+        CrossingType(),
+        TactilePavingCrosswalk()
     ]
     
     var displayQuests: [DisplayUnit] {
