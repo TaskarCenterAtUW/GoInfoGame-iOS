@@ -8,7 +8,7 @@
 import Foundation
 import RealmSwift
 import MapKit
-import SwiftOverpassAPI
+//import SwiftOverpassAPI
 
 class RealmOPElement: Object {
     @objc dynamic var id: Int = 0

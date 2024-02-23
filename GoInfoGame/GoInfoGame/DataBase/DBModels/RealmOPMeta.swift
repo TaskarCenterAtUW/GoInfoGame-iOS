@@ -6,7 +6,7 @@
 //
 
 import RealmSwift
-import SwiftOverpassAPI
+//import SwiftOverpassAPI
 
 class RealmOPMeta: Object {
     @objc dynamic var version: Int = 0

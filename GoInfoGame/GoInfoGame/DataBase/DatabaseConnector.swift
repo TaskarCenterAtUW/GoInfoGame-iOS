@@ -7,8 +7,8 @@
 
 import Foundation
 import RealmSwift
-import SwiftOverpassAPI
 import MapKit
+import osmapi
 
 class DatabaseConnector {
     static let shared = DatabaseConnector()
@@ -28,32 +28,35 @@ class DatabaseConnector {
          data with same id
         @param elements  List of OPElement
      */
-    func saveElements(_ elements: [OPElement]) {
+    func saveOSMElements(_ elements: [OSMElement]) {
         // Save the elements appropriately
         // Get the ways and nodes out
-        let nodes = elements.filter({$0 is OPNode}).filter({!$0.tags.isEmpty})
-        let ways = elements.filter({$0 is OPWay}).filter({!$0.tags.isEmpty})
+        let nodes = elements.filter({$0 is OSMNode}).filter({!$0.tags.isEmpty})
+        let ways = elements.filter({$0 is OSMWay}).filter({!$0.tags.isEmpty})
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
         do {
             try realm.write {
                 for node in nodes {
                     let storedElement = StoredNode()
                     storedElement.id = node.id
                     for tag in node.tags {
-                        if (!tag.key.contains(".")) { // Do a utility function
-                            storedElement.tags.setValue(tag.value, forKey: tag.key)
-                        }
+                        storedElement.tags.setValue(tag.value, forKey: tag.key)
                     }
-                    if let meta = node.meta {
-                        storedElement.version = meta.version
-                        storedElement.timestamp = meta.timestamp
-                    }
-                    if let asNode = node as? OPNode{
-                        switch asNode.geometry {
-                        case .center(let coordinate):
-                            storedElement.point = coordinate
-                        default:
-                            continue
-                        }
+//                    if let meta = node {
+                        let timestampString = dateFormatter.string(from: node.timestamp)
+                        storedElement.version = node.version
+                        storedElement.timestamp = timestampString
+//                    }
+                    if let asNode = node as? OSMNode{
+                        // coordinate from lat long
+                        storedElement.point = CLLocationCoordinate2D(latitude: asNode.lat, longitude: asNode.lon)
+//                        switch asNode.geometry {
+//                        case .center(let coordinate):
+//                            storedElement.point = coordinate
+//                        default:
+//                            continue
+//                        }
                     }
                     realm.add(storedElement, update: .modified)
                 }
@@ -61,26 +64,24 @@ class DatabaseConnector {
                 for way in ways {
                     let storedWay = StoredWay()
                     storedWay.id = way.id
+                    let timestampString = dateFormatter.string(from: way.timestamp)
                     for tag in way.tags {
                         if(!tag.key.contains(".")){ // Do a utility function
                             storedWay.tags.setValue(tag.value, forKey: tag.key)
                         }
                     }
-                    
-                    
-                    if let meta = way.meta {
-                        storedWay.version = meta.version
-                        storedWay.timestamp = meta.timestamp
-                    }
-                    if let asWay = way as? OPWay {
+                    storedWay.version = way.version
+                    storedWay.timestamp = timestampString
+                    if let asWay = way as? OSMWay {
                         storedWay.nodes.append(objectsIn: asWay.nodes.map({Int64($0)}))
                         // Store the coordinates
-                        switch asWay.geometry {
-                        case .polygon(let coordinates):
-                            storedWay.polyline.append(objectsIn: coordinates)
-                        default:
-                            print("Ignoring geometry")
-                        }
+//MARK: TBD polylines
+//                        switch asWay.geometry {
+//                        case .polygon(let coordinates):
+//                            storedWay.polyline.append(objectsIn: coordinates)
+//                        default:
+//                            print("Ignoring geometry")
+//                        }
                     }
                     realm.add(storedWay, update: .modified)
                 }
@@ -93,44 +94,83 @@ class DatabaseConnector {
             Earlier implementation of saveElements. This used to save only the Way type of objects.
             This is not used anymore
      */
-    func saveElements(_ elements: [OPWay]) {
+//    func saveElements(_ elements: [OPWay]) {
+//        do {
+//            try realm.write {
+//                for element in elements {
+//                    let realmElement = RealmOPElement()
+//                    realmElement.id = element.id
+//                    realmElement.isInteresting = element.isInteresting
+//                    realmElement.isSkippable = element.isSkippable
+//                    
+//                    let realmTags = element.tags.map { tag in
+//                        let realmTag = RealmOPElementTag()
+//                        realmTag.key = tag.key
+//                        realmTag.value = tag.value
+//                        return realmTag
+//                    }
+//                    realmElement.tags.append(objectsIn: realmTags)
+//                    
+//                    if let meta = element.meta {
+//                        let realmMeta = RealmOPMeta()
+//                        realmMeta.version = meta.version
+//                        realmMeta.timestamp = meta.timestamp
+//                        realmMeta.changeset = meta.changeset
+//                        realmMeta.userId = meta.userId
+//                        realmMeta.username = meta.username
+//                        realmElement.meta = realmMeta
+//                    } else {
+//                        realmElement.meta = RealmOPMeta()
+//                    }
+//                    
+//                    if !element.nodes.isEmpty {
+//                        realmElement.nodes.append(objectsIn: element.nodes)
+//                    }
+//                    let geometry =  RealmOPGeometry(geometry: element.geometry)
+//                    realmElement.geometry.append(geometry)
+//                    realm.add(realmElement, update: .modified)
+//                }
+//                
+//                
+//            }
+//        } catch {
+//            print("Error saving elements to Realm: \(error)")
+//        }
+//    }
+    func saveElements(_ elements: [OSMWay]) {
         do {
             try realm.write {
                 for element in elements {
                     let realmElement = RealmOPElement()
                     realmElement.id = element.id
-                    realmElement.isInteresting = element.isInteresting
-                    realmElement.isSkippable = element.isSkippable
+                    realmElement.isInteresting = element.isInteresting ?? false
+                    realmElement.isSkippable = element.isSkippable ?? false
                     
-                    let realmTags = element.tags.map { tag in
+                    let realmTags = element.tags.map { key, value in
                         let realmTag = RealmOPElementTag()
-                        realmTag.key = tag.key
-                        realmTag.value = tag.value
+                        realmTag.key = key
+                        realmTag.value = value
                         return realmTag
                     }
                     realmElement.tags.append(objectsIn: realmTags)
                     
-                    if let meta = element.meta {
-                        let realmMeta = RealmOPMeta()
-                        realmMeta.version = meta.version
-                        realmMeta.timestamp = meta.timestamp
-                        realmMeta.changeset = meta.changeset
-                        realmMeta.userId = meta.userId
-                        realmMeta.username = meta.username
-                        realmElement.meta = realmMeta
-                    } else {
-                        realmElement.meta = RealmOPMeta()
-                    }
+                    let realmMeta = RealmOPMeta()
+                    let dateFormatter = DateFormatter()
+                    dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+                    let dateString = dateFormatter.string(from: element.timestamp)
+                    realmMeta.version = element.version
+                    realmMeta.timestamp = dateString
+                    realmMeta.changeset = element.changeset
+                    realmMeta.userId = element.uid
+                    realmMeta.username = element.user
+                    realmElement.meta = realmMeta
                     
                     if !element.nodes.isEmpty {
                         realmElement.nodes.append(objectsIn: element.nodes)
                     }
-                    let geometry =  RealmOPGeometry(geometry: element.geometry)
-                    realmElement.geometry.append(geometry)
+                    
                     realm.add(realmElement, update: .modified)
                 }
-                
-                
             }
         } catch {
             print("Error saving elements to Realm: \(error)")
