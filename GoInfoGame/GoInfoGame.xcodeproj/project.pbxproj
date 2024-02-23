@@ -165,6 +165,8 @@
 		A4E711AC2B58F7C000C9DE08 /* HandRailForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4E711AB2B58F7C000C9DE08 /* HandRailForm.swift */; };
 		A4E711AE2B59004700C9DE08 /* StepsIncline.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4E711AD2B59004700C9DE08 /* StepsIncline.swift */; };
 		A4E711B02B59011000C9DE08 /* StepsInclineForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4E711AF2B59011000C9DE08 /* StepsInclineForm.swift */; };
+		B0CCB98C2B8626AE00AA73DE /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0CCB98B2B8626AE00AA73DE /* ProfileView.swift */; };
+		B0CCB98E2B8626C600AA73DE /* ProfileViewVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0CCB98D2B8626C600AA73DE /* ProfileViewVM.swift */; };
 		FA5853C12B21F17F00301CDA /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA5853C02B21F17F00301CDA /* OnboardingView.swift */; };
 		FA87A8102B68142F000A6BEA /* LoadingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA87A80F2B68142F000A6BEA /* LoadingView.swift */; };
 		FA87A8132B6AC019000A6BEA /* StepsRampTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA87A8112B6AC019000A6BEA /* StepsRampTests.swift */; };
@@ -425,6 +427,8 @@
 		A4E711AD2B59004700C9DE08 /* StepsIncline.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StepsIncline.swift; sourceTree = "<group>"; };
 		A4E711AF2B59011000C9DE08 /* StepsInclineForm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StepsInclineForm.swift; sourceTree = "<group>"; };
 		AE61EC473200AFDA81C2110A /* Pods-GoInfoGame-GoInfoGameUITests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-GoInfoGame-GoInfoGameUITests.release.xcconfig"; path = "Target Support Files/Pods-GoInfoGame-GoInfoGameUITests/Pods-GoInfoGame-GoInfoGameUITests.release.xcconfig"; sourceTree = "<group>"; };
+		B0CCB98B2B8626AE00AA73DE /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
+		B0CCB98D2B8626C600AA73DE /* ProfileViewVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewVM.swift; sourceTree = "<group>"; };
 		C96303080D26026265099E0E /* Pods-GoInfoGame.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-GoInfoGame.release.xcconfig"; path = "Target Support Files/Pods-GoInfoGame/Pods-GoInfoGame.release.xcconfig"; sourceTree = "<group>"; };
 		D76D8E22AC705A38AFEA78B1 /* Pods-GoInfoGame-GoInfoGameUITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-GoInfoGame-GoInfoGameUITests.debug.xcconfig"; path = "Target Support Files/Pods-GoInfoGame-GoInfoGameUITests/Pods-GoInfoGame-GoInfoGameUITests.debug.xcconfig"; sourceTree = "<group>"; };
 		F008D431593E568E75C48C84 /* Pods-GoInfoGame.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-GoInfoGame.debug.xcconfig"; path = "Target Support Files/Pods-GoInfoGame/Pods-GoInfoGame.debug.xcconfig"; sourceTree = "<group>"; };
@@ -585,6 +589,7 @@
 			children = (
 				FA87A80E2B681416000A6BEA /* Utils */,
 				970D5BD02B62B61300C20BE7 /* MapViewController.swift */,
+				B0CBEA902B88980A00C430F3 /* Profile */,
 				971575152B5FFD5F0044797C /* Map */,
 				973FC0152B4D562200878269 /* CustomComponents */,
 				973FBFFF2B46CD4100878269 /* QuestsList */,
@@ -1075,6 +1080,15 @@
 				A4E711AF2B59011000C9DE08 /* StepsInclineForm.swift */,
 			);
 			path = StepsIncline;
+			sourceTree = "<group>";
+		};
+		B0CBEA902B88980A00C430F3 /* Profile */ = {
+			isa = PBXGroup;
+			children = (
+				B0CCB98B2B8626AE00AA73DE /* ProfileView.swift */,
+				B0CCB98D2B8626C600AA73DE /* ProfileViewVM.swift */,
+			);
+			path = Profile;
 			sourceTree = "<group>";
 		};
 		FA5853BF2B21E3E000301CDA /* Onboarding */ = {
@@ -1719,6 +1733,7 @@
 				973FC04C2B5A5F5F00878269 /* RadioItem.swift in Sources */,
 				A495DF2D2B6A190400478E44 /* CustomMapView.swift in Sources */,
 				05DBBB662B17209600B6F110 /* RealmOPMeta.swift in Sources */,
+				B0CCB98E2B8626C600AA73DE /* ProfileViewVM.swift in Sources */,
 				0536DD942B0BD59900B04C4B /* OAuthError.swift in Sources */,
 				973FC0172B4D567900878269 /* WidthView.swift in Sources */,
 				97AC1C082B6A45C9004F0BF4 /* SideWalkValidationForm.swift in Sources */,
@@ -1734,6 +1749,7 @@
 				A4E711AC2B58F7C000C9DE08 /* HandRailForm.swift in Sources */,
 				A4E711A62B57BBCA00C9DE08 /* QuestProtocols.swift in Sources */,
 				973FBFFE2B46BB3800878269 /* Utils.swift in Sources */,
+				B0CCB98C2B8626AE00AA73DE /* ProfileView.swift in Sources */,
 				FAF44FBD2B3084EC004FE664 /* OnboardingView1.swift in Sources */,
 				973FC01D2B4FEE1B00878269 /* YesNoView.swift in Sources */,
 			);

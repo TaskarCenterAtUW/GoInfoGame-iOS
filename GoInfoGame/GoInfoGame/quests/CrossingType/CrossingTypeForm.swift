@@ -24,7 +24,7 @@ struct CrossingTypeForm: View, QuestForm {
     var body: some View {
         ZStack{
             VStack{
-                QuestionHeader(icon:Image("kerb_tactile_paving"), title: LocalizedStrings.questCrossingTypeTitle.localized, subtitle: "Crossing")
+                QuestionHeader(icon:Image("pedestrian_crossing"), title: LocalizedStrings.questCrossingTypeTitle.localized, subtitle: "Crossing")
                 VStack(alignment:.center){
                     VStack (alignment: .leading){
                         Text(LocalizedStrings.selectOne.localized).font(.caption).foregroundColor(.gray)

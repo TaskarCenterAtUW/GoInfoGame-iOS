@@ -156,7 +156,7 @@ public class OSMConnection {
         }
         BaseNetworkManager.shared.fetchData(url: url, completion: completion)
     }
-    func getUserDetails(_ completion: @escaping (Result<OSMUserDataResponse, Error>)-> Void) {
+    public func getUserDetails(_ completion: @escaping (Result<OSMUserDataResponse, Error>)-> Void) {
         let urlString =  self.baseUrl.appending("user/details.json")
         guard let url = URL(string: urlString) else {
             print("Invalid URL given")

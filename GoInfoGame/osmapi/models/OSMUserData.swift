@@ -7,22 +7,23 @@
 import Foundation
 
 // MARK: - OSMUserData
-struct OSMUserDataResponse: Codable {
+public struct OSMUserDataResponse: Codable {
     let version, generator, copyright: String
     let attribution, license: String
-    let user: OSMUserData
+    public let user: OSMUserData
 }
 
 // MARK: - User
-struct OSMUserData: Codable {
-    let id: Int
-    let displayName: String
+public struct OSMUserData: Codable {
+    public let id: Int
+    public let displayName: String
     let accountCreated: Date
     let description: String
     let contributorTerms: ContributorTerms
     let roles: [String]
-    let changesets, traces: Changesets
+    public let changesets, traces: Changesets
     let blocks: Blocks
+    public let profileImage: profileImage?
 
     enum CodingKeys: String, CodingKey {
         case id
@@ -31,6 +32,7 @@ struct OSMUserData: Codable {
         case description
         case contributorTerms = "contributor_terms"
         case roles, changesets, traces, blocks
+        case profileImage = "img"
     }
 }
 
@@ -45,11 +47,15 @@ struct Received: Codable {
 }
 
 // MARK: - Changesets
-struct Changesets: Codable {
-    let count: Int
+public struct Changesets: Codable {
+    public let count: Int
 }
 
 // MARK: - ContributorTerms
 struct ContributorTerms: Codable {
     let agreed: Bool
+}
+
+public struct profileImage: Codable {
+    public let href: String
 }

@@ -17,6 +17,9 @@ class MapViewController: UIHostingController<MapView> {
         
         let questListButton = UIBarButtonItem(barButtonSystemItem: .search, target: self, action: #selector(questListButtonTapped))
         navigationItem.rightBarButtonItem = questListButton
+        
+        let profileButton = UIBarButtonItem(image: UIImage(systemName: "person.crop.circle.fill"), style: .plain, target: self, action: #selector(profileButtonTapped))
+        navigationItem.leftBarButtonItem = profileButton
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -26,6 +29,12 @@ class MapViewController: UIHostingController<MapView> {
     @objc func questListButtonTapped() {
          let questListView = QuestsListUIView()
          let hostingController = UIHostingController(rootView: questListView)
+         present(hostingController, animated: true, completion: nil)
+     }
+    
+    @objc func profileButtonTapped() {
+         let profileView = ProfileView()
+         let hostingController = UIHostingController(rootView: profileView)
          present(hostingController, animated: true, completion: nil)
      }
 }
