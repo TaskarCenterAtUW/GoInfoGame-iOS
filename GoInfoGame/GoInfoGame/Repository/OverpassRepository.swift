@@ -6,30 +6,30 @@
 //
 
 import Foundation
-import SwiftOverpassAPI
+//import SwiftOverpassAPI
 
 // Why is this needed??
 
-protocol OverpassDataProvider {
-    func fetchData(
-        forBoundingBox minLatitude: Double,
-        _ minLongitude: Double,
-        _ maxLatitude: Double,
-        _ maxLongitude: Double,
-        completion: @escaping ([Int : OPElement]) -> Void
-    )
-}
+//protocol OverpassDataProvider {
+//    func fetchData(
+//        forBoundingBox minLatitude: Double,
+//        _ minLongitude: Double,
+//        _ maxLatitude: Double,
+//        _ maxLongitude: Double,
+//        completion: @escaping ([Int : OPElement]) -> Void
+//    )
+//}
 
-class OverpassRepository: OverpassDataProvider {
-    
-    func fetchData(
-        forBoundingBox minLatitude: Double,
-        _ minLongitude: Double,
-        _ maxLatitude: Double,
-        _ maxLongitude: Double,
-        completion: @escaping ([Int : OPElement]) -> Void
-    ) {
-      
-        completion([:])
-    }
-}
+//class OverpassRepository: OverpassDataProvider {
+//    
+//    func fetchData(
+//        forBoundingBox minLatitude: Double,
+//        _ minLongitude: Double,
+//        _ maxLatitude: Double,
+//        _ maxLongitude: Double,
+//        completion: @escaping ([Int : OPElement]) -> Void
+//    ) {
+//      
+//        completion([:])
+//    }
+//}

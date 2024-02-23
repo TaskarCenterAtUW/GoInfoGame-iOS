@@ -19,10 +19,19 @@ class DatasyncManager {
     
     private let dbInstance = DatabaseConnector.shared
     
-    private let osmConnection = OSMConnection(config: OSMConfig.test, currentChangesetId: nil, userCreds: OSMLogin.test)
+    private let osmConnection = OSMConnection(config: OSMConfig.testOSM, currentChangesetId: nil, userCreds: OSMLogin.testOSM)
     
+    func syncDataToOSM( completionHandler: @escaping ()-> Void?)  {
+        Task {
+            await syncData()
+            completionHandler()
+        }
+    }
+    
+    /// *** Terminating app due to uncaught exception 'RLMException', reason: 'Realm accessed from incorrect thread.'
+    ///  To fix the above error added @mainActor
+    @MainActor
     func syncData() async  {
-        
         if(isSynching){
             print("Already syncing")
             return
@@ -33,6 +42,7 @@ class DatasyncManager {
         let changesets = dbInstance.getChangesets()
         print("Starting to sync data")
         var nodesToSync: [String:StoredNode] = [:]
+        var waysToSync: [String:StoredWay] = [:]
         for changeset in changesets {
             // Get the element type
             if changeset.elementType == .node {
@@ -40,6 +50,12 @@ class DatasyncManager {
                 // Get the node
                 if let node  = dbInstance.getNode(id: changeset.elementId) {
                     nodesToSync[changeset.id] = node
+                }
+            }else if changeset.elementType == .way {
+                print("Syncing Way")
+                // Get the way
+                if let way = dbInstance.getWay(id: changeset.elementId) {
+                    waysToSync[changeset.id] = way
                 }
             }
         }
@@ -52,7 +68,7 @@ class DatasyncManager {
             case .success(let isFinished):
                 print("Synced \(payload)")
                 DispatchQueue.main.async {
-                  // your code here
+                    // your code here
                     self.dbInstance.assignChangesetId(obj: key, changesetId: payload.changeset)
                 }
                 
@@ -60,7 +76,25 @@ class DatasyncManager {
                 print("Failed to sync \(payload)")
             }
         }
-        isSynching = false 
+        // TODO: Add logic to sync Way
+        for (key,way) in waysToSync {
+            var payload = way.asOSMWay()
+            // update the way
+            let result = await syncWay(way: &payload)
+            switch result{
+            case .success(let isFinished):
+                print("Synced \(payload)")
+                DispatchQueue.main.async {
+                    // your code here
+                    self.dbInstance.assignChangesetId(obj: key, changesetId: payload.changeset)
+                }
+                
+            case .failure(let error):
+                print("Failed to sync \(payload)")
+            }
+            
+        }
+        isSynching = false
         
     }
     
@@ -103,11 +137,21 @@ class DatasyncManager {
     // utility function to act as substitute for osmConnection functions
     func updateNode(node: inout OSMNode) async -> Result<Int,Error> {
         await withCheckedContinuation { continuation in
-            osmConnection.updateNode(node: &node, tags: [:]) { result in
+            osmConnection.updateNode(node: &node, tags: node.tags ?? [:]) { result in
                 continuation.resume(returning: result)
             }
         }
     }
+    
+    // utility function to act as substitute for osmConnection functions
+    func updateWay(way: inout OSMWay) async -> Result<Int,Error> {
+        await withCheckedContinuation { continuation in
+            osmConnection.updateWay(way: &way, tags: way.tags) { result in
+                continuation.resume(returning:result)
+            }
+        }
+    }
+    
     
     
     /**
@@ -122,6 +166,26 @@ class DatasyncManager {
                 // close changeset
                 let newVersion = try await updateNode(node: &node).get()
                 node.version = newVersion
+                // Give back the new version and other stuff.
+                let closeResult = try await closeChangeset(id: String(changesetId)).get()
+            
+            return .success(true)
+            
+        } catch (let error){
+            print(error)
+            return .failure(error)
+        }
+    }
+    
+    func syncWay(way: inout OSMWay)  async -> Result<Bool,Error> {
+        do {
+                // open changeset
+                let changesetId = try await openChangeset().get()
+                // update node
+                way.changeset = changesetId
+                // close changeset
+                let newVersion = try await updateWay(way: &way).get()
+                way.version = newVersion
                 // Give back the new version and other stuff.
                 let closeResult = try await closeChangeset(id: String(changesetId)).get()
             

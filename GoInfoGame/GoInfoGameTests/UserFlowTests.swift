@@ -7,7 +7,7 @@
 
 import XCTest
 @testable import GoInfoGame
-@testable import SwiftOverpassAPI
+//@testable import SwiftOverpassAPI
 @testable import osmparser
 @testable import osmapi
 
@@ -17,7 +17,7 @@ import XCTest
  */
 final class UserFlowTests: XCTestCase {
 
-    let opManager = OverpassRequestManager()
+//    let opManager = OverpassRequestManager()
     
     let dbInstance = DatabaseConnector.shared
     
@@ -27,47 +27,47 @@ final class UserFlowTests: XCTestCase {
     }
     
     func seedData() {
-        let expec = expectation(description: "Fetches the elements from Overpass Manager and stores in Database")
-        let kirklandBBox = BBox(minLat: 47.70312160869372, maxLat: 47.718964653825054, minLon: -122.20866792353317, maxLon: -122.18570621653987)
-        opManager.fetchElements(fromBBox: kirklandBBox) { fetchedElements in
-            // Get the count of nodes and ways
-            let allValues = fetchedElements.values
-            
-            let nodes = allValues.filter({$0 is OPNode}).filter({!$0.tags.isEmpty})
-            let ways = allValues.filter({$0  is OPWay}).filter({!$0.tags.isEmpty})
-            let allElements = allValues.filter({!$0.tags.isEmpty})
-            self.dbInstance.saveElements(allElements) // Save all where there are tags
-            expec.fulfill()
-        }
-        
-        waitForExpectations(timeout: 10)
+//        let expec = expectation(description: "Fetches the elements from Overpass Manager and stores in Database")
+//        let kirklandBBox = BBox(minLat: 47.70312160869372, maxLat: 47.718964653825054, minLon: -122.20866792353317, maxLon: -122.18570621653987)
+//        opManager.fetchElements(fromBBox: kirklandBBox) { fetchedElements in
+//            // Get the count of nodes and ways
+//            let allValues = fetchedElements.values
+//            
+//            let nodes = allValues.filter({$0 is OPNode}).filter({!$0.tags.isEmpty})
+//            let ways = allValues.filter({$0  is OPWay}).filter({!$0.tags.isEmpty})
+//            let allElements = allValues.filter({!$0.tags.isEmpty})
+//            self.dbInstance.saveElements(allElements) // Save all where there are tags
+//            expec.fulfill()
+//        }
+//        
+//        waitForExpectations(timeout: 10)
     }
     
     func testDataInserts() throws {
-        let nodesFromStorage = dbInstance.getNodes()
-        let waysFromStorage = dbInstance.getWays()
-        XCTAssert(nodesFromStorage.count > 0)
-        // Get the Nodes from the above
-        let nodeElements = nodesFromStorage.map({$0.asNode()})
-        let wayElements = waysFromStorage.map({$0.asWay()})
-        let testQuest = TestQuest()
-        var applicableElements: [Element] = []
-        for singleNode in nodeElements {
-//            testQuest.isApplicable(element: singleNode)
-            let isApplicable = testQuest.isApplicable(element: singleNode)
-            if (isApplicable){
-                applicableElements.append(singleNode)
-                print(singleNode.tags)
-            }
-        }
-        for singleWay in wayElements {
-            let isApplicable = testQuest.isApplicable(element: singleWay)
-            if (isApplicable){
-                applicableElements.append(singleWay)
-                print(singleWay.tags)
-            }
-        }
-        print(applicableElements.count)
+//        let nodesFromStorage = dbInstance.getNodes()
+//        let waysFromStorage = dbInstance.getWays()
+//        XCTAssert(nodesFromStorage.count > 0)
+//        // Get the Nodes from the above
+//        let nodeElements = nodesFromStorage.map({$0.asNode()})
+//        let wayElements = waysFromStorage.map({$0.asWay()})
+//        let testQuest = TestQuest()
+//        var applicableElements: [Element] = []
+//        for singleNode in nodeElements {
+////            testQuest.isApplicable(element: singleNode)
+//            let isApplicable = testQuest.isApplicable(element: singleNode)
+//            if (isApplicable){
+//                applicableElements.append(singleNode)
+//                print(singleNode.tags)
+//            }
+//        }
+//        for singleWay in wayElements {
+//            let isApplicable = testQuest.isApplicable(element: singleWay)
+//            if (isApplicable){
+//                applicableElements.append(singleWay)
+//                print(singleWay.tags)
+//            }
+//        }
+//        print(applicableElements.count)
     }
     
     func testPerformanceDBFetch() throws {

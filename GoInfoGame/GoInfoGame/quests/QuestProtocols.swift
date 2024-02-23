@@ -36,17 +36,20 @@ class QuestBase {
        let storedElementType: StoredElementEnum = type == .way ? .way : .node
        let storedId = String(id)
        // Create a changeset
-       let newChangeset = DatabaseConnector.shared.createChangeset(id: storedId, type: storedElementType, tags: tags)
+       _ = DatabaseConnector.shared.createChangeset(id: storedId, type: storedElementType, tags: tags)
        switch (storedElementType){
        case .way:
-           DatabaseConnector.shared.addWayTags(id: storedId, tags: tags)
+          _ = DatabaseConnector.shared.addWayTags(id: storedId, tags: tags)
        case .node:
-           DatabaseConnector.shared.addNodeTags(id: storedId, tags: tags)
+          _ = DatabaseConnector.shared.addNodeTags(id: storedId, tags: tags)
        case .unknown:
            print("Unknown Stored element type received")
        }
        // Sync using datasyncmanager
 
+       DatasyncManager.shared.syncDataToOSM {
+           print("SYNC DONE")
+       }
     }
     
 }

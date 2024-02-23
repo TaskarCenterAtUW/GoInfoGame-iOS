@@ -88,6 +88,12 @@
 "quest_pedestrian_crossing_island" = "Does this pedestrian crossing have an island?";
 "dont_show_again" = "Don't show again for this session";
 "quest_tactile_paving_kerb_title" = "Is there tactile paving on this curb here?";
+"quest_crossing_kerb_height_title" = "What’s the height of the curbs at this crossing?";
+"quest_kerb_height_flush" = "Same level as road surface";
+"quest_kerb_height_lowered" = "A bit higher than road surface";
+"quest_kerb_height_raised" = "High curb";
+ "quest_kerb_height_lowered_ramp" = "Curb ramp";
+ "quest_kerb_height_no" = "No curb at all";
 "quest_crossing_type_title" = "What kind of crossing is this?";
 "quest_crossing_type_signals_controlled" = "Controlled by traffic lights";
 "quest_crossing_type_marked" = "Marked";

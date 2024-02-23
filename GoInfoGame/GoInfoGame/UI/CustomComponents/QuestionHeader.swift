@@ -16,7 +16,7 @@ struct QuestionHeader: View {
         VStack(alignment: .leading) {
             HStack {
                 Spacer()
-                    icon
+                icon
                     .resizable()
                     .scaledToFit()
                     .frame(width: 100, height: 100)
@@ -26,7 +26,10 @@ struct QuestionHeader: View {
             }
             Text(title)
                 .font(.headline)
-                .padding(.top,10)
+                .padding(.top, 10)
+                .multilineTextAlignment(.leading)
+                .lineLimit(nil)
+                .fixedSize(horizontal: false, vertical: true)
             Text(subtitle)
                 .font(.subheadline)
                 .foregroundColor(.gray)

@@ -10,6 +10,7 @@ import Foundation
 import RealmSwift
 import osmparser
 import MapKit
+import osmapi
 
 // Represents one stored way
 class StoredWay: Object {
@@ -31,5 +32,14 @@ class StoredWay: Object {
         let nodeList:[Int64] = nodes.map({$0})
         let way = Way(id: Int64(id), version: version, tags: theTags, timestampEdited: 0, type: .way, nodeIds: nodeList)
         return way
+    }
+    
+    public func asOSMWay() -> OSMWay {
+        var storage = [String: String]()
+        for tag in tags {
+            storage[tag.key] = tag.value
+        }
+        let nodes = Array(nodes.map { Int($0) })
+        return OSMWay(type: "way", id: id, timestamp: Date(), version: version, changeset: -1, user: "", uid: -1, nodes: nodes, tags: storage)
     }
 }

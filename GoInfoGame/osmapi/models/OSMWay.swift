@@ -16,13 +16,15 @@ struct OSMWayResponse: Codable {
 }
 
 // MARK: - Element
-struct OSMWay: Codable, OSMPayload  {
+public struct OSMWay: Codable, OSMPayload, OSMElement  {
+    public var isInteresting: Bool? = false
+    public var isSkippable: Bool? = false
     func toPayload() -> String {
-         var osmNode = "<osm>"
+        var osmNode = "<osm>"
         let xmlBuilder = OSMXMLBuilder(rootName: "way")
         xmlBuilder.addAttribute(name: "id", value: "\(id)")
-//        xmlBuilder.addAttribute(name: "lat", value: "\(lat)")
-//        xmlBuilder.addAttribute(name: "lon", value: "\(lon)")
+        //        xmlBuilder.addAttribute(name: "lat", value: "\(lat)")
+        //        xmlBuilder.addAttribute(name: "lon", value: "\(lon)")
         xmlBuilder.addAttribute(name: "version", value: "\(version)")
         xmlBuilder.addAttribute(name: "changeset", value: "\(changeset)")
         tags.forEach { (key: String, value: String) in
@@ -35,13 +37,25 @@ struct OSMWay: Codable, OSMPayload  {
         return osmNode
     }
     
-    let type: String
-    let id: Int
-    let timestamp: Date
-    let version: Int
-    var changeset: Int
-    let user: String
-    let uid: Int
-    let nodes: [Int]
-    var tags: [String:String]
+    public let type: String
+    public let id: Int
+    public let timestamp: Date
+    public var version: Int
+    public var changeset: Int
+    public let user: String
+    public let uid: Int
+    public let nodes: [Int]
+    public var tags: [String:String]
+    
+    public init(type: String, id: Int, timestamp: Date, version: Int, changeset: Int, user: String, uid: Int, nodes: [Int], tags: [String : String]) {
+        self.type = type
+        self.id = id
+        self.timestamp = timestamp
+        self.version = version
+        self.changeset = changeset
+        self.user = user
+        self.uid = uid
+        self.nodes = nodes
+        self.tags = tags
+    }
 }

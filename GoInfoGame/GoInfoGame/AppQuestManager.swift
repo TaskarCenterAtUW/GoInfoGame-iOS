@@ -6,18 +6,19 @@
 //
 
 import Foundation
-import SwiftOverpassAPI
+//import SwiftOverpassAPI
 import osmparser
 import MapKit
+import osmapi
 
 
 // Class that handles data handling and display of annotations
 class AppQuestManager {
     
-    let opManager = OverpassRequestManager()
+//    let opManager = OverpassRequestManager()
     
     let dbInstance = DatabaseConnector.shared
-    
+    let osmConnection = OSMConnection()
     
     static let shared = AppQuestManager()
     private init() {}
@@ -31,14 +32,35 @@ class AppQuestManager {
     // Fetch the quests for a bounding box
     func fetchData(fromBBOx bbox: BBox,completion: @escaping () -> Void){
         // Get the data from bbox
-        opManager.fetchElements(fromBBox: bbox) { fetchedElements in
-            // Get the count of nodes and ways
-            let allValues = fetchedElements.values
-            let allElements = allValues.filter({!$0.tags.isEmpty})
-            print("Saving tags")
-            self.dbInstance.saveElements(allElements) // Save all where there are tags
-            completion()
+        let centralLocation = CLLocation(latitude: 37.7749, longitude: -122.4194) // San Francisco coords
+        let distance = 100
+        //37.41465820658871,-122.0912196996173,37.42366839341129,-122.0799229003827
+        let boundingCoordinates = centralLocation.boundingCoordinates(distance: CLLocationDistance(distance))
+        
+        osmConnection.fetchMapData(left:bbox.minLon , bottom:bbox.minLat , right:bbox.maxLon , top:bbox.maxLat ) { result in
+            switch result {
+            case .success(let mapData):
+                let response = Array(mapData.values)
+                let allValues = response
+                let allElements = allValues.filter({!$0.tags.isEmpty})
+                print("Saving tags")
+                DispatchQueue.main.async {
+                    self.dbInstance.saveOSMElements(allElements) // Save all where there are tags
+                    completion()
+                }
+            case .failure(let error):
+                print("error")
+            }
+           
         }
+//        opManager.fetchElements(fromBBox: bbox) { fetchedElements in
+//            // Get the count of nodes and ways
+//            let allValues = fetchedElements.values
+//            let allElements = allValues.filter({!$0.tags.isEmpty})
+//            print("Saving tags")
+//            self.dbInstance.saveElements(allElements) // Save all where there are tags
+//            completion()
+//        }
     }
     
     
