@@ -35,7 +35,9 @@ struct QuestsListUIView : View {
             return [.height(250)]
         } else if sheetSize == .LARGE {
             return [.height(600)]
-        } else {
+        } else if sheetSize == .XLARGE {
+            return [.height(800)]
+        }else {
             return [.medium, .large]
         }
     }

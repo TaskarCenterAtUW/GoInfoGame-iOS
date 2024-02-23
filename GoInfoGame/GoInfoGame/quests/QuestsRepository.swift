@@ -27,7 +27,8 @@ class QuestsRepository {
         TactilePavingKerb(),
         CrossingIsland(),
         CrossingType(),
-        TactilePavingCrosswalk()
+        TactilePavingCrosswalk(),
+        CrossingKerbHeight()
     ]
     
     var displayQuests: [DisplayUnit] {
