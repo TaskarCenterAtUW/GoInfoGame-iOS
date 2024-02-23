@@ -37,7 +37,7 @@ public struct OSMWay: Codable, OSMPayload, OSMElement  {
         return osmNode
     }
     
-    let type: String
+    public let type: String
     public let id: Int
     public let timestamp: Date
     public var version: Int
@@ -46,7 +46,8 @@ public struct OSMWay: Codable, OSMPayload, OSMElement  {
     public let uid: Int
     public let nodes: [Int]
     public var tags: [String:String]
-    public init(type: String, id: Int, timestamp: Date, version: Int, changeset: Int, user: String, uid: Int, nodes: [Int], tags: [String : String] = [:]) {
+    
+    public init(type: String, id: Int, timestamp: Date, version: Int, changeset: Int, user: String, uid: Int, nodes: [Int], tags: [String : String]) {
         self.type = type
         self.id = id
         self.timestamp = timestamp

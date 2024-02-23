@@ -8,17 +8,11 @@
 import Foundation
 public class OSMConnection {
     // Creates a connection
-    let baseUrl: String// = OSMConfig.baseUrl
-    
+    let baseUrl: String
     var currentChangesetId: Int? = 0
-    
-//    let userCreds: OSMLogin = OSMLogin(username: "nareshd@vindago.in", password: "a$hwa7hamA")
     let userCreds: OSMLogin
-    //ycqzd3_F6rqDEhs / nareshd@gaussiansolutions.com
-    
     // Lets see if we can start with some authentication or node
-    
- public   init(config: OSMConfig = OSMConfig.test, currentChangesetId: Int? = nil, userCreds: OSMLogin = OSMLogin.test) {
+    public init(config: OSMConfig = OSMConfig.testOSM, currentChangesetId: Int? = nil, userCreds: OSMLogin = OSMLogin.testOSM) {
         self.baseUrl = config.baseUrl
         self.currentChangesetId = currentChangesetId
         self.userCreds = userCreds
@@ -28,8 +22,9 @@ public class OSMConnection {
         let urlString = self.baseUrl.appending("node/").appending(id).appending(".json")
         guard let url = URL(string: urlString) else {
             print("Invalid URL given")
-                    return
-                }
+            return
+        }
+        BaseNetworkManager.shared.addOrSetHeaders(header: "Authorization", value: "Basic \(self.userCreds.getHeaderData())")
         BaseNetworkManager.shared.fetchData(url: url, completion: completion) // Need to improve this one
     }
     
@@ -37,8 +32,9 @@ public class OSMConnection {
         let urlString =  self.baseUrl.appending("way/").appending(id).appending(".json")
         guard let url = URL(string: urlString) else {
             print("Invalid URL given")
-                    return
-                }
+            return
+        }
+        BaseNetworkManager.shared.addOrSetHeaders(header: "Authorization", value: "Basic \(self.userCreds.getHeaderData())")
         BaseNetworkManager.shared.fetchData(url: url, completion: completion) // Need to improve this one
     }
     
@@ -47,8 +43,8 @@ public class OSMConnection {
         let urlString = self.baseUrl.appending("changeset/create")
         guard let url = URL(string: urlString) else {
             print("Invalid URL given")
-                    return
-                }
+            return
+        }
         BaseNetworkManager.shared.addOrSetHeaders(header: "Authorization", value: "Basic \(self.userCreds.getHeaderData())")
         BaseNetworkManager.shared.postData(url: url,method: "PUT" ,body: OSMChangesetPayload()) { (result: Result<Int,Error>) in
             switch result {
@@ -63,12 +59,12 @@ public class OSMConnection {
         }
     }
     
-   public func closeChangeSet(id: String,completion: @escaping((Result<Bool,Error>)->Void)) {
+    public func closeChangeSet(id: String,completion: @escaping((Result<Bool,Error>)->Void)) {
         let urlString = self.baseUrl.appending("changeset/").appending(id).appending("/close")
         guard let url = URL(string: urlString) else {
             print("Invalid URL given")
-                    return
-                }
+            return
+        }
         BaseNetworkManager.shared.addOrSetHeaders(header: "Authorization", value: "Basic \(self.userCreds.getHeaderData())")
         BaseNetworkManager.shared.postData(url: url,method: "PUT" ,body: ["tag":"xyz"],expectEmpty: true) { (result: Result<Bool,Error>) in
             switch result {
@@ -83,24 +79,20 @@ public class OSMConnection {
         }
     }
     
+    // TODO: We are not using this any where, need to discuss and remove it.
     // Original method with everything from postman
     func getChangesets(_ completion: @escaping(()->())) {
-        
-        var request = URLRequest(url: URL(string: "https://waylyticsposm.westus2.cloudapp.azure.com/api/0.6/changesets.json")!,timeoutInterval: Double.infinity)
-        request.addValue("Basic bmFyZXNoZEB2aW5kYWdvLmluOmEkaHdhN2hhbUE=", forHTTPHeaderField: "Authorization")
-
+        let urlString = self.baseUrl.appending("changesets.json")
+        var request = URLRequest(url: URL(string: urlString)!,timeoutInterval: Double.infinity)
+        request.addValue("Basic \(self.userCreds.getHeaderData())", forHTTPHeaderField: "Authorization")
         request.httpMethod = "GET"
-        
         let task = URLSession.shared.dataTask(with: request) { data, response, error in
-          guard let data = data else {
-            print(String(describing: error))
-              completion()
-            return
-          }
-          print(String(data: data, encoding: .utf8)!)
+            guard let data = data else {
+                completion()
+                return
+            }
             completion()
         }
-
         task.resume()
     }
     
@@ -110,8 +102,8 @@ public class OSMConnection {
         let urlString = self.baseUrl.appending("changesets.json?open=true")
         guard let url = URL(string: urlString) else {
             print("Invalid URL given")
-                    return
-                }
+            return
+        }
         // Get to work
         BaseNetworkManager.shared.addOrSetHeaders(header: "Authorization", value: "Basic \(self.userCreds.getHeaderData())")
         BaseNetworkManager.shared.fetchData(url: url, completion: completion)
@@ -123,8 +115,8 @@ public class OSMConnection {
         let urlString = self.baseUrl.appending("node/").appending(String(node.id))
         guard let url = URL(string: urlString) else {
             print("Invalid URL given")
-                    return
-                }
+            return
+        }
         BaseNetworkManager.shared.addOrSetHeaders(header: "Authorization", value: "Basic \(self.userCreds.getHeaderData())")
         // Add nodes to the same
         if(node.tags == nil){
@@ -139,13 +131,13 @@ public class OSMConnection {
         
     }
     
-    func updateWay(way: inout OSMWay, tags:[String:String], completion: @escaping((Result<Int,Error>)->Void)){
+    public func updateWay(way: inout OSMWay, tags:[String:String], completion: @escaping((Result<Int,Error>)->Void)){
         // Have to do this.
         let urlString = self.baseUrl.appending("way/").appending(String(way.id))
         guard let url = URL(string: urlString) else {
             print("Invalid URL given")
-                    return
-                }
+            return
+        }
         BaseNetworkManager.shared.addOrSetHeaders(header: "Authorization", value: "Basic \(self.userCreds.getHeaderData())")
         // Add nodes to the same
         
@@ -158,27 +150,25 @@ public class OSMConnection {
     }
     func getUserDetailsWithId(id: String,_ completion: @escaping (Result<OSMUserDataResponse, Error>)-> Void) {
         let urlString =  self.baseUrl.appending("user/").appending(id).appending(".json")
-        print(urlString)
         guard let url = URL(string: urlString) else {
             print("Invalid URL given")
-                    return
-                }
+            return
+        }
         BaseNetworkManager.shared.fetchData(url: url, completion: completion)
     }
     func getUserDetails(_ completion: @escaping (Result<OSMUserDataResponse, Error>)-> Void) {
         let urlString =  self.baseUrl.appending("user/details.json")
-        print(urlString)
         guard let url = URL(string: urlString) else {
             print("Invalid URL given")
-                    return
-                }
+            return
+        }
         BaseNetworkManager.shared.addOrSetHeaders(header: "Authorization", value: "Basic \(self.userCreds.getHeaderData())")
         BaseNetworkManager.shared.fetchData(url: url, completion: completion)
     }
     
     /// Internal function for getting the map data
      public func getOSMMapData(left: Double, bottom: Double, right: Double, top: Double,_ completion: @escaping (Result<OSMMapDataResponse, Error>)-> Void) {
-        let urlString =  "https://api.openstreetmap.org/api/0.6/map.json?bbox=\(left),\(bottom),\(right),\(top)"
+         let urlString =  self.baseUrl.appending("map.json?bbox=\(left),\(bottom),\(right),\(top)")
         print(urlString)
         guard let url = URL(string: urlString) else {
             print("Invalid URL given")

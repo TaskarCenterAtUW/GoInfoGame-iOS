@@ -25,4 +25,8 @@ public struct OSMLogin {
     public static var test : OSMLogin {
         OSMLogin(username: "nareshd@vindago.in", password: "a$hwa7hamA") // Need to change
     }
+    
+    public static var testOSM : OSMLogin {
+        OSMLogin(username: "giyiw35819@tupanda.com", password: "d.Dgq6J6aBy.dCJ") 
+    }
 }

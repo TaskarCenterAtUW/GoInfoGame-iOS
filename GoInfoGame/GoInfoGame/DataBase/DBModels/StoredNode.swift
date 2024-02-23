@@ -32,6 +32,10 @@ class StoredNode : Object {
     }
     
     public func asOSMNode() -> OSMNode {
-        return OSMNode(type: "node", id: id, lat: point.latitude, lon: point.longitude, timestamp: Date(), version: version, changeset: -1, user: "", uid: -1)
+        var storage = [String: String]()
+        for tag in tags {
+            storage[tag.key] = tag.value
+        }
+        return OSMNode(type: "node", id: id, lat: point.latitude, lon: point.longitude, timestamp: Date(), version: version, changeset: -1, user: "", uid: -1, tags: storage)
     }
 }
