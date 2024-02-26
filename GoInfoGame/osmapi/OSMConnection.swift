@@ -6,19 +6,31 @@
 //
 
 import Foundation
+
+/**
+ Base class that deals with all the interactions with OSM server
+ */
 public class OSMConnection {
     // Creates a connection
     let baseUrl: String
     var currentChangesetId: Int? = 0
     let userCreds: OSMLogin
     // Lets see if we can start with some authentication or node
+    
+    /// Initializer for OSMConnection
+    /// - parameter config : The Server configuration (defaults to OSMConfig.testOSM)
+    /// - parameter currentChangesetId: The overal changeset id for the user
+    /// - parameter userCreds: User credentials for authenticated calls. Defaults to testOSM
     public init(config: OSMConfig = OSMConfig.testOSM, currentChangesetId: Int? = nil, userCreds: OSMLogin = OSMLogin.testOSM) {
         self.baseUrl = config.baseUrl
         self.currentChangesetId = currentChangesetId
         self.userCreds = userCreds
     }
-    
+    /// Fetches a single node
+    /// - parameter id : the `id` of the node
+    /// - parameter completion: The completion handler that receives the node
     func getNode(id: String,_ completion: @escaping (Result<OSMNodeResponse, Error>)-> Void) {
+        //TODO: Write error when node does not exist
         let urlString = self.baseUrl.appending("node/").appending(id).appending(".json")
         guard let url = URL(string: urlString) else {
             print("Invalid URL given")
@@ -27,8 +39,11 @@ public class OSMConnection {
         BaseNetworkManager.shared.addOrSetHeaders(header: "Authorization", value: "Basic \(self.userCreds.getHeaderData())")
         BaseNetworkManager.shared.fetchData(url: url, completion: completion) // Need to improve this one
     }
-    
+    /// Fetches a single way
+    /// - parameter id: the `id` of the way
+    /// - parameter completion: The completion handler that receives the way
     func getWay(id: String,_ completion: @escaping (Result<OSMWayResponse, Error>)-> Void) {
+        //TODO: Write errors when way does not exist
         let urlString =  self.baseUrl.appending("way/").appending(id).appending(".json")
         guard let url = URL(string: urlString) else {
             print("Invalid URL given")
@@ -38,8 +53,10 @@ public class OSMConnection {
         BaseNetworkManager.shared.fetchData(url: url, completion: completion) // Need to improve this one
     }
     
+    /// Opens a changeset for the given user
+    /// - parameter completion: Completion handler that receives the newly opened changesetId
     public func openChangeSet(_ completion: @escaping((Result<Int,Error>)->Void)) {
-        // Have to open changeset
+        //TODO: Write errors when not authenticated and if there is already an open changeset with same user
         let urlString = self.baseUrl.appending("changeset/create")
         guard let url = URL(string: urlString) else {
             print("Invalid URL given")
@@ -58,8 +75,11 @@ public class OSMConnection {
             completion(result)
         }
     }
-    
+    /// Closes the changeset
+    /// - parameter id: The changeset ID to be closed
+    /// - parameter completion: The completion handler
     public func closeChangeSet(id: String,completion: @escaping((Result<Bool,Error>)->Void)) {
+        //TODO: Write error codes if not able to close
         let urlString = self.baseUrl.appending("changeset/").appending(id).appending("/close")
         guard let url = URL(string: urlString) else {
             print("Invalid URL given")
@@ -109,9 +129,12 @@ public class OSMConnection {
         BaseNetworkManager.shared.fetchData(url: url, completion: completion)
     }
     
-    
+    /// Updates a single node
+    /// - parameter node : An instance of `OSMNode`
+    /// - parameter tags: A `[String:String]` dictionary containing new added tags
+    /// - parameter completion : A handler that is called after the call is made
     public func updateNode(node: inout OSMNode, tags:[String:String], completion: @escaping((Result<Int,Error>)->Void)){
-        // Have to do this.
+        //TODO: Error handling when there is no active changeset, no node and not authorized
         let urlString = self.baseUrl.appending("node/").appending(String(node.id))
         guard let url = URL(string: urlString) else {
             print("Invalid URL given")
@@ -130,9 +153,12 @@ public class OSMConnection {
         BaseNetworkManager.shared.postData(url: url, method: "PUT",body: node ,completion: completion)
         
     }
-    
+    /// Updates a single way
+    /// - parameter way: the current way element
+    /// - parameter tags: `[String:String]` dictionary containing new tags
+    /// - parameter completion: The completion handler after this is done
     public func updateWay(way: inout OSMWay, tags:[String:String], completion: @escaping((Result<Int,Error>)->Void)){
-        // Have to do this.
+        //TODO: Error handling when there is no active changeset, way not found and not authorized
         let urlString = self.baseUrl.appending("way/").appending(String(way.id))
         guard let url = URL(string: urlString) else {
             print("Invalid URL given")
@@ -148,7 +174,12 @@ public class OSMConnection {
         BaseNetworkManager.shared.postData(url: url, method: "PUT",body: way ,completion: completion)
         
     }
+    
+    /// Fetches the user details based on `id`
+    /// - parameter id : Id of the user
+    /// - parameter completion : Completion handler with user data response
     func getUserDetailsWithId(id: String,_ completion: @escaping (Result<OSMUserDataResponse, Error>)-> Void) {
+        //TODO: Error for user id not found
         let urlString =  self.baseUrl.appending("user/").appending(id).appending(".json")
         guard let url = URL(string: urlString) else {
             print("Invalid URL given")
@@ -156,7 +187,11 @@ public class OSMConnection {
         }
         BaseNetworkManager.shared.fetchData(url: url, completion: completion)
     }
+    
+    /// Fetches the current logged in user details
+    /// - parameter completion : Completion handler
     public func getUserDetails(_ completion: @escaping (Result<OSMUserDataResponse, Error>)-> Void) {
+        //TODO: Errors for unauthenticated call
         let urlString =  self.baseUrl.appending("user/details.json")
         guard let url = URL(string: urlString) else {
             print("Invalid URL given")
