@@ -27,29 +27,40 @@ struct YesNoView: View {
     var body: some View {
         HStack(spacing: 0) {
             Spacer()
-            Button {
+            Button(action: {
                 action?(.other)
-            } label: {
+            }) {
                 Text(actionBtnLabel)
-                    .foregroundColor(.orange).font(.body)
+                    .foregroundColor(.orange)
+                    .font(.caption)
+                    .fontWeight(.bold)
                     .frame(maxWidth: .infinity)
             }
             .frame(minHeight: 50)
-            Spacer()
+            Spacer().frame(width: 0)
             Divider().background(Color.gray).frame(height: 30)
-            Button(LocalizedStrings.questGenericHasFeatureYes.localized) {
+            Button(action: {
                 action?(.yes)
+            }) {
+                Text(LocalizedStrings.questGenericHasFeatureYes.localized)
+                    .foregroundColor(.orange)
+                    .font(.caption)
+                    .fontWeight(.bold)
+                    .frame(maxWidth: 80)
             }
-            .foregroundColor(.orange)
-            .frame(minWidth: 20, maxWidth: 80, minHeight: 50)
+            .frame(minHeight: 50)
+            Spacer().frame(width: 4)
             Divider().background(Color.gray).frame(height: 30)
-            Button {
+            Button(action: {
                 action?(.no)
-            } label: {
+            }) {
                 Text(LocalizedStrings.questGenericHasFeatureNo.localized)
-                    .foregroundColor(.orange).font(.body)
+                    .foregroundColor(.orange)
+                    .font(.caption)
+                    .fontWeight(.bold)
                     .frame(maxWidth: .infinity)
             }
+            .frame(minHeight: 50)
         }
     }
 }

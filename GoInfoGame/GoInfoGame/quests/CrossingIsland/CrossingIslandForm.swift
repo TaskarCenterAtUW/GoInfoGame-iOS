@@ -35,6 +35,7 @@ struct CrossingIslandForm: View, QuestForm {
                     RoundedRectangle(cornerRadius: 10)
                         .fill(Color.white)
                         .shadow(color: .gray, radius: 2, x: 0, y: 2))
+                .padding(.bottom,20)
             }.padding()
             if isShowingAreYouSure {
                 CustomSureAlert(alertTitle: LocalizedStrings.questSourceDialogTitle.localized, content: LocalizedStrings.questSourceDialogNote.localized,leftBtnLabel: LocalizedStrings.undoConfirmNegative.localized, rightBtnLabel:LocalizedStrings.questGenericConfirmationYes.localized, isDontShowCheckVisible: true,onCancel: {
