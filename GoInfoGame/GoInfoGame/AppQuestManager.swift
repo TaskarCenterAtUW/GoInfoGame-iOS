@@ -88,6 +88,7 @@ class AppQuestManager {
                     // Create a display Unit
                     let duplicateQuest = quest.copyWithElement(element: node)
                     let unit = DisplayUnitWithCoordinate(displayUnit: duplicateQuest.displayUnit, coordinateInfo:  CLLocationCoordinate2D(latitude: node.position.latitude, longitude: node.position.longitude), id: node.id)
+                    print(unit.coordinateInfo)
                     displayUnits.append(unit)
                     nodeQuests.append(duplicateQuest)
                     break
@@ -104,6 +105,8 @@ class AppQuestManager {
                     let position  = dbInstance.getCenterForWay(id: String(way.id)) ?? CLLocationCoordinate2D()
                     let unit = DisplayUnitWithCoordinate(displayUnit: duplicateQuest.displayUnit, coordinateInfo: position, id: way.id)
                     displayUnits.append(unit)
+                    print("W")
+                    print(unit.coordinateInfo)
 //                    if(quest is SideWalkWidth){
 //                        if let q = quest as? SideWalkWidth {
 //                            q.assignAnsweringHandler()
@@ -115,6 +118,8 @@ class AppQuestManager {
             }
         }
         print("Sending back items")
+        print(displayUnits.count)
+        
         return displayUnits
     }
 }

@@ -21,7 +21,7 @@ public class OSMConnection {
     /// - parameter config : The Server configuration (defaults to OSMConfig.testOSM)
     /// - parameter currentChangesetId: The overal changeset id for the user
     /// - parameter userCreds: User credentials for authenticated calls. Defaults to testOSM
-    public init(config: OSMConfig = OSMConfig.testOSM, currentChangesetId: Int? = nil, userCreds: OSMLogin = OSMLogin.testOSM) {
+    public init(config: OSMConfig = OSMConfig.testOSM   , currentChangesetId: Int? = nil, userCreds: OSMLogin = OSMLogin.testOSM) {
         self.baseUrl = config.baseUrl
         self.currentChangesetId = currentChangesetId
         self.userCreds = userCreds
