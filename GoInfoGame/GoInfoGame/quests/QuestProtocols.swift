@@ -49,9 +49,11 @@ class QuestBase {
 
        DatasyncManager.shared.syncDataToOSM {
            print("SYNC DONE")
+           DispatchQueue.main.async {
+               MapViewPublisher.shared.dismissSheet.send(true)
+           }
        }
     }
-    
 }
 // Adds default method and implementation
 extension Quest {
