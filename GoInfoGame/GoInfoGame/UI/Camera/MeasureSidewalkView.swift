@@ -20,7 +20,9 @@ struct MeasureSidewalkView: View {
             MeasureWidthContainer(aimLabelHidden: $aimLabelHidden, notReadyLabelHidden: $notReadyLabelHidden, startMeasuring: $startMeasuring, resultLabelText: $resultLabelText)
             VStack {
                 Spacer()
-                Text(".")
+                Text("+")
+                    .font(.system(size: 30))
+                    .foregroundStyle(.white)
                     .padding()
                     .font(.largeTitle)
                 
@@ -39,13 +41,15 @@ struct MeasureSidewalkView: View {
                                 .stroke(Color.blue, lineWidth: 2)
                         )
                 }
-                
-                Spacer()
+                .padding()
             }
         }
         if !resultLabelText.isEmpty {
             VStack {
-                Text("Width is: \(resultLabelText)").padding()
+                Text("Width is: \(resultLabelText)")
+                    .padding()
+                    .foregroundColor(.white)
+                    .font(.headline)
             }
         }
             

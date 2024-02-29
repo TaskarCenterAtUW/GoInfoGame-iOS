@@ -78,7 +78,7 @@ struct MeasureWidthContainer: UIViewRepresentable {
         
         func stopMeasuring() {
             parent.startMeasuring = false
-            parent.endPointNode = parent.createPointNode(at: parent.endValue, color: .red)
+            parent.endPointNode = parent.createPointNode(at: parent.endValue, color: .white)
             parent.sceneView.scene.rootNode.addChildNode(parent.endPointNode!)
             parent.updateResultLabel(parent.startValue.distance(from: parent.endValue))
         }
@@ -98,7 +98,7 @@ struct MeasureWidthContainer: UIViewRepresentable {
             if startMeasuring {
                 if startValue == vectorZero {
                     startValue = worldPos
-                    startPointNode = createPointNode(at: worldPos, color: .green)
+                    startPointNode = createPointNode(at: worldPos, color: .white)
                     sceneView.scene.rootNode.addChildNode(startPointNode!)
                     isMeasuring = true
                 }
