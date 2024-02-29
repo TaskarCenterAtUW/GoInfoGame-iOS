@@ -8,7 +8,7 @@
 import SwiftUI
 import ARKit
 
-struct MeasureWidthView: UIViewRepresentable {
+struct MeasureWidthContainer: UIViewRepresentable {
     
     @Binding var aimLabelHidden: Bool
     @Binding var notReadyLabelHidden: Bool
@@ -56,9 +56,9 @@ struct MeasureWidthView: UIViewRepresentable {
     
     
     class Coordinator: NSObject, ARSCNViewDelegate {
-        var parent: MeasureWidthView
+        var parent: MeasureWidthContainer
         
-        init(_ parent: MeasureWidthView) {
+        init(_ parent: MeasureWidthContainer) {
             self.parent = parent
         }
         

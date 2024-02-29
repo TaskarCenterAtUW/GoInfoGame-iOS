@@ -176,7 +176,7 @@
 		FA87A81B2B6B042E000A6BEA /* SideWalkWidthTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA87A81A2B6B042E000A6BEA /* SideWalkWidthTests.swift */; };
 		FABF3CF42B7419BB0080EAC9 /* LocationManagerDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = FABF3CF32B7419BB0080EAC9 /* LocationManagerDelegate.swift */; };
 		FABF3CF82B822F120080EAC9 /* CustomSureAlert.swift in Sources */ = {isa = PBXBuildFile; fileRef = FABF3CF72B822F120080EAC9 /* CustomSureAlert.swift */; };
-		FABF3CFD2B8607860080EAC9 /* CameraView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FABF3CFC2B8607860080EAC9 /* CameraView.swift */; };
+		FABF3CFD2B8607860080EAC9 /* MeasureWidthContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = FABF3CFC2B8607860080EAC9 /* MeasureWidthContainer.swift */; };
 		FABF3D002B8607D80080EAC9 /* MeasureSidewalkView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FABF3CFF2B8607D80080EAC9 /* MeasureSidewalkView.swift */; };
 		FAC9E60F2B04F9C800E2C608 /* OverpassRequestManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC9E60E2B04F9C800E2C608 /* OverpassRequestManager.swift */; };
 		FAC9E6112B06811300E2C608 /* LocationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC9E6102B06811300E2C608 /* LocationManager.swift */; };
@@ -443,7 +443,7 @@
 		FA87A81A2B6B042E000A6BEA /* SideWalkWidthTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SideWalkWidthTests.swift; sourceTree = "<group>"; };
 		FABF3CF32B7419BB0080EAC9 /* LocationManagerDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationManagerDelegate.swift; sourceTree = "<group>"; };
 		FABF3CF72B822F120080EAC9 /* CustomSureAlert.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomSureAlert.swift; sourceTree = "<group>"; };
-		FABF3CFC2B8607860080EAC9 /* CameraView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraView.swift; sourceTree = "<group>"; };
+		FABF3CFC2B8607860080EAC9 /* MeasureWidthContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeasureWidthContainer.swift; sourceTree = "<group>"; };
 		FABF3CFF2B8607D80080EAC9 /* MeasureSidewalkView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeasureSidewalkView.swift; sourceTree = "<group>"; };
 		FAC9E60E2B04F9C800E2C608 /* OverpassRequestManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OverpassRequestManager.swift; sourceTree = "<group>"; };
 		FAC9E6102B06811300E2C608 /* LocationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationManager.swift; sourceTree = "<group>"; };
@@ -1118,7 +1118,7 @@
 		FABF3CF92B86062E0080EAC9 /* Camera */ = {
 			isa = PBXGroup;
 			children = (
-				FABF3CFC2B8607860080EAC9 /* CameraView.swift */,
+				FABF3CFC2B8607860080EAC9 /* MeasureWidthContainer.swift */,
 				FABF3CFF2B8607D80080EAC9 /* MeasureSidewalkView.swift */,
 			);
 			path = Camera;
@@ -1751,7 +1751,7 @@
 				B0CCB98E2B8626C600AA73DE /* ProfileViewVM.swift in Sources */,
 				0536DD942B0BD59900B04C4B /* OAuthError.swift in Sources */,
 				973FC0172B4D567900878269 /* WidthView.swift in Sources */,
-				FABF3CFD2B8607860080EAC9 /* CameraView.swift in Sources */,
+				FABF3CFD2B8607860080EAC9 /* MeasureWidthContainer.swift in Sources */,
 				97AC1C082B6A45C9004F0BF4 /* SideWalkValidationForm.swift in Sources */,
 				FAD5C4F52AFCBE700040C61A /* SceneDelegate.swift in Sources */,
 				97AC1C232B726ADC004F0BF4 /* TactilePavingKerbForm.swift in Sources */,
