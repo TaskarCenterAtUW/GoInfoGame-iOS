@@ -13,29 +13,46 @@ enum LengthUnit {
 }
 
 struct WidthView: View {
-    @Binding var feet: Double
-    @Binding var inches: Double
+    @Binding var feet: Int
+    @Binding var inches: Int
     @State private var isInputValid: Bool = false
     @Binding var isConfirmAlert: Bool
-    var unit : LengthUnit = .feetInch
+    var unit: LengthUnit = .feetInch
 
     var body: some View {
-        if(unit  == .feetInch ) {
+        if unit == .feetInch {
             VStack {
                 HStack {
-                    TextField("Feet", value: $feet, formatter: NumberFormatter(), onEditingChanged: { _ in
-                        validateInput()
-                    })
+                    TextField("Feet", text: Binding(
+                        get: { "\(self.feet)" },
+                        set: {
+                            if let value = NumberFormatter().number(from: $0) {
+                                self.feet = value.intValue
+                            } else {
+                                self.feet = 0
+                            }
+                            validateInput()
+                        }
+                    ))
                     .frame(width: 20)
                     .padding(.horizontal)
                     .overlay(Rectangle().frame(height: 1).padding(.top, 25).foregroundColor(.orange), alignment: .bottom)
                     .textFieldStyle(PlainTextFieldStyle())
                     .keyboardType(UIKeyboardType.numberPad)
+
                     Text("'").font(.title)
-                    
-                    TextField("Inches", value: $inches, formatter: NumberFormatter(), onEditingChanged: { _ in
-                        validateInput()
-                    })
+
+                    TextField("Inches", text: Binding(
+                        get: { "\(self.inches)" },
+                        set: {
+                            if let value = NumberFormatter().number(from: $0) {
+                                self.inches = value.intValue
+                            } else {
+                                self.inches = 0
+                            }
+                            validateInput()
+                        }
+                    ))
                     .frame(width: 20)
                     .padding(.horizontal)
                     .overlay(Rectangle().frame(height: 1).padding(.top, 25).foregroundColor(.orange), alignment: .bottom)
@@ -45,7 +62,7 @@ struct WidthView: View {
                     if isInputValid {
                         Button() {
                             isConfirmAlert = true
-                        }label: {
+                        } label: {
                             Image(systemName: "checkmark.circle.fill")
                                 .font(Font.system(size: 40))
                                 .foregroundColor(.orange)
@@ -53,31 +70,36 @@ struct WidthView: View {
                     }
                 }
             }
-            
-            
-        }
-        else if (unit == .meters) {
-            HStack(content: {
-                TextField("Inches", value: $inches, formatter: NumberFormatter(), onEditingChanged: { _ in
-                    validateInput()
-                })
+        } else if unit == .meters {
+            HStack {
+                TextField("Inches", text: Binding(
+                    get: { "\(self.inches)" },
+                    set: {
+                        if let value = NumberFormatter().number(from: $0) {
+                            self.inches = value.intValue
+                        } else {
+                            self.inches = 0
+                        }
+                        validateInput()
+                    }
+                ))
                 .frame(width: 20)
                 .padding(.horizontal)
                 .overlay(Rectangle().frame(height: 1).padding(.top, 25).foregroundColor(.orange), alignment: .bottom)
                 .textFieldStyle(PlainTextFieldStyle())
                 .keyboardType(UIKeyboardType.numberPad)
-                
+
                 Text("m").font(.title)
-            })
+            }
         }
-            
     }
+
     private func validateInput() {
         isInputValid = feet > 0 && inches >= 0
     }
 }
 
 #Preview {
-    WidthView(feet: .constant(0.0), inches: .constant(0.0), isConfirmAlert: .constant(false))
+    WidthView(feet: .constant(0), inches: .constant(0), isConfirmAlert: .constant(false))
 
 }

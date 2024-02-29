@@ -6,13 +6,17 @@
 //
 
 import SwiftUI
+import UIKit
+import Combine
+
 
 struct SideWalkWidthForm: View, QuestForm {
     typealias AnswerClass = WidthAnswer
     @State private var showAlert = false
-    @State private var feet: Double = 0.0
-    @State private var inches: Double = 0.0
+    @State private var feet: Int = 0
+    @State private var inches: Int = 0
     @State private var isConfirmAlert: Bool = false
+    @State private var isKeyboardVisible: Bool = false // Track keyboard visibility
     var action: ((WidthAnswer) -> Void)?
     
     var body: some View {
@@ -26,6 +30,12 @@ struct SideWalkWidthForm: View, QuestForm {
                 .foregroundColor(.gray)
                 .padding(.top,10)
             WidthView(feet: $feet, inches: $inches, isConfirmAlert: $isConfirmAlert)
+                .onReceive(Just(isConfirmAlert)) { isAlert in
+                            if isAlert {
+                                // Dismiss the keyboard when confirmation is given
+                                UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
+                            }
+                        }
             Divider()
             Button {
                 showAlert = true
@@ -57,8 +67,8 @@ struct SideWalkWidthForm: View, QuestForm {
         action?(answer)
     }
     
-    func convertFeetToMeter(feet: Double, inches: Double)-> String {
-        let meters = (feet * 12 + inches) * 0.0254
+    func convertFeetToMeter(feet: Int, inches: Int)-> String {
+        let meters = Double((feet * 12 + inches)) * 0.0254
         return String(format: "%.2f", meters)
     }
 }
