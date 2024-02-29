@@ -8,7 +8,7 @@
 import UIKit
 import SwiftUI
 
-class MapViewController: UIHostingController<MeasureSidewalkView> {
+class MapViewController: UIHostingController<MapView> {
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -16,14 +16,16 @@ class MapViewController: UIHostingController<MeasureSidewalkView> {
         // Do any additional setup after loading the view.
         
         let questListButton = UIBarButtonItem(barButtonSystemItem: .search, target: self, action: #selector(questListButtonTapped))
-        navigationItem.rightBarButtonItem = questListButton
         
+        let widthDemoButton = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(widthDemoButtonTapped))
+        navigationItem.rightBarButtonItems = [questListButton, widthDemoButton]
+
         let profileButton = UIBarButtonItem(image: UIImage(systemName: "person.crop.circle.fill"), style: .plain, target: self, action: #selector(profileButtonTapped))
         navigationItem.leftBarButtonItem = profileButton
     }
     
     required init?(coder aDecoder: NSCoder) {
-        super.init(coder: aDecoder, rootView: MeasureSidewalkView())
+        super.init(coder: aDecoder, rootView: MapView())
     }
     
     @objc func questListButtonTapped() {
@@ -35,6 +37,12 @@ class MapViewController: UIHostingController<MeasureSidewalkView> {
     @objc func profileButtonTapped() {
          let profileView = ProfileView()
          let hostingController = UIHostingController(rootView: profileView)
+         present(hostingController, animated: true, completion: nil)
+     }
+    
+    @objc func widthDemoButtonTapped() {
+        let measureSidewalkView = MeasureSidewalkView()
+         let hostingController = UIHostingController(rootView: measureSidewalkView)
          present(hostingController, animated: true, completion: nil)
      }
 }
