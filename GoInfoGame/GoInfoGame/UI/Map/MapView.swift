@@ -8,6 +8,7 @@
 import SwiftUI
 import MapKit
 import CoreLocation
+import Combine
 
 struct MapView: View {
     
@@ -17,7 +18,8 @@ struct MapView: View {
     @Environment(\.presentationMode) private var presentationMode
     @AppStorage("isMapFromOnboarding") var isMapFromOnboarding: Bool = false
     @StateObject private var viewModel = MapViewModel()
-    
+    @State private var isPresented = false
+
     var body: some View {
         
         ZStack {
@@ -26,6 +28,7 @@ struct MapView: View {
                 MapAnnotation(coordinate: item.coordinateInfo) {
                     Button {
                         viewModel.selectedQuest = item.displayUnit
+                        isPresented = true
                         print(viewModel.selectedQuest as Any, "selectedQuest quest")
                     } label: {
                         Image(uiImage: item.displayUnit.parent?.icon ?? UIImage(imageLiteralResourceName: "mapPoint"))
@@ -46,16 +49,27 @@ struct MapView: View {
                 LoadingView()
             }
         }
-        .sheet(item: $viewModel.selectedQuest) { selectedQuest in
+        .sheet(isPresented: $isPresented, content: {
+            let selectedQuest = self.viewModel.selectedQuest
             if #available(iOS 16.0, *) {
-                selectedQuest.parent?.form.presentationDetents(getSheetSize(sheetSize: selectedQuest.sheetSize ?? .MEDIUM))
+                selectedQuest?.parent?.form.presentationDetents(getSheetSize(sheetSize: selectedQuest?.sheetSize ?? .MEDIUM))
             } else {
                 // Nothing here
             }
+        })
+        .onReceive(MapViewPublisher.shared.dismissSheet) { _ in
+            isPresented = false
         }
     }
 }
 
 #Preview {
     MapView()
+}
+
+
+public class MapViewPublisher: ObservableObject {
+    public let dismissSheet = PassthroughSubject<Bool, Never>()
+    static let shared = MapViewPublisher()
+    private init() {}
 }

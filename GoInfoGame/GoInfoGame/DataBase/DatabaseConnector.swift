@@ -31,7 +31,8 @@ class DatabaseConnector {
     func saveOSMElements(_ elements: [OSMElement]) {
         // Save the elements appropriately
         // Get the ways and nodes out
-        let nodes = elements.filter({$0 is OSMNode}).filter({!$0.tags.isEmpty})
+        //let nodes = elements.filter({$0 is OSMNode}).filter({$0.tags.isEmpty})
+        let nodes = elements
         let ways = elements.filter({$0 is OSMWay}).filter({!$0.tags.isEmpty})
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
