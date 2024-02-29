@@ -17,7 +17,7 @@ struct MeasureSidewalkView: View {
     var body: some View {
         ZStack {
            Spacer()
-            MeasureWidthView(aimLabelHidden: $aimLabelHidden, notReadyLabelHidden: $notReadyLabelHidden, startMeasuring: $startMeasuring, resultLabelText: $resultLabelText)
+            MeasureWidthContainer(aimLabelHidden: $aimLabelHidden, notReadyLabelHidden: $notReadyLabelHidden, startMeasuring: $startMeasuring, resultLabelText: $resultLabelText)
             VStack {
                 Spacer()
                 Text(".")
