@@ -15,7 +15,7 @@ class MapViewController: UIHostingController<MapView> {
 
         // Do any additional setup after loading the view.
         
-        let questListButton = UIBarButtonItem(barButtonSystemItem: .search, target: self, action: #selector(questListButtonTapped))
+        let questListButton = UIBarButtonItem(image: UIImage(systemName: "list.bullet"), style: .plain, target: self, action: #selector(questListButtonTapped))
         
         let widthDemoButton = UIBarButtonItem(barButtonSystemItem: .camera, target: self, action: #selector(widthDemoButtonTapped))
         navigationItem.rightBarButtonItems = [questListButton, widthDemoButton]
