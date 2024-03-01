@@ -16,8 +16,10 @@ class MapViewController: UIHostingController<MapView> {
         // Do any additional setup after loading the view.
         
         let questListButton = UIBarButtonItem(barButtonSystemItem: .search, target: self, action: #selector(questListButtonTapped))
-        navigationItem.rightBarButtonItem = questListButton
         
+        let widthDemoButton = UIBarButtonItem(barButtonSystemItem: .camera, target: self, action: #selector(widthDemoButtonTapped))
+        navigationItem.rightBarButtonItems = [questListButton, widthDemoButton]
+
         let profileButton = UIBarButtonItem(image: UIImage(systemName: "person.crop.circle.fill"), style: .plain, target: self, action: #selector(profileButtonTapped))
         navigationItem.leftBarButtonItem = profileButton
     }
@@ -35,6 +37,12 @@ class MapViewController: UIHostingController<MapView> {
     @objc func profileButtonTapped() {
          let profileView = ProfileView()
          let hostingController = UIHostingController(rootView: profileView)
+         present(hostingController, animated: true, completion: nil)
+     }
+    
+    @objc func widthDemoButtonTapped() {
+        let measureSidewalkView = MeasureSidewalkView()
+         let hostingController = UIHostingController(rootView: measureSidewalkView)
          present(hostingController, animated: true, completion: nil)
      }
 }
