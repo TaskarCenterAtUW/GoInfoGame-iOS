@@ -14,6 +14,8 @@ class LocationManagerDelegate: NSObject, ObservableObject, CLLocationManagerDele
     @Published var location: CLLocation?
     var locationUpdateHandler: ((CLLocation) -> Void)?
     
+    var hasUpdatedLocation = false
+    
     override init() {
         super.init()
     }
@@ -56,8 +58,10 @@ class LocationManagerDelegate: NSObject, ObservableObject, CLLocationManagerDele
     
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         guard let mostRecentLocation = locations.last else { return }
+        guard !hasUpdatedLocation else { return }
         location = mostRecentLocation
         locationUpdateHandler?(mostRecentLocation)
+        hasUpdatedLocation = true
         stopUpdatingLocation()
     }
 }
