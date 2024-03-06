@@ -23,7 +23,10 @@ struct MapView: View {
     var body: some View {
         
         ZStack {
-            Map(coordinateRegion: $viewModel.region, showsUserLocation: true, userTrackingMode: $trackingMode, annotationItems: viewModel.items) { item in
+            Map(coordinateRegion: $viewModel.region,
+                
+                showsUserLocation: true,
+                userTrackingMode: $trackingMode, annotationItems: viewModel.items) { item in
                 
                 MapAnnotation(coordinate: item.coordinateInfo) {
                     Button {
@@ -43,6 +46,7 @@ struct MapView: View {
                 }
             }.ignoresSafeArea()
             
+            
             if viewModel.isLoading {
                 Color.black.opacity(0.3)
                     .edgesIgnoringSafeArea(.all)
@@ -52,6 +56,7 @@ struct MapView: View {
         .sheet(isPresented: $isPresented, content: {
             let selectedQuest = self.viewModel.selectedQuest
             if #available(iOS 16.0, *) {
+                
                 selectedQuest?.parent?.form.presentationDetents(getSheetSize(sheetSize: selectedQuest?.sheetSize ?? .MEDIUM))
             } else {
                 // Nothing here

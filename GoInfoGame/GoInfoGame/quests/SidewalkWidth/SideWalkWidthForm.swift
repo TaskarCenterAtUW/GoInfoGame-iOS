@@ -17,13 +17,21 @@ struct SideWalkWidthForm: View, QuestForm {
     @State private var inches: Int = 0
     @State private var isConfirmAlert: Bool = false
     @State private var isKeyboardVisible: Bool = false // Track keyboard visibility
+//    @Binding var subheading: String
+    
+//    init(subheading: Binding<String> = .constant("")){
+//        _subheading = subheading
+//    }
+    
+    
+    
     var action: ((WidthAnswer) -> Void)?
     
     var body: some View {
         VStack{
             QuestionHeader(icon: Image("sidewalk-width-img"),
                            title: LocalizedStrings.questDetermineSidewalkWidth.localized,
-                           subtitle: "Residential Road")
+                           subtitle: subheading)
             Text(LocalizedStrings.questRoadWithExplanation.localized).font(.caption)
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .fixedSize(horizontal: false, vertical: true)
@@ -65,6 +73,10 @@ struct SideWalkWidthForm: View, QuestForm {
         let width = self.convertFeetToMeter(feet: feet, inches: inches)
         let answer = WidthAnswer(width: width, units: "m", isARMeasurement: false)
         action?(answer)
+    }
+    
+    func assignSubHeading(value:String) {
+        self.subheading = value
     }
     
     func convertFeetToMeter(feet: Int, inches: Int)-> String {
