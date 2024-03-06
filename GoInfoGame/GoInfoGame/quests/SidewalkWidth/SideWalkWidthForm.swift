@@ -18,12 +18,13 @@ struct SideWalkWidthForm: View, QuestForm {
     @State private var isConfirmAlert: Bool = false
     @State private var isKeyboardVisible: Bool = false // Track keyboard visibility
     var action: ((WidthAnswer) -> Void)?
+    var subTitle: String?
     
     var body: some View {
         VStack{
             QuestionHeader(icon: Image("sidewalk-width-img"),
                            title: LocalizedStrings.questDetermineSidewalkWidth.localized,
-                           subtitle: "Residential Road")
+                           subtitle: subTitle ?? "")
             Text(LocalizedStrings.questRoadWithExplanation.localized).font(.caption)
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .fixedSize(horizontal: false, vertical: true)

@@ -10,6 +10,7 @@ import SwiftUI
 import SwiftUI
 
 struct CrossingIslandForm: View, QuestForm {
+    var subTitle: String?
     var action: ((YesNoAnswer) -> Void)?
         
     typealias AnswerClass = YesNoAnswer

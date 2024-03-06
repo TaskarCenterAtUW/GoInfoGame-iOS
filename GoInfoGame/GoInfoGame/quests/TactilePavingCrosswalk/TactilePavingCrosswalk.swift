@@ -11,7 +11,7 @@ import SwiftUI
 import osmparser
 
 class TactilePavingCrosswalk :QuestBase, Quest {
-    
+    var subTitle: String? = ""
     var title: String = "Tactile Paving Crosswalk"
     var filter: String = """
     nodes with ( highway = traffic_signals 

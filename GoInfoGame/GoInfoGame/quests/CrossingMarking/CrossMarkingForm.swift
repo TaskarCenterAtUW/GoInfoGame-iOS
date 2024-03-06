@@ -9,6 +9,7 @@ import Foundation
 import SwiftUI
 
 struct CrossMarkingForm : View,QuestForm{
+    var subTitle: String?
     var action: ((CrossingAnswer) -> Void)?
     typealias AnswerClass = CrossingAnswer
     @State private var selectedAnswer: CrossingAnswer?

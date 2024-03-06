@@ -11,6 +11,7 @@ import SwiftUI
 import osmparser
 
 class CrossMarking: QuestBase, Quest {
+    var subTitle: String? = ""
     typealias AnswerClass = CrossingAnswer
     var _internalExpression: ElementFilterExpression?
     var title: String = "Cross Marking"

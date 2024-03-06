@@ -9,8 +9,8 @@ import Foundation
 import SwiftUI
 
 struct StairNumberForm: View, QuestForm {
+    var subTitle: String?
     var action: ((Int) -> Void)?
-    
     typealias AnswerClass = Int
     @State private var numberOfSteps: Int = 0
     @State private var showAlert = false

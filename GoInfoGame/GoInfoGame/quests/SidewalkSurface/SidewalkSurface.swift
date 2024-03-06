@@ -11,6 +11,7 @@ import SwiftUI
 import osmparser
 
 class SidewalkSurface: QuestBase, Quest {
+    var subTitle: String? = ""
     typealias AnswerClass = SidewalkSurfaceAnswer
     var title: String = "Sidewalk Surface"
     var filter: String = ""

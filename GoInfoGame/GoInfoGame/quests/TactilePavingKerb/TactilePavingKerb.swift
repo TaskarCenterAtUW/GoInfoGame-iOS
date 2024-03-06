@@ -12,6 +12,7 @@ import osmparser
 
 typealias AnswerClass = Bool
 class TactilePavingKerb :Quest {
+    var subTitle: String? = ""
     var relationData: Element? = nil
     func copyWithElement(element: Element) -> any Quest {
         let tactilePavingKerb = TactilePavingKerb()

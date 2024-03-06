@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct CrossingTypeForm: View, QuestForm {
+    var subTitle: String?
     var action: ((CrossingTypeAnswer) -> Void)?
     func applyAnswer(answer: CrossingTypeAnswer) {
     }

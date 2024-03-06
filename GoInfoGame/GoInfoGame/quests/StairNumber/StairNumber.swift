@@ -11,6 +11,7 @@ import SwiftUI
 import osmparser
 
 class StairNumber: QuestBase, Quest {
+    var subTitle: String? = ""
     typealias AnswerClass = Int
     var relationData: Element? = nil
     var _internalExpression: ElementFilterExpression?

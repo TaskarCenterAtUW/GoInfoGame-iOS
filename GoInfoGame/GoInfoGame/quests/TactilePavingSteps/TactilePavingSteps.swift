@@ -11,7 +11,7 @@ import SwiftUI
 import osmparser
 
 class TactilePavingSteps :QuestBase, Quest {
-    
+    var subTitle: String? = ""
     var title: String = "Tactile Paving Steps"
     var filter: String = """
     ways with highway = steps

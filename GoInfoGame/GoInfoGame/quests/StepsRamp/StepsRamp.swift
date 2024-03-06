@@ -11,6 +11,7 @@ import SwiftUI
 import osmparser
 
 class StepsRamp: QuestBase, Quest {
+    var subTitle: String? = ""
     typealias AnswerClass = StepsRampAnswer
     var _internalExpression: ElementFilterExpression?
     var relationData: Element? = nil

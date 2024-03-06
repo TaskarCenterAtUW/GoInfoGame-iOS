@@ -9,6 +9,7 @@ import Foundation
 import SwiftUI
 
 struct TactilePavingStepsForm: View, QuestForm {
+    var subTitle: String?
     var action: ((YesNoAnswer) -> Void)?
     typealias AnswerClass = YesNoAnswer
     @State private var isShowingAreYouSure = false

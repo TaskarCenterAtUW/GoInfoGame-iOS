@@ -9,6 +9,7 @@ import Foundation
 import SwiftUI
 
 struct BusStopLitForm: View, QuestForm {
+    var subTitle: String?
     var action: ((YesNoAnswer) -> Void)?
         
     typealias AnswerClass = YesNoAnswer

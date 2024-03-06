@@ -23,7 +23,7 @@ protocol Quest {
     func onAnswer(answer:AnswerClass)
     var displayUnit: DisplayUnit { get}
     var filterExpression : ElementFilterExpression? { get  }
-    
+    var subTitle: String? {get set}
     func copyWithElement(element: Element) -> any Quest // Not sure.
 }
 
@@ -82,13 +82,13 @@ struct DisplayUnit : Identifiable {
     let title:String
     let description : String
     let id = UUID()
-    let parent: (any Quest)?
+    var parent: (any Quest)?
     let sheetSize : SheetSize?
 }
 
 protocol QuestForm {
     associatedtype AnswerClass
-    
+    var subTitle: String? {get set}
     var action: ((_ answer:AnswerClass)->Void)? {get set}
 }
 

@@ -11,6 +11,7 @@ import SwiftUI
 import osmparser
 
 class WayLit: QuestBase, Quest {
+    var subTitle: String? = ""
     typealias AnswerClass = YesNoAnswer
     var _internalExpression: ElementFilterExpression?
     var relationData: Element? = nil

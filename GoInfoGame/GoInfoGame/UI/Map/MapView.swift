@@ -29,7 +29,8 @@ struct MapView: View {
                     Button {
                         viewModel.selectedQuest = item.displayUnit
                         isPresented = true
-                        print(viewModel.selectedQuest as Any, "selectedQuest quest")
+                        //TODO: Will be sending subtitle here
+                       // self.viewModel.selectedQuest?.parent?.subTitle = "This is dynamic description"
                     } label: {
                         Image(uiImage: item.displayUnit.parent?.icon ?? UIImage(imageLiteralResourceName: "mapPoint"))
                             .resizable()

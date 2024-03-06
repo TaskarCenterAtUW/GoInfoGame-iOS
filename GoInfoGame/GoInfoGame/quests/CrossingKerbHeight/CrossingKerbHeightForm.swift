@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct CrossingKerbHeightForm: View, QuestForm {
+    var subTitle: String?
     var action: ((CrossingKerbHeightAnswer) -> Void)?
     typealias AnswerClass = CrossingKerbHeightAnswer
     @State private var selectedImage:[String] = []

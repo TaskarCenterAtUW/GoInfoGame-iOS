@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct TactilePavingKerbForm: View, QuestForm {
+    var subTitle: String?
     var action: ((Bool) -> Void)?
     
     func applyAnswer(answer: Bool) {

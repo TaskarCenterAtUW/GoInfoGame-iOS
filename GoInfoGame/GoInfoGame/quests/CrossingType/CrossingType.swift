@@ -11,6 +11,7 @@ import SwiftUI
 import osmparser
 
 class CrossingType: QuestBase, Quest {
+    var subTitle: String? = ""
     var title: String = "Crossing Type"
     var filter: String = """
         nodes with highway = crossing

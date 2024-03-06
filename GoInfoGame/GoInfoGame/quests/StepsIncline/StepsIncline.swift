@@ -11,7 +11,7 @@ import SwiftUI
 import osmparser
 
 class StepsIncline: QuestBase, Quest {
-    
+    var subTitle: String? = ""
     typealias AnswerClass = StepsInclineDirection
     var _internalExpression: ElementFilterExpression?
     var relationData: Element? = nil

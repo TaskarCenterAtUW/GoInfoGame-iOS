@@ -12,6 +12,7 @@ struct HandRailForm: View, QuestForm {
     var action: ((YesNoAnswer) -> Void)?
     @State private var isShowingAreYouSure = false
     @State private var selectedAnswer: YesNoAnswer = .unknown
+    var subTitle: String?
     
     var body: some View {
         ZStack {

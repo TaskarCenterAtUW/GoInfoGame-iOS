@@ -8,8 +8,8 @@
 import SwiftUI
 // View representing a form for sidewalk surface selection
 struct SidewalkSurfaceForm: QuestForm ,View {
+    var subTitle: String?
     var action: ((SidewalkSurfaceAnswer) -> Void)?
-    
     typealias AnswerClass = SidewalkSurfaceAnswer
     @State private var selectedImage : [String] = []
     @State private var showAlert = false

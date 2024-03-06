@@ -8,8 +8,8 @@
 import SwiftUI
 
 struct SideWalkValidationForm: QuestForm ,View {
+    var subTitle: String?
     var action: ((SideWalkValidationAnswer) -> Void)?
-    
     typealias AnswerClass = SideWalkValidationAnswer
     @State private var showAlert = false
     @State private var selectedAnswer : SideWalkValidationAnswer = SideWalkValidationAnswer.noAnswerSelected

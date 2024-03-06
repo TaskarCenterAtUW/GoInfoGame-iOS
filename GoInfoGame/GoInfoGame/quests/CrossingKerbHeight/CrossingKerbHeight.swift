@@ -11,6 +11,7 @@ import UIKit
 import osmparser
 
 class CrossingKerbHeight: QuestBase, Quest {
+    var subTitle: String? = ""
     var title: String = "Crossing Kerb Height"
     var _internalExpression: ElementFilterExpression?
     var relationData: Element? = nil

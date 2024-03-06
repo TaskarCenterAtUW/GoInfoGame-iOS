@@ -11,6 +11,7 @@ import SwiftUI
 import osmparser
 
 class BusStopLit: QuestBase, Quest {
+    var subTitle: String? = ""
     typealias AnswerClass = YesNoAnswer
     var relationData: Element? = nil
     var _internalExpression: ElementFilterExpression?

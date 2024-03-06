@@ -9,6 +9,7 @@ import Foundation
 import SwiftUI
 
 struct StepsRampForm: View, QuestForm {
+    var subTitle: String?
     var action: ((StepsRampAnswer) -> Void)?
     typealias AnswerClass = StepsRampAnswer
     @State private var selectedImage:[String] = []

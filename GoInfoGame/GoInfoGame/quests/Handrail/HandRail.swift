@@ -45,6 +45,7 @@ class HandRail: QuestBase,Quest {
             return _internalExpression
         }
     }
+    var subTitle: String? = ""
     
     override init() {
         super.init()

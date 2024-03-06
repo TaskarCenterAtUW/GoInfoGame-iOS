@@ -10,6 +10,7 @@ import SwiftUI
 import osmparser
 
 class SideWalkValidation: QuestBase, Quest {
+    var subTitle: String? = ""
     typealias AnswerClass = SideWalkValidationAnswer
     var title: String = "Sidewalk Validation"
     var filter: String = ""
