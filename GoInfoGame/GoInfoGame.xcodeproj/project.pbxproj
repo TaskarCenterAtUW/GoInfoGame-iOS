@@ -33,6 +33,7 @@
 		970D5BD52B677CC500C20BE7 /* OSMUserData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 970D5BD42B677CC500C20BE7 /* OSMUserData.swift */; };
 		971575172B5FFD6F0044797C /* MapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 971575162B5FFD6F0044797C /* MapView.swift */; };
 		971575192B5FFE910044797C /* LocationManagerCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 971575182B5FFE910044797C /* LocationManagerCoordinator.swift */; };
+		971902112B983EFC009B3270 /* MapViewCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 971902102B983EFC009B3270 /* MapViewCoordinator.swift */; };
 		971F9FDF2B847349005397CC /* CrossingIslandForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = 971F9FDE2B847349005397CC /* CrossingIslandForm.swift */; };
 		971F9FE12B847358005397CC /* CrossingIsland.swift in Sources */ = {isa = PBXBuildFile; fileRef = 971F9FE02B847358005397CC /* CrossingIsland.swift */; };
 		971F9FE42B84CDBF005397CC /* CrossingType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 971F9FE32B84CDBF005397CC /* CrossingType.swift */; };
@@ -297,6 +298,7 @@
 		970D5BD42B677CC500C20BE7 /* OSMUserData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OSMUserData.swift; sourceTree = "<group>"; };
 		971575162B5FFD6F0044797C /* MapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapView.swift; sourceTree = "<group>"; };
 		971575182B5FFE910044797C /* LocationManagerCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationManagerCoordinator.swift; sourceTree = "<group>"; };
+		971902102B983EFC009B3270 /* MapViewCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapViewCoordinator.swift; sourceTree = "<group>"; };
 		971F9FDE2B847349005397CC /* CrossingIslandForm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CrossingIslandForm.swift; sourceTree = "<group>"; };
 		971F9FE02B847358005397CC /* CrossingIsland.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CrossingIsland.swift; sourceTree = "<group>"; };
 		971F9FE32B84CDBF005397CC /* CrossingType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CrossingType.swift; sourceTree = "<group>"; };
@@ -682,6 +684,7 @@
 				971575162B5FFD6F0044797C /* MapView.swift */,
 				970D5BD22B67638400C20BE7 /* MapViewModel.swift */,
 				A495DF2C2B6A190400478E44 /* CustomMapView.swift */,
+				971902102B983EFC009B3270 /* MapViewCoordinator.swift */,
 			);
 			path = Map;
 			sourceTree = "<group>";
@@ -1761,6 +1764,7 @@
 				972454152B14A49A0036B91A /* Extensions.swift in Sources */,
 				0536DD8C2B0BD2C200B04C4B /* Constants.swift in Sources */,
 				970D5BD32B67638500C20BE7 /* MapViewModel.swift in Sources */,
+				971902112B983EFC009B3270 /* MapViewCoordinator.swift in Sources */,
 				0536DD992B0BDBFE00B04C4B /* OAuthManager.swift in Sources */,
 				A4E711AC2B58F7C000C9DE08 /* HandRailForm.swift in Sources */,
 				A4E711A62B57BBCA00C9DE08 /* QuestProtocols.swift in Sources */,
