@@ -1,5 +1,5 @@
 //
-//  MapViewCoordinator.swift
+//  CustomMap.swift
 //  GoInfoGame
 //
 //  Created by Lakshmi Shweta Pochiraju on 06/03/24.
@@ -9,8 +9,8 @@ import Foundation
 import SwiftUI
 import MapKit
 
-// Coordinator for managing map interactions between SwiftUI and UIKit components
-struct MapViewCoordinator: UIViewRepresentable {
+// Custom Map for managing map interactions between SwiftUI and UIKit components
+struct CustomMap: UIViewRepresentable {
     @Binding var region: MKCoordinateRegion
     @Binding var trackingMode: MapUserTrackingMode
     var items: [DisplayUnitWithCoordinate]
@@ -45,8 +45,8 @@ struct MapViewCoordinator: UIViewRepresentable {
     
     // Coordinator class for managing delegate methods
     class Coordinator: NSObject, MKMapViewDelegate {
-        var parent: MapViewCoordinator
-        init(_ parent: MapViewCoordinator) {
+        var parent: CustomMap
+        init(_ parent: CustomMap) {
             self.parent = parent
         }
         

@@ -20,7 +20,7 @@ struct MapView: View {
 
     var body: some View {
         ZStack {
-            MapViewCoordinator(region: $viewModel.region,
+            CustomMap(region: $viewModel.region,
                           trackingMode: $trackingMode,
                           items: viewModel.items,
                           selectedQuest: $viewModel.selectedQuest,
