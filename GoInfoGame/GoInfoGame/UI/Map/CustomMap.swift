@@ -11,6 +11,7 @@ import MapKit
 
 // Custom Map for managing map interactions between SwiftUI and UIKit components
 struct CustomMap: UIViewRepresentable {
+    
     @Binding var region: MKCoordinateRegion
     @Binding var trackingMode: MapUserTrackingMode
     var items: [DisplayUnitWithCoordinate]
@@ -23,19 +24,19 @@ struct CustomMap: UIViewRepresentable {
         let mapView = MKMapView()
         mapView.delegate = context.coordinator
         mapView.showsUserLocation = true
+        // Set user tracking mode
+        mapView.userTrackingMode = trackingMode.mkUserTrackingMode
+        // Hide points of interest except street names
+        mapView.pointOfInterestFilter = .excludingAll
         return mapView
     }
     
     // Updates the UIView with new data
     func updateUIView(_ mapView: MKMapView, context: Context) {
-        // Set user tracking mode
-        mapView.userTrackingMode = trackingMode.mkUserTrackingMode
-        // Hide points of interest except street names
-        mapView.pointOfInterestFilter = .excludingAll
         // Manage annotations
-        manageAnnotations(mapView)
+        manageAnnotations(mapView, context: context)
         // Update the region if necessary
-        updateRegion(mapView)
+        context.coordinator.updateRegion(mapView)
     }
     
     // Creates the coordinator
@@ -46,6 +47,7 @@ struct CustomMap: UIViewRepresentable {
     // Coordinator class for managing delegate methods
     class Coordinator: NSObject, MKMapViewDelegate {
         var parent: CustomMap
+        var isRegionSet = false // boolean flag to track if region has been set
         init(_ parent: CustomMap) {
             self.parent = parent
         }
@@ -109,10 +111,20 @@ struct CustomMap: UIViewRepresentable {
             // Set the image with circular border to the annotation view
             annotationView.image = resizedImage
         }
+        // Helper method to update the region
+        func updateRegion(_ mapView: MKMapView) {
+            // Update the region only if it hasn't been set yet
+            if self.parent.isPresented  {
+                return
+            } else if !isRegionSet {
+                mapView.setRegion(parent.region, animated: true)
+            }
+        }
+        
     }
     
     // Helper method to manage annotations
-    private func manageAnnotations(_ mapView: MKMapView) {
+    private func manageAnnotations(_ mapView: MKMapView, context: Context) {
         // Check if the existing annotations are same as the new ones
         let existingAnnotations = Set(mapView.annotations.compactMap { $0 as? DisplayUnitAnnotation })
         let newAnnotations = Set(items.map { $0.annotation })
@@ -125,19 +137,14 @@ struct CustomMap: UIViewRepresentable {
             // Add annotations that are present in the new set but not in the existing set
             let annotationsToAdd = newAnnotations.subtracting(existingAnnotations)
             mapView.addAnnotations(Array(annotationsToAdd))
+            // Update the region if it hasn't been set yet
+            if !context.coordinator.isRegionSet {
+                mapView.setRegion(region, animated: true)
+            }
+            context.coordinator.isRegionSet = true
         }
     }
     
-    // Helper method to update the region
-    private func updateRegion(_ mapView: MKMapView) {
-        // Update the region if necessary
-        if mapView.region.center != region.center ||
-            mapView.region.span.latitudeDelta != region.span.latitudeDelta ||
-            mapView.region.span.longitudeDelta != region.span.longitudeDelta {
-            
-            mapView.setRegion(region, animated: true)
-        }
-    }
 }
 
 // Extension to convert MapUserTrackingMode to MKUserTrackingMode
