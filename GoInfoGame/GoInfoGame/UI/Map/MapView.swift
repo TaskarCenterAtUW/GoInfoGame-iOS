@@ -35,8 +35,10 @@ struct MapView: View {
                         
                         let direction = inferDirection(selectedAnnotation: item.coordinateInfo)
                         print("Direction is \(direction)")
-                    
-                        inferAddress { address in
+                        
+                        let annotationLocation = CLLocation(latitude: item.coordinateInfo.latitude, longitude: item.coordinateInfo.longitude)
+                        
+                        inferAddress(location: annotationLocation) { address in
                             if let address = address {
                                 print("This waylit is on \(address) at \(distance) meters away on \(direction)")
                             } else {
@@ -125,11 +127,12 @@ struct MapView: View {
     }
     
     // infer address from user location coordinates
-    func inferAddress(completion: @escaping (String?) -> Void) {
-        let userCurrentLocation = locationManagerDelegate.locationManager.location!
+    func inferAddress(location: CLLocation,completion: @escaping (String?) -> Void) {
+
+            
         let geocoder = CLGeocoder()
         
-        geocoder.reverseGeocodeLocation(userCurrentLocation) { placemarks, error in
+        geocoder.reverseGeocodeLocation(location) { placemarks, error in
             guard let placemark = placemarks?.first else {
                 completion(nil)
                 return
