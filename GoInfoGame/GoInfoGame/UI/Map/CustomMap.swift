@@ -17,7 +17,6 @@ struct CustomMap: UIViewRepresentable {
     var items: [DisplayUnitWithCoordinate]
     @Binding var selectedQuest: DisplayUnit?
     @Binding var isPresented: Bool
-    var isLoading: Bool
     
     // Creates and configures the UIView
     func makeUIView(context: Context) -> MKMapView {
@@ -58,19 +57,15 @@ struct CustomMap: UIViewRepresentable {
             guard let displayUnitAnnotation = annotation as? DisplayUnitAnnotation else {
                 return nil
             }
-            
             let identifier = "customAnnotation"
             var annotationView = mapView.dequeueReusableAnnotationView(withIdentifier: identifier)
-            
             if annotationView == nil {
                 annotationView = MKAnnotationView(annotation: annotation, reuseIdentifier: identifier)
             } else {
                 annotationView?.annotation = annotation
             }
-            
             // Customize annotation view
             customizeAnnotationView(annotationView, with: displayUnitAnnotation)
-            
             return annotationView
         }
         
@@ -80,6 +75,8 @@ struct CustomMap: UIViewRepresentable {
                 parent.selectedQuest = selectedQuest.displayUnit
                 parent.isPresented = true
             }
+            // Deselect the annotation to prevent re-adding on selection
+            mapView.deselectAnnotation(annotation, animated: false)
         }
         
         // Customizes the appearance of the annotation view
@@ -89,9 +86,9 @@ struct CustomMap: UIViewRepresentable {
             let pinImage = displayUnitAnnotation.displayUnit.parent?.icon
             let size = CGSize(width: 40, height: 40)
             
-            UIGraphicsBeginImageContext(size)
+            UIGraphicsBeginImageContextWithOptions(size, false, 0.0)
             
-            // Draw circular border
+            // To draw circular border
             if let context = UIGraphicsGetCurrentContext() {
                 let borderRect = CGRect(x: 0, y: 0, width: size.width, height: size.height)
                 let borderWidth: CGFloat = 2.0
@@ -99,16 +96,14 @@ struct CustomMap: UIViewRepresentable {
                 context.setLineWidth(borderWidth)
                 context.strokeEllipse(in: borderRect.insetBy(dx: borderWidth / 2, dy: borderWidth / 2))
                 
-                // Draw the pinImage inside the circular border
+                // To draw the pinImage inside the circular border
                 let imageRect = borderRect.insetBy(dx: borderWidth, dy: borderWidth)
                 pinImage?.draw(in: imageRect)
             }
             
-            // Get the resized image with circular border
+            // Getting the resized image with circular border
             let resizedImage = UIGraphicsGetImageFromCurrentImageContext()
             UIGraphicsEndImageContext()
-            
-            // Set the image with circular border to the annotation view
             annotationView.image = resizedImage
         }
         // Helper method to update the region
@@ -125,23 +120,27 @@ struct CustomMap: UIViewRepresentable {
     
     // Helper method to manage annotations
     private func manageAnnotations(_ mapView: MKMapView, context: Context) {
-        // Check if the existing annotations are same as the new ones
-        let existingAnnotations = Set(mapView.annotations.compactMap { $0 as? DisplayUnitAnnotation })
-        let newAnnotations = Set(items.map { $0.annotation })
-        
-        if existingAnnotations != newAnnotations {
-            // Remove annotations that are not present in the new set
-            let annotationsToRemove = existingAnnotations.subtracting(newAnnotations)
-            mapView.removeAnnotations(Array(annotationsToRemove))
-            
-            // Add annotations that are present in the new set but not in the existing set
-            let annotationsToAdd = newAnnotations.subtracting(existingAnnotations)
-            mapView.addAnnotations(Array(annotationsToAdd))
-            // Update the region if it hasn't been set yet
+        /// Extracting coordinates of existing annotations
+        let existingCoordinates = Set(mapView.annotations.compactMap { ($0 as? DisplayUnitAnnotation)?.coordinate })
+        let newAnnotations = items.map { $0.annotation }
+        let newCoordinates = Set(newAnnotations.map { $0.coordinate })
+        /// Checking if the coordinates of existing annotations are different from the coordinates of new annotations
+        if existingCoordinates != newCoordinates {
+            /// Removing annotations that are not present in the new set
+            let annotationsToRemove = mapView.annotations.filter {
+                guard let displayUnitAnnotation = $0 as? DisplayUnitAnnotation else { return false }
+                return !newCoordinates.contains(displayUnitAnnotation.coordinate)
+            }
+            mapView.removeAnnotations(annotationsToRemove)
+            /// Adding annotations that are present in the new set but not in the existing set
+            let annotationsToAdd = newAnnotations.filter { !existingCoordinates.contains($0.coordinate) }
+            mapView.addAnnotations(annotationsToAdd)
+
+            /// Updating the region if it hasn't been set yet
             if !context.coordinator.isRegionSet {
                 mapView.setRegion(region, animated: true)
+                context.coordinator.isRegionSet = true
             }
-            context.coordinator.isRegionSet = true
         }
     }
     
