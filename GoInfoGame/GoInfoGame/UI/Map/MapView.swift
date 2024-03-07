@@ -28,6 +28,7 @@ struct MapView: View {
                 MapAnnotation(coordinate: item.coordinateInfo) {
                     Button {
                         viewModel.selectedQuest = item.displayUnit
+                        self.setSubTitleForSideWalk()
                         isPresented = true
                         print(viewModel.selectedQuest as Any, "selectedQuest quest")
                     } label: {
@@ -59,6 +60,12 @@ struct MapView: View {
         })
         .onReceive(MapViewPublisher.shared.dismissSheet) { _ in
             isPresented = false
+        }
+    }
+    
+    private func setSubTitleForSideWalk() {
+        if let sidewalk =  self.viewModel.selectedQuest?.parent as? SideWalkWidth {
+            sidewalk.subTitle = "This is side walk subTitle"
         }
     }
 }
