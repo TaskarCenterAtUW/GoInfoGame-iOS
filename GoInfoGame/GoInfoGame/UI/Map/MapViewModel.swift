@@ -13,14 +13,13 @@ import CoreLocation
 class MapViewModel: ObservableObject {
 
     let locationManagerDelegate = LocationManagerDelegate()
-    
-     var region = MKCoordinateRegion(center: CLLocationCoordinate2D(latitude: 37.3318, longitude: -122.0312), span: MKCoordinateSpan(latitudeDelta: 0.0004 , longitudeDelta: 0.0004 ))
+    @Published var isLoading: Bool = false
+    var region = MKCoordinateRegion(center: CLLocationCoordinate2D(latitude: 37.3318, longitude: -122.0312), span: MKCoordinateSpan(latitudeDelta: 0.0004 , longitudeDelta: 0.0004 ))
     let viewSpanDelta = 0.0004 // Delta lat/lng to show to the user
 
     
     @Published var items: [DisplayUnitWithCoordinate] = []
     @Published var selectedQuest: DisplayUnit?
-    @Published var isLoading: Bool = false
     let dataSpanDistance: CLLocationDistance = 1000 // Distance from user location to get the data
     
     init() {
