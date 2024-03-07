@@ -173,7 +173,7 @@ struct CustomMap: UIViewRepresentable {
         let destinationPoint = MKMapPoint(selectedAnnotation)
         let angleRadians = atan2(destinationPoint.y - userLocationPoint.y, destinationPoint.x - userLocationPoint.x)
         var angleDegrees = angleRadians * 180 / .pi
-        angleDegrees += 90 // Adjust to be relative to north
+        angleDegrees += 90 
         
         if angleDegrees < 0 {
             angleDegrees += 360
@@ -184,9 +184,7 @@ struct CustomMap: UIViewRepresentable {
         angleDegrees = (angleDegrees * 10).rounded() / 10
         
         var direction = ""
-        
-        print("Angle for inferDirection (degrees): \(angleDegrees)")
-        
+                
         // Convert angle into relative direction
            if angleDegrees >= 337.5 || angleDegrees < 22.5 {
                direction = "ahead"
@@ -203,7 +201,27 @@ struct CustomMap: UIViewRepresentable {
         return direction
     }
     
-    
+    // infer street name from user location coordinates
+    func inferStreetName(location: CLLocation,completion: @escaping (String?) -> Void) {
+        
+        let geocoder = CLGeocoder()
+        geocoder.reverseGeocodeLocation(location) { placemarks, error in
+            guard let placemark = placemarks?.first else {
+                completion(nil)
+                return
+            }
+            var addressComponents: [String] = []
+            if let streetNumber = placemark.subThoroughfare {
+                addressComponents.append(streetNumber)
+            }
+            if let streetName = placemark.thoroughfare {
+                addressComponents.append(streetName)
+            }
+            
+            let address = addressComponents.joined(separator: ", ")
+            completion(address)
+        }
+    }
 }
 
 // Extension to convert MapUserTrackingMode to MKUserTrackingMode
