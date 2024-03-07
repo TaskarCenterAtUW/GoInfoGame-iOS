@@ -8,6 +8,7 @@
 import Foundation
 import SwiftUI
 import MapKit
+import CoreLocation
 
 // Custom Map for managing map interactions between SwiftUI and UIKit components
 struct CustomMap: UIViewRepresentable {
@@ -18,6 +19,8 @@ struct CustomMap: UIViewRepresentable {
     @Binding var selectedQuest: DisplayUnit?
     @Binding var isPresented: Bool
     @StateObject var locationManagerDelegate = LocationManagerDelegate()
+    
+    var contextualInfo: ((String) -> Void)?
     
     // Creates and configures the UIView
     func makeUIView(context: Context) -> MKMapView {
@@ -48,8 +51,11 @@ struct CustomMap: UIViewRepresentable {
     class Coordinator: NSObject, MKMapViewDelegate {
         var parent: CustomMap
         var isRegionSet = false // boolean flag to track if region has been set
+        var contextualInfo: ((String) -> Void)?
+        
         init(_ parent: CustomMap) {
             self.parent = parent
+            self.contextualInfo = parent.contextualInfo
         }
         
         // Customizes the view for each annotation
@@ -75,6 +81,9 @@ struct CustomMap: UIViewRepresentable {
             if let selectedQuest = annotation as? DisplayUnitAnnotation {
                 parent.selectedQuest = selectedQuest.displayUnit
                 parent.isPresented = true
+                
+                let distance = parent.calculateDistance(selectedAnnotation: selectedQuest.coordinate)
+                
             }
             // Deselect the annotation to prevent re-adding on selection
             mapView.deselectAnnotation(annotation, animated: false)
@@ -144,6 +153,14 @@ struct CustomMap: UIViewRepresentable {
             }
         }
     }
+    
+    // calculate distance between user current location and selected annotation
+        func calculateDistance(selectedAnnotation: CLLocationCoordinate2D) -> CLLocationDistance {
+            let userCurrentLocation = locationManagerDelegate.locationManager.location!.coordinate
+            let fromLocation = CLLocation(latitude: userCurrentLocation.latitude, longitude: userCurrentLocation.longitude)
+            let toLocation = CLLocation(latitude: selectedAnnotation.latitude, longitude: selectedAnnotation.longitude)
+            return CLLocationDistance(Int(fromLocation.distance(from: toLocation)))
+        }
     
 }
 
