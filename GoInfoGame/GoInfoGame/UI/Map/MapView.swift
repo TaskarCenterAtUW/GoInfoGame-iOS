@@ -23,7 +23,9 @@ struct MapView: View {
                           trackingMode: $trackingMode,
                           items: viewModel.items,
                           selectedQuest: $viewModel.selectedQuest,
-                          isPresented: $isPresented)
+                      isPresented: $isPresented, contextualInfo: { contextualInfo in
+                print(contextualInfo)
+            })
                 .edgesIgnoringSafeArea(.all)
             
             if viewModel.isLoading {
