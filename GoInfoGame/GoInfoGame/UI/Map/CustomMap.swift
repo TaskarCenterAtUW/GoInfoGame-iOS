@@ -85,6 +85,7 @@ struct CustomMap: UIViewRepresentable {
                 let distance = parent.calculateDistance(selectedAnnotation: selectedQuest.coordinate)
                 let direction = parent.inferDirection(selectedAnnotation: selectedQuest.coordinate)
                 
+                print("The \(selectedQuest.title!) is on at \(direction) meters away")
                 
                 
             }
@@ -186,23 +187,19 @@ struct CustomMap: UIViewRepresentable {
         
         print("Angle for inferDirection (degrees): \(angleDegrees)")
         
-        if angleDegrees >= 337.5 || angleDegrees < 22.5 {
-            direction = "north"
-        } else if angleDegrees >= 22.5 && angleDegrees < 67.5 {
-            direction = "northeast"
-        } else if angleDegrees >= 67.5 && angleDegrees < 112.5 {
-            direction = "east"
-        } else if angleDegrees >= 112.5 && angleDegrees < 157.5 {
-            direction = "southeast"
-        } else if angleDegrees >= 157.5 && angleDegrees < 202.5 {
-            direction = "south"
-        } else if angleDegrees >= 202.5 && angleDegrees < 247.5 {
-            direction = "southwest"
-        } else if angleDegrees >= 247.5 && angleDegrees < 292.5 {
-            direction = "west"
-        } else {
-            direction = "northwest"
-        }
+        // Convert angle into relative direction
+           if angleDegrees >= 337.5 || angleDegrees < 22.5 {
+               direction = "ahead"
+           } else if angleDegrees >= 22.5 && angleDegrees < 112.5 {
+               direction = "right"
+           } else if angleDegrees >= 112.5 && angleDegrees < 202.5 {
+               direction = "behind"
+           } else if angleDegrees >= 202.5 && angleDegrees < 292.5 {
+               direction = "left"
+           } else {
+               direction = "right"
+           }
+        
         return direction
     }
     
