@@ -85,9 +85,13 @@ struct CustomMap: UIViewRepresentable {
                 let distance = parent.calculateDistance(selectedAnnotation: selectedQuest.coordinate)
                 let direction = parent.inferDirection(selectedAnnotation: selectedQuest.coordinate)
                 
-                print("The \(selectedQuest.title!) is on at \(direction) meters away")
-                
-                
+                let annotationLocation = CLLocation(latitude: selectedQuest.coordinate.latitude, longitude: selectedQuest.coordinate.longitude)
+                parent.inferStreetName(location: annotationLocation) { streetName in
+                    if let streetName = streetName {
+                        let contextualString = "The \(selectedQuest.title!) is on \(streetName) at \(distance) meters \(direction) of you"
+                        self.contextualInfo?(contextualString)
+                    } 
+                }
             }
             // Deselect the annotation to prevent re-adding on selection
             mapView.deselectAnnotation(annotation, animated: false)
@@ -173,7 +177,7 @@ struct CustomMap: UIViewRepresentable {
         let destinationPoint = MKMapPoint(selectedAnnotation)
         let angleRadians = atan2(destinationPoint.y - userLocationPoint.y, destinationPoint.x - userLocationPoint.x)
         var angleDegrees = angleRadians * 180 / .pi
-        angleDegrees += 90 
+        angleDegrees += 90
         
         if angleDegrees < 0 {
             angleDegrees += 360
@@ -207,7 +211,7 @@ struct CustomMap: UIViewRepresentable {
         let geocoder = CLGeocoder()
         geocoder.reverseGeocodeLocation(location) { placemarks, error in
             guard let placemark = placemarks?.first else {
-                completion(nil)
+                completion("")
                 return
             }
             var addressComponents: [String] = []
