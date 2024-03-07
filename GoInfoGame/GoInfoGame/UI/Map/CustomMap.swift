@@ -17,6 +17,7 @@ struct CustomMap: UIViewRepresentable {
     var items: [DisplayUnitWithCoordinate]
     @Binding var selectedQuest: DisplayUnit?
     @Binding var isPresented: Bool
+    @StateObject var locationManagerDelegate = LocationManagerDelegate()
     
     // Creates and configures the UIView
     func makeUIView(context: Context) -> MKMapView {

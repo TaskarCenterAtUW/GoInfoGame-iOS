@@ -12,7 +12,6 @@ import Combine
 
 struct MapView: View {
     @State var trackingMode: MapUserTrackingMode = MapUserTrackingMode.none
-    @StateObject var locationManagerDelegate = LocationManagerDelegate()
     @Environment(\.presentationMode) private var presentationMode
     @AppStorage("isMapFromOnboarding") var isMapFromOnboarding: Bool = false
     @StateObject private var viewModel = MapViewModel()
