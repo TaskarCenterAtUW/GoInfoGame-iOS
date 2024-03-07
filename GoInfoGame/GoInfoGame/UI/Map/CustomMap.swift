@@ -83,6 +83,9 @@ struct CustomMap: UIViewRepresentable {
                 parent.isPresented = true
                 
                 let distance = parent.calculateDistance(selectedAnnotation: selectedQuest.coordinate)
+                let direction = parent.inferDirection(selectedAnnotation: selectedQuest.coordinate)
+                
+                
                 
             }
             // Deselect the annotation to prevent re-adding on selection
@@ -161,6 +164,48 @@ struct CustomMap: UIViewRepresentable {
             let toLocation = CLLocation(latitude: selectedAnnotation.latitude, longitude: selectedAnnotation.longitude)
             return CLLocationDistance(Int(fromLocation.distance(from: toLocation)))
         }
+    
+    // infer direction
+    func inferDirection(selectedAnnotation: CLLocationCoordinate2D) -> String {
+        let userCurrentLocation = locationManagerDelegate.locationManager.location!.coordinate
+        let userLocationPoint = MKMapPoint(userCurrentLocation)
+        let destinationPoint = MKMapPoint(selectedAnnotation)
+        let angleRadians = atan2(destinationPoint.y - userLocationPoint.y, destinationPoint.x - userLocationPoint.x)
+        var angleDegrees = angleRadians * 180 / .pi
+        angleDegrees += 90 // Adjust to be relative to north
+        
+        if angleDegrees < 0 {
+            angleDegrees += 360
+        } else if angleDegrees >= 360 {
+            angleDegrees -= 360
+        }
+        
+        angleDegrees = (angleDegrees * 10).rounded() / 10
+        
+        var direction = ""
+        
+        print("Angle for inferDirection (degrees): \(angleDegrees)")
+        
+        if angleDegrees >= 337.5 || angleDegrees < 22.5 {
+            direction = "north"
+        } else if angleDegrees >= 22.5 && angleDegrees < 67.5 {
+            direction = "northeast"
+        } else if angleDegrees >= 67.5 && angleDegrees < 112.5 {
+            direction = "east"
+        } else if angleDegrees >= 112.5 && angleDegrees < 157.5 {
+            direction = "southeast"
+        } else if angleDegrees >= 157.5 && angleDegrees < 202.5 {
+            direction = "south"
+        } else if angleDegrees >= 202.5 && angleDegrees < 247.5 {
+            direction = "southwest"
+        } else if angleDegrees >= 247.5 && angleDegrees < 292.5 {
+            direction = "west"
+        } else {
+            direction = "northwest"
+        }
+        return direction
+    }
+    
     
 }
 
