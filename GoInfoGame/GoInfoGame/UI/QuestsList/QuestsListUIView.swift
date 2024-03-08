@@ -8,20 +8,30 @@
 import SwiftUI
 
 struct QuestsListUIView : View {
-    let items: [DisplayUnit] = QuestsRepository.shared.displayQuests
+    @StateObject private var viewModel = MapViewModel()
+    //let items: [DisplayUnit] = QuestsRepository.shared.displayQuests
     @State var selectedQuest: DisplayUnit?
     
     var body: some View {
-        List {
-            Section(header: Text("Quests Explorer")) {
-                ForEach(items) { item in
-                    Text(item.title)
-                        .onTapGesture {
-                            selectedQuest = item
+        ZStack{
+            List {
+                Section(header: Text("Quests Explorer")) {
+                    ForEach(viewModel.items) { item in
+                        VStack{
+                            Text(item.displayUnit.parent?.title ?? "")
                         }
+                        .onTapGesture {
+                            selectedQuest = item.displayUnit
+                        }
+                    }
                 }
             }
-        }
+            
+            if viewModel.isLoading {
+                Color.black.opacity(0.3)
+                    .edgesIgnoringSafeArea(.all)
+                LoadingView()
+            }}
         .sheet(item: $selectedQuest) { selectedQuest in
             if #available(iOS 16.0, *) {
                 selectedQuest.parent?.form.presentationDetents(getSheetSize(sheetSize: selectedQuest.sheetSize ?? .MEDIUM))

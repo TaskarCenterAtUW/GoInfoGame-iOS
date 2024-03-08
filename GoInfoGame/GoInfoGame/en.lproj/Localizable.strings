@@ -98,4 +98,24 @@
 "quest_crossing_type_signals_controlled" = "Controlled by traffic lights";
 "quest_crossing_type_marked" = "Marked";
 "quest_crossing_type_unmarked" = "Without road markings";
+//Quest titles
+"quest_sidewalk_width" = "Determine sidewalk widths";
+"quest_handrail" = "Specify whether steps have handrails";
+"quest_steps_ramp" = "Specify whether steps have a ramp";
+"quest_way_steps" = "Specify which way leads up for steps";
+"quest_tactile_paving_steps" = "Survey tactile paving on steps";
+"quest_number_stairs" = "Determine number of stairs";
+"quest_way_lit" = "Specify whether ways are lit";
+"quest_bustop_lit" = "Specify whether bus stop is lit";
+"quest_crossing_unmarked" = "Specify whether crossing is marked or unmarked and what the marking references are";
+"quest_sidewalk_surface" = "Specify surface type of sidewalk";
+"quest_sidewalk_exists" = "Specify whether this sidewalk actually exists.";
+"quest_kerb_tactile_paving" = "Specify whether kerbs have tactile paving";
+"quest_crossing_intersections";
+"quest_crossing_island" = "Specify whether pedestrian crossings have islands";
+"quest_crossing_types" = "Specify crossing types";
+"quest_crosswalk_tactile_paving" = "Specify whether crosswalks have tactile paving";
+"quest_crossing_kerb_height" = "Determine the heights of kerbs at crossings";
+"quest_kerb_height" = "Determine the heights of kerbs";
+
 
