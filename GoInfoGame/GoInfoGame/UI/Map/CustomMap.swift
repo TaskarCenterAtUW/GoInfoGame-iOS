@@ -138,6 +138,8 @@ struct CustomMap: UIViewRepresentable {
     
     // Helper method to manage annotations
     private func manageAnnotations(_ mapView: MKMapView, context: Context) {
+        /// to reset isRegionSet value whenever region changes.
+        context.coordinator.isRegionSet = false
         /// Extracting coordinates of existing annotations
         let existingCoordinates = Set(mapView.annotations.compactMap { ($0 as? DisplayUnitAnnotation)?.coordinate })
         let newAnnotations = items.map { $0.annotation }
@@ -164,7 +166,8 @@ struct CustomMap: UIViewRepresentable {
     
     // calculate distance between user current location and selected annotation
         func calculateDistance(selectedAnnotation: CLLocationCoordinate2D) -> CLLocationDistance {
-            let userCurrentLocation = locationManagerDelegate.locationManager.location!.coordinate
+            guard let userCurrentLocation = locationManagerDelegate.locationManager.location?.coordinate else { return CLLocationDistance(0) }
+        
             let fromLocation = CLLocation(latitude: userCurrentLocation.latitude, longitude: userCurrentLocation.longitude)
             let toLocation = CLLocation(latitude: selectedAnnotation.latitude, longitude: selectedAnnotation.longitude)
             return CLLocationDistance(Int(fromLocation.distance(from: toLocation)))
@@ -172,7 +175,7 @@ struct CustomMap: UIViewRepresentable {
     
     // infer direction
     func inferDirection(selectedAnnotation: CLLocationCoordinate2D) -> String {
-        let userCurrentLocation = locationManagerDelegate.locationManager.location!.coordinate
+        guard let userCurrentLocation = locationManagerDelegate.locationManager.location?.coordinate else { return "undetermined" }
         let userLocationPoint = MKMapPoint(userCurrentLocation)
         let destinationPoint = MKMapPoint(selectedAnnotation)
         let angleRadians = atan2(destinationPoint.y - userLocationPoint.y, destinationPoint.x - userLocationPoint.x)
