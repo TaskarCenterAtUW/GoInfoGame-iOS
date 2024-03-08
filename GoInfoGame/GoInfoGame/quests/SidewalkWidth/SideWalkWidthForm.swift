@@ -54,7 +54,7 @@ struct SideWalkWidthForm: View, QuestForm {
         }.padding()
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .alert(isPresented: $isConfirmAlert) {
-                if !(feet >= 4 && feet <= 8) {
+                if !(feet >= 1 && feet <= 12) {
                     return Alert(
                         title: Text(LocalizedStrings.questGenericConfirmationTitle.localized),
                         message: Text(LocalizedStrings.questRoadWidthUnusualInputConfirmation.localized),
