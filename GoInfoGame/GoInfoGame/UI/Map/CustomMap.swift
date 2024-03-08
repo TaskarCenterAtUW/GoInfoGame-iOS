@@ -81,14 +81,18 @@ struct CustomMap: UIViewRepresentable {
             if let selectedQuest = annotation as? DisplayUnitAnnotation {
                 parent.selectedQuest = selectedQuest.displayUnit
                 parent.isPresented = true
-                
-                let distance = parent.calculateDistance(selectedAnnotation: selectedQuest.coordinate)
+                var contextualString = ""
+                let distance = Int(parent.calculateDistance(selectedAnnotation: selectedQuest.coordinate))
                 let direction = parent.inferDirection(selectedAnnotation: selectedQuest.coordinate)
                 
                 let annotationLocation = CLLocation(latitude: selectedQuest.coordinate.latitude, longitude: selectedQuest.coordinate.longitude)
                 parent.inferStreetName(location: annotationLocation) { streetName in
                     if let streetName = streetName {
-                        let contextualString = "The \(selectedQuest.title!) is on \(streetName) at \(distance) meters \(direction) of you"
+                        if let sidewalk =  self.parent.selectedQuest?.parent as? SideWalkWidth {
+                            contextualString = "The Sidewalk is along \(streetName == "" ? "the street" : streetName) at \(distance) meters \(direction) of you"
+                        } else {
+                            contextualString = "The \(selectedQuest.title!) is on \(streetName == "" ? "the street" : streetName) at \(distance) meters \(direction) of you"
+                        }
                         self.contextualInfo?(contextualString)
                     } 
                 }

@@ -54,14 +54,26 @@ struct SideWalkWidthForm: View, QuestForm {
         }.padding()
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .alert(isPresented: $isConfirmAlert) {
-                Alert(
-                    title: Text(LocalizedStrings.questGenericConfirmationTitle.localized),
-                    message: Text(LocalizedStrings.questRoadWidthUnusualInputConfirmation.localized),
-                    primaryButton: .default(Text(LocalizedStrings.questGenericConfirmationYes.localized)) {
-                        processAnswer()
-                    },
-                    secondaryButton: .default(Text(LocalizedStrings.questGenericConfirmationNo.localized))
-                )
+                if !(feet >= 1 && feet <= 12) {
+                    return Alert(
+                        title: Text(LocalizedStrings.questGenericConfirmationTitle.localized),
+                        message: Text(LocalizedStrings.questRoadWidthUnusualInputConfirmation.localized),
+                        primaryButton: .default(Text(LocalizedStrings.questGenericConfirmationYes.localized)) {
+                            processAnswer()
+                        },
+                        secondaryButton: .default(Text(LocalizedStrings.questGenericConfirmationNo.localized))
+                    )
+                } else {
+                    return Alert(
+                        title: Text(LocalizedStrings.questSourceDialogTitle.localized),
+                        message: Text(LocalizedStrings.questSourceDialogNote.localized),
+                        primaryButton: .default(Text(LocalizedStrings.questGenericConfirmationYes.localized)) {
+                            processAnswer()
+                        },
+                        secondaryButton: .default(Text(LocalizedStrings.undoConfirmNegative.localized))
+                    )
+                }
+                
             }
     }
     
