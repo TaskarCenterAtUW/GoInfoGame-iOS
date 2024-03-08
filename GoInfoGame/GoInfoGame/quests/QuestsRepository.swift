@@ -55,8 +55,30 @@ class QuestsRepository {
         }
 }
 // Probably move somewhere else
+class DisplayUnitAnnotation: NSObject, MKAnnotation {
+    let displayUnit: DisplayUnit
+    let coordinate: CLLocationCoordinate2D
+
+    var title: String? {
+        return displayUnit.title
+    }
+
+    var subtitle: String? {
+        return displayUnit.description
+    }
+
+    init(displayUnit: DisplayUnit, coordinate: CLLocationCoordinate2D) {
+        self.displayUnit = displayUnit
+        self.coordinate = coordinate
+    }
+}
+
 struct DisplayUnitWithCoordinate: Identifiable {
     let displayUnit: DisplayUnit
     let coordinateInfo: CLLocationCoordinate2D
     let id: Int64
+
+    var annotation: DisplayUnitAnnotation {
+        return DisplayUnitAnnotation(displayUnit: displayUnit, coordinate: coordinateInfo)
+    }
 }
