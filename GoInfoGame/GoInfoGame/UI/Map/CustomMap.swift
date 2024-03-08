@@ -144,6 +144,8 @@ struct CustomMap: UIViewRepresentable {
         let newCoordinates = Set(newAnnotations.map { $0.coordinate })
         /// Checking if the coordinates of existing annotations are different from the coordinates of new annotations
         if existingCoordinates != newCoordinates {
+            /// to reset isRegionSet value whenever region changes.
+                context.coordinator.isRegionSet = false
             /// Removing annotations that are not present in the new set
             let annotationsToRemove = mapView.annotations.filter {
                 guard let displayUnitAnnotation = $0 as? DisplayUnitAnnotation else { return false }
