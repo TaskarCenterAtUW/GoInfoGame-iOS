@@ -25,7 +25,7 @@ struct MapView: View {
                           selectedQuest: $viewModel.selectedQuest,
                       isPresented: $isPresented, contextualInfo: { contextualInfo in
                 print(contextualInfo)
-                self.setSubTitleForSideWalk()
+                self.setSubTitleForSideWalk(subTitle: contextualInfo)
             })
                 .edgesIgnoringSafeArea(.all)
             
@@ -48,9 +48,9 @@ struct MapView: View {
         }
     }
     
-    private func setSubTitleForSideWalk() {
+    private func setSubTitleForSideWalk(subTitle: String) {
         if let sidewalk =  self.viewModel.selectedQuest?.parent as? SideWalkWidth {
-            sidewalk.subTitle = "This is side walk subTitle"
+            sidewalk.subTitle = subTitle
         }
     }
 
