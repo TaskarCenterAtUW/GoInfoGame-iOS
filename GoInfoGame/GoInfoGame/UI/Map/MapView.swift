@@ -12,7 +12,6 @@ import Combine
 
 struct MapView: View {
     @State var trackingMode: MapUserTrackingMode = MapUserTrackingMode.none
-    @StateObject var locationManagerDelegate = LocationManagerDelegate()
     @Environment(\.presentationMode) private var presentationMode
     @AppStorage("isMapFromOnboarding") var isMapFromOnboarding: Bool = false
     @StateObject private var viewModel = MapViewModel()
@@ -24,7 +23,9 @@ struct MapView: View {
                           trackingMode: $trackingMode,
                           items: viewModel.items,
                           selectedQuest: $viewModel.selectedQuest,
-                          isPresented: $isPresented)
+                      isPresented: $isPresented, contextualInfo: { contextualInfo in
+                print(contextualInfo)
+            })
                 .edgesIgnoringSafeArea(.all)
             
             if viewModel.isLoading {

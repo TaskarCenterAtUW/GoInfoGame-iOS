@@ -8,6 +8,7 @@
 import Foundation
 import SwiftUI
 import MapKit
+import CoreLocation
 
 // Custom Map for managing map interactions between SwiftUI and UIKit components
 struct CustomMap: UIViewRepresentable {
@@ -17,6 +18,9 @@ struct CustomMap: UIViewRepresentable {
     var items: [DisplayUnitWithCoordinate]
     @Binding var selectedQuest: DisplayUnit?
     @Binding var isPresented: Bool
+    @StateObject var locationManagerDelegate = LocationManagerDelegate()
+    
+    var contextualInfo: ((String) -> Void)?
     
     // Creates and configures the UIView
     func makeUIView(context: Context) -> MKMapView {
@@ -47,8 +51,11 @@ struct CustomMap: UIViewRepresentable {
     class Coordinator: NSObject, MKMapViewDelegate {
         var parent: CustomMap
         var isRegionSet = false // boolean flag to track if region has been set
+        var contextualInfo: ((String) -> Void)?
+        
         init(_ parent: CustomMap) {
             self.parent = parent
+            self.contextualInfo = parent.contextualInfo
         }
         
         // Customizes the view for each annotation
@@ -74,6 +81,17 @@ struct CustomMap: UIViewRepresentable {
             if let selectedQuest = annotation as? DisplayUnitAnnotation {
                 parent.selectedQuest = selectedQuest.displayUnit
                 parent.isPresented = true
+                
+                let distance = parent.calculateDistance(selectedAnnotation: selectedQuest.coordinate)
+                let direction = parent.inferDirection(selectedAnnotation: selectedQuest.coordinate)
+                
+                let annotationLocation = CLLocation(latitude: selectedQuest.coordinate.latitude, longitude: selectedQuest.coordinate.longitude)
+                parent.inferStreetName(location: annotationLocation) { streetName in
+                    if let streetName = streetName {
+                        let contextualString = "The \(selectedQuest.title!) is on \(streetName) at \(distance) meters \(direction) of you"
+                        self.contextualInfo?(contextualString)
+                    } 
+                }
             }
             // Deselect the annotation to prevent re-adding on selection
             mapView.deselectAnnotation(annotation, animated: false)
@@ -144,6 +162,70 @@ struct CustomMap: UIViewRepresentable {
         }
     }
     
+    // calculate distance between user current location and selected annotation
+        func calculateDistance(selectedAnnotation: CLLocationCoordinate2D) -> CLLocationDistance {
+            let userCurrentLocation = locationManagerDelegate.locationManager.location!.coordinate
+            let fromLocation = CLLocation(latitude: userCurrentLocation.latitude, longitude: userCurrentLocation.longitude)
+            let toLocation = CLLocation(latitude: selectedAnnotation.latitude, longitude: selectedAnnotation.longitude)
+            return CLLocationDistance(Int(fromLocation.distance(from: toLocation)))
+        }
+    
+    // infer direction
+    func inferDirection(selectedAnnotation: CLLocationCoordinate2D) -> String {
+        let userCurrentLocation = locationManagerDelegate.locationManager.location!.coordinate
+        let userLocationPoint = MKMapPoint(userCurrentLocation)
+        let destinationPoint = MKMapPoint(selectedAnnotation)
+        let angleRadians = atan2(destinationPoint.y - userLocationPoint.y, destinationPoint.x - userLocationPoint.x)
+        var angleDegrees = angleRadians * 180 / .pi
+        angleDegrees += 90
+        
+        if angleDegrees < 0 {
+            angleDegrees += 360
+        } else if angleDegrees >= 360 {
+            angleDegrees -= 360
+        }
+        
+        angleDegrees = (angleDegrees * 10).rounded() / 10
+        
+        var direction = ""
+                
+        // Convert angle into relative direction
+           if angleDegrees >= 337.5 || angleDegrees < 22.5 {
+               direction = "ahead"
+           } else if angleDegrees >= 22.5 && angleDegrees < 112.5 {
+               direction = "right"
+           } else if angleDegrees >= 112.5 && angleDegrees < 202.5 {
+               direction = "behind"
+           } else if angleDegrees >= 202.5 && angleDegrees < 292.5 {
+               direction = "left"
+           } else {
+               direction = "right"
+           }
+        
+        return direction
+    }
+    
+    // infer street name from user location coordinates
+    func inferStreetName(location: CLLocation,completion: @escaping (String?) -> Void) {
+        
+        let geocoder = CLGeocoder()
+        geocoder.reverseGeocodeLocation(location) { placemarks, error in
+            guard let placemark = placemarks?.first else {
+                completion("")
+                return
+            }
+            var addressComponents: [String] = []
+            if let streetNumber = placemark.subThoroughfare {
+                addressComponents.append(streetNumber)
+            }
+            if let streetName = placemark.thoroughfare {
+                addressComponents.append(streetName)
+            }
+            
+            let address = addressComponents.joined(separator: ", ")
+            completion(address)
+        }
+    }
 }
 
 // Extension to convert MapUserTrackingMode to MKUserTrackingMode
