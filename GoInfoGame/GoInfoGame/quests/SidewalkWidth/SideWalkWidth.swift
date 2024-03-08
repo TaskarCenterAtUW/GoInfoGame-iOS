@@ -14,7 +14,7 @@ class SideWalkWidth : QuestBase, Quest {
     typealias AnswerClass = WidthAnswer
     var _internalExpression: ElementFilterExpression?
     var relationData: Element? = nil
-    var title: String = "Side Walk Width"
+    var title: String = " Quest is Side Walk Width"
     var filter: String = """
                         ways with
                         ( highway = footway

@@ -23,7 +23,7 @@ struct WidthView: View {
         if unit == .feetInch {
             VStack {
                 HStack {
-                    TextField("Feet", text: Binding(
+                    TextField("Feet",text: Binding(
                         get: { "\(self.feet)" },
                         set: {
                             if let value = NumberFormatter().number(from: $0) {
@@ -34,6 +34,8 @@ struct WidthView: View {
                             validateInput()
                         }
                     ))
+                    .accessibilityLabel(Text("Enter in Feet"))
+                    .accessibilityHint(Text("Tap to input measurements in feet in the text field."))
                     .frame(width: 20)
                     .padding(.horizontal)
                     .overlay(Rectangle().frame(height: 1).padding(.top, 25).foregroundColor(.orange), alignment: .bottom)
@@ -53,6 +55,8 @@ struct WidthView: View {
                             validateInput()
                         }
                     ))
+                    .accessibilityLabel(Text("Enter in Inches"))
+                    .accessibilityHint(Text("Tap to input measurements in inches in the text field."))
                     .frame(width: 20)
                     .padding(.horizontal)
                     .overlay(Rectangle().frame(height: 1).padding(.top, 25).foregroundColor(.orange), alignment: .bottom)
