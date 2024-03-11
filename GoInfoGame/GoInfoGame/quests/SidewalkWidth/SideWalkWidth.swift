@@ -25,7 +25,7 @@ class SideWalkWidth : QuestBase, Quest {
     var wikiLink: String = ""
     var changesetComment: String = ""
     var displayUnit: DisplayUnit {
-        DisplayUnit(title: self.title, description: "",parent: self, sheetSize: .MEDIUM)
+        DisplayUnit(title: self.title, description: LocalizedStrings.questSidewalkWidth.localized,parent: self, sheetSize: .MEDIUM)
     }
     var filterExpression: ElementFilterExpression? {
         if(_internalExpression != nil){

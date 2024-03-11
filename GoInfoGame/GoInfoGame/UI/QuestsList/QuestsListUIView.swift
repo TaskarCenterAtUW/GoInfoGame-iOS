@@ -18,7 +18,7 @@ struct QuestsListUIView : View {
                 Section(header: Text("Quests Explorer")) {
                     ForEach(viewModel.items) { item in
                         VStack{
-                            Text(item.displayUnit.parent?.title ?? "")
+                            Text(item.displayUnit.description )
                         }
                         .onTapGesture {
                             selectedQuest = item.displayUnit

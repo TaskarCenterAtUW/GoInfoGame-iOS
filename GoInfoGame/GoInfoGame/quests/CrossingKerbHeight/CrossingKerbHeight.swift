@@ -39,7 +39,7 @@ class CrossingKerbHeight: QuestBase, Quest {
         }
     }
     var displayUnit: DisplayUnit {
-        DisplayUnit(title: self.title, description: "",parent: self,sheetSize:.XLARGE )
+        DisplayUnit(title: self.title, description: LocalizedStrings.questCrossingKerbHeight.localized,parent: self,sheetSize:.XLARGE )
     }
     typealias AnswerClass = CrossingKerbHeightAnswer
     override init() {

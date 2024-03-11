@@ -88,7 +88,7 @@ struct CustomMap: UIViewRepresentable {
                 let annotationLocation = CLLocation(latitude: selectedQuest.coordinate.latitude, longitude: selectedQuest.coordinate.longitude)
                 parent.inferStreetName(location: annotationLocation) { streetName in
                     if let streetName = streetName {
-                        if let sidewalk =  self.parent.selectedQuest?.parent as? SideWalkWidth {
+                        if self.parent.selectedQuest?.parent is SideWalkWidth {
                             contextualString = "The Sidewalk is along \(streetName == "" ? "the street" : streetName) at \(distance) meters \(direction) of you"
                         } else {
                             contextualString = "The \(selectedQuest.title!) is on \(streetName == "" ? "the street" : streetName) at \(distance) meters \(direction) of you"

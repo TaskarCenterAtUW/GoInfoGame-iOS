@@ -27,7 +27,7 @@ class StepsIncline: QuestBase, Quest {
          and !incline
     """
     var displayUnit: DisplayUnit {
-        DisplayUnit(title: self.title, description: "",parent: self, sheetSize: .MEDIUM)
+        DisplayUnit(title: self.title, description: LocalizedStrings.questIncline.localized,parent: self, sheetSize: .MEDIUM)
     }
     var filterExpression: ElementFilterExpression? {
         if(_internalExpression != nil){

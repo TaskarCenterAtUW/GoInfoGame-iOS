@@ -18,7 +18,7 @@ class SideWalkValidation: QuestBase, Quest {
     var changesetComment: String = ""
     var relationData: Element? = nil
     var displayUnit: DisplayUnit {
-        DisplayUnit(title: self.title, description: "",parent: self,sheetSize:.LARGE )
+        DisplayUnit(title: self.title, description: LocalizedStrings.questSidewalkExists.localized,parent: self,sheetSize:.LARGE )
     }
     var form: AnyView {
         get{

@@ -117,5 +117,6 @@
 "quest_crosswalk_tactile_paving" = "Specify whether crosswalks have tactile paving";
 "quest_crossing_kerb_height" = "Determine the heights of kerbs at crossings";
 "quest_kerb_height" = "Determine the heights of kerbs";
-
+"quest_steps_incline" = "Specify which way leads up for steps";
+"quest_stairs" = "Determine number of stairs";
 

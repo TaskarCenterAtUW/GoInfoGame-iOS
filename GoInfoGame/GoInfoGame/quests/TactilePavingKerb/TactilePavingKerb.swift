@@ -25,7 +25,7 @@ class TactilePavingKerb :Quest {
     var changesetComment: String = ""
     var form: AnyView = AnyView(TactilePavingKerbForm())
     var displayUnit: DisplayUnit {
-        DisplayUnit(title: self.title, description: "",parent: self,sheetSize:.MEDIUM )
+        DisplayUnit(title: self.title, description: LocalizedStrings.questKerbTactilePaving.localized,parent: self,sheetSize:.MEDIUM )
     }
     func onAnswer(answer: Bool) {
     }

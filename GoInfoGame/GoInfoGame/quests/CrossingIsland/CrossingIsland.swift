@@ -20,7 +20,7 @@ class CrossingIsland: QuestBase, Quest {
     var title: String = "Crossing Island"
     var filter: String = ""
     var displayUnit: DisplayUnit {
-        DisplayUnit(title: self.title, description: "",parent: self,sheetSize:.SMALL )
+        DisplayUnit(title: self.title, description: LocalizedStrings.questCrossingIsland.localized,parent: self,sheetSize:.SMALL )
     }
     var filterExpression: ElementFilterExpression? {
         if(_internalExpression != nil){

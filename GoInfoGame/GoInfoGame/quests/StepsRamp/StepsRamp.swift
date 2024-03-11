@@ -32,7 +32,7 @@ class StepsRamp: QuestBase, Quest {
              )
     """
     var displayUnit: DisplayUnit {
-        DisplayUnit(title: self.title, description: "",parent: self,sheetSize:.LARGE )
+        DisplayUnit(title: self.title, description: LocalizedStrings.questStepsRamp.localized,parent: self,sheetSize:.LARGE )
     }
     var filterExpression: ElementFilterExpression? {
         if(_internalExpression != nil){

@@ -26,7 +26,7 @@ class TactilePavingCrosswalk :QuestBase, Quest {
     var changesetComment: String = ""
     var relationData: Element? = nil
     var displayUnit: DisplayUnit {
-        DisplayUnit(title: self.title, description: "",parent: self,sheetSize:.MEDIUM )
+        DisplayUnit(title: self.title, description: LocalizedStrings.questCrosswalkTactilePaving.localized,parent: self,sheetSize:.MEDIUM )
     }
     typealias AnswerClass = YesNoAnswer
     

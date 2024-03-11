@@ -25,7 +25,7 @@ class StairNumber: QuestBase, Quest {
         }
     }
     var displayUnit: DisplayUnit {
-        DisplayUnit(title: self.title, description: "",parent: self,sheetSize:.MEDIUM )
+        DisplayUnit(title: self.title, description: LocalizedStrings.questStairs.localized,parent: self,sheetSize:.MEDIUM )
     }
     var filterExpression: ElementFilterExpression? {
         if(_internalExpression != nil){

@@ -35,7 +35,7 @@ class HandRail: QuestBase,Quest {
         }
     }
     var displayUnit: DisplayUnit {
-        DisplayUnit(title: self.title, description: "",parent: self,sheetSize: .SMALL)
+        DisplayUnit(title: self.title, description: LocalizedStrings.questHandrail.localized,parent: self,sheetSize: .SMALL)
     }
     var filterExpression: ElementFilterExpression? {
         if(_internalExpression != nil){
