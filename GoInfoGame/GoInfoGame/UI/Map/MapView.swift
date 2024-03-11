@@ -23,7 +23,7 @@ struct MapView: View {
                           trackingMode: $trackingMode,
                           items: viewModel.items,
                           selectedQuest: $viewModel.selectedQuest,
-                      isPresented: $isPresented, contextualInfo: { contextualInfo in
+                      isPresented: $isPresented, mapViewModel: viewModel, contextualInfo: { contextualInfo in
                 print(contextualInfo)
                 self.setSubTitleForSideWalk(subTitle: contextualInfo)
             })
