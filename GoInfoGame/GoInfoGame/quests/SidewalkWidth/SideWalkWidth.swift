@@ -14,7 +14,7 @@ class SideWalkWidth : QuestBase, Quest {
     typealias AnswerClass = WidthAnswer
     var _internalExpression: ElementFilterExpression?
     var relationData: Element? = nil
-    var title: String = "Determine sidewalk widths"
+    var title: String = " Quest is Side Walk Width"
     var filter: String = """
                         ways with
                         ( highway = footway
@@ -38,6 +38,13 @@ class SideWalkWidth : QuestBase, Quest {
     var form: AnyView {
         get{
             return AnyView(self.internalForm as! SideWalkWidthForm)
+        }
+    }
+     var subTitle: String = "" {
+        didSet {
+            if let sidwalk = self.internalForm as? SideWalkWidthForm {
+                sidwalk.viewModel.subTitle = self.subTitle
+            }
         }
     }
     

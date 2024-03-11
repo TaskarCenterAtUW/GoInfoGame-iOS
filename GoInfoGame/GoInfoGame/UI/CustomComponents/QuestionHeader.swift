@@ -34,6 +34,9 @@ struct QuestionHeader: View {
                 .font(.subheadline)
                 .foregroundColor(.gray)
                 .padding(.top,2)
+                .multilineTextAlignment(.leading)
+                .lineLimit(nil)
+                .fixedSize(horizontal: false, vertical: true)
         }
     }
 }

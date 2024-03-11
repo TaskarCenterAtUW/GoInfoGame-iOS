@@ -6,12 +6,12 @@
   
 */
 "quest_width_most_narrow_path" = "What is the width of the most narrow usable path along this footpath? (measure with your phone please)";
-"quest_determine_sidewalk_widths" = "Determine sidewalk widths";
-"quest_road_width_explanation" = "The roadway width from curb to curb: This includes anything on the street surface, including on-street parking or bicycle lanes but excluding anything beyond the curb like sidewalks, off-street parking or adjacent bicycle paths.";
+"quest_determine_sidewalk_widths" = "Determine Sidewalk Width";
+"quest_road_width_explanation" = "Roadway width from curb to curb includes on-street parking and bicycle lanes but excludes sidewalks, off-street parking, or adjacent bicycle paths.";
 "other_answers" = "OTHER ANSWERS...";
 "questions_list" = "Questions List";
 "quest_generic_confirmation_title" = "Are you sure?";
-"quest_road_width_unusualInput_confirmation_description" = "This width looks implausible. Remember, this should be the width from curb to curb, including on-street parking, bicycle lanes etc.";
+"quest_road_width_unusualInput_confirmation_description" = "This width seems unlikely. Just remember, it should account for everything from one side of the road to the other, like parking spaces and bike lanes.";
 "quest_generic_confirmation_no" = "I WILL CHECK";
 "quest_specify_handrails" = "Specify whether steps have handrails";
 "quest_handrail_title" = "Do these steps have a handrail?";

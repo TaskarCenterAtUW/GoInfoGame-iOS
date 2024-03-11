@@ -17,7 +17,7 @@ class WayLit: QuestBase, Quest {
     var icon: UIImage = #imageLiteral(resourceName: "add_way_lit")
     var wikiLink: String = ""
     var changesetComment: String = ""
-    var title: String = "Way Lit"
+    var title: String = "Quest is Way Lit"
     private static let litResidentialRoads =  ["residential", "living_street", "pedestrian"]
     private static let litWays = ["footway", "cycleway", "steps"]
     private  static let litNonResidentialRoads = [

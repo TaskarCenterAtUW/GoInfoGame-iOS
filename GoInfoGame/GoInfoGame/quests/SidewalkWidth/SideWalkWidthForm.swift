@@ -9,6 +9,9 @@ import SwiftUI
 import UIKit
 import Combine
 
+class SideWalkWidthFormModel : ObservableObject {
+   @Published var subTitle: String = "Residential Road"
+}
 
 struct SideWalkWidthForm: View, QuestForm {
     typealias AnswerClass = WidthAnswer
@@ -17,13 +20,14 @@ struct SideWalkWidthForm: View, QuestForm {
     @State private var inches: Int = 0
     @State private var isConfirmAlert: Bool = false
     @State private var isKeyboardVisible: Bool = false // Track keyboard visibility
+    @ObservedObject var viewModel = SideWalkWidthFormModel()
     var action: ((WidthAnswer) -> Void)?
     
     var body: some View {
         VStack{
             QuestionHeader(icon: Image("sidewalk-width-img"),
                            title: LocalizedStrings.questDetermineSidewalkWidth.localized,
-                           subtitle: "Residential Road")
+                           subtitle: viewModel.subTitle)
             Text(LocalizedStrings.questRoadWithExplanation.localized).font(.caption)
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .fixedSize(horizontal: false, vertical: true)
@@ -50,14 +54,26 @@ struct SideWalkWidthForm: View, QuestForm {
         }.padding()
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .alert(isPresented: $isConfirmAlert) {
-                Alert(
-                    title: Text(LocalizedStrings.questGenericConfirmationTitle.localized),
-                    message: Text(LocalizedStrings.questRoadWidthUnusualInputConfirmation.localized),
-                    primaryButton: .default(Text(LocalizedStrings.questGenericConfirmationYes.localized)) {
-                        processAnswer()
-                    },
-                    secondaryButton: .default(Text(LocalizedStrings.questGenericConfirmationNo.localized))
-                )
+                if !(feet >= 1 && feet <= 12) {
+                    return Alert(
+                        title: Text(LocalizedStrings.questGenericConfirmationTitle.localized),
+                        message: Text(LocalizedStrings.questRoadWidthUnusualInputConfirmation.localized),
+                        primaryButton: .default(Text(LocalizedStrings.questGenericConfirmationYes.localized)) {
+                            processAnswer()
+                        },
+                        secondaryButton: .default(Text(LocalizedStrings.questGenericConfirmationNo.localized))
+                    )
+                } else {
+                    return Alert(
+                        title: Text(LocalizedStrings.questSourceDialogTitle.localized),
+                        message: Text(LocalizedStrings.questSourceDialogNote.localized),
+                        primaryButton: .default(Text(LocalizedStrings.questGenericConfirmationYes.localized)) {
+                            processAnswer()
+                        },
+                        secondaryButton: .default(Text(LocalizedStrings.undoConfirmNegative.localized))
+                    )
+                }
+                
             }
     }
     
