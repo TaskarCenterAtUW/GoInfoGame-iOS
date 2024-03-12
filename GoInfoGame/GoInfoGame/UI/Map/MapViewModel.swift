@@ -152,14 +152,10 @@ class MapViewModel: ObservableObject {
     }
     // Function to fetch data and update subheadings of items
     func fetchDataAndUpdateItems() {
-        for var item in items {
+        for var (index,item) in items.enumerated() {
             getSubheading(displayUnit: item) { subheading in
                 item.subheading = subheading
-                DispatchQueue.main.async {
-                    if let index = self.items.firstIndex(where: { $0.id == item.id }) {
-                        self.items[index] = item
-                    }
-                }
+                self.items[index] = item
             }
         }
     }
