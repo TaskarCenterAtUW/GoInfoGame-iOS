@@ -49,6 +49,7 @@ class MapViewModel: ObservableObject {
         AppQuestManager.shared.fetchData(fromBBOx: bBox) { [weak self] in
             guard let self = self else { return }
             self.items = AppQuestManager.shared.fetchQuestsFromDB()
+            fetchDataAndUpdateItems()
             self.isLoading = false
         }
     }
@@ -126,6 +127,40 @@ class MapViewModel: ObservableObject {
             
             let address = addressComponents.joined(separator: ", ")
             completion(address)
+        }
+    }
+    func getSubheading(displayUnit: DisplayUnitWithCoordinate, completion: @escaping (String) -> Void) {
+        var contextualString = ""
+        let distance = Int(calculateDistance(from: displayUnit.coordinateInfo))
+        let direction = inferDirection(to: displayUnit.coordinateInfo)
+
+        let annotationLocation = CLLocation(latitude: displayUnit.coordinateInfo.latitude, longitude: displayUnit.coordinateInfo.longitude)
+        
+        inferStreetName(from: annotationLocation) { streetName in
+            if let streetName = streetName {
+                if displayUnit.displayUnit.parent is SideWalkWidth {
+                    contextualString = "The Sidewalk is along \(streetName == "" ? "the street" : streetName) at \(distance) meters \(direction) of you"
+                } else {
+                    contextualString = "The \(displayUnit.displayUnit.title) is on \(streetName == "" ? "the street" : streetName) at \(distance) meters \(direction) of you"
+                }
+            } else {
+                contextualString = "Failed to infer street name"
+            }
+            
+            completion(contextualString)
+        }
+    }
+    // Function to fetch data and update subheadings of items
+    func fetchDataAndUpdateItems() {
+        for var item in items {
+            getSubheading(displayUnit: item) { subheading in
+                item.subheading = subheading
+                DispatchQueue.main.async {
+                    if let index = self.items.firstIndex(where: { $0.id == item.id }) {
+                        self.items[index] = item
+                    }
+                }
+            }
         }
     }
 }

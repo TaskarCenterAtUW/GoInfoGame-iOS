@@ -42,7 +42,7 @@ class QuestsRepository {
                 return DisplayUnitWithCoordinate(
                     displayUnit: quest.displayUnit,
                     coordinateInfo: randomCoordinate,
-                    id:Int64.random(in: 2...90000)
+                    id:Int64.random(in: 2...90000), subheading: ""
                 )
             }
     }
@@ -77,7 +77,7 @@ struct DisplayUnitWithCoordinate: Identifiable {
     let displayUnit: DisplayUnit
     let coordinateInfo: CLLocationCoordinate2D
     let id: Int64
-
+    var subheading : String
     var annotation: DisplayUnitAnnotation {
         return DisplayUnitAnnotation(displayUnit: displayUnit, coordinate: coordinateInfo)
     }

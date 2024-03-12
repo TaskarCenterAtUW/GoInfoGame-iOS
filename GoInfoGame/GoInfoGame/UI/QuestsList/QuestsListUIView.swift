@@ -9,19 +9,19 @@ import SwiftUI
 
 struct QuestsListUIView : View {
     @StateObject private var viewModel = MapViewModel()
-    //let items: [DisplayUnit] = QuestsRepository.shared.displayQuests
     @State var selectedQuest: DisplayUnit?
     
     var body: some View {
         ZStack{
             List {
                 Section(header: Text("Quests Explorer")) {
-                    ForEach(viewModel.items) { item in
-                        VStack{
-                            Text(item.displayUnit.description )
+                    ForEach(viewModel.items.indices, id: \.self) { index in
+                        VStack(alignment: .leading) {
+                            Text(viewModel.items[index].displayUnit.description).font(.subheadline)
+                            Text(viewModel.items[index].subheading).font(.caption2)
                         }
                         .onTapGesture {
-                            selectedQuest = item.displayUnit
+                            selectedQuest = viewModel.items[index].displayUnit
                         }
                     }
                 }
