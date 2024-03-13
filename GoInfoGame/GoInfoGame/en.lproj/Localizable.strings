@@ -105,7 +105,7 @@
 "quest_way_steps" = "Specify which way leads up for steps";
 "quest_tactile_paving_steps" = "Survey tactile paving on steps";
 "quest_number_stairs" = "Determine number of stairs";
-"quest_way_lit" = "Specify whether ways are lit";
+"quest_way_lit" = "Specify whether way is lit";
 "quest_bustop_lit" = "Specify whether bus stop is lit";
 "quest_crossing_unmarked" = "Specify whether crossing is marked or unmarked and what the marking references are";
 "quest_sidewalk_surface" = "Specify surface type of sidewalk";

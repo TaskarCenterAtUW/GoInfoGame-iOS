@@ -141,7 +141,7 @@ class MapViewModel: ObservableObject {
                 if displayUnit.displayUnit.parent is SideWalkWidth {
                     contextualString = "The Sidewalk is along \(streetName == "" ? "the street" : streetName) at \(distance) meters \(direction) of you"
                 } else {
-                    contextualString = "The \(displayUnit.displayUnit.title) is on \(streetName == "" ? "the street" : streetName) at \(distance) meters \(direction) of you"
+                    contextualString = "The \(self.getSubstringAfterQuestIs(displayUnit.displayUnit.title)) is on \(streetName == "" ? "the street" : streetName) at \(distance) meters \(direction) of you"
                 }
             } else {
                 contextualString = "Failed to infer street name"
@@ -159,5 +159,12 @@ class MapViewModel: ObservableObject {
             }
         }
     }
+    func getSubstringAfterQuestIs(_ string: String) -> String {
+            guard let range = string.range(of: "Quest is ") else {
+                return string
+            }
+            
+            return String(string[range.upperBound...])
+        }
 }
 
