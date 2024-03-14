@@ -22,6 +22,9 @@ struct QuestsListUIView : View {
                         }
                         .onTapGesture {
                             selectedQuest = viewModel.items[index].displayUnit
+                            if let sidewalk =  selectedQuest?.parent as? SideWalkWidth {
+                                sidewalk.subTitle = viewModel.items[index].subheading
+                            }
                         }
                     }
                 }
