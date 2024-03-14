@@ -134,7 +134,8 @@ struct CustomMap: UIViewRepresentable {
             if self.parent.isPresented  {
                 return
             } else if !isRegionSet {
-                mapView.setRegion(parent.region, animated: true)
+                mapView.setRegion(mapView.regionThatFits(MKCoordinateRegion(center: parent.locationManagerDelegate.location?.coordinate ?? CLLocationCoordinate2D(), span: MKCoordinateSpan(latitudeDelta: 0.05, longitudeDelta: 0.05))), animated: true)
+//                mapView.setRegion(parent.region, animated: true)
             }
         }
         

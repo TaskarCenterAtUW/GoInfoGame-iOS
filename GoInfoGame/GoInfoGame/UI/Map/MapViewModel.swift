@@ -29,6 +29,7 @@ class MapViewModel: ObservableObject {
         
         locationManagerDelegate.locationUpdateHandler = { [weak self] location in
             guard let self = self else { return }
+            self.region = MKCoordinateRegion(center: location.coordinate, span: MKCoordinateSpan(latitudeDelta: 0.0004 , longitudeDelta: 0.0004))
             fetchOSMDataFor(currentLocation: location)
         }
         
@@ -42,10 +43,10 @@ class MapViewModel: ObservableObject {
     func fetchOSMDataFor(currentLocation: CLLocation) {
         isLoading = true
         let bBox = boundingBoxAroundLocation(location: currentLocation, distance: dataSpanDistance)
-        self.region = MKCoordinateRegion(center: currentLocation.coordinate, span: MKCoordinateSpan(
-            latitudeDelta: viewSpanDelta,
-            longitudeDelta: viewSpanDelta
-        ))
+//        self.region = MKCoordinateRegion(center: currentLocation.coordinate, span: MKCoordinateSpan(
+//            latitudeDelta: viewSpanDelta,
+//            longitudeDelta: viewSpanDelta
+//        ))
         AppQuestManager.shared.fetchData(fromBBOx: bBox) { [weak self] in
             guard let self = self else { return }
             self.items = AppQuestManager.shared.fetchQuestsFromDB()
