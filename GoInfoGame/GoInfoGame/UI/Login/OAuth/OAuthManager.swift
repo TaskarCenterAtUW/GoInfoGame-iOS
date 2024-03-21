@@ -31,6 +31,7 @@ class OAuthManager: ObservableObject {
 
     func removeAuthorization() {
         oAuth.removeAuthorization()
+        isAuthorized = false
     }
 
     func requestAccessFromUser(withVC vc: UIViewController, onComplete callback: @escaping (Result<Void, Error>) -> Void) {
