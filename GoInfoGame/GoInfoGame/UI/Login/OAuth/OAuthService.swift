@@ -20,6 +20,7 @@ protocol OAuthService {
     func urlRequest(url: URL) -> URLRequest?
     func urlRequest(string: String) -> URLRequest?
     func getUserDetails(callback: @escaping ([String: Any]?) -> Void)
+    func fetchAccessTokenFor(authCode: String)
 }
 
 protocol OAuthCallbackDelegate: AnyObject {
@@ -137,6 +138,109 @@ class OAuth2: OAuthService, OAuthCallbackDelegate, OAuthURLProvider, AccessToken
         getAccessToken(for: code)
     }
     
+    func fetchAccessTokenFor(authCode:String) {
+            let postingJSON = [
+                "client_id": "oR9y-ytJ1O1OnM1hnPXc8WHjBwmephYdu3Az0a4rXNU",
+                "redirect_uri": "goinfogame://oauth/callback",
+                "code": "\(authCode)",
+                "grant_type": "authorization_code",
+                "client_secret": "eRY8q6sI5JDA3FU2iw5awIyXShuGUD6z2hL0YTNjfGg",
+            ]
+        
+            let postingBody  = query(postingJSON).data(using: .utf8, allowLossyConversion: false)
+            
+            let session = URLSession(configuration: URLSessionConfiguration.default, delegate: nil, delegateQueue: nil)
+            let url: String = "https://master.apis.dev.openstreetmap.org/oauth2/token"//?client_id=oR9y-ytJ1O1OnM1hnPXc8WHjBwmephYdu3Az0a4rXNU&redirect_uri=goinfogame://oauth/callback&code=\(code)&grant_type=authorization_code&client_secret=eRY8q6sI5JDA3FU2iw5awIyXShuGUD6z2hL0YTNjfGg" //"https://master.apis.dev.openstreetmap.org/oauth2/token"
+            let request: NSMutableURLRequest = NSMutableURLRequest()
+            request.url = NSURL(string: url) as URL?
+            request.httpMethod = "POST"
+            //add params to request
+            request.httpBody = postingBody
+            let dataTask = session.dataTask(with: request as URLRequest) { (data: Data?, response:URLResponse?, error: Error?) -> Void in
+                if((error) != nil) {
+                    print(error!.localizedDescription)
+                } else {
+                    print("Succes:")
+                    do {
+
+                        let parsedData = try JSONSerialization.jsonObject(with: data!, options: []) as! [String:Any]
+                        if let theAccessToken = parsedData["access_token"] as? String {
+                            let accessToken = theAccessToken
+                            print(accessToken)
+                            self.setAuthorizationToken(token: accessToken)
+                           // NotificationCenter.default.post(name: NSNotification.Name.AuthNotification.didLogin, object: theAccessToken)
+                        }
+                    } catch let error as NSError {
+                        print(error)
+                        
+                        
+                    }
+
+                }
+            }
+            dataTask.resume()
+
+        }
+    
+    
+    public func query(_ parameters: [String: String]) -> String {
+            var components: [(String, String)] = []
+
+            for key in parameters.keys.sorted(by: <) {
+                let value = parameters[key]!
+                components += [(key, escape(value))]//queryComponents(fromKey: key, value: value)
+            }
+
+            return components.map { "\($0)=\($1)" }.joined(separator: "&")
+        }
+
+        /// Function that uri encodes strings
+        ///
+        /// - Parameter string: un encoded uri query parameter
+        /// - Returns: encoded parameter
+        public func escape(_ string: String) -> String {
+            let generalDelimitersToEncode = ":#[]@" // does not include "?" or "/" due to RFC 3986 - Section 3.4
+            let subDelimitersToEncode = "!$&'()*+,;="
+
+            var allowedCharacterSet = CharacterSet.urlQueryAllowed
+            allowedCharacterSet.remove(charactersIn: "\(generalDelimitersToEncode)\(subDelimitersToEncode)")
+
+            var escaped = ""
+
+            //==========================================================================================================
+            //
+            //  Batching is required for escaping due to an internal bug in iOS 8.1 and 8.2. Encoding more than a few
+            //  hundred Chinese characters causes various malloc error crashes. To avoid this issue until iOS 8 is no
+            //  longer supported, batching MUST be used for encoding. This introduces roughly a 20% overhead. For more
+            //  info, please refer to:
+            //
+            //      - https://github.com/Alamofire/Alamofire/issues/206
+            //
+            //==========================================================================================================
+
+            if #available(iOS 8.3, *) {
+                escaped = string.addingPercentEncoding(withAllowedCharacters: allowedCharacterSet) ?? string
+            } else {
+                let batchSize = 50
+                var index = string.startIndex
+
+                while index != string.endIndex {
+                    let startIndex = index
+                    let endIndex = string.index(index, offsetBy: batchSize, limitedBy: string.endIndex) ?? string.endIndex
+                    let range = startIndex..<endIndex
+
+                    let substring = string.substring(with: range)
+
+                    escaped += substring.addingPercentEncoding(withAllowedCharacters: allowedCharacterSet) ?? substring
+
+                    index = endIndex
+                }
+            }
+
+            return escaped
+        }
+    
+    
     func urlRequest(url: URL) -> URLRequest? {
         guard let authorizationHeader = authorizationHeader else { return nil }
         var request = URLRequest(url: url)
@@ -228,6 +332,6 @@ class OAuth2: OAuthService, OAuthCallbackDelegate, OAuthURLProvider, AccessToken
     }
     
     func getAccessToken(for code: String) {
-        
+        fetchAccessTokenFor(authCode: code)
     }
 }
