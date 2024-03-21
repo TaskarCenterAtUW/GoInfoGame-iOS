@@ -2255,6 +2255,7 @@
 				DEVELOPMENT_TEAM = NPCMG529DV;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = GoInfoGame/Info.plist;
+				INFOPLIST_KEY_NSCameraUsageDescription = "This app requires to access your camera to measure width of sidewalk";
 				INFOPLIST_KEY_NSFileProviderDomainUsageDescription = "";
 				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "We need your location";
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "We need your location";
@@ -2291,6 +2292,7 @@
 				DEVELOPMENT_TEAM = NPCMG529DV;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = GoInfoGame/Info.plist;
+				INFOPLIST_KEY_NSCameraUsageDescription = "This app requires to access your camera to measure width of sidewalk";
 				INFOPLIST_KEY_NSFileProviderDomainUsageDescription = "";
 				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "We need your location";
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "We need your location";
