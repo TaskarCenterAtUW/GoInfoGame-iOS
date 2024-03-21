@@ -47,6 +47,15 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // to restore the scene back to its current state.
     }
 
+    func scene(_ scene: UIScene, openURLContexts URLContexts: Set<UIOpenURLContext>) {
+         print("Open contexts called")
+        // gaurd and get the first URL 
+        guard let url = URLContexts.first?.url else { return }
+
+        OAuthManager.shared.redirectHandler(url: url, options: [:])
+
+        
+    }
 
 }
 
