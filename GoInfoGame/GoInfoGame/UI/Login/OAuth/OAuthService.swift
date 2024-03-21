@@ -54,18 +54,18 @@ class OAuth2: OAuthService, OAuthCallbackDelegate, OAuthURLProvider, AccessToken
     
     private static let OAUTH_KEYCHAIN_IDENTIFIER = "OAuth_access_token"
     private static let redirect_uri = "goinfogame://oauth/callback"
-    private static let scope = "write_notes read_prefs write_api write_diary"
-    
+    private static let scope = "read_prefs write_prefs write_diary write_api write_notes write_redactions openid"
+      
     // MARK: - Properties
     
     private let servers: [OAuthServer] = [
         OAuthServer(authURL: "https://www.openstreetmap.org/",
                     apiURL: "https://api.openstreetmap.org/",
-                    client_id: "H9GQPRVvceXdxL8SRRCJUBer3-Hki-42B1ZbbbUHiTw"),
+                    client_id: "oR9y-ytJ1O1OnM1hnPXc8WHjBwmephYdu3Az0a4rXNU"),
         
         OAuthServer(authURL: "https://master.apis.dev.openstreetmap.org/",
                     apiURL: "https://api06.dev.openstreetmap.org/",
-                    client_id: "hYaqLb9aWCZd571O7SkBqX3TDr7rKVPIl_Pl7bmP1rM")
+                    client_id: "oR9y-ytJ1O1OnM1hnPXc8WHjBwmephYdu3Az0a4rXNU")
     ]
     
     private var safariVC: SFSafariViewController?
