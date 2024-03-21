@@ -9,22 +9,24 @@ import Foundation
 import SafariServices
 import UIKit
 
-class OAuthManager {
+class OAuthManager: ObservableObject {
 
     // MARK: - Properties
 
     static let shared = OAuthManager()
 
     private var oAuth: OAuthService = OAuth2()
-
+    
+    @Published var isAuthorized: Bool = false
+    
     // MARK: - Initialization
 
     private init() {}
 
     // MARK: - Public Methods
 
-    func isAuthorized() -> Bool {
-        return oAuth.isAuthorized()
+    func checkAuthorizationStatus() {
+        isAuthorized = oAuth.isAuthorized()
     }
 
     func removeAuthorization() {
