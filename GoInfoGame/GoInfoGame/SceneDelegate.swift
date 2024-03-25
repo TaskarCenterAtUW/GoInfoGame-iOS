@@ -52,7 +52,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // gaurd and get the first URL 
         guard let url = URLContexts.first?.url else { return }
 
-        OAuthManager.shared.redirectHandler(url: url, options: [:])
+        NotificationCenter.default.post(name: .init("HandleOAuthRedirect"), object: url)
 
         
     }
