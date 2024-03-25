@@ -12,6 +12,7 @@ class MapViewController: UIHostingController<MapView> {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.title = ""
 
         // Do any additional setup after loading the view.
         
@@ -37,7 +38,7 @@ class MapViewController: UIHostingController<MapView> {
     @objc func profileButtonTapped() {
          let profileView = ProfileView()
          let hostingController = UIHostingController(rootView: profileView)
-         present(hostingController, animated: true, completion: nil)
+        navigationController?.pushViewController(hostingController, animated: true)
      }
     
     @objc func widthDemoButtonTapped() {
