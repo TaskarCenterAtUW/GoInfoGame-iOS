@@ -9,49 +9,49 @@ import Foundation
 import SafariServices
 import UIKit
 
-class OAuthManager: ObservableObject {
-
-    // MARK: - Properties
-
-    static let shared = OAuthManager()
-
-    private var oAuth: OAuthService = OAuth2()
-    
-    @Published var isAuthorized: Bool = false
-    
-    // MARK: - Initialization
-
-    private init() {}
-
-    // MARK: - Public Methods
-
-    func checkAuthorizationStatus() {
-        isAuthorized = oAuth.isAuthorized()
-    }
-
-    func removeAuthorization() {
-        oAuth.removeAuthorization()
-        isAuthorized = false
-    }
-
-    func requestAccessFromUser(withVC vc: UIViewController, onComplete callback: @escaping (Result<Void, Error>) -> Void) {
-        oAuth.requestAccessFromUser(withVC: vc, onComplete: callback)
-    }
-
-    func redirectHandler(url: URL, options: [UIApplication.OpenURLOptionsKey: Any]) {
-        oAuth.redirectHandler(url: url, options: options)
-    }
-
-    func urlRequest(url: URL) -> URLRequest? {
-        return oAuth.urlRequest(url: url)
-    }
-
-    func urlRequest(string: String) -> URLRequest? {
-        return oAuth.urlRequest(string: string)
-    }
-
-    func getUserDetails(callback: @escaping ([String: Any]?) -> Void) {
-        oAuth.getUserDetails(callback: callback)
-    }
-}
-
+//class OAuthManager: ObservableObject {
+//
+//    // MARK: - Properties
+//
+//    static let shared = OAuthManager()
+//
+//    private var oAuth: OAuthService = OAuth2()
+//    
+//    @Published var isAuthorized: Bool = false
+//    
+//    // MARK: - Initialization
+//
+//    private init() {}
+//
+//    // MARK: - Public Methods
+//
+//    func checkAuthorizationStatus() {
+//        isAuthorized = oAuth.isAuthorized()
+//    }
+//
+//    func removeAuthorization() {
+//        oAuth.removeAuthorization()
+//        isAuthorized = false
+//    }
+//
+//    func requestAccessFromUser(withVC vc: UIViewController, onComplete callback: @escaping (Result<Void, Error>) -> Void) {
+//        oAuth.requestAccessFromUser(withVC: vc, onComplete: callback)
+//    }
+//
+//    func redirectHandler(url: URL, options: [UIApplication.OpenURLOptionsKey: Any]) {
+//        oAuth.redirectHandler(url: url, options: options)
+//    }
+//
+//    func urlRequest(url: URL) -> URLRequest? {
+//        return oAuth.urlRequest(url: url)
+//    }
+//
+//    func urlRequest(string: String) -> URLRequest? {
+//        return oAuth.urlRequest(string: string)
+//    }
+//
+//    func getUserDetails(callback: @escaping ([String: Any]?) -> Void) {
+//        oAuth.getUserDetails(callback: callback)
+//    }
+//}
+//
