@@ -15,6 +15,8 @@ public class OSMConnection {
     let baseUrl: String
     var currentChangesetId: Int? = 0
     let userCreds: OSMLogin
+    // AuthToken
+   public var accessToken: String? = nil
     // Lets see if we can start with some authentication or node
     
     /// Initializer for OSMConnection
@@ -37,6 +39,7 @@ public class OSMConnection {
             return
         }
         BaseNetworkManager.shared.addOrSetHeaders(header: "Authorization", value: "Basic \(self.userCreds.getHeaderData())")
+        // Bearer
         BaseNetworkManager.shared.fetchData(url: url, completion: completion) // Need to improve this one
     }
     /// Fetches a single way
@@ -185,6 +188,20 @@ public class OSMConnection {
             print("Invalid URL given")
             return
         }
+        BaseNetworkManager.shared.fetchData(url: url, completion: completion)
+    }
+    
+    /// Fetches the user details based on 'access token'
+    /// - parameter token: access token of the logged in user
+    /// - parameter completion : Completion handler with user data response
+    public func getUserDetailsWithToken(accessToken: String, _ completion:@escaping (Result<OSMUserDataResponse, Error>)-> Void) {
+        //TODO: Error for user id not found
+        let urlString =  self.baseUrl.appending("user/details.json")
+        guard let url = URL(string: urlString) else {
+            print("Invalid URL given")
+            return
+        }
+        BaseNetworkManager.shared.addOrSetHeaders(header: "Authorization", value: "Bearer \(accessToken)")
         BaseNetworkManager.shared.fetchData(url: url, completion: completion)
     }
     
