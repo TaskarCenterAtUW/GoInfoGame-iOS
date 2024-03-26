@@ -168,6 +168,7 @@
 		A4E711B02B59011000C9DE08 /* StepsInclineForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4E711AF2B59011000C9DE08 /* StepsInclineForm.swift */; };
 		B0CCB98C2B8626AE00AA73DE /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0CCB98B2B8626AE00AA73DE /* ProfileView.swift */; };
 		B0CCB98E2B8626C600AA73DE /* ProfileViewVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0CCB98D2B8626C600AA73DE /* ProfileViewVM.swift */; };
+		FA1992ED2BB1A78C003B4719 /* KeychainManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA1992EC2BB1A78C003B4719 /* KeychainManager.swift */; };
 		FA5853C12B21F17F00301CDA /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA5853C02B21F17F00301CDA /* OnboardingView.swift */; };
 		FA87A8102B68142F000A6BEA /* LoadingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA87A80F2B68142F000A6BEA /* LoadingView.swift */; };
 		FA87A8132B6AC019000A6BEA /* StepsRampTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA87A8112B6AC019000A6BEA /* StepsRampTests.swift */; };
@@ -175,6 +176,7 @@
 		FA87A8172B6AC885000A6BEA /* StepsInclineTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA87A8162B6AC885000A6BEA /* StepsInclineTests.swift */; };
 		FA87A8192B6B01A4000A6BEA /* HandRailTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA87A8182B6B01A4000A6BEA /* HandRailTests.swift */; };
 		FA87A81B2B6B042E000A6BEA /* SideWalkWidthTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA87A81A2B6B042E000A6BEA /* SideWalkWidthTests.swift */; };
+		FA9FE2D82BAC75390036F618 /* OAuthViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA9FE2D72BAC75390036F618 /* OAuthViewController.swift */; };
 		FABF3CF42B7419BB0080EAC9 /* LocationManagerDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = FABF3CF32B7419BB0080EAC9 /* LocationManagerDelegate.swift */; };
 		FABF3CF82B822F120080EAC9 /* CustomSureAlert.swift in Sources */ = {isa = PBXBuildFile; fileRef = FABF3CF72B822F120080EAC9 /* CustomSureAlert.swift */; };
 		FABF3CFD2B8607860080EAC9 /* MeasureWidthContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = FABF3CFC2B8607860080EAC9 /* MeasureWidthContainer.swift */; };
@@ -436,6 +438,7 @@
 		C96303080D26026265099E0E /* Pods-GoInfoGame.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-GoInfoGame.release.xcconfig"; path = "Target Support Files/Pods-GoInfoGame/Pods-GoInfoGame.release.xcconfig"; sourceTree = "<group>"; };
 		D76D8E22AC705A38AFEA78B1 /* Pods-GoInfoGame-GoInfoGameUITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-GoInfoGame-GoInfoGameUITests.debug.xcconfig"; path = "Target Support Files/Pods-GoInfoGame-GoInfoGameUITests/Pods-GoInfoGame-GoInfoGameUITests.debug.xcconfig"; sourceTree = "<group>"; };
 		F008D431593E568E75C48C84 /* Pods-GoInfoGame.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-GoInfoGame.debug.xcconfig"; path = "Target Support Files/Pods-GoInfoGame/Pods-GoInfoGame.debug.xcconfig"; sourceTree = "<group>"; };
+		FA1992EC2BB1A78C003B4719 /* KeychainManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeychainManager.swift; sourceTree = "<group>"; };
 		FA5853C02B21F17F00301CDA /* OnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingView.swift; sourceTree = "<group>"; };
 		FA87A80F2B68142F000A6BEA /* LoadingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingView.swift; sourceTree = "<group>"; };
 		FA87A8112B6AC019000A6BEA /* StepsRampTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StepsRampTests.swift; sourceTree = "<group>"; };
@@ -443,6 +446,7 @@
 		FA87A8162B6AC885000A6BEA /* StepsInclineTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StepsInclineTests.swift; sourceTree = "<group>"; };
 		FA87A8182B6B01A4000A6BEA /* HandRailTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HandRailTests.swift; sourceTree = "<group>"; };
 		FA87A81A2B6B042E000A6BEA /* SideWalkWidthTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SideWalkWidthTests.swift; sourceTree = "<group>"; };
+		FA9FE2D72BAC75390036F618 /* OAuthViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OAuthViewController.swift; sourceTree = "<group>"; };
 		FABF3CF32B7419BB0080EAC9 /* LocationManagerDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationManagerDelegate.swift; sourceTree = "<group>"; };
 		FABF3CF72B822F120080EAC9 /* CustomSureAlert.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomSureAlert.swift; sourceTree = "<group>"; };
 		FABF3CFC2B8607860080EAC9 /* MeasureWidthContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeasureWidthContainer.swift; sourceTree = "<group>"; };
@@ -552,6 +556,7 @@
 				0536DD912B0BD58800B04C4B /* OAuthService.swift */,
 				0536DD932B0BD59900B04C4B /* OAuthError.swift */,
 				0536DD982B0BDBFE00B04C4B /* OAuthManager.swift */,
+				FA9FE2D72BAC75390036F618 /* OAuthViewController.swift */,
 			);
 			path = OAuth;
 			sourceTree = "<group>";
@@ -1168,6 +1173,7 @@
 				FAC9E60E2B04F9C800E2C608 /* OverpassRequestManager.swift */,
 				FAC9E6102B06811300E2C608 /* LocationManager.swift */,
 				FABF3CF32B7419BB0080EAC9 /* LocationManagerDelegate.swift */,
+				FA1992EC2BB1A78C003B4719 /* KeychainManager.swift */,
 				05CB71DD2B0FAEC200DED821 /* UI */,
 				05CB71DE2B0FAFAA00DED821 /* Bridges */,
 				058EADD92B10E02E0017E259 /* DataBase */,
@@ -1747,6 +1753,8 @@
 				97439F7A2B87447400DA43E1 /* CrossingKerbHeight.swift in Sources */,
 				971F9FE12B847358005397CC /* CrossingIsland.swift in Sources */,
 				970D5BD12B62B61300C20BE7 /* MapViewController.swift in Sources */,
+				FA9FE2D82BAC75390036F618 /* OAuthViewController.swift in Sources */,
+				FA1992ED2BB1A78C003B4719 /* KeychainManager.swift in Sources */,
 				0536DD972B0BD95100B04C4B /* URLSession+Extension.swift in Sources */,
 				973FC04C2B5A5F5F00878269 /* RadioItem.swift in Sources */,
 				A495DF2D2B6A190400478E44 /* CustomMapView.swift in Sources */,
@@ -2255,6 +2263,7 @@
 				DEVELOPMENT_TEAM = NPCMG529DV;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = GoInfoGame/Info.plist;
+				INFOPLIST_KEY_NSCameraUsageDescription = "This app requires to access your camera to measure width of sidewalk";
 				INFOPLIST_KEY_NSFileProviderDomainUsageDescription = "";
 				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "We need your location";
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "We need your location";
@@ -2291,6 +2300,7 @@
 				DEVELOPMENT_TEAM = NPCMG529DV;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = GoInfoGame/Info.plist;
+				INFOPLIST_KEY_NSCameraUsageDescription = "This app requires to access your camera to measure width of sidewalk";
 				INFOPLIST_KEY_NSFileProviderDomainUsageDescription = "";
 				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "We need your location";
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "We need your location";

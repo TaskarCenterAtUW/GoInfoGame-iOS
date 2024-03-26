@@ -21,7 +21,7 @@ extension URLSession: NetworkRequest {
             } else if let data = data {
                 completion(.success(data))
             } else {
-                let unknownError = NSError(domain: "com.taskar.GoInfoGame", code: 0, userInfo: nil)
+                let unknownError = NSError(domain: "com.vindago.goinfogame", code: 0, userInfo: nil)
                 completion(.failure(unknownError))
             }
         }

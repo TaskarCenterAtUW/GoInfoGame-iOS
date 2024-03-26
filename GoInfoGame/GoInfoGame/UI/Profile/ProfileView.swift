@@ -7,44 +7,106 @@
 
 import Foundation
 import SwiftUI
+import osmapi
 
 struct ProfileView: View {
+    
+    @State private var isSafariViewControllerPresented = false
+    
+    @State var osmApiUrl: String?
+    
+    @State private var accessToken: String?
+   
+    var body: some View {
+        return NavigationView {
+            VStack {
+                if accessToken != nil {
+                    LoggedInView(isSafariViewControllerPresented: $isSafariViewControllerPresented, accessToken: $accessToken)
+                } else {
+                    LoginView(isSafariViewControllerPresented: $isSafariViewControllerPresented) { accessToken in
+                        self.accessToken = accessToken
+                    }
+                }
+            }
+            .onReceive(NotificationCenter.default.publisher(for: .init("HandleOAuthRedirect"))) { notification in
+                if let url = notification.object as? URL {
+                    
+                    // Handle the URL here and call the function in OAuthViewController
+                    OAuthViewController().getAccessTokenFor(url: url, completion: { accessToken in
+                        let osmConnection = OSMConnection()
+                        
+                        osmConnection.getUserDetailsWithToken(accessToken: accessToken) { result in
+                            switch result {
+                            case .success(let user):
+                                print(user)
+                                isSafariViewControllerPresented = false
+                                self.accessToken = accessToken
+                            case .failure(_):
+                                print("error")
+                            }
+                        }
+                    })
+                }
+            }
+            .onAppear {
+                if let token = KeychainManager.load(key: "accessToken") {
+                    accessToken = token
+                }
+            }
+        }
+        
+    }
+}
+
+#Preview {
+    ProfileView()
+}
+
+struct LoggedInView: View {
+    
     @ObservedObject private var viewModel = ProfileViewVM()
     @Environment(\.dismiss) var dismiss
     @Environment(\.openURL) var openURL
     
-    var body: some View {
-        return NavigationView {
-            VStack {
-                HStack {
-                    profileImage
-                    VStack (alignment: .leading,spacing: 0){
-                        Text(viewModel.user?.displayName ?? "")
-                            .font(.system(size: 20, weight: .semibold))
-                        HStack {
-                            Image(systemName: "star.fill")
-                                .resizable()
-                                .frame(width: 25, height: 25)
-                            Text("\(viewModel.user?.changesets.count ?? 0)")
-                                .font(.title)
-                        }
-                    }
-                    Spacer()
-                }
-                HStack {
-                    profileButton
-                    Spacer()
-                    logOutButton
-                }
-                Divider().padding()
-                Spacer()
-            }
-            .padding(20)
-            .navigationBarItems(leading: backButton)
-            .navigationBarTitleDisplayMode(.inline)
-            .navigationTitle("My Profile")
-        }
+    @Binding var isSafariViewControllerPresented: Bool
         
+   @Binding var accessToken: String?
+    
+    var body: some View {
+        Group {
+            if accessToken != nil {
+                VStack {
+                    HStack {
+                        profileImage
+                        VStack (alignment: .leading,spacing: 0){
+                            Text(viewModel.user?.displayName ?? "")
+                                .font(.system(size: 20, weight: .semibold))
+                            HStack {
+                                Image(systemName: "star.fill")
+                                    .resizable()
+                                    .frame(width: 25, height: 25)
+                                Text("\(viewModel.user?.changesets.count ?? 0)")
+                                    .font(.title)
+                            }
+                        }
+                        Spacer()
+                    }
+                    HStack {
+                        profileButton
+                        Spacer()
+                        logOutButton
+                    }
+                    Divider().padding()
+                    Spacer()
+                }
+                .padding(20)
+                .navigationBarTitleDisplayMode(.inline)
+            } else {
+                LoginView(isSafariViewControllerPresented: $isSafariViewControllerPresented) { token in
+                    accessToken = token
+                }
+            }
+        }
     }
     
     @ViewBuilder
@@ -90,7 +152,8 @@ struct ProfileView: View {
     
     private var logOutButton: some View {
         Button {
-            //LOGOUT
+            _ = KeychainManager.delete(key: "accessToken")
+            accessToken = nil
         } label: {
             Text("LOGOUT")
                 .foregroundColor(.black)
@@ -103,19 +166,36 @@ struct ProfileView: View {
                 }
         }
     }
-    
-    private var backButton: some View {
-        Button {
-            dismiss()
-        } label: {
-            Image(systemName: "arrow.left")
-                .font(.system(size: 24, weight: .semibold))
-                .foregroundColor(.black)
-                .cornerRadius(15)
-        }
-    }
 }
 
-#Preview {
-    ProfileView()
+struct LoginView: View {
+    
+    @Binding private var isSafariViewControllerPresented: Bool
+    var loginAction: (String) -> Void
+    
+    public init(isSafariViewControllerPresented: Binding<Bool>, loginAction: @escaping (String) -> Void) {
+           _isSafariViewControllerPresented = isSafariViewControllerPresented
+           self.loginAction = loginAction
+       }
+    
+    var body: some View {
+        VStack {
+            Button("LOGIN") {
+                self.isSafariViewControllerPresented = true
+            }
+            .foregroundColor(.white)
+            .font(.headline)
+            .padding()
+            .frame(width: UIScreen.main.bounds.width / 2)
+            .background(Color.blue)
+            .cornerRadius(10)
+            .sheet(isPresented: $isSafariViewControllerPresented) {
+                OAuthViewController()
+            }
+            .navigationBarHidden(true)
+            .padding()
+        }
+        
+    }
+    
 }
