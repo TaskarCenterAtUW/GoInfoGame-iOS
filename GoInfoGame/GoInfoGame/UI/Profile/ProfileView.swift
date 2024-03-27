@@ -76,6 +76,9 @@ struct LoggedInView: View {
         Group {
             if accessToken != nil {
                 VStack {
+                    Text("My Profile")
+                        .font(.title)
+                        
                     HStack {
                         profileImage
                         VStack (alignment: .leading,spacing: 0){
@@ -114,7 +117,7 @@ struct LoggedInView: View {
         if self.viewModel.imageUrl == nil {
             Image(systemName: "person.circle.fill")
                 .resizable()
-                .frame(width: 120, height: 120, alignment: .center)
+                .frame(width: 80, height: 80, alignment: .center)
                 .cornerRadius(60)
         }else {
             AsyncImage(url: self.viewModel.imageUrl) { phase in
