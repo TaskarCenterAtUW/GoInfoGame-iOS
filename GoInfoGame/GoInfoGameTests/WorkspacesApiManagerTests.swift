@@ -24,7 +24,7 @@ final class WorkspacesApiManagerTests: XCTestCase {
         let expec = expectation(description: "Fetches the workspaces around user")
         
         
-        workspacesAPI.fetchWorkspaces(){result in
+        workspacesAPI.fetchWorkspaces(lat:"",lon:""){result in
             switch result {
             case .success(let workspacesResponse):
                 print(workspacesResponse)

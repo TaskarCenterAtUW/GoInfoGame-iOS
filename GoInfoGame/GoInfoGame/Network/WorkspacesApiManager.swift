@@ -14,7 +14,8 @@ class WorkspacesApiManager {
     private let listingURL = "https://www.jsonkeeper.com/b/Q80Q"
     private init() {}
     
-    func fetchWorkspaces(_ completion:@escaping (Result<WorkSpacesResponse, Error>)-> Void) {
+    // fetches the workspaces based on latitiude and longitude
+    func fetchWorkspaces(lat:String, lon: String, _ completion:@escaping (Result<WorkSpacesResponse, Error>)-> Void) {
         
         var request = URLRequest(url: URL(string: self.listingURL)!,timeoutInterval: Double.infinity)
        
