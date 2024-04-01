@@ -39,7 +39,8 @@ struct CrossingKerbHeightForm: View, QuestForm {
                         Spacer()
                         if !selectedImage.isEmpty {
                             Button() {
-                                self.showAlert.toggle()
+                                let answer = CrossingKerbHeightAnswer.fromString(selectedImage.first ?? "")
+                                action?(answer ?? CrossingKerbHeightAnswer.none)
                             }label: {
                                 Image(systemName: "checkmark.circle.fill")
                                     .font(Font.system(size: 40))
@@ -55,18 +56,7 @@ struct CrossingKerbHeightForm: View, QuestForm {
                 
             }
             .padding()
-            /// if user selects yes/no option
-            if showAlert {
-                /// display are you sure alert
-                CustomSureAlert(alertTitle: LocalizedStrings.questSourceDialogTitle.localized, content: LocalizedStrings.questSourceDialogNote.localized,leftBtnLabel: LocalizedStrings.undoConfirmNegative.localized, rightBtnLabel:LocalizedStrings.questGenericConfirmationYes.localized, isDontShowCheckVisible: true, onCancel: {
-                    self.showAlert = false
-                }, onConfirm: {
-                    self.showAlert = false
-                    let answer = CrossingKerbHeightAnswer.fromString(selectedImage.first ?? "")
-                    action?(answer ?? CrossingKerbHeightAnswer.none)
-                })
-                .zIndex(1)
-            }
+            
             /// if user selects other answers option
             if showOtherAlert {
                 /// display leave a note instead alert

@@ -24,7 +24,7 @@ struct BusStopLitForm: View, QuestForm {
                 YesNoView(actionBtnLabel: LocalizedStrings.otherAnswers.localized, action: { answer in
                     self.selectedAnswer = answer
                     if answer == .yes || answer == .no {
-                        self.isShowingAreYouSure.toggle()
+                        self.action?(selectedAnswer)
                     }
                 })
                 .background(
@@ -33,15 +33,6 @@ struct BusStopLitForm: View, QuestForm {
                         .shadow(color: .gray, radius: 2, x: 0, y: 2))
                 .padding(.bottom,20)
             }.padding()
-            if isShowingAreYouSure {
-                CustomSureAlert(alertTitle: LocalizedStrings.questSourceDialogTitle.localized, content: LocalizedStrings.questSourceDialogNote.localized,leftBtnLabel: LocalizedStrings.undoConfirmNegative.localized, rightBtnLabel:LocalizedStrings.questGenericConfirmationYes.localized, isDontShowCheckVisible: true,onCancel: {
-                    self.isShowingAreYouSure = false
-                }, onConfirm: {
-                    self.isShowingAreYouSure = false
-                    self.action?(selectedAnswer)
-                })
-                .zIndex(1)
-            }
         }
     }
 }
