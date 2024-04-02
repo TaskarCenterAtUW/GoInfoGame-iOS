@@ -13,18 +13,7 @@ import osmparser
 class TactilePavingSteps :QuestBase, Quest {
     
     var title: String = "Tactile Paving Steps"
-    var filter: String = """
-    ways with highway = steps
-             and surface ~ \(PavedTypes.anythingPaved.joined(separator: "|"))
-             and (!conveying or conveying = no)
-             and access !~ private|no
-            and (
-              !tactile_paving
-              or tactile_paving = unknown
-              or tactile_paving ~ no|partial|incorrect and tactile_paving older today -4 years
-              or tactile_paving = yes and tactile_paving older today -8 years
-            )
-    """
+    var filter: String = "ways with highway=steps and !surface"
     var icon: UIImage = #imageLiteral(resourceName: "steps_tactile_paving.pdf")
     var wikiLink: String = ""
     var changesetComment: String = ""

@@ -8,8 +8,8 @@
 import SwiftUI
 
 struct CrossingKerbHeightForm: View, QuestForm {
-    var action: ((CrossingKerbHeightAnswer) -> Void)?
-    typealias AnswerClass = CrossingKerbHeightAnswer
+    var action: ((KerbHeightTypeAnswer) -> Void)?
+    typealias AnswerClass = KerbHeightTypeAnswer
     @State private var selectedImage:[String] = []
     @State private var showOtherAlert = false
     @State private var showAlert = false
@@ -23,7 +23,7 @@ struct CrossingKerbHeightForm: View, QuestForm {
     var body: some View {
         ZStack{
             VStack (alignment: .leading){
-                QuestionHeader(icon: Image("kerb_type"), title: LocalizedStrings.questCrossingKerbHeightTitle.localized, subtitle: "").padding(.bottom,10)
+                QuestionHeader(icon: Image("wheelchair_crossing"), title: LocalizedStrings.questCrossingKerbHeightTitle.localized, subtitle: "").padding(.bottom,10)
                 VStack(alignment: .leading){
                     Text(LocalizedStrings.selectOne.localized).font(.caption).foregroundColor(.gray)
                     ImageGridItemView(gridCount: 2, isLabelBelow: false, imageData: imageData, isImageRotated: false, isDisplayImageOnly: false, isScrollable: false, allowMultipleSelection: false, onTap: { (selectedImage) in
@@ -62,8 +62,8 @@ struct CrossingKerbHeightForm: View, QuestForm {
                     self.showAlert = false
                 }, onConfirm: {
                     self.showAlert = false
-                    let answer = CrossingKerbHeightAnswer.fromString(selectedImage.first ?? "")
-                    action?(answer ?? CrossingKerbHeightAnswer.none)
+                    let answer = KerbHeightTypeAnswer.fromString(selectedImage.first ?? "")
+                    action?(answer ?? KerbHeightTypeAnswer.none)
                 })
                 .zIndex(1)
             }

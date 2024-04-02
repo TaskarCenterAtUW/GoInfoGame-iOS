@@ -13,7 +13,7 @@ import osmparser
 class SidewalkSurface: QuestBase, Quest {
     typealias AnswerClass = SidewalkSurfaceAnswer
     var title: String = "Sidewalk Surface"
-    var filter: String = ""
+    var filter: String = "ways with (highway=footway and footway = sidewalk) and !surface"
     var icon: UIImage = #imageLiteral(resourceName: "sidewalk_surface.pdf")
     var wikiLink: String = ""
     var changesetComment: String = ""

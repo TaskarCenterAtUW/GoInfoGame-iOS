@@ -13,16 +13,10 @@ import osmparser
 class CrossingType: QuestBase, Quest {
     var title: String = "Crossing Type"
     var filter: String = """
-        nodes with highway = crossing
-          and foot != no
-          and (
-            !crossing
-            or crossing ~ island|unknown|yes
-            or (
-              crossing ~ traffic_signals|uncontrolled|zebra|marked|unmarked
-              and crossing older today -8 years
-            )
-          )
+        ways with highway = crossing
+                  and footway = crossing
+                  and (
+                    !crossing
     """
     var icon: UIImage = #imageLiteral(resourceName: "pedestrian_crossing.pdf")
     var wikiLink: String = ""
