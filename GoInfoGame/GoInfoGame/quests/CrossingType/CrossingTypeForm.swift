@@ -44,8 +44,8 @@ struct CrossingTypeForm: View, QuestForm {
                         Spacer()
                         if selectedAnswer != .none {
                             Button() {
-                                /// applying final selected answer
-                                self.showAlert.toggle()
+                             
+                                self.action?(selectedAnswer)
                             }label: {
                                 Image(systemName: "checkmark.circle.fill")
                                     .font(Font.system(size: 40))
@@ -59,15 +59,7 @@ struct CrossingTypeForm: View, QuestForm {
                             .fill(Color.white)
                             .shadow(color: .gray, radius: 2, x: 0, y: 2))
             }.padding()
-            if showAlert {
-                CustomSureAlert(alertTitle: LocalizedStrings.questSourceDialogTitle.localized, content: LocalizedStrings.questSourceDialogNote.localized,leftBtnLabel: LocalizedStrings.undoConfirmNegative.localized, rightBtnLabel:LocalizedStrings.questGenericConfirmationYes.localized, isDontShowCheckVisible: true,onCancel: {
-                    self.showAlert = false
-                }, onConfirm: {
-                    self.showAlert = false
-                    self.action?(selectedAnswer)
-                })
-                .zIndex(1)
-            }
+            
             /// if user selects cant say option
             if showOtherAlert {
                 /// display leave a note instead alert

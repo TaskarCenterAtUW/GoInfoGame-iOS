@@ -28,7 +28,7 @@ struct TactilePavingKerbForm: View, QuestForm {
                     Divider()
                     YesNoView(actionBtnLabel: LocalizedStrings.cantSay.localized, action: { answer in
                         if answer == .yes || answer == .no {
-                            self.showAlert.toggle()
+                            self.action?(selectedAnswer)
                         } else if answer == .other{
                             self.showOtherAlert.toggle()
                         }
@@ -39,17 +39,7 @@ struct TactilePavingKerbForm: View, QuestForm {
                             .fill(Color.white)
                             .shadow(color: .gray, radius: 2, x: 0, y: 2))
             }.padding()
-            /// if user selects yes/no option
-            if showAlert {
-                /// display are you sure alert
-                CustomSureAlert(alertTitle: LocalizedStrings.questSourceDialogTitle.localized, content: LocalizedStrings.questSourceDialogNote.localized,leftBtnLabel: LocalizedStrings.undoConfirmNegative.localized, rightBtnLabel:LocalizedStrings.questGenericConfirmationYes.localized, isDontShowCheckVisible: true, onCancel: {
-                    self.showAlert = false
-                }, onConfirm: {
-                    self.showAlert = false
-                    self.action?(selectedAnswer)
-                })
-                .zIndex(1)
-            }
+            
             /// if user selects other answers option
             if showOtherAlert {
                 /// display leave a note instead alert

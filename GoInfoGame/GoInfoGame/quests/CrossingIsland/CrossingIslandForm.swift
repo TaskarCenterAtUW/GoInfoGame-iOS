@@ -26,7 +26,7 @@ struct CrossingIslandForm: View, QuestForm {
                 YesNoView(actionBtnLabel: LocalizedStrings.cantSay.localized, action: { answer in
                     self.selectedAnswer = answer
                     if answer == .yes || answer == .no {
-                        self.isShowingAreYouSure.toggle()
+                        self.action?(selectedAnswer)
                     } else if answer == .other {
                         self.showOtherAlert.toggle()
                     }
@@ -37,15 +37,7 @@ struct CrossingIslandForm: View, QuestForm {
                         .shadow(color: .gray, radius: 2, x: 0, y: 2))
                 .padding(.bottom,20)
             }.padding()
-            if isShowingAreYouSure {
-                CustomSureAlert(alertTitle: LocalizedStrings.questSourceDialogTitle.localized, content: LocalizedStrings.questSourceDialogNote.localized,leftBtnLabel: LocalizedStrings.undoConfirmNegative.localized, rightBtnLabel:LocalizedStrings.questGenericConfirmationYes.localized, isDontShowCheckVisible: true,onCancel: {
-                    self.isShowingAreYouSure = false
-                }, onConfirm: {
-                    self.isShowingAreYouSure = false
-                    self.action?(selectedAnswer)
-                })
-                .zIndex(1)
-            }
+
             /// if user selects other answers option
             if showOtherAlert {
                 /// display leave a note instead alert
