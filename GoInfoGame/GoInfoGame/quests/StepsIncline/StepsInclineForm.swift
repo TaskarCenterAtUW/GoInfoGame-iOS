@@ -12,12 +12,20 @@ struct StepsInclineForm: View, QuestForm {
     typealias AnswerClass = StepsInclineDirection
     @State private var selectedImage : [String] = []
     @State private var showAlert = false
+    
+    @Environment(\.presentationMode) var presentationMode
+    
     let imageData: [ImageData] = [
         ImageData(id:"UP",type: "none", imageName: "steps-incline-up", tag: "up", optionName: LocalizedStrings.questStepsInclineUp.localized),
         ImageData(id:"UP_REVERSED",type: "bicycle", imageName: "steps-incline-up-reversed", tag: "down", optionName: LocalizedStrings.questStepsInclineUp.localized),
     ]
     var body: some View {
         VStack{
+            DismissButtonView {
+                withAnimation {
+                    presentationMode.wrappedValue.dismiss()
+                }
+            }
             QuestionHeader(icon: Image("steps"), title: "Which direction leads upwards for the steps", subtitle: "steps")
             VStack (alignment: .leading){
                 Text(LocalizedStrings.selectOne.localized).font(.caption).foregroundColor(.gray)

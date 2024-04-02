@@ -13,6 +13,9 @@ struct CrossMarkingForm : View,QuestForm{
     typealias AnswerClass = CrossingAnswer
     @State private var selectedAnswer: CrossingAnswer?
     @State private var showAlert = false
+    
+    @Environment(\.presentationMode) var presentationMode
+    
     let items = [
         TextItem(value: CrossingAnswer.yes, titleId: LocalizedStrings.questCrossingYes.localized),
         TextItem(value: CrossingAnswer.no, titleId: LocalizedStrings.questCrossingNo.localized),
@@ -21,6 +24,11 @@ struct CrossMarkingForm : View,QuestForm{
     
     var body: some View {
         VStack{
+            DismissButtonView {
+                withAnimation {
+                    presentationMode.wrappedValue.dismiss()
+                }
+            }
             QuestionHeader(icon: Image("pedestrian"),
                            title: LocalizedStrings.questCrossingTitle.localized,
                            subtitle: "")

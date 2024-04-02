@@ -34,6 +34,7 @@ struct DismissButtonView: View {
             Spacer()
             Button(action: dismissAction) {
                 Text("Dismiss")
+                    .foregroundStyle(.orange)
             }
             .padding([.top], 30)
             .padding([.trailing], 15)

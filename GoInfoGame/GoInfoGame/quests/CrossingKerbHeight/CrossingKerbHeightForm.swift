@@ -13,6 +13,9 @@ struct CrossingKerbHeightForm: View, QuestForm {
     @State private var selectedImage:[String] = []
     @State private var showOtherAlert = false
     @State private var showAlert = false
+    
+    @Environment(\.presentationMode) var presentationMode
+
     let imageData: [ImageData] = [
         ImageData(id:"kerb_height_raised",type: "raised", imageName: "kerb_height_raised", tag: "raised", optionName: LocalizedStrings.questKerbHeightRaised.localized),
         ImageData(id:"kerb_height_lowered",type: "lowered", imageName: "kerb_height_lowered", tag: "lowered", optionName: LocalizedStrings.questKerbHeightLowered.localized),
@@ -20,42 +23,48 @@ struct CrossingKerbHeightForm: View, QuestForm {
         ImageData(id:"kerb_height_lowered_ramp",type: "lowered", imageName: "kerb_height_lowered_ramp", tag: "lowered_and_sloped", optionName: LocalizedStrings.questKerbHeightLoweredRamp.localized),
         ImageData(id:"kerb_height_no",type: "no", imageName: "kerb_height_no", tag: "no", optionName: LocalizedStrings.questKerbHeightNo.localized)
     ]
+    
     var body: some View {
-        ZStack{
-            VStack (alignment: .leading){
-                QuestionHeader(icon: Image("kerb_type"), title: LocalizedStrings.questCrossingKerbHeightTitle.localized, subtitle: "").padding(.bottom,10)
-                VStack(alignment: .leading){
-                    Text(LocalizedStrings.selectOne.localized).font(.caption).foregroundColor(.gray)
-                    ImageGridItemView(gridCount: 2, isLabelBelow: false, imageData: imageData, isImageRotated: false, isDisplayImageOnly: false, isScrollable: false, allowMultipleSelection: false, onTap: { (selectedImage) in
-                    }, selectedImages: $selectedImage)
-                    Divider()
-                    HStack() {
-                        Spacer()
-                        Button {
-                            showOtherAlert = true
-                        } label: {
-                            Text(LocalizedStrings.otherAnswers.localized).foregroundColor(.orange)
+        ScrollView {
+            VStack {
+                    DismissButtonView {
+                        withAnimation {
+                            presentationMode.wrappedValue.dismiss()
                         }
-                        Spacer()
-                        if !selectedImage.isEmpty {
-                            Button() {
-                                let answer = CrossingKerbHeightAnswer.fromString(selectedImage.first ?? "")
-                                action?(answer ?? CrossingKerbHeightAnswer.none)
-                            }label: {
-                                Image(systemName: "checkmark.circle.fill")
-                                    .font(Font.system(size: 40))
-                                    .foregroundColor(.orange)
+                    }
+                    QuestionHeader(icon: Image("kerb_type"), title: LocalizedStrings.questCrossingKerbHeightTitle.localized, subtitle: "").padding(.bottom,10)
+                    VStack(alignment: .leading){
+                        Text(LocalizedStrings.selectOne.localized).font(.caption).foregroundColor(.gray)
+                        ImageGridItemView(gridCount: 2, isLabelBelow: false, imageData: imageData, isImageRotated: false, isDisplayImageOnly: false, isScrollable: false, allowMultipleSelection: false, onTap: { (selectedImage) in
+                        }, selectedImages: $selectedImage)
+                        Divider()
+                        HStack() {
+                            Spacer()
+                            Button {
+                                showOtherAlert = true
+                            } label: {
+                                Text(LocalizedStrings.otherAnswers.localized).foregroundColor(.orange)
                             }
-                        }
-                    }.padding(.top,10)
-                } .padding()
-                    .background(
-                        RoundedRectangle(cornerRadius: 10)
-                            .fill(Color.white)
-                            .shadow(color: .gray, radius: 2, x: 0, y: 2))
-                
-            }
-            .padding()
+                            Spacer()
+                            if !selectedImage.isEmpty {
+                                Button() {
+                                    let answer = CrossingKerbHeightAnswer.fromString(selectedImage.first ?? "")
+                                    action?(answer ?? CrossingKerbHeightAnswer.none)
+                                }label: {
+                                    Image(systemName: "checkmark.circle.fill")
+                                        .font(Font.system(size: 40))
+                                        .foregroundColor(.orange)
+                                }
+                            }
+                        }.padding(.top,10)
+                    } .padding()
+                        .background(
+                            RoundedRectangle(cornerRadius: 10)
+                                .fill(Color.white)
+                                .shadow(color: .gray, radius: 2, x: 0, y: 2))
+                    
+                }
+        }
             
             /// if user selects other answers option
             if showOtherAlert {
@@ -66,7 +75,7 @@ struct CrossingKerbHeightForm: View, QuestForm {
                     self.showOtherAlert = false
                 })
             }
-        }
+        
     }
 }
 

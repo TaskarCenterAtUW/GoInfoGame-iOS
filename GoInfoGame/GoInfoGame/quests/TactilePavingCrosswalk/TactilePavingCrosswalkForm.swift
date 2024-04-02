@@ -14,9 +14,17 @@ struct TactilePavingCrosswalkForm: View, QuestForm {
     @State private var isShowingAreYouSure = false
     @State private var selectedAnswer: YesNoAnswer = .unknown
     
+    @Environment(\.presentationMode) var presentationMode
+    
     var body: some View {
         ZStack {
             VStack{
+                DismissButtonView {
+                    withAnimation {
+                        presentationMode.wrappedValue.dismiss()
+                    }
+                }
+                .padding([.top], 50)
                 QuestionHeader(icon:Image("tactile_crossing"),
                                title: LocalizedStrings.questTactilePavingCrossing.localized,
                                subtitle: "Marked Crossing")
