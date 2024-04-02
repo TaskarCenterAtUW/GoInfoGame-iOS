@@ -35,7 +35,7 @@ struct DismissButtonView: View {
             Button(action: dismissAction) {
                 Text("Dismiss")
             }
-            .padding([.top], 40)
+            .padding([.top], 30)
             .padding([.trailing], 15)
         }
     }
