@@ -100,6 +100,9 @@
 		A475C7DD2B5E3E7C00BABEDA /* OSMPayload.swift in Sources */ = {isa = PBXBuildFile; fileRef = A475C7DC2B5E3E7C00BABEDA /* OSMPayload.swift */; };
 		A475C7E02B5E4B6E00BABEDA /* OSMXMLBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = A475C7DF2B5E4B6E00BABEDA /* OSMXMLBuilder.swift */; };
 		A475C7E32B5E4CB600BABEDA /* OSMXMLBuilderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A475C7E22B5E4CB600BABEDA /* OSMXMLBuilderTests.swift */; };
+		A48037312BBA8C25007EE7E4 /* WorkspacesApiManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A48037302BBA8C25007EE7E4 /* WorkspacesApiManager.swift */; };
+		A48037332BBA8D00007EE7E4 /* WorkspacesApiManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A48037322BBA8D00007EE7E4 /* WorkspacesApiManagerTests.swift */; };
+		A48037362BBA8DDC007EE7E4 /* WorkspacesResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = A48037352BBA8DDC007EE7E4 /* WorkspacesResponse.swift */; };
 		A4834A3F2B67737500D4F0AA /* StoredChangeset.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4834A3E2B67737500D4F0AA /* StoredChangeset.swift */; };
 		A4834A412B67885E00D4F0AA /* DatasyncManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4834A402B67885E00D4F0AA /* DatasyncManager.swift */; };
 		A4834A442B679CE000D4F0AA /* DatasyncManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4834A432B679CE000D4F0AA /* DatasyncManagerTests.swift */; };
@@ -367,6 +370,9 @@
 		A475C7DC2B5E3E7C00BABEDA /* OSMPayload.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OSMPayload.swift; sourceTree = "<group>"; };
 		A475C7DF2B5E4B6E00BABEDA /* OSMXMLBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OSMXMLBuilder.swift; sourceTree = "<group>"; };
 		A475C7E22B5E4CB600BABEDA /* OSMXMLBuilderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OSMXMLBuilderTests.swift; sourceTree = "<group>"; };
+		A48037302BBA8C25007EE7E4 /* WorkspacesApiManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkspacesApiManager.swift; sourceTree = "<group>"; };
+		A48037322BBA8D00007EE7E4 /* WorkspacesApiManagerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkspacesApiManagerTests.swift; sourceTree = "<group>"; };
+		A48037352BBA8DDC007EE7E4 /* WorkspacesResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkspacesResponse.swift; sourceTree = "<group>"; };
 		A4834A3E2B67737500D4F0AA /* StoredChangeset.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoredChangeset.swift; sourceTree = "<group>"; };
 		A4834A402B67885E00D4F0AA /* DatasyncManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatasyncManager.swift; sourceTree = "<group>"; };
 		A4834A432B679CE000D4F0AA /* DatasyncManagerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatasyncManagerTests.swift; sourceTree = "<group>"; };
@@ -564,7 +570,9 @@
 		0536DD952B0BD91F00B04C4B /* Network */ = {
 			isa = PBXGroup;
 			children = (
+				A48037342BBA8DCB007EE7E4 /* models */,
 				0536DD962B0BD95100B04C4B /* URLSession+Extension.swift */,
+				A48037302BBA8C25007EE7E4 /* WorkspacesApiManager.swift */,
 			);
 			path = Network;
 			sourceTree = "<group>";
@@ -901,6 +909,14 @@
 			path = xmlbuilder;
 			sourceTree = "<group>";
 		};
+		A48037342BBA8DCB007EE7E4 /* models */ = {
+			isa = PBXGroup;
+			children = (
+				A48037352BBA8DDC007EE7E4 /* WorkspacesResponse.swift */,
+			);
+			path = models;
+			sourceTree = "<group>";
+		};
 		A4834A422B679CD400D4F0AA /* data */ = {
 			isa = PBXGroup;
 			children = (
@@ -1199,6 +1215,7 @@
 				FAD5C5092AFCBE720040C61A /* GoInfoGameTests.swift */,
 				A40E72632B5CD65000328848 /* OverpassRequestManagerTests.swift */,
 				A444AC8B2B5E934B006C74F7 /* UserFlowTests.swift */,
+				A48037322BBA8D00007EE7E4 /* WorkspacesApiManagerTests.swift */,
 			);
 			path = GoInfoGameTests;
 			sourceTree = "<group>";
@@ -1701,6 +1718,7 @@
 				FABF3CF42B7419BB0080EAC9 /* LocationManagerDelegate.swift in Sources */,
 				973FC0382B59363C00878269 /* TactilePavingSteps.swift in Sources */,
 				973FC0192B4FB17000878269 /* LocalizedStrings.swift in Sources */,
+				A48037312BBA8C25007EE7E4 /* WorkspacesApiManager.swift in Sources */,
 				FABF3D002B8607D80080EAC9 /* MeasureSidewalkView.swift in Sources */,
 				FAC9E6112B06811300E2C608 /* LocationManager.swift in Sources */,
 				97439F782B87444200DA43E1 /* CrossingKerbHeightForm.swift in Sources */,
@@ -1773,6 +1791,7 @@
 				0536DD8C2B0BD2C200B04C4B /* Constants.swift in Sources */,
 				970D5BD32B67638500C20BE7 /* MapViewModel.swift in Sources */,
 				971902112B983EFC009B3270 /* CustomMap.swift in Sources */,
+				A48037362BBA8DDC007EE7E4 /* WorkspacesResponse.swift in Sources */,
 				0536DD992B0BDBFE00B04C4B /* OAuthManager.swift in Sources */,
 				A4E711AC2B58F7C000C9DE08 /* HandRailForm.swift in Sources */,
 				A4E711A62B57BBCA00C9DE08 /* QuestProtocols.swift in Sources */,
@@ -1799,6 +1818,7 @@
 				A444AC8C2B5E934B006C74F7 /* UserFlowTests.swift in Sources */,
 				FA87A8152B6AC4E2000A6BEA /* BusStopLitTests.swift in Sources */,
 				FAD5C50A2AFCBE720040C61A /* GoInfoGameTests.swift in Sources */,
+				A48037332BBA8D00007EE7E4 /* WorkspacesApiManagerTests.swift in Sources */,
 				FA87A81B2B6B042E000A6BEA /* SideWalkWidthTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
