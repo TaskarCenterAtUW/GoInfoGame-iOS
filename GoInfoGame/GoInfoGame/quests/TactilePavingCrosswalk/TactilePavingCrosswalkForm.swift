@@ -31,7 +31,7 @@ struct TactilePavingCrosswalkForm: View, QuestForm {
                     YesNoView(actionBtnLabel: LocalizedStrings.otherAnswers.localized, action: { answer in
                         self.selectedAnswer = answer
                         if answer == .yes || answer == .no {
-                            self.isShowingAreYouSure.toggle()
+                            self.action?(selectedAnswer)
                         }
                     })
                 } .padding(10)
@@ -40,15 +40,6 @@ struct TactilePavingCrosswalkForm: View, QuestForm {
                             .fill(Color.white)
                             .shadow(color: .gray, radius: 2, x: 0, y: 2))
             }.padding()
-            if isShowingAreYouSure {
-                CustomSureAlert(alertTitle: LocalizedStrings.questSourceDialogTitle.localized, content: LocalizedStrings.questSourceDialogNote.localized,leftBtnLabel: LocalizedStrings.undoConfirmNegative.localized, rightBtnLabel:LocalizedStrings.questGenericConfirmationYes.localized, isDontShowCheckVisible: true,onCancel: {
-                    self.isShowingAreYouSure = false
-                }, onConfirm: {
-                    self.isShowingAreYouSure = false
-                    self.action?(selectedAnswer)
-                })
-                .zIndex(1)
-            }
         }.frame(maxHeight: .leastNormalMagnitude)
     }
 }
