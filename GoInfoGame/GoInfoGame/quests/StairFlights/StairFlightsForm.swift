@@ -54,19 +54,6 @@ struct StairFlightsForm: View, QuestForm {
                             }
                         }
                     }
-                    Divider()
-                    HStack() {
-                        Spacer()
-                        Button {
-                            showAlert = true
-                        } label: {
-                            Text(LocalizedStrings.otherAnswers.localized).foregroundColor(.orange)
-                        }
-                        .alert(isPresented: $showAlert) {
-                            Alert(title: Text("More Questions"))
-                        }.frame(alignment: .center)
-                        Spacer()
-                    }.padding(.top,10)
                 }.padding()
                     .background(
                         RoundedRectangle(cornerRadius: 10)
