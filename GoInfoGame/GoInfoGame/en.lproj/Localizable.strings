@@ -98,4 +98,5 @@
 "quest_crossing_type_signals_controlled" = "Controlled by traffic lights";
 "quest_crossing_type_marked" = "Marked";
 "quest_crossing_type_unmarked" = "Without road markings";
+"quest_stair_flights" = "How many flights of stairs are available?";
 
