@@ -13,11 +13,17 @@ struct WayLitForm: View, QuestForm {
     typealias AnswerClass = YesNoAnswer
     @State private var isShowingAreYouSure = false
     @State private var selectedAnswer: YesNoAnswer = .unknown
-
     
+    @Environment(\.presentationMode) var presentationMode
+
     var body: some View {
         ZStack {
             VStack{
+                DismissButtonView {
+                    withAnimation {
+                        presentationMode.wrappedValue.dismiss()
+                    }
+                }
                 QuestionHeader(icon: Image("add_way_lit"),
                                title: LocalizedStrings.questLitTitle.localized,
                                subtitle: "SideWalk")
