@@ -24,3 +24,19 @@ struct LoadingView: View {
         .background(RoundedRectangle(cornerRadius: 20).fill(Color.white).shadow(radius: 5))
     }
 }
+
+//TODO: Move it to new file
+struct DismissButtonView: View {
+    let dismissAction: () -> Void
+
+    var body: some View {
+        HStack {
+            Spacer()
+            Button(action: dismissAction) {
+                Text("Dismiss")
+            }
+            .padding([.top], 40)
+            .padding([.trailing], 15)
+        }
+    }
+}
