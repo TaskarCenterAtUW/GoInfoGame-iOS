@@ -18,20 +18,19 @@ struct StairNumberForm: View, QuestForm {
     
     var body: some View {
         VStack{
-            QuestionHeader(icon:Image("steps_count"), title: LocalizedStrings.questStepCountTitle.localized, subtitle: "Stair Number")
+            QuestionHeader(icon:Image("steps_count"), title: LocalizedStrings.questStepCountTitle.localized, subtitle: "Steps Count")
             VStack{
                 HStack {
                     Spacer()
-                    TextField("NoOfSteps", value: $numberOfSteps, formatter: NumberFormatter(),onEditingChanged: { Bool in
-                        print("$numberOfSteps",numberOfSteps)
-                        validateInput()
-                    }
-                    )
-                    .frame(width: 20)
-                    .padding(.horizontal)
-                    .overlay(Rectangle().frame(height: 1).padding(.top, 25).foregroundColor(.black), alignment: .bottom)
-                    .textFieldStyle(PlainTextFieldStyle())
-                    .keyboardType(UIKeyboardType.numberPad)
+                    TextField("NoOfSteps", value: $numberOfSteps, formatter: NumberFormatter())
+                                            .frame(width: 20)
+                                            .padding(.horizontal)
+                                            .overlay(Rectangle().frame(height: 1).padding(.top, 25).foregroundColor(.black), alignment: .bottom)
+                                            .textFieldStyle(PlainTextFieldStyle())
+                                            .keyboardType(UIKeyboardType.numberPad)
+                                            .onChange(of: numberOfSteps) { _ in
+                                                validateInput()
+                                            }
                     Image("close")
                         .resizable()
                         .scaledToFit()
