@@ -54,7 +54,7 @@ class WayLit: QuestBase, Quest {
             and ~path|footway|cycleway !~ link
     """
     var displayUnit: DisplayUnit {
-        DisplayUnit(title: self.title, description: "",parent: self,sheetSize:.SMALL )
+        DisplayUnit(title: self.title, description: "",parent: self,sheetSize:.MEDIUM )
     }
     var filterExpression: ElementFilterExpression? {
         if(_internalExpression != nil){

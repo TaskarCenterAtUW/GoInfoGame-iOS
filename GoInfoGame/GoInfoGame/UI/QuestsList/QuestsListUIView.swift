@@ -11,23 +11,32 @@ struct QuestsListUIView : View {
     let items: [DisplayUnit] = QuestsRepository.shared.displayQuests
     @State var selectedQuest: DisplayUnit?
     
+    @Environment(\.presentationMode) var presentationMode
+    
     var body: some View {
-        List {
-            Section(header: Text("Quests Explorer")) {
-                ForEach(items) { item in
-                    Text(item.title)
-                        .onTapGesture {
-                            selectedQuest = item
-                        }
+        VStack {
+            DismissButtonView {
+                withAnimation {
+                    presentationMode.wrappedValue.dismiss()
                 }
             }
-        }
-        .sheet(item: $selectedQuest) { selectedQuest in
-            if #available(iOS 16.0, *) {
-                selectedQuest.parent?.form.presentationDetents(getSheetSize(sheetSize: selectedQuest.sheetSize ?? .MEDIUM))
-            } else {
-                // Nothing here
+            List {
+                Section(header: Text("Quests Explorer")) {
+                    ForEach(items) { item in
+                        Text(item.title)
+                            .onTapGesture {
+                                selectedQuest = item
+                            }
+                    }
+                }
             }
+            .sheet(item: $selectedQuest) { selectedQuest in
+                if #available(iOS 16.0, *) {
+                    selectedQuest.parent?.form.presentationDetents(getSheetSize(sheetSize: selectedQuest.sheetSize ?? .MEDIUM))
+                } else {
+                    // Nothing here
+                }
+        }
         }
     }
 }

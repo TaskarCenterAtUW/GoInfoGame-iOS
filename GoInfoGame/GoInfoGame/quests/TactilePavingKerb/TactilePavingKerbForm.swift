@@ -16,9 +16,18 @@ struct TactilePavingKerbForm: View, QuestForm {
     @State private var selectedAnswer:Bool = false
     @State private var showAlert = false
     @State private var showOtherAlert = false
+    
+    @Environment(\.presentationMode) var presentationMode
+    
     var body: some View {
         ZStack{
             VStack{
+                DismissButtonView {
+                    withAnimation {
+                        presentationMode.wrappedValue.dismiss()
+                    }
+                }
+                .padding([.top], 30)
                 QuestionHeader(icon:Image("kerb_tactile_paving"), title: LocalizedStrings.questTactilePavingKerbTitle.localized, subtitle: "Lowered Curb")
                 VStack(alignment:.leading){
                     Text(LocalizedStrings.usuallyLooksLikeThis.localized).font(.caption).foregroundColor(.gray)

@@ -17,9 +17,16 @@ struct CrossingIslandForm: View, QuestForm {
     @State private var selectedAnswer: YesNoAnswer = .unknown
     @State private var showOtherAlert = false
     
+    @Environment(\.presentationMode) var presentationMode
+    
     var body: some View {
         ZStack {
             VStack{
+                DismissButtonView {
+                    withAnimation {
+                        presentationMode.wrappedValue.dismiss()
+                    }
+                }
                 QuestionHeader(icon: Image("ic_quest_pedestrian_crossing_island"),
                                title: LocalizedStrings.questPedestrianCrossingIsland.localized,
                                subtitle: "Unmarked Crossing")
