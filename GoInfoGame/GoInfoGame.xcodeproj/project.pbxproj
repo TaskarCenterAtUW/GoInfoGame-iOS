@@ -64,6 +64,8 @@
 		973FC04C2B5A5F5F00878269 /* RadioItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 973FC04B2B5A5F5F00878269 /* RadioItem.swift */; };
 		97412A942BBADAED00DF7983 /* StairFlightsForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97412A932BBADAED00DF7983 /* StairFlightsForm.swift */; };
 		97412A962BBADAFF00DF7983 /* StairFlights.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97412A952BBADAFF00DF7983 /* StairFlights.swift */; };
+		97412A992BBBF3A300DF7983 /* KerbHeight.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97412A982BBBF3A300DF7983 /* KerbHeight.swift */; };
+		97412A9B2BBBF3B400DF7983 /* KerbHeightForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97412A9A2BBBF3B400DF7983 /* KerbHeightForm.swift */; };
 		97439F782B87444200DA43E1 /* CrossingKerbHeightForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97439F772B87444200DA43E1 /* CrossingKerbHeightForm.swift */; };
 		97439F7A2B87447400DA43E1 /* CrossingKerbHeight.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97439F792B87447400DA43E1 /* CrossingKerbHeight.swift */; };
 		97A014BF2B7B580700F7C277 /* OSMMapData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97A014BE2B7B580700F7C277 /* OSMMapData.swift */; };
@@ -337,6 +339,8 @@
 		973FC04B2B5A5F5F00878269 /* RadioItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RadioItem.swift; sourceTree = "<group>"; };
 		97412A932BBADAED00DF7983 /* StairFlightsForm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StairFlightsForm.swift; sourceTree = "<group>"; };
 		97412A952BBADAFF00DF7983 /* StairFlights.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StairFlights.swift; sourceTree = "<group>"; };
+		97412A982BBBF3A300DF7983 /* KerbHeight.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KerbHeight.swift; sourceTree = "<group>"; };
+		97412A9A2BBBF3B400DF7983 /* KerbHeightForm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KerbHeightForm.swift; sourceTree = "<group>"; };
 		97439F772B87444200DA43E1 /* CrossingKerbHeightForm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CrossingKerbHeightForm.swift; sourceTree = "<group>"; };
 		97439F792B87447400DA43E1 /* CrossingKerbHeight.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CrossingKerbHeight.swift; sourceTree = "<group>"; };
 		97A014BE2B7B580700F7C277 /* OSMMapData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OSMMapData.swift; sourceTree = "<group>"; };
@@ -812,6 +816,15 @@
 			path = StairFlights;
 			sourceTree = "<group>";
 		};
+		97412A972BBBF39000DF7983 /* KerbHeight */ = {
+			isa = PBXGroup;
+			children = (
+				97412A982BBBF3A300DF7983 /* KerbHeight.swift */,
+				97412A9A2BBBF3B400DF7983 /* KerbHeightForm.swift */,
+			);
+			path = KerbHeight;
+			sourceTree = "<group>";
+		};
 		97439F762B8729EA00DA43E1 /* CrossingKerbHeight */ = {
 			isa = PBXGroup;
 			children = (
@@ -1074,6 +1087,7 @@
 		A4E7119C2B57A22300C9DE08 /* quests */ = {
 			isa = PBXGroup;
 			children = (
+				97412A972BBBF39000DF7983 /* KerbHeight */,
 				97412A922BBADACA00DF7983 /* StairFlights */,
 				97439F762B8729EA00DA43E1 /* CrossingKerbHeight */,
 				971F9FE22B84ABA6005397CC /* CrossingType */,
@@ -1774,6 +1788,7 @@
 				A4E711AE2B59004700C9DE08 /* StepsIncline.swift in Sources */,
 				973FC0142B4D353800878269 /* SideWalkWidthForm.swift in Sources */,
 				971575172B5FFD6F0044797C /* MapView.swift in Sources */,
+				97412A9B2BBBF3B400DF7983 /* KerbHeightForm.swift in Sources */,
 				973FC04A2B5A478C00878269 /* CrossMarkingForm.swift in Sources */,
 				973FC03F2B59418B00878269 /* WayLit.swift in Sources */,
 				A40004EC2B62338400AF21FB /* AppQuestManager.swift in Sources */,
@@ -1792,6 +1807,7 @@
 				A495DF2D2B6A190400478E44 /* CustomMapView.swift in Sources */,
 				05DBBB662B17209600B6F110 /* RealmOPMeta.swift in Sources */,
 				B0CCB98E2B8626C600AA73DE /* ProfileViewVM.swift in Sources */,
+				97412A992BBBF3A300DF7983 /* KerbHeight.swift in Sources */,
 				97412A962BBADAFF00DF7983 /* StairFlights.swift in Sources */,
 				0536DD942B0BD59900B04C4B /* OAuthError.swift in Sources */,
 				973FC0172B4D567900878269 /* WidthView.swift in Sources */,

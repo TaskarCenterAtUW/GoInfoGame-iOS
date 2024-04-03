@@ -99,4 +99,7 @@
 "quest_crossing_type_marked" = "Marked";
 "quest_crossing_type_unmarked" = "Without road markings";
 "quest_stair_flights" = "How many flights of stairs are available?";
+"quest_kerb_height_title" = "What’s the height of this curb?";
+
+
 
