@@ -7,34 +7,56 @@
 
 import SwiftUI
 import MapKit
-import CoreLocation
 import Combine
 
 struct MapView: View {
+    let selectedWorkspace: Workspace?
     @State var trackingMode: MapUserTrackingMode = MapUserTrackingMode.none
     @Environment(\.presentationMode) private var presentationMode
     @AppStorage("isMapFromOnboarding") var isMapFromOnboarding: Bool = false
     @StateObject private var viewModel = MapViewModel()
     @State private var isPresented = false
-
+    
     var body: some View {
-        ZStack {
-            CustomMap(region: $viewModel.region,
+//        NavigationView {
+            ZStack (alignment: .top) {
+                CustomMap(region: $viewModel.region,
                           trackingMode: $trackingMode,
                           items: viewModel.items,
                           selectedQuest: $viewModel.selectedQuest,
-                      isPresented: $isPresented, contextualInfo: { contextualInfo in
-                print(contextualInfo)
-                self.setSubTitleForSideWalk(subTitle: contextualInfo)
-            })
+                          isPresented: $isPresented, contextualInfo: { contextualInfo in
+                    print(contextualInfo)
+                    self.setSubTitleForSideWalk(subTitle: contextualInfo)
+                })
                 .edgesIgnoringSafeArea(.all)
-            
-            if viewModel.isLoading {
-                Color.black.opacity(0.3)
-                    .edgesIgnoringSafeArea(.all)
-                LoadingView()
+                
+                if viewModel.isLoading {
+                    Color.black.opacity(0.3)
+                        .edgesIgnoringSafeArea(.all)
+                    LoadingView()
+                }
             }
-        }
+            .navigationBarHidden(false)
+            .navigationBarItems(leading: EmptyView())
+            .toolbar {
+                ToolbarItem(placement: .navigationBarLeading) {
+                    NavigationLink(destination: ProfileView()) {
+                        Image(systemName: "person.crop.circle.fill")
+                    }
+                }
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    HStack {
+                        NavigationLink(destination: QuestsListUIView())  {
+                            Image(systemName: "list.bullet")
+                        }
+                        NavigationLink(destination: MeasureSidewalkView()) {
+                            Image(systemName: "camera")
+                        }
+                    }
+                }
+            }
+            .toolbarBackground(.visible, for: .navigationBar)
+        
         .sheet(isPresented: $isPresented, content: {
             let selectedQuest = self.viewModel.selectedQuest
             if #available(iOS 16.0, *) {
@@ -46,6 +68,9 @@ struct MapView: View {
         .onReceive(MapViewPublisher.shared.dismissSheet) { _ in
             isPresented = false
         }
+        .onAppear(){
+            print("selected workspace",selectedWorkspace?.name ?? "")
+        }
     }
     
     private func setSubTitleForSideWalk(subTitle: String) {
@@ -53,11 +78,6 @@ struct MapView: View {
             sidewalk.subTitle = subTitle
         }
     }
-
-}
-
-#Preview {
-    MapView()
 }
 
 

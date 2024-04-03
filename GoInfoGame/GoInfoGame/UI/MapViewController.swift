@@ -25,9 +25,9 @@ class MapViewController: UIHostingController<MapView> {
         navigationItem.leftBarButtonItem = profileButton
     }
     
-    required init?(coder aDecoder: NSCoder) {
-        super.init(coder: aDecoder, rootView: MapView())
-    }
+//    required init(coder aDecoder: NSCoder) {
+//        super.init(coder: aDecoder, rootView: MapView())
+//    }
     
     @objc func questListButtonTapped() {
          let questListView = QuestsListUIView()
