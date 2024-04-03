@@ -18,8 +18,7 @@ struct MapView: View {
     @State private var isPresented = false
     
     var body: some View {
-//        NavigationView {
-            ZStack (alignment: .top) {
+            ZStack{
                 CustomMap(region: $viewModel.region,
                           trackingMode: $trackingMode,
                           items: viewModel.items,
@@ -29,7 +28,6 @@ struct MapView: View {
                     self.setSubTitleForSideWalk(subTitle: contextualInfo)
                 })
                 .edgesIgnoringSafeArea(.all)
-                
                 if viewModel.isLoading {
                     Color.black.opacity(0.3)
                         .edgesIgnoringSafeArea(.all)
