@@ -23,8 +23,16 @@ struct SideWalkWidthForm: View, QuestForm {
     @ObservedObject var viewModel = SideWalkWidthFormModel()
     var action: ((WidthAnswer) -> Void)?
     
+    @Environment(\.presentationMode) var presentationMode
+    
     var body: some View {
         VStack{
+            DismissButtonView {
+                withAnimation {
+                    presentationMode.wrappedValue.dismiss()
+                }
+            }
+            .padding([.top], 30)
             QuestionHeader(icon: Image("sidewalk-width-img"),
                            title: LocalizedStrings.questDetermineSidewalkWidth.localized,
                            subtitle: viewModel.subTitle)

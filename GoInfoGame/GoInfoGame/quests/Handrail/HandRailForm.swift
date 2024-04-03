@@ -12,10 +12,16 @@ struct HandRailForm: View, QuestForm {
     var action: ((YesNoAnswer) -> Void)?
     @State private var isShowingAreYouSure = false
     @State private var selectedAnswer: YesNoAnswer = .unknown
+    @Environment(\.presentationMode) var presentationMode
     
     var body: some View {
         ZStack {
             VStack{
+                DismissButtonView {
+                    withAnimation {
+                        presentationMode.wrappedValue.dismiss()
+                    }
+                }
                 QuestionHeader(icon: Image("steps_handrail"),
                                title: "Do these steps have handrail?",
                                subtitle: "")

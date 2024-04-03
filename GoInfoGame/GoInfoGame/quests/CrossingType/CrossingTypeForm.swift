@@ -16,6 +16,9 @@ struct CrossingTypeForm: View, QuestForm {
     @State private var showAlert = false
     @State private var selectedImage:[String] = []
     @State private var showOtherAlert = false
+    
+    @Environment(\.presentationMode) var presentationMode
+
     let imageData: [ImageData] = [
         ImageData(id:"crossing_type_signals",type: "traffic_signals", imageName: "crossing_type_signals", tag: "traffic_signals", optionName: LocalizedStrings.questCrossingTypeSignalsControlled.localized),
         ImageData(id:"crossing_type_unmarked",type: "marked", imageName: "crossing_type_zebra", tag: "marked", optionName: LocalizedStrings.questCrossingTypeMarked.localized),
@@ -24,6 +27,12 @@ struct CrossingTypeForm: View, QuestForm {
     var body: some View {
         ZStack{
             VStack{
+                DismissButtonView {
+                    withAnimation {
+                        presentationMode.wrappedValue.dismiss()
+                    }
+                }
+                .padding([.top], 30)
                 QuestionHeader(icon:Image("pedestrian_crossing"), title: LocalizedStrings.questCrossingTypeTitle.localized, subtitle: "Crossing")
                 VStack(alignment:.center){
                     VStack (alignment: .leading){

@@ -14,6 +14,9 @@ struct SidewalkSurfaceForm: QuestForm ,View {
     @State private var selectedImage : [String] = []
     @State private var showAlert = false
     @State private var selectedAnswer : SidewalkSurfaceAnswer = SidewalkSurfaceAnswer(value: SurfaceAndNote(surface: Surface.none,note: ""))
+    
+    @Environment(\.presentationMode) var presentationMode
+
     let imagesFromSurfaces: [ImageData] = SELECTABLE_WAY_SURFACES.compactMap { surfaceString in
         if let surface = Surface(rawValue: surfaceString) {
             return ImageData(
@@ -35,6 +38,11 @@ struct SidewalkSurfaceForm: QuestForm ,View {
     var body: some View {
         ZStack{
             VStack (alignment: .leading){
+                DismissButtonView {
+                    withAnimation {
+                        presentationMode.wrappedValue.dismiss()
+                    }
+                }
                 // Question header
                 QuestionHeader(icon: Image("sidewalk_surface"),
                                title: LocalizedStrings.questSidewalkSurfaceTitle.localized,

@@ -16,8 +16,15 @@ struct StairNumberForm: View, QuestForm {
     @State private var showAlert = false
     @State private var isInputValid: Bool = false
     
+    @Environment(\.presentationMode) var presentationMode
+    
     var body: some View {
         VStack{
+            DismissButtonView {
+                withAnimation {
+                    presentationMode.wrappedValue.dismiss()
+                }
+            }
             QuestionHeader(icon:Image("steps_count"), title: LocalizedStrings.questStepCountTitle.localized, subtitle: "Steps Count")
             VStack{
                 HStack {
