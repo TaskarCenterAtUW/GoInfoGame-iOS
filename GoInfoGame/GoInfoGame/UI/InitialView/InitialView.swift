@@ -26,8 +26,20 @@ struct InitialView: View {
                 } else {
                     EmptyView()
                 }
-            } else {
-                LoadingView()
+            }else {
+                VStack {
+                    ProgressView()
+                        .progressViewStyle(CircularProgressViewStyle(tint: .blue))
+                        .padding(20)
+                    
+                    Text("Looking for Workspaces...")
+                        .foregroundColor(.gray)
+                        .font(.headline)
+                        .padding(.bottom, 10)
+
+                }
+                .frame(width: 200, height: 150)
+                .background(RoundedRectangle(cornerRadius: 20).fill(Color.white).shadow(radius: 5))
             }
         }
     }
