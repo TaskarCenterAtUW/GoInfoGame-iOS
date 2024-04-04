@@ -52,6 +52,10 @@ class MapViewModel: ObservableObject {
             self.isLoading = false
         }
     }
+    
+    func refreshMapAfterSubmission() {
+        self.items = AppQuestManager.shared.fetchQuestsFromDB()
+    }
         
     private func boundingBoxAroundLocation(location: CLLocation, distance: CLLocationDistance) -> BBox {
         let region = MKCoordinateRegion(center: location.coordinate, latitudinalMeters: distance, longitudinalMeters: distance)

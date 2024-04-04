@@ -64,6 +64,7 @@ struct MapView: View {
             }
         })
         .onReceive(MapViewPublisher.shared.dismissSheet) { _ in
+            viewModel.refreshMapAfterSubmission()
             isPresented = false
         }
         .onAppear(){
