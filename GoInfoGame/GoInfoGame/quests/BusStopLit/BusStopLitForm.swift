@@ -20,7 +20,7 @@ struct BusStopLitForm: View, QuestForm {
             VStack{
                 QuestionHeader(icon: Image("stop_lit"),
                                title: LocalizedStrings.questBusStopLitTitle.localized,
-                               subtitle: "SideWalk")
+                               contextualInfo: "SideWalk")
                 YesNoView(actionBtnLabel: LocalizedStrings.otherAnswers.localized, action: { answer in
                     self.selectedAnswer = answer
                     if answer == .yes || answer == .no {

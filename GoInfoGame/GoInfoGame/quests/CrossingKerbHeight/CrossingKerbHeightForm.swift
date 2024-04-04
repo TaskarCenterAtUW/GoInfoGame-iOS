@@ -32,7 +32,7 @@ struct CrossingKerbHeightForm: View, QuestForm {
                             presentationMode.wrappedValue.dismiss()
                         }
                     }
-                    QuestionHeader(icon: Image("kerb_type"), title: LocalizedStrings.questCrossingKerbHeightTitle.localized, subtitle: "").padding(.bottom,10)
+                    QuestionHeader(icon: Image("kerb_type"), title: LocalizedStrings.questCrossingKerbHeightTitle.localized, contextualInfo: "").padding(.bottom,10)
                     VStack(alignment: .leading){
                         Text(LocalizedStrings.selectOne.localized).font(.caption).foregroundColor(.gray)
                         ImageGridItemView(gridCount: 2, isLabelBelow: false, imageData: imageData, isImageRotated: false, isDisplayImageOnly: false, isScrollable: false, allowMultipleSelection: false, onTap: { (selectedImage) in

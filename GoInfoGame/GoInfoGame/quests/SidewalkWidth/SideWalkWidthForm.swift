@@ -35,7 +35,7 @@ struct SideWalkWidthForm: View, QuestForm {
             .padding([.top], 30)
             QuestionHeader(icon: Image("sidewalk-width-img"),
                            title: LocalizedStrings.questDetermineSidewalkWidth.localized,
-                           subtitle: viewModel.subTitle)
+                           contextualInfo: viewModel.subTitle)
             Text(LocalizedStrings.questRoadWithExplanation.localized).font(.caption)
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .fixedSize(horizontal: false, vertical: true)

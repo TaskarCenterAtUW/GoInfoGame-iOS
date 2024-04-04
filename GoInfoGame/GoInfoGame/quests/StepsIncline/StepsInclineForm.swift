@@ -26,7 +26,7 @@ struct StepsInclineForm: View, QuestForm {
                     presentationMode.wrappedValue.dismiss()
                 }
             }
-            QuestionHeader(icon: Image("steps"), title: "Which direction leads upwards for the steps", subtitle: "steps")
+            QuestionHeader(icon: Image("steps"), title: "Which direction leads upwards for the steps", contextualInfo: "steps")
             VStack (alignment: .leading){
                 Text(LocalizedStrings.selectOne.localized).font(.caption).foregroundColor(.gray)
                 ImageGridItemView(gridCount: 2, isLabelBelow: true, imageData: imageData, isImageRotated: true, isDisplayImageOnly: false, isScrollable: false, allowMultipleSelection: false, onTap: { (selectedImage) in

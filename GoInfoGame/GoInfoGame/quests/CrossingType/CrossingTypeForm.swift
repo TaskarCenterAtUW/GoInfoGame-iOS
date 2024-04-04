@@ -33,7 +33,7 @@ struct CrossingTypeForm: View, QuestForm {
                     }
                 }
                 .padding([.top], 30)
-                QuestionHeader(icon:Image("pedestrian_crossing"), title: LocalizedStrings.questCrossingTypeTitle.localized, subtitle: "Crossing")
+                QuestionHeader(icon:Image("pedestrian_crossing"), title: LocalizedStrings.questCrossingTypeTitle.localized, contextualInfo: "Crossing")
                 VStack(alignment:.center){
                     VStack (alignment: .leading){
                         Text(LocalizedStrings.selectOne.localized).font(.caption).foregroundColor(.gray)

@@ -25,7 +25,7 @@ struct StairFlightsForm: View, QuestForm {
                         presentationMode.wrappedValue.dismiss()
                     }
                 }
-                QuestionHeader(icon:Image("steps_count"), title: LocalizedStrings.questStairFlights.localized, subtitle: "Stair Flights")
+                QuestionHeader(icon:Image("steps_count"), title: LocalizedStrings.questStairFlights.localized, contextualInfo: "Stair Flights")
                 VStack{
                     HStack {
                         Spacer()

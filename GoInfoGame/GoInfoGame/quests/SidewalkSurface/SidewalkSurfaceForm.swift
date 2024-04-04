@@ -46,7 +46,7 @@ struct SidewalkSurfaceForm: QuestForm ,View {
                 // Question header
                 QuestionHeader(icon: Image("sidewalk_surface"),
                                title: LocalizedStrings.questSidewalkSurfaceTitle.localized,
-                               subtitle: "Street")
+                               contextualInfo: "Street")
                 .padding(.bottom,10)
                 // Quest Body
                 VStack(alignment: .leading){

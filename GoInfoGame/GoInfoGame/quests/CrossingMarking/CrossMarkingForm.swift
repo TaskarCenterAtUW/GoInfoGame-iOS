@@ -31,7 +31,7 @@ struct CrossMarkingForm : View,QuestForm{
             }
             QuestionHeader(icon: Image("pedestrian"),
                            title: LocalizedStrings.questCrossingTitle.localized,
-                           subtitle: "")
+                           contextualInfo: "")
             VStack{
                 VStack (alignment: .leading){
                     ForEach(items, id: \.titleId) { item in

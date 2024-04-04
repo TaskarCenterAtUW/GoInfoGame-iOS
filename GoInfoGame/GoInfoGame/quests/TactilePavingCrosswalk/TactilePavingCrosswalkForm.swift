@@ -27,7 +27,7 @@ struct TactilePavingCrosswalkForm: View, QuestForm {
                 .padding([.top], 50)
                 QuestionHeader(icon:Image("tactile_crossing"),
                                title: LocalizedStrings.questTactilePavingCrossing.localized,
-                               subtitle: "Marked Crossing")
+                               contextualInfo: "Marked Crossing")
                 VStack(alignment:.leading){
                     Text(LocalizedStrings.usuallyLooksLikeThis.localized)
                         .font(.caption)

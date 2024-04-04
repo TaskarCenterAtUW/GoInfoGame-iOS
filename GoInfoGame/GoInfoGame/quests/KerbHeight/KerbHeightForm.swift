@@ -25,7 +25,7 @@ struct KerbHeightForm: View, QuestForm {
     
     var body: some View {
         VStack(alignment: .leading) {
-            QuestionHeader(icon: Image("kerb_type"), title: LocalizedStrings.questKerbHeightTitle.localized, subtitle: "").padding(.bottom,10)
+            QuestionHeader(icon: Image("kerb_type"), title: LocalizedStrings.questKerbHeightTitle.localized, contextualInfo: "").padding(.bottom,10)
             
             ZStack {
                 VStack(alignment: .leading) {
