@@ -27,6 +27,11 @@ public class OSMConnection {
         self.baseUrl = config.baseUrl
         self.currentChangesetId = currentChangesetId
         self.userCreds = userCreds
+        
+       if let token = KeychainManager.load(key: "accessToken") {
+           self.accessToken = token
+            
+        }
     }
     /// Fetches a single node
     /// - parameter id : the `id` of the node
