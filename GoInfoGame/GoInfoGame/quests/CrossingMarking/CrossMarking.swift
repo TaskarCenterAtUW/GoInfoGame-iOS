@@ -61,6 +61,7 @@ enum CrossingAnswer: String {
     case yes = "Yes"
     case no = "No"
     case prohibited = "Prohibited"
+    case none = "None"
 }
 
 struct TextItem<T> {

@@ -193,7 +193,7 @@ struct LoginView: View {
             .sheet(isPresented: $isSafariViewControllerPresented) {
                 OAuthViewController()
             }
-            .navigationBarHidden(true)
+            .navigationBarHidden(false)
             .padding()
         }
         
