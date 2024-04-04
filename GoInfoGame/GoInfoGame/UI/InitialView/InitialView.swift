@@ -58,7 +58,7 @@ struct WorkspacesListView: View {
                         Text(workspace.name)
                     }
                 }
-            }
+            }.textCase(nil)
         }
         .navigationBarHidden(true)
     }
