@@ -12,7 +12,7 @@
         <!--Map View Controller-->
         <scene sceneID="eS8-T4-bVR">
             <objects>
-                <hostingController id="oB8-mI-y0B" customClass="MapViewController" customModule="GoInfoGame" customModuleProvider="target" sceneMemberID="viewController">
+                <hostingController storyboardIdentifier="MapViewController" id="oB8-mI-y0B" customClass="MapViewController" customModule="GoInfoGame" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="WIL-R2-Zwd">
                         <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
@@ -23,15 +23,15 @@
                 </hostingController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="s7U-Gu-uwn" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="304.58015267175574" y="-68.309859154929583"/>
+            <point key="canvasLocation" x="1335" y="-68"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="Oj0-5X-njE">
             <objects>
-                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="5oO-NF-Hms" sceneMemberID="viewController">
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" navigationBarHidden="YES" id="5oO-NF-Hms" sceneMemberID="viewController">
                     <toolbarItems/>
+                    <navigationItem key="navigationItem" id="XZ3-X6-RJP"/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="GqK-OL-fF7">
-                        <rect key="frame" x="0.0" y="59" width="393" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <navigationBarAppearance key="scrollEdgeAppearance">
                             <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -39,12 +39,22 @@
                     </navigationBar>
                     <nil name="viewControllers"/>
                     <connections>
-                        <segue destination="oB8-mI-y0B" kind="relationship" relationship="rootViewController" id="HWc-8q-aQu"/>
+                        <segue destination="8uQ-tC-Rve" kind="relationship" relationship="rootViewController" id="lkD-Gd-qX5"/>
                     </connections>
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="33d-6L-4ci" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="-688" y="-68"/>
+        </scene>
+        <!--Initial View Controller-->
+        <scene sceneID="r9o-cC-W6z">
+            <objects>
+                <hostingController id="8uQ-tC-Rve" customClass="InitialViewController" customModule="GoInfoGame" customModuleProvider="target" sceneMemberID="viewController">
+                    <navigationItem key="navigationItem" id="pmy-t8-F6k"/>
+                </hostingController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Ua1-WW-OiW" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="424" y="-68"/>
         </scene>
     </scenes>
     <resources>

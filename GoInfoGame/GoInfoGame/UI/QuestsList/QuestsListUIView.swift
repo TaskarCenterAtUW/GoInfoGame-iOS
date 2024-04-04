@@ -38,6 +38,7 @@ struct QuestsListUIView : View {
                 }
         }
         }
+        .navigationBarHidden(true)
     }
 }
 

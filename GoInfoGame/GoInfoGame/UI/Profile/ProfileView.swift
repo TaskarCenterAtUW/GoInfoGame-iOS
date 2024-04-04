@@ -18,7 +18,7 @@ struct ProfileView: View {
     @State private var accessToken: String?
    
     var body: some View {
-        return NavigationView {
+        return
             VStack {
                 if accessToken != nil {
                     LoggedInView(isSafariViewControllerPresented: $isSafariViewControllerPresented, accessToken: $accessToken)
@@ -54,8 +54,6 @@ struct ProfileView: View {
                 }
             }
         }
-        
-    }
 }
 
 #Preview {
