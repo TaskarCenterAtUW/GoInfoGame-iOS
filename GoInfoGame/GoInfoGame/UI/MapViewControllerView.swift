@@ -7,10 +7,10 @@
 
 import Foundation
 import SwiftUI
+// MapViewControllerView - View for representing a UIKit UIViewController
 struct MapViewControllerView : UIViewControllerRepresentable {
 
      func updateUIViewController(_ uiViewController: UIViewControllerType, context: Context) {
-    
      }
 
      func makeUIViewController(context: Context) -> some UIViewController {

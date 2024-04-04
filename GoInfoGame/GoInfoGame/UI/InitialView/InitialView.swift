@@ -6,15 +6,17 @@
 //
 
 import SwiftUI
-
+// InitialView - Main view for displaying available workspaces and navigating to MapVie
 struct InitialView: View {
     @StateObject private var viewModel = InitialViewModel()
     @State private var shouldNavigateToMapView = false
     
     var body: some View {
         NavigationView {
+            // Checking if there are multiple workspaces
             if viewModel.workspaces.count > 1 {
                 WorkspacesListView(workspaces: viewModel.workspaces)
+            // Checking if there's only one workspace
             } else if viewModel.workspaces.count == 1 {
                 if let selectedWorkspace = viewModel.workspaces.first {
                     NavigationLink(destination: MapView(selectedWorkspace: selectedWorkspace).navigationBarBackButtonHidden(true), isActive: $shouldNavigateToMapView) {
@@ -27,6 +29,7 @@ struct InitialView: View {
                     EmptyView()
                 }
             }else {
+                // Displaying progress view if no workspaces are available
                 VStack {
                     ProgressView()
                         .progressViewStyle(CircularProgressViewStyle(tint: .blue))
@@ -44,6 +47,7 @@ struct InitialView: View {
         }
     }
 }
+// WorkspacesListView - View for displaying a list of workspaces
 struct WorkspacesListView: View {
     let workspaces: [Workspace]
     var body: some View {
