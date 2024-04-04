@@ -14,7 +14,7 @@ class CrossMarking: QuestBase, Quest {
     typealias AnswerClass = CrossingAnswer
     var _internalExpression: ElementFilterExpression?
     var title: String = "Cross Marking"
-    var filter: String = ""
+    var filter: String = "ways with highway=footway and !footway"
     var icon: UIImage = #imageLiteral(resourceName: "pedestrian")
     var wikiLink: String = ""
     var changesetComment: String = ""

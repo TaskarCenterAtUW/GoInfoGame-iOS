@@ -15,21 +15,7 @@ class CrossingKerbHeight: QuestBase, Quest {
     var _internalExpression: ElementFilterExpression?
     var relationData: Element? = nil
     //MARK: added nodes and ways filter as a single string. Need to change
-    var filter: String = """
-        nodes with
-          highway = crossing
-          and foot != no
-          and crossing
-          and !kerb:left and !kerb:right
-          and (
-            !kerb
-            or kerb ~ yes|unknown
-            or kerb !~ no|rolled and kerb older today -8 years
-          )
-     ways with
-              highway and access ~ private|no
-              or highway ~ footway|path|cycleway
-    """
+    var filter: String = "nodes with barrier=kerb and !kerb"
     var icon: UIImage = #imageLiteral(resourceName: "kerb_type.pdf")
     var wikiLink: String = ""
     var changesetComment: String = ""
@@ -41,7 +27,7 @@ class CrossingKerbHeight: QuestBase, Quest {
     var displayUnit: DisplayUnit {
         DisplayUnit(title: self.title, description: "",parent: self,sheetSize:.XLARGE )
     }
-    typealias AnswerClass = CrossingKerbHeightAnswer
+    typealias AnswerClass = KerbHeightTypeAnswer
     override init() {
         super.init()
         self.internalForm = CrossingKerbHeightForm(action: { [self] answer in
@@ -49,12 +35,12 @@ class CrossingKerbHeight: QuestBase, Quest {
         })
     }
     
-    func onAnswer(answer: CrossingKerbHeightAnswer) {
+    func onAnswer(answer: KerbHeightTypeAnswer) {
         var finalTags:[String:String] = [:]
         if let rData = self.relationData {
         /// expected tag for .kerbRamp & .lowered is same
         /// changing tag from "lowered_and_sloped" to "lowered"  for kerbRamp
-            if answer == CrossingKerbHeightAnswer.kerbRamp {
+            if answer == KerbHeightTypeAnswer.kerbRamp {
                 finalTags = ["kerb": "lowered_and_sloped"]
             } else {
                 finalTags = ["kerb": "\(answer.osmValue)"]
@@ -70,7 +56,7 @@ class CrossingKerbHeight: QuestBase, Quest {
     }
 }
 
-enum CrossingKerbHeightAnswer: CaseIterable {
+enum KerbHeightTypeAnswer: CaseIterable {
     case raised
     case lowered
     case flush
@@ -94,7 +80,7 @@ enum CrossingKerbHeightAnswer: CaseIterable {
             return "lowered_and_sloped"
         }
     }
-    static func fromString(_ osmValue: String) -> CrossingKerbHeightAnswer? {
+    static func fromString(_ osmValue: String) -> KerbHeightTypeAnswer? {
         for caseEnum in allCases {
             if caseEnum.osmValue == osmValue {
                 return caseEnum

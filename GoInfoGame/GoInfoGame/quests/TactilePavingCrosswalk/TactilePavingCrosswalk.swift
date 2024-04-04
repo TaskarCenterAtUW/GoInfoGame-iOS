@@ -13,14 +13,7 @@ import osmparser
 class TactilePavingCrosswalk :QuestBase, Quest {
     
     var title: String = "Tactile Paving Crosswalk"
-    var filter: String = """
-    nodes with ( highway = traffic_signals 
-            and crossing = traffic_signals and foot != no
-            or highway = crossing and foot != no )
-            and ( !tactile_paving or tactile_paving = unknown or tactile_paving ~ no|incorrect
-            and tactile_paving older today -4 years or tactile_paving = yes
-            and tactile_paving older today -8 years )
-    """
+    var filter: String = "highway = crossing and foot != no and !tactile_paving"
     var icon: UIImage = #imageLiteral(resourceName: "tactile_crossing")
     var wikiLink: String = ""
     var changesetComment: String = ""

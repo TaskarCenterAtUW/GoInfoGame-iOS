@@ -19,13 +19,7 @@ class StepsIncline: QuestBase, Quest {
     var wikiLink: String = ""
     var changesetComment: String = ""
     var title: String = "StepsIncline"
-    var filter: String = """
-        ways with highway = steps
-         and (!indoor or indoor = no)
-         and area != yes
-         and access !~ private|no
-         and !incline
-    """
+    var filter: String = "ways with highway=steps and !climb"
     var displayUnit: DisplayUnit {
         DisplayUnit(title: self.title, description: "",parent: self, sheetSize: .MEDIUM)
     }

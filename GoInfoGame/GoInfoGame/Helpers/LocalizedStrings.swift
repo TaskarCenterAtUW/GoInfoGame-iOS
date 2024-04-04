@@ -100,6 +100,7 @@ enum LocalizedStrings: String {
     case questCrossingTypeMarked = "quest_crossing_type_marked"
     case questCrossingTypeUnmarked = "quest_crossing_type_unmarked"
     case questStairFlights = "quest_stair_flights"
+    case questKerbHeightTitle = "quest_kerb_height_title"
     
     var localized: String {
         return NSLocalizedString(rawValue, comment: "")

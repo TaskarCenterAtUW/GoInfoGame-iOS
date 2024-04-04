@@ -15,7 +15,12 @@ class CrossingIsland: QuestBase, Quest {
     var relationData: Element? = nil
     var _internalExpression: ElementFilterExpression?
     var icon: UIImage = #imageLiteral(resourceName: "ic_quest_pedestrian_crossing_island.pdf")
-    var wikiLink: String = ""
+    var wikiLink: String = """
+    ways with
+          highway = footway
+          and footway=traffic_island
+          and !crossing:marking
+    """
     var changesetComment: String = ""
     var title: String = "Crossing Island"
     var filter: String = ""
