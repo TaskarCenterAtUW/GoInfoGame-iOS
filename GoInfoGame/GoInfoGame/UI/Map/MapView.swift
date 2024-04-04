@@ -17,6 +17,8 @@ struct MapView: View {
     @StateObject private var viewModel = MapViewModel()
     @State private var isPresented = false
     
+    @StateObject var contextualInfo = ContextualInfo.shared
+        
     var body: some View {
             ZStack{
                 CustomMap(region: $viewModel.region,
@@ -25,7 +27,7 @@ struct MapView: View {
                           selectedQuest: $viewModel.selectedQuest,
                           isPresented: $isPresented, contextualInfo: { contextualInfo in
                     print(contextualInfo)
-                    self.setSubTitleForSideWalk(subTitle: contextualInfo)
+                    self.setContextualInfo(contextualinfo: contextualInfo)
                 })
                 .edgesIgnoringSafeArea(.all)
                 if viewModel.isLoading {
@@ -34,6 +36,7 @@ struct MapView: View {
                     LoadingView()
                 }
             }
+            .environmentObject(contextualInfo)
             .navigationBarHidden(false)
             .navigationBarItems(leading: EmptyView())
             .toolbar {
@@ -59,6 +62,7 @@ struct MapView: View {
             let selectedQuest = self.viewModel.selectedQuest
             if #available(iOS 16.0, *) {
                 selectedQuest?.parent?.form.presentationDetents(getSheetSize(sheetSize: selectedQuest?.sheetSize ?? .MEDIUM))
+                    .environmentObject(contextualInfo)
             } else {
                 // Nothing here
             }
@@ -72,10 +76,9 @@ struct MapView: View {
         }
     }
     
-    private func setSubTitleForSideWalk(subTitle: String) {
-        if let sidewalk =  self.viewModel.selectedQuest?.parent as? SideWalkWidth {
-            sidewalk.subTitle = subTitle
-        }
+    private func setContextualInfo(contextualinfo: String) {
+        contextualInfo.info = contextualinfo
+        
     }
 }
 
@@ -83,5 +86,14 @@ struct MapView: View {
 public class MapViewPublisher: ObservableObject {
     public let dismissSheet = PassthroughSubject<Bool, Never>()
     static let shared = MapViewPublisher()
+    private init() {}
+}
+
+//TODO: Move to a new file
+class ContextualInfo: ObservableObject {
+    static let shared = ContextualInfo()
+    
+    @Published var info: String = "Contextual info appears here"
+    
     private init() {}
 }
