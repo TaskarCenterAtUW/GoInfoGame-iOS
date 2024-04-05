@@ -330,4 +330,33 @@ class DatabaseConnector {
             return nil
         }
     }
+    
+    func updateNodeVersion(nodeId:String, version:Int) -> StoredNode?{
+        guard let theNode = getNode(id: nodeId) else { return nil }
+        do {
+            try realm.write {
+                theNode.version = version
+            }
+        }
+        catch {
+            print("Error while assigning version")
+        }
+        
+        return theNode
+    }
+    
+    func updateWayVersion(wayId: String, version: Int) -> StoredWay? {
+        guard let theWay = getWay(id: wayId) else { return nil }
+        
+        do {
+            try realm.write {
+                theWay.version = version
+            }
+        }
+        catch {
+            print("Error while assigning version")
+        }
+        
+        return theWay
+    }
 }

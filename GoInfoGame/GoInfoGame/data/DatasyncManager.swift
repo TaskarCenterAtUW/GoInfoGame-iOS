@@ -166,6 +166,7 @@ class DatasyncManager {
                 // close changeset
                 let newVersion = try await updateNode(node: &node).get()
                 node.version = newVersion
+                self.dbInstance.updateNodeVersion(nodeId: String(node.id), version: newVersion)
                 // Give back the new version and other stuff.
                 let closeResult = try await closeChangeset(id: String(changesetId)).get()
             
@@ -186,6 +187,8 @@ class DatasyncManager {
                 // close changeset
                 let newVersion = try await updateWay(way: &way).get()
                 way.version = newVersion
+                // update the version in databse
+                self.dbInstance.updateWayVersion(wayId: String(way.id), version: newVersion)
                 // Give back the new version and other stuff.
                 let closeResult = try await closeChangeset(id: String(changesetId)).get()
             
