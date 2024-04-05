@@ -24,7 +24,7 @@ struct HandRailForm: View, QuestForm {
                 }
                 QuestionHeader(icon: Image("steps_handrail"),
                                title: "Do these steps have handrail?",
-                               subtitle: "")
+                               contextualInfo: "")
                 YesNoView(actionBtnLabel: LocalizedStrings.otherAnswers.localized, action: { answer in
                     self.selectedAnswer = answer
                     if answer == .yes || answer == .no {

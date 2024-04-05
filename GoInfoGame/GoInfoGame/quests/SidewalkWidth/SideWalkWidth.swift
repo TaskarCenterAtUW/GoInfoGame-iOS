@@ -40,13 +40,6 @@ class SideWalkWidth : QuestBase, Quest {
             return AnyView(self.internalForm as! SideWalkWidthForm)
         }
     }
-     var subTitle: String = "" {
-        didSet {
-            if let sidwalk = self.internalForm as? SideWalkWidthForm {
-                sidwalk.viewModel.subTitle = self.subTitle
-            }
-        }
-    }
     
     override init() {
         super.init()

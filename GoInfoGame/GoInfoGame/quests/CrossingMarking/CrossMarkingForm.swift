@@ -16,6 +16,8 @@ struct CrossMarkingForm : View,QuestForm{
     
     @Environment(\.presentationMode) var presentationMode
     
+    @EnvironmentObject var contextualInfo: ContextualInfo
+    
     let items = [
         TextItem(value: CrossingAnswer.yes, titleId: LocalizedStrings.questCrossingYes.localized),
         TextItem(value: CrossingAnswer.no, titleId: LocalizedStrings.questCrossingNo.localized),
@@ -31,7 +33,7 @@ struct CrossMarkingForm : View,QuestForm{
             }
             QuestionHeader(icon: Image("pedestrian"),
                            title: LocalizedStrings.questCrossingTitle.localized,
-                           subtitle: "")
+                           contextualInfo: contextualInfo.info)
             VStack{
                 VStack (alignment: .leading){
                     ForEach(items, id: \.titleId) { item in
