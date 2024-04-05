@@ -63,18 +63,23 @@ class AppQuestManager {
     
     
     
+    
     // Fetches all the available quests from Database
     func fetchQuestsFromDB() ->  [DisplayUnitWithCoordinate] {
-        let nodesFromStorage = dbInstance.getNodes()
-        let waysFromStorage = dbInstance.getWays()
+            
+        let nodesFromStorage = dbInstance.getNodes().filter { n in
+            n.tags.count != 0
+        }
+        let waysFromStorage = dbInstance.getWays().filter{w in w.tags.count != 0 }
         let nodeElements = nodesFromStorage.map({$0.asNode()})
         let wayElements = waysFromStorage.map({$0.asWay()})
-        
+                
         // Get the quests for nodes
         var nodeQuests: [any Quest] = []
         var wayQuests: [any Quest] = []
         let allQuests = QuestsRepository.shared.applicableQuests
         var displayUnits : [DisplayUnitWithCoordinate] = []
+        
         
         // Get the quests for ways
         for node in nodeElements {
