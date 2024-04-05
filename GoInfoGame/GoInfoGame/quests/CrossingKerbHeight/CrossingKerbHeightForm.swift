@@ -17,7 +17,7 @@ struct CrossingKerbHeightForm: View, QuestForm {
     @Environment(\.presentationMode) var presentationMode
     
     @EnvironmentObject var contextualInfo: ContextualInfo
-
+    
     let imageData: [ImageData] = [
         ImageData(id:"kerb_height_raised",type: "raised", imageName: "kerb_height_raised", tag: "raised", optionName: LocalizedStrings.questKerbHeightRaised.localized),
         ImageData(id:"kerb_height_lowered",type: "lowered", imageName: "kerb_height_lowered", tag: "lowered", optionName: LocalizedStrings.questKerbHeightLowered.localized),
@@ -29,54 +29,65 @@ struct CrossingKerbHeightForm: View, QuestForm {
     var body: some View {
         ScrollView {
             VStack {
-                    DismissButtonView {
-                        withAnimation {
-                            presentationMode.wrappedValue.dismiss()
-                        }
+                DismissButtonView {
+                    withAnimation {
+                        presentationMode.wrappedValue.dismiss()
                     }
-                QuestionHeader(icon: Image("kerb_type"), title: LocalizedStrings.questCrossingKerbHeightTitle.localized, contextualInfo: contextualInfo.info).padding(.bottom,10)
-                    VStack(alignment: .leading){
-                        Text(LocalizedStrings.selectOne.localized).font(.caption).foregroundColor(.gray)
-                        ImageGridItemView(gridCount: 2, isLabelBelow: false, imageData: imageData, isImageRotated: false, isDisplayImageOnly: false, isScrollable: false, allowMultipleSelection: false, onTap: { (selectedImage) in
-                        }, selectedImages: $selectedImage)
-                        Divider()
-                        HStack() {
-                            Spacer()
-                            Button {
-                                showOtherAlert = true
-                            } label: {
-                                Text(LocalizedStrings.otherAnswers.localized).foregroundColor(.orange)
-                            }
+                }
+                QuestionHeader(icon: Image("kerb_type"), title: LocalizedStrings.questCrossingKerbHeightTitle.localized, contextualInfo: contextualInfo.info).padding(.top,10)
+                    .padding(.leading,10)
+                ZStack {
+                    VStack(alignment: .leading) {
+                        Text(LocalizedStrings.selectOne.localized)
+                            .font(.caption)
+                            .foregroundColor(.gray).padding(.bottom,10)
+                        
+                        ImageGridItemView(gridCount: 2,
+                                          isLabelBelow: false,
+                                          imageData: imageData,
+                                          isImageRotated: false,
+                                          isDisplayImageOnly: false,
+                                          isScrollable: false,
+                                          allowMultipleSelection: false,
+                                          onTap: { selectedImage in },
+                                          selectedImages: $selectedImage)
+                        
+                    }.padding()
+                    VStack {
+                        Spacer()
+                        HStack {
                             Spacer()
                             if !selectedImage.isEmpty {
-                                Button() {
+                                Button(action: {
                                     let answer = KerbHeightTypeAnswer.fromString(selectedImage.first ?? "")
                                     action?(answer ?? KerbHeightTypeAnswer.none)
-                                }label: {
+                                }) {
                                     Image(systemName: "checkmark.circle.fill")
                                         .font(Font.system(size: 40))
                                         .foregroundColor(.orange)
+                                        .padding()
                                 }
                             }
-                        }.padding(.top,10)
-                    } .padding()
-                        .background(
-                            RoundedRectangle(cornerRadius: 10)
-                                .fill(Color.white)
-                                .shadow(color: .gray, radius: 2, x: 0, y: 2))
-                    
+                        }
+                    }
                 }
-        }
-            
-            /// if user selects other answers option
-            if showOtherAlert {
-                /// display leave a note instead alert
-                CustomSureAlert(alertTitle: LocalizedStrings.questLeaveNewNoteTitle.localized, content: LocalizedStrings.questLeaveNewNoteDescription.localized,leftBtnLabel: LocalizedStrings.questLeaveNewNoteNo.localized, rightBtnLabel:LocalizedStrings.questLeaveNewNoteYes.localized, isDontShowCheckVisible: false, onCancel: {
-                    self.showOtherAlert = false
-                }, onConfirm: {
-                    self.showOtherAlert = false
-                })
+                .background(
+                    RoundedRectangle(cornerRadius: 10)
+                        .fill(Color.white)
+                        .shadow(color: .gray, radius: 2, x: 0, y: 2))
+                
             }
+        }
+        
+        /// if user selects other answers option
+        if showOtherAlert {
+            /// display leave a note instead alert
+            CustomSureAlert(alertTitle: LocalizedStrings.questLeaveNewNoteTitle.localized, content: LocalizedStrings.questLeaveNewNoteDescription.localized,leftBtnLabel: LocalizedStrings.questLeaveNewNoteNo.localized, rightBtnLabel:LocalizedStrings.questLeaveNewNoteYes.localized, isDontShowCheckVisible: false, onCancel: {
+                self.showOtherAlert = false
+            }, onConfirm: {
+                self.showOtherAlert = false
+            })
+        }
         
     }
 }

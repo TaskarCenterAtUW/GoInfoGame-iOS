@@ -51,21 +51,15 @@ struct SidewalkSurfaceForm: QuestForm ,View {
                                contextualInfo: contextualInfo.info)
                 .padding(.bottom,10)
                 // Quest Body
+                
                 VStack(alignment: .leading){
                     Text(LocalizedStrings.select.localized).font(.caption).foregroundColor(.gray)
                     /// Grid view for displaying selectable surfaces
                     ImageGridItemView(gridCount: 3, isLabelBelow: true, imageData: imagesFromSurfaces, isImageRotated: false, isDisplayImageOnly: false, isScrollable: true, allowMultipleSelection: false, onTap: { (selectedImage) in
                         selectedAnswer = SidewalkSurfaceAnswer(value: SurfaceAndNote(surface: Surface(rawValue: selectedImage.first ?? ""),note: ""))
                         print("selectedAnswer:", selectedAnswer)
-                        print("Clicked Tag: \(selectedImage)")}, selectedImages: $selectedImage)
-                    Divider()
-                    HStack() {
-                        Spacer()
-                        Button {
-                            showAlert = true
-                        } label: {
-                            Text(LocalizedStrings.otherAnswers.localized).foregroundColor(.orange)
-                        }.frame(alignment: .center)
+                        print("Clicked Tag: \(selectedImage)")}, selectedImages: $selectedImage).frame(height: 350)
+                    HStack(alignment: .center) {
                         Spacer()
                         if selectedAnswer.value.surface != Surface.none {
                             Button() {

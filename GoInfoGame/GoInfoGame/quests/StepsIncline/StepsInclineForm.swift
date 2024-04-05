@@ -32,21 +32,8 @@ struct StepsInclineForm: View, QuestForm {
             VStack (alignment: .leading){
                 Text(LocalizedStrings.selectOne.localized).font(.caption).foregroundColor(.gray)
                 ImageGridItemView(gridCount: 2, isLabelBelow: true, imageData: imageData, isImageRotated: true, isDisplayImageOnly: false, isScrollable: false, allowMultipleSelection: false, onTap: { (selectedImage) in
-                    action?(.down)
+                    action?(StepsInclineDirection(rawValue: selectedImage.first ?? "") ?? .down)
                 }, selectedImages:$selectedImage)
-                Divider()
-                HStack() {
-                    Spacer()
-                    Button {
-                        showAlert = true
-                    } label: {
-                        Text(LocalizedStrings.otherAnswers.localized).foregroundColor(.orange)
-                    }
-                    .alert(isPresented: $showAlert) {
-                        Alert(title: Text("More Questions"))
-                    }.frame(alignment: .center)
-                    Spacer()
-                }.padding(.top,10)
             }
             .padding()
             .background(

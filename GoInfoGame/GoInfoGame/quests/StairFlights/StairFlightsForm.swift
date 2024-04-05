@@ -15,7 +15,6 @@ struct StairFlightsForm: View, QuestForm {
     @State private var numberOfSteps: Int = 0
     @State private var showAlert = false
     @State private var isInputValid: Bool = false
-    @State private var isShowingAreYouSure = false
     @Environment(\.presentationMode) var presentationMode
     
     @EnvironmentObject var contextualInfo: ContextualInfo
@@ -54,7 +53,7 @@ struct StairFlightsForm: View, QuestForm {
                         Spacer()
                         if isInputValid {
                             Button() {
-                                self.isShowingAreYouSure.toggle()
+                                action?(numberOfSteps)
                             }label: {
                                 Image(systemName: "checkmark.circle.fill")
                                     .font(Font.system(size: 40))

@@ -11,7 +11,7 @@ import SwiftUI
 struct CrossMarkingForm : View,QuestForm{
     var action: ((CrossingAnswer) -> Void)?
     typealias AnswerClass = CrossingAnswer
-    @State private var selectedAnswer: CrossingAnswer?
+    @State private var selectedAnswer =  CrossingAnswer.none;
     @State private var showAlert = false
     
     @Environment(\.presentationMode) var presentationMode
@@ -38,22 +38,22 @@ struct CrossMarkingForm : View,QuestForm{
                     ForEach(items, id: \.titleId) { item in
                         RadioItem(textItem: item, isSelected: item.value == selectedAnswer) {
                             selectedAnswer = item.value
-                            action?(selectedAnswer ?? .no)
                         }
                         .frame(maxWidth: .infinity, alignment: .leading)
-                        .padding()
+                        .padding(.top,5)
+                        .padding(.bottom,5)
                     }}.padding(.top,10)
-                Divider()
-                Button {
-                    showAlert = true
-                } label: {
-                    Text(LocalizedStrings.cantSay.localized).foregroundColor(.orange)
+                if selectedAnswer != CrossingAnswer.none {
+                    Button() {
+                    /// applying final selected answer
+                        action?(selectedAnswer)
+                    }label: {
+                        Image(systemName: "checkmark.circle.fill")
+                            .font(Font.system(size: 40))
+                            .foregroundColor(.orange)
+                    }
                 }
-                .alert(isPresented: $showAlert) {
-                    Alert(title: Text("More Questions"))
-                }
-                .padding()
-            }
+            }.padding()
             .background(
                 RoundedRectangle(cornerRadius: 10)
                     .fill(Color.white)

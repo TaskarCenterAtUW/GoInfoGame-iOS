@@ -24,7 +24,7 @@ class CrossingType: QuestBase, Quest {
     var relationData: Element? = nil
     var _internalExpression: ElementFilterExpression?
     var displayUnit: DisplayUnit {
-        DisplayUnit(title: self.title, description: "",parent: self,sheetSize:.LARGE )
+        DisplayUnit(title: self.title, description: "",parent: self,sheetSize:.MEDIUM )
     }
     var filterExpression: ElementFilterExpression? {
         if(_internalExpression != nil){

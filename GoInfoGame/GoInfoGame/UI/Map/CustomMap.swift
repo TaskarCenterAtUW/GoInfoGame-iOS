@@ -94,7 +94,7 @@ struct CustomMap: UIViewRepresentable {
                             contextualString = "The \(selectedQuest.title!) is on \(streetName == "" ? "the street" : streetName) at \(distance) meters"
                         }
                         self.contextualInfo?(contextualString)
-                    } 
+                    }
                 }
             }
             // Deselect the annotation to prevent re-adding on selection
