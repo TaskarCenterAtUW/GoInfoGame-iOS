@@ -21,7 +21,6 @@ struct CrossMarkingForm : View,QuestForm{
     let items = [
         TextItem(value: CrossingAnswer.yes, titleId: LocalizedStrings.questCrossingYes.localized),
         TextItem(value: CrossingAnswer.no, titleId: LocalizedStrings.questCrossingNo.localized),
-        TextItem(value: CrossingAnswer.prohibited, titleId:  LocalizedStrings.questCrossingProhibited.localized),
     ]
     
     var body: some View {
@@ -41,6 +40,8 @@ struct CrossMarkingForm : View,QuestForm{
                             selectedAnswer = item.value
                             action?(selectedAnswer ?? .no)
                         }
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .padding()
                     }}.padding(.top,10)
                 Divider()
                 Button {

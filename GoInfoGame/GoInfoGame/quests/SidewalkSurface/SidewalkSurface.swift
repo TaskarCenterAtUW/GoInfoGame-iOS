@@ -19,7 +19,7 @@ class SidewalkSurface: QuestBase, Quest {
     var changesetComment: String = ""
     var relationData: Element? = nil
     var displayUnit: DisplayUnit {
-        DisplayUnit(title: self.title, description: "",parent: self,sheetSize:.LARGE )
+        DisplayUnit(title: self.title, description: "",parent: self,sheetSize: .XLARGE)
     }
     var form: AnyView {
         get{

@@ -20,7 +20,7 @@ class CrossMarking: QuestBase, Quest {
     var changesetComment: String = ""
     var relationData: Element? = nil
     var displayUnit: DisplayUnit {
-        DisplayUnit(title: self.title, description: "",parent: self,sheetSize:.MEDIUM )
+        DisplayUnit(title: self.title, description: "",parent: self,sheetSize:.LARGE )
     }
     var filterExpression: ElementFilterExpression? {
         if(_internalExpression != nil){
@@ -60,7 +60,6 @@ class CrossMarking: QuestBase, Quest {
 enum CrossingAnswer: String {
     case yes = "Yes"
     case no = "No"
-    case prohibited = "Prohibited"
 }
 
 struct TextItem<T> {

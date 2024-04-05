@@ -34,7 +34,6 @@ struct CrossingTypeForm: View, QuestForm {
                         presentationMode.wrappedValue.dismiss()
                     }
                 }
-                .padding([.top], 30)
                 QuestionHeader(icon:Image("pedestrian_crossing"), title: LocalizedStrings.questCrossingTypeTitle.localized, contextualInfo: contextualInfo.info)
                 VStack(alignment:.center){
                     VStack (alignment: .leading){
