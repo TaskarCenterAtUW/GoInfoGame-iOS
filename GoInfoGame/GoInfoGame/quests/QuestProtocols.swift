@@ -46,12 +46,14 @@ class QuestBase {
            print("Unknown Stored element type received")
        }
        // Sync using datasyncmanager
+       
+       // Dismiss sheet after syncing to db
+       MapViewPublisher.shared.dismissSheet.send(true)
+       
 
        DatasyncManager.shared.syncDataToOSM {
            print("SYNC DONE")
-           DispatchQueue.main.async {
-               MapViewPublisher.shared.dismissSheet.send(true)
-           }
+
        }
     }
 }
