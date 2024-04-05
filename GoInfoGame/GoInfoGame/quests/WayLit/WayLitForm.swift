@@ -26,7 +26,7 @@ struct WayLitForm: View, QuestForm {
                 }
                 QuestionHeader(icon: Image("add_way_lit"),
                                title: LocalizedStrings.questLitTitle.localized,
-                               subtitle: "SideWalk")
+                               contextualInfo: "SideWalk")
                 YesNoView(actionBtnLabel: LocalizedStrings.otherAnswers.localized, action: { answer in
                     self.selectedAnswer = answer
                     if answer == .yes || answer == .no {

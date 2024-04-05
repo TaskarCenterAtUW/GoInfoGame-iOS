@@ -31,7 +31,7 @@ struct SideWalkValidationForm: QuestForm ,View {
             VStack (alignment: .leading){
                 QuestionHeader(icon: Image("sidewalk"),
                                title: LocalizedStrings.questSidewalkTitle.localized,
-                               subtitle: "Street")
+                               contextualInfo: "Street")
                 .padding(.bottom,10)
                 VStack(alignment: .leading){
                     Text(LocalizedStrings.select.localized).font(.caption).foregroundColor(.gray)

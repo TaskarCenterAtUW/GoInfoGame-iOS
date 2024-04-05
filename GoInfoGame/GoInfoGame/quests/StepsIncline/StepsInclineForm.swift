@@ -15,6 +15,8 @@ struct StepsInclineForm: View, QuestForm {
     
     @Environment(\.presentationMode) var presentationMode
     
+    @EnvironmentObject var contextualInfo: ContextualInfo
+    
     let imageData: [ImageData] = [
         ImageData(id:"UP",type: "none", imageName: "steps-incline-up", tag: "up", optionName: LocalizedStrings.questStepsInclineUp.localized),
         ImageData(id:"UP_REVERSED",type: "bicycle", imageName: "steps-incline-up-reversed", tag: "down", optionName: LocalizedStrings.questStepsInclineUp.localized),
@@ -26,7 +28,7 @@ struct StepsInclineForm: View, QuestForm {
                     presentationMode.wrappedValue.dismiss()
                 }
             }
-            QuestionHeader(icon: Image("steps"), title: "Which direction leads upwards for the steps", subtitle: "steps")
+            QuestionHeader(icon: Image("steps"), title: "Which direction leads upwards for the steps", contextualInfo: contextualInfo.info)
             VStack (alignment: .leading){
                 Text(LocalizedStrings.selectOne.localized).font(.caption).foregroundColor(.gray)
                 ImageGridItemView(gridCount: 2, isLabelBelow: true, imageData: imageData, isImageRotated: true, isDisplayImageOnly: false, isScrollable: false, allowMultipleSelection: false, onTap: { (selectedImage) in

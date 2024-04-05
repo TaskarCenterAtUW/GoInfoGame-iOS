@@ -180,6 +180,7 @@
 		B0CCB98C2B8626AE00AA73DE /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0CCB98B2B8626AE00AA73DE /* ProfileView.swift */; };
 		B0CCB98E2B8626C600AA73DE /* ProfileViewVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0CCB98D2B8626C600AA73DE /* ProfileViewVM.swift */; };
 		FA1992ED2BB1A78C003B4719 /* KeychainManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA1992EC2BB1A78C003B4719 /* KeychainManager.swift */; };
+		FA2EC4822BBECE38003B8B64 /* KeychainManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA1992EC2BB1A78C003B4719 /* KeychainManager.swift */; };
 		FA5853C12B21F17F00301CDA /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA5853C02B21F17F00301CDA /* OnboardingView.swift */; };
 		FA87A8102B68142F000A6BEA /* LoadingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA87A80F2B68142F000A6BEA /* LoadingView.swift */; };
 		FA87A8132B6AC019000A6BEA /* StepsRampTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA87A8112B6AC019000A6BEA /* StepsRampTests.swift */; };
@@ -1670,6 +1671,7 @@
 				A475C7CE2B5D4FE200BABEDA /* OSMChangeset.swift in Sources */,
 				A40E728B2B5D48A800328848 /* OSMConnection.swift in Sources */,
 				A475C7D32B5E22C800BABEDA /* OSMNode.swift in Sources */,
+				FA2EC4822BBECE38003B8B64 /* KeychainManager.swift in Sources */,
 				A475C7D92B5E264700BABEDA /* OSMWay.swift in Sources */,
 				A475C7DD2B5E3E7C00BABEDA /* OSMPayload.swift in Sources */,
 				97A014BF2B7B580700F7C277 /* OSMMapData.swift in Sources */,

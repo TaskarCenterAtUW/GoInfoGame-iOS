@@ -28,7 +28,7 @@ struct TactilePavingKerbForm: View, QuestForm {
                     }
                 }
                 .padding([.top], 30)
-                QuestionHeader(icon:Image("kerb_tactile_paving"), title: LocalizedStrings.questTactilePavingKerbTitle.localized, subtitle: "Lowered Curb")
+                QuestionHeader(icon:Image("kerb_tactile_paving"), title: LocalizedStrings.questTactilePavingKerbTitle.localized, contextualInfo: "Lowered Curb")
                 VStack(alignment:.leading){
                     Text(LocalizedStrings.usuallyLooksLikeThis.localized).font(.caption).foregroundColor(.gray)
                     Image("tactile_paving_illustration")

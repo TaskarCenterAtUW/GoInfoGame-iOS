@@ -15,7 +15,7 @@ class MapViewModel: ObservableObject {
     let locationManagerDelegate = LocationManagerDelegate()
     @Published var isLoading: Bool = false
     var region = MKCoordinateRegion(center: CLLocationCoordinate2D(latitude: 37.3318, longitude: -122.0312), span: MKCoordinateSpan(latitudeDelta: 0.0004 , longitudeDelta: 0.0004 ))
-    let viewSpanDelta = 0.0004 // Delta lat/lng to show to the user
+    let viewSpanDelta = 0.005 // Delta lat/lng to show to the user
 
     
     @Published var items: [DisplayUnitWithCoordinate] = []
@@ -51,6 +51,10 @@ class MapViewModel: ObservableObject {
             self.items = AppQuestManager.shared.fetchQuestsFromDB()
             self.isLoading = false
         }
+    }
+    
+    func refreshMapAfterSubmission() {
+        self.items = AppQuestManager.shared.fetchQuestsFromDB()
     }
         
     private func boundingBoxAroundLocation(location: CLLocation, distance: CLLocationDistance) -> BBox {

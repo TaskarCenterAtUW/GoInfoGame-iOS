@@ -13,24 +13,28 @@ class QuestsRepository {
     private init() {}
     
     var applicableQuests: [ any Quest] = [
-        SideWalkWidth(),
-        HandRail(),
-        StepsRamp(),
-        StepsIncline(),
-        StairNumber(),
-        TactilePavingSteps(),
-        WayLit(),
-        BusStopLit(),
-        CrossMarking(),
-        SideWalkValidation(),
-        SidewalkSurface(),
-        TactilePavingKerb(),
-        CrossingIsland(),
+        
         CrossingType(),
+        CrossingIsland(),
+        CrossMarking(),
+        SidewalkSurface(),
+        StairFlights(),
+        TactilePavingSteps(),
+        SideWalkWidth(),
+        StepsIncline(),
         TactilePavingCrosswalk(),
         CrossingKerbHeight(),
-        StairFlights(),
         KerbHeight()
+
+
+        
+//        HandRail(),
+//        StepsRamp(),
+//        StairNumber(),
+//        WayLit(),
+//        BusStopLit(),
+//        SideWalkValidation(),
+//        TactilePavingKerb(),
     ]
     
     var displayQuests: [DisplayUnit] {

@@ -33,6 +33,6 @@ public struct OSMLogin {
     }
     /// Dev server credentials
     public static var testOSM : OSMLogin {
-        OSMLogin(username: "giyiw35819@tupanda.com", password: "d.Dgq6J6aBy.dCJ") 
+        OSMLogin(username: "giyiw35819@tupanda.com", password: "ginyiw123") 
     }
 }

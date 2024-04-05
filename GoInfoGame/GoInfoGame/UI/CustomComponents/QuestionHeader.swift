@@ -10,7 +10,7 @@ import SwiftUI
 struct QuestionHeader: View {
     var icon: Image
     var title: String
-    var subtitle: String
+    var contextualInfo: String
     
     var body: some View {
         VStack(alignment: .leading) {
@@ -30,7 +30,7 @@ struct QuestionHeader: View {
                 .multilineTextAlignment(.leading)
                 .lineLimit(nil)
                 .fixedSize(horizontal: false, vertical: true)
-            Text(subtitle)
+            Text(contextualInfo)
                 .font(.subheadline)
                 .foregroundColor(.gray)
                 .padding(.top,2)
@@ -42,5 +42,5 @@ struct QuestionHeader: View {
 }
 
 #Preview {
-    QuestionHeader(icon: Image("add_way_lit"), title: "Question", subtitle: "Description")
+    QuestionHeader(icon: Image("add_way_lit"), title: "Question", contextualInfo: "Description")
 }

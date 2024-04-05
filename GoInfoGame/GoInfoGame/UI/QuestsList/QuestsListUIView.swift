@@ -13,6 +13,8 @@ struct QuestsListUIView : View {
     
     @Environment(\.presentationMode) var presentationMode
     
+    @StateObject var contextualInfo = ContextualInfo.shared
+    
     var body: some View {
         VStack {
             DismissButtonView {
@@ -25,6 +27,7 @@ struct QuestsListUIView : View {
                     ForEach(items) { item in
                         Text(item.title)
                             .onTapGesture {
+                                setContextualInfo()
                                 selectedQuest = item
                             }
                     }
@@ -33,12 +36,17 @@ struct QuestsListUIView : View {
             .sheet(item: $selectedQuest) { selectedQuest in
                 if #available(iOS 16.0, *) {
                     selectedQuest.parent?.form.presentationDetents(getSheetSize(sheetSize: selectedQuest.sheetSize ?? .MEDIUM))
+                        .environmentObject(contextualInfo)
                 } else {
                     // Nothing here
                 }
         }
         }
         .navigationBarHidden(true)
+    }
+    
+    private func setContextualInfo() {
+        contextualInfo.info = "Contextual Info appears here"
     }
 }
 
