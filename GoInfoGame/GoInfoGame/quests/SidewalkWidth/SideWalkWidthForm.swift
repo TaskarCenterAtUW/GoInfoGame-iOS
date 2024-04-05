@@ -9,10 +9,6 @@ import SwiftUI
 import UIKit
 import Combine
 
-class SideWalkWidthFormModel : ObservableObject {
-   @Published var subTitle: String = "Residential Road"
-}
-
 struct SideWalkWidthForm: View, QuestForm {
     typealias AnswerClass = WidthAnswer
     @State private var showAlert = false
@@ -20,10 +16,11 @@ struct SideWalkWidthForm: View, QuestForm {
     @State private var inches: Int = 0
     @State private var isConfirmAlert: Bool = false
     @State private var isKeyboardVisible: Bool = false // Track keyboard visibility
-    @ObservedObject var viewModel = SideWalkWidthFormModel()
     var action: ((WidthAnswer) -> Void)?
     
     @Environment(\.presentationMode) var presentationMode
+    
+    @EnvironmentObject var contextualInfo: ContextualInfo
     
     var body: some View {
         VStack{
@@ -35,7 +32,7 @@ struct SideWalkWidthForm: View, QuestForm {
             .padding([.top], 30)
             QuestionHeader(icon: Image("sidewalk-width-img"),
                            title: LocalizedStrings.questDetermineSidewalkWidth.localized,
-                           contextualInfo: viewModel.subTitle)
+                           contextualInfo: contextualInfo.info)
             Text(LocalizedStrings.questRoadWithExplanation.localized).font(.caption)
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .fixedSize(horizontal: false, vertical: true)
