@@ -33,7 +33,7 @@ struct CrossingTypeForm: View, QuestForm {
                     withAnimation {
                         presentationMode.wrappedValue.dismiss()
                     }
-                }
+                }.padding(.top,5)
                 QuestionHeader(icon:Image("pedestrian_crossing"), title: LocalizedStrings.questCrossingTypeTitle.localized, contextualInfo: contextualInfo.info)
                 VStack(alignment:.center){
                     VStack (alignment: .leading){
@@ -43,15 +43,7 @@ struct CrossingTypeForm: View, QuestForm {
                             print("selected crossing type tag ->",selectedAnswer.rawValue)
                         }, selectedImages: $selectedImage)
                     }
-                    Divider()
-                    HStack() {
-                        Spacer()
-                        Button {
-                            self.showOtherAlert.toggle()
-                        } label: {
-                            Text(LocalizedStrings.cantSay.localized.uppercased()).foregroundColor(.orange)
-                        }.frame(alignment: .center)
-                        Spacer()
+                    VStack() {
                         if selectedAnswer != .none {
                             Button() {
                              

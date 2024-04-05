@@ -45,15 +45,6 @@ struct SideWalkWidthForm: View, QuestForm {
                                 UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
                             }
                         }
-            Divider()
-            Button {
-                showAlert = true
-            } label: {
-                Text(LocalizedStrings.otherAnswers.localized).foregroundColor(.orange)
-            }
-            .alert(isPresented: $showAlert) {
-                Alert(title: Text("More Questions"))
-            }
             .padding(.top,10)
             Spacer()
         }.padding()

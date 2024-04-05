@@ -40,7 +40,8 @@ struct CrossMarkingForm : View,QuestForm{
                             selectedAnswer = item.value
                         }
                         .frame(maxWidth: .infinity, alignment: .leading)
-                        .padding()
+                        .padding(.top,5)
+                        .padding(.bottom,5)
                     }}.padding(.top,10)
                 if selectedAnswer != CrossingAnswer.none {
                     Button() {

@@ -88,31 +88,11 @@ struct CustomMap: UIViewRepresentable {
                 let annotationLocation = CLLocation(latitude: selectedQuest.coordinate.latitude, longitude: selectedQuest.coordinate.longitude)
                 parent.inferStreetName(location: annotationLocation) { streetName in
                     if let streetName = streetName {
-                        if let selectedQuest = self.parent.selectedQuest?.parent {
-                            switch selectedQuest {
-                            case is SidewalkSurface:
-                                contextualString = "The Sidewalk is along \(streetName == "" ? "the street" : streetName) at \(distance) meters"
-                            case is CrossingType:
-                                contextualString = "This is a crossing type quest."
-                            case is CrossingIsland:
-                                contextualString = "This is a crossing island quest."
-                            case is CrossMarking:
-                                contextualString = "This is a cross marking quest."
-                            case is StairFlights:
-                                contextualString = "This is a stair flights quest."
-                            case is TactilePavingSteps:
-                                contextualString = "This is a tactile paving steps quest."
-                            case is StepsIncline:
-                                contextualString = "This is a steps incline quest."
-                            case is TactilePavingCrosswalk:
-                                contextualString = "This is a tactile paving crosswalk quest."
-                            case is CrossingKerbHeight:
-                                contextualString = "This is a crossing kerb height quest."
-                            case is KerbHeight:
-                                contextualString = "This is a kerb height quest."
-                            default:
-                                contextualString = "The \(selectedQuest.title) is on \(streetName == "" ? "the street" : streetName) at \(distance) meters"
-                            }}
+                        if let sidewalk =  self.parent.selectedQuest?.parent as? SideWalkWidth {
+                            contextualString = "The Sidewalk is along \(streetName == "" ? "the street" : streetName) at \(distance) meters"
+                        } else {
+                            contextualString = "The \(selectedQuest.title!) is on \(streetName == "" ? "the street" : streetName) at \(distance) meters"
+                        }
                         self.contextualInfo?(contextualString)
                     }
                 }
