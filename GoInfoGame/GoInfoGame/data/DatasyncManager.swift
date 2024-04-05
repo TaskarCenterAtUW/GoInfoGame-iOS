@@ -39,6 +39,12 @@ class DatasyncManager {
         else {
             isSynching = true
         }
+        // check if the user is logged in
+        // if user not logged in, isSynching-false and return
+        guard let accessToken = osmConnection.accessToken else {
+            isSynching = false
+            return
+        }
         let changesets = dbInstance.getChangesets()
         print("Starting to sync data")
         var nodesToSync: [String:StoredNode] = [:]
