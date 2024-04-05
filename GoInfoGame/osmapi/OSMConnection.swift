@@ -70,7 +70,7 @@ public class OSMConnection {
             print("Invalid URL given")
             return
         }
-        BaseNetworkManager.shared.addOrSetHeaders(header: "Authorization", value: "Basic \(self.userCreds.getHeaderData())")
+        BaseNetworkManager.shared.addOrSetHeaders(header: "Authorization", value: "Bearer \(self.accessToken!)")
         BaseNetworkManager.shared.postData(url: url,method: "PUT" ,body: OSMChangesetPayload()) { (result: Result<Int,Error>) in
             switch result {
             case .success(let changesetID):
@@ -93,7 +93,7 @@ public class OSMConnection {
             print("Invalid URL given")
             return
         }
-        BaseNetworkManager.shared.addOrSetHeaders(header: "Authorization", value: "Basic \(self.userCreds.getHeaderData())")
+        BaseNetworkManager.shared.addOrSetHeaders(header: "Authorization", value: "Bearer \(self.accessToken!)")
         BaseNetworkManager.shared.postData(url: url,method: "PUT" ,body: ["tag":"xyz"],expectEmpty: true) { (result: Result<Bool,Error>) in
             switch result {
             case .success(let closedResult):
@@ -112,7 +112,7 @@ public class OSMConnection {
     func getChangesets(_ completion: @escaping(()->())) {
         let urlString = self.baseUrl.appending("changesets.json")
         var request = URLRequest(url: URL(string: urlString)!,timeoutInterval: Double.infinity)
-        request.addValue("Basic \(self.userCreds.getHeaderData())", forHTTPHeaderField: "Authorization")
+        request.addValue("Bearer \(self.accessToken!)", forHTTPHeaderField: "Authorization")
         request.httpMethod = "GET"
         let task = URLSession.shared.dataTask(with: request) { data, response, error in
             guard let data = data else {
@@ -148,7 +148,7 @@ public class OSMConnection {
             print("Invalid URL given")
             return
         }
-        BaseNetworkManager.shared.addOrSetHeaders(header: "Authorization", value: "Basic \(self.userCreds.getHeaderData())")
+        BaseNetworkManager.shared.addOrSetHeaders(header: "Authorization", value: "Bearer \(self.accessToken!)")
         // Add nodes to the same
         if(node.tags == nil){
             node.tags = [:]
@@ -172,7 +172,7 @@ public class OSMConnection {
             print("Invalid URL given")
             return
         }
-        BaseNetworkManager.shared.addOrSetHeaders(header: "Authorization", value: "Basic \(self.userCreds.getHeaderData())")
+        BaseNetworkManager.shared.addOrSetHeaders(header: "Authorization", value: "Bearer \(self.accessToken!)")
         // Add nodes to the same
         
         tags.forEach { (key: String, value: String) in
