@@ -184,6 +184,7 @@ class DatasyncManager {
         }
     }
     
+    @MainActor
     func syncWay(way: inout OSMWay)  async -> Result<Bool,Error> {
         do {
                 // open changeset
