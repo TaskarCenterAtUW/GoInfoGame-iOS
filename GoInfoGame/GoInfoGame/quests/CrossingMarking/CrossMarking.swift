@@ -60,7 +60,6 @@ class CrossMarking: QuestBase, Quest {
 enum CrossingAnswer: String {
     case yes = "Yes"
     case no = "No"
-    case prohibited = "Prohibited"
 }
 
 struct TextItem<T> {
