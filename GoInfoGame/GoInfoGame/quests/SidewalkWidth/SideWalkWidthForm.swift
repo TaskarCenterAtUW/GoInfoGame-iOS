@@ -43,40 +43,43 @@ struct SideWalkWidthForm: View, QuestForm {
                             if isAlert {
                                 // Dismiss the keyboard when confirmation is given
                                 UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
+                                processAnswer()
                             }
+                           
                         }
             .padding(.top,10)
             Spacer()
         }.padding()
             .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .alert(isPresented: $isConfirmAlert) {
-                if !(feet >= 1 && feet <= 12) {
-                    return Alert(
-                        title: Text(LocalizedStrings.questGenericConfirmationTitle.localized),
-                        message: Text(LocalizedStrings.questRoadWidthUnusualInputConfirmation.localized),
-                        primaryButton: .default(Text(LocalizedStrings.questGenericConfirmationYes.localized)) {
-                            processAnswer()
-                        },
-                        secondaryButton: .default(Text(LocalizedStrings.questGenericConfirmationNo.localized))
-                    )
-                } else {
-                    return Alert(
-                        title: Text(LocalizedStrings.questSourceDialogTitle.localized),
-                        message: Text(LocalizedStrings.questSourceDialogNote.localized),
-                        primaryButton: .default(Text(LocalizedStrings.questGenericConfirmationYes.localized)) {
-                            processAnswer()
-                        },
-                        secondaryButton: .default(Text(LocalizedStrings.undoConfirmNegative.localized))
-                    )
-                }
-                
-            }
+//            .alert(isPresented: $isConfirmAlert) {
+//                if !(feet >= 1 && feet <= 12) {
+//                    return Alert(
+//                        title: Text(LocalizedStrings.questGenericConfirmationTitle.localized),
+//                        message: Text(LocalizedStrings.questRoadWidthUnusualInputConfirmation.localized),
+//                        primaryButton: .default(Text(LocalizedStrings.questGenericConfirmationYes.localized)) {
+//                            processAnswer()
+//                        },
+//                        secondaryButton: .default(Text(LocalizedStrings.questGenericConfirmationNo.localized))
+//                    )
+//                } else {
+//                    return Alert(
+//                        title: Text(LocalizedStrings.questSourceDialogTitle.localized),
+//                        message: Text(LocalizedStrings.questSourceDialogNote.localized),
+//                        primaryButton: .default(Text(LocalizedStrings.questGenericConfirmationYes.localized)) {
+//                            processAnswer()
+//                        },
+//                        secondaryButton: .default(Text(LocalizedStrings.undoConfirmNegative.localized))
+//                    )
+//                }
+//                
+//            }
     }
     
     func processAnswer() {
         let width = self.convertFeetToMeter(feet: feet, inches: inches)
         let answer = WidthAnswer(width: width, units: "m", isARMeasurement: false)
         action?(answer)
+        isConfirmAlert = false
     }
     
     func convertFeetToMeter(feet: Int, inches: Int)-> String {
