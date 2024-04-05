@@ -17,6 +17,8 @@ struct KerbHeightForm: View, QuestForm {
     
     @EnvironmentObject var contextualInfo: ContextualInfo
     
+    @Environment(\.presentationMode) var presentationMode
+    
     let KerbHeightImageData: [ImageData] = [
         ImageData(id:"kerb_height_raised", type: "raised", imageName: "kerb_height_raised", tag: "raised", optionName: LocalizedStrings.questKerbHeightRaised.localized),
         ImageData(id:"kerb_height_lowered", type: "lowered", imageName: "kerb_height_lowered", tag: "lowered", optionName: LocalizedStrings.questKerbHeightLowered.localized),
@@ -27,6 +29,11 @@ struct KerbHeightForm: View, QuestForm {
     
     var body: some View {
         VStack(alignment: .leading) {
+            DismissButtonView {
+                withAnimation {
+                    presentationMode.wrappedValue.dismiss()
+                }
+            }
             QuestionHeader(icon: Image("kerb_type"), title: LocalizedStrings.questKerbHeightTitle.localized, contextualInfo: contextualInfo.info).padding(.bottom,10)
             
             ZStack {

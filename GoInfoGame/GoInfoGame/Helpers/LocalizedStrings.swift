@@ -39,7 +39,6 @@ enum LocalizedStrings: String {
     case questCrossingTitle = "quest_crossing_title"
     case questCrossingYes = "quest_crossing_yes"
     case questCrossingNo = "quest_crossing_no"
-    case questCrossingProhibited = "quest_crossing_prohibited"
     case cantSay = "cant_say"
     case questGenericAnswerDiffersAlongTheWay = "quest_generic_answer_differs_along_the_way"
     case questSidewalkTitle = "quest_sidewalk_title"
