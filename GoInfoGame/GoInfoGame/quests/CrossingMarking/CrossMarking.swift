@@ -9,12 +9,12 @@ import Foundation
 import UIKit
 import SwiftUI
 import osmparser
-
+// This is to figure out what type of marking is there for the crossing
 class CrossMarking: QuestBase, Quest {
     typealias AnswerClass = CrossingAnswer
     var _internalExpression: ElementFilterExpression?
     var title: String = "Cross Marking"
-    var filter: String = "ways with highway=footway and !footway"
+    var filter: String = "ways with highway=footway and footway=crossing and !crossing"
     var icon: UIImage = #imageLiteral(resourceName: "pedestrian")
     var wikiLink: String = ""
     var changesetComment: String = ""
