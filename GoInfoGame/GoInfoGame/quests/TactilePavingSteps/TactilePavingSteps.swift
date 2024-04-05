@@ -30,7 +30,7 @@ class TactilePavingSteps :QuestBase, Quest {
             return _internalExpression
         }
         else {
-            print("<>")
+//            print("<>")
             _internalExpression = try? filter.toElementFilterExpression()
             return _internalExpression
         }

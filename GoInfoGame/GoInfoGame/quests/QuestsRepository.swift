@@ -12,7 +12,7 @@ class QuestsRepository {
     static let shared = QuestsRepository()
     private init() {}
     
-    var applicableQuests: [ any Quest] = [
+    let applicableQuests: [ any Quest] = [
         
         CrossingType(),
         CrossingIsland(),

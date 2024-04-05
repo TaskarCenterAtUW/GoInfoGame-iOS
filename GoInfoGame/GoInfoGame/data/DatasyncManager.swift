@@ -39,6 +39,12 @@ class DatasyncManager {
         else {
             isSynching = true
         }
+        // check if the user is logged in
+        // if user not logged in, isSynching-false and return
+        guard let accessToken = osmConnection.accessToken else {
+            isSynching = false
+            return
+        }
         let changesets = dbInstance.getChangesets()
         print("Starting to sync data")
         var nodesToSync: [String:StoredNode] = [:]
@@ -178,6 +184,7 @@ class DatasyncManager {
         }
     }
     
+    @MainActor
     func syncWay(way: inout OSMWay)  async -> Result<Bool,Error> {
         do {
                 // open changeset
