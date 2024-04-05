@@ -18,6 +18,8 @@ struct StairFlightsForm: View, QuestForm {
     @State private var isShowingAreYouSure = false
     @Environment(\.presentationMode) var presentationMode
     
+    @EnvironmentObject var contextualInfo: ContextualInfo
+    
     var body: some View {
             VStack{
                 DismissButtonView {
@@ -25,7 +27,7 @@ struct StairFlightsForm: View, QuestForm {
                         presentationMode.wrappedValue.dismiss()
                     }
                 }
-                QuestionHeader(icon:Image("steps_count"), title: LocalizedStrings.questStairFlights.localized, contextualInfo: "Stair Flights")
+                QuestionHeader(icon:Image("steps_count"), title: LocalizedStrings.questStairFlights.localized, contextualInfo: contextualInfo.info)
                 VStack{
                     HStack {
                         Spacer()

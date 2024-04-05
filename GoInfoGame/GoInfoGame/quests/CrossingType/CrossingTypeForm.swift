@@ -18,6 +18,8 @@ struct CrossingTypeForm: View, QuestForm {
     @State private var showOtherAlert = false
     
     @Environment(\.presentationMode) var presentationMode
+    
+    @EnvironmentObject var contextualInfo: ContextualInfo
 
     let imageData: [ImageData] = [
         ImageData(id:"crossing_type_signals",type: "traffic_signals", imageName: "crossing_type_signals", tag: "traffic_signals", optionName: LocalizedStrings.questCrossingTypeSignalsControlled.localized),
@@ -33,7 +35,7 @@ struct CrossingTypeForm: View, QuestForm {
                     }
                 }
                 .padding([.top], 30)
-                QuestionHeader(icon:Image("pedestrian_crossing"), title: LocalizedStrings.questCrossingTypeTitle.localized, contextualInfo: "Crossing")
+                QuestionHeader(icon:Image("pedestrian_crossing"), title: LocalizedStrings.questCrossingTypeTitle.localized, contextualInfo: contextualInfo.info)
                 VStack(alignment:.center){
                     VStack (alignment: .leading){
                         Text(LocalizedStrings.selectOne.localized).font(.caption).foregroundColor(.gray)

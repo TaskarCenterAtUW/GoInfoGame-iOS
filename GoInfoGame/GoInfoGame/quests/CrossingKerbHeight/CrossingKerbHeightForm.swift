@@ -15,6 +15,8 @@ struct CrossingKerbHeightForm: View, QuestForm {
     @State private var showAlert = false
     
     @Environment(\.presentationMode) var presentationMode
+    
+    @EnvironmentObject var contextualInfo: ContextualInfo
 
     let imageData: [ImageData] = [
         ImageData(id:"kerb_height_raised",type: "raised", imageName: "kerb_height_raised", tag: "raised", optionName: LocalizedStrings.questKerbHeightRaised.localized),
@@ -32,7 +34,7 @@ struct CrossingKerbHeightForm: View, QuestForm {
                             presentationMode.wrappedValue.dismiss()
                         }
                     }
-                    QuestionHeader(icon: Image("kerb_type"), title: LocalizedStrings.questCrossingKerbHeightTitle.localized, contextualInfo: "").padding(.bottom,10)
+                QuestionHeader(icon: Image("kerb_type"), title: LocalizedStrings.questCrossingKerbHeightTitle.localized, contextualInfo: contextualInfo.info).padding(.bottom,10)
                     VStack(alignment: .leading){
                         Text(LocalizedStrings.selectOne.localized).font(.caption).foregroundColor(.gray)
                         ImageGridItemView(gridCount: 2, isLabelBelow: false, imageData: imageData, isImageRotated: false, isDisplayImageOnly: false, isScrollable: false, allowMultipleSelection: false, onTap: { (selectedImage) in

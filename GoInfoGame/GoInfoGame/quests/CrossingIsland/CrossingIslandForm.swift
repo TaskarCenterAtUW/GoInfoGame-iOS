@@ -19,6 +19,8 @@ struct CrossingIslandForm: View, QuestForm {
     
     @Environment(\.presentationMode) var presentationMode
     
+    @EnvironmentObject var contextualInfo: ContextualInfo
+    
     var body: some View {
         ZStack {
             VStack{
@@ -29,7 +31,7 @@ struct CrossingIslandForm: View, QuestForm {
                 }
                 QuestionHeader(icon: Image("ic_quest_pedestrian_crossing_island"),
                                title: LocalizedStrings.questPedestrianCrossingIsland.localized,
-                               contextualInfo: "Unmarked Crossing")
+                               contextualInfo: contextualInfo.info)
                 YesNoView(actionBtnLabel: LocalizedStrings.cantSay.localized, action: { answer in
                     self.selectedAnswer = answer
                     if answer == .yes || answer == .no {

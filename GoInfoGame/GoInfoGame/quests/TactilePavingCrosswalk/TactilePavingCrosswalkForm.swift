@@ -16,6 +16,8 @@ struct TactilePavingCrosswalkForm: View, QuestForm {
     
     @Environment(\.presentationMode) var presentationMode
     
+    @EnvironmentObject var contextualInfo: ContextualInfo
+    
     var body: some View {
         ZStack {
             VStack{
@@ -27,7 +29,7 @@ struct TactilePavingCrosswalkForm: View, QuestForm {
                 .padding([.top], 50)
                 QuestionHeader(icon:Image("tactile_crossing"),
                                title: LocalizedStrings.questTactilePavingCrossing.localized,
-                               contextualInfo: "Marked Crossing")
+                               contextualInfo: contextualInfo.info)
                 VStack(alignment:.leading){
                     Text(LocalizedStrings.usuallyLooksLikeThis.localized)
                         .font(.caption)

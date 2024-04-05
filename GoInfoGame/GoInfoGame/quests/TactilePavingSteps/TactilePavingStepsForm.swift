@@ -16,6 +16,8 @@ struct TactilePavingStepsForm: View, QuestForm {
     
     @Environment(\.presentationMode) var presentationMode
     
+    @EnvironmentObject var contextualInfo: ContextualInfo
+    
     var body: some View {
         ZStack {
             VStack{
@@ -26,7 +28,7 @@ struct TactilePavingStepsForm: View, QuestForm {
                 }
                 QuestionHeader(icon:Image("steps_tactile_paving"),
                                title: LocalizedStrings.questTactilePavingTitleSteps.localized,
-                               contextualInfo: "Stair Number")
+                               contextualInfo: contextualInfo.info)
                 VStack(alignment:.leading){
                     Text(LocalizedStrings.usuallyLooksLikeThis.localized)
                         .font(.caption)
