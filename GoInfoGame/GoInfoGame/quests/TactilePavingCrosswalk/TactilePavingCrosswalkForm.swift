@@ -26,7 +26,7 @@ struct TactilePavingCrosswalkForm: View, QuestForm {
                         presentationMode.wrappedValue.dismiss()
                     }
                 }
-                .padding([.top], 50)
+                .padding([.top], 10)
                 QuestionHeader(icon:Image("tactile_crossing"),
                                title: LocalizedStrings.questTactilePavingCrossing.localized,
                                contextualInfo: contextualInfo.info)

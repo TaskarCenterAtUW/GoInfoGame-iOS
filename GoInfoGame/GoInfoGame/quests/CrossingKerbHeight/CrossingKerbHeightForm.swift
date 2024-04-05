@@ -35,30 +35,28 @@ struct CrossingKerbHeightForm: View, QuestForm {
                         }
                     }
                 QuestionHeader(icon: Image("kerb_type"), title: LocalizedStrings.questCrossingKerbHeightTitle.localized, contextualInfo: contextualInfo.info).padding(.bottom,10)
+                    .padding(.leading,10)
                     VStack(alignment: .leading){
                         Text(LocalizedStrings.selectOne.localized).font(.caption).foregroundColor(.gray)
                         ImageGridItemView(gridCount: 2, isLabelBelow: false, imageData: imageData, isImageRotated: false, isDisplayImageOnly: false, isScrollable: false, allowMultipleSelection: false, onTap: { (selectedImage) in
                         }, selectedImages: $selectedImage)
-                        Divider()
-                        HStack() {
+                        VStack {
                             Spacer()
-                            Button {
-                                showOtherAlert = true
-                            } label: {
-                                Text(LocalizedStrings.otherAnswers.localized).foregroundColor(.orange)
-                            }
-                            Spacer()
-                            if !selectedImage.isEmpty {
-                                Button() {
-                                    let answer = KerbHeightTypeAnswer.fromString(selectedImage.first ?? "")
-                                    action?(answer ?? KerbHeightTypeAnswer.none)
-                                }label: {
-                                    Image(systemName: "checkmark.circle.fill")
-                                        .font(Font.system(size: 40))
-                                        .foregroundColor(.orange)
+                            HStack {
+                                Spacer()
+                                if !selectedImage.isEmpty {
+                                    Button(action: {
+                                        let answer = KerbHeightTypeAnswer.fromString(selectedImage.first ?? "")
+                                        action?(answer ?? KerbHeightTypeAnswer.none)
+                                    }) {
+                                        Image(systemName: "checkmark.circle.fill")
+                                            .font(Font.system(size: 40))
+                                            .foregroundColor(.orange)
+                                            .padding()
+                                    }
                                 }
                             }
-                        }.padding(.top,10)
+                        }
                     } .padding()
                         .background(
                             RoundedRectangle(cornerRadius: 10)

@@ -54,7 +54,9 @@ struct QuestsListUIView : View {
 func getSheetSize(sheetSize: SheetSize) -> Set<PresentationDetent> {
     if sheetSize == .SMALL {
         return [.height(250)]
-    } else if sheetSize == .LARGE {
+    } else if sheetSize == .MEDIUM {
+        return [.height(450)]
+    }else if sheetSize == .LARGE {
         return [.height(600)]
     } else if sheetSize == .XLARGE {
         return [.height(800)]

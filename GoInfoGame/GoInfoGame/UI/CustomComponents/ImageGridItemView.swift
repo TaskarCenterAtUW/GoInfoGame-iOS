@@ -89,8 +89,8 @@ struct ImageGridItemView: View {
         } else {
             return (minWidth: isLabelBelow ? 70 : 0,
                     maxWidth: isLabelBelow ? 70 : .infinity,
-                    minHeight: isLabelBelow ? 70 : 150,
-                    maxHeight: isLabelBelow ? 70 : 150)
+                    minHeight: isLabelBelow ? 70 : 130,
+                    maxHeight: isLabelBelow ? 70 : 130)
         }
     }
     
