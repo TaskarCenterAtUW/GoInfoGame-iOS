@@ -99,6 +99,8 @@ public class Way: Element {
     public var type: ElementType = .way
     
     public var nodeIds: [Int64] = []
+    // Add list of lat/longs
+    public var polyline: [LatLon] = []
     
     var isClosed: Bool {
         nodeIds.count >= 3 && nodeIds.first == nodeIds.last
