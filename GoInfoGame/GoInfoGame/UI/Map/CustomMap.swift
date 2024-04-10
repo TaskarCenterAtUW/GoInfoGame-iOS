@@ -35,8 +35,6 @@ struct CustomMap: UIViewRepresentable {
         // Hide points of interest except street names
         mapView.pointOfInterestFilter = .excludingAll
         
-        let polyline = MKPolyline(coordinates: lineCoordinates, count: lineCoordinates.count)
-        mapView.addOverlay(polyline)
         return mapView
     }
     
@@ -46,6 +44,11 @@ struct CustomMap: UIViewRepresentable {
         manageAnnotations(mapView, context: context)
         // Update the region if necessary
         context.coordinator.updateRegion(mapView)
+        
+        if !lineCoordinates.isEmpty {
+               let polyline = MKPolyline(coordinates: lineCoordinates, count: lineCoordinates.count)
+               mapView.addOverlay(polyline)
+           }
     }
     
     // Creates the coordinator
@@ -68,8 +71,8 @@ struct CustomMap: UIViewRepresentable {
         func mapView(_ mapView: MKMapView, rendererFor overlay: MKOverlay) -> MKOverlayRenderer {
             if let routePolyline = overlay as? MKPolyline {
                 let renderer = MKPolylineRenderer(polyline: routePolyline)
-                renderer.strokeColor = UIColor.systemBlue
-                renderer.lineWidth = 5
+                renderer.strokeColor = UIColor.brown
+                renderer.lineWidth = 15
                 return renderer
             }
             return MKOverlayRenderer()
