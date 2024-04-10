@@ -31,8 +31,13 @@ class DatabaseConnector {
     func saveOSMElements(_ elements: [OSMElement]) {
         // Save the elements appropriately
         // Get the ways and nodes out
-        //let nodes = elements.filter({$0 is OSMNode}).filter({$0.tags.isEmpty})
-        let nodes = elements
+        let nodes = elements.filter({$0 is OSMNode}).filter({$0.tags.isEmpty})
+        let nodesOnly = elements.filter({$0 is OSMNode})
+        // Create a dictionary out of this like [id : osmnode]
+        var nodesDict: [String:OSMNode] = [:]
+        nodesOnly.forEach { element in
+            nodesDict[String(element.id)] = element as? OSMNode
+        }
         let ways = elements.filter({$0 is OSMWay}).filter({!$0.tags.isEmpty})
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
@@ -75,6 +80,16 @@ class DatabaseConnector {
                     storedWay.timestamp = timestampString
                     if let asWay = way as? OSMWay {
                         storedWay.nodes.append(objectsIn: asWay.nodes.map({Int64($0)}))
+                        // Get all the points for the p
+                        var nodesInWay = List<CLLocationCoordinate2D>()
+                        asWay.nodes.forEach { nodeId in
+                            if let actualNode = nodesDict[String(nodeId)] {
+                                nodesInWay.append(CLLocationCoordinate2D(latitude: actualNode.lat, longitude: actualNode.lon))
+                            }
+                            
+                        }
+                        storedWay.polyline = nodesInWay
+//                        print("STORED POLYLINES --->>>\(storedWay.polyline)")
                         // Store the coordinates
 //MARK: TBD polylines
 //                        switch asWay.geometry {
