@@ -30,19 +30,7 @@ struct InitialView: View {
                 }
             }else {
                 // Displaying progress view if no workspaces are available
-                VStack {
-                    ProgressView()
-                        .progressViewStyle(CircularProgressViewStyle(tint: .blue))
-                        .padding(20)
-                    
-                    Text("Looking for Workspaces...")
-                        .foregroundColor(.gray)
-                        .font(.headline)
-                        .padding(.bottom, 10)
-
-                }
-                .frame(width: 200, height: 150)
-                .background(RoundedRectangle(cornerRadius: 20).fill(Color.white).shadow(radius: 5))
+                ActivityView(activityText: "Looking for workspaces...")
             }
         }
     }
@@ -50,16 +38,43 @@ struct InitialView: View {
 // WorkspacesListView - View for displaying a list of workspaces
 struct WorkspacesListView: View {
     let workspaces: [Workspace]
+    
     var body: some View {
-        List {
-            Section(header: Text("Please pick the workspace you want to contribute to").font(.headline)) {
-                ForEach(workspaces, id: \.id) { workspace in
-                    NavigationLink(destination: MapView(selectedWorkspace: workspace).navigationBarBackButtonHidden(true)) {
-                        Text(workspace.name)
+        ZStack {
+            VStack(alignment: .leading) {
+                VStack(spacing: 30) {
+                    Image("osmlogo")
+                        .resizable()
+                        .frame(width: 100, height: 100)
+                    Text("GoInfoGame")
+                        .font(.system(size: 30, design: .rounded))
+                    Text("Pick the workspace you want to contribute to")
+                        .font(.system(size: 16, design: .rounded))
+                        .foregroundStyle(.gray)
+                }
+                .padding()
+                VStack(spacing: 20) {
+                    ForEach(workspaces, id: \.id) { workspace in
+                        NavigationLink(destination: MapView(selectedWorkspace: workspace).navigationBarBackButtonHidden(true)) {
+                            Text(workspace.name)
+                                .font(.system(size: 17))
+                                .frame(maxWidth: .infinity, maxHeight: 40)
+                        }
+                        
+                        .buttonStyle(.borderedProminent)
+                        .tint(Color(red: 147 / 255, green: 190 / 255, blue: 90 / 255))
+                        .buttonBorderShape(.roundedRectangle(radius: 0))
                     }
                 }
-            }.textCase(nil)
+            }
+            .padding()
         }
-        .navigationBarHidden(true)
     }
 }
+
+#Preview {
+    InitialView()
+    
+}
+
+

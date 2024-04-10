@@ -33,7 +33,7 @@ struct MapView: View {
                 if viewModel.isLoading {
                     Color.black.opacity(0.3)
                         .edgesIgnoringSafeArea(.all)
-                    LoadingView()
+                   ActivityView(activityText: "Looking for quests...")
                 }
             }
             .environmentObject(contextualInfo)

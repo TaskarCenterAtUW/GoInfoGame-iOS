@@ -7,14 +7,17 @@
 
 import SwiftUI
 
-struct LoadingView: View {
+struct ActivityView: View {
+    
+    let activityText: String
+    
     var body: some View {
         VStack {
             ProgressView()
                 .progressViewStyle(CircularProgressViewStyle(tint: .blue)) 
                 .padding(20)
             
-            Text("Loading...")
+            Text(activityText)
                 .foregroundColor(.gray)
                 .font(.headline)
                 .padding(.bottom, 10)
