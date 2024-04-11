@@ -18,10 +18,12 @@ struct CustomMap: UIViewRepresentable {
     @Binding var trackingMode: MapUserTrackingMode
     var items: [DisplayUnitWithCoordinate]
     @Binding var selectedQuest: DisplayUnit?
+    @Binding var shouldShowPolyline: Bool
     @Binding var isPresented: Bool
     @StateObject var locationManagerDelegate = LocationManagerDelegate()
     
-   @State var lineCoordinates: [CLLocationCoordinate2D] = []
+    @State var lineCoordinates: [CLLocationCoordinate2D] = []
+    
     
     var contextualInfo: ((String) -> Void)?
     
@@ -45,10 +47,20 @@ struct CustomMap: UIViewRepresentable {
         // Update the region if necessary
         context.coordinator.updateRegion(mapView)
         
-        if !lineCoordinates.isEmpty {
-               let polyline = MKPolyline(coordinates: lineCoordinates, count: lineCoordinates.count)
-               mapView.addOverlay(polyline)
-           }
+        if shouldShowPolyline {
+            if !lineCoordinates.isEmpty {
+                   let polyline = MKPolyline(coordinates: lineCoordinates, count: lineCoordinates.count)
+                   mapView.addOverlay(polyline)
+               }
+        } else {
+            mapView.overlays.forEach { overlay in
+                if overlay is MKPolyline {
+                    mapView.removeOverlay(overlay)
+                }
+            }
+        }
+        
+        
     }
     
     // Creates the coordinator
