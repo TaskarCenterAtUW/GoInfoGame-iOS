@@ -67,9 +67,16 @@ struct MapView: View {
                 // Nothing here
             }
         })
-        .onReceive(MapViewPublisher.shared.dismissSheet) { _ in
-            viewModel.refreshMapAfterSubmission()
+        .onReceive(MapViewPublisher.shared.dismissSheet) { scenario in
+            
             isPresented = false
+            switch scenario {
+            case .dismissed:
+                shouldShowPolyline = false
+            case .submitted:
+                viewModel.refreshMapAfterSubmission()
+                shouldShowPolyline = false
+            }
         }
         .onAppear(){
             print("selected workspace",selectedWorkspace?.name ?? "")
