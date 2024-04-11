@@ -17,6 +17,8 @@ struct MapView: View {
     @StateObject private var viewModel = MapViewModel()
     @State private var isPresented = false
     
+    @State private var shouldShowPolyline = true
+    
     @StateObject var contextualInfo = ContextualInfo.shared
         
     var body: some View {
@@ -25,6 +27,7 @@ struct MapView: View {
                           trackingMode: $trackingMode,
                           items: viewModel.items,
                           selectedQuest: $viewModel.selectedQuest,
+                          shouldShowPolyline: $shouldShowPolyline,
                           isPresented: $isPresented, contextualInfo: { contextualInfo in
                     print(contextualInfo)
                     self.setContextualInfo(contextualinfo: contextualInfo)
