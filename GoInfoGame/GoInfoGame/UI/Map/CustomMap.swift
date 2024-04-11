@@ -83,8 +83,8 @@ struct CustomMap: UIViewRepresentable {
         func mapView(_ mapView: MKMapView, rendererFor overlay: MKOverlay) -> MKOverlayRenderer {
             if let routePolyline = overlay as? MKPolyline {
                 let renderer = MKPolylineRenderer(polyline: routePolyline)
-                renderer.strokeColor = UIColor.brown
-                renderer.lineWidth = 15
+                renderer.strokeColor = UIColor.orange
+                renderer.lineWidth = 10
                 return renderer
             }
             return MKOverlayRenderer()
