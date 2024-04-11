@@ -84,7 +84,7 @@ struct CustomMap: UIViewRepresentable {
             if let routePolyline = overlay as? MKPolyline {
                 let renderer = MKPolylineRenderer(polyline: routePolyline)
                 renderer.strokeColor = UIColor.orange
-                renderer.lineWidth = 10
+                renderer.lineWidth = 5
                 return renderer
             }
             return MKOverlayRenderer()
