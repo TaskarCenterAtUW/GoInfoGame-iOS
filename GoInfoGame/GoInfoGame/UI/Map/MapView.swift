@@ -66,6 +66,9 @@ struct MapView: View {
             if #available(iOS 16.0, *) {
                 selectedQuest?.parent?.form.presentationDetents(getSheetSize(sheetSize: selectedQuest?.sheetSize ?? .MEDIUM))
                     .environmentObject(contextualInfo)
+                    .onAppear(perform: {
+                        shouldShowPolyline = true
+                    })
             } else {
                 // Nothing here
             }
