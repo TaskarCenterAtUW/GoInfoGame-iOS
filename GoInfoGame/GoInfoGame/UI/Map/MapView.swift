@@ -84,9 +84,14 @@ struct MapView: View {
 
 
 public class MapViewPublisher: ObservableObject {
-    public let dismissSheet = PassthroughSubject<Bool, Never>()
+    public let dismissSheet = PassthroughSubject<SheetDismissalScenario, Never>()
     static let shared = MapViewPublisher()
     private init() {}
+}
+
+public enum SheetDismissalScenario {
+    case dismissed
+    case submitted
 }
 
 //TODO: Move to a new file
