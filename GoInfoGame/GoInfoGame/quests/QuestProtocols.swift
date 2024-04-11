@@ -48,7 +48,7 @@ class QuestBase {
        // Sync using datasyncmanager
        
        // Dismiss sheet after syncing to db
-       MapViewPublisher.shared.dismissSheet.send(true)
+       MapViewPublisher.shared.dismissSheet.send(.submitted)
        
 
        DatasyncManager.shared.syncDataToOSM {
