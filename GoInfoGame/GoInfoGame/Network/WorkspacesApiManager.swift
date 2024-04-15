@@ -12,7 +12,13 @@ class WorkspacesApiManager {
     
     static let shared = WorkspacesApiManager()
     private let listingURL = "https://www.jsonkeeper.com/b/Q80Q"
+    let apiClient = APIClient(baseURL: URL(string: "https://tdei-api-dev.azurewebsites.net/api/v1")!)
     private init() {}
+    
+    struct LoginRequest: Encodable {
+      let username: String
+      let password: String
+    }
     
     // fetches the workspaces based on latitiude and longitude
     func fetchWorkspaces(lat:String, lon: String, _ completion:@escaping (Result<WorkSpacesResponse, Error>)-> Void) {
@@ -41,5 +47,9 @@ class WorkspacesApiManager {
 
 
     }
-    
+    // Function to call the login API
+    func login(username: String, password: String, completion: @escaping (Result<TDEILoginResponse, Error>) -> Void) {
+      let loginBody = LoginRequest(username: username, password: password)
+        apiClient.request(path: "/authenticate",method: "POST", body: loginBody, completion: completion)
+    }
 }

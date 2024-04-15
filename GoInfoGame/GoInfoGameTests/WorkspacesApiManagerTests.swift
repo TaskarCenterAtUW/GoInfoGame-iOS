@@ -50,5 +50,19 @@ final class WorkspacesApiManagerTests: XCTestCase {
             // Put the code you want to measure the time of here.
         }
     }
+    func testLogin() throws {
+        let workspacesAPI = WorkspacesApiManager.shared
+        let expec = expectation(description: "Logs in user")
+        workspacesAPI.login(username: "admin@tdei.com", password: "admin") { result in
+          switch result {
+          case .success(let loginResponse):
+            print("Login successful! Access token:", loginResponse.accessToken)
+          case .failure(let error):
+            print("Login error:", error.localizedDescription)
+          }
+            expec.fulfill()
+        }
+        waitForExpectations(timeout: 30)
+    }
 
 }

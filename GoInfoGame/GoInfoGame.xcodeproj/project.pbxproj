@@ -35,6 +35,8 @@
 		971342752BBD254200174EBF /* InitialViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 971342742BBD254200174EBF /* InitialViewModel.swift */; };
 		971342772BBD415600174EBF /* InitialViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 971342762BBD415600174EBF /* InitialViewController.swift */; };
 		971342792BBD691500174EBF /* MapViewControllerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 971342782BBD691500174EBF /* MapViewControllerView.swift */; };
+		971373C92BCCFEBB008836EC /* TDEILoginResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 971373C82BCCFEBB008836EC /* TDEILoginResponse.swift */; };
+		971373CD2BCD09E6008836EC /* APIClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 971373CC2BCD09E6008836EC /* APIClient.swift */; };
 		971575172B5FFD6F0044797C /* MapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 971575162B5FFD6F0044797C /* MapView.swift */; };
 		971575192B5FFE910044797C /* LocationManagerCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 971575182B5FFE910044797C /* LocationManagerCoordinator.swift */; };
 		971902112B983EFC009B3270 /* CustomMap.swift in Sources */ = {isa = PBXBuildFile; fileRef = 971902102B983EFC009B3270 /* CustomMap.swift */; };
@@ -314,6 +316,8 @@
 		971342742BBD254200174EBF /* InitialViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InitialViewModel.swift; sourceTree = "<group>"; };
 		971342762BBD415600174EBF /* InitialViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InitialViewController.swift; sourceTree = "<group>"; };
 		971342782BBD691500174EBF /* MapViewControllerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapViewControllerView.swift; sourceTree = "<group>"; };
+		971373C82BCCFEBB008836EC /* TDEILoginResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TDEILoginResponse.swift; sourceTree = "<group>"; };
+		971373CC2BCD09E6008836EC /* APIClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIClient.swift; sourceTree = "<group>"; };
 		971575162B5FFD6F0044797C /* MapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapView.swift; sourceTree = "<group>"; };
 		971575182B5FFE910044797C /* LocationManagerCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationManagerCoordinator.swift; sourceTree = "<group>"; };
 		971902102B983EFC009B3270 /* CustomMap.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomMap.swift; sourceTree = "<group>"; };
@@ -590,6 +594,7 @@
 				A48037342BBA8DCB007EE7E4 /* models */,
 				0536DD962B0BD95100B04C4B /* URLSession+Extension.swift */,
 				A48037302BBA8C25007EE7E4 /* WorkspacesApiManager.swift */,
+				971373CC2BCD09E6008836EC /* APIClient.swift */,
 			);
 			path = Network;
 			sourceTree = "<group>";
@@ -960,6 +965,7 @@
 			isa = PBXGroup;
 			children = (
 				A48037352BBA8DDC007EE7E4 /* WorkspacesResponse.swift */,
+				971373C82BCCFEBB008836EC /* TDEILoginResponse.swift */,
 			);
 			path = models;
 			sourceTree = "<group>";
@@ -1757,6 +1763,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				A4AD130C2B5E80F20041A881 /* StoredElement.swift in Sources */,
+				971373CD2BCD09E6008836EC /* APIClient.swift in Sources */,
 				05DBBB5D2B1262BA00B6F110 /* OverpassRepository.swift in Sources */,
 				A4B83AF12B5F92FA006684CA /* StoredNode.swift in Sources */,
 				97AC1C0C2B6B843C004F0BF4 /* CustomAlert.swift in Sources */,
@@ -1836,6 +1843,7 @@
 				97412A962BBADAFF00DF7983 /* StairFlights.swift in Sources */,
 				0536DD942B0BD59900B04C4B /* OAuthError.swift in Sources */,
 				973FC0172B4D567900878269 /* WidthView.swift in Sources */,
+				971373C92BCCFEBB008836EC /* TDEILoginResponse.swift in Sources */,
 				FABF3CFD2B8607860080EAC9 /* MeasureWidthContainer.swift in Sources */,
 				97AC1C082B6A45C9004F0BF4 /* SideWalkValidationForm.swift in Sources */,
 				FAD5C4F52AFCBE700040C61A /* SceneDelegate.swift in Sources */,
