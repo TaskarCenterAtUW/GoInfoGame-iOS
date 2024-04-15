@@ -14,39 +14,42 @@ public class OSMConnection {
     // Creates a connection
     let baseUrl: String
     var currentChangesetId: Int? = 0
-    let userCreds: OSMLogin
+    var userCreds: OSMLogin
     // AuthToken
    public var accessToken: String? = nil
     
     var authorizationValue: String {
-        if baseUrl.contains("workspaces") {
-            return "Basic \(userCreds.getHeaderData())"
-        } else {
-            guard let accessToken = accessToken else {
-                fatalError("Access token not available.")
-            }
-//            if accessToken != "" {
-//
-//                
-//            } else {
-//                
+        
+        return "Basic \(userCreds.getHeaderData())"
+        
+        
+//        if baseUrl.contains("workspaces") {
+//            return "Basic \(userCreds.getHeaderData())"
+//        } else {
+//            guard let accessToken = accessToken else {
+//                fatalError("Access token not available.")
 //            }
-            return "Bearer \(accessToken)"
-        }
+//            
+//            return "Bearer \(accessToken)"
+//        }
     }
 
     /// Initializer for OSMConnection
     /// - parameter config : The Server configuration (defaults to OSMConfig.testOSM)
     /// - parameter currentChangesetId: The overal changeset id for the user
     /// - parameter userCreds: User credentials for authenticated calls. Defaults to testOSM
-    public init(config: OSMConfig = OSMConfig.testPOSM, currentChangesetId: Int? = nil, userCreds: OSMLogin = OSMLogin.testPOSM) {
+    public init(config: OSMConfig = OSMConfig.testPOSM, currentChangesetId: Int? = nil) {
         self.baseUrl = config.baseUrl
         self.currentChangesetId = currentChangesetId
-        self.userCreds = userCreds
+        
+        if baseUrl.contains("workspace") {
+            self.userCreds = OSMLogin.workspaceUser
+        } else {
+            self.userCreds = OSMLogin.osmUser
+        }
         
        if let token = KeychainManager.load(key: "accessToken") {
            self.accessToken = token
-            
         }
     }
     /// Fetches a single node
@@ -235,7 +238,7 @@ public class OSMConnection {
             print("Invalid URL given")
             return
         }
-        BaseNetworkManager.shared.addOrSetHeaders(header: "Authorization", value: "Basic \(userCreds.getHeaderData())")
+        BaseNetworkManager.shared.addOrSetHeaders(header: "Authorization", value: authorizationValue)
         BaseNetworkManager.shared.fetchData(url: url, completion: completion)
     }
     

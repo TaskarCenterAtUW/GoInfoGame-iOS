@@ -15,7 +15,7 @@ final class OSMConnectionTests: XCTestCase {
     let osmTestNode = "4316662656"
     let posmTestWay = "4305301937"
     
-    let posmConfig = OSMConfig.testOSM
+    let posmConfig = OSMConfig.testPOSM
     let posmCreds = OSMLogin.testOSM
     var posmConnection : OSMConnection?
 
