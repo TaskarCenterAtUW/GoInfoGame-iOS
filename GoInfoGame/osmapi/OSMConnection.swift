@@ -17,13 +17,29 @@ public class OSMConnection {
     let userCreds: OSMLogin
     // AuthToken
    public var accessToken: String? = nil
-    // Lets see if we can start with some authentication or node
     
+    var authorizationValue: String {
+        if baseUrl.contains("workspaces") {
+            return "Basic \(userCreds.getHeaderData())"
+        } else {
+            guard let accessToken = accessToken else {
+                fatalError("Access token not available.")
+            }
+//            if accessToken != "" {
+//
+//                
+//            } else {
+//                
+//            }
+            return "Bearer \(accessToken)"
+        }
+    }
+
     /// Initializer for OSMConnection
     /// - parameter config : The Server configuration (defaults to OSMConfig.testOSM)
     /// - parameter currentChangesetId: The overal changeset id for the user
     /// - parameter userCreds: User credentials for authenticated calls. Defaults to testOSM
-    public init(config: OSMConfig = OSMConfig.testOSM, currentChangesetId: Int? = nil, userCreds: OSMLogin = OSMLogin.testOSM) {
+    public init(config: OSMConfig = OSMConfig.testPOSM, currentChangesetId: Int? = nil, userCreds: OSMLogin = OSMLogin.testPOSM) {
         self.baseUrl = config.baseUrl
         self.currentChangesetId = currentChangesetId
         self.userCreds = userCreds
@@ -43,7 +59,7 @@ public class OSMConnection {
             print("Invalid URL given")
             return
         }
-        BaseNetworkManager.shared.addOrSetHeaders(header: "Authorization", value: "Basic \(self.userCreds.getHeaderData())")
+        BaseNetworkManager.shared.addOrSetHeaders(header: "Authorization", value: authorizationValue)
         // Bearer
         BaseNetworkManager.shared.fetchData(url: url, completion: completion) // Need to improve this one
     }
@@ -57,7 +73,7 @@ public class OSMConnection {
             print("Invalid URL given")
             return
         }
-        BaseNetworkManager.shared.addOrSetHeaders(header: "Authorization", value: "Basic \(self.userCreds.getHeaderData())")
+        BaseNetworkManager.shared.addOrSetHeaders(header: "Authorization", value: authorizationValue)
         BaseNetworkManager.shared.fetchData(url: url, completion: completion) // Need to improve this one
     }
     
@@ -70,7 +86,7 @@ public class OSMConnection {
             print("Invalid URL given")
             return
         }
-        BaseNetworkManager.shared.addOrSetHeaders(header: "Authorization", value: "Bearer \(self.accessToken!)")
+        BaseNetworkManager.shared.addOrSetHeaders(header: "Authorization", value: authorizationValue)
         BaseNetworkManager.shared.postData(url: url,method: "PUT" ,body: OSMChangesetPayload()) { (result: Result<Int,Error>) in
             switch result {
             case .success(let changesetID):
@@ -93,7 +109,7 @@ public class OSMConnection {
             print("Invalid URL given")
             return
         }
-        BaseNetworkManager.shared.addOrSetHeaders(header: "Authorization", value: "Bearer \(self.accessToken!)")
+        BaseNetworkManager.shared.addOrSetHeaders(header: "Authorization", value: authorizationValue)
         BaseNetworkManager.shared.postData(url: url,method: "PUT" ,body: ["tag":"xyz"],expectEmpty: true) { (result: Result<Bool,Error>) in
             switch result {
             case .success(let closedResult):
@@ -112,7 +128,7 @@ public class OSMConnection {
     func getChangesets(_ completion: @escaping(()->())) {
         let urlString = self.baseUrl.appending("changesets.json")
         var request = URLRequest(url: URL(string: urlString)!,timeoutInterval: Double.infinity)
-        request.addValue("Bearer \(self.accessToken!)", forHTTPHeaderField: "Authorization")
+        request.addValue(authorizationValue, forHTTPHeaderField: "Authorization")
         request.httpMethod = "GET"
         let task = URLSession.shared.dataTask(with: request) { data, response, error in
             guard let data = data else {
@@ -133,7 +149,7 @@ public class OSMConnection {
             return
         }
         // Get to work
-        BaseNetworkManager.shared.addOrSetHeaders(header: "Authorization", value: "Basic \(self.userCreds.getHeaderData())")
+        BaseNetworkManager.shared.addOrSetHeaders(header: "Authorization", value: authorizationValue)
         BaseNetworkManager.shared.fetchData(url: url, completion: completion)
     }
     
@@ -148,7 +164,7 @@ public class OSMConnection {
             print("Invalid URL given")
             return
         }
-        BaseNetworkManager.shared.addOrSetHeaders(header: "Authorization", value: "Bearer \(self.accessToken!)")
+        BaseNetworkManager.shared.addOrSetHeaders(header: "Authorization", value: authorizationValue)
         // Add nodes to the same
         if(node.tags == nil){
             node.tags = [:]
@@ -172,7 +188,7 @@ public class OSMConnection {
             print("Invalid URL given")
             return
         }
-        BaseNetworkManager.shared.addOrSetHeaders(header: "Authorization", value: "Bearer \(self.accessToken!)")
+        BaseNetworkManager.shared.addOrSetHeaders(header: "Authorization", value: authorizationValue)
         // Add nodes to the same
         
         tags.forEach { (key: String, value: String) in
@@ -206,7 +222,7 @@ public class OSMConnection {
             print("Invalid URL given")
             return
         }
-        BaseNetworkManager.shared.addOrSetHeaders(header: "Authorization", value: "Bearer \(accessToken)")
+        BaseNetworkManager.shared.addOrSetHeaders(header: "Authorization", value: authorizationValue)
         BaseNetworkManager.shared.fetchData(url: url, completion: completion)
     }
     
@@ -219,7 +235,7 @@ public class OSMConnection {
             print("Invalid URL given")
             return
         }
-        BaseNetworkManager.shared.addOrSetHeaders(header: "Authorization", value: "Basic \(self.userCreds.getHeaderData())")
+        BaseNetworkManager.shared.addOrSetHeaders(header: "Authorization", value: "Basic \(userCreds.getHeaderData())")
         BaseNetworkManager.shared.fetchData(url: url, completion: completion)
     }
     
