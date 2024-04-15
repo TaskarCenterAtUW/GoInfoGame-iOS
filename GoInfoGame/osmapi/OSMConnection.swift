@@ -14,9 +14,18 @@ public class OSMConnection {
     // Creates a connection
     let baseUrl: String
     var currentChangesetId: Int? = 0
-    var userCreds: OSMLogin
+    
+    var userCreds: OSMLogin {
+        if baseUrl.contains("workspace") {
+            return OSMLogin.workspaceUser
+        } else {
+            return OSMLogin.osmUser
+        }
+    }
+    
     // AuthToken
    public var accessToken: String? = nil
+    
     
     var authorizationValue: String {
         
@@ -42,12 +51,7 @@ public class OSMConnection {
         self.baseUrl = config.baseUrl
         self.currentChangesetId = currentChangesetId
         
-        if baseUrl.contains("workspace") {
-            self.userCreds = OSMLogin.workspaceUser
-        } else {
-            self.userCreds = OSMLogin.osmUser
-        }
-        
+     
        if let token = KeychainManager.load(key: "accessToken") {
            self.accessToken = token
         }
