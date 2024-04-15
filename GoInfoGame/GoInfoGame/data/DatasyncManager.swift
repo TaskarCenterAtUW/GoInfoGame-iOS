@@ -19,7 +19,7 @@ class DatasyncManager {
     
     private let dbInstance = DatabaseConnector.shared
     
-    private let osmConnection = OSMConnection(config: OSMConfig.testOSM, currentChangesetId: nil, userCreds: OSMLogin.testOSM)
+    private let osmConnection = OSMConnection(config: OSMConfig.testPOSM, currentChangesetId: nil, userCreds: OSMLogin.testPOSM)
     
     func syncDataToOSM( completionHandler: @escaping ()-> Void?)  {
         Task {

@@ -12,10 +12,10 @@ class ProfileViewVM: ObservableObject {
     @Published var user: OSMUserData?
     
     init() {
-        let posmConnection = OSMConnection(config: OSMConfig.testOSM,userCreds: OSMLogin.testOSM)
+        let posmConnection = OSMConnection(config: OSMConfig.testPOSM,userCreds: OSMLogin.testPOSM)
         let accessToken = KeychainManager.load(key: "accessToken")
         if accessToken != nil {
-            posmConnection.getUserDetailsWithToken(accessToken: accessToken!, { [weak self] result in
+            posmConnection.getUserDetails { [weak self] result in
                 switch result {
                 case .success(let userDataResponse):
                     let user = userDataResponse.user
@@ -26,12 +26,12 @@ class ProfileViewVM: ObservableObject {
                 case .failure(let error):
                     print("---error", error)
                 }
-            })
+            }
         }
     }
         var profileUrl: URL? {
             if let userName = self.user?.displayName {
-                return URL(string:OSMConfig.url.appending("user/").appending(userName))
+                return URL(string:OSMConfig.testPOSM.baseUrl.appending("user/").appending(userName))
             }
             return nil
         }
