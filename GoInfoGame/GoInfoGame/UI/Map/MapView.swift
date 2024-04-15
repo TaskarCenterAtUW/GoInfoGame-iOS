@@ -17,6 +17,8 @@ struct MapView: View {
     @StateObject private var viewModel = MapViewModel()
     @State private var isPresented = false
     
+    @State private var shouldShowPolyline = true
+    
     @StateObject var contextualInfo = ContextualInfo.shared
         
     var body: some View {
@@ -25,6 +27,7 @@ struct MapView: View {
                           trackingMode: $trackingMode,
                           items: viewModel.items,
                           selectedQuest: $viewModel.selectedQuest,
+                          shouldShowPolyline: $shouldShowPolyline,
                           isPresented: $isPresented, contextualInfo: { contextualInfo in
                     print(contextualInfo)
                     self.setContextualInfo(contextualinfo: contextualInfo)
@@ -63,13 +66,24 @@ struct MapView: View {
             if #available(iOS 16.0, *) {
                 selectedQuest?.parent?.form.presentationDetents(getSheetSize(sheetSize: selectedQuest?.sheetSize ?? .MEDIUM))
                     .environmentObject(contextualInfo)
+                    .interactiveDismissDisabled()
+                    .onAppear(perform: {
+                        shouldShowPolyline = true
+                    })
             } else {
                 // Nothing here
             }
         })
-        .onReceive(MapViewPublisher.shared.dismissSheet) { _ in
-            viewModel.refreshMapAfterSubmission()
+        .onReceive(MapViewPublisher.shared.dismissSheet) { scenario in
+            
             isPresented = false
+            switch scenario {
+            case .dismissed:
+                shouldShowPolyline = false
+            case .submitted:
+                viewModel.refreshMapAfterSubmission()
+                shouldShowPolyline = false
+            }
         }
         .onAppear(){
             print("selected workspace",selectedWorkspace?.name ?? "")
@@ -84,9 +98,14 @@ struct MapView: View {
 
 
 public class MapViewPublisher: ObservableObject {
-    public let dismissSheet = PassthroughSubject<Bool, Never>()
+    public let dismissSheet = PassthroughSubject<SheetDismissalScenario, Never>()
     static let shared = MapViewPublisher()
     private init() {}
+}
+
+public enum SheetDismissalScenario {
+    case dismissed
+    case submitted
 }
 
 //TODO: Move to a new file

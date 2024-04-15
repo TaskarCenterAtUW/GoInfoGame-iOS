@@ -35,10 +35,14 @@ struct DismissButtonView: View {
     var body: some View {
         HStack {
             Spacer()
-            Button(action: dismissAction) {
+            Button(action: {
+                dismissAction()
+                MapViewPublisher.shared.dismissSheet.send(.dismissed)
+                
+            }, label: {
                 Text("Dismiss")
                     .foregroundStyle(.orange)
-            }
+            })
             .padding([.top], 30)
             .padding([.trailing], 15)
         }

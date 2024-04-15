@@ -9,6 +9,7 @@ import Foundation
 import SwiftUI
 import MapKit
 import CoreLocation
+import osmparser
 
 // Custom Map for managing map interactions between SwiftUI and UIKit components
 struct CustomMap: UIViewRepresentable {
@@ -17,8 +18,12 @@ struct CustomMap: UIViewRepresentable {
     @Binding var trackingMode: MapUserTrackingMode
     var items: [DisplayUnitWithCoordinate]
     @Binding var selectedQuest: DisplayUnit?
+    @Binding var shouldShowPolyline: Bool
     @Binding var isPresented: Bool
     @StateObject var locationManagerDelegate = LocationManagerDelegate()
+    
+    @State var lineCoordinates: [CLLocationCoordinate2D] = []
+    
     
     var contextualInfo: ((String) -> Void)?
     
@@ -31,6 +36,7 @@ struct CustomMap: UIViewRepresentable {
         mapView.userTrackingMode = trackingMode.mkUserTrackingMode
         // Hide points of interest except street names
         mapView.pointOfInterestFilter = .excludingAll
+        
         return mapView
     }
     
@@ -40,6 +46,21 @@ struct CustomMap: UIViewRepresentable {
         manageAnnotations(mapView, context: context)
         // Update the region if necessary
         context.coordinator.updateRegion(mapView)
+        
+        if shouldShowPolyline {
+            if !lineCoordinates.isEmpty {
+                   let polyline = MKPolyline(coordinates: lineCoordinates, count: lineCoordinates.count)
+                   mapView.addOverlay(polyline)
+               }
+        } else {
+            mapView.overlays.forEach { overlay in
+                if overlay is MKPolyline {
+                    mapView.removeOverlay(overlay)
+                }
+            }
+        }
+        
+        
     }
     
     // Creates the coordinator
@@ -56,6 +77,17 @@ struct CustomMap: UIViewRepresentable {
         init(_ parent: CustomMap) {
             self.parent = parent
             self.contextualInfo = parent.contextualInfo
+        }
+        
+        //renders polyline
+        func mapView(_ mapView: MKMapView, rendererFor overlay: MKOverlay) -> MKOverlayRenderer {
+            if let routePolyline = overlay as? MKPolyline {
+                let renderer = MKPolylineRenderer(polyline: routePolyline)
+                renderer.strokeColor = UIColor.orange
+                renderer.lineWidth = 5
+                return renderer
+            }
+            return MKOverlayRenderer()
         }
         
         // Customizes the view for each annotation
@@ -86,6 +118,17 @@ struct CustomMap: UIViewRepresentable {
                // let direction = parent.inferDirection(selectedAnnotation: selectedQuest.coordinate)
                 
                 let annotationLocation = CLLocation(latitude: selectedQuest.coordinate.latitude, longitude: selectedQuest.coordinate.longitude)
+                
+                var polylineCoords: [CLLocationCoordinate2D] = []
+                if let wayElement = selectedQuest.displayUnit.parent?.relationData as? Way {
+                    for eachWay in wayElement.polyline {
+                        let eachCoord = CLLocationCoordinate2D(latitude: eachWay.latitude, longitude: eachWay.longitude)
+                        polylineCoords.append(eachCoord)
+                    }
+                }
+                self.parent.lineCoordinates = polylineCoords
+                print("POLYLINE COORDS ARE ----\(polylineCoords)")
+                
                 parent.inferStreetName(location: annotationLocation) { streetName in
                     if let streetName = streetName {
                         if let sidewalk =  self.parent.selectedQuest?.parent as? SideWalkWidth {

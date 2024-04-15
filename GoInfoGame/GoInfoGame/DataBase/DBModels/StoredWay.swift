@@ -31,6 +31,14 @@ class StoredWay: Object {
         }
         let nodeList:[Int64] = nodes.map({$0})
         let way = Way(id: Int64(id), version: version, tags: theTags, timestampEdited: 0, type: .way, nodeIds: nodeList)
+        
+        var latLong: [LatLon] = []
+        for coordinate in polyline {
+            let eachLatLong = LatLon(latitude: coordinate.latitude, longitude: coordinate.longitude)
+            latLong.append(eachLatLong)
+        }
+        
+        way.polyline = latLong
         return way
     }
     
