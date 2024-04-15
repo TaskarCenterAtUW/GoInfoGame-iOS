@@ -106,6 +106,16 @@ class DatabaseConnector {
             print("Elements to be skipped or something happened")
         }
     }
+    
+    func clearDB() {
+        do {
+            try realm.write {
+                realm.deleteAll()
+            }
+        } catch {
+            print("Error clearing DB")
+        }
+    }
     /**
             Earlier implementation of saveElements. This used to save only the Way type of objects.
             This is not used anymore
