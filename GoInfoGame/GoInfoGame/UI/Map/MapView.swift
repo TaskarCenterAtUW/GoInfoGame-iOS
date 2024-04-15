@@ -20,6 +20,8 @@ struct MapView: View {
     @State private var shouldShowPolyline = true
     
     @StateObject var contextualInfo = ContextualInfo.shared
+    
+    @AppStorage("baseUrl") var baseUrl = ""
         
     var body: some View {
             ZStack{
@@ -87,6 +89,7 @@ struct MapView: View {
         }
         .onAppear(){
             print("selected workspace",selectedWorkspace?.name ?? "")
+            self.baseUrl = selectedWorkspace!.posmBasePath
         }
     }
     
