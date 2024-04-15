@@ -85,13 +85,13 @@ struct LoggedInView: View {
                     HStack {
                         profileImage
                         VStack (alignment: .leading,spacing: 0){
-                            Text(viewModel.user?.displayName ?? "Gin Y")
+                            Text(viewModel.user?.displayName ?? "")
                                 .font(.system(size: 20, weight: .semibold))
                             HStack {
                                 Image(systemName: "star.fill")
                                     .resizable()
                                     .frame(width: 25, height: 25)
-                                Text("\(viewModel.user?.changesets.count ?? 10)")
+                                Text("\(viewModel.user?.changesets.count ?? 0)")
                                     .font(.title)
                             }
                         }
