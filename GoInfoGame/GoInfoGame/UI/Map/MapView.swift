@@ -88,8 +88,8 @@ struct MapView: View {
             }
         }
         .onAppear(){
-            print("selected workspace",selectedWorkspace?.name ?? "")
-            self.baseUrl = selectedWorkspace!.posmBasePath
+            print("selected workspace",selectedWorkspace?.title ?? "")
+            self.baseUrl = ""
         }
     }
     

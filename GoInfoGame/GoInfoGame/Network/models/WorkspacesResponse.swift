@@ -22,28 +22,29 @@ class WorkSpacesResponse: Codable {
 }
 
 // MARK: - Workspace
-class Workspace: Codable, CustomStringConvertible {
-    let id: String
-    let posmBasePath: String
-    let name: String
-    let polygon: Polygon
-    let quests: [Int]
+struct Workspace: Codable, CustomStringConvertible {
+    let id: Int
+    let title: String
+    let tdeiRecordId:String
+    let tdeiProjectGroupId:String
+    let tdeiServiceId: String
+    let tdeiMetadata: String
 
-    init(id: String, posmBasePath: String, name: String, polygon: Polygon, quests: [Int]) {
+    init(id: Int, title: String, tdeiRecordId:String,tdeiProjectGroupId:String,tdeiServiceId: String,tdeiMetadata: String) {
         self.id = id
-        self.posmBasePath = posmBasePath
-        self.name = name
-        self.polygon = polygon
-        self.quests = quests
+        self.title = title
+        self.tdeiRecordId = tdeiRecordId
+        self.tdeiProjectGroupId = tdeiProjectGroupId
+        self.tdeiServiceId = tdeiServiceId
+        self.tdeiMetadata = tdeiMetadata
     }
+
     var description: String {
         var d = "{ \n"
-        d += "name: \(self.name) \n"
-        d += "posmBasePath: \(self.posmBasePath) \n"
+        d += "name: \(self.title) \n"
         d += "id: \(self.id) \n"
         d += "}\n"
-        
-        return  d
+        return d
     }
 }
 
