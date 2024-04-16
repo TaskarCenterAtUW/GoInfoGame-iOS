@@ -36,7 +36,7 @@ class InitialViewModel: ObservableObject {
             DispatchQueue.main.async {
                 switch result {
                 case .success(let workspacesResponse):
-                    self.workspaces = workspacesResponse.workspaces
+                    self.workspaces = workspacesResponse
                     self.isLoading = false
                 case .failure(let error):
                     print("Error fetching workspaces: \(error)")

@@ -11,35 +11,33 @@ import Foundation
 class WorkspacesApiManager {
     
     static let shared = WorkspacesApiManager()
-    private let listingURL = "https://www.jsonkeeper.com/b/Q80Q"
+    private let listingURL = "https://workspaces-tasks-stage.sidewalks.washington.edu/api/v2/workspaces/"
     private init() {}
     
     // fetches the workspaces based on latitiude and longitude
-    func fetchWorkspaces(lat:String, lon: String, _ completion:@escaping (Result<WorkSpacesResponse, Error>)-> Void) {
-        
-        var request = URLRequest(url: URL(string: self.listingURL)!,timeoutInterval: Double.infinity)
-       
+    func fetchWorkspaces(lat: String, lon: String, completion: @escaping (Result<[Workspace], Error>) -> Void) {
+        var request = URLRequest(url: URL(string: self.listingURL)!, timeoutInterval: Double.infinity)
         request.httpMethod = "GET"
 
         let task = URLSession.shared.dataTask(with: request) { data, response, error in
-          guard let data = data else {
-            print(String(describing: error))
-            return
-          }
-        let theDecoder = JSONDecoder()
-        theDecoder.dateDecodingStrategy = .iso8601
+            guard let data = data else {
+                if let error = error {
+                    completion(.failure(error))
+                } else {
+                    completion(.failure(NSError(domain: "Data is nil", code: -1, userInfo: nil)))
+                }
+                return
+            }
+
+            let theDecoder = JSONDecoder()
+            theDecoder.dateDecodingStrategy = .iso8601
             do {
-                let decodedData = try theDecoder.decode(WorkSpacesResponse.self, from: data)
-                completion(.success(decodedData))
-            } catch  {
+                let workspaces = try theDecoder.decode([Workspace].self, from: data)
+                completion(.success(workspaces))
+            } catch {
                 completion(.failure(error))
             }
-          
         }
-
         task.resume()
-
-
     }
-    
 }

@@ -56,7 +56,7 @@ struct WorkspacesListView: View {
                 VStack(spacing: 20) {
                     ForEach(workspaces, id: \.id) { workspace in
                         NavigationLink(destination: MapView(selectedWorkspace: workspace).navigationBarBackButtonHidden(true)) {
-                            Text(workspace.name)
+                            Text(workspace.title)
                                 .font(.system(size: 17))
                                 .frame(maxWidth: .infinity, maxHeight: 40)
                         }

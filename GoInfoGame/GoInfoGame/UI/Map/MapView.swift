@@ -86,7 +86,7 @@ struct MapView: View {
             }
         }
         .onAppear(){
-            print("selected workspace",selectedWorkspace?.name ?? "")
+            print("selected workspace",selectedWorkspace?.title ?? "")
         }
     }
     
