@@ -99,8 +99,8 @@ struct LoggedInView: View {
                     }
                     HStack {
                         profileButton
-                        Spacer()
-                        logOutButton
+                      //  Spacer()
+                       // logOutButton
                     }
                     Divider().padding()
                     Spacer()

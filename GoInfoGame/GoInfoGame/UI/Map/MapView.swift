@@ -89,7 +89,7 @@ struct MapView: View {
         }
         .onAppear(){
             print("selected workspace",selectedWorkspace?.title ?? "")
-            self.baseUrl = ""
+            self.baseUrl = "https://workspaces-osm-stage.sidewalks.washington.edu"
         }
     }
     
