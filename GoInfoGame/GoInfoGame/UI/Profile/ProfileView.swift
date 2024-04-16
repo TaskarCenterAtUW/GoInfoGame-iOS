@@ -20,13 +20,18 @@ struct ProfileView: View {
     var body: some View {
         return
             VStack {
-                if accessToken != nil {
-                    LoggedInView(isSafariViewControllerPresented: $isSafariViewControllerPresented, accessToken: $accessToken)
-                } else {
-                    LoginView(isSafariViewControllerPresented: $isSafariViewControllerPresented) { accessToken in
-                        self.accessToken = accessToken
-                    }
-                }
+                LoggedInView(isSafariViewControllerPresented: $isSafariViewControllerPresented, accessToken: $accessToken)
+                
+                
+                
+                //TODO: TO be considered later
+               // if accessToken != nil {
+//                    LoggedInView(isSafariViewControllerPresented: $isSafariViewControllerPresented, accessToken: $accessToken)
+//                } else {
+//                    LoginView(isSafariViewControllerPresented: $isSafariViewControllerPresented) { accessToken in
+//                        self.accessToken = accessToken
+//                    }
+//                }
             }
             .onReceive(NotificationCenter.default.publisher(for: .init("HandleOAuthRedirect"))) { notification in
                 if let url = notification.object as? URL {
@@ -35,7 +40,7 @@ struct ProfileView: View {
                     OAuthViewController().getAccessTokenFor(url: url, completion: { accessToken in
                         let osmConnection = OSMConnection()
                         
-                        osmConnection.getUserDetailsWithToken(accessToken: accessToken) { result in
+                        osmConnection.getUserDetails { result in
                             switch result {
                             case .success(let user):
                                 print(user)
@@ -72,7 +77,7 @@ struct LoggedInView: View {
     
     var body: some View {
         Group {
-            if accessToken != nil {
+        //    if accessToken != nil {
                 VStack {
                     Text("My Profile")
                         .font(.title)
@@ -102,11 +107,11 @@ struct LoggedInView: View {
                 }
                 .padding(20)
                 .navigationBarTitleDisplayMode(.inline)
-            } else {
-                LoginView(isSafariViewControllerPresented: $isSafariViewControllerPresented) { token in
-                    accessToken = token
-                }
-            }
+//            } else {
+//                LoginView(isSafariViewControllerPresented: $isSafariViewControllerPresented) { token in
+//                    accessToken = token
+//                }
+//            }
         }
     }
     
