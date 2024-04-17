@@ -34,6 +34,7 @@ struct MapView: View {
                     print(contextualInfo)
                     self.setContextualInfo(contextualinfo: contextualInfo)
                 })
+                .id(viewModel.refreshMap)
                 .edgesIgnoringSafeArea(.all)
                 if viewModel.isLoading {
                     Color.black.opacity(0.3)

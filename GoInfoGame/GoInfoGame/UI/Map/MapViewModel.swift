@@ -17,7 +17,7 @@ class MapViewModel: ObservableObject {
     var region = MKCoordinateRegion(center: CLLocationCoordinate2D(latitude: 37.3318, longitude: -122.0312), span: MKCoordinateSpan(latitudeDelta: 0.0004 , longitudeDelta: 0.0004 ))
     let viewSpanDelta = 0.005 // Delta lat/lng to show to the user
 
-    
+    @Published var refreshMap = UUID()
     @Published var items: [DisplayUnitWithCoordinate] = []
     @Published var selectedQuest: DisplayUnit?
     let dataSpanDistance: CLLocationDistance = 1000 // Distance from user location to get the data
@@ -50,6 +50,8 @@ class MapViewModel: ObservableObject {
             guard let self = self else { return }
             self.items = AppQuestManager.shared.fetchQuestsFromDB()
             self.isLoading = false
+            if self.items.count == 0 {self.refreshMap = UUID()}
+            
         }
     }
     
