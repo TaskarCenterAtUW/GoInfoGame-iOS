@@ -51,16 +51,16 @@ struct MapView: View {
                         Image(systemName: "person.crop.circle.fill")
                     }
                 }
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    HStack {
-                        NavigationLink(destination: QuestsListUIView())  {
-                            Image(systemName: "list.bullet")
-                        }
-                        NavigationLink(destination: MeasureSidewalkView()) {
-                            Image(systemName: "camera")
-                        }
-                    }
-                }
+//                ToolbarItem(placement: .navigationBarTrailing) {
+//                    HStack {
+//                        NavigationLink(destination: QuestsListUIView())  {
+//                            Image(systemName: "list.bullet")
+//                        }
+//                        NavigationLink(destination: MeasureSidewalkView()) {
+//                            Image(systemName: "camera")
+//                        }
+//                    }
+//                }
             }
             .toolbarBackground(.visible, for: .navigationBar)
         
