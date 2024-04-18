@@ -38,7 +38,14 @@ class DatabaseConnector {
         nodesOnly.forEach { element in
             nodesDict[String(element.id)] = element as? OSMNode
         }
-        let ways = elements.filter({$0 is OSMWay}).filter({!$0.tags.isEmpty})
+        
+        let ways = elements.filter { element in
+            guard let way = element as? OSMWay else {
+                return false
+            }
+            return !way.tags.isEmpty && !(way.tags["ext:link"] == "true")
+        }
+        
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
         do {
