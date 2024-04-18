@@ -186,11 +186,11 @@ struct CustomMap: UIViewRepresentable {
     // Helper method to manage annotations
     private func manageAnnotations(_ mapView: MKMapView, context: Context) {
         /// Extracting coordinates of existing annotations
-        let existingCoordinates = Set(mapView.annotations.compactMap { ($0 as? DisplayUnitAnnotation)?.coordinate })
+        let existingCoordinates = mapView.annotations.compactMap { ($0 as? DisplayUnitAnnotation)?.coordinate }
         let newAnnotations = items.map { $0.annotation }
-        let newCoordinates = Set(newAnnotations.map { $0.coordinate })
+        let newCoordinates = newAnnotations.map { $0.coordinate }
         /// Checking if the coordinates of existing annotations are different from the coordinates of new annotations
-        if existingCoordinates != newCoordinates {
+        if existingCoordinates.count != newCoordinates.count {
             /// to reset isRegionSet value whenever region changes.
                 context.coordinator.isRegionSet = false
             /// Removing annotations that are not present in the new set
