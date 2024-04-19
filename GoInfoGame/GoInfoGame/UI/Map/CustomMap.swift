@@ -205,7 +205,10 @@ struct CustomMap: UIViewRepresentable {
 
             /// Updating the region if it hasn't been set yet
             if !context.coordinator.isRegionSet {
-                mapView.setRegion(region, animated: true)
+                /// resetting region only when app is launched/re-launched
+                if existingCoordinates.count == 0 {
+                    mapView.setRegion(region, animated: true)
+                }
                 context.coordinator.isRegionSet = true
             }
         }
