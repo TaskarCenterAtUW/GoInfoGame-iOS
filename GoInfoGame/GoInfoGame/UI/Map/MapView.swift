@@ -18,7 +18,7 @@ struct MapView: View {
     @State private var isPresented = false
     
     @State private var shouldShowPolyline = true
-    
+    @State private var isSyncing = false
     @StateObject var contextualInfo = ContextualInfo.shared
     
     @AppStorage("baseUrl") var baseUrl = ""
@@ -49,6 +49,13 @@ struct MapView: View {
                 ToolbarItem(placement: .navigationBarLeading) {
                     NavigationLink(destination: ProfileView()) {
                         Image(systemName: "person.crop.circle.fill")
+                    }
+                }
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    if isSyncing {
+                        ProgressView()
+                    }else{
+                        EmptyView()
                     }
                 }
 //                ToolbarItem(placement: .navigationBarTrailing) {
@@ -86,6 +93,12 @@ struct MapView: View {
             case .submitted:
                 viewModel.refreshMapAfterSubmission()
                 shouldShowPolyline = false
+            case .syncing:
+                isSyncing = true
+                print("syncing")
+            case .synced:
+                isSyncing = false
+                print("synced")
             }
         }
         .onAppear(){
@@ -110,6 +123,8 @@ public class MapViewPublisher: ObservableObject {
 public enum SheetDismissalScenario {
     case dismissed
     case submitted
+    case syncing
+    case synced
 }
 
 //TODO: Move to a new file
