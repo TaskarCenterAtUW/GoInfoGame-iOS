@@ -46,8 +46,10 @@ struct CrossingTypeForm: View, QuestForm {
                     VStack() {
                         if selectedAnswer != .none {
                             Button() {
-                             
-                                self.action?(selectedAnswer)
+                                presentationMode.wrappedValue.dismiss()
+                                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5){
+                                    self.action?(selectedAnswer)
+                                }
                             }label: {
                                 Image(systemName: "checkmark.circle.fill")
                                     .font(Font.system(size: 40))

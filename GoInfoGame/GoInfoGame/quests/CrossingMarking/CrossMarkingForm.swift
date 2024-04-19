@@ -46,7 +46,10 @@ struct CrossMarkingForm : View,QuestForm{
                 if selectedAnswer != CrossingAnswer.none {
                     Button() {
                     /// applying final selected answer
-                        action?(selectedAnswer)
+                        presentationMode.wrappedValue.dismiss()
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5){
+                            action?(selectedAnswer)
+                        }
                     }label: {
                         Image(systemName: "checkmark.circle.fill")
                             .font(Font.system(size: 40))

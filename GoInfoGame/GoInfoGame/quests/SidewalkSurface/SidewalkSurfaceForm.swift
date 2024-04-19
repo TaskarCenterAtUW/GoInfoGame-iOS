@@ -64,8 +64,11 @@ struct SidewalkSurfaceForm: QuestForm ,View {
                             Spacer()
                             if selectedAnswer.value.surface != Surface.none {
                                 Button() {
-                                /// applying final selected answer
-                                    action?(selectedAnswer)
+                                    presentationMode.wrappedValue.dismiss()
+                                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.5){
+                                        /// applying final selected answer
+                                            action?(selectedAnswer)
+                                    }
                                 }label: {
                                     Image(systemName: "checkmark.circle.fill")
                                         .font(Font.system(size: 40))

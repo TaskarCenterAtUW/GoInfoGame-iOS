@@ -49,11 +49,12 @@ class QuestBase {
        
        // Dismiss sheet after syncing to db
        MapViewPublisher.shared.dismissSheet.send(.submitted)
-       
-
+       MapViewPublisher.shared.dismissSheet.send(.syncing)
        DatasyncManager.shared.syncDataToOSM {
            print("SYNC DONE")
-
+           DispatchQueue.main.async {
+               MapViewPublisher.shared.dismissSheet.send(.synced)
+           }
        }
     }
 }

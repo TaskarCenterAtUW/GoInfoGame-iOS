@@ -32,7 +32,10 @@ struct StepsInclineForm: View, QuestForm {
             VStack (alignment: .leading){
                 Text(LocalizedStrings.selectOne.localized).font(.caption).foregroundColor(.gray)
                 ImageGridItemView(gridCount: 2, isLabelBelow: true, imageData: imageData, isImageRotated: true, isDisplayImageOnly: false, isScrollable: false, allowMultipleSelection: false, onTap: { (selectedImage) in
-                    action?(StepsInclineDirection(rawValue: selectedImage.first ?? "") ?? .down)
+                    presentationMode.wrappedValue.dismiss()
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.5){
+                        action?(StepsInclineDirection(rawValue: selectedImage.first ?? "") ?? .down)
+                    }
                 }, selectedImages:$selectedImage)
             }
             .padding()
