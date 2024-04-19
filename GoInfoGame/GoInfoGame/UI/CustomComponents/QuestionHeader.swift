@@ -19,7 +19,7 @@ struct QuestionHeader: View {
                 icon
                     .resizable()
                     .scaledToFit()
-                    .frame(width: 100, height: 100)
+                    .frame(width: 50, height: 50)
                     .foregroundColor(.blue)
                     .frame(alignment: Alignment.center).padding(.top,20)
                 Spacer()
