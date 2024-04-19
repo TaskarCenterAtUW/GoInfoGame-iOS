@@ -33,11 +33,11 @@ struct SideWalkWidthForm: View, QuestForm {
             QuestionHeader(icon: Image("sidewalk-width-img"),
                            title: LocalizedStrings.questDetermineSidewalkWidth.localized,
                            contextualInfo: contextualInfo.info)
-            Text(LocalizedStrings.questRoadWithExplanation.localized).font(.caption)
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .fixedSize(horizontal: false, vertical: true)
-                .foregroundColor(.gray)
-                .padding(.top,10)
+//            Text(LocalizedStrings.questRoadWithExplanation.localized).font(.caption)
+//                .frame(maxWidth: .infinity, alignment: .leading)
+//                .fixedSize(horizontal: false, vertical: true)
+//                .foregroundColor(.gray)
+//                .padding(.top,10)
             WidthView(feet: $feet, inches: $inches, isConfirmAlert: $isConfirmAlert)
                 .onReceive(Just(isConfirmAlert)) { isAlert in
                             if isAlert {
