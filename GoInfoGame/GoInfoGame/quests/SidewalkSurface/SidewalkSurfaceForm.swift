@@ -39,46 +39,49 @@ struct SidewalkSurfaceForm: QuestForm ,View {
     ]
     var body: some View {
         ZStack{
-            VStack (alignment: .leading){
-                DismissButtonView {
-                    withAnimation {
-                        presentationMode.wrappedValue.dismiss()
-                    }
-                }
-                // Question header
-                QuestionHeader(icon: Image("sidewalk_surface"),
-                               title: LocalizedStrings.questSidewalkSurfaceTitle.localized,
-                               contextualInfo: contextualInfo.info)
-                .padding(.bottom,10)
-                // Quest Body
-                
-                VStack(alignment: .leading){
-                    Text(LocalizedStrings.select.localized).font(.caption).foregroundColor(.gray)
-                    /// Grid view for displaying selectable surfaces
-                    ImageGridItemView(gridCount: 3, isLabelBelow: true, imageData: imagesFromSurfaces, isImageRotated: false, isDisplayImageOnly: false, isScrollable: true, allowMultipleSelection: false, onTap: { (selectedImage) in
-                        selectedAnswer = SidewalkSurfaceAnswer(value: SurfaceAndNote(surface: Surface(rawValue: selectedImage.first ?? ""),note: ""))
-                        print("selectedAnswer:", selectedAnswer)
-                        print("Clicked Tag: \(selectedImage)")}, selectedImages: $selectedImage).frame(height: 350)
-                    HStack(alignment: .center) {
-                        Spacer()
-                        if selectedAnswer.value.surface != Surface.none {
-                            Button() {
-                            /// applying final selected answer
-                                action?(selectedAnswer)
-                            }label: {
-                                Image(systemName: "checkmark.circle.fill")
-                                    .font(Font.system(size: 40))
-                                    .foregroundColor(.orange)
-                            }
+            ScrollView {
+                VStack (alignment: .leading){
+                    DismissButtonView {
+                        withAnimation {
+                            presentationMode.wrappedValue.dismiss()
                         }
-                    }.padding(.top,10)
-                }        .padding()
-                    .background(
-                        RoundedRectangle(cornerRadius: 10)
-                            .fill(Color.white)
-                            .shadow(color: .gray, radius: 2, x: 0, y: 2))
+                    }.padding([.top], 30)
+                    // Question header
+                    QuestionHeader(icon: Image("sidewalk_surface"),
+                                   title: LocalizedStrings.questSidewalkSurfaceTitle.localized,
+                                   contextualInfo: contextualInfo.info)
+                    .padding(.bottom,10)
+                    // Quest Body
+                    
+                    VStack(alignment: .leading){
+                        Text(LocalizedStrings.select.localized).font(.caption).foregroundColor(.gray)
+                        /// Grid view for displaying selectable surfaces
+                        ImageGridItemView(gridCount: 3, isLabelBelow: true, imageData: imagesFromSurfaces, isImageRotated: false, isDisplayImageOnly: false, isScrollable: true, allowMultipleSelection: false, onTap: { (selectedImage) in
+                            selectedAnswer = SidewalkSurfaceAnswer(value: SurfaceAndNote(surface: Surface(rawValue: selectedImage.first ?? ""),note: ""))
+                            print("selectedAnswer:", selectedAnswer)
+                            print("Clicked Tag: \(selectedImage)")}, selectedImages: $selectedImage).frame(height: 350)
+                        HStack(alignment: .center) {
+                            Spacer()
+                            if selectedAnswer.value.surface != Surface.none {
+                                Button() {
+                                /// applying final selected answer
+                                    action?(selectedAnswer)
+                                }label: {
+                                    Image(systemName: "checkmark.circle.fill")
+                                        .font(Font.system(size: 40))
+                                        .foregroundColor(.orange)
+                                }
+                                .padding(.bottom, 30)
+                            }
+                        }.padding(.top,10)
+                    }        .padding()
+                        .background(
+                            RoundedRectangle(cornerRadius: 10)
+                                .fill(Color.white)
+                                .shadow(color: .gray, radius: 2, x: 0, y: 2))
+                }
+                .padding()
             }
-            .padding()
             if showAlert {
                 CustomAlert(title: "", content: {CustomVerticalButtonsList(buttons: SidewalkSurfaceOtherAnswerButtons, selectionChanged: { selectedOtherAnswerOption in
                     /// To Dismiss alert when selectedButton value changes
