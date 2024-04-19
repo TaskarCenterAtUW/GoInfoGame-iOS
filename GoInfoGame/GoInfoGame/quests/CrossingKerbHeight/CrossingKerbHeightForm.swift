@@ -60,7 +60,10 @@ struct CrossingKerbHeightForm: View, QuestForm {
                             if !selectedImage.isEmpty {
                                 Button(action: {
                                     let answer = KerbHeightTypeAnswer.fromString(selectedImage.first ?? "")
-                                    action?(answer ?? KerbHeightTypeAnswer.none)
+                                    presentationMode.wrappedValue.dismiss()
+                                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.5){
+                                        action?(answer ?? KerbHeightTypeAnswer.none)
+                                    }
                                 }) {
                                     Image(systemName: "checkmark.circle.fill")
                                         .font(Font.system(size: 40))

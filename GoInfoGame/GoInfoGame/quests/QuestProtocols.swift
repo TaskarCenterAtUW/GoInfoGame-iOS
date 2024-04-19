@@ -33,7 +33,6 @@ class QuestBase {
     
    public func updateTags(id: Int64, tags:[String:String], type: ElementType){
        // Convert from ElementType enum to StoredElementEnum
-       MapViewPublisher.shared.dismissSheet.send(.syncing)
        let storedElementType: StoredElementEnum = type == .way ? .way : .node
        let storedId = String(id)
        // Create a changeset
@@ -50,8 +49,7 @@ class QuestBase {
        
        // Dismiss sheet after syncing to db
        MapViewPublisher.shared.dismissSheet.send(.submitted)
-       
-
+       MapViewPublisher.shared.dismissSheet.send(.syncing)
        DatasyncManager.shared.syncDataToOSM {
            print("SYNC DONE")
            DispatchQueue.main.async {

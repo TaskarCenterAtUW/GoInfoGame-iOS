@@ -78,7 +78,10 @@ struct SideWalkWidthForm: View, QuestForm {
     func processAnswer() {
         let width = self.convertFeetToMeter(feet: feet, inches: inches)
         let answer = WidthAnswer(width: width, units: "m", isARMeasurement: false)
-        action?(answer)
+        presentationMode.wrappedValue.dismiss()
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5){
+            action?(answer)
+        }
         isConfirmAlert = false
     }
     

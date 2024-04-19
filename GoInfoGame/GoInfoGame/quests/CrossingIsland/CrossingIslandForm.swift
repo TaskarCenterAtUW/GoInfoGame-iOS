@@ -35,7 +35,9 @@ struct CrossingIslandForm: View, QuestForm {
                 YesNoView(actionBtnLabel: LocalizedStrings.cantSay.localized, action: { answer in
                     self.selectedAnswer = answer
                     if answer == .yes || answer == .no {
-                        self.action?(selectedAnswer)
+                        presentationMode.wrappedValue.dismiss()
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5){
+                            self.action?(selectedAnswer) }
                     } else if answer == .other {
                         self.showOtherAlert.toggle()
                     }

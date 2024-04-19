@@ -49,7 +49,7 @@ struct TactilePavingStepsForm: View, QuestForm {
                             .fill(Color.white)
                             .shadow(color: .gray, radius: 2, x: 0, y: 2))
             }.padding()
-        }
+        }.frame(maxHeight: .leastNormalMagnitude)
     }
 }
 

@@ -53,7 +53,10 @@ struct StairFlightsForm: View, QuestForm {
                         Spacer()
                         if isInputValid {
                             Button() {
-                                action?(numberOfSteps)
+                                presentationMode.wrappedValue.dismiss()
+                                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5){
+                                    action?(numberOfSteps)
+                                }
                             }label: {
                                 Image(systemName: "checkmark.circle.fill")
                                     .font(Font.system(size: 40))
