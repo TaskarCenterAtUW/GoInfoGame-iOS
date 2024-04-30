@@ -90,27 +90,70 @@ struct CustomMap: UIViewRepresentable {
             return MKOverlayRenderer()
         }
         
+        func mapView(_ mapView: MKMapView, clusterAnnotationForMemberAnnotations memberAnnotations: [MKAnnotation]) -> MKClusterAnnotation {
+            
+            let clusterAnnotations = MKClusterAnnotation(memberAnnotations: memberAnnotations)
+            return clusterAnnotations
+        }
+        
         // Customizes the view for each annotation
         func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
-            // Ensure annotation is of the correct type
-            guard let displayUnitAnnotation = annotation as? DisplayUnitAnnotation else {
-                return nil
-            }
-            let identifier = "customAnnotation"
-            var annotationView = mapView.dequeueReusableAnnotationView(withIdentifier: identifier)
-            if annotationView == nil {
-                annotationView = MKAnnotationView(annotation: annotation, reuseIdentifier: identifier)
+           
+            if let cluster = annotation as? MKClusterAnnotation {
+                let clusterView = MKMarkerAnnotationView()
+                if !cluster.memberAnnotations.isEmpty{
+                    // Create another display stuff here.
+                    guard let displayUnitAnnotation = cluster.memberAnnotations[0] as? DisplayUnitAnnotation else {
+                        return nil
+                    }
+                    let identifier = "customAnnotation1"
+                    var annotationView = mapView.dequeueReusableAnnotationView(withIdentifier: identifier)
+                    if annotationView == nil {
+                        annotationView = MKAnnotationView(annotation: annotation, reuseIdentifier: identifier)
+                    } else {
+                        annotationView?.annotation = annotation
+                    }
+                    // Customize annotation view
+                    customizeAnnotationView(annotationView, with: displayUnitAnnotation)
+                    return annotationView
+                }
+                return clusterView
             } else {
-                annotationView?.annotation = annotation
+                // Ensure annotation is of the correct type
+                guard let displayUnitAnnotation = annotation as? DisplayUnitAnnotation else {
+                    return nil
+                }
+                let identifier = "customAnnotation"
+                var annotationView = mapView.dequeueReusableAnnotationView(withIdentifier: identifier)
+                if annotationView == nil {
+                    annotationView = MKAnnotationView(annotation: annotation, reuseIdentifier: identifier)
+                } else {
+                    annotationView?.annotation = annotation
+                }
+                annotationView?.clusteringIdentifier = "cluster"
+            
+                // Customize annotation view
+                customizeAnnotationView(annotationView, with: displayUnitAnnotation)
+                return annotationView
             }
-            // Customize annotation view
-            customizeAnnotationView(annotationView, with: displayUnitAnnotation)
-            return annotationView
         }
         
         // Handles selection of annotations
         func mapView(_ mapView: MKMapView, didSelect annotation: MKAnnotation) {
-            if let selectedQuest = annotation as? DisplayUnitAnnotation {
+            print("did select ")
+            print(annotation)
+            if let annotation = annotation as? MKClusterAnnotation {
+                let displayAnnotation = annotation.memberAnnotations.first as! DisplayUnitAnnotation
+                selectedAnAnnotation(selectedQuest: displayAnnotation)
+            } else {
+                selectedAnAnnotation(selectedQuest: annotation as! DisplayUnitAnnotation)
+            }
+            
+            // Deselect the annotation to prevent re-adding on selection
+            mapView.deselectAnnotation(annotation, animated: false)
+        }
+        
+        private func selectedAnAnnotation(selectedQuest: DisplayUnitAnnotation) {
                 parent.selectedQuest = selectedQuest.displayUnit
                 parent.isPresented = true
                 var contextualString = ""
@@ -139,9 +182,6 @@ struct CustomMap: UIViewRepresentable {
                         self.contextualInfo?(contextualString)
                     }
                 }
-            }
-            // Deselect the annotation to prevent re-adding on selection
-            mapView.deselectAnnotation(annotation, animated: false)
         }
         
         // Customizes the appearance of the annotation view
