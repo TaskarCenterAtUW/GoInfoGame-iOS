@@ -8,7 +8,6 @@
 import Foundation
 import SwiftUI
 import MapKit
-import CoreLocation
 import osmparser
 
 // Custom Map for managing map interactions between SwiftUI and UIKit components
