@@ -25,7 +25,8 @@ struct MapView: View {
         
     var body: some View {
             ZStack{
-                CustomMap(region: $viewModel.region,
+                CustomMap(region: viewModel.region,
+                          userLocation: viewModel.userlocation,
                           trackingMode: $trackingMode,
                           items: viewModel.items,
                           selectedQuest: $viewModel.selectedQuest,
