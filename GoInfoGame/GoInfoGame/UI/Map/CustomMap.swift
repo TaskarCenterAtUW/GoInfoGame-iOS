@@ -8,13 +8,13 @@
 import Foundation
 import SwiftUI
 import MapKit
-import CoreLocation
 import osmparser
 
 // Custom Map for managing map interactions between SwiftUI and UIKit components
 struct CustomMap: UIViewRepresentable {
     
-    @Binding var region: MKCoordinateRegion
+    var region: MKCoordinateRegion
+    var userLocation = CLLocationCoordinate2D(latitude: 17.4700, longitude: 78.3534)
     @Binding var trackingMode: MapUserTrackingMode
     var items: [DisplayUnitWithCoordinate]
     @Binding var selectedQuest: DisplayUnit?
@@ -23,7 +23,6 @@ struct CustomMap: UIViewRepresentable {
     @StateObject var locationManagerDelegate = LocationManagerDelegate()
     
     @State var lineCoordinates: [CLLocationCoordinate2D] = []
-    
     
     var contextualInfo: ((String) -> Void)?
     
@@ -42,16 +41,15 @@ struct CustomMap: UIViewRepresentable {
     
     // Updates the UIView with new data
     func updateUIView(_ mapView: MKMapView, context: Context) {
-        // Manage annotations
+        mapView.setCenter(userLocation, animated: true)
+        context.coordinator.updateUserRegion(mapView)
         manageAnnotations(mapView, context: context)
-        // Update the region if necessary
-        context.coordinator.updateRegion(mapView)
         
         if shouldShowPolyline {
             if !lineCoordinates.isEmpty {
-                   let polyline = MKPolyline(coordinates: lineCoordinates, count: lineCoordinates.count)
-                   mapView.addOverlay(polyline)
-               }
+                let polyline = MKPolyline(coordinates: lineCoordinates, count: lineCoordinates.count)
+                mapView.addOverlay(polyline)
+            }
         } else {
             mapView.overlays.forEach { overlay in
                 if overlay is MKPolyline {
@@ -59,8 +57,6 @@ struct CustomMap: UIViewRepresentable {
                 }
             }
         }
-        
-        
     }
     
     // Creates the coordinator
@@ -77,6 +73,17 @@ struct CustomMap: UIViewRepresentable {
         init(_ parent: CustomMap) {
             self.parent = parent
             self.contextualInfo = parent.contextualInfo
+        }
+        
+        // Helper method to update the region
+        func updateUserRegion(_ mapView: MKMapView) {
+            // Update the region only if it hasn't been set yet
+            if self.parent.isPresented  {
+                return
+            } else if !isRegionSet {
+                mapView.setRegion(parent.region, animated: true)
+                isRegionSet = true
+            }
         }
         
         //renders polyline
@@ -145,8 +152,8 @@ struct CustomMap: UIViewRepresentable {
             if let annotation = annotation as? MKClusterAnnotation {
                 let displayAnnotation = annotation.memberAnnotations.first as! DisplayUnitAnnotation
                 selectedAnAnnotation(selectedQuest: displayAnnotation)
-            } else {
-                selectedAnAnnotation(selectedQuest: annotation as! DisplayUnitAnnotation)
+            } else if let annotation = annotation as? DisplayUnitAnnotation {
+                selectedAnAnnotation(selectedQuest: annotation)
             }
             
             // Deselect the annotation to prevent re-adding on selection
@@ -211,16 +218,6 @@ struct CustomMap: UIViewRepresentable {
             UIGraphicsEndImageContext()
             annotationView.image = resizedImage
         }
-        // Helper method to update the region
-        func updateRegion(_ mapView: MKMapView) {
-            // Update the region only if it hasn't been set yet
-            if self.parent.isPresented  {
-                return
-            } else if !isRegionSet {
-                mapView.setRegion(parent.region, animated: true)
-            }
-        }
-        
     }
     
     // Helper method to manage annotations
@@ -247,7 +244,8 @@ struct CustomMap: UIViewRepresentable {
             if !context.coordinator.isRegionSet {
                 /// resetting region only when app is launched/re-launched
                 if existingCoordinates.count == 0 {
-                    mapView.setRegion(region, animated: true)
+                    mapView.setCenter(userLocation, animated: true)
+                  //  mapView.setRegion(region, animated: true)
                 }
                 context.coordinator.isRegionSet = true
             }
