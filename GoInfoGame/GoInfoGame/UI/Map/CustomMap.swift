@@ -153,8 +153,8 @@ struct CustomMap: UIViewRepresentable {
             if let annotation = annotation as? MKClusterAnnotation {
                 let displayAnnotation = annotation.memberAnnotations.first as! DisplayUnitAnnotation
                 selectedAnAnnotation(selectedQuest: displayAnnotation)
-            } else {
-                selectedAnAnnotation(selectedQuest: annotation as! DisplayUnitAnnotation)
+            } else if let annotation = annotation as? DisplayUnitAnnotation {
+                selectedAnAnnotation(selectedQuest: annotation)
             }
             
             // Deselect the annotation to prevent re-adding on selection
