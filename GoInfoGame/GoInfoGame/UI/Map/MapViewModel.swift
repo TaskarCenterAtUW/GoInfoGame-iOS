@@ -14,7 +14,7 @@ class MapViewModel: ObservableObject {
 
     let locationManagerDelegate = LocationManagerDelegate()
     @Published var isLoading: Bool = false
-    var region = MKCoordinateRegion(center: CLLocationCoordinate2D(latitude: 37.3318, longitude: -122.0312), span: MKCoordinateSpan(latitudeDelta: 0.0004 , longitudeDelta: 0.0004 ))
+    var region = MKCoordinateRegion(center: CLLocationCoordinate2D(latitude: 37.3318, longitude: -122.0312), span: MKCoordinateSpan(latitudeDelta: 0.0009 , longitudeDelta: 0.0009))
     let viewSpanDelta = 0.001 // Delta lat/lng to show to the user
     var userlocation =  CLLocationCoordinate2D(latitude: 17.4700, longitude: 78.3534)
     @Published var refreshMap = UUID()
