@@ -36,13 +36,13 @@ class MapViewModel: ObservableObject {
     
     @objc private func locationDidChange() {
         guard let userLocation = locationManagerDelegate.location else { return }
-        fetchOSMDataFor(currentLocation: userLocation)
+        fetchOSMDataFor(currentLocation: userLocation.coordinate)
     }
 
-    func fetchOSMDataFor(currentLocation: CLLocation) {
+    func fetchOSMDataFor(currentLocation: CLLocationCoordinate2D) {
         isLoading = true
         let bBox = boundingBoxAroundLocation(location: currentLocation, distance: dataSpanDistance)
-        self.region = MKCoordinateRegion(center: currentLocation.coordinate, span: MKCoordinateSpan(
+        self.region = MKCoordinateRegion(center: currentLocation, span: MKCoordinateSpan(
             latitudeDelta: viewSpanDelta,
             longitudeDelta: viewSpanDelta
         ))
@@ -59,8 +59,8 @@ class MapViewModel: ObservableObject {
         self.items = AppQuestManager.shared.fetchQuestsFromDB()
     }
         
-    private func boundingBoxAroundLocation(location: CLLocation, distance: CLLocationDistance) -> BBox {
-        let region = MKCoordinateRegion(center: location.coordinate, latitudinalMeters: distance, longitudinalMeters: distance)
+    private func boundingBoxAroundLocation(location: CLLocationCoordinate2D, distance: CLLocationDistance) -> BBox {
+        let region = MKCoordinateRegion(center: location, latitudinalMeters: distance, longitudinalMeters: distance)
         let center = region.center
         let span = region.span
         let minLat = center.latitude - span.latitudeDelta / 2

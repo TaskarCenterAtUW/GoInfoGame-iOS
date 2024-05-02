@@ -12,12 +12,15 @@ class LocationManagerDelegate: NSObject, ObservableObject, CLLocationManagerDele
         
     var locationManager = CLLocationManager()
     @Published var location: CLLocation?
-    var locationUpdateHandler: ((CLLocation) -> Void)?
+    var locationUpdateHandler: ((CLLocationCoordinate2D) -> Void)?
     
     var hasUpdatedLocation = false
     
     override init() {
         super.init()
+        locationManager.delegate = self
+        
+        locationManager.startUpdatingLocation()
     }
     
     func requestLocationAuthorization() {
@@ -60,7 +63,7 @@ class LocationManagerDelegate: NSObject, ObservableObject, CLLocationManagerDele
         guard let mostRecentLocation = locations.last else { return }
         guard !hasUpdatedLocation else { return }
         location = mostRecentLocation
-        locationUpdateHandler?(mostRecentLocation)
+        locationUpdateHandler?(mostRecentLocation.coordinate)
         hasUpdatedLocation = true
         stopUpdatingLocation()
     }

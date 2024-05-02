@@ -28,10 +28,10 @@ class InitialViewModel: ObservableObject {
         
     }
     // Method for fetching workspaces based on location
-    func fetchWorkspaceFor(currentLocation: CLLocation) {
+    func fetchWorkspaceFor(currentLocation: CLLocationCoordinate2D) {
         isLoading = true
-        let latString = "\(currentLocation.coordinate.latitude)"
-        let longString = "\(currentLocation.coordinate.longitude)"
+        let latString = "\(currentLocation.latitude)"
+        let longString = "\(currentLocation.longitude)"
         WorkspacesApiManager.shared.fetchWorkspaces(lat: latString, lon: longString) { result in
             DispatchQueue.main.async {
                 switch result {
