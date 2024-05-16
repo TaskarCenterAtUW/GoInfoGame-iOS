@@ -10,6 +10,8 @@ import Foundation
 import osmparser
 
 class HandRail: QuestBase,Quest {
+    var questId: String = "19"
+    
     typealias AnswerClass = YesNoAnswer
     var _internalExpression: ElementFilterExpression?
     var relationData: Element? = nil
@@ -35,7 +37,8 @@ class HandRail: QuestBase,Quest {
         }
     }
     var displayUnit: DisplayUnit {
-        DisplayUnit(title: self.title, description: "",parent: self,sheetSize: .SMALL)
+        let uid = String(self.relationData?.id ?? 0)
+        return DisplayUnit(title: self.title, description: "", id: "\(uid)-\(questId)",parent: self,sheetSize: .SMALL)
     }
     var filterExpression: ElementFilterExpression? {
         if(_internalExpression != nil){

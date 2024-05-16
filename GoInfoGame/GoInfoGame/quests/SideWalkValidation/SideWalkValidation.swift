@@ -10,6 +10,8 @@ import SwiftUI
 import osmparser
 
 class SideWalkValidation: QuestBase, Quest {
+    var questId: String = "2"
+    
     typealias AnswerClass = SideWalkValidationAnswer
     var title: String = "Sidewalk Validation"
     var filter: String = ""
@@ -18,7 +20,8 @@ class SideWalkValidation: QuestBase, Quest {
     var changesetComment: String = ""
     var relationData: Element? = nil
     var displayUnit: DisplayUnit {
-        DisplayUnit(title: self.title, description: "",parent: self,sheetSize:.LARGE )
+        let uid = String(self.relationData?.id ?? 0)
+       return DisplayUnit(title: self.title, description: "", id: "\(uid)-\(questId)",parent: self,sheetSize:.LARGE )
     }
     var form: AnyView {
         get{

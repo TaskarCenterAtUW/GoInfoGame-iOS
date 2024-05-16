@@ -23,8 +23,10 @@ class CrossingType: QuestBase, Quest {
     var changesetComment: String = ""
     var relationData: Element? = nil
     var _internalExpression: ElementFilterExpression?
+    var questId: String = "1"
     var displayUnit: DisplayUnit {
-        DisplayUnit(title: self.title, description: "",parent: self,sheetSize:.MEDIUM )
+        let uid = String(self.relationData?.id ?? 0)
+        return DisplayUnit(title: self.title, description: "",id: uid+"-"+questId, parent: self,sheetSize:.MEDIUM)
     }
     var filterExpression: ElementFilterExpression? {
         if(_internalExpression != nil){

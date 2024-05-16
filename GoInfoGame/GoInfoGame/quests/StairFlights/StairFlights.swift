@@ -12,6 +12,8 @@ import SwiftUI
 import osmparser
 
 class StairFlights: QuestBase, Quest {
+    var questId: String = "4"
+    
     typealias AnswerClass = Int
     var relationData: Element? = nil
     var _internalExpression: ElementFilterExpression?
@@ -26,7 +28,8 @@ class StairFlights: QuestBase, Quest {
         }
     }
     var displayUnit: DisplayUnit {
-        DisplayUnit(title: self.title, description: "",parent: self,sheetSize:.MEDIUM )
+        let uid = String(self.relationData?.id ?? 0)
+        return DisplayUnit(title: self.title, description: "", id: "\(uid) - \(questId)",parent: self,sheetSize:.MEDIUM )
     }
     var filterExpression: ElementFilterExpression? {
         if(_internalExpression != nil){

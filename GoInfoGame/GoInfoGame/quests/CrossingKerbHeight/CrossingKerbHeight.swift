@@ -11,6 +11,8 @@ import UIKit
 import osmparser
 
 class CrossingKerbHeight: QuestBase, Quest {
+    var questId: String = "9"
+    
     var title: String = "Crossing Kerb Height"
     var _internalExpression: ElementFilterExpression?
     var relationData: Element? = nil
@@ -25,7 +27,8 @@ class CrossingKerbHeight: QuestBase, Quest {
         }
     }
     var displayUnit: DisplayUnit {
-        DisplayUnit(title: self.title, description: "",parent: self,sheetSize:.XLARGE )
+        let uid = String(self.relationData?.id ?? 0)
+        return DisplayUnit(title: self.title, description: "", id: "\(uid) -\(questId)",parent: self,sheetSize:.XLARGE )
     }
     typealias AnswerClass = KerbHeightTypeAnswer
     override init() {

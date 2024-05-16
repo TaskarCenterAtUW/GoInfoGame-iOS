@@ -10,6 +10,8 @@ import SwiftUI
 import osmparser
 
 class KerbHeight: QuestBase, Quest {
+    var questId: String = "19"
+    
     func onAnswer(answer: KerbHeightTypeAnswer) {
         var finalTags:[String:String] = [:]
         if let rData = self.relationData {
@@ -31,7 +33,8 @@ class KerbHeight: QuestBase, Quest {
     var relationData: Element? = nil
     var _internalExpression: ElementFilterExpression?
     var displayUnit: DisplayUnit {
-        DisplayUnit(title: self.title, description: "Kerb Height",parent: self,sheetSize:.XLARGE )
+        let uid = String(self.relationData?.id ?? 0)
+        return DisplayUnit(title: self.title, description: "Kerb Height", id: "\(uid)-\(questId)",parent: self,sheetSize:.XLARGE )
     }
     var filterExpression: ElementFilterExpression? {
         if(_internalExpression != nil){

@@ -11,6 +11,8 @@ import SwiftUI
 import osmparser
 
 class BusStopLit: QuestBase, Quest {
+    var questId: String = "6"
+    
     typealias AnswerClass = YesNoAnswer
     var relationData: Element? = nil
     var _internalExpression: ElementFilterExpression?
@@ -35,7 +37,8 @@ class BusStopLit: QuestBase, Quest {
             )
     """
     var displayUnit: DisplayUnit {
-        DisplayUnit(title: self.title, description: "",parent: self,sheetSize:.SMALL )
+        let uid = String(self.relationData?.id ?? 0)
+        return DisplayUnit(title: self.title, description: "", id: "\(uid) - \(questId)",parent: self,sheetSize:.SMALL )
     }
     var filterExpression: ElementFilterExpression? {
         if(_internalExpression != nil){

@@ -11,6 +11,8 @@ import SwiftUI
 import osmparser
 
 class TactilePavingSteps :QuestBase, Quest {
+    var questId: String = "27"
+    
     
     var title: String = "Tactile Paving Steps"
     var filter: String = "ways with highway=steps and !surface"
@@ -19,7 +21,8 @@ class TactilePavingSteps :QuestBase, Quest {
     var changesetComment: String = ""
     var relationData: Element? = nil
     var displayUnit: DisplayUnit {
-        DisplayUnit(title: self.title, description: "",parent: self,sheetSize:.LARGE )
+        let uid = String(self.relationData?.id ?? 0)
+        return DisplayUnit(title: self.title, description: "", id: "\(uid)-\(questId)",parent: self,sheetSize:.LARGE )
     }
     typealias AnswerClass = YesNoAnswer
     

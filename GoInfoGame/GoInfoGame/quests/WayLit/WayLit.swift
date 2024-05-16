@@ -11,6 +11,8 @@ import SwiftUI
 import osmparser
 
 class WayLit: QuestBase, Quest {
+    var questId: String = "15"
+    
     typealias AnswerClass = YesNoAnswer
     var _internalExpression: ElementFilterExpression?
     var relationData: Element? = nil
@@ -54,7 +56,8 @@ class WayLit: QuestBase, Quest {
             and ~path|footway|cycleway !~ link
     """
     var displayUnit: DisplayUnit {
-        DisplayUnit(title: self.title, description: "",parent: self,sheetSize:.MEDIUM )
+        let uid = String(self.relationData?.id ?? 0)
+        return DisplayUnit(title: self.title, description: "", id: "\(uid)-\(questId)",parent: self,sheetSize:.MEDIUM )
     }
     var filterExpression: ElementFilterExpression? {
         if(_internalExpression != nil){
