@@ -17,10 +17,12 @@ struct CustomMap: UIViewRepresentable {
     var userLocation = CLLocationCoordinate2D(latitude: 17.4700, longitude: 78.3534)
     @Binding var trackingMode: MapUserTrackingMode
     var items: [DisplayUnitWithCoordinate]
+    var changeItem: ChangedDisplayItem?
     @Binding var selectedQuest: DisplayUnit?
     @Binding var shouldShowPolyline: Bool
     @Binding var isPresented: Bool
     @StateObject var locationManagerDelegate = LocationManagerDelegate()
+    
     
     @State var lineCoordinates: [CLLocationCoordinate2D] = []
     
@@ -41,7 +43,7 @@ struct CustomMap: UIViewRepresentable {
     
     // Updates the UIView with new data
     func updateUIView(_ mapView: MKMapView, context: Context) {
-        mapView.setCenter(userLocation, animated: true)
+      //  mapView.setCenter(userLocation, animated: true)
         context.coordinator.updateUserRegion(mapView)
         manageAnnotations(mapView, context: context)
         
@@ -148,7 +150,6 @@ struct CustomMap: UIViewRepresentable {
         // Handles selection of annotations
         func mapView(_ mapView: MKMapView, didSelect annotation: MKAnnotation) {
             print("did select ")
-            print(annotation)
             if let annotation = annotation as? MKClusterAnnotation {
                 let displayAnnotation = annotation.memberAnnotations.first as! DisplayUnitAnnotation
                 selectedAnAnnotation(selectedQuest: displayAnnotation)
@@ -177,7 +178,6 @@ struct CustomMap: UIViewRepresentable {
                     }
                 }
                 self.parent.lineCoordinates = polylineCoords
-                print("POLYLINE COORDS ARE ----\(polylineCoords)")
                 
                 parent.inferStreetName(location: annotationLocation) { streetName in
                     if let streetName = streetName {
@@ -224,31 +224,33 @@ struct CustomMap: UIViewRepresentable {
     private func manageAnnotations(_ mapView: MKMapView, context: Context) {
         /// Extracting coordinates of existing annotations
         let existingCoordinates = mapView.annotations.compactMap { ($0 as? DisplayUnitAnnotation)?.coordinate }
-        let newAnnotations = items.map { $0.annotation }
-        let newCoordinates = newAnnotations.map { $0.coordinate }
-        /// Checking if the coordinates of existing annotations are different from the coordinates of new annotations
-        if existingCoordinates.count != newCoordinates.count {
-            /// to reset isRegionSet value whenever region changes.
-                context.coordinator.isRegionSet = false
-            /// Removing annotations that are not present in the new set
-            let annotationsToRemove = mapView.annotations.filter {
-                guard let displayUnitAnnotation = $0 as? DisplayUnitAnnotation else { return false }
-                return !newCoordinates.contains(displayUnitAnnotation.coordinate)
+        
+        
+        if (existingCoordinates.isEmpty) {
+            mapView.addAnnotations(items.compactMap({$0.annotation}))
+        }
+       
+        if (self.changeItem != nil) {
+            // Get annotation to remove
+            if let toRemove = mapView.annotations.first(where: {$0 as? DisplayUnitAnnotation == self.changeItem?.old.annotation}){
+                mapView.removeAnnotation(toRemove)
+            }           
+            if let newItem = self.changeItem!.new {
+                mapView.addAnnotation(newItem.annotation)
             }
-            mapView.removeAnnotations(annotationsToRemove)
-            /// Adding annotations that are present in the new set but not in the existing set
-            let annotationsToAdd = newAnnotations.filter { !existingCoordinates.contains($0.coordinate) }
-            mapView.addAnnotations(annotationsToAdd)
-
-            /// Updating the region if it hasn't been set yet
-            if !context.coordinator.isRegionSet {
-                /// resetting region only when app is launched/re-launched
-                if existingCoordinates.count == 0 {
-                    mapView.setCenter(userLocation, animated: true)
-                  //  mapView.setRegion(region, animated: true)
-                }
-                context.coordinator.isRegionSet = true
+            
+        } else {
+            context.coordinator.isRegionSet = false
+        }
+        
+        /// Updating the region if it hasn't been set yet
+        if !context.coordinator.isRegionSet {
+            /// resetting region only when app is launched/re-launched
+            if existingCoordinates.count == 0 {
+                mapView.setCenter(userLocation, animated: true)
+              //  mapView.setRegion(region, animated: true)
             }
+            context.coordinator.isRegionSet = true
         }
     }
     
