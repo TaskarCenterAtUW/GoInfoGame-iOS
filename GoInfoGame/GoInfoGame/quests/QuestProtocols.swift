@@ -23,6 +23,7 @@ protocol Quest {
     func onAnswer(answer:AnswerClass)
     var displayUnit: DisplayUnit { get}
     var filterExpression : ElementFilterExpression? { get  }
+    var questId: String { get }
     
     func copyWithElement(element: Element) -> any Quest // Not sure.
 }
@@ -48,7 +49,7 @@ class QuestBase {
        // Sync using datasyncmanager
        
        // Dismiss sheet after syncing to db
-       MapViewPublisher.shared.dismissSheet.send(.submitted)
+       MapViewPublisher.shared.dismissSheet.send(.submitted(storedId))
        MapViewPublisher.shared.dismissSheet.send(.syncing)
        DatasyncManager.shared.syncDataToOSM {
            print("SYNC DONE")
@@ -84,7 +85,7 @@ extension Quest {
 struct DisplayUnit : Identifiable {
     let title:String
     let description : String
-    let id = UUID()
+    let id: String
     let parent: (any Quest)?
     let sheetSize : SheetSize?
 }
