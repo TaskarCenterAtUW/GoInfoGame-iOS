@@ -10,6 +10,11 @@ import SwiftUI
 import MapKit
 import CoreLocation
 
+struct ChangedDisplayItem {
+    let old:DisplayUnitWithCoordinate
+    let new: DisplayUnitWithCoordinate?
+}
+
 class MapViewModel: ObservableObject {
 
     let locationManagerDelegate = LocationManagerDelegate()
@@ -19,6 +24,7 @@ class MapViewModel: ObservableObject {
     var userlocation =  CLLocationCoordinate2D(latitude: 17.4700, longitude: 78.3534)
     @Published var refreshMap = UUID()
     @Published var items: [DisplayUnitWithCoordinate] = []
+    @Published var changeItem: ChangedDisplayItem? = nil
     @Published var selectedQuest: DisplayUnit?
     let dataSpanDistance: CLLocationDistance = 1000 // Distance from user location to get the data
     
@@ -56,8 +62,19 @@ class MapViewModel: ObservableObject {
         }
     }
     
-    func refreshMapAfterSubmission() {
-        self.items = AppQuestManager.shared.fetchQuestsFromDB()
+    func refreshMapAfterSubmission(elementId: String) {
+        if let newItem = AppQuestManager.shared.getUpdatedQuest(elementId: elementId) {
+            let toReplace = self.items.first(where: {$0.id == Int(elementId)!})
+            print("To replace \(toReplace) with \(newItem)")
+            self.changeItem = ChangedDisplayItem(old: toReplace!, new: newItem)
+        }
+        else{
+            print("No item replaced \(elementId)")
+            let toReplace = self.items.first(where: {$0.id == Int(elementId)!})
+            self.changeItem = ChangedDisplayItem(old: toReplace!, new: nil)
+        }
+        
+//        self.items = AppQuestManager.shared.fetchQuestsFromDB()
     }
         
     private func boundingBoxAroundLocation(location: CLLocationCoordinate2D, distance: CLLocationDistance) -> BBox {
