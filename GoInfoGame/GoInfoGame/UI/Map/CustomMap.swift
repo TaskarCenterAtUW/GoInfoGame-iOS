@@ -222,36 +222,29 @@ struct CustomMap: UIViewRepresentable {
     
     // Helper method to manage annotations
     private func manageAnnotations(_ mapView: MKMapView, context: Context) {
-        /// Extracting coordinates of existing annotations
+        
         let existingCoordinates = mapView.annotations.compactMap { ($0 as? DisplayUnitAnnotation)?.coordinate }
+        
+        /// resetting region only when app is launched/re-launched
+        if existingCoordinates.count == 0 {
+            mapView.setCenter(userLocation, animated: true)
+        }
+        context.coordinator.isRegionSet = true
         
         
         if (existingCoordinates.isEmpty) {
+            print("Adding annotations completely")
             mapView.addAnnotations(items.compactMap({$0.annotation}))
         }
-       
-        if (self.changeItem != nil) {
-            // Get annotation to remove
-            if let toRemove = mapView.annotations.first(where: {$0 as? DisplayUnitAnnotation == self.changeItem?.old.annotation}){
-                mapView.removeAnnotation(toRemove)
-            }           
-            if let newItem = self.changeItem!.new {
-                mapView.addAnnotation(newItem.annotation)
-            }
-            
-        } else {
-            context.coordinator.isRegionSet = false
-        }
         
-        /// Updating the region if it hasn't been set yet
-        if !context.coordinator.isRegionSet {
-            /// resetting region only when app is launched/re-launched
-            if existingCoordinates.count == 0 {
-                mapView.setCenter(userLocation, animated: true)
-              //  mapView.setRegion(region, animated: true)
-            }
-            context.coordinator.isRegionSet = true
-        }
+        let currentAnnotations = Set(mapView.annotations.compactMap { $0 as? DisplayUnitAnnotation })
+        let newAnnotations = Set(items.map({$0.annotation}))
+        
+        let annotationsToRemove = currentAnnotations.subtracting(newAnnotations)
+        let annotationsToAdd = newAnnotations.subtracting(currentAnnotations)
+        
+        mapView.removeAnnotations(Array(annotationsToRemove))
+        mapView.addAnnotations(Array(annotationsToAdd))
     }
     
     // calculate distance between user current location and selected annotation
