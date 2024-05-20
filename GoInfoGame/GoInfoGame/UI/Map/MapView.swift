@@ -117,8 +117,8 @@ struct MapView: View {
             case .dismissed:
                 shouldShowPolyline = false
             case .submitted(let elementId):
-                viewModel.refreshMapAfterSubmission(elementId: elementId)
                 shouldShowPolyline = false
+                viewModel.refreshMapAfterSubmission(elementId: elementId)                
             case .syncing:
                 isSyncing = true
                 print("syncing")
