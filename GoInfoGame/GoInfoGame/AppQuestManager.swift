@@ -18,7 +18,7 @@ class AppQuestManager {
 //    let opManager = OverpassRequestManager()
     
     let dbInstance = DatabaseConnector.shared
-    let osmConnection = OSMConnection()
+    let osmConnection =  OSMConnection(config: OSMConfig.testPOSM, currentChangesetId: nil)
     
     static let shared = AppQuestManager()
     private init() {}
