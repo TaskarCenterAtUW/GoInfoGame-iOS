@@ -30,7 +30,6 @@ struct MapView: View {
                           userLocation: viewModel.userlocation,
                           trackingMode: $trackingMode,
                           items: viewModel.items,
-                          changeItem: viewModel.changeItem,
                           selectedQuest: $viewModel.selectedQuest,
                           shouldShowPolyline: $shouldShowPolyline,
                           

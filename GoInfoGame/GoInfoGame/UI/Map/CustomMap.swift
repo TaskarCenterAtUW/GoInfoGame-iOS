@@ -17,7 +17,6 @@ struct CustomMap: UIViewRepresentable {
     var userLocation = CLLocationCoordinate2D(latitude: 17.4700, longitude: 78.3534)
     @Binding var trackingMode: MapUserTrackingMode
     var items: [DisplayUnitWithCoordinate]
-    var changeItem: ChangedDisplayItem?
     @Binding var selectedQuest: DisplayUnit?
     @Binding var shouldShowPolyline: Bool
     @Binding var isPresented: Bool

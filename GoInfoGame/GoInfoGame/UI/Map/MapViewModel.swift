@@ -10,10 +10,6 @@ import SwiftUI
 import MapKit
 import CoreLocation
 
-struct ChangedDisplayItem {
-    let old:DisplayUnitWithCoordinate
-    let new: DisplayUnitWithCoordinate?
-}
 
 class MapViewModel: ObservableObject {
 
@@ -24,7 +20,6 @@ class MapViewModel: ObservableObject {
     var userlocation =  CLLocationCoordinate2D(latitude: 17.4700, longitude: 78.3534)
     @Published var refreshMap = UUID()
     @Published var items: [DisplayUnitWithCoordinate] = []
-    @Published var changeItem: ChangedDisplayItem? = nil
     @Published var selectedQuest: DisplayUnit?
     let dataSpanDistance: CLLocationDistance = 1000 // Distance from user location to get the data
     
