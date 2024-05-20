@@ -63,18 +63,20 @@ class MapViewModel: ObservableObject {
     }
     
     func refreshMapAfterSubmission(elementId: String) {
+            
         if let newItem = AppQuestManager.shared.getUpdatedQuest(elementId: elementId) {
             let toReplace = self.items.first(where: {$0.id == Int(elementId)!})
-            print("To replace \(toReplace) with \(newItem)")
-            self.changeItem = ChangedDisplayItem(old: toReplace!, new: newItem)
+            let index = self.items.firstIndex(where: {$0.id == Int(elementId)!})
+            
+            self.items.remove(at: index!)
+            self.items.insert(newItem, at: index!)
         }
         else{
-            print("No item replaced \(elementId)")
-            let toReplace = self.items.first(where: {$0.id == Int(elementId)!})
-            self.changeItem = ChangedDisplayItem(old: toReplace!, new: nil)
+            if let toReplace = self.items.first(where: {$0.id == Int(elementId)!}) {
+                let index = self.items.firstIndex(where: {$0.id == Int(elementId)!})
+                self.items.remove(at: index!)
+            }
         }
-        
-//        self.items = AppQuestManager.shared.fetchQuestsFromDB()
     }
         
     private func boundingBoxAroundLocation(location: CLLocationCoordinate2D, distance: CLLocationDistance) -> BBox {
