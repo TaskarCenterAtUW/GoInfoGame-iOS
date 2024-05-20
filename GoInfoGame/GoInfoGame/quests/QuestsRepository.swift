@@ -89,6 +89,10 @@ class DisplayUnitAnnotation: NSObject, MKAnnotation {
 //        
 //        return self.coordinate == object.coordinate && self.title == object.title && rData.id == oDat.id
     }
+    
+    override var hash: Int {
+           return displayUnit.id.hashValue
+       }
 }
 
 struct DisplayUnitWithCoordinate: Identifiable {
