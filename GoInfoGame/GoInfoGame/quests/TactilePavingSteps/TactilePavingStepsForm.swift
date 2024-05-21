@@ -39,6 +39,7 @@ struct TactilePavingStepsForm: View, QuestForm {
                     Divider()
                     YesNoView(actionBtnLabel: LocalizedStrings.otherAnswers.localized, action: { answer in
                         self.selectedAnswer = answer
+                        presentationMode.wrappedValue.dismiss()
                         if answer == .yes || answer == .no {
                             self.action?(selectedAnswer)
                         }
