@@ -60,6 +60,8 @@ struct MapView: View {
                     }
                     .padding([.all], 50)
                     .background(Color.white)
+                    .accessibilityElement(children: .combine)
+                    .accessibilityLabel("Quest Submitted")
                     .onAppear {
                         DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
                             showAlert = false // Dismiss notification box after 1 second
@@ -129,7 +131,7 @@ struct MapView: View {
         }
         .onAppear(){
             print("selected workspace",selectedWorkspace?.title ?? "")
-            self.baseUrl = "https://workspaces-osm-stage.sidewalks.washington.edu"
+            self.baseUrl = "https://master.apis.dev.openstreetmap.org"
         }
     }
     
