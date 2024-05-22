@@ -51,7 +51,7 @@ struct MapView: View {
                             .aspectRatio(contentMode: .fit)
                             .frame(width: 50, height: 50)
                             .foregroundColor(.green)
-                            .padding(.bottom, 10)
+                            .padding(.bottom, 50)
                         Text("Quest Submitted")
                             .foregroundColor(.white)
                             .padding()
