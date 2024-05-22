@@ -11,7 +11,7 @@ import Combine
 
 struct MapView: View {
     let selectedWorkspace: Workspace?
-    @State var trackingMode: MapUserTrackingMode = MapUserTrackingMode.none
+    @State var trackingMode: MapUserTrackingMode = MapUserTrackingMode.follow
     @Environment(\.presentationMode) private var presentationMode
     @AppStorage("isMapFromOnboarding") var isMapFromOnboarding: Bool = false
     @StateObject private var viewModel = MapViewModel()
