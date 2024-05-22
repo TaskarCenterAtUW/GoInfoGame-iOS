@@ -131,7 +131,7 @@ struct MapView: View {
         }
         .onAppear(){
             print("selected workspace",selectedWorkspace?.title ?? "")
-            self.baseUrl = "https://master.apis.dev.openstreetmap.org"
+            self.baseUrl = "https://workspaces-osm-stage.sidewalks.washington.edu"
         }
     }
     
