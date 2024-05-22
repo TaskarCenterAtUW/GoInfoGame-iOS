@@ -15,7 +15,7 @@ class TactilePavingSteps :QuestBase, Quest {
     
     
     var title: String = "Tactile Paving Steps"
-    var filter: String = "ways with highway=steps and !surface"
+    var filter: String = "ways with highway=steps and !tactile_paving"
     var icon: UIImage = #imageLiteral(resourceName: "steps_tactile_paving.pdf")
     var wikiLink: String = ""
     var changesetComment: String = ""
