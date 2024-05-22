@@ -11,7 +11,7 @@ import Combine
 
 struct MapView: View {
     let selectedWorkspace: Workspace?
-    @State var trackingMode: MapUserTrackingMode = MapUserTrackingMode.none
+    @State var trackingMode: MapUserTrackingMode = MapUserTrackingMode.follow
     @Environment(\.presentationMode) private var presentationMode
     @AppStorage("isMapFromOnboarding") var isMapFromOnboarding: Bool = false
     @StateObject private var viewModel = MapViewModel()
@@ -19,6 +19,7 @@ struct MapView: View {
     
     @State private var shouldShowPolyline = true
     @State private var isSyncing = false
+    @State private var showAlert = false
     @StateObject var contextualInfo = ContextualInfo.shared
     
     @AppStorage("baseUrl") var baseUrl = ""
@@ -31,6 +32,7 @@ struct MapView: View {
                           items: viewModel.items,
                           selectedQuest: $viewModel.selectedQuest,
                           shouldShowPolyline: $shouldShowPolyline,
+                          
                           isPresented: $isPresented, contextualInfo: { contextualInfo in
                     print(contextualInfo)
                     self.setContextualInfo(contextualinfo: contextualInfo)
@@ -41,6 +43,30 @@ struct MapView: View {
                     Color.black.opacity(0.3)
                         .edgesIgnoringSafeArea(.all)
                    ActivityView(activityText: "Looking for quests...")
+                }
+                if showAlert {
+                    VStack {
+                        Image(systemName: "checkmark.circle.fill")
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                            .frame(width: 50, height: 50)
+                            .foregroundColor(.green)
+                            .padding(.bottom, 50)
+                        Text("Quest Submitted")
+                            .foregroundColor(.white)
+                            .padding()
+                            .background(Color.orange)
+                            .cornerRadius(10)
+                    }
+                    .padding([.all], 50)
+                    .background(Color.white)
+                    .accessibilityElement(children: .combine)
+                    .accessibilityLabel("Quest Submitted")
+                    .onAppear {
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                            showAlert = false // Dismiss notification box after 1 second
+                        }
+                    }
                 }
             }
             .environmentObject(contextualInfo)
@@ -91,15 +117,16 @@ struct MapView: View {
             switch scenario {
             case .dismissed:
                 shouldShowPolyline = false
-            case .submitted:
-                viewModel.refreshMapAfterSubmission()
+            case .submitted(let elementId):
                 shouldShowPolyline = false
+                viewModel.refreshMapAfterSubmission(elementId: elementId)                
             case .syncing:
                 isSyncing = true
                 print("syncing")
             case .synced:
                 isSyncing = false
                 print("synced")
+                showAlert = true
             }
         }
         .onAppear(){
@@ -123,7 +150,7 @@ public class MapViewPublisher: ObservableObject {
 
 public enum SheetDismissalScenario {
     case dismissed
-    case submitted
+    case submitted(String)
     case syncing
     case synced
 }

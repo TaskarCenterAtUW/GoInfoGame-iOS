@@ -11,6 +11,8 @@ import SwiftUI
 import osmparser
 
 class StepsIncline: QuestBase, Quest {
+    var questId: String = "32"
+    
     
     typealias AnswerClass = StepsInclineDirection
     var _internalExpression: ElementFilterExpression?
@@ -21,7 +23,8 @@ class StepsIncline: QuestBase, Quest {
     var title: String = "StepsIncline"
     var filter: String = "ways with highway=steps and !climb"
     var displayUnit: DisplayUnit {
-        DisplayUnit(title: self.title, description: "",parent: self, sheetSize: .MEDIUM)
+        let uid = String(self.relationData?.id ?? 0)
+       return DisplayUnit(title: self.title, description: "", id: "\(uid)-\(questId)",parent: self, sheetSize: .MEDIUM)
     }
     var filterExpression: ElementFilterExpression? {
         if(_internalExpression != nil){
@@ -47,7 +50,7 @@ class StepsIncline: QuestBase, Quest {
     
     func onAnswer(answer: StepsInclineDirection) {
         if let rData = self.relationData {
-            self.updateTags(id: rData.id, tags: ["incline":answer.rawValue], type: rData.type)
+            self.updateTags(id: rData.id, tags: ["climb":answer.rawValue], type: rData.type)
         }
     }
     

@@ -11,6 +11,8 @@ import SwiftUI
 import osmparser
 // This is to figure out what type of marking is there for the crossing
 class CrossMarking: QuestBase, Quest {
+    var questId: String = "10"
+    
     typealias AnswerClass = CrossingAnswer
     var _internalExpression: ElementFilterExpression?
     var title: String = "Cross Marking"
@@ -20,7 +22,8 @@ class CrossMarking: QuestBase, Quest {
     var changesetComment: String = ""
     var relationData: Element? = nil
     var displayUnit: DisplayUnit {
-        DisplayUnit(title: self.title, description: "",parent: self,sheetSize:.MEDIUM )
+        let uid = String(self.relationData?.id ?? 0)
+        return DisplayUnit(title: self.title, description: "", id: "\(uid)-\(questId)",parent: self,sheetSize:.MEDIUM )
     }
     var filterExpression: ElementFilterExpression? {
         if(_internalExpression != nil){

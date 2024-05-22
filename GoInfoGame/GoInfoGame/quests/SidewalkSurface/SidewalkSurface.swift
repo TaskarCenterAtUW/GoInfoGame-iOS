@@ -11,6 +11,8 @@ import SwiftUI
 import osmparser
 
 class SidewalkSurface: QuestBase, Quest {
+    var questId: String = "31"
+    
     typealias AnswerClass = SidewalkSurfaceAnswer
     var title: String = "Sidewalk Surface"
     var filter: String = "ways with (highway=footway and footway = sidewalk) and !surface"
@@ -19,7 +21,8 @@ class SidewalkSurface: QuestBase, Quest {
     var changesetComment: String = ""
     var relationData: Element? = nil
     var displayUnit: DisplayUnit {
-        DisplayUnit(title: self.title, description: "",parent: self,sheetSize: .XLARGE)
+        let uid = String(self.relationData?.id ?? 0)
+        return DisplayUnit(title: self.title, description: "", id: "\(uid)-\(questId)",parent: self,sheetSize: .XLARGE)
     }
     var form: AnyView {
         get{

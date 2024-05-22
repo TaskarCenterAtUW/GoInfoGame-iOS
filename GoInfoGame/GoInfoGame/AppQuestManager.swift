@@ -18,7 +18,7 @@ class AppQuestManager {
 //    let opManager = OverpassRequestManager()
     
     let dbInstance = DatabaseConnector.shared
-    let osmConnection = OSMConnection()
+    let osmConnection =  OSMConnection(config: OSMConfig.testPOSM, currentChangesetId: nil)
     
     static let shared = AppQuestManager()
     private init() {}
@@ -61,6 +61,60 @@ class AppQuestManager {
 //        }
     }
     
+    
+    func getUpdatedQuest(elementId: String) -> DisplayUnitWithCoordinate? {
+        let nodesFromStorage = dbInstance.getNodes().filter { n in
+            n.tags.count != 0
+        }
+        let waysFromStorage = dbInstance.getWays().filter{w in w.tags.count != 0 }
+        let theWay = waysFromStorage.first(where: {$0.id == Int(elementId)})
+        let theNode = nodesFromStorage.first(where: {$0.id == Int(elementId)})
+        let allQuests = QuestsRepository.shared.applicableQuests
+        // theElement if not equal to nil
+        if (theNode != nil) {
+            let nodeElement = theNode?.asNode()
+            for quest in allQuests {
+                if quest.filter.isEmpty {continue} // Ignore quest
+                if quest.isApplicable(element: nodeElement!){
+                    // Create a duplicate of the quest
+                    // Create a display Unit
+                    let duplicateQuest = quest.copyWithElement(element: nodeElement!)
+                    let unit = DisplayUnitWithCoordinate(displayUnit: duplicateQuest.displayUnit, coordinateInfo:  CLLocationCoordinate2D(latitude: nodeElement!.position.latitude, longitude: nodeElement!.position.longitude), id: nodeElement!.id)
+                    return unit
+                }
+            }
+            
+        }
+        else if (theWay != nil){
+            let wayElement = theWay?.asWay()
+            for quest in allQuests {
+                if quest.filter.isEmpty {continue} // Ignore quest
+                if quest.isApplicable(element: wayElement!){
+                    // Create a duplicate of the quest
+                    // Need to add another here.
+                    let duplicateQuest = quest.copyWithElement(element: wayElement!)
+                    let position  = dbInstance.getCenterForWay(id: String(wayElement!.id)) ?? CLLocationCoordinate2D()
+                    let unit = DisplayUnitWithCoordinate(displayUnit: duplicateQuest.displayUnit, coordinateInfo: position, id: wayElement!.id)
+                return unit
+                }
+            }
+            
+        }
+        return nil
+    }
+    
+//    internal func getPossibleQuest(element:  osmparser.Element) -> DisplayUnitWithCoordinate? {
+//        let allQuests = QuestsRepository.shared.applicableQuests
+//        for quest in allQuests {
+//            if quest.filter.isEmpty {continue}
+//            if quest.isApplicable(element: element){
+//                let duplicateQuest = quest.copyWithElement(element: element)
+//                let unit = DisplayUnitWithCoordinate(displayUnit: duplicateQuest.displayUnit, coordinateInfo:  CLLocationCoordinate2D(latitude: node.position.latitude, longitude: node.position.longitude), id: node.id)
+//            }
+//            
+//        }
+//        
+//    }
     
     
     

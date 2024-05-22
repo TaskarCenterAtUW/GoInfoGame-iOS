@@ -11,6 +11,8 @@ import SwiftUI
 import osmparser
 
 class StepsRamp: QuestBase, Quest {
+    var questId: String = "25"
+    
     typealias AnswerClass = StepsRampAnswer
     var _internalExpression: ElementFilterExpression?
     var relationData: Element? = nil
@@ -32,7 +34,8 @@ class StepsRamp: QuestBase, Quest {
              )
     """
     var displayUnit: DisplayUnit {
-        DisplayUnit(title: self.title, description: "",parent: self,sheetSize:.LARGE )
+        let uid = String(self.relationData?.id ?? 0)
+        return DisplayUnit(title: self.title, description: "", id: "\(uid)-\(questId)",parent: self,sheetSize:.LARGE )
     }
     var filterExpression: ElementFilterExpression? {
         if(_internalExpression != nil){

@@ -7,6 +7,8 @@
 
 import Foundation
 import MapKit
+import osmparser
+
 // singleton class that has all the quest type instances
 class QuestsRepository {
     static let shared = QuestsRepository()
@@ -77,6 +79,20 @@ class DisplayUnitAnnotation: NSObject, MKAnnotation {
         self.displayUnit = displayUnit
         self.coordinate = coordinate
     }
+    
+    
+    override func isEqual(_ object: Any?) -> Bool {
+        guard let object = object as? DisplayUnitAnnotation else  {return false}
+        return self.displayUnit.id == object.displayUnit.id
+//        guard let quest = self.displayUnit.parent as? (any Quest) else {return false}
+//        guard let rData = quest.relationData, let oDat = object.displayUnit.parent?.relationData as? Element else {return false}
+//        
+//        return self.coordinate == object.coordinate && self.title == object.title && rData.id == oDat.id
+    }
+    
+    override var hash: Int {
+           return displayUnit.id.hashValue
+       }
 }
 
 struct DisplayUnitWithCoordinate: Identifiable {

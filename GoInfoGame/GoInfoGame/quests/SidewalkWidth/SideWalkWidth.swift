@@ -11,6 +11,8 @@ import SwiftUI
 import osmparser
 
 class SideWalkWidth : QuestBase, Quest {
+    var questId: String = "3"
+    
     typealias AnswerClass = WidthAnswer
     var _internalExpression: ElementFilterExpression?
     var relationData: Element? = nil
@@ -25,7 +27,8 @@ class SideWalkWidth : QuestBase, Quest {
     var wikiLink: String = ""
     var changesetComment: String = ""
     var displayUnit: DisplayUnit {
-        DisplayUnit(title: self.title, description: "",parent: self, sheetSize: .MEDIUM)
+        let uid = String(self.relationData?.id ?? 0)
+       return DisplayUnit(title: self.title, description: "", id: "\(uid) - \(questId)",parent: self, sheetSize: .MEDIUM)
     }
     var filterExpression: ElementFilterExpression? {
         if(_internalExpression != nil){

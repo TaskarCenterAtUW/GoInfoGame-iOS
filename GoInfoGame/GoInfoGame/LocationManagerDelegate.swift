@@ -13,9 +13,7 @@ class LocationManagerDelegate: NSObject, ObservableObject, CLLocationManagerDele
     var locationManager = CLLocationManager()
     @Published var location: CLLocation?
     var locationUpdateHandler: ((CLLocationCoordinate2D) -> Void)?
-    
-    var hasUpdatedLocation = false
-    
+        
     override init() {
         super.init()
         locationManager.delegate = self
@@ -36,6 +34,7 @@ class LocationManagerDelegate: NSObject, ObservableObject, CLLocationManagerDele
             
             DispatchQueue.main.async {
                 self.locationManager.desiredAccuracy = kCLLocationAccuracyNearestTenMeters
+                self.locationManager.distanceFilter = 150
                 self.locationManager.startUpdatingLocation()
             }
         }
@@ -43,6 +42,7 @@ class LocationManagerDelegate: NSObject, ObservableObject, CLLocationManagerDele
 
     
     func stopUpdatingLocation() {
+        print("App is pushed to background. So stopping location updates")
         locationManager.stopUpdatingLocation()
     }
     
@@ -61,10 +61,11 @@ class LocationManagerDelegate: NSObject, ObservableObject, CLLocationManagerDele
     
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         guard let mostRecentLocation = locations.last else { return }
-        guard !hasUpdatedLocation else { return }
         location = mostRecentLocation
         locationUpdateHandler?(mostRecentLocation.coordinate)
-        hasUpdatedLocation = true
-        stopUpdatingLocation()
+    }
+    
+    func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
+        print("Error with location manager is ----\(error.localizedDescription)")
     }
 }
