@@ -42,8 +42,9 @@ struct CustomMap: UIViewRepresentable {
     
     // Updates the UIView with new data
     func updateUIView(_ mapView: MKMapView, context: Context) {
-      //  mapView.setCenter(userLocation, animated: true)
+        //  mapView.setCenter(userLocation, animated: true)
         context.coordinator.updateUserRegion(mapView)
+        context.coordinator.updateVisibleAnnotations(in: mapView)
         manageAnnotations(mapView, context: context)
         
         if shouldShowPolyline {
@@ -106,7 +107,7 @@ struct CustomMap: UIViewRepresentable {
         
         // Customizes the view for each annotation
         func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
-           
+            
             if let cluster = annotation as? MKClusterAnnotation {
                 let clusterView = MKMarkerAnnotationView()
                 if !cluster.memberAnnotations.isEmpty{
@@ -116,6 +117,8 @@ struct CustomMap: UIViewRepresentable {
                     }
                     let identifier = "customAnnotation1"
                     var annotationView = mapView.dequeueReusableAnnotationView(withIdentifier: identifier)
+                    //                    annotationView?.isAccessibilityElement = true
+                    //                    annotationView?.accessibilityTraits = .button
                     if annotationView == nil {
                         annotationView = MKAnnotationView(annotation: annotation, reuseIdentifier: identifier)
                     } else {
@@ -139,7 +142,7 @@ struct CustomMap: UIViewRepresentable {
                     annotationView?.annotation = annotation
                 }
                 annotationView?.clusteringIdentifier = "cluster"
-            
+                
                 // Customize annotation view
                 customizeAnnotationView(annotationView, with: displayUnitAnnotation)
                 return annotationView
@@ -161,33 +164,33 @@ struct CustomMap: UIViewRepresentable {
         }
         
         private func selectedAnAnnotation(selectedQuest: DisplayUnitAnnotation) {
-                parent.selectedQuest = selectedQuest.displayUnit
-                parent.isPresented = true
-                var contextualString = ""
-                let distance = Int(parent.calculateDistance(selectedAnnotation: selectedQuest.coordinate))
-               // let direction = parent.inferDirection(selectedAnnotation: selectedQuest.coordinate)
-                
-                let annotationLocation = CLLocation(latitude: selectedQuest.coordinate.latitude, longitude: selectedQuest.coordinate.longitude)
-                
-                var polylineCoords: [CLLocationCoordinate2D] = []
-                if let wayElement = selectedQuest.displayUnit.parent?.relationData as? Way {
-                    for eachWay in wayElement.polyline {
-                        let eachCoord = CLLocationCoordinate2D(latitude: eachWay.latitude, longitude: eachWay.longitude)
-                        polylineCoords.append(eachCoord)
-                    }
+            parent.selectedQuest = selectedQuest.displayUnit
+            parent.isPresented = true
+            var contextualString = ""
+            let distance = Int(parent.calculateDistance(selectedAnnotation: selectedQuest.coordinate))
+            // let direction = parent.inferDirection(selectedAnnotation: selectedQuest.coordinate)
+            
+            let annotationLocation = CLLocation(latitude: selectedQuest.coordinate.latitude, longitude: selectedQuest.coordinate.longitude)
+            
+            var polylineCoords: [CLLocationCoordinate2D] = []
+            if let wayElement = selectedQuest.displayUnit.parent?.relationData as? Way {
+                for eachWay in wayElement.polyline {
+                    let eachCoord = CLLocationCoordinate2D(latitude: eachWay.latitude, longitude: eachWay.longitude)
+                    polylineCoords.append(eachCoord)
                 }
-                self.parent.lineCoordinates = polylineCoords
-                
-                parent.inferStreetName(location: annotationLocation) { streetName in
-                    if let streetName = streetName {
-                        if let sidewalk =  self.parent.selectedQuest?.parent as? SideWalkWidth {
-                            contextualString = "The Sidewalk is along \(streetName == "" ? "the street" : streetName) at \(distance) meters"
-                        } else {
-                            contextualString = "The \(selectedQuest.title!) is on \(streetName == "" ? "the street" : streetName) at \(distance) meters"
-                        }
-                        self.contextualInfo?(contextualString)
+            }
+            self.parent.lineCoordinates = polylineCoords
+            
+            parent.inferStreetName(location: annotationLocation) { streetName in
+                if let streetName = streetName {
+                    if let sidewalk =  self.parent.selectedQuest?.parent as? SideWalkWidth {
+                        contextualString = "The Sidewalk is along \(streetName == "" ? "the street" : streetName) at \(distance) meters"
+                    } else {
+                        contextualString = "The \(selectedQuest.title!) is on \(streetName == "" ? "the street" : streetName) at \(distance) meters"
                     }
+                    self.contextualInfo?(contextualString)
                 }
+            }
         }
         
         // Customizes the appearance of the annotation view
@@ -216,6 +219,24 @@ struct CustomMap: UIViewRepresentable {
             let resizedImage = UIGraphicsGetImageFromCurrentImageContext()
             UIGraphicsEndImageContext()
             annotationView.image = resizedImage
+        }
+        
+        func updateVisibleAnnotations(in mapView: MKMapView) {
+            let visibleRect = mapView.visibleMapRect
+            for annotation in mapView.annotations {
+                if let annotationView = mapView.view(for: annotation) {
+                    let annotationPoint = MKMapPoint(annotation.coordinate)
+                    if visibleRect.contains(annotationPoint) {
+                        // Annotation is visible
+                        annotationView.isAccessibilityElement = true
+                    } else {
+                        // Annotation is not visible
+                        annotationView.isAccessibilityElement = false
+                    }
+                }
+            }
+            // Notify the accessibility system of the updated annotations
+            UIAccessibility.post(notification: .layoutChanged, argument: mapView)
         }
     }
     
