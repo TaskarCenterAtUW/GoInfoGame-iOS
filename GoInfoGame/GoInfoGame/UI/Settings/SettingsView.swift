@@ -7,12 +7,56 @@
 
 import SwiftUI
 
-struct SettingsView: View {
+struct SettingsView : View {
+    let items: [ApplicableQuests] = QuestsRepository.shared.applicableQuests
+    
+    @ObservedObject var questManager = QuestsRepository.shared
+  
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+          List {
+              ForEach(0..<questManager.applicableQuests.count, id: \.self) { index in
+                  HStack {
+                      Image(uiImage: questManager.applicableQuests[index].quest.icon)
+                          .resizable()
+                          .aspectRatio(contentMode: .fit)
+                          .frame(width: 30, height: 30) 
+                      
+                      Text(questManager.applicableQuests[index].quest.title)
+                      Spacer()
+                      Button(action: {
+                          questManager.applicableQuests[index].toggleIsDefault()
+                      }) {
+                          CheckBoxView(isChecked: questManager.applicableQuests[index].isDefault ? true : false)
+                      }
+                  }
+              }
+          }
+          .navigationTitle("Quest Selection")
+          .onDisappear {
+              print(items)
+              QuestsPublisher.shared.refreshQuest.send("")
+              
+          }
+      }
+  }
+
+#Preview {
+    Group {
+        CheckBoxView(isChecked: true)
+        CheckBoxView(isChecked: true)
+        CheckBoxView(isChecked: false)
+        CheckBoxView(isChecked: false)
     }
 }
 
-#Preview {
-    SettingsView()
+
+
+struct CheckBoxView: View {
+    
+    let isChecked: Bool;
+    
+    var body: some View {
+        Image(systemName: isChecked ? "checkmark.square.fill" : "square")
+            .foregroundColor(isChecked ? Color(UIColor.systemBlue) : Color.secondary)
+    }
 }
