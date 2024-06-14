@@ -188,6 +188,7 @@
 		FA87A8172B6AC885000A6BEA /* StepsInclineTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA87A8162B6AC885000A6BEA /* StepsInclineTests.swift */; };
 		FA87A8192B6B01A4000A6BEA /* HandRailTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA87A8182B6B01A4000A6BEA /* HandRailTests.swift */; };
 		FA87A81B2B6B042E000A6BEA /* SideWalkWidthTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA87A81A2B6B042E000A6BEA /* SideWalkWidthTests.swift */; };
+		FA8C74BF2C1B00E600D28220 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA8C74BE2C1B00E600D28220 /* SettingsView.swift */; };
 		FA9FE2D82BAC75390036F618 /* OAuthViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA9FE2D72BAC75390036F618 /* OAuthViewController.swift */; };
 		FABF3CF42B7419BB0080EAC9 /* LocationManagerDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = FABF3CF32B7419BB0080EAC9 /* LocationManagerDelegate.swift */; };
 		FABF3CF82B822F120080EAC9 /* CustomSureAlert.swift in Sources */ = {isa = PBXBuildFile; fileRef = FABF3CF72B822F120080EAC9 /* CustomSureAlert.swift */; };
@@ -468,6 +469,7 @@
 		FA87A8162B6AC885000A6BEA /* StepsInclineTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StepsInclineTests.swift; sourceTree = "<group>"; };
 		FA87A8182B6B01A4000A6BEA /* HandRailTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HandRailTests.swift; sourceTree = "<group>"; };
 		FA87A81A2B6B042E000A6BEA /* SideWalkWidthTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SideWalkWidthTests.swift; sourceTree = "<group>"; };
+		FA8C74BE2C1B00E600D28220 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		FA9FE2D72BAC75390036F618 /* OAuthViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OAuthViewController.swift; sourceTree = "<group>"; };
 		FABF3CF32B7419BB0080EAC9 /* LocationManagerDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationManagerDelegate.swift; sourceTree = "<group>"; };
 		FABF3CF72B822F120080EAC9 /* CustomSureAlert.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomSureAlert.swift; sourceTree = "<group>"; };
@@ -621,6 +623,7 @@
 		05CB71DD2B0FAEC200DED821 /* UI */ = {
 			isa = PBXGroup;
 			children = (
+				FA8C74BD2C1B00CC00D28220 /* Settings */,
 				971342712BBD240500174EBF /* InitialView */,
 				FABF3CF92B86062E0080EAC9 /* Camera */,
 				FA87A80E2B681416000A6BEA /* Utils */,
@@ -1184,6 +1187,14 @@
 				FA87A80F2B68142F000A6BEA /* LoadingView.swift */,
 			);
 			path = Utils;
+			sourceTree = "<group>";
+		};
+		FA8C74BD2C1B00CC00D28220 /* Settings */ = {
+			isa = PBXGroup;
+			children = (
+				FA8C74BE2C1B00E600D28220 /* SettingsView.swift */,
+			);
+			path = Settings;
 			sourceTree = "<group>";
 		};
 		FABF3CF92B86062E0080EAC9 /* Camera */ = {
@@ -1788,6 +1799,7 @@
 				971F9FE42B84CDBF005397CC /* CrossingType.swift in Sources */,
 				97AC1C062B6A45B0004F0BF4 /* SideWalkValidation.swift in Sources */,
 				FAD5C4F32AFCBE700040C61A /* AppDelegate.swift in Sources */,
+				FA8C74BF2C1B00E600D28220 /* SettingsView.swift in Sources */,
 				18EC425C2B84987200DE05D7 /* TactilePavingCrosswalkForm.swift in Sources */,
 				05DBBB622B164D9A00B6F110 /* RealOPElement.swift in Sources */,
 				973FC0422B59467A00878269 /* BusStopLit.swift in Sources */,
