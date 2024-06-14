@@ -8,28 +8,52 @@
 import Foundation
 import MapKit
 import osmparser
+import Combine
+
+import Foundation
+
+import Foundation
+
+struct ApplicableQuests {
+    var quest: any Quest
+    var isDefault: Bool {
+        didSet {
+            UserDefaults.standard.set(isDefault, forKey: "\(quest)_isDefault")
+        }
+    }
+    
+    init(quest:any Quest) {
+        self.quest = quest
+        self.isDefault = UserDefaults.standard.object(forKey: "\(quest)_isDefault") as? Bool ?? true
+    }
+    
+    mutating func toggleIsDefault() {
+        isDefault.toggle()
+        let questDef =  "\(quest)_isDefault"
+        print(questDef)
+        UserDefaults.standard.set(isDefault, forKey: "\(quest)_isDefault")
+    }
+}
 
 // singleton class that has all the quest type instances
-class QuestsRepository {
+class QuestsRepository: ObservableObject {
     static let shared = QuestsRepository()
     private init() {}
     
-    let applicableQuests: [ any Quest] = [
-        
-        CrossingType(),
-        CrossingIsland(),
-        CrossMarking(),
-        SidewalkSurface(),
-        StairFlights(),
-        TactilePavingSteps(),
-        SideWalkWidth(),
-        StepsIncline(),
-        TactilePavingCrosswalk(),
-        CrossingKerbHeight(),
-        KerbHeight()
+    @Published var applicableQuests: [ApplicableQuests] = [
+        ApplicableQuests(quest: CrossingType()),
+        ApplicableQuests(quest: CrossingIsland()),
+        ApplicableQuests(quest: CrossMarking()),
+        ApplicableQuests(quest: SidewalkSurface()),
+        ApplicableQuests(quest: StairFlights()),
+        ApplicableQuests(quest: TactilePavingSteps()),
+        ApplicableQuests(quest: SideWalkWidth()),
+        ApplicableQuests(quest: StepsIncline()),
+        ApplicableQuests(quest: TactilePavingCrosswalk()),
+        ApplicableQuests(quest: CrossingKerbHeight()),
+        ApplicableQuests(quest: KerbHeight())
+    ]
 
-
-        
 //        HandRail(),
 //        StepsRamp(),
 //        StairNumber(),
@@ -37,18 +61,17 @@ class QuestsRepository {
 //        BusStopLit(),
 //        SideWalkValidation(),
 //        TactilePavingKerb(),
-    ]
-    
+
     var displayQuests: [DisplayUnit] {
         self.applicableQuests.map { q in
-            q.displayUnit
+            q.quest.displayUnit
         }
     }
     var displayCoordQuests: [DisplayUnitWithCoordinate] {
             self.applicableQuests.map { quest in
                 let randomCoordinate = generateRandomCoordinates()
                 return DisplayUnitWithCoordinate(
-                    displayUnit: quest.displayUnit,
+                    displayUnit: quest.quest.displayUnit,
                     coordinateInfo: randomCoordinate,
                     id:Int64.random(in: 2...90000)
                 )
