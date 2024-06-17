@@ -127,7 +127,17 @@ class DatasyncManager {
     func openChangeset() async -> Result<Int,Error> {
         
         await withCheckedContinuation { continuation in
-            osmConnection.openChangeSet { result in
+            
+            var versionNumber = ""
+            var buildNumber = ""
+            if let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String, let build = Bundle.main.infoDictionary?["CFBundleVersion"] as? String {
+                versionNumber = version
+                buildNumber = build
+            }
+            
+            let createdBy = "\(versionNumber)(\(buildNumber))"
+            
+            osmConnection.openChangeSet(createdByTag: createdBy) { result in
                 continuation.resume(returning: result)
             }
         }

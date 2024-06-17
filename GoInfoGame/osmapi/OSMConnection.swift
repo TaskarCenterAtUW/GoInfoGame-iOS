@@ -86,7 +86,7 @@ public class OSMConnection {
     
     /// Opens a changeset for the given user
     /// - parameter completion: Completion handler that receives the newly opened changesetId
-    public func openChangeSet(_ completion: @escaping((Result<Int,Error>)->Void)) {
+    public func openChangeSet(createdByTag: String, _ completion: @escaping((Result<Int,Error>)->Void)) {
         //TODO: Write errors when not authenticated and if there is already an open changeset with same user
         let urlString = self.baseUrl.appending("changeset/create")
         guard let url = URL(string: urlString) else {
@@ -94,7 +94,7 @@ public class OSMConnection {
             return
         }
         BaseNetworkManager.shared.addOrSetHeaders(header: "Authorization", value: authorizationValue)
-        BaseNetworkManager.shared.postData(url: url,method: "PUT" ,body: OSMChangesetPayload()) { (result: Result<Int,Error>) in
+        BaseNetworkManager.shared.postData(url: url,method: "PUT" ,body: OSMChangesetPayload(createdByTag: createdByTag)) { (result: Result<Int,Error>) in
             switch result {
             case .success(let changesetID):
                 print(changesetID)
