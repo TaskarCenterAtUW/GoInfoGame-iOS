@@ -69,34 +69,34 @@ class AppQuestManager {
         let waysFromStorage = dbInstance.getWays().filter{w in w.tags.count != 0 }
         let theWay = waysFromStorage.first(where: {$0.id == Int(elementId)})
         let theNode = nodesFromStorage.first(where: {$0.id == Int(elementId)})
-        let allQuests = QuestsRepository.shared.applicableQuests
+        let allQuests = QuestsRepository.shared.applicableQuests.filter({$0.isDefault})
         // theElement if not equal to nil
         if (theNode != nil) {
             let nodeElement = theNode?.asNode()
             for quest in allQuests {
-                if quest.filter.isEmpty {continue} // Ignore quest
-                if quest.isApplicable(element: nodeElement!){
-                    // Create a duplicate of the quest
-                    // Create a display Unit
-                    let duplicateQuest = quest.copyWithElement(element: nodeElement!)
-                    let unit = DisplayUnitWithCoordinate(displayUnit: duplicateQuest.displayUnit, coordinateInfo:  CLLocationCoordinate2D(latitude: nodeElement!.position.latitude, longitude: nodeElement!.position.longitude), id: nodeElement!.id)
-                    return unit
-                }
+                    if quest.quest.filter.isEmpty {continue} // Ignore quest
+                    if quest.quest.isApplicable(element: nodeElement!){
+                        // Create a duplicate of the quest
+                        // Create a display Unit
+                        let duplicateQuest = quest.quest.copyWithElement(element: nodeElement!)
+                        let unit = DisplayUnitWithCoordinate(displayUnit: duplicateQuest.displayUnit, coordinateInfo:  CLLocationCoordinate2D(latitude: nodeElement!.position.latitude, longitude: nodeElement!.position.longitude), id: nodeElement!.id)
+                        return unit
+                    }
             }
             
         }
         else if (theWay != nil){
             let wayElement = theWay?.asWay()
             for quest in allQuests {
-                if quest.filter.isEmpty {continue} // Ignore quest
-                if quest.isApplicable(element: wayElement!){
-                    // Create a duplicate of the quest
-                    // Need to add another here.
-                    let duplicateQuest = quest.copyWithElement(element: wayElement!)
-                    let position  = dbInstance.getCenterForWay(id: String(wayElement!.id)) ?? CLLocationCoordinate2D()
-                    let unit = DisplayUnitWithCoordinate(displayUnit: duplicateQuest.displayUnit, coordinateInfo: position, id: wayElement!.id)
-                return unit
-                }
+                    if quest.quest.filter.isEmpty {continue} // Ignore quest
+                    if quest.quest.isApplicable(element: wayElement!){
+                        // Create a duplicate of the quest
+                        // Need to add another here.
+                        let duplicateQuest = quest.quest.copyWithElement(element: wayElement!)
+                        let position  = dbInstance.getCenterForWay(id: String(wayElement!.id)) ?? CLLocationCoordinate2D()
+                        let unit = DisplayUnitWithCoordinate(displayUnit: duplicateQuest.displayUnit, coordinateInfo: position, id: wayElement!.id)
+                    return unit
+                    }
             }
             
         }
@@ -131,7 +131,7 @@ class AppQuestManager {
         // Get the quests for nodes
         var nodeQuests: [any Quest] = []
         var wayQuests: [any Quest] = []
-        let allQuests = QuestsRepository.shared.applicableQuests
+        let allQuests = QuestsRepository.shared.applicableQuests.filter({$0.isDefault})
         var displayUnits : [DisplayUnitWithCoordinate] = []
         
         
@@ -139,36 +139,37 @@ class AppQuestManager {
         for node in nodeElements {
             // Get the quests and try to iterate
             for quest in allQuests {
-                if quest.filter.isEmpty {continue} // Ignore quest
-                if quest.isApplicable(element: node){
-                    // Create a duplicate of the quest
-                    // Create a display Unit
-                    let duplicateQuest = quest.copyWithElement(element: node)
-                    let unit = DisplayUnitWithCoordinate(displayUnit: duplicateQuest.displayUnit, coordinateInfo:  CLLocationCoordinate2D(latitude: node.position.latitude, longitude: node.position.longitude), id: node.id)
-                    displayUnits.append(unit)
-                    nodeQuests.append(duplicateQuest)
-                    break
-                }
+                    if quest.quest.filter.isEmpty {continue} // Ignore quest
+                    if quest.quest.isApplicable(element: node){
+                        // Create a duplicate of the quest
+                        // Create a display Unit
+                        let duplicateQuest = quest.quest.copyWithElement(element: node)
+                        let unit = DisplayUnitWithCoordinate(displayUnit: duplicateQuest.displayUnit, coordinateInfo:  CLLocationCoordinate2D(latitude: node.position.latitude, longitude: node.position.longitude), id: node.id)
+                        displayUnits.append(unit)
+                        nodeQuests.append(duplicateQuest)
+                        break
+                    }
+                
             }
         }
         for way in wayElements{
             for quest in allQuests {
-                if quest.filter.isEmpty {continue} // Ignore quest
-                if quest.isApplicable(element: way){
-                    // Create a duplicate of the quest
-                    // Need to add another here.
-                    let duplicateQuest = quest.copyWithElement(element: way)
-                    let position  = dbInstance.getCenterForWay(id: String(way.id)) ?? CLLocationCoordinate2D()
-                    let unit = DisplayUnitWithCoordinate(displayUnit: duplicateQuest.displayUnit, coordinateInfo: position, id: way.id)
-                    displayUnits.append(unit)
-//                    if(quest is SideWalkWidth){
-//                        if let q = quest as? SideWalkWidth {
-//                            q.assignAnsweringHandler()
-//                        }
-//                    }
-                    wayQuests.append(duplicateQuest)
-                    break
-                }
+                    if quest.quest.filter.isEmpty {continue} // Ignore quest
+                    if quest.quest.isApplicable(element: way){
+                        // Create a duplicate of the quest
+                        // Need to add another here.
+                        let duplicateQuest = quest.quest.copyWithElement(element: way)
+                        let position  = dbInstance.getCenterForWay(id: String(way.id)) ?? CLLocationCoordinate2D()
+                        let unit = DisplayUnitWithCoordinate(displayUnit: duplicateQuest.displayUnit, coordinateInfo: position, id: way.id)
+                        displayUnits.append(unit)
+    //                    if(quest is SideWalkWidth){
+    //                        if let q = quest as? SideWalkWidth {
+    //                            q.assignAnsweringHandler()
+    //                        }
+    //                    }
+                        wayQuests.append(duplicateQuest)
+                        break
+                    }
             }
         }
         print("Sending back items")

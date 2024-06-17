@@ -57,6 +57,11 @@ class MapViewModel: ObservableObject {
         }
     }
     
+    
+    func refreshQuests() {
+        self.items = AppQuestManager.shared.fetchQuestsFromDB()
+    }
+    
     func refreshMapAfterSubmission(elementId: String) {
             
         if let newItem = AppQuestManager.shared.getUpdatedQuest(elementId: elementId) {

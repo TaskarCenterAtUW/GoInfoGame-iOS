@@ -78,6 +78,11 @@ struct MapView: View {
                         Image(systemName: "person.crop.circle.fill")
                     }
                 }
+                ToolbarItem(placement: .topBarTrailing) {
+                    NavigationLink(destination: SettingsView()) {
+                        Image(systemName: "gearshape.fill")
+                    }
+                }
                 ToolbarItem(placement: .navigationBarTrailing) {
                     if isSyncing {
                         ProgressView()
@@ -129,6 +134,9 @@ struct MapView: View {
                 showAlert = true
             }
         }
+        .onReceive(QuestsPublisher.shared.refreshQuest, perform: { _ in
+            viewModel.refreshQuests()
+        })
         .onAppear(){
             print("selected workspace",selectedWorkspace?.title ?? "")
             self.baseUrl = "https://workspaces-osm-stage.sidewalks.washington.edu"
@@ -145,6 +153,12 @@ struct MapView: View {
 public class MapViewPublisher: ObservableObject {
     public let dismissSheet = PassthroughSubject<SheetDismissalScenario, Never>()
     static let shared = MapViewPublisher()
+    private init() {}
+}
+
+public class QuestsPublisher: ObservableObject {
+    public let refreshQuest = PassthroughSubject<String, Never>()
+    static let shared = QuestsPublisher()
     private init() {}
 }
 

@@ -23,7 +23,11 @@ class MapViewController: UIHostingController<MapView> {
 
         let profileButton = UIBarButtonItem(image: UIImage(systemName: "person.crop.circle.fill"), style: .plain, target: self, action: #selector(profileButtonTapped))
         navigationItem.leftBarButtonItem = profileButton
+        
+        let settingsButton = UIBarButtonItem(image: UIImage(systemName: "gearshape.fill"), style: .plain, target: self, action: #selector(settingsButtonTapped))
+        navigationItem.rightBarButtonItem = settingsButton
     }
+    
     
 //    required init(coder aDecoder: NSCoder) {
 //        super.init(coder: aDecoder, rootView: MapView())
@@ -40,6 +44,14 @@ class MapViewController: UIHostingController<MapView> {
          let hostingController = UIHostingController(rootView: profileView)
         navigationController?.pushViewController(hostingController, animated: true)
      }
+    
+    @objc func settingsButtonTapped() {
+         let settingsView = SettingsView()
+         let hostingController = UIHostingController(rootView: settingsView)
+        navigationController?.pushViewController(hostingController, animated: true)
+     }
+    
+    
     
     @objc func widthDemoButtonTapped() {
         let measureSidewalkView = MeasureSidewalkView()
