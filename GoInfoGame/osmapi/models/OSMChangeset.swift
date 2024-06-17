@@ -40,11 +40,14 @@ struct OSMChangeset: Codable {
 }
 
 struct OSMChangesetPayload: OSMPayload {
+    let createdByTag:String
     
     func toPayload() -> String {
         """
         <osm>
         <changeset>
+        <tag k="created_by" v="GIG \(self.createdByTag)"/>
+        <tag k="comment" v="iOS OSM client"/>
         </changeset>
         </osm>
         """
