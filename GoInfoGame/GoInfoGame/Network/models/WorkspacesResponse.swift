@@ -48,6 +48,13 @@ struct Workspace: Codable, CustomStringConvertible {
     }
 }
 
+extension Workspace {
+    func saveQuestsToUserDefaults() {
+        let key = "defaultQuests"
+        UserDefaults.standard.set(self.quests, forKey: key)
+    }
+}
+
 // MARK: - Polygon
 class Polygon: Codable {
 
