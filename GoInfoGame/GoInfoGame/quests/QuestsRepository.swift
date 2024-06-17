@@ -54,7 +54,17 @@ class QuestsRepository: ObservableObject {
         ApplicableQuest(quest: TactilePavingCrosswalk(), questId: "14"),
         ApplicableQuest(quest: CrossingKerbHeight(), questId: "9"),
         ApplicableQuest(quest: KerbHeight(), questId: "19")
-    ]
+    ].filter{ appQuest in
+        
+        let defaults = UserDefaults.standard
+        let defaultQuestIds = defaults.array(forKey: "defaultQuests") as? [Int] ?? []
+        
+        if let questIdInt = Int(appQuest.questId) {
+            return defaultQuestIds.contains(questIdInt)
+        }
+        return false
+    }
+    
 
 //        HandRail(),
 //        StepsRamp(),
