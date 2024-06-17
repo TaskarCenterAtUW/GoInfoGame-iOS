@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct SettingsView : View {
-    let items: [ApplicableQuests] = QuestsRepository.shared.applicableQuests
+    let items: [ApplicableQuest] = QuestsRepository.shared.applicableQuests
     
     @ObservedObject var questManager = QuestsRepository.shared
   
