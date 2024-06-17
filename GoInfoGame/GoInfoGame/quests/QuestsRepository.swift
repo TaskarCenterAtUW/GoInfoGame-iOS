@@ -14,16 +14,18 @@ import Foundation
 
 import Foundation
 
-struct ApplicableQuests {
+struct ApplicableQuest {
     var quest: any Quest
+    var questId: String
     var isDefault: Bool {
         didSet {
             UserDefaults.standard.set(isDefault, forKey: "\(quest)_isDefault")
         }
     }
     
-    init(quest:any Quest) {
+    init(quest:any Quest, questId: String) {
         self.quest = quest
+        self.questId = questId
         self.isDefault = UserDefaults.standard.object(forKey: "\(quest)_isDefault") as? Bool ?? true
     }
     
@@ -40,18 +42,18 @@ class QuestsRepository: ObservableObject {
     static let shared = QuestsRepository()
     private init() {}
     
-    @Published var applicableQuests: [ApplicableQuests] = [
-        ApplicableQuests(quest: CrossingType()),
-        ApplicableQuests(quest: CrossingIsland()),
-        ApplicableQuests(quest: CrossMarking()),
-        ApplicableQuests(quest: SidewalkSurface()),
-        ApplicableQuests(quest: StairFlights()),
-        ApplicableQuests(quest: TactilePavingSteps()),
-        ApplicableQuests(quest: SideWalkWidth()),
-        ApplicableQuests(quest: StepsIncline()),
-        ApplicableQuests(quest: TactilePavingCrosswalk()),
-        ApplicableQuests(quest: CrossingKerbHeight()),
-        ApplicableQuests(quest: KerbHeight())
+    @Published var applicableQuests: [ApplicableQuest] = [
+        ApplicableQuest(quest: CrossingType(), questId: "1"),
+        ApplicableQuest(quest: CrossingIsland(), questId: "8"),
+        ApplicableQuest(quest: CrossMarking(), questId: "10"),
+        ApplicableQuest(quest: SidewalkSurface(), questId: "31"),
+        ApplicableQuest(quest: StairFlights(), questId: "4"),
+        ApplicableQuest(quest: TactilePavingSteps(), questId: "27"),
+        ApplicableQuest(quest: SideWalkWidth(), questId: "3"),
+        ApplicableQuest(quest: StepsIncline(), questId: "32"),
+        ApplicableQuest(quest: TactilePavingCrosswalk(), questId: "14"),
+        ApplicableQuest(quest: CrossingKerbHeight(), questId: "9"),
+        ApplicableQuest(quest: KerbHeight(), questId: "19")
     ]
 
 //        HandRail(),
