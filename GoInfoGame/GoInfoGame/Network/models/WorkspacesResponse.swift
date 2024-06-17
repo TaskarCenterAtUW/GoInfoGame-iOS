@@ -25,18 +25,21 @@ class WorkSpacesResponse: Codable {
 struct Workspace: Codable, CustomStringConvertible {
     let id: Int
     let title: String
+    let quests: [Int]
     let tdeiRecordId:String
     let tdeiProjectGroupId:String
     let tdeiServiceId: String
     let tdeiMetadata: String
-
-    init(id: Int, title: String, tdeiRecordId:String,tdeiProjectGroupId:String,tdeiServiceId: String,tdeiMetadata: String) {
+    
+    init(id: Int, title: String, tdeiRecordId:String,tdeiProjectGroupId:String,tdeiServiceId: String,tdeiMetadata: String, quests: [Int]) {
         self.id = id
         self.title = title
         self.tdeiRecordId = tdeiRecordId
         self.tdeiProjectGroupId = tdeiProjectGroupId
         self.tdeiServiceId = tdeiServiceId
         self.tdeiMetadata = tdeiMetadata
+        self.quests = quests
+        
     }
 
     var description: String {
