@@ -78,11 +78,6 @@ struct MapView: View {
                         Image(systemName: "person.crop.circle.fill")
                     }
                 }
-                ToolbarItem(placement: .topBarTrailing) {
-                    NavigationLink(destination: SettingsView()) {
-                        Image(systemName: "gearshape.fill")
-                    }
-                }
                 ToolbarItem(placement: .navigationBarTrailing) {
                     if isSyncing {
                         ProgressView()

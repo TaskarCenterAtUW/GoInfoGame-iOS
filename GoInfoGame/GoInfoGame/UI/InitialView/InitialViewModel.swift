@@ -12,7 +12,7 @@ import CoreLocation
 // InitialViewModel - ViewModel for managing data related to initial view
 class InitialViewModel: ObservableObject {
     let locationManagerDelegate = LocationManagerDelegate()
-    @Published var workspaces: [Workspace] = []
+    @Published var workspaces: [Workspace] = [] 
     @Published var isLoading: Bool = false
     
     init() {

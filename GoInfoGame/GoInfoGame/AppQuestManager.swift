@@ -69,7 +69,7 @@ class AppQuestManager {
         let waysFromStorage = dbInstance.getWays().filter{w in w.tags.count != 0 }
         let theWay = waysFromStorage.first(where: {$0.id == Int(elementId)})
         let theNode = nodesFromStorage.first(where: {$0.id == Int(elementId)})
-        let allQuests = QuestsRepository.shared.applicableQuests.filter({$0.isDefault})
+        let allQuests = QuestsRepository.shared.applicableQuests
         // theElement if not equal to nil
         if (theNode != nil) {
             let nodeElement = theNode?.asNode()
@@ -131,7 +131,7 @@ class AppQuestManager {
         // Get the quests for nodes
         var nodeQuests: [any Quest] = []
         var wayQuests: [any Quest] = []
-        let allQuests = QuestsRepository.shared.applicableQuests.filter({$0.isDefault})
+        let allQuests = QuestsRepository.shared.applicableQuests
         var displayUnits : [DisplayUnitWithCoordinate] = []
         
         

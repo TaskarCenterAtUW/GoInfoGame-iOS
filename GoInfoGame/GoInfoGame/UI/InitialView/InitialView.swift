@@ -24,6 +24,7 @@ struct InitialView: View {
                     }.hidden()
                         .onAppear {
                             shouldNavigateToMapView = true
+                            selectedWorkspace.saveQuestsToUserDefaults()
                         }
                 } else {
                     EmptyView()
@@ -56,11 +57,17 @@ struct WorkspacesListView: View {
                 ScrollView {
                     VStack(spacing: 20) {
                         ForEach(workspaces, id: \.id) { workspace in
-                            NavigationLink(destination: MapView(selectedWorkspace: workspace).navigationBarBackButtonHidden(true)) {
-                                Text(workspace.title)
-                                    .font(.system(size: 17))
-                                    .frame(maxWidth: .infinity, maxHeight: 40)
-                            }
+                            NavigationLink(
+                                destination: MapView(selectedWorkspace: workspace)
+                                    .navigationBarBackButtonHidden(true),
+                                label: {
+                                    Text(workspace.title)
+                                        .font(.system(size: 17))
+                                        .frame(maxWidth: .infinity, maxHeight: 40)
+                                })
+                            .simultaneousGesture(TapGesture().onEnded {
+                                workspace.saveQuestsToUserDefaults()
+                            })
                             
                             .buttonStyle(.borderedProminent)
                             .tint(Color(red: 147 / 255, green: 190 / 255, blue: 90 / 255))
