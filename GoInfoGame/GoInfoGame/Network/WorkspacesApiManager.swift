@@ -11,7 +11,7 @@ import Foundation
 class WorkspacesApiManager {
     
     static let shared = WorkspacesApiManager()
-    private let listingURL = "https://workspaces-tasks-stage.sidewalks.washington.edu/api/v2/workspaces/"
+    private let listingURL = "https://waylyticsosm.blob.core.windows.net/flows/workspaces-test/uwdataset.json"
     private init() {}
     
     // fetches the workspaces based on latitiude and longitude
