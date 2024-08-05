@@ -14,7 +14,7 @@ struct ImageData: Identifiable {
     let tag: String
     let optionName: String
 }
-struct ImageGridItemView: View {
+struct LongImageGridItemView: View {
     let gridCount: Int
     let isLabelBelow: Bool
     let imageData: [ImageData]
@@ -24,7 +24,9 @@ struct ImageGridItemView: View {
     let allowMultipleSelection: Bool // Boolean indicating whether multiple image selection is allowed
     let onTap: ([String]) -> Void
     
-    @Binding var selectedImages: [String]
+    @State private var selectedImageName: String?
+    
+ //   @Binding var selectedImages: [String]
     
     var body: some View {
         let spacing: CGFloat = gridCount == 3 ? 2 : (gridCount == 2 ? 5 : 0)
@@ -43,7 +45,8 @@ struct ImageGridItemView: View {
             ForEach(imageData) { data in
                 VStack {
                     Button(action: {
-                        handleSelection(for: data)
+                       // handleSelection(for: data)
+                        selectedImageName = data.optionName
                     })
                     {
                         ZStack {
@@ -60,7 +63,7 @@ struct ImageGridItemView: View {
                                 .clipped()
                                 .aspectRatio(1, contentMode: .fit)
                                 .rotationEffect(.degrees(isImageRotated ? 30: 0))
-                                .border(selectedImages.contains(data.tag) ? Color.orange : Color.clear, width: selectedImages.contains(data.tag) ? 3 : 0)
+                                .border(selectedImageName == data.optionName ? Color(red: 135/255, green: 62/255, blue: 242/255) : Color.clear, width: selectedImageName == data.optionName  ? 3 : 0)
                             if !isLabelBelow {
                                 Text(data.optionName)
                                     .font(.caption)
@@ -95,37 +98,37 @@ struct ImageGridItemView: View {
     }
     
     // Function to handle selection logic
-    private func handleSelection(for data: ImageData) {
-        // If multiple selection is allowed
-        if allowMultipleSelection {
-            /// If the image tag is "none"
-            if data.tag == "none" {
-                /// checking if selected tag already exists in selectedImages
-                if selectedImages.contains(data.tag){
-                    selectedImages.removeAll() /// Clear all selections
-                } else{
-                    selectedImages = ["none"] /// Select "none"
-                }
-                /// If the image tag is not "none"
-            } else {
-                if selectedImages.contains("none"){
-                    /// Remove "none" from selection
-                    selectedImages.removeObject(element: "none")
-                }
-                if selectedImages.contains(data.tag) {
-                    /// Deselect the image
-                    selectedImages.removeObject(element: data.tag)
-                } else {
-                    /// Select the image
-                    selectedImages.append(data.tag)
-                }
-            }
-        } else {
-            // Select the image if multiple selection is not allowed
-            selectedImages = [data.tag]
-        }
-        onTap(selectedImages)
-    }
+//    private func handleSelection(for data: ImageData) {
+//        // If multiple selection is allowed
+//        if allowMultipleSelection {
+//            /// If the image tag is "none"
+//            if data.tag == "none" {
+//                /// checking if selected tag already exists in selectedImages
+//                if selectedImages.contains(data.tag){
+//                    selectedImages.removeAll() /// Clear all selections
+//                } else{
+//                    selectedImages = ["none"] /// Select "none"
+//                }
+//                /// If the image tag is not "none"
+//            } else {
+//                if selectedImages.contains("none"){
+//                    /// Remove "none" from selection
+//                    selectedImages.removeObject(element: "none")
+//                }
+//                if selectedImages.contains(data.tag) {
+//                    /// Deselect the image
+//                    selectedImages.removeObject(element: data.tag)
+//                } else {
+//                    /// Select the image
+//                    selectedImages.append(data.tag)
+//                }
+//            }
+//        } else {
+//            // Select the image if multiple selection is not allowed
+//            selectedImages = [data.tag]
+//        }
+//        onTap(selectedImages)
+//    }
 }
 
 
@@ -135,10 +138,10 @@ struct ImageGridItemView: View {
 //}
 
 
-struct LongImageGridItemView: View {
+struct ImageGridItemView: View {
     let gridCount: Int
     let isLabelBelow: Bool
-    let imageData: [LongImageData]
+    let imageData: [ImageData]
     let isImageRotated: Bool
     let isDisplayImageOnly: Bool
     let isScrollable: Bool
@@ -161,7 +164,7 @@ struct LongImageGridItemView: View {
     }
     
     // Function to create LazyVGrid with custom spacing and content
-    func gridWithSpacing(_ spacing: CGFloat, count: Int, content: [LongImageData]) -> some View {
+    func gridWithSpacing(_ spacing: CGFloat, count: Int, content: [ImageData]) -> some View {
         return LazyVGrid(columns: Array(repeating: GridItem(spacing: spacing), count: count), spacing: spacing) {
             ForEach(imageData) { data in
                 VStack {
@@ -182,7 +185,7 @@ struct LongImageGridItemView: View {
                                 .clipped()
                                 .aspectRatio(1, contentMode: .fit)
                                 .rotationEffect(.degrees(isImageRotated ? 30: 0))
-                                .border(selectedImages.contains(data.tag) ? Color.orange : Color.clear, width: selectedImages.contains(data.tag) ? 3 : 0)
+                                .border(selectedImages.contains(data.tag) ? Color(red: 135/255, green: 62/255, blue: 242/255) : Color.clear, width: selectedImages.contains(data.tag) ? 3 : 0)
                             if !isLabelBelow {
                                 Text(data.optionName)
                                     .font(.caption)
@@ -217,7 +220,7 @@ struct LongImageGridItemView: View {
     }
     
     // Function to handle selection logic
-    private func handleSelection(for data: LongImageData) {
+    private func handleSelection(for data: ImageData) {
         // If multiple selection is allowed
         if allowMultipleSelection {
             /// If the image tag is "none"
