@@ -13,18 +13,21 @@ struct QuestOptions: View {
     
     @State var selectedOption: String?
     
+    var onChoiceSelected: (QuestAnswerChoice) -> ()
+    
     var body: some View {
            ScrollView {
-                   ForEach(options, id: \.self) { title in
+               ForEach(options) { option in
                        Button(action: {
-                           print("\(title) pressed")
-                           self.selectedOption = title
+                           print("\(option.choiceText) pressed")
+                           self.selectedOption = option.choiceText
+                           onChoiceSelected(option)
                        }) {
-                           Text(title)
+                           Text(option.choiceText)
                                .font(.custom("Lato-Bold", size: 14))
-                               .foregroundColor(selectedOption == title ? Color.white : Color(red: 66/255, green: 82/255, blue: 110/255))
+                               .foregroundColor(selectedOption == option.choiceText ? Color.white : Color(red: 66/255, green: 82/255, blue: 110/255))
                                .padding()
-                               .background(selectedOption == title ? Color(red: 135/255, green: 62/255, blue: 242/255) : Color(red: 245/255, green: 245/255, blue: 245/255))
+                               .background(selectedOption == option.choiceText ? Color(red: 135/255, green: 62/255, blue: 242/255) : Color(red: 245/255, green: 245/255, blue: 245/255))
                                .cornerRadius(25)
                        }
                      
@@ -34,6 +37,6 @@ struct QuestOptions: View {
        }
 }
 
-#Preview {
-    QuestOptions(options: ["Ashpalt", "Concrete", "Brick", "Others"], selectedOption: "")
-}
+//#Preview {
+//    QuestOptions(options: ["Ashpalt", "Concrete", "Brick", "Others"], selectedOption: "")
+//}
