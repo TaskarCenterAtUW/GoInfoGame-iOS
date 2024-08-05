@@ -26,7 +26,12 @@ class KerbHeight: QuestBase, Quest {
         }
     }
     var title: String = "Kerb Height"
-    var filter: String = ""
+    var filter: String = """
+    nodes with
+      !kerb
+      or kerb ~ yes|unknown
+      or kerb !~ no|rolled and kerb older today -8 years
+"""
     var icon: UIImage = #imageLiteral(resourceName: "kerb_type.pdf")
     var wikiLink: String = ""
     var changesetComment: String = "Determine the heights of kerbs"

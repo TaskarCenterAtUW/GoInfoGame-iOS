@@ -189,6 +189,12 @@
 		FA87A8192B6B01A4000A6BEA /* HandRailTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA87A8182B6B01A4000A6BEA /* HandRailTests.swift */; };
 		FA87A81B2B6B042E000A6BEA /* SideWalkWidthTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA87A81A2B6B042E000A6BEA /* SideWalkWidthTests.swift */; };
 		FA8C74BF2C1B00E600D28220 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA8C74BE2C1B00E600D28220 /* SettingsView.swift */; };
+		FA8C74C22C4E89C800D28220 /* LongForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA8C74C12C4E89C800D28220 /* LongForm.swift */; };
+		FA8C74C42C4FDE1000D28220 /* LongFormModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA8C74C32C4FDE1000D28220 /* LongFormModel.swift */; };
+		FA8C74C72C4FE2E900D28220 /* SidewalkSurfaceImageData.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA8C74C62C4FE2E900D28220 /* SidewalkSurfaceImageData.swift */; };
+		FA8C74C92C57B9AE00D28220 /* LongQuestView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA8C74C82C57B9AE00D28220 /* LongQuestView.swift */; };
+		FA8C74D42C5A443700D28220 /* QuestOptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA8C74D32C5A443700D28220 /* QuestOptions.swift */; };
+		FA8C74D62C5C0DBA00D28220 /* LongFormViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA8C74D52C5C0DBA00D28220 /* LongFormViewModel.swift */; };
 		FA9FE2D82BAC75390036F618 /* OAuthViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA9FE2D72BAC75390036F618 /* OAuthViewController.swift */; };
 		FABF3CF42B7419BB0080EAC9 /* LocationManagerDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = FABF3CF32B7419BB0080EAC9 /* LocationManagerDelegate.swift */; };
 		FABF3CF82B822F120080EAC9 /* CustomSureAlert.swift in Sources */ = {isa = PBXBuildFile; fileRef = FABF3CF72B822F120080EAC9 /* CustomSureAlert.swift */; };
@@ -470,6 +476,15 @@
 		FA87A8182B6B01A4000A6BEA /* HandRailTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HandRailTests.swift; sourceTree = "<group>"; };
 		FA87A81A2B6B042E000A6BEA /* SideWalkWidthTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SideWalkWidthTests.swift; sourceTree = "<group>"; };
 		FA8C74BE2C1B00E600D28220 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		FA8C74C12C4E89C800D28220 /* LongForm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LongForm.swift; sourceTree = "<group>"; };
+		FA8C74C32C4FDE1000D28220 /* LongFormModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LongFormModel.swift; sourceTree = "<group>"; };
+		FA8C74C62C4FE2E900D28220 /* SidewalkSurfaceImageData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SidewalkSurfaceImageData.swift; sourceTree = "<group>"; };
+		FA8C74C82C57B9AE00D28220 /* LongQuestView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LongQuestView.swift; sourceTree = "<group>"; };
+		FA8C74D02C598F9D00D28220 /* Lato-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Lato-Regular.ttf"; sourceTree = "<group>"; };
+		FA8C74D12C598F9D00D28220 /* Lato-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Lato-Bold.ttf"; sourceTree = "<group>"; };
+		FA8C74D22C5998D600D28220 /* Lato-Medium.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Lato-Medium.ttf"; sourceTree = "<group>"; };
+		FA8C74D32C5A443700D28220 /* QuestOptions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuestOptions.swift; sourceTree = "<group>"; };
+		FA8C74D52C5C0DBA00D28220 /* LongFormViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LongFormViewModel.swift; sourceTree = "<group>"; };
 		FA9FE2D72BAC75390036F618 /* OAuthViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OAuthViewController.swift; sourceTree = "<group>"; };
 		FABF3CF32B7419BB0080EAC9 /* LocationManagerDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationManagerDelegate.swift; sourceTree = "<group>"; };
 		FABF3CF72B822F120080EAC9 /* CustomSureAlert.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomSureAlert.swift; sourceTree = "<group>"; };
@@ -961,6 +976,7 @@
 			isa = PBXGroup;
 			children = (
 				A48037352BBA8DDC007EE7E4 /* WorkspacesResponse.swift */,
+				FA8C74C32C4FDE1000D28220 /* LongFormModel.swift */,
 			);
 			path = models;
 			sourceTree = "<group>";
@@ -1109,6 +1125,7 @@
 		A4E7119C2B57A22300C9DE08 /* quests */ = {
 			isa = PBXGroup;
 			children = (
+				FA8C74C02C4E89A600D28220 /* LongQuests */,
 				97412A972BBBF39000DF7983 /* KerbHeight */,
 				97412A922BBADACA00DF7983 /* StairFlights */,
 				97439F762B8729EA00DA43E1 /* CrossingKerbHeight */,
@@ -1197,6 +1214,44 @@
 			path = Settings;
 			sourceTree = "<group>";
 		};
+		FA8C74C02C4E89A600D28220 /* LongQuests */ = {
+			isa = PBXGroup;
+			children = (
+				FA8C74CA2C59738800D28220 /* AnswerComponents */,
+				FA8C74C52C4FE2C600D28220 /* ElementData */,
+				FA8C74C12C4E89C800D28220 /* LongForm.swift */,
+				FA8C74C82C57B9AE00D28220 /* LongQuestView.swift */,
+			);
+			path = LongQuests;
+			sourceTree = "<group>";
+		};
+		FA8C74C52C4FE2C600D28220 /* ElementData */ = {
+			isa = PBXGroup;
+			children = (
+				FA8C74C62C4FE2E900D28220 /* SidewalkSurfaceImageData.swift */,
+				FA8C74D52C5C0DBA00D28220 /* LongFormViewModel.swift */,
+			);
+			path = ElementData;
+			sourceTree = "<group>";
+		};
+		FA8C74CA2C59738800D28220 /* AnswerComponents */ = {
+			isa = PBXGroup;
+			children = (
+				FA8C74D32C5A443700D28220 /* QuestOptions.swift */,
+			);
+			path = AnswerComponents;
+			sourceTree = "<group>";
+		};
+		FA8C74CF2C598F3D00D28220 /* Fonts */ = {
+			isa = PBXGroup;
+			children = (
+				FA8C74D22C5998D600D28220 /* Lato-Medium.ttf */,
+				FA8C74D12C598F9D00D28220 /* Lato-Bold.ttf */,
+				FA8C74D02C598F9D00D28220 /* Lato-Regular.ttf */,
+			);
+			path = Fonts;
+			sourceTree = "<group>";
+		};
 		FABF3CF92B86062E0080EAC9 /* Camera */ = {
 			isa = PBXGroup;
 			children = (
@@ -1239,6 +1294,7 @@
 		FAD5C4F12AFCBE700040C61A /* GoInfoGame */ = {
 			isa = PBXGroup;
 			children = (
+				FA8C74CF2C598F3D00D28220 /* Fonts */,
 				A4E7119C2B57A22300C9DE08 /* quests */,
 				A4E7119A2B57A17600C9DE08 /* data */,
 				973FC00C2B4D2A6D00878269 /* Localizable.strings */,
@@ -1764,11 +1820,13 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FA8C74D42C5A443700D28220 /* QuestOptions.swift in Sources */,
 				A4AD130C2B5E80F20041A881 /* StoredElement.swift in Sources */,
 				05DBBB5D2B1262BA00B6F110 /* OverpassRepository.swift in Sources */,
 				A4B83AF12B5F92FA006684CA /* StoredNode.swift in Sources */,
 				97AC1C0C2B6B843C004F0BF4 /* CustomAlert.swift in Sources */,
 				A4834A412B67885E00D4F0AA /* DatasyncManager.swift in Sources */,
+				FA8C74D62C5C0DBA00D28220 /* LongFormViewModel.swift in Sources */,
 				0536DD852B0BD11A00B04C4B /* LoginViewController.swift in Sources */,
 				A4E711A42B57B13100C9DE08 /* QuestionHeader.swift in Sources */,
 				973FC0442B59468800878269 /* BusStopLitForm.swift in Sources */,
@@ -1805,6 +1863,7 @@
 				973FC0422B59467A00878269 /* BusStopLit.swift in Sources */,
 				97AC1C0A2B6B7F10004F0BF4 /* CustomVerticalButtonsList.swift in Sources */,
 				973FC0352B592C0F00878269 /* StairNumberForm.swift in Sources */,
+				FA8C74C22C4E89C800D28220 /* LongForm.swift in Sources */,
 				FAC9E60F2B04F9C800E2C608 /* OverpassRequestManager.swift in Sources */,
 				18EC425E2B849FE000DE05D7 /* TactilePavingCrosswalk.swift in Sources */,
 				FABF3CF82B822F120080EAC9 /* CustomSureAlert.swift in Sources */,
@@ -1820,6 +1879,7 @@
 				973FC0142B4D353800878269 /* SideWalkWidthForm.swift in Sources */,
 				971575172B5FFD6F0044797C /* MapView.swift in Sources */,
 				97412A9B2BBBF3B400DF7983 /* KerbHeightForm.swift in Sources */,
+				FA8C74C42C4FDE1000D28220 /* LongFormModel.swift in Sources */,
 				973FC04A2B5A478C00878269 /* CrossMarkingForm.swift in Sources */,
 				973FC03F2B59418B00878269 /* WayLit.swift in Sources */,
 				971342772BBD415600174EBF /* InitialViewController.swift in Sources */,
@@ -1841,10 +1901,12 @@
 				05DBBB662B17209600B6F110 /* RealmOPMeta.swift in Sources */,
 				B0CCB98E2B8626C600AA73DE /* ProfileViewVM.swift in Sources */,
 				97412A992BBBF3A300DF7983 /* KerbHeight.swift in Sources */,
+				FA8C74C92C57B9AE00D28220 /* LongQuestView.swift in Sources */,
 				97412A962BBADAFF00DF7983 /* StairFlights.swift in Sources */,
 				0536DD942B0BD59900B04C4B /* OAuthError.swift in Sources */,
 				973FC0172B4D567900878269 /* WidthView.swift in Sources */,
 				FABF3CFD2B8607860080EAC9 /* MeasureWidthContainer.swift in Sources */,
+				FA8C74C72C4FE2E900D28220 /* SidewalkSurfaceImageData.swift in Sources */,
 				97AC1C082B6A45C9004F0BF4 /* SideWalkValidationForm.swift in Sources */,
 				FAD5C4F52AFCBE700040C61A /* SceneDelegate.swift in Sources */,
 				97AC1C232B726ADC004F0BF4 /* TactilePavingKerbForm.swift in Sources */,
