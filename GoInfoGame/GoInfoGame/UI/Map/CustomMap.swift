@@ -91,7 +91,7 @@ struct CustomMap: UIViewRepresentable {
               func centerAnnotationAtTop(mapView: MKMapView, annotation: MKAnnotation) {
                   let coordinate = annotation.coordinate
                   var newRegion = mapView.region
-                  let offsetLatitude = newRegion.span.latitudeDelta * 0.40
+                  let offsetLatitude = newRegion.span.latitudeDelta * 0.45
                   let newCenter = CLLocationCoordinate2D(latitude: coordinate.latitude - offsetLatitude,
                                                          longitude: coordinate.longitude)
                   newRegion.center = newCenter
