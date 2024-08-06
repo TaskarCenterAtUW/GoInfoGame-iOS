@@ -17,20 +17,6 @@ struct LongQuestView: View {
         return quest.questAnswerChoices
     }
     
-    let imagesFromSurfaces: [LongImageData] = SELECTABLE_WAY_SURFACES.compactMap { surfaceString in
-        if let surface = Surface(rawValue: surfaceString) {
-            return LongImageData(
-                type: surfaceString,
-                imageName: surface.iconResId,
-                tag: surface.rawValue,
-                optionName:  surface.titleResId
-            )
-        } else {
-            print("Invalid Surface: \(surfaceString)")
-            return nil
-        }
-    }
-
     var body: some View {
         VStack(alignment: .leading) {
             Text(quest.questTitle)
@@ -42,30 +28,10 @@ struct LongQuestView: View {
                            .font(.custom("Lato-Regular", size: 12))
                            .foregroundColor(Color(red: 131/255, green: 135/255, blue: 155/255))
             
-            switch quest.questType {
-            case .exclusiveChoice:
-                QuestOptions(options: questOptions, onChoiceSelected: { selectedChoice in
-                    print("SELECTED CHOICE IS ---->>>\(selectedChoice)")
-                    onChoiceSelected(selectedChoice)
-                })
-            case .numeric:
-                HStack {
-                    TextField("Enter value", text: .constant(""))
-                    .frame(width: 100)
-                    .padding(.horizontal)
-                    .overlay(Rectangle().frame(height: 1).padding(.top, 25).foregroundColor(.orange), alignment: .bottom)
-                    .textFieldStyle(PlainTextFieldStyle())
-                    .keyboardType(UIKeyboardType.numberPad)
-
-                }
-            case .excWithImg:
-                HStack {
-                    
-                }
-//                LongImageGridItemView(gridCount: 3, isLabelBelow: true, imageData: imagesFromSurfaces, isImageRotated: false, isDisplayImageOnly: false, isScrollable: true, allowMultipleSelection: quest.questType.rawValue == "MultiplesChoice" ? true : false, onTap: { (selectedImage) in
-//                      print("Selected long form image is \(selectedImage)")
-//                  }, selectedImages: $selectedImage)
-            }
+            QuestOptions(options: questOptions, onChoiceSelected: { selectedChoice in
+                print("SELECTED CHOICE IS ---->>>\(selectedChoice)")
+                onChoiceSelected(selectedChoice)
+            }, questType: quest.questType)
           }
           .padding(.vertical, 5)
     }

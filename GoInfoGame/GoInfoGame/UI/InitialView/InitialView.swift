@@ -34,6 +34,7 @@ struct InitialView: View {
                 ActivityView(activityText: "Looking for workspaces...")
             }
         }
+        .navigationBarBackButtonHidden(true)  
     }
 }
 // WorkspacesListView - View for displaying a list of workspaces

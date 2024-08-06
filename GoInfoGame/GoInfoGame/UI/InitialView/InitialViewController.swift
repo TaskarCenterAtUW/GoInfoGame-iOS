@@ -7,8 +7,8 @@
 // InitialViewController - Hosting controller for InitialView
 import Foundation
 import SwiftUI
-class InitialViewController: UIHostingController<InitialView> {
+class InitialViewController: UIHostingController<PosmLoginView> {
     required init?(coder aDecoder: NSCoder) {
-        super.init(coder: aDecoder, rootView: InitialView())
+        super.init(coder: aDecoder, rootView: PosmLoginView())
     }
 }
