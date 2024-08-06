@@ -8,8 +8,12 @@
 import SwiftUI
 
 
-struct LongForm: View {
+struct LongForm: View, QuestForm {
     @ObservedObject private var viewModel = LongFormViewModel()
+    
+    var action: (([String:String]) -> Void)?
+    
+    typealias AnswerClass = [String:String]
             
     var body: some View {
         List {
