@@ -195,6 +195,8 @@
 		FA8C74C92C57B9AE00D28220 /* LongQuestView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA8C74C82C57B9AE00D28220 /* LongQuestView.swift */; };
 		FA8C74D42C5A443700D28220 /* QuestOptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA8C74D32C5A443700D28220 /* QuestOptions.swift */; };
 		FA8C74D62C5C0DBA00D28220 /* LongFormViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA8C74D52C5C0DBA00D28220 /* LongFormViewModel.swift */; };
+		FA8C74D82C60E95100D28220 /* PosmLogin.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA8C74D72C60E95100D28220 /* PosmLogin.swift */; };
+		FA8C74DA2C60FD3100D28220 /* LongSidewalkQuest.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA8C74D92C60FD3100D28220 /* LongSidewalkQuest.swift */; };
 		FA9FE2D82BAC75390036F618 /* OAuthViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA9FE2D72BAC75390036F618 /* OAuthViewController.swift */; };
 		FABF3CF42B7419BB0080EAC9 /* LocationManagerDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = FABF3CF32B7419BB0080EAC9 /* LocationManagerDelegate.swift */; };
 		FABF3CF82B822F120080EAC9 /* CustomSureAlert.swift in Sources */ = {isa = PBXBuildFile; fileRef = FABF3CF72B822F120080EAC9 /* CustomSureAlert.swift */; };
@@ -485,6 +487,8 @@
 		FA8C74D22C5998D600D28220 /* Lato-Medium.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Lato-Medium.ttf"; sourceTree = "<group>"; };
 		FA8C74D32C5A443700D28220 /* QuestOptions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuestOptions.swift; sourceTree = "<group>"; };
 		FA8C74D52C5C0DBA00D28220 /* LongFormViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LongFormViewModel.swift; sourceTree = "<group>"; };
+		FA8C74D72C60E95100D28220 /* PosmLogin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PosmLogin.swift; sourceTree = "<group>"; };
+		FA8C74D92C60FD3100D28220 /* LongSidewalkQuest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LongSidewalkQuest.swift; sourceTree = "<group>"; };
 		FA9FE2D72BAC75390036F618 /* OAuthViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OAuthViewController.swift; sourceTree = "<group>"; };
 		FABF3CF32B7419BB0080EAC9 /* LocationManagerDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationManagerDelegate.swift; sourceTree = "<group>"; };
 		FABF3CF72B822F120080EAC9 /* CustomSureAlert.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomSureAlert.swift; sourceTree = "<group>"; };
@@ -573,6 +577,7 @@
 			children = (
 				0536DD902B0BD57500B04C4B /* OAuth */,
 				0536DD842B0BD11A00B04C4B /* LoginViewController.swift */,
+				FA8C74D72C60E95100D28220 /* PosmLogin.swift */,
 			);
 			path = Login;
 			sourceTree = "<group>";
@@ -1221,6 +1226,7 @@
 				FA8C74C52C4FE2C600D28220 /* ElementData */,
 				FA8C74C12C4E89C800D28220 /* LongForm.swift */,
 				FA8C74C82C57B9AE00D28220 /* LongQuestView.swift */,
+				FA8C74D92C60FD3100D28220 /* LongSidewalkQuest.swift */,
 			);
 			path = LongQuests;
 			sourceTree = "<group>";
@@ -1837,6 +1843,7 @@
 				A48037312BBA8C25007EE7E4 /* WorkspacesApiManager.swift in Sources */,
 				FABF3D002B8607D80080EAC9 /* MeasureSidewalkView.swift in Sources */,
 				97439F782B87444200DA43E1 /* CrossingKerbHeightForm.swift in Sources */,
+				FA8C74DA2C60FD3100D28220 /* LongSidewalkQuest.swift in Sources */,
 				A4834A3F2B67737500D4F0AA /* StoredChangeset.swift in Sources */,
 				973FC02F2B58F81F00878269 /* StepsRamp.swift in Sources */,
 				971F9FE62B84CDCE005397CC /* CrossingTypeForm.swift in Sources */,
@@ -1866,6 +1873,7 @@
 				FA8C74C22C4E89C800D28220 /* LongForm.swift in Sources */,
 				FAC9E60F2B04F9C800E2C608 /* OverpassRequestManager.swift in Sources */,
 				18EC425E2B849FE000DE05D7 /* TactilePavingCrosswalk.swift in Sources */,
+				FA8C74D82C60E95100D28220 /* PosmLogin.swift in Sources */,
 				FABF3CF82B822F120080EAC9 /* CustomSureAlert.swift in Sources */,
 				973FC0482B5A477E00878269 /* CrossMarking.swift in Sources */,
 				05DBBB642B17204300B6F110 /* RealmOPGeometry.swift in Sources */,
