@@ -87,6 +87,17 @@ struct CustomMap: UIViewRepresentable {
                 isRegionSet = true
             }
         }
+        // To keep the selected annotation visible at the top
+              func centerAnnotationAtTop(mapView: MKMapView, annotation: MKAnnotation) {
+                  let coordinate = annotation.coordinate
+                  var newRegion = mapView.region
+                  let offsetLatitude = newRegion.span.latitudeDelta * 0.45
+                  let newCenter = CLLocationCoordinate2D(latitude: coordinate.latitude - offsetLatitude,
+                                                         longitude: coordinate.longitude)
+                  newRegion.center = newCenter
+                  
+                  mapView.setRegion(newRegion, animated: true)
+              }
         
         //renders polyline
         func mapView(_ mapView: MKMapView, rendererFor overlay: MKOverlay) -> MKOverlayRenderer {
@@ -158,7 +169,7 @@ struct CustomMap: UIViewRepresentable {
             } else if let annotation = annotation as? DisplayUnitAnnotation {
                 selectedAnAnnotation(selectedQuest: annotation)
             }
-            
+            centerAnnotationAtTop(mapView: mapView, annotation: annotation)
             // Deselect the annotation to prevent re-adding on selection
             mapView.deselectAnnotation(annotation, animated: false)
         }

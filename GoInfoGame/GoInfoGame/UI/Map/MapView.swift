@@ -70,7 +70,7 @@ struct MapView: View {
                 }
             }
             .environmentObject(contextualInfo)
-            .navigationBarHidden(false)
+            .navigationBarHidden(isPresented)
             .navigationBarItems(leading: EmptyView())
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
