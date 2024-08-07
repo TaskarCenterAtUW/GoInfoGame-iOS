@@ -191,7 +191,7 @@
 		FA8C74BF2C1B00E600D28220 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA8C74BE2C1B00E600D28220 /* SettingsView.swift */; };
 		FA8C74C22C4E89C800D28220 /* LongForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA8C74C12C4E89C800D28220 /* LongForm.swift */; };
 		FA8C74C42C4FDE1000D28220 /* LongFormModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA8C74C32C4FDE1000D28220 /* LongFormModel.swift */; };
-		FA8C74C72C4FE2E900D28220 /* SidewalkSurfaceImageData.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA8C74C62C4FE2E900D28220 /* SidewalkSurfaceImageData.swift */; };
+		FA8C74C72C4FE2E900D28220 /* LongFormWidthView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA8C74C62C4FE2E900D28220 /* LongFormWidthView.swift */; };
 		FA8C74C92C57B9AE00D28220 /* LongQuestView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA8C74C82C57B9AE00D28220 /* LongQuestView.swift */; };
 		FA8C74D42C5A443700D28220 /* QuestOptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA8C74D32C5A443700D28220 /* QuestOptions.swift */; };
 		FA8C74D62C5C0DBA00D28220 /* LongFormViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA8C74D52C5C0DBA00D28220 /* LongFormViewModel.swift */; };
@@ -480,7 +480,7 @@
 		FA8C74BE2C1B00E600D28220 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		FA8C74C12C4E89C800D28220 /* LongForm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LongForm.swift; sourceTree = "<group>"; };
 		FA8C74C32C4FDE1000D28220 /* LongFormModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LongFormModel.swift; sourceTree = "<group>"; };
-		FA8C74C62C4FE2E900D28220 /* SidewalkSurfaceImageData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SidewalkSurfaceImageData.swift; sourceTree = "<group>"; };
+		FA8C74C62C4FE2E900D28220 /* LongFormWidthView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LongFormWidthView.swift; sourceTree = "<group>"; };
 		FA8C74C82C57B9AE00D28220 /* LongQuestView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LongQuestView.swift; sourceTree = "<group>"; };
 		FA8C74D02C598F9D00D28220 /* Lato-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Lato-Regular.ttf"; sourceTree = "<group>"; };
 		FA8C74D12C598F9D00D28220 /* Lato-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Lato-Bold.ttf"; sourceTree = "<group>"; };
@@ -981,7 +981,6 @@
 			isa = PBXGroup;
 			children = (
 				A48037352BBA8DDC007EE7E4 /* WorkspacesResponse.swift */,
-				FA8C74C32C4FDE1000D28220 /* LongFormModel.swift */,
 			);
 			path = models;
 			sourceTree = "<group>";
@@ -1222,30 +1221,13 @@
 		FA8C74C02C4E89A600D28220 /* LongQuests */ = {
 			isa = PBXGroup;
 			children = (
-				FA8C74CA2C59738800D28220 /* AnswerComponents */,
-				FA8C74C52C4FE2C600D28220 /* ElementData */,
-				FA8C74C12C4E89C800D28220 /* LongForm.swift */,
-				FA8C74C82C57B9AE00D28220 /* LongQuestView.swift */,
-				FA8C74D92C60FD3100D28220 /* LongSidewalkQuest.swift */,
+				FA8C74DF2C6394AF00D28220 /* Classes */,
+				FA8C74DE2C63944300D28220 /* Components */,
+				FA8C74DD2C63891500D28220 /* View */,
+				FA8C74DC2C6388FF00D28220 /* ViewModel */,
+				FA8C74DB2C6388A300D28220 /* Model */,
 			);
 			path = LongQuests;
-			sourceTree = "<group>";
-		};
-		FA8C74C52C4FE2C600D28220 /* ElementData */ = {
-			isa = PBXGroup;
-			children = (
-				FA8C74C62C4FE2E900D28220 /* SidewalkSurfaceImageData.swift */,
-				FA8C74D52C5C0DBA00D28220 /* LongFormViewModel.swift */,
-			);
-			path = ElementData;
-			sourceTree = "<group>";
-		};
-		FA8C74CA2C59738800D28220 /* AnswerComponents */ = {
-			isa = PBXGroup;
-			children = (
-				FA8C74D32C5A443700D28220 /* QuestOptions.swift */,
-			);
-			path = AnswerComponents;
 			sourceTree = "<group>";
 		};
 		FA8C74CF2C598F3D00D28220 /* Fonts */ = {
@@ -1256,6 +1238,48 @@
 				FA8C74D02C598F9D00D28220 /* Lato-Regular.ttf */,
 			);
 			path = Fonts;
+			sourceTree = "<group>";
+		};
+		FA8C74DB2C6388A300D28220 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				FA8C74C32C4FDE1000D28220 /* LongFormModel.swift */,
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
+		FA8C74DC2C6388FF00D28220 /* ViewModel */ = {
+			isa = PBXGroup;
+			children = (
+				FA8C74D52C5C0DBA00D28220 /* LongFormViewModel.swift */,
+			);
+			path = ViewModel;
+			sourceTree = "<group>";
+		};
+		FA8C74DD2C63891500D28220 /* View */ = {
+			isa = PBXGroup;
+			children = (
+				FA8C74C12C4E89C800D28220 /* LongForm.swift */,
+				FA8C74C82C57B9AE00D28220 /* LongQuestView.swift */,
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
+		FA8C74DE2C63944300D28220 /* Components */ = {
+			isa = PBXGroup;
+			children = (
+				FA8C74C62C4FE2E900D28220 /* LongFormWidthView.swift */,
+				FA8C74D32C5A443700D28220 /* QuestOptions.swift */,
+			);
+			path = Components;
+			sourceTree = "<group>";
+		};
+		FA8C74DF2C6394AF00D28220 /* Classes */ = {
+			isa = PBXGroup;
+			children = (
+				FA8C74D92C60FD3100D28220 /* LongSidewalkQuest.swift */,
+			);
+			path = Classes;
 			sourceTree = "<group>";
 		};
 		FABF3CF92B86062E0080EAC9 /* Camera */ = {
@@ -1914,7 +1938,7 @@
 				0536DD942B0BD59900B04C4B /* OAuthError.swift in Sources */,
 				973FC0172B4D567900878269 /* WidthView.swift in Sources */,
 				FABF3CFD2B8607860080EAC9 /* MeasureWidthContainer.swift in Sources */,
-				FA8C74C72C4FE2E900D28220 /* SidewalkSurfaceImageData.swift in Sources */,
+				FA8C74C72C4FE2E900D28220 /* LongFormWidthView.swift in Sources */,
 				97AC1C082B6A45C9004F0BF4 /* SideWalkValidationForm.swift in Sources */,
 				FAD5C4F52AFCBE700040C61A /* SceneDelegate.swift in Sources */,
 				97AC1C232B726ADC004F0BF4 /* TactilePavingKerbForm.swift in Sources */,
