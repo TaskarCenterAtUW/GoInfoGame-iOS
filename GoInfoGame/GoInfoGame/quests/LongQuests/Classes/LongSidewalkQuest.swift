@@ -15,12 +15,12 @@ class LongSidewalkQuest: QuestBase, Quest {
     var title: String = ""
     
     var filter: String = "ways with (highway=footway and footway=sidewalk)"
-    
-//    var icon: UIImage = Image(named)
-    
+        
     var wikiLink: String = ""
     
     var changesetComment: String = ""
+    
+    typealias AnswerClass = [String:String]
     
     var form:  AnyView {
         get{
@@ -32,7 +32,6 @@ class LongSidewalkQuest: QuestBase, Quest {
         let uid = String(self.relationData?.id ?? 0)
         return DisplayUnit(title: self.title, description: "", id: "\(uid)-\(questId)",parent: self,sheetSize: .LARGE)
     }
-    
     
     override init() {
         super.init()
@@ -50,10 +49,5 @@ class LongSidewalkQuest: QuestBase, Quest {
         let quest = LongSidewalkQuest()
         quest.relationData = element
         return quest
-        
     }
-    
-    typealias AnswerClass = [String:String]
-    
-    
 }
