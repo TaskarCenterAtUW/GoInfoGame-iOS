@@ -1,20 +1,25 @@
 //
-//  LongSidewalkQuest.swift
+//  LongKerbQuest.swift
 //  GoInfoGame
 //
-//  Created by Achyut Kumar M on 05/08/24.
+//  Created by Achyut Kumar M on 07/08/24.
 //
 
 import Foundation
 import osmparser
 import SwiftUI
 
-class LongSidewalkQuest: QuestBase, Quest {
+class LongKerbQuest: QuestBase, Quest {
     var icon: UIImage = #imageLiteral(resourceName: "sidewalk_surface.pdf")
     
     var title: String = ""
     
-    var filter: String = "ways with (highway=footway and footway=sidewalk)"
+    var filter: String = """
+    nodes with
+      !kerb
+      or kerb ~ yes|unknown
+      or kerb !~ no|rolled and kerb older today -8 years
+"""
         
     var wikiLink: String = ""
     
@@ -43,10 +48,10 @@ class LongSidewalkQuest: QuestBase, Quest {
         
     }
         
-    var questId: String = "311"
+    var questId: String = "312"
     
     func copyWithElement(element: Element) -> any Quest {
-        let quest = LongSidewalkQuest()
+        let quest = LongKerbQuest()
         quest.relationData = element
         return quest
     }

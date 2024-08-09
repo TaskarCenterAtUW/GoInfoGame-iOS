@@ -1,20 +1,25 @@
 //
-//  LongSidewalkQuest.swift
+//  LongCrossingQuest.swift
 //  GoInfoGame
 //
-//  Created by Achyut Kumar M on 05/08/24.
+//  Created by Achyut Kumar M on 07/08/24.
 //
 
 import Foundation
 import osmparser
 import SwiftUI
 
-class LongSidewalkQuest: QuestBase, Quest {
+class LongCrossingQuest: QuestBase, Quest {
     var icon: UIImage = #imageLiteral(resourceName: "sidewalk_surface.pdf")
     
     var title: String = ""
     
-    var filter: String = "ways with (highway=footway and footway=sidewalk)"
+    var filter: String = """
+    ways with
+          highway = footway
+          and footway=traffic_island
+          and !crossing:marking
+    """
         
     var wikiLink: String = ""
     
@@ -46,8 +51,9 @@ class LongSidewalkQuest: QuestBase, Quest {
     var questId: String = "311"
     
     func copyWithElement(element: Element) -> any Quest {
-        let quest = LongSidewalkQuest()
+        let quest = LongCrossingQuest()
         quest.relationData = element
         return quest
     }
 }
+
