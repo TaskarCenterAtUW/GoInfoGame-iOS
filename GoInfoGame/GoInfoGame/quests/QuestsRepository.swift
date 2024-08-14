@@ -40,31 +40,46 @@ struct ApplicableQuest {
 // singleton class that has all the quest type instances
 class QuestsRepository: ObservableObject {
     static let shared = QuestsRepository()
-    private init() {}
-    
-    @Published var applicableQuests: [ApplicableQuest] = [
-        ApplicableQuest(quest: CrossingType(), questId: "1"),
-        ApplicableQuest(quest: CrossingIsland(), questId: "8"),
-        ApplicableQuest(quest: CrossMarking(), questId: "10"),
-        ApplicableQuest(quest: SidewalkSurface(), questId: "31"),
-        ApplicableQuest(quest: StairFlights(), questId: "4"),
-        ApplicableQuest(quest: TactilePavingSteps(), questId: "27"),
-        ApplicableQuest(quest: SideWalkWidth(), questId: "3"),
-        ApplicableQuest(quest: StepsIncline(), questId: "32"),
-        ApplicableQuest(quest: TactilePavingCrosswalk(), questId: "14"),
-        ApplicableQuest(quest: CrossingKerbHeight(), questId: "9"),
-        ApplicableQuest(quest: KerbHeight(), questId: "19")
-    ].filter{ appQuest in
-        
-        let defaults = UserDefaults.standard
-        let defaultQuestIds = defaults.array(forKey: "defaultQuests") as? [Int] ?? []
-        
-        if let questIdInt = Int(appQuest.questId) {
-            return defaultQuestIds.contains(questIdInt)
-        }
-        return false
+    private init() {
+        print("QUEST REPO INITIALISED")
     }
     
+    var sideWalkLongQuestModel: LongFormModel? {
+          return longQuestModels.first(where: { $0.elementType.lowercased() == "sidewalks" })
+      }
+    
+    var kerbLongQuestModel: LongFormModel? {
+          return longQuestModels.first(where: { $0.elementType.lowercased() == "kerb" })
+      }
+    
+    var crossingsLongQuestModel: LongFormModel? {
+          return longQuestModels.first(where: { $0.elementType.lowercased() == "crossings" })
+      }
+    
+    @Published var applicableQuests: [ApplicableQuest] = [
+//       ApplicableQuest(quest: LongSidewalkQuest(), questId: "1"),
+        ApplicableQuest(quest: LongKerbQuest(), questId: "1"),
+       ApplicableQuest(quest: LongCrossingQuest(), questId: "2")
+       
+
+        
+//        ApplicableQuest(quest: CrossingType(), questId: "1"),
+//        ApplicableQuest(quest: CrossingIsland(), questId: "8"),
+//        ApplicableQuest(quest: CrossMarking(), questId: "10"),
+////        ApplicableQuest(quest: SidewalkSurface(), questId: "31"),
+//        ApplicableQuest(quest: StairFlights(), questId: "4"),
+//        ApplicableQuest(quest: TactilePavingSteps(), questId: "27"),
+////        ApplicableQuest(quest: SideWalkWidth(), questId: "3"),
+//        ApplicableQuest(quest: StepsIncline(), questId: "32"),
+//        ApplicableQuest(quest: TactilePavingCrosswalk(), questId: "14"),
+//        ApplicableQuest(quest: CrossingKerbHeight(), questId: "9"),
+//        ApplicableQuest(quest: KerbHeight(), questId: "19")
+    ]
+    
+//    @Published var applicableQuests: [ApplicableQuest] = [
+//        ApplicableQuest(quest: LongSidewalkQuest(), questId: "1"),
+//    ]
+//    
 
 //        HandRail(),
 //        StepsRamp(),
@@ -73,7 +88,9 @@ class QuestsRepository: ObservableObject {
 //        BusStopLit(),
 //        SideWalkValidation(),
 //        TactilePavingKerb(),
-
+    
+    @Published var longQuestModels: [LongFormModel] = []
+    
     var displayQuests: [DisplayUnit] {
         self.applicableQuests.map { q in
             q.quest.displayUnit
@@ -96,6 +113,20 @@ class QuestsRepository: ObservableObject {
             
             return CLLocationCoordinate2D(latitude: randomLat, longitude: randomLon)
         }
+    
+    func loadLongQuests(from fileName: String) {
+            do {
+                if let loadedQuests = try FileStorageManager.shared.load(from: fileName) {
+                    self.longQuestModels = loadedQuests
+                } else {
+                    print("File not found")
+                }
+            } catch {
+                print("Failed to load file: \(error)")
+            }
+        }
+    
+    
 }
 // Probably move somewhere else
 class DisplayUnitAnnotation: NSObject, MKAnnotation {
