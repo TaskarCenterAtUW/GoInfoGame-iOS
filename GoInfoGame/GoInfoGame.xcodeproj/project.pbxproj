@@ -216,6 +216,7 @@
 		FAF44FBD2B3084EC004FE664 /* OnboardingView1.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAF44FBC2B3084EC004FE664 /* OnboardingView1.swift */; };
 		FAF44FBF2B3084FB004FE664 /* OnboardingView2.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAF44FBE2B3084FB004FE664 /* OnboardingView2.swift */; };
 		FAF44FC12B30850A004FE664 /* OnboardingView3.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAF44FC02B30850A004FE664 /* OnboardingView3.swift */; };
+		FAFDA1FA2C6B861A00ECEAE9 /* FileStorageManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAFDA1F92C6B861A00ECEAE9 /* FileStorageManager.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -514,6 +515,7 @@
 		FAF44FBC2B3084EC004FE664 /* OnboardingView1.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingView1.swift; sourceTree = "<group>"; };
 		FAF44FBE2B3084FB004FE664 /* OnboardingView2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingView2.swift; sourceTree = "<group>"; };
 		FAF44FC02B30850A004FE664 /* OnboardingView3.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingView3.swift; sourceTree = "<group>"; };
+		FAFDA1F92C6B861A00ECEAE9 /* FileStorageManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileStorageManager.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -1339,6 +1341,7 @@
 				FAC9E60E2B04F9C800E2C608 /* OverpassRequestManager.swift */,
 				FABF3CF32B7419BB0080EAC9 /* LocationManagerDelegate.swift */,
 				FA1992EC2BB1A78C003B4719 /* KeychainManager.swift */,
+				FAFDA1F92C6B861A00ECEAE9 /* FileStorageManager.swift */,
 				05CB71DD2B0FAEC200DED821 /* UI */,
 				05CB71DE2B0FAFAA00DED821 /* Bridges */,
 				058EADD92B10E02E0017E259 /* DataBase */,
@@ -1875,6 +1878,7 @@
 				FABF3D002B8607D80080EAC9 /* MeasureSidewalkView.swift in Sources */,
 				97439F782B87444200DA43E1 /* CrossingKerbHeightForm.swift in Sources */,
 				FA8C74DA2C60FD3100D28220 /* LongSidewalkQuest.swift in Sources */,
+				FAFDA1FA2C6B861A00ECEAE9 /* FileStorageManager.swift in Sources */,
 				A4834A3F2B67737500D4F0AA /* StoredChangeset.swift in Sources */,
 				973FC02F2B58F81F00878269 /* StepsRamp.swift in Sources */,
 				971F9FE62B84CDCE005397CC /* CrossingTypeForm.swift in Sources */,
