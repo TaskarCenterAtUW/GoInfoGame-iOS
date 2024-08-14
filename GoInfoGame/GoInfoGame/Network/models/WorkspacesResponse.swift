@@ -25,7 +25,6 @@ class WorkSpacesResponse: Codable {
 struct Workspace: Codable, CustomStringConvertible {
     let id: Int
     let title: String
-    let quests: [Int]
     let tdeiRecordId:String
     let tdeiProjectGroupId:String
     let tdeiServiceId: String
@@ -38,7 +37,6 @@ struct Workspace: Codable, CustomStringConvertible {
         self.tdeiProjectGroupId = tdeiProjectGroupId
         self.tdeiServiceId = tdeiServiceId
         self.tdeiMetadata = tdeiMetadata
-        self.quests = quests
         
     }
 
@@ -48,13 +46,6 @@ struct Workspace: Codable, CustomStringConvertible {
         d += "id: \(self.id) \n"
         d += "}\n"
         return d
-    }
-}
-
-extension Workspace {
-    func saveQuestsToUserDefaults() {
-        let key = "defaultQuests"
-        UserDefaults.standard.set(self.quests, forKey: key)
     }
 }
 
