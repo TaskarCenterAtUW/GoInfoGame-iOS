@@ -15,7 +15,7 @@ struct InitialView: View {
         NavigationView {
             // Checking if there are multiple workspaces
             if viewModel.workspaces.count > 1 {
-                WorkspacesListView(workspaces: viewModel.workspaces)
+                WorkspacesListView(workspaces: viewModel.workspaces, viewModel: viewModel)
             // Checking if there's only one workspace
             } else if viewModel.workspaces.count == 1 {
                 if let selectedWorkspace = viewModel.workspaces.first {
@@ -24,7 +24,7 @@ struct InitialView: View {
                     }.hidden()
                         .onAppear {
                             shouldNavigateToMapView = true
-                            selectedWorkspace.saveQuestsToUserDefaults()
+                          //  selectedWorkspace.saveQuestsToUserDefaults()
                         }
                 } else {
                     EmptyView()
@@ -40,6 +40,10 @@ struct InitialView: View {
 // WorkspacesListView - View for displaying a list of workspaces
 struct WorkspacesListView: View {
     let workspaces: [Workspace]
+    
+    var viewModel: InitialViewModel
+    @State private var shouldNavigateToMapView = false
+    @State private var selectedWorkspace: Workspace?
     
     var body: some View {
         ZStack {
@@ -58,27 +62,43 @@ struct WorkspacesListView: View {
                 ScrollView {
                     VStack(spacing: 20) {
                         ForEach(workspaces, id: \.id) { workspace in
-                            NavigationLink(
-                                destination: MapView(selectedWorkspace: workspace)
-                                    .navigationBarBackButtonHidden(true),
-                                label: {
-                                    Text(workspace.title)
-                                        .font(.system(size: 17))
-                                        .frame(maxWidth: .infinity, maxHeight: 40)
+                            Button {
+                                viewModel.fetchLongQuestsFor(workspaceId: "\(workspace.id)", completion: { success in
+                                    if success {
+                                        self.shouldNavigateToMapView = true
+                                        self.selectedWorkspace = workspace
+                                    }
                                 })
-                            .simultaneousGesture(TapGesture().onEnded {
-                                workspace.saveQuestsToUserDefaults()
-                            })
-                            
+                            }  label: {
+                                Text(workspace.title)
+                                    .font(.system(size: 17))
+                                    .frame(maxWidth: .infinity, maxHeight: 40)
+                            }
                             .buttonStyle(.borderedProminent)
-                            .tint(Color(red: 147 / 255, green: 190 / 255, blue: 90 / 255))
-                            .buttonBorderShape(.roundedRectangle(radius: 0))
+                            .tint(Color(red: 66/255, green: 82/255, blue: 110/255))
+                            .buttonBorderShape(.roundedRectangle(radius: 10))
+                            .simultaneousGesture(TapGesture().onEnded {
+                              //  workspace.saveQuestsToUserDefaults()
+                            })
                         }
                     }
                 }
                 .padding()
             }
             .padding()
+            
+            if shouldNavigateToMapView, let selectedWorkspace = selectedWorkspace {
+         
+                           NavigationLink(
+                               destination: MapView(selectedWorkspace: selectedWorkspace)
+
+                                   .navigationBarBackButtonHidden(true),
+                               isActive: $shouldNavigateToMapView,
+                               label: {
+                                   EmptyView()
+                               }
+                           )
+                       }
         }
     }
 }
