@@ -71,6 +71,53 @@ class ApiManager {
         task.resume()
     }
     
+    func login(username: String, password: String, completion: @escaping (LoginResponse)-> Void){
+        
+        let postingJSON = [
+            "username": username,
+            "password": password
+        ]
+        
+        let postingBody  = try? JSONSerialization.data(withJSONObject: postingJSON)
+        
+        let session = URLSession(configuration: URLSessionConfiguration.default, delegate: nil, delegateQueue: nil)
+        let loginUrl = "https://tdei-gateway-stage.azurewebsites.net/api/v1/authenticate"
+        let request: NSMutableURLRequest = NSMutableURLRequest()
+        request.url = NSURL(string: loginUrl) as URL?
+        request.httpMethod = "POST"
+        request.addValue("application/json", forHTTPHeaderField: "Content-Type")
+        //add params to request
+        request.httpBody = postingBody
+        let dataTask = session.dataTask(with: request as URLRequest) { (data: Data?, response:URLResponse?, error: Error?) -> Void in
+            guard let data = data else {
+                return
+            }
+            if((error) != nil) {
+                print(error!.localizedDescription)
+            } else {
+                print("Succes:")
+                do {
+                    
+                    
+                    
+                    if let success = try? JSONDecoder().decode(PosmLoginSuccessResponse.self, from: data) {
+                        completion(.success(success))
+                    }
+                    else if let failure = try? JSONDecoder().decode(PosmLoginErrorResponse.self, from: data) {
+                        completion(.failure(failure))
+                    } else {
+                        completion(.error(error?.localizedDescription ?? "An error occured"))
+                    }
+                } catch let error as NSError {
+                    print(error)
+                    completion(.error(error.localizedDescription))
+                }
+            }
+        }
+        dataTask.resume()
+        
+    }
+    
     func saveLongQuestsToDefaults(longQuestJson: [LongFormModel]) {
         do {
            try FileStorageManager.shared.save(questModels: longQuestJson, to: "longQuestJson")
