@@ -583,7 +583,6 @@
 			children = (
 				0536DD902B0BD57500B04C4B /* OAuth */,
 				0536DD842B0BD11A00B04C4B /* LoginViewController.swift */,
-				FA8C74D72C60E95100D28220 /* PosmLogin.swift */,
 			);
 			path = Login;
 			sourceTree = "<group>";
@@ -1332,6 +1331,7 @@
 		FAD5C4F12AFCBE700040C61A /* GoInfoGame */ = {
 			isa = PBXGroup;
 			children = (
+				FAFDA1FB2C6D321500ECEAE9 /* Login */,
 				FA8C74CF2C598F3D00D28220 /* Fonts */,
 				A4E7119C2B57A22300C9DE08 /* quests */,
 				A4E7119A2B57A17600C9DE08 /* data */,
@@ -1379,6 +1379,22 @@
 				FAD5C5152AFCBE720040C61A /* GoInfoGameUITestsLaunchTests.swift */,
 			);
 			path = GoInfoGameUITests;
+			sourceTree = "<group>";
+		};
+		FAFDA1FB2C6D321500ECEAE9 /* Login */ = {
+			isa = PBXGroup;
+			children = (
+				FAFDA1FC2C6D322800ECEAE9 /* UI */,
+			);
+			path = Login;
+			sourceTree = "<group>";
+		};
+		FAFDA1FC2C6D322800ECEAE9 /* UI */ = {
+			isa = PBXGroup;
+			children = (
+				FA8C74D72C60E95100D28220 /* PosmLogin.swift */,
+			);
+			path = UI;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
