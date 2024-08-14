@@ -13,7 +13,7 @@
 import Foundation
 
 // MARK: - PosmLoginModel
-struct PosmLoginModel: Codable {
+struct PosmLoginSuccessResponse: Codable {
     let accessToken: String
     let expiresIn, refreshExpiresIn: Int
     let refreshToken: String
@@ -24,4 +24,15 @@ struct PosmLoginModel: Codable {
         case refreshExpiresIn = "refresh_expires_in"
         case refreshToken = "refresh_token"
     }
+}
+
+struct PosmLoginErrorResponse: Codable {
+    let message: String
+    let errors: [String]
+}
+
+enum LoginResponse {
+    case success(PosmLoginSuccessResponse)
+    case failure(PosmLoginErrorResponse)
+    case error(String)
 }
