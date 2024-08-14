@@ -22,9 +22,25 @@ class LongSidewalkQuest: QuestBase, Quest {
     
     typealias AnswerClass = [String:String]
     
+    private lazy var longForm: LongForm = {
+          LongForm(elementType: .sidewalk)
+      }()
+    
     var form:  AnyView {
         get{
-            return AnyView(self.internalForm as! LongForm)
+            return AnyView(longForm)
+        }
+    }
+    
+    var _internalExpression: ElementFilterExpression?
+    
+    var filterExpression: ElementFilterExpression? {
+        if(_internalExpression != nil){
+            return _internalExpression
+        }
+        else {
+            _internalExpression = try? filter.toElementFilterExpression()
+            return _internalExpression
         }
     }
     
@@ -32,10 +48,11 @@ class LongSidewalkQuest: QuestBase, Quest {
         let uid = String(self.relationData?.id ?? 0)
         return DisplayUnit(title: self.title, description: "", id: "\(uid)-\(questId)",parent: self,sheetSize: .LARGE)
     }
-    
+        
     override init() {
         super.init()
-        self.internalForm = LongForm()
+        print("SIDEWALK LONG QUEST ----")
+        self.internalForm = LongForm(elementType: .sidewalk)
     }
     var relationData: Element? = nil
     
@@ -51,3 +68,19 @@ class LongSidewalkQuest: QuestBase, Quest {
         return quest
     }
 }
+
+
+//class LongQuestBase {
+//    
+//    func loadLongQuests(from fileName: String) {
+//            do {
+//                if let loadedQuests = try FileStorageManager.shared.load(from: fileName) {
+//                    self.longQuestModels = loadedQuests
+//                } else {
+//                    print("File not found")
+//                }
+//            } catch {
+//                print("Failed to load file: \(error)")
+//            }
+//        }
+//}

@@ -10,18 +10,17 @@ import osmparser
 import SwiftUI
 
 class LongKerbQuest: QuestBase, Quest {
-    var icon: UIImage = #imageLiteral(resourceName: "sidewalk_surface.pdf")
+    var icon: UIImage = #imageLiteral(resourceName: "kerb_type")
     
     var title: String = ""
     
-    var filter: String = """
-    nodes with
-      !kerb
-      or kerb ~ yes|unknown
-      or kerb !~ no|rolled and kerb older today -8 years
-"""
+    var filter: String = "nodes with barrier=kerb"
         
     var wikiLink: String = ""
+    
+    
+    var _internalExpression: ElementFilterExpression?
+    
     
     var changesetComment: String = ""
     
@@ -33,15 +32,31 @@ class LongKerbQuest: QuestBase, Quest {
         }
     }
     
+    var filterExpression: ElementFilterExpression? {
+        if(_internalExpression != nil){
+            return _internalExpression
+        }
+        else {
+            _internalExpression = try? filter.toElementFilterExpression()
+            return _internalExpression
+        }
+    }
+    
     var displayUnit: DisplayUnit {
         let uid = String(self.relationData?.id ?? 0)
         return DisplayUnit(title: self.title, description: "", id: "\(uid)-\(questId)",parent: self,sheetSize: .LARGE)
     }
-    
+        
+//    var sidewalkLongQuest: LongFormModel {
+//        return QuestsRepository.shared.sideWalkLongQuestModel!
+//    }
+//    
     override init() {
         super.init()
-        self.internalForm = LongForm()
+        print("kerb LONG QUEST -")
+        self.internalForm = LongForm(elementType: .kerb)
     }
+    
     var relationData: Element? = nil
     
     func onAnswer(answer: [String : String]) {
