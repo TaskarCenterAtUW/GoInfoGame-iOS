@@ -21,15 +21,23 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // This delegate does not imply the connecting scene or session are new (see `application:configurationForConnectingSceneSession` instead).
    guard let _ = (scene as? UIWindowScene) else { return }
         
-//        let contentView = LongForm()
-//
-//             // Use a UIHostingController as window root view controller.
-//             if let windowScene = scene as? UIWindowScene {
-//                 let window = UIWindow(windowScene: windowScene)
-//                 window.rootViewController = UIHostingController(rootView: contentView)
-//                 self.window = window
-//                 window.makeKeyAndVisible()
-//             }
+        
+        
+        if let acceesToken = KeychainManager.load(key: "accessToken") {
+            let contentView = InitialView()
+
+                 // Use a UIHostingController as window root view controller.
+                 if let windowScene = scene as? UIWindowScene {
+                     let window = UIWindow(windowScene: windowScene)
+                     window.rootViewController = UIHostingController(rootView: contentView)
+                     self.window = window
+                     window.makeKeyAndVisible()
+                 }
+        } else {
+            
+        }
+        
+
     }
 
     func sceneDidDisconnect(_ scene: UIScene) {
