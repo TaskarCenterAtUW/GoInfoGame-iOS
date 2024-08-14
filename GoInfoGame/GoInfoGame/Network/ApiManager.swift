@@ -8,9 +8,9 @@
 import Foundation
 // Singleton object that deals with workspaces APIs
 
-class WorkspacesApiManager {
+class ApiManager {
     
-    static let shared = WorkspacesApiManager()
+    static let shared = ApiManager()
     private let listingURL = "https://api.workspaces-dev.sidewalks.washington.edu/api/v1/workspaces/mine"
     private init() {}
     
