@@ -24,7 +24,7 @@ struct QuestOptions: View {
         switch questType {
         case .exclusiveChoice:
             ScrollView {
-                ForEach(options) { option in
+                ForEach(options, id: \.id) { option in
                         Button(action: {
                             print("\(option.choiceText) pressed")
                             self.selectedOption = option.choiceText

@@ -13,6 +13,7 @@ import CoreLocation
 class InitialViewModel: ObservableObject {
     let locationManagerDelegate = LocationManagerDelegate()
     @Published var workspaces: [Workspace] = [] 
+    @Published var longQuests: [LongFormModel] = []
     @Published var isLoading: Bool = false
     
     init() {
@@ -42,6 +43,25 @@ class InitialViewModel: ObservableObject {
                     print("Error fetching workspaces: \(error)")
                     self.isLoading = false
                 }
+            }
+        }
+    }
+    
+    func fetchLongQuestsFor(workspaceId: String,completion: @escaping (Bool) -> Void) {
+        isLoading = true
+
+        WorkspacesApiManager.shared.fetchLongQuests(workspaceId: workspaceId) { result in
+            DispatchQueue.main.async {
+                switch result {
+                case .success(let longQuestsResponse):
+                    self.longQuests = longQuestsResponse
+                    self.isLoading = false
+                    completion(true)
+                case .failure(let error):
+                    self.isLoading = false
+                    completion(false)
+                }
+               
             }
         }
     }

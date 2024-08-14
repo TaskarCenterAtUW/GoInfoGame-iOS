@@ -12,10 +12,7 @@ class LongFormViewModel: ObservableObject {
     @Published var answers: [Int: String] = [:]
     @Published var answersToBeSubmitted: [String: String] = [:]
 
-    
-    init() {
-        self.longForm = dummyFormData
-    }
+    init() {}
         
      func shouldShowQuest(_ quest: LongQuest) -> Bool {
         guard let dependency = quest.questAnswerDependency else {
