@@ -53,7 +53,7 @@ struct QuestOptions: View {
                                ))
                     .frame(width: 100)
                     .padding(.horizontal)
-                    .overlay(Rectangle().frame(height: 1).padding(.top, 25).foregroundColor(.orange), alignment: .bottom)
+                    .overlay(Rectangle().frame(height: 1).padding(.top, 25).foregroundColor(Color(red: 135/255, green: 62/255, blue: 242/255)), alignment: .bottom)
                     .textFieldStyle(PlainTextFieldStyle())
                     .keyboardType(UIKeyboardType.numberPad)
                 }

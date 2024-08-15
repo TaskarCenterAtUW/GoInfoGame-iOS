@@ -60,6 +60,8 @@ func getSheetSize(sheetSize: SheetSize) -> Set<PresentationDetent> {
         return [.height(600)]
     } else if sheetSize == .XLARGE {
         return [.height(750)]
+    } else if sheetSize == .LONGFORM {
+        return [.height(690)]
     } else {
         return [.medium, .large]
     }

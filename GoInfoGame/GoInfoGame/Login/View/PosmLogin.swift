@@ -17,6 +17,10 @@ struct PosmLoginView: View {
     var body: some View {
         NavigationView {
             VStack(spacing: 20) {
+                Text("GoInfoGame")
+                    .font(.custom("Lato-Bold", size: 30))
+                    .foregroundColor((Color(red: 135/255, green: 62/255, blue: 242/255)))
+                    .padding([.bottom], 50)
                 TextField("Username", text: $viewModel.username)
                     .padding()
                     .background(Color(.systemGray6))

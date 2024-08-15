@@ -21,11 +21,16 @@ struct LongForm: View, QuestForm {
             
     var body: some View {
         VStack(alignment: .leading) {
-            DismissButtonView {
-                withAnimation {
-                    presentationMode.wrappedValue.dismiss()
+            HStack {
+                Text("\(elementHeading())")
+                    .padding([.leading], 15)
+                LongFormDismissButtonView {
+                    withAnimation {
+                        presentationMode.wrappedValue.dismiss()
+                    }
                 }
             }
+            .padding([.all], 20)
             List {
                 if let quests = questsForLongForm() {
                     ForEach(quests, id: \.questID) { quest in
@@ -39,6 +44,11 @@ struct LongForm: View, QuestForm {
                         Button(action: {
                             print("Submit pressed")
                             print(viewModel.answersToBeSubmitted)
+                            if let action = action {
+                                  action(viewModel.answersToBeSubmitted)
+                              } else {
+                                  print("osmAction is nil")
+                              }
                         }) {
                             Text("Submit")
                                 .font(.custom("Lato-Bold", size: 16))
@@ -55,6 +65,19 @@ struct LongForm: View, QuestForm {
                     Text("No Quests availabke")
                 }
             }
+        }
+    }
+    
+    func elementHeading() -> String {
+        switch elementType {
+        case .sidewalk:
+            return "Sidewalks"
+        case .kerb:
+            return "Kerb"
+        case .crossing:
+            return "Crossings"
+        case nil:
+            return ""
         }
     }
     

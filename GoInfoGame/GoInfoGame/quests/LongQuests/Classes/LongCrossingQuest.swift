@@ -42,7 +42,7 @@ class LongCrossingQuest: QuestBase, Quest {
     
     var displayUnit: DisplayUnit {
         let uid = String(self.relationData?.id ?? 0)
-        return DisplayUnit(title: self.title, description: "", id: "\(uid)-\(questId)",parent: self,sheetSize: .LARGE)
+        return DisplayUnit(title: self.title, description: "", id: "\(uid)-\(questId)",parent: self,sheetSize: .LONGFORM)
     }
     
 //    var sidewalkLongQuest: LongFormModel {
