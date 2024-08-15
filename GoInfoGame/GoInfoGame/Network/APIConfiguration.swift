@@ -6,3 +6,24 @@
 //
 
 import Foundation
+
+class APIConfiguration {
+    static let shared = APIConfiguration()
+    
+    var environment: APIEnvironment = .staging
+    
+    func workspaceUrl(for endpoint: APIEndpoint) -> URL? {
+        return URL(string: environment.workspaceBaseURL + endpoint.path)
+    }
+    
+    func loginUrl(for endpoint: APIEndpoint) -> URL? {
+        return URL(string: environment.loginBaseURL + endpoint.path)
+    }
+    
+    func osmUrl(for endpoint: APIEndpoint) -> URL? {
+        return URL(string:  environment.osmBaseURL + endpoint.path)
+    }
+    
+    
+    
+}
