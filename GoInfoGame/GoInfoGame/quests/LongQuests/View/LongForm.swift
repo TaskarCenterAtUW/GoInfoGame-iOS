@@ -62,7 +62,7 @@ struct LongForm: View, QuestForm {
                     }
                     .frame(maxWidth: .infinity)
                 } else {
-                    Text("No Quests availabke")
+                    Text("No Quests available")
                 }
             }
         }
