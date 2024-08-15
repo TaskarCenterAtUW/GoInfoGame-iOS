@@ -254,6 +254,9 @@ public class OSMConnection {
             print("Invalid URL given")
                     return
                 }
+         if let workspaceID = KeychainManager.load(key: "workspaceID") {
+             BaseNetworkManager.shared.addOrSetHeaders(header: "X-Workspace", value: workspaceID)
+         }
         BaseNetworkManager.shared.fetchData(url: url, completion: completion)
     }
     
