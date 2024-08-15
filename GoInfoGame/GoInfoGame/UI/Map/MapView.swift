@@ -134,7 +134,8 @@ struct MapView: View {
         })
         .onAppear(){
             print("selected workspace",selectedWorkspace?.title ?? "")
-            self.baseUrl = "https://workspaces-osm-stage.sidewalks.washington.edu"
+            QuestsRepository.shared.loadLongQuests(from: "longQuestJson")
+            self.baseUrl = "https://osm.workspaces-stage.sidewalks.washington.edu"
         }
     }
     
