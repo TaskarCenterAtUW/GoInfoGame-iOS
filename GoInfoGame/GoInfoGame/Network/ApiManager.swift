@@ -11,7 +11,7 @@ import Foundation
 class ApiManager {
     
     static let shared = ApiManager()
-    private let listingURL = "https://api.workspaces-dev.sidewalks.washington.edu/api/v1/workspaces/mine"
+    private let listingURL = "https://api.workspaces-stage.sidewalks.washington.edu/api/v1/workspaces/mine"
     private init() {}
     
     // fetches the workspaces based on latitiude and longitude
@@ -44,7 +44,7 @@ class ApiManager {
     // fetches the long quests based on workspace id
     func fetchLongQuests(workspaceId: String, completion: @escaping (Result<[LongFormModel], Error>) -> Void) {
         
-        let longQuestUrl = "https://api.workspaces-dev.sidewalks.washington.edu/api/v1/workspaces/\(workspaceId)/quests/long"
+        let longQuestUrl = "https://api.workspaces-stage.sidewalks.washington.edu/api/v1/workspaces/\(workspaceId)/quests/long"
         var request = URLRequest(url: URL(string: longQuestUrl)!, timeoutInterval: Double.infinity)
         request.httpMethod = "GET"
 
