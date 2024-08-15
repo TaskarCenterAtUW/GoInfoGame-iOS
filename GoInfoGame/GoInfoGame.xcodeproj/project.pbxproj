@@ -108,7 +108,7 @@
 		A475C7DD2B5E3E7C00BABEDA /* OSMPayload.swift in Sources */ = {isa = PBXBuildFile; fileRef = A475C7DC2B5E3E7C00BABEDA /* OSMPayload.swift */; };
 		A475C7E02B5E4B6E00BABEDA /* OSMXMLBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = A475C7DF2B5E4B6E00BABEDA /* OSMXMLBuilder.swift */; };
 		A475C7E32B5E4CB600BABEDA /* OSMXMLBuilderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A475C7E22B5E4CB600BABEDA /* OSMXMLBuilderTests.swift */; };
-		A48037312BBA8C25007EE7E4 /* WorkspacesApiManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A48037302BBA8C25007EE7E4 /* WorkspacesApiManager.swift */; };
+		A48037312BBA8C25007EE7E4 /* ApiManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A48037302BBA8C25007EE7E4 /* ApiManager.swift */; };
 		A48037332BBA8D00007EE7E4 /* WorkspacesApiManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A48037322BBA8D00007EE7E4 /* WorkspacesApiManagerTests.swift */; };
 		A48037362BBA8DDC007EE7E4 /* WorkspacesResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = A48037352BBA8DDC007EE7E4 /* WorkspacesResponse.swift */; };
 		A4834A3F2B67737500D4F0AA /* StoredChangeset.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4834A3E2B67737500D4F0AA /* StoredChangeset.swift */; };
@@ -217,6 +217,8 @@
 		FAF44FBF2B3084FB004FE664 /* OnboardingView2.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAF44FBE2B3084FB004FE664 /* OnboardingView2.swift */; };
 		FAF44FC12B30850A004FE664 /* OnboardingView3.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAF44FC02B30850A004FE664 /* OnboardingView3.swift */; };
 		FAFDA1FA2C6B861A00ECEAE9 /* FileStorageManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAFDA1F92C6B861A00ECEAE9 /* FileStorageManager.swift */; };
+		FAFDA1FF2C6D337800ECEAE9 /* PosmLoginModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAFDA1FE2C6D337800ECEAE9 /* PosmLoginModel.swift */; };
+		FAFDA2022C6D33C300ECEAE9 /* PosmLoginViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAFDA2012C6D33C300ECEAE9 /* PosmLoginViewModel.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -398,7 +400,7 @@
 		A475C7DC2B5E3E7C00BABEDA /* OSMPayload.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OSMPayload.swift; sourceTree = "<group>"; };
 		A475C7DF2B5E4B6E00BABEDA /* OSMXMLBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OSMXMLBuilder.swift; sourceTree = "<group>"; };
 		A475C7E22B5E4CB600BABEDA /* OSMXMLBuilderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OSMXMLBuilderTests.swift; sourceTree = "<group>"; };
-		A48037302BBA8C25007EE7E4 /* WorkspacesApiManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkspacesApiManager.swift; sourceTree = "<group>"; };
+		A48037302BBA8C25007EE7E4 /* ApiManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApiManager.swift; sourceTree = "<group>"; };
 		A48037322BBA8D00007EE7E4 /* WorkspacesApiManagerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkspacesApiManagerTests.swift; sourceTree = "<group>"; };
 		A48037352BBA8DDC007EE7E4 /* WorkspacesResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkspacesResponse.swift; sourceTree = "<group>"; };
 		A4834A3E2B67737500D4F0AA /* StoredChangeset.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoredChangeset.swift; sourceTree = "<group>"; };
@@ -516,6 +518,8 @@
 		FAF44FBE2B3084FB004FE664 /* OnboardingView2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingView2.swift; sourceTree = "<group>"; };
 		FAF44FC02B30850A004FE664 /* OnboardingView3.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingView3.swift; sourceTree = "<group>"; };
 		FAFDA1F92C6B861A00ECEAE9 /* FileStorageManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileStorageManager.swift; sourceTree = "<group>"; };
+		FAFDA1FE2C6D337800ECEAE9 /* PosmLoginModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PosmLoginModel.swift; sourceTree = "<group>"; };
+		FAFDA2012C6D33C300ECEAE9 /* PosmLoginViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PosmLoginViewModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -583,7 +587,6 @@
 			children = (
 				0536DD902B0BD57500B04C4B /* OAuth */,
 				0536DD842B0BD11A00B04C4B /* LoginViewController.swift */,
-				FA8C74D72C60E95100D28220 /* PosmLogin.swift */,
 			);
 			path = Login;
 			sourceTree = "<group>";
@@ -615,7 +618,7 @@
 			children = (
 				A48037342BBA8DCB007EE7E4 /* models */,
 				0536DD962B0BD95100B04C4B /* URLSession+Extension.swift */,
-				A48037302BBA8C25007EE7E4 /* WorkspacesApiManager.swift */,
+				A48037302BBA8C25007EE7E4 /* ApiManager.swift */,
 			);
 			path = Network;
 			sourceTree = "<group>";
@@ -1332,6 +1335,7 @@
 		FAD5C4F12AFCBE700040C61A /* GoInfoGame */ = {
 			isa = PBXGroup;
 			children = (
+				FAFDA1FB2C6D321500ECEAE9 /* Login */,
 				FA8C74CF2C598F3D00D28220 /* Fonts */,
 				A4E7119C2B57A22300C9DE08 /* quests */,
 				A4E7119A2B57A17600C9DE08 /* data */,
@@ -1379,6 +1383,40 @@
 				FAD5C5152AFCBE720040C61A /* GoInfoGameUITestsLaunchTests.swift */,
 			);
 			path = GoInfoGameUITests;
+			sourceTree = "<group>";
+		};
+		FAFDA1FB2C6D321500ECEAE9 /* Login */ = {
+			isa = PBXGroup;
+			children = (
+				FAFDA2002C6D338400ECEAE9 /* ViewModel */,
+				FAFDA1FD2C6D335300ECEAE9 /* Model */,
+				FAFDA1FC2C6D322800ECEAE9 /* View */,
+			);
+			path = Login;
+			sourceTree = "<group>";
+		};
+		FAFDA1FC2C6D322800ECEAE9 /* View */ = {
+			isa = PBXGroup;
+			children = (
+				FA8C74D72C60E95100D28220 /* PosmLogin.swift */,
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
+		FAFDA1FD2C6D335300ECEAE9 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				FAFDA1FE2C6D337800ECEAE9 /* PosmLoginModel.swift */,
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
+		FAFDA2002C6D338400ECEAE9 /* ViewModel */ = {
+			isa = PBXGroup;
+			children = (
+				FAFDA2012C6D33C300ECEAE9 /* PosmLoginViewModel.swift */,
+			);
+			path = ViewModel;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -1874,7 +1912,7 @@
 				FABF3CF42B7419BB0080EAC9 /* LocationManagerDelegate.swift in Sources */,
 				973FC0382B59363C00878269 /* TactilePavingSteps.swift in Sources */,
 				973FC0192B4FB17000878269 /* LocalizedStrings.swift in Sources */,
-				A48037312BBA8C25007EE7E4 /* WorkspacesApiManager.swift in Sources */,
+				A48037312BBA8C25007EE7E4 /* ApiManager.swift in Sources */,
 				FABF3D002B8607D80080EAC9 /* MeasureSidewalkView.swift in Sources */,
 				97439F782B87444200DA43E1 /* CrossingKerbHeightForm.swift in Sources */,
 				FA8C74DA2C60FD3100D28220 /* LongSidewalkQuest.swift in Sources */,
@@ -1888,6 +1926,7 @@
 				059D47312B2C81A9000987FA /* Style.swift in Sources */,
 				A4E711A82B57CA4300C9DE08 /* QuestsRepository.swift in Sources */,
 				97AC1C112B70CF03004F0BF4 /* SidewalkSurfaceForm.swift in Sources */,
+				FAFDA2022C6D33C300ECEAE9 /* PosmLoginViewModel.swift in Sources */,
 				973FC03A2B59364F00878269 /* TactilePavingStepsForm.swift in Sources */,
 				973FC0332B592BFE00878269 /* StairNumber.swift in Sources */,
 				059D47332B2C83BA000987FA /* Highway.swift in Sources */,
@@ -1946,6 +1985,7 @@
 				B0CCB98E2B8626C600AA73DE /* ProfileViewVM.swift in Sources */,
 				97412A992BBBF3A300DF7983 /* KerbHeight.swift in Sources */,
 				FA8C74C92C57B9AE00D28220 /* LongQuestView.swift in Sources */,
+				FAFDA1FF2C6D337800ECEAE9 /* PosmLoginModel.swift in Sources */,
 				97412A962BBADAFF00DF7983 /* StairFlights.swift in Sources */,
 				0536DD942B0BD59900B04C4B /* OAuthError.swift in Sources */,
 				973FC0172B4D567900878269 /* WidthView.swift in Sources */,

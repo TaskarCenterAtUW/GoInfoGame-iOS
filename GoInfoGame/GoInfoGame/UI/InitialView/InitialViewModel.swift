@@ -33,7 +33,7 @@ class InitialViewModel: ObservableObject {
         isLoading = true
         let latString = "\(currentLocation.latitude)"
         let longString = "\(currentLocation.longitude)"
-        WorkspacesApiManager.shared.fetchWorkspaces(lat: latString, lon: longString) { result in
+        ApiManager.shared.fetchWorkspaces(lat: latString, lon: longString) { result in
             DispatchQueue.main.async {
                 switch result {
                 case .success(let workspacesResponse):
@@ -50,7 +50,7 @@ class InitialViewModel: ObservableObject {
     func fetchLongQuestsFor(workspaceId: String,completion: @escaping (Bool) -> Void) {
         isLoading = true
 
-        WorkspacesApiManager.shared.fetchLongQuests(workspaceId: workspaceId) { result in
+        ApiManager.shared.fetchLongQuests(workspaceId: workspaceId) { result in
             DispatchQueue.main.async {
                 switch result {
                 case .success(let longQuestsResponse):

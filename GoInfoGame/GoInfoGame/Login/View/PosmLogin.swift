@@ -8,60 +8,52 @@
 import SwiftUI
 
 struct PosmLoginView: View {
-    @State private var username: String = ""
-    @State private var password: String = ""
+    
+    @ObservedObject var viewModel = PosmLoginViewModel()
+    
     @State private var isShowingAlert = false
     @State private var shouldLogin = false
     
     var body: some View {
         NavigationView {
             VStack(spacing: 20) {
-                TextField("Username", text: $username)
-                    .padding()
-                    .background(Color(.systemGray6))
-                    .cornerRadius(10)
-                    .padding(.horizontal, 40)
-
-                SecureField("Password", text: $password)
+                TextField("Username", text: $viewModel.username)
                     .padding()
                     .background(Color(.systemGray6))
                     .cornerRadius(10)
                     .padding(.horizontal, 40)
                 
-                NavigationLink(destination: InitialView(), isActive: $shouldLogin) {
-                                    EmptyView()
-                                }
-                .navigationBarBackButtonHidden(true)
+                SecureField("Password", text: $viewModel.password)
+                    .padding()
+                    .background(Color(.systemGray6))
+                    .cornerRadius(10)
+                    .padding(.horizontal, 40)
+                
+                if let errorMessage = viewModel.errorMessage {
+                    Text(errorMessage)
+                        .foregroundColor(.red)
+                }
                 
                 Button(action: {
-                   handleLogin()
+                    viewModel.performLogin()
                 }) {
                     Text("Login")
                         .font(.custom("Lato-Bold", size: 20))
                         .foregroundColor(Color.white)
                         .padding()
-                        .background( Color(red: 135/255, green: 62/255, blue: 242/255) )
+                        .background(Color(red: 135/255, green: 62/255, blue: 242/255))
                         .cornerRadius(25)
                 }
-                .alert(isPresented: $isShowingAlert) {
-                    Alert(title: Text("Login Failed"), message: Text("Invalid username or password"), dismissButton: .default(Text("OK")))
+                if viewModel.isLoggedIn {
+                    NavigationLink(destination: InitialView(), isActive: $viewModel.isLoggedIn) {
+                        EmptyView()
+                    }
+                    .navigationBarBackButtonHidden(true)
                 }
             }
         }
     }
     
-    func handleLogin() {
-        shouldLogin = true
-   
-//        if username.isEmpty || password.isEmpty {
-//            isShowingAlert = true
-//        } else {
-//         //Navigate to Workspaces
-//            shouldLogin = true
-//            
-//            
-//        }
-    }
 }
 
 #Preview {

@@ -20,7 +20,7 @@ final class WorkspacesApiManagerTests: XCTestCase {
     }
 
     func testExample() throws {
-        let workspacesAPI = WorkspacesApiManager.shared
+        let workspacesAPI = ApiManager.shared
         let expec = expectation(description: "Fetches the workspaces around user")
         
         
