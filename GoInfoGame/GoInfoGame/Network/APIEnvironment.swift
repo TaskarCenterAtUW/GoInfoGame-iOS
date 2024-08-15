@@ -7,7 +7,7 @@
 
 import Foundation
 
-enum Environment {
+enum APIEnvironment {
     case development
     case staging
     case production
@@ -26,7 +26,7 @@ enum Environment {
         }
     }
     
-    var workspaceLoginURL: String {
+    var loginBaseURL: String {
         switch self {
         case .development:
             return "https://tdei-gateway-dev.azurewebsites.net/api/v1"
@@ -39,7 +39,7 @@ enum Environment {
         }
     }
     
-    var workspaceOSMURL: String {
+    var osmBaseURL: String {
         switch self {
         case .development:
             return "https://osm.workspaces-dev.sidewalks.washington.edu/api/0.6/"
