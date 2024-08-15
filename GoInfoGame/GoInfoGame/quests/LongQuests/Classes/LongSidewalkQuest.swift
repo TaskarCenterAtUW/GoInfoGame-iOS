@@ -22,13 +22,15 @@ class LongSidewalkQuest: QuestBase, Quest {
     
     typealias AnswerClass = [String:String]
     
-    private lazy var longForm: LongForm = {
-          LongForm(elementType: .sidewalk)
-      }()
+//    private lazy var longForm: LongForm = {
+//        LongForm(elementType: .sidewalk) { tags in
+//            self.onAnswer(answer: tags)
+//        }
+//      }()
     
     var form:  AnyView {
         get{
-            return AnyView(longForm)
+            return AnyView(self.internalForm as! LongForm)
         }
     }
     
@@ -46,18 +48,24 @@ class LongSidewalkQuest: QuestBase, Quest {
     
     var displayUnit: DisplayUnit {
         let uid = String(self.relationData?.id ?? 0)
-        return DisplayUnit(title: self.title, description: "", id: "\(uid)-\(questId)",parent: self,sheetSize: .LARGE)
+        return DisplayUnit(title: self.title, description: "", id: "\(uid)-\(questId)",parent: self,sheetSize: .LONGFORM)
     }
-        
+    
     override init() {
         super.init()
         print("SIDEWALK LONG QUEST ----")
-        self.internalForm = LongForm(elementType: .sidewalk)
+        
+        self.internalForm = LongForm(elementType: .sidewalk, action: { [self] tags in
+            self.onAnswer(answer: tags)
+        })
     }
+    
     var relationData: Element? = nil
     
     func onAnswer(answer: [String : String]) {
-        
+        if let rData = self.relationData  {
+            self.updateTags(id: rData.id, tags: answer, type: rData.type)
+        }
     }
         
     var questId: String = "311"

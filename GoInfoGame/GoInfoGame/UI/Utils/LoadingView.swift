@@ -48,3 +48,25 @@ struct DismissButtonView: View {
         }
     }
 }
+
+
+struct LongFormDismissButtonView: View {
+    let dismissAction: () -> Void
+
+    var body: some View {
+        HStack {
+            Spacer()
+            Button(action: {
+                dismissAction()
+                MapViewPublisher.shared.dismissSheet.send(.dismissed)
+                
+            }, label: {
+                Image("long-form-dismiss")
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .frame(width: 25, height: 25)
+            })
+            
+        }
+    }
+}

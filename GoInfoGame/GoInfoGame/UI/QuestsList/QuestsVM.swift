@@ -22,6 +22,7 @@ enum SheetSize {
     case MEDIUM
     case LARGE
     case XLARGE
+    case LONGFORM
 }
 //struct Ques: Identifiable, Hashable {
 //    var id: String

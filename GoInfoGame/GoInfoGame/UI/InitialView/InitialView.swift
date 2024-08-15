@@ -67,6 +67,9 @@ struct WorkspacesListView: View {
                                     if success {
                                         self.shouldNavigateToMapView = true
                                         self.selectedWorkspace = workspace
+                                        
+                                        let workspaceId = "\(workspace.id)"
+                                        _ = KeychainManager.save(key: "workspaceID", data: workspaceId)
                                     }
                                 })
                             }  label: {
@@ -74,8 +77,10 @@ struct WorkspacesListView: View {
                                     .font(.system(size: 17))
                                     .frame(maxWidth: .infinity, maxHeight: 40)
                             }
-                            .buttonStyle(.borderedProminent)
-                            .tint(Color(red: 66/255, green: 82/255, blue: 110/255))
+                            .font(.custom("Lato-Bold", size: 25))
+                            .foregroundColor(Color.white)
+                            .padding()
+                            .background(Color(red: 135/255, green: 62/255, blue: 242/255))
                             .buttonBorderShape(.roundedRectangle(radius: 10))
                             .simultaneousGesture(TapGesture().onEnded {
                               //  workspace.saveQuestsToUserDefaults()
