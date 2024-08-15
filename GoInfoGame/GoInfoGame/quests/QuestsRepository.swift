@@ -57,7 +57,7 @@ class QuestsRepository: ObservableObject {
       }
     
     @Published var applicableQuests: [ApplicableQuest] = [
-//       ApplicableQuest(quest: LongSidewalkQuest(), questId: "1"),
+       ApplicableQuest(quest: LongSidewalkQuest(), questId: "1"),
         ApplicableQuest(quest: LongKerbQuest(), questId: "1"),
        ApplicableQuest(quest: LongCrossingQuest(), questId: "2")
        
