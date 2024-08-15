@@ -20,7 +20,7 @@ struct APIEndpoint {
     
     static let fetchLongQuests = { (workspaceId: String) in APIEndpoint(path: "/workspaces/\(workspaceId)/quests/long", method: "GET", body: nil, headers: nil) }
     
-    static let fetchOSMElements = APIEndpoint(path: <#T##String#>, method: <#T##String#>, body: <#T##Data?#>, headers: <#T##[String : String]?#>)
+    
     
     
     
