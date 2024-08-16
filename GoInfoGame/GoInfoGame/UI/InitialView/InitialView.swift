@@ -124,10 +124,16 @@ struct WorkspacesListView: View {
 struct LocationDisabledView: View {
     var body: some View {
         VStack {
+            Text("GoInfoGame")
+                .font(.custom("Lato-Bold", size: 30))
+                .foregroundColor((Color(red: 135/255, green: 62/255, blue: 242/255)))
+                .padding([.bottom], 50)
+
             Text("Location Services Disabled")
-                .font(.title)
+                .font(.custom("Lato-Bold", size: 25))
                 .padding()
             Text("Please enable location services on your device settings to use this app.")
+                .font(.custom("Lato-Bold", size: 19))
                 .multilineTextAlignment(.center)
                 .padding()
             Button(action: {
@@ -136,6 +142,7 @@ struct LocationDisabledView: View {
                 }
             }) {
                 Text("Open Settings")
+                    .font(.custom("Lato-Bold", size: 20))
                     .foregroundColor(.blue)
             }
             .padding()
@@ -145,7 +152,7 @@ struct LocationDisabledView: View {
 }
 
 #Preview {
-    InitialView()
+    LocationDisabledView()
     
 }
 
