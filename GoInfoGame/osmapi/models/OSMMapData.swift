@@ -14,7 +14,7 @@ public struct OSMMapDataResponse: Codable {
     public let bounds: Bounds
     public let elements: [Element]
     
-    func getOSMElements() -> [Int:OSMElement]{
+   public func getOSMElements() -> [Int:OSMElement]{
         var newMap :[Int: OSMElement] = [:]
         elements.forEach { ele in
             if let osmElement = ele.toOSMElement() {

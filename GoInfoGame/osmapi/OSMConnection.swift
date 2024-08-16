@@ -29,7 +29,7 @@ public class OSMConnection {
     
     var authorizationValue: String {
         
-        return "Basic \(userCreds.getHeaderData())"
+        return "Bearer \(accessToken!)"
         
         
 //        if baseUrl.contains("workspaces") {
@@ -88,16 +88,18 @@ public class OSMConnection {
     /// - parameter completion: Completion handler that receives the newly opened changesetId
     public func openChangeSet(createdByTag: String, _ completion: @escaping((Result<Int,Error>)->Void)) {
         //TODO: Write errors when not authenticated and if there is already an open changeset with same user
-        let urlString = self.baseUrl.appending("changeset/create")
+        let urlString1 = self.baseUrl.appending("changeset/create")
+        let urlString = "https://osm.workspaces-stage.sidewalks.washington.edu/api/0.6/changeset/create"
         guard let url = URL(string: urlString) else {
             print("Invalid URL given")
             return
         }
-        BaseNetworkManager.shared.addOrSetHeaders(header: "Authorization", value: authorizationValue)
+       // let workspaceID = KeychainManager.load(key: "workspaceID")
+        BaseNetworkManager.shared.addOrSetHeaders(header: "Authorization", value: "Bearer \(accessToken!)")
         BaseNetworkManager.shared.postData(url: url,method: "PUT" ,body: OSMChangesetPayload(createdByTag: createdByTag)) { (result: Result<Int,Error>) in
             switch result {
             case .success(let changesetID):
-                print(changesetID)
+                print("CHANGESET ID ===>\(changesetID)")
                 self.currentChangesetId = changesetID
                 
             case .failure(let error):
@@ -246,34 +248,34 @@ public class OSMConnection {
         BaseNetworkManager.shared.fetchData(url: url, completion: completion)
     }
     
-    /// Internal function for getting the map data
-     public func getOSMMapData(left: Double, bottom: Double, right: Double, top: Double,_ completion: @escaping (Result<OSMMapDataResponse, Error>)-> Void) {
-         let urlString =  self.baseUrl.appending("map.json?bbox=\(left),\(bottom),\(right),\(top)")
-        print(urlString)
-        guard let url = URL(string: urlString) else {
-            print("Invalid URL given")
-                    return
-                }
-         if let workspaceID = KeychainManager.load(key: "workspaceID") {
-             BaseNetworkManager.shared.addOrSetHeaders(header: "X-Workspace", value: workspaceID)
-         }
-        BaseNetworkManager.shared.fetchData(url: url, completion: completion)
-    }
+//    /// Internal function for getting the map data
+//     public func getOSMMapData(left: Double, bottom: Double, right: Double, top: Double,_ completion: @escaping (Result<OSMMapDataResponse, Error>)-> Void) {
+//         let urlString =  self.baseUrl.appending("map.json?bbox=\(left),\(bottom),\(right),\(top)")
+//        print(urlString)
+//        guard let url = URL(string: urlString) else {
+//            print("Invalid URL given")
+//                    return
+//                }
+//         if let workspaceID = KeychainManager.load(key: "workspaceID") {
+//             BaseNetworkManager.shared.addOrSetHeaders(header: "X-Workspace", value: workspaceID)
+//         }
+//        BaseNetworkManager.shared.fetchData(url: url, completion: completion)
+//    }
     
-    /// Function used to get the map data and give it in the form of a dictionary with Integers as ids and elements in the right side.
-    public func fetchMapData(left: Double, bottom: Double, right: Double, top: Double,_ completion: @escaping (Result<[Int:OSMElement], Error>)-> Void){
-        getOSMMapData(left: left, bottom: bottom, right: right, top: top) { result in
-            switch result {
-            case .success(let osmResponse):
-                print("Convert nodes etc")
-                completion(.success(osmResponse.getOSMElements()))
-            case .failure(let error):
-                print("Bad result")
-                completion(.failure(error))
-            }
-            
-        }
-        
-    }
+//    /// Function used to get the map data and give it in the form of a dictionary with Integers as ids and elements in the right side.
+//    public func fetchMapData(left: Double, bottom: Double, right: Double, top: Double,_ completion: @escaping (Result<[Int:OSMElement], Error>)-> Void){
+//        getOSMMapData(left: left, bottom: bottom, right: right, top: top) { result in
+//            switch result {
+//            case .success(let osmResponse):
+//                print("Convert nodes etc")
+//                completion(.success(osmResponse.getOSMElements()))
+//            case .failure(let error):
+//                print("Bad result")
+//                completion(.failure(error))
+//            }
+//            
+//        }
+//        
+//    }
     
 }

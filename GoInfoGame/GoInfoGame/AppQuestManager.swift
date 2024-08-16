@@ -25,41 +25,41 @@ class AppQuestManager {
     
     private let seedBox = BBox(minLat: 47.70312160869372, maxLat: 47.718964653825054, minLon: -122.20866792353317, maxLon: -122.18570621653987)
     
-    func addSeedData() {
-        fetchData(fromBBOx: seedBox ){}
-    }
-    
-    // Fetch the quests for a bounding box
-    func fetchData(fromBBOx bbox: BBox,completion: @escaping () -> Void){
-        // Get the data from bbox
-      //  let distance = 100
-        //37.41465820658871,-122.0912196996173,37.42366839341129,-122.0799229003827
-        
-        osmConnection.fetchMapData(left:bbox.minLon , bottom:bbox.minLat , right:bbox.maxLon , top:bbox.maxLat ) { result in
-            switch result {
-            case .success(let mapData):
-                let response = Array(mapData.values)
-                let allValues = response
-               // let allElements = allValues.filter({!$0.tags.isEmpty})
-                print("Saving tags")
-                DispatchQueue.main.async {
-                    self.dbInstance.saveOSMElements(allValues) // Save all where there are tags
-                    completion()
-                }
-            case .failure(let error):
-                print("error")
-            }
-           
-        }
-//        opManager.fetchElements(fromBBox: bbox) { fetchedElements in
-//            // Get the count of nodes and ways
-//            let allValues = fetchedElements.values
-//            let allElements = allValues.filter({!$0.tags.isEmpty})
-//            print("Saving tags")
-//            self.dbInstance.saveElements(allElements) // Save all where there are tags
-//            completion()
+//    func addSeedData() {
+//        fetchData(fromBBOx: seedBox ){}
+//    }
+//    
+//    // Fetch the quests for a bounding box
+//    func fetchData(fromBBOx bbox: BBox,completion: @escaping () -> Void){
+//        // Get the data from bbox
+//      //  let distance = 100
+//        //37.41465820658871,-122.0912196996173,37.42366839341129,-122.0799229003827
+//        
+//        osmConnection.fetchMapData(left:bbox.minLon , bottom:bbox.minLat , right:bbox.maxLon , top:bbox.maxLat ) { result in
+//            switch result {
+//            case .success(let mapData):
+//                let response = Array(mapData.values)
+//                let allValues = response
+//               // let allElements = allValues.filter({!$0.tags.isEmpty})
+//                print("Saving tags")
+//                DispatchQueue.main.async {
+//                    self.dbInstance.saveOSMElements(allValues) // Save all where there are tags
+//                    completion()
+//                }
+//            case .failure(let error):
+//                print("error")
+//            }
+//           
 //        }
-    }
+////        opManager.fetchElements(fromBBox: bbox) { fetchedElements in
+////            // Get the count of nodes and ways
+////            let allValues = fetchedElements.values
+////            let allElements = allValues.filter({!$0.tags.isEmpty})
+////            print("Saving tags")
+////            self.dbInstance.saveElements(allElements) // Save all where there are tags
+////            completion()
+////        }
+//    }
     
     
     func getUpdatedQuest(elementId: String) -> DisplayUnitWithCoordinate? {
@@ -173,6 +173,10 @@ class AppQuestManager {
             }
         }
         print("Sending back items")
+        print(allQuests)
+        
+        print(nodeElements.filter({ $0.id == 1026105 }))
+        
         return displayUnits
     }
 }

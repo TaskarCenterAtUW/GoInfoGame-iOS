@@ -42,11 +42,11 @@ enum APIEnvironment {
     var osmBaseURL: String {
         switch self {
         case .development:
-            return "https://osm.workspaces-dev.sidewalks.washington.edu/api/0.6/"
+            return "https://osm.workspaces-dev.sidewalks.washington.edu/api/0.6"
         case .staging:
-            return "https://osm.workspaces-stage.sidewalks.washington.edu/api/0.6/"
+            return "https://osm.workspaces-stage.sidewalks.washington.edu/api/0.6"
         case .production:
-            return "https://osm.workspaces-prod.sidewalks.washington.edu/api/0.6/"
+            return "https://osm.workspaces-prod.sidewalks.washington.edu/api/0.6"
         case .osm:
             return ""
         }
