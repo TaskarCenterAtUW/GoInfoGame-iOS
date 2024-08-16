@@ -74,7 +74,7 @@ struct MapView: View {
             .navigationBarItems(leading: EmptyView())
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
-                    NavigationLink(destination: ProfileView()) {
+                    NavigationLink(destination: UserProfileView()) {
                         Image(systemName: "person.crop.circle.fill")
                     }
                 }
