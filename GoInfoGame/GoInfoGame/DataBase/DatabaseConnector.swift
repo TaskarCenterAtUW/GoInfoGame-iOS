@@ -31,7 +31,7 @@ class DatabaseConnector {
     func saveOSMElements(_ elements: [OSMElement]) {
         // Save the elements appropriately
         // Get the ways and nodes out
-        let nodes = elements.filter({$0 is OSMNode}).filter({$0.tags.isEmpty})
+        let nodes = elements.filter({$0 is OSMNode})
         let nodesOnly = elements.filter({$0 is OSMNode})
         // Create a dictionary out of this like [id : osmnode]
         var nodesDict: [String:OSMNode] = [:]
