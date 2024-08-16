@@ -12,7 +12,7 @@ struct LongQuestView: View {
     var quest: LongQuest
     
     var onChoiceSelected: (QuestAnswerChoice) -> ()
-  
+    var selectedOptions: [QuestAnswerChoice]
     var questOptions: [QuestAnswerChoice] {
         return quest.questAnswerChoices
     }
@@ -28,7 +28,7 @@ struct LongQuestView: View {
                            .font(.custom("Lato-Regular", size: 12))
                            .foregroundColor(Color(red: 131/255, green: 135/255, blue: 155/255))
             
-            QuestOptions(options: questOptions, onChoiceSelected: { selectedChoice in
+            QuestOptions(options: questOptions, selectedOptions: selectedOptions , onChoiceSelected: { selectedChoice in
                 print("SELECTED CHOICE IS ---->>>\(selectedChoice)")
                 onChoiceSelected(selectedChoice)
             }, questType: quest.questType)

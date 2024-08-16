@@ -37,7 +37,7 @@ struct LongForm: View, QuestForm {
                         if viewModel.shouldShowQuest(quest) {
                             LongQuestView(quest: quest, onChoiceSelected: { selectedAnswerChoice in
                                 viewModel.updateAnswers(quest: quest, selectedAnswerChoice: selectedAnswerChoice)
-                            })
+                            }, selectedOptions: viewModel.selectedAnswers )
                         }
                     }
                     VStack {

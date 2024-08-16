@@ -11,6 +11,7 @@ class LongFormViewModel: ObservableObject {
     @Published var longForm: LongFormModel?
     @Published var answers: [Int: String] = [:]
     @Published var answersToBeSubmitted: [String: String] = [:]
+    @Published var selectedAnswers: [QuestAnswerChoice] = []
 
     init() {}
         
@@ -25,6 +26,7 @@ class LongFormViewModel: ObservableObject {
     }
     
     func updateAnswers(quest: LongQuest, selectedAnswerChoice: QuestAnswerChoice) {
+        selectedAnswers.append(selectedAnswerChoice)
         answers[quest.questID] = selectedAnswerChoice.value
         answersToBeSubmitted[quest.questTag] = selectedAnswerChoice.value
         answersToBeRemoved()
