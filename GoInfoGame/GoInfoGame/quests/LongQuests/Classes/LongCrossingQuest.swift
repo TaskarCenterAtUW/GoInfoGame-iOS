@@ -14,7 +14,7 @@ class LongCrossingQuest: QuestBase, Quest {
     
     var title: String = ""
     
-    var filter: String = "ways with (highway=footway and footway=crossing)"
+    var filter: String = "ways with (highway=footway and footway=crossing) and !ext:gig_complete"
         
     var wikiLink: String = ""
     
@@ -52,13 +52,17 @@ class LongCrossingQuest: QuestBase, Quest {
     override init() {
         super.init()
         print("CROSSING LONG QUEST ----")
-        self.internalForm = LongForm(elementType: .crossing)
+        self.internalForm = LongForm(elementType: .crossing, action: { tags in
+            self.onAnswer(answer: tags)
+        })
     }
     
     var relationData: Element? = nil
     
     func onAnswer(answer: [String : String]) {
-        
+        if let rData = self.relationData  {
+            self.updateTags(id: rData.id, tags: answer, type: rData.type)
+        }
     }
         
     var questId: String = "311"
