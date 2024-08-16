@@ -276,6 +276,7 @@ class DatasyncManager {
     /**
             Syncs the node along with the updated
      */
+    @MainActor
     func syncNode(node: inout OSMNode) async -> Result<Bool,Error> {
         do {
                 // open changeset
