@@ -11,14 +11,14 @@ struct QuestOptions: View {
     
     let options: [QuestAnswerChoice]
     
-    @State var selectedOption: String?
+    @Binding var selectedAnswerId: UUID?
     
     var onChoiceSelected: (QuestAnswerChoice) -> ()
     
     var questType: QuestType
     
     @State private var textFieldValue: String = ""
-    
+       
     var body: some View {
         
         switch questType {
@@ -26,15 +26,15 @@ struct QuestOptions: View {
             ScrollView {
                 ForEach(options, id: \.id) { option in
                         Button(action: {
+                            selectedAnswerId = option.id
                             print("\(option.choiceText) pressed")
-                            self.selectedOption = option.choiceText
                             onChoiceSelected(option)
                         }) {
                             Text(option.choiceText)
                                 .font(.custom("Lato-Bold", size: 14))
-                                .foregroundColor(selectedOption == option.choiceText ? Color.white : Color(red: 66/255, green: 82/255, blue: 110/255))
+                                .foregroundColor(selectedAnswerId == option.id ? Color.white : Color(red: 66/255, green: 82/255, blue: 110/255))
                                 .padding()
-                                .background(selectedOption == option.choiceText ? Color(red: 135/255, green: 62/255, blue: 242/255) : Color(red: 245/255, green: 245/255, blue: 245/255))
+                                .background(selectedAnswerId == option.id ? Color(red: 135/255, green: 62/255, blue: 242/255) : Color(red: 245/255, green: 245/255, blue: 245/255))
                                 .cornerRadius(25)
                         }
                       
@@ -45,8 +45,8 @@ struct QuestOptions: View {
                 HStack {
                     TextField("Enter value", text: Binding(
                                    get: { textFieldValue },
-                                   set: {
-                                       textFieldValue = $0
+                                   set: { newValue in
+                                       textFieldValue = newValue
                                        let answer = QuestAnswerChoice(value: textFieldValue, choiceText: textFieldValue, imageURL: "", choiceFollowUp: "")
                                        onChoiceSelected(answer)
                                    }

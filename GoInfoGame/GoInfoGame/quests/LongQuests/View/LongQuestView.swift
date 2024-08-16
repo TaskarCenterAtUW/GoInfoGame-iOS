@@ -9,6 +9,8 @@ import SwiftUI
 
 struct LongQuestView: View {
     
+    @Binding var selectedAnswers: [UUID: UUID]
+    
     var quest: LongQuest
     
     var onChoiceSelected: (QuestAnswerChoice) -> ()
@@ -28,7 +30,7 @@ struct LongQuestView: View {
                            .font(.custom("Lato-Regular", size: 12))
                            .foregroundColor(Color(red: 131/255, green: 135/255, blue: 155/255))
             
-            QuestOptions(options: questOptions, onChoiceSelected: { selectedChoice in
+            QuestOptions(options: questOptions, selectedAnswerId: $selectedAnswers[quest.id], onChoiceSelected: { selectedChoice in
                 print("SELECTED CHOICE IS ---->>>\(selectedChoice)")
                 onChoiceSelected(selectedChoice)
             }, questType: quest.questType)

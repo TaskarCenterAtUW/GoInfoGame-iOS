@@ -9,6 +9,9 @@ import SwiftUI
 
 
 struct LongForm: View, QuestForm {
+    
+    @State private var selectedAnswers: [UUID: UUID] = [:]
+    
     @ObservedObject private var viewModel = LongFormViewModel()
     
     var elementType: LongFormElementType?
@@ -35,7 +38,7 @@ struct LongForm: View, QuestForm {
                 if let quests = questsForLongForm() {
                     ForEach(quests, id: \.questID) { quest in
                         if viewModel.shouldShowQuest(quest) {
-                            LongQuestView(quest: quest, onChoiceSelected: { selectedAnswerChoice in
+                            LongQuestView(selectedAnswers: $selectedAnswers, quest: quest, onChoiceSelected: { selectedAnswerChoice in
                                 viewModel.updateAnswers(quest: quest, selectedAnswerChoice: selectedAnswerChoice)
                             })
                         }
