@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import SwiftUI
 
 class PosmLoginViewModel: ObservableObject {
     @Published var username: String = ""
@@ -13,10 +14,14 @@ class PosmLoginViewModel: ObservableObject {
     @Published var isLoggedIn: Bool = false
     @Published var errorMessage: String?
     
+    @AppStorage("loggedIn") private var loggedIn: Bool = false
+    
     
     func performLogin() {
 
         let postParams = ["username": username, "password": password]
+        
+        _ = KeychainManager.save(key: "username", data: username)
         
         let postBody  = try? JSONSerialization.data(withJSONObject: postParams)
         
@@ -27,6 +32,7 @@ class PosmLoginViewModel: ObservableObject {
                 DispatchQueue.main.async {
                     _ = KeychainManager.save(key: "accessToken", data: accessToken)
                     self.isLoggedIn = true
+                    self.loggedIn = true
                 }
             case .failure(let failure) :
                 //TODO:
