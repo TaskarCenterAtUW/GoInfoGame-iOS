@@ -11,30 +11,43 @@ struct InitialView: View {
     @StateObject private var viewModel = InitialViewModel()
     @State private var shouldNavigateToMapView = false
     
+    @StateObject private var locManagerDelegate = LocationManagerDelegate()
+    
     var body: some View {
         NavigationView {
-            // Checking if there are multiple workspaces
-            if viewModel.workspaces.count > 1 {
-                WorkspacesListView(workspaces: viewModel.workspaces, viewModel: viewModel)
-            // Checking if there's only one workspace
-            } else if viewModel.workspaces.count == 1 {
-                if let selectedWorkspace = viewModel.workspaces.first {
-                    NavigationLink(destination: MapView(selectedWorkspace: selectedWorkspace).navigationBarBackButtonHidden(true), isActive: $shouldNavigateToMapView) {
+            
+            if locManagerDelegate.isLocationServicesOff || locManagerDelegate.isLocationDenied {
+                LocationDisabledView()
+            } else {
+                // Checking if there are multiple workspaces
+                if viewModel.workspaces.count > 1 {
+                    WorkspacesListView(workspaces: viewModel.workspaces, viewModel: viewModel)
+                    // Checking if there's only one workspace
+                } else if viewModel.workspaces.count == 1 {
+                    if let selectedWorkspace = viewModel.workspaces.first {
+                        NavigationLink(destination: MapView(selectedWorkspace: selectedWorkspace).navigationBarBackButtonHidden(true), isActive: $shouldNavigateToMapView) {
+                            EmptyView()
+                        }.hidden()
+                            .onAppear {
+                                shouldNavigateToMapView = true
+                                //  selectedWorkspace.saveQuestsToUserDefaults()
+                            }
+                    } else {
                         EmptyView()
-                    }.hidden()
-                        .onAppear {
-                            shouldNavigateToMapView = true
-                          //  selectedWorkspace.saveQuestsToUserDefaults()
-                        }
-                } else {
-                    EmptyView()
+                    }
+                }else {
+                    // Displaying progress view if no workspaces are available
+                    ActivityView(activityText: "Looking for workspaces...")
                 }
-            }else {
-                // Displaying progress view if no workspaces are available
-                ActivityView(activityText: "Looking for workspaces...")
             }
+            
+            
+           
         }
-        .navigationBarBackButtonHidden(true)  
+        .onAppear {
+            viewModel.locationManagerDelegate.requestLocationAuthorization()
+        }
+        .navigationBarBackButtonHidden(true)
     }
 }
 // WorkspacesListView - View for displaying a list of workspaces
@@ -105,6 +118,29 @@ struct WorkspacesListView: View {
                            )
                        }
         }
+    }
+}
+
+struct LocationDisabledView: View {
+    var body: some View {
+        VStack {
+            Text("Location Services Disabled")
+                .font(.title)
+                .padding()
+            Text("Please enable location services on your device settings to use this app.")
+                .multilineTextAlignment(.center)
+                .padding()
+            Button(action: {
+                if let url = URL(string: UIApplication.openSettingsURLString) {
+                    UIApplication.shared.open(url)
+                }
+            }) {
+                Text("Open Settings")
+                    .foregroundColor(.blue)
+            }
+            .padding()
+        }
+        .padding()
     }
 }
 
