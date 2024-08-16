@@ -14,7 +14,7 @@ class LongSidewalkQuest: QuestBase, Quest {
     
     var title: String = ""
     
-    var filter: String = "ways with (highway=footway and footway=sidewalk)"
+    var filter: String = "ways with (highway=footway and footway=sidewalk) and !ext:gig_complete"
         
     var wikiLink: String = ""
     

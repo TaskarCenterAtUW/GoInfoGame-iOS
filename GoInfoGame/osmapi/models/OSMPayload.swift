@@ -19,3 +19,10 @@ struct TagPayload: OSMPayload {
          return "<tag k=\"\(key)\" v=\"\(value)\"/>"
     }
 }
+
+struct WayNodePayload: OSMPayload{
+    let nodeId: Int
+    func toPayload() -> String {
+        return "<nd ref=\"\(nodeId)\" />"
+    }
+}

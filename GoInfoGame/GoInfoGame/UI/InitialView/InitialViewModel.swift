@@ -58,7 +58,7 @@ class InitialViewModel: ObservableObject {
                 switch result {
                 case .success(let longQuestsResponse):
                     self.longQuests = longQuestsResponse
-                    
+                    self.saveLongQuestsToDefaults(longQuestJson: longQuestsResponse)
                     self.isLoading = false
                     completion(true)
                 case .failure(let error):

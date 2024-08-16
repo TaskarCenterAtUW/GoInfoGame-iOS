@@ -20,7 +20,7 @@ class ApiManager {
     static let shared = ApiManager()
     private init() {}
     
-    func performRequest<T: Decodable>(to endpoint: APIEndpoint, setupType: SetupType, modelType: T.Type, completion: @escaping (Result<T, Error>) -> Void) {
+    func performRequest<T: Decodable>(to endpoint: APIEndpoint, setupType: SetupType, modelType: T.Type, useJSON:Bool = true, completion: @escaping (Result<T, Error>) -> Void) {
         
         var finalUrl: URL?
         switch setupType {
@@ -66,14 +66,27 @@ class ApiManager {
                 return
             }
             
-            do {
-                let theDecoder = JSONDecoder()
-                theDecoder.dateDecodingStrategy = .iso8601
-                let decodedData = try theDecoder.decode(T.self, from: data)
-                completion(.success(decodedData))
-            } catch {
-                print("Failed to decode data: \(error.localizedDescription)")
-                completion(.failure(error))
+            if useJSON {
+                
+                do {
+                    let theDecoder = JSONDecoder()
+                    theDecoder.dateDecodingStrategy = .iso8601
+                    let decodedData = try theDecoder.decode(T.self, from: data)
+                    completion(.success(decodedData))
+                } catch {
+                    print("Failed to decode data: \(error.localizedDescription)")
+                    completion(.failure(error))
+                }
+            }
+            else {
+                do{
+                    let decodedString = try String(data: data, encoding: .utf8)!
+                    completion(.success(decodedString as! T))
+                }
+                catch {
+                    print("Failed to decode the non JSON: \(error.localizedDescription)")
+                    completion(.failure(error))
+                }
             }
         }
         task.resume()

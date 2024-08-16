@@ -15,11 +15,11 @@ struct APIEndpoint {
     let headers: [String: String]?
     
     
-    static let login = { (loginParams:Data) in APIEndpoint(path: "/authenticate", method: "POST", body: loginParams, headers: nil) }
+    static let login = { (loginParams:Data) in APIEndpoint(path: "/authenticate", method: "POST", body: loginParams, headers: ["Content-Type":"application/json"]) }
     
     static let fetchWorkspaceList = APIEndpoint(path: "/workspaces/mine", method: "GET", body: nil, headers: nil)
     
-    static let fetchLongQuests = { (workspaceId: String) in APIEndpoint(path: "/workspaces/\(workspaceId)/quests/long", method: "GET", body: nil, headers: nil) }
+    static let fetchLongQuests = { (workspaceId: String) in APIEndpoint(path: "/workspaces/\(workspaceId)/quests/long", method: "GET", body: nil, headers: ["Content-Type":"application/json"]) }
     
     static let fetchOSMElements = { (left: Double, bottom: Double, right: Double, top: Double, workspaceID: String) in
           let header = [
@@ -27,10 +27,11 @@ struct APIEndpoint {
         ]
       return APIEndpoint(path: "/map.json?bbox=\(left),\(bottom),\(right),\(top)", method: "GET", body: nil, headers: header) }
     
-    static let openChangesets = { (accessToken: String, body: Data)  in
+    static let openChangesets = { (accessToken: String, workspaceId:String ,body: Data)  in
         
         let header = [
             "Authorization" : "Bearer \(accessToken)",
+            "X-Workspace": "\(workspaceId)",
             "Content-Type" : "application/xml"
         ]
         
@@ -44,5 +45,14 @@ struct APIEndpoint {
         ]
         
        return APIEndpoint(path: "/way/\(wayID)", method: "PUT", body: body, headers: header)}
+    
+    static let uploadChangeset = { (accessToken: String,changesetId:String ,workspaceId: String, body: Data) in
+            let header = [
+                "Authorization": "Bearer \(accessToken)",
+                "X-Workspace": workspaceId,
+                "Content-Type": "application/xml"
+            ]
+        return APIEndpoint(path: "/changeset/\(changesetId)/upload", method: "POST", body: body, headers: header)
+    }
 }
 

@@ -140,10 +140,13 @@ class DatasyncManager {
             let osmPayloadString = OSMChangesetPayload(createdByTag: createdBy).toPayload()
             
             let osmPayload = osmPayloadString.data(using: .utf8)
+             
+            
+            let workspaceId = KeychainManager.load(key: "workspaceID")
             
             if let accessToken = KeychainManager.load(key: "accessToken") {
                 
-                ApiManager.shared.performRequest(to: .openChangesets(accessToken, osmPayload!), setupType: .osm, modelType: Int.self) { result in
+                ApiManager.shared.performRequest(to: .openChangesets(accessToken, workspaceId ?? "" ,osmPayload!), setupType: .osm, modelType: Int.self) { result in
                     switch result {
                     case .success(let changesetID):
                       //  self.currentChangesetId = changesetID
@@ -196,11 +199,38 @@ class DatasyncManager {
     
     // utility function to act as substitute for osmConnection functions
     func updateNode(node: inout OSMNode) async -> Result<Int,Error> {
-        await withCheckedContinuation { continuation in
-            osmConnection.updateNode(node: &node, tags: node.tags ?? [:]) { result in
-                continuation.resume(returning: result)
+        var localNode = node
+        // Same here with the upload
+        let result:Result<Int, Error> =  await withCheckedContinuation { continuation in
+            
+            let nodeBodyString = localNode.toPayload()
+            
+            let changesetUploadBody = "<osmChange version=\"0.6\" generator=\"GIG Change generator\">"+nodeBodyString+"</osmChange>"
+            let workspaceId = KeychainManager.load(key: "workspaceID")
+            
+            let wayBody = changesetUploadBody.data(using: .utf8)
+//            let wayId = "\(localNode.id)"
+            // Create the changeset upload payload
+            let newVersion = node.version + 1
+
+            if let accessToken = KeychainManager.load(key: "accessToken") {
+                ApiManager.shared.performRequest(to: .uploadChangeset(accessToken,"\(node.changeset)",workspaceId ?? "",wayBody! ), setupType: .osm, modelType: String.self,useJSON: false) { result in
+                    switch result {
+                    case .success(let success):
+                        localNode.tags.forEach { (key: String, value: String) in
+                            localNode.tags[key] = value
+                        }
+                        continuation.resume(returning: .success(newVersion))
+                    case .failure(let error):
+                        print(error)
+                        continuation.resume(returning: .failure(error))
+                    }
+                }
+            } else {
+                continuation.resume(returning: .failure(NSError(domain: "No AccessToken", code: 0, userInfo: nil)))
             }
         }
+        return result
     }
     
 
@@ -210,17 +240,22 @@ class DatasyncManager {
 
         let result: Result<Int, Error> = await withCheckedContinuation { continuation in
             let wayBodyString = localWay.toPayload()
-            let wayBody = wayBodyString.data(using: .utf8)
+            let changesetUploadBody = "<osmChange version=\"0.6\" generator=\"GIG Change generator\">"+wayBodyString+"</osmChange>"
+            let workspaceId = KeychainManager.load(key: "workspaceID")
+            
+            let wayBody = changesetUploadBody.data(using: .utf8)
             let wayId = "\(localWay.id)"
+            // Create the changeset upload payload
+            let newVersion = way.version + 1
 
             if let accessToken = KeychainManager.load(key: "accessToken") {
-                ApiManager.shared.performRequest(to: .updateWay(accessToken, wayId, wayBody!), setupType: .osm, modelType: Int.self) { result in
+                ApiManager.shared.performRequest(to: .uploadChangeset(accessToken,"\(way.changeset)",workspaceId ?? "",wayBody! ), setupType: .osm, modelType: String.self,useJSON: false) { result in
                     switch result {
                     case .success(let success):
                         localWay.tags.forEach { (key: String, value: String) in
                             localWay.tags[key] = value
                         }
-                        continuation.resume(returning: .success(success))
+                        continuation.resume(returning: .success(newVersion))
                     case .failure(let error):
                         print(error)
                         continuation.resume(returning: .failure(error))
