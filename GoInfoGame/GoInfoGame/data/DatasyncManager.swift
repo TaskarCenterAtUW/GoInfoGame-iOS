@@ -137,13 +137,55 @@ class DatasyncManager {
             
             let createdBy = "\(versionNumber)(\(buildNumber))"
             
-            osmConnection.openChangeSet(createdByTag: createdBy) { result in
-                continuation.resume(returning: result)
+            let osmPayloadString = OSMChangesetPayload(createdByTag: createdBy).toPayload()
+            
+            let osmPayload = osmPayloadString.data(using: .utf8)
+            
+            if let accessToken = KeychainManager.load(key: "accessToken") {
+                
+                ApiManager.shared.performRequest(to: .openChangesets(accessToken, osmPayload!), setupType: .osm, modelType: Int.self) { result in
+                    switch result {
+                    case .success(let changesetID):
+                      //  self.currentChangesetId = changesetID
+                         print("changesetID is ---\(changesetID)")
+                        continuation.resume(returning: .success(changesetID))
+                    case .failure(let error):
+                        print(error)
+                        continuation.resume(returning: .failure(error))
+                    }
+                }
             }
         }
     }
+
+    ///////////////
+//    public func openChangeSet(createdByTag: String, _ completion: @escaping((Result<Int,Error>)->Void)) {
+//        //TODO: Write errors when not authenticated and if there is already an open changeset with same user
+//        let urlString1 = self.baseUrl.appending("changeset/create")
+//        let urlString = "https://osm.workspaces-stage.sidewalks.washington.edu/api/0.6/changeset/create"
+//        guard let url = URL(string: urlString) else {
+//            print("Invalid URL given")
+//            return
+//        }
+//       // let workspaceID = KeychainManager.load(key: "workspaceID")
+//        BaseNetworkManager.shared.addOrSetHeaders(header: "Authorization", value: "Bearer \(accessToken!)")
+//        BaseNetworkManager.shared.postData(url: url,method: "PUT" ,body: OSMChangesetPayload(createdByTag: createdByTag)) { (result: Result<Int,Error>) in
+//            switch result {
+//            case .success(let changesetID):
+//                print("CHANGESET ID ===>\(changesetID)")
+//                self.currentChangesetId = changesetID
+//                
+//            case .failure(let error):
+//                print(error)
+//            }
+//            completion(result)
+//        }
+//    }
+    //////////
     
     func closeChangeset(id:String ) async -> Result<Bool,Error> {
+        
+        
         
         await withCheckedContinuation { continuation in
             osmConnection.closeChangeSet(id: id) { result in
@@ -161,14 +203,38 @@ class DatasyncManager {
         }
     }
     
+
     // utility function to act as substitute for osmConnection functions
-    func updateWay(way: inout OSMWay) async -> Result<Int,Error> {
-        await withCheckedContinuation { continuation in
-            osmConnection.updateWay(way: &way, tags: way.tags) { result in
-                continuation.resume(returning:result)
+    func updateWay(way: inout OSMWay) async -> Result<Int, Error> {
+        var localWay = way
+
+        let result: Result<Int, Error> = await withCheckedContinuation { continuation in
+            let wayBodyString = localWay.toPayload()
+            let wayBody = wayBodyString.data(using: .utf8)
+            let wayId = "\(localWay.id)"
+
+            if let accessToken = KeychainManager.load(key: "accessToken") {
+                ApiManager.shared.performRequest(to: .updateWay(accessToken, wayId, wayBody!), setupType: .osm, modelType: Int.self) { result in
+                    switch result {
+                    case .success(let success):
+                        localWay.tags.forEach { (key: String, value: String) in
+                            localWay.tags[key] = value
+                        }
+                        continuation.resume(returning: .success(success))
+                    case .failure(let error):
+                        print(error)
+                        continuation.resume(returning: .failure(error))
+                    }
+                }
+            } else {
+                continuation.resume(returning: .failure(NSError(domain: "No AccessToken", code: 0, userInfo: nil)))
             }
         }
+        way = localWay
+        return result
     }
+
+
     
     
     
