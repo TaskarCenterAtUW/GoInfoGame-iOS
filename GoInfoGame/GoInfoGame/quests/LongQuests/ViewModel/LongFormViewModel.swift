@@ -19,7 +19,14 @@ class LongFormViewModel: ObservableObject {
             return true
         }
         if let answeredValue = answers[dependency.questionID] {
-            return dependency.requiredValue.contains(answeredValue)
+            switch dependency.requiredValue {
+            case .string(let reqValue):
+                return reqValue == answeredValue
+            case .array(let reqValue):
+                return reqValue.contains(answeredValue)
+           
+            }
+            
         }
         return false
     }
