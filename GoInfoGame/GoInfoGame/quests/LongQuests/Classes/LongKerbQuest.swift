@@ -14,7 +14,7 @@ class LongKerbQuest: QuestBase, Quest {
     
     var title: String = ""
     
-    var filter: String = "nodes with barrier=kerb"
+    var filter: String = "nodes with barrier=kerb and !ext:gig_complete"
         
     var wikiLink: String = ""
     
