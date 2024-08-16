@@ -46,21 +46,21 @@ class LongKerbQuest: QuestBase, Quest {
         let uid = String(self.relationData?.id ?? 0)
         return DisplayUnit(title: self.title, description: "", id: "\(uid)-\(questId)",parent: self,sheetSize: .LONGFORM)
     }
-        
-//    var sidewalkLongQuest: LongFormModel {
-//        return QuestsRepository.shared.sideWalkLongQuestModel!
-//    }
-//    
+            
     override init() {
         super.init()
         print("kerb LONG QUEST -")
-        self.internalForm = LongForm(elementType: .kerb)
+        self.internalForm = LongForm(elementType: .kerb, action: { [self] tags in
+            self.onAnswer(answer: tags)
+        })
     }
     
     var relationData: Element? = nil
     
     func onAnswer(answer: [String : String]) {
-        
+        if let rData = self.relationData  {
+            self.updateTags(id: rData.id, tags: answer, type: rData.type)
+        }
     }
         
     var questId: String = "312"
