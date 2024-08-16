@@ -124,6 +124,11 @@ struct WorkspacesListView: View {
 struct LocationDisabledView: View {
     var body: some View {
         VStack {
+            Text("GoInfoGame")
+                .font(.custom("Lato-Bold", size: 30))
+                .foregroundColor((Color(red: 135/255, green: 62/255, blue: 242/255)))
+                .padding([.bottom], 50)
+            
             Text("Location Services Disabled")
                 .font(.title)
                 .padding()
