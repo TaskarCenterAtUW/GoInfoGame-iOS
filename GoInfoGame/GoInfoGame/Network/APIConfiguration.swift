@@ -24,6 +24,7 @@ class APIConfiguration {
         return URL(string:  environment.osmBaseURL + endpoint.path)
     }
     
-    
-    
+    func userProfileUrl(for endpoint: APIEndpoint) -> URL? {
+        return URL(string:  environment.userProfileBaseURL + endpoint.path)
+    }
 }

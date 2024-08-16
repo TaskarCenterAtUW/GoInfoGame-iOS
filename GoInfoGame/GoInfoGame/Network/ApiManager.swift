@@ -12,6 +12,7 @@ enum SetupType {
     case workspace
     case login
     case osm
+    case userProfile
 }
 
 // Singleton object that deals with APIs
@@ -30,7 +31,10 @@ class ApiManager {
             finalUrl = APIConfiguration.shared.loginUrl(for: endpoint)
         case .osm:
             finalUrl = APIConfiguration.shared.osmUrl(for: endpoint)
+        case .userProfile:
+            finalUrl = APIConfiguration.shared.userProfileUrl(for: endpoint)
         }
+        
         guard let url = finalUrl else {
             print("Invalid URL")
             completion(.failure(NSError(domain: "", code: -1, userInfo: [NSLocalizedDescriptionKey: "Invalid URL"])))

@@ -222,6 +222,9 @@
 		FAFDA2042C6E8BEA00ECEAE9 /* APIEnvironment.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAFDA2032C6E8BEA00ECEAE9 /* APIEnvironment.swift */; };
 		FAFDA2062C6E8D7A00ECEAE9 /* APIEndPoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAFDA2052C6E8D7A00ECEAE9 /* APIEndPoint.swift */; };
 		FAFDA2082C6E8F2500ECEAE9 /* APIConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAFDA2072C6E8F2500ECEAE9 /* APIConfiguration.swift */; };
+		FAFDA20E2C6F58D600ECEAE9 /* UserProfile.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAFDA20D2C6F58D600ECEAE9 /* UserProfile.swift */; };
+		FAFDA2102C6F592700ECEAE9 /* UserProfileViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAFDA20F2C6F592700ECEAE9 /* UserProfileViewModel.swift */; };
+		FAFDA2122C6F64E800ECEAE9 /* UserProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAFDA2112C6F64E800ECEAE9 /* UserProfileView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -526,6 +529,9 @@
 		FAFDA2032C6E8BEA00ECEAE9 /* APIEnvironment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIEnvironment.swift; sourceTree = "<group>"; };
 		FAFDA2052C6E8D7A00ECEAE9 /* APIEndPoint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIEndPoint.swift; sourceTree = "<group>"; };
 		FAFDA2072C6E8F2500ECEAE9 /* APIConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIConfiguration.swift; sourceTree = "<group>"; };
+		FAFDA20D2C6F58D600ECEAE9 /* UserProfile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfile.swift; sourceTree = "<group>"; };
+		FAFDA20F2C6F592700ECEAE9 /* UserProfileViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfileViewModel.swift; sourceTree = "<group>"; };
+		FAFDA2112C6F64E800ECEAE9 /* UserProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfileView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -1344,6 +1350,7 @@
 		FAD5C4F12AFCBE700040C61A /* GoInfoGame */ = {
 			isa = PBXGroup;
 			children = (
+				FAFDA2092C6F589900ECEAE9 /* UserProfile */,
 				FAFDA1FB2C6D321500ECEAE9 /* Login */,
 				FA8C74CF2C598F3D00D28220 /* Fonts */,
 				A4E7119C2B57A22300C9DE08 /* quests */,
@@ -1426,6 +1433,40 @@
 				FAFDA2012C6D33C300ECEAE9 /* PosmLoginViewModel.swift */,
 			);
 			path = ViewModel;
+			sourceTree = "<group>";
+		};
+		FAFDA2092C6F589900ECEAE9 /* UserProfile */ = {
+			isa = PBXGroup;
+			children = (
+				FAFDA20C2C6F58C000ECEAE9 /* Model */,
+				FAFDA20B2C6F58AB00ECEAE9 /* ViewModel */,
+				FAFDA20A2C6F58A300ECEAE9 /* View */,
+			);
+			path = UserProfile;
+			sourceTree = "<group>";
+		};
+		FAFDA20A2C6F58A300ECEAE9 /* View */ = {
+			isa = PBXGroup;
+			children = (
+				FAFDA2112C6F64E800ECEAE9 /* UserProfileView.swift */,
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
+		FAFDA20B2C6F58AB00ECEAE9 /* ViewModel */ = {
+			isa = PBXGroup;
+			children = (
+				FAFDA20F2C6F592700ECEAE9 /* UserProfileViewModel.swift */,
+			);
+			path = ViewModel;
+			sourceTree = "<group>";
+		};
+		FAFDA20C2C6F58C000ECEAE9 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				FAFDA20D2C6F58D600ECEAE9 /* UserProfile.swift */,
+			);
+			path = Model;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -1958,6 +1999,7 @@
 				FAC9E60F2B04F9C800E2C608 /* OverpassRequestManager.swift in Sources */,
 				18EC425E2B849FE000DE05D7 /* TactilePavingCrosswalk.swift in Sources */,
 				FA8C74D82C60E95100D28220 /* PosmLogin.swift in Sources */,
+				FAFDA20E2C6F58D600ECEAE9 /* UserProfile.swift in Sources */,
 				FABF3CF82B822F120080EAC9 /* CustomSureAlert.swift in Sources */,
 				973FC0482B5A477E00878269 /* CrossMarking.swift in Sources */,
 				05DBBB642B17204300B6F110 /* RealmOPGeometry.swift in Sources */,
@@ -1971,6 +2013,7 @@
 				A4E711AE2B59004700C9DE08 /* StepsIncline.swift in Sources */,
 				973FC0142B4D353800878269 /* SideWalkWidthForm.swift in Sources */,
 				971575172B5FFD6F0044797C /* MapView.swift in Sources */,
+				FAFDA2102C6F592700ECEAE9 /* UserProfileViewModel.swift in Sources */,
 				97412A9B2BBBF3B400DF7983 /* KerbHeightForm.swift in Sources */,
 				FA8C74C42C4FDE1000D28220 /* LongFormModel.swift in Sources */,
 				973FC04A2B5A478C00878269 /* CrossMarkingForm.swift in Sources */,
@@ -2019,6 +2062,7 @@
 				0536DD992B0BDBFE00B04C4B /* OAuthManager.swift in Sources */,
 				A4E711AC2B58F7C000C9DE08 /* HandRailForm.swift in Sources */,
 				A4E711A62B57BBCA00C9DE08 /* QuestProtocols.swift in Sources */,
+				FAFDA2122C6F64E800ECEAE9 /* UserProfileView.swift in Sources */,
 				973FBFFE2B46BB3800878269 /* Utils.swift in Sources */,
 				B0CCB98C2B8626AE00AA73DE /* ProfileView.swift in Sources */,
 				FAF44FBD2B3084EC004FE664 /* OnboardingView1.swift in Sources */,

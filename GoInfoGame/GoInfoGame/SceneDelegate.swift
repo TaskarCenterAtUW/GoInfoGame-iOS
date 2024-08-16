@@ -13,6 +13,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     var window: UIWindow?
     
    var locationManagerDelegate = LocationManagerDelegate()
+    
+    @AppStorage("loggedIn") private var loggedIn: Bool = false
 
 
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
@@ -22,22 +24,26 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
   // guard let _ = (scene as? UIWindowScene) else { return }
         
         
-        
-        if let acceesToken = KeychainManager.load(key: "accessToken") {
+        if loggedIn {
             let contentView = InitialView()
-
-                 // Use a UIHostingController as window root view controller.
-                 if let windowScene = scene as? UIWindowScene {
-                     let window = UIWindow(windowScene: windowScene)
-                     window.rootViewController = UIHostingController(rootView: contentView)
-                     self.window = window
-                     window.makeKeyAndVisible()
-                 }
+            // Use a UIHostingController as window root view controller.
+            if let windowScene = scene as? UIWindowScene {
+                let window = UIWindow(windowScene: windowScene)
+                window.rootViewController = UIHostingController(rootView: contentView)
+                self.window = window
+                window.makeKeyAndVisible()
+            }
         } else {
-            
+            let contentView = PosmLoginView()
+            // Use a UIHostingController as window root view controller.
+            if let windowScene = scene as? UIWindowScene {
+                let window = UIWindow(windowScene: windowScene)
+                window.rootViewController = UIHostingController(rootView: contentView)
+                self.window = window
+                window.makeKeyAndVisible()
+            }
         }
         
-
     }
 
     func sceneDidDisconnect(_ scene: UIScene) {

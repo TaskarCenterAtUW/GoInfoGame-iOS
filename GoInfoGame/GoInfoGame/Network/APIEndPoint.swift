@@ -54,5 +54,14 @@ struct APIEndpoint {
             ]
         return APIEndpoint(path: "/changeset/\(changesetId)/upload", method: "POST", body: body, headers: header)
     }
+    
+    static let fetchuserProfile = { (userName: String, accessToken: String) in
+        
+        let header = [
+            "Authorization": "Bearer \(accessToken)",
+            "Content-Type":"application/json"
+        ]
+        
+       return APIEndpoint(path: "/user-profile?user_name=\(userName)", method: "GET", body: nil, headers: header) }
 }
 
