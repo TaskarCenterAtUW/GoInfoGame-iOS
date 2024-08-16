@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import osmapi
 
 enum SetupType {
     case workspace
@@ -43,6 +44,14 @@ class ApiManager {
             request.httpBody = httpBody
         }
         
+        if let headers = endpoint.headers {
+               for (key, value) in headers {
+                   request.setValue(value, forHTTPHeaderField: key)
+               }
+           }
+        
+       
+        
         let task = URLSession.shared.dataTask(with: request) { data, response, error in
             if let error = error {
                 print("Request failed with error: \(error.localizedDescription)")
@@ -58,7 +67,9 @@ class ApiManager {
             }
             
             do {
-                let decodedData = try JSONDecoder().decode(T.self, from: data)
+                let theDecoder = JSONDecoder()
+                theDecoder.dateDecodingStrategy = .iso8601
+                let decodedData = try theDecoder.decode(T.self, from: data)
                 completion(.success(decodedData))
             } catch {
                 print("Failed to decode data: \(error.localizedDescription)")
@@ -67,6 +78,34 @@ class ApiManager {
         }
         task.resume()
     }
+    
+//    public func getOSMMapData(left: Double, bottom: Double, right: Double, top: Double,_ completion: @escaping (Result<OSMMapDataResponse, Error>)-> Void) {
+//        let urlString =  self.baseUrl.appending("map.json?bbox=\(left),\(bottom),\(right),\(top)")
+//       print(urlString)
+//       guard let url = URL(string: urlString) else {
+//           print("Invalid URL given")
+//                   return
+//               }
+//        if let workspaceID = KeychainManager.load(key: "workspaceID") {
+//            BaseNetworkManager.shared.addOrSetHeaders(header: "X-Workspace", value: workspaceID)
+//        }
+//       BaseNetworkManager.shared.fetchData(url: url, completion: completion)
+//   }
+//    
+//    public func fetchMapData(left: Double, bottom: Double, right: Double, top: Double,_ completion: @escaping (Result<[Int:OSMElement], Error>)-> Void){
+//        getOSMMapData(left: left, bottom: bottom, right: right, top: top) { result in
+//            switch result {
+//            case .success(let osmResponse):
+//                print("Convert nodes etc")
+//                completion(.success(osmResponse.getOSMElements()))
+//            case .failure(let error):
+//                print("Bad result")
+//                completion(.failure(error))
+//            }
+//            
+//        }
+//        
+//    }
     
     
     
