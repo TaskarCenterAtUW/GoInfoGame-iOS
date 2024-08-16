@@ -9,6 +9,7 @@ import Foundation
 import SwiftUI
 import MapKit
 import CoreLocation
+import osmapi
 
 
 class MapViewModel: ObservableObject {
@@ -23,6 +24,8 @@ class MapViewModel: ObservableObject {
     @Published var selectedQuest: DisplayUnit?
     let dataSpanDistance: CLLocationDistance = 1000 // Distance from user location to get the data
     
+   private let dbInstance = DatabaseConnector.shared
+    
     init() {
         locationManagerDelegate.locationManager.delegate = locationManagerDelegate
         locationManagerDelegate.locationManager.requestWhenInUseAuthorization()
@@ -33,14 +36,13 @@ class MapViewModel: ObservableObject {
             self.userlocation = location
             fetchOSMDataFor(currentLocation: location)
         }
-        
     }
     
     @objc private func locationDidChange() {
         guard let userLocation = locationManagerDelegate.location else { return }
         fetchOSMDataFor(currentLocation: userLocation.coordinate)
     }
-
+    
     func fetchOSMDataFor(currentLocation: CLLocationCoordinate2D) {
         isLoading = true
         let bBox = boundingBoxAroundLocation(location: currentLocation, distance: dataSpanDistance)
@@ -48,15 +50,30 @@ class MapViewModel: ObservableObject {
             latitudeDelta: viewSpanDelta,
             longitudeDelta: viewSpanDelta
         ))
-        AppQuestManager.shared.fetchData(fromBBOx: bBox) { [weak self] in
-            guard let self = self else { return }
-            self.items = AppQuestManager.shared.fetchQuestsFromDB()
-            self.isLoading = false
-            if self.items.count == 0 {self.refreshMap = UUID()}
+        
+        if let workspaceID = KeychainManager.load(key: "workspaceID") {
             
+            ApiManager.shared.performRequest(to: .fetchOSMElements(bBox.minLon, bBox.minLat, bBox.maxLon, bBox.maxLat, workspaceID), setupType: .osm, modelType: OSMMapDataResponse.self) { result in
+                switch result {
+                case .success(let success):
+                   let osmElements = success.getOSMElements()
+                    print("OSM ELEMENTS ??? \(osmElements)")
+                    
+                    let response = Array(osmElements.values)
+                    let allValues = response
+                    
+                    DispatchQueue.main.async {
+                        self.dbInstance.saveOSMElements(allValues) // Save all where there are tags
+                        self.items = AppQuestManager.shared.fetchQuestsFromDB()
+                        self.isLoading = false
+                        if self.items.count == 0 {self.refreshMap = UUID()}
+                    }
+                case .failure(let failure):
+                    print(failure)
+                }
+            }
         }
     }
-    
     
     func refreshQuests() {
         self.items = AppQuestManager.shared.fetchQuestsFromDB()
@@ -91,5 +108,20 @@ class MapViewModel: ObservableObject {
        
         return BBox(minLat: minLat, maxLat: maxLat, minLon: minLon, maxLon: maxLon)
     }
+    
+//    func fetchOSMDataForx(currentLocation: CLLocationCoordinate2D) {
+//        isLoading = true
+//        let bBox = boundingBoxAroundLocation(location: currentLocation, distance: dataSpanDistance)
+//        self.region = MKCoordinateRegion(center: currentLocation, span: MKCoordinateSpan(
+//            latitudeDelta: viewSpanDelta,
+//            longitudeDelta: viewSpanDelta
+//        ))
+//        AppQuestManager.shared.fetchData(fromBBOx: bBox) { [weak self] in
+//            guard let self = self else { return }
+//            self.items = AppQuestManager.shared.fetchQuestsFromDB()
+//            self.isLoading = false
+//            if self.items.count == 0 {self.refreshMap = UUID()}
+//            
+//        }
+//    }
 }
-
