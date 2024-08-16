@@ -6,66 +6,97 @@
 //
 
 import CoreLocation
-import MapKit
+import Foundation
 
 class LocationManagerDelegate: NSObject, ObservableObject, CLLocationManagerDelegate {
-        
     var locationManager = CLLocationManager()
     @Published var location: CLLocation?
+    @Published var isLocationDenied: Bool = false
+    @Published var isLocationServicesOff: Bool = false
     var locationUpdateHandler: ((CLLocationCoordinate2D) -> Void)?
-        
+    
     override init() {
         super.init()
         locationManager.delegate = self
-        
-        locationManager.startUpdatingLocation()
+        checkInitialLocationStatus()
     }
     
     func requestLocationAuthorization() {
-        locationManager.requestWhenInUseAuthorization()
+        DispatchQueue.main.async {
+            self.locationManager.requestWhenInUseAuthorization()
+        }
     }
     
     func startUpdatingLocation() {
+        // Perform location services check on a background thread
         DispatchQueue.global(qos: .background).async {
-            guard CLLocationManager.locationServicesEnabled() else {
-                print("Location services are not enabled")
-                return
-            }
-            
+            let locationServicesEnabled = CLLocationManager.locationServicesEnabled()
             DispatchQueue.main.async {
+                if !locationServicesEnabled {
+                    self.isLocationServicesOff = true
+                    return
+                }
+                
                 self.locationManager.desiredAccuracy = kCLLocationAccuracyNearestTenMeters
                 self.locationManager.distanceFilter = 150
                 self.locationManager.startUpdatingLocation()
+                self.isLocationServicesOff = false
             }
         }
     }
 
     
     func stopUpdatingLocation() {
-        print("App is pushed to background. So stopping location updates")
-        locationManager.stopUpdatingLocation()
-    }
-    
-    func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
-        switch manager.authorizationStatus {
-        case .authorizedWhenInUse:
-            print("Authorized")
-            startUpdatingLocation()
-        case .denied, .restricted:
-            print("Not Authorized")
-        default:
-            print("Requesting authorization...")
-            requestLocationAuthorization()
+        DispatchQueue.main.async {
+            self.locationManager.stopUpdatingLocation()
         }
     }
     
+    func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
+        // Check the authorization status and location services in background
+        DispatchQueue.global(qos: .background).async {
+            let isLocationServicesEnabled = CLLocationManager.locationServicesEnabled()
+            let authorizationStatus = manager.authorizationStatus
+            
+            DispatchQueue.main.async {
+                switch authorizationStatus {
+                case .authorizedWhenInUse, .authorizedAlways:
+                    self.isLocationDenied = false
+                    self.isLocationServicesOff = !isLocationServicesEnabled
+                    self.startUpdatingLocation()
+                case .denied, .restricted:
+                    self.isLocationDenied = true
+                    self.isLocationServicesOff = false
+                    self.stopUpdatingLocation()
+                default:
+                    self.isLocationDenied = false
+                    self.isLocationServicesOff = !isLocationServicesEnabled
+                    self.requestLocationAuthorization()
+                }
+            }
+        }
+    }
+
+    
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         guard let mostRecentLocation = locations.last else { return }
-        location = mostRecentLocation
-        locationUpdateHandler?(mostRecentLocation.coordinate)
+        DispatchQueue.main.async {
+            self.location = mostRecentLocation
+            self.locationUpdateHandler?(mostRecentLocation.coordinate)
+        }
     }
     
     func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
         print("Error with location manager is ----\(error.localizedDescription)")
+    }
+    
+    private func checkInitialLocationStatus() {
+        // Perform initial status check asynchronously
+        DispatchQueue.global(qos: .background).async {
+            let servicesEnabled = CLLocationManager.locationServicesEnabled()
+            DispatchQueue.main.async {
+                self.isLocationServicesOff = !servicesEnabled
+            }
+        }
     }
 }
