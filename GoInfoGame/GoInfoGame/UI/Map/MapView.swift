@@ -113,7 +113,7 @@ struct MapView: View {
         })
         .onReceive(MapViewPublisher.shared.dismissSheet) { scenario in
             
-//            isPresented = false
+            isPresented = false
             switch scenario {
             case .dismissed:
                 shouldShowPolyline = false
