@@ -19,6 +19,8 @@ struct LongQuestView: View {
         return quest.questAnswerChoices
     }
     
+    @Binding var currentAnswer:String?
+    
     var body: some View {
         VStack(alignment: .leading) {
             Text(quest.questTitle)
@@ -33,7 +35,7 @@ struct LongQuestView: View {
             QuestOptions(options: questOptions, selectedAnswerId: $selectedAnswers[quest.id], onChoiceSelected: { selectedChoice in
                 print("SELECTED CHOICE IS ---->>>\(selectedChoice)")
                 onChoiceSelected(selectedChoice)
-            }, questType: quest.questType)
+            }, questType: quest.questType,currentAnswer: $currentAnswer)
           }
           .padding(.vertical, 5)
     }

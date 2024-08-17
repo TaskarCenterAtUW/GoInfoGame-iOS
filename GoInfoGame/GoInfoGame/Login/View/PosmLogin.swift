@@ -26,6 +26,7 @@ struct PosmLoginView: View {
                     .background(Color(.systemGray6))
                     .cornerRadius(10)
                     .padding(.horizontal, 40)
+                    .textInputAutocapitalization(.never)
                 
                 SecureField("Password", text: $viewModel.password)
                     .padding()

@@ -53,7 +53,6 @@ class LongSidewalkQuest: QuestBase, Quest {
     
     override init() {
         super.init()
-        print("SIDEWALK LONG QUEST ----")
         
         self.internalForm = LongForm(elementType: .sidewalk, action: { [self] tags in
             self.onAnswer(answer: tags)

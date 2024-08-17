@@ -18,6 +18,8 @@ struct QuestOptions: View {
     var questType: QuestType
     
     @State private var textFieldValue: String = ""
+    
+    @Binding var currentAnswer: String?
        
     var body: some View {
         
@@ -32,9 +34,9 @@ struct QuestOptions: View {
                         }) {
                             Text(option.choiceText)
                                 .font(.custom("Lato-Bold", size: 14))
-                                .foregroundColor(selectedAnswerId == option.id ? Color.white : Color(red: 66/255, green: 82/255, blue: 110/255))
+                                .foregroundColor(currentAnswer == option.value ? Color.white : Color(red: 66/255, green: 82/255, blue: 110/255))
                                 .padding()
-                                .background(selectedAnswerId == option.id ? Color(red: 135/255, green: 62/255, blue: 242/255) : Color(red: 245/255, green: 245/255, blue: 245/255))
+                                .background(currentAnswer == option.value ? Color(red: 135/255, green: 62/255, blue: 242/255) : Color(red: 245/255, green: 245/255, blue: 245/255))
                                 .cornerRadius(25)
                         }
                       
@@ -44,7 +46,7 @@ struct QuestOptions: View {
         case .numeric:
                 HStack {
                     TextField("Enter value", text: Binding(
-                                   get: { textFieldValue },
+                                   get: { currentAnswer ?? "" },
                                    set: { newValue in
                                        textFieldValue = newValue
                                        let answer = QuestAnswerChoice(value: textFieldValue, choiceText: textFieldValue, imageURL: "", choiceFollowUp: "")
