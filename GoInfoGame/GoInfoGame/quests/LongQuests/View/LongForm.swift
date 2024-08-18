@@ -48,11 +48,14 @@ struct LongForm: View, QuestForm {
                         Button(action: {
                             print("Submit pressed")
                             print(viewModel.answersToBeSubmitted)
-                            if let action = action {
-                                  action(viewModel.answersToBeSubmitted)
-                              } else {
-                                  print("osmAction is nil")
-                              }
+                            if !viewModel.answersToBeSubmitted.isEmpty {
+                                if let action = action {
+                                      action(viewModel.answersToBeSubmitted)
+                                  }
+                            } else {
+                                print("Please answer atleast one quest to submit")
+                            }
+ 
                         }) {
                             Text("Submit")
                                 .font(.custom("Lato-Bold", size: 16))
