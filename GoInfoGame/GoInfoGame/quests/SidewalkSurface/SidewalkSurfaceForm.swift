@@ -58,7 +58,6 @@ struct SidewalkSurfaceForm: QuestForm ,View {
                         /// Grid view for displaying selectable surfaces
                         ImageGridItemView(gridCount: 3, isLabelBelow: true, imageData: imagesFromSurfaces, isImageRotated: false, isDisplayImageOnly: false, isScrollable: true, allowMultipleSelection: false, onTap: { (selectedImage) in
                             selectedAnswer = SidewalkSurfaceAnswer(value: SurfaceAndNote(surface: Surface(rawValue: selectedImage.first ?? ""),note: ""))
-                            print("selectedAnswer:", selectedAnswer)
                             print("Clicked Tag: \(selectedImage)")}, selectedImages: $selectedImage).frame(height: 350)
                         HStack(alignment: .center) {
                             Spacer()

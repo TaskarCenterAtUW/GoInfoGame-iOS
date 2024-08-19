@@ -46,8 +46,6 @@ struct LongForm: View, QuestForm {
                     }
                     VStack {
                         Button(action: {
-                            print("Submit pressed")
-                            print(viewModel.answersToBeSubmitted)
                             if !viewModel.answersToBeSubmitted.isEmpty {
                                 if let action = action {
                                       action(viewModel.answersToBeSubmitted)

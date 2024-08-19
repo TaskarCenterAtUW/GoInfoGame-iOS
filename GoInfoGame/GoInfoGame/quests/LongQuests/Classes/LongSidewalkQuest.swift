@@ -75,19 +75,3 @@ class LongSidewalkQuest: QuestBase, Quest {
         return quest
     }
 }
-
-
-//class LongQuestBase {
-//    
-//    func loadLongQuests(from fileName: String) {
-//            do {
-//                if let loadedQuests = try FileStorageManager.shared.load(from: fileName) {
-//                    self.longQuestModels = loadedQuests
-//                } else {
-//                    print("File not found")
-//                }
-//            } catch {
-//                print("Failed to load file: \(error)")
-//            }
-//        }
-//}

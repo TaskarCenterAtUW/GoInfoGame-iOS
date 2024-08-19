@@ -33,7 +33,6 @@ struct LongQuestView: View {
                            .foregroundColor(Color(red: 131/255, green: 135/255, blue: 155/255))
             
             QuestOptions(options: questOptions, selectedAnswerId: $selectedAnswers[quest.id], onChoiceSelected: { selectedChoice in
-                print("SELECTED CHOICE IS ---->>>\(selectedChoice)")
                 onChoiceSelected(selectedChoice)
             }, questType: quest.questType,currentAnswer: $currentAnswer)
           }

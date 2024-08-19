@@ -40,7 +40,6 @@ struct CrossingTypeForm: View, QuestForm {
                         Text(LocalizedStrings.selectOne.localized).font(.caption).foregroundColor(.gray)
                         ImageGridItemView(gridCount: 3, isLabelBelow: false, imageData: imageData, isImageRotated: false, isDisplayImageOnly: false, isScrollable: false, allowMultipleSelection: false, onTap: { (selectedImage) in
                             selectedAnswer =  CrossingTypeAnswer(rawValue: selectedImage.first ?? "") ?? .none
-                            print("selected crossing type tag ->",selectedAnswer.rawValue)
                         }, selectedImages: $selectedImage)
                     }
                     VStack() {
