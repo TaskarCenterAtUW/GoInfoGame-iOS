@@ -14,51 +14,58 @@ struct PosmLoginView: View {
     @State private var isShowingAlert = false
     @State private var shouldLogin = false
     
+    @State private var shouldShowAlert = false
+    
     var body: some View {
         NavigationView {
-            VStack(spacing: 20) {
-                Text("GoInfoGame")
-                    .font(.custom("Lato-Bold", size: 30))
-                    .foregroundColor((Color(red: 135/255, green: 62/255, blue: 242/255)))
-                    .padding([.bottom], 50)
-                TextField("Username", text: $viewModel.username)
-                    .padding()
-                    .background(Color(.systemGray6))
-                    .cornerRadius(10)
-                    .padding(.horizontal, 40)
-                    .textInputAutocapitalization(.never)
-                
-                SecureField("Password", text: $viewModel.password)
-                    .padding()
-                    .background(Color(.systemGray6))
-                    .cornerRadius(10)
-                    .padding(.horizontal, 40)
-                
-                if let errorMessage = viewModel.errorMessage {
-                    Text(errorMessage)
-                        .foregroundColor(.red)
-                }
-                
-                Button(action: {
-                    viewModel.performLogin()
-                }) {
-                    Text("Login")
-                        .font(.custom("Lato-Bold", size: 20))
-                        .foregroundColor(Color.white)
+            ZStack {
+                VStack(spacing: 20) {
+                    Text("GoInfoGame")
+                        .font(.custom("Lato-Bold", size: 30))
+                        .foregroundColor((Color(red: 135/255, green: 62/255, blue: 242/255)))
+                        .padding([.bottom], 50)
+                    TextField("Username", text: $viewModel.username)
                         .padding()
-                        .background(Color(red: 135/255, green: 62/255, blue: 242/255))
-                        .cornerRadius(25)
-                }
-                if viewModel.isLoggedIn {
-                    NavigationLink(destination: InitialView(), isActive: $viewModel.isLoggedIn) {
-                        EmptyView()
+                        .background(Color(.systemGray6))
+                        .cornerRadius(10)
+                        .padding(.horizontal, 40)
+                        .textInputAutocapitalization(.never)
+                    
+                    SecureField("Password", text: $viewModel.password)
+                        .padding()
+                        .background(Color(.systemGray6))
+                        .cornerRadius(10)
+                        .padding(.horizontal, 40)
+            
+                    Button(action: {
+                        viewModel.performLogin()
+                    }) {
+                        Text("Login")
+                            .font(.custom("Lato-Bold", size: 20))
+                            .foregroundColor(Color.white)
+                            .padding()
+                            .background(Color(red: 135/255, green: 62/255, blue: 242/255))
+                            .cornerRadius(25)
                     }
-                    .navigationBarBackButtonHidden(true)
+                    if viewModel.isLoggedIn {
+                        NavigationLink(destination: InitialView(), isActive: $viewModel.isLoggedIn) {
+                            EmptyView()
+                        }
+                        .navigationBarBackButtonHidden(true)
+                    }
+                }
+                if viewModel.isLoading {
+                    ActivityView(activityText: "Loading...")
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+                        .background(Color.black.opacity(0.4))
+                        .edgesIgnoringSafeArea(.all)
                 }
             }
         }
+        .alert(viewModel.errorMessage ?? "An error occured", isPresented: $viewModel.isLoggedIn) {
+            Button("OK", role: .cancel) { }
+        }
     }
-    
 }
 
 #Preview {
