@@ -29,7 +29,6 @@ struct QuestOptions: View {
                 ForEach(options, id: \.id) { option in
                         Button(action: {
                             selectedAnswerId = option.id
-                            print("\(option.choiceText) pressed")
                             onChoiceSelected(option)
                         }) {
                             Text(option.choiceText)

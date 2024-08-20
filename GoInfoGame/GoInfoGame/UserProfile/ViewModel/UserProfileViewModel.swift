@@ -31,7 +31,6 @@ class UserProfileViewModel: ObservableObject {
             ApiManager.shared.performRequest(to: .fetchuserProfile(username!, accessToken), setupType: .userProfile, modelType: TdeiUserProfile.self) { result in
                 switch result {
                 case .success(let userprofile):
-                    print(userprofile)
                     DispatchQueue.main.async {
                         self.user = userprofile
                         UserProfileCache.shared.cacheUserProfile(userprofile)

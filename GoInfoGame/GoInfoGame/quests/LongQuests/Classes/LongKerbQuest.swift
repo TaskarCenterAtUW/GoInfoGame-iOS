@@ -49,7 +49,6 @@ class LongKerbQuest: QuestBase, Quest {
             
     override init() {
         super.init()
-        print("kerb LONG QUEST -")
         self.internalForm = LongForm(elementType: .kerb, action: { [self] tags in
             self.onAnswer(answer: tags)
         })
