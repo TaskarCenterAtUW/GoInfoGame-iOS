@@ -25,24 +25,37 @@ struct InitialView: View {
                     // Checking if there's only one workspace
                 } else if viewModel.workspaces.count == 1 {
                     if let selectedWorkspace = viewModel.workspaces.first {
-                        NavigationLink(destination: MapView(selectedWorkspace: selectedWorkspace).navigationBarBackButtonHidden(true), isActive: $shouldNavigateToMapView) {
-                            EmptyView()
-                        }.hidden()
-                            .onAppear {
-                                shouldNavigateToMapView = true
-                                //  selectedWorkspace.saveQuestsToUserDefaults()
+                        VStack {
+                            if !shouldNavigateToMapView {
+                                ActivityView(activityText: "Fetching workspace data...")
                             }
-                    } else {
-                        EmptyView()
+                            NavigationLink(
+                                destination: MapView(selectedWorkspace: selectedWorkspace)
+                                    .navigationBarBackButtonHidden(true),
+                                isActive: $shouldNavigateToMapView,
+                                label: {
+                                    EmptyView()
+                                }
+                            )
+                        }
+                        .onAppear {
+                            viewModel.fetchLongQuestsFor(workspaceId: "\(selectedWorkspace.id)") { success in
+                                if success {
+                                    let workspaceId = "\(selectedWorkspace.id)"
+                                    _ = KeychainManager.save(key: "workspaceID", data: workspaceId)
+                                    DispatchQueue.main.async {
+                                        self.shouldNavigateToMapView = true
+                                    }
+                                }
+                            }
+                        }
                     }
-                }else {
+                }
+                else {
                     // Displaying progress view if no workspaces are available
                     ActivityView(activityText: "Looking for workspaces...")
                 }
             }
-            
-            
-           
         }
         .onAppear {
             viewModel.locationManagerDelegate.requestLocationAuthorization()
