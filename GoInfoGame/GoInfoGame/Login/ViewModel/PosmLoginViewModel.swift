@@ -12,30 +12,32 @@ import SwiftUI
 class PosmLoginViewModel: ObservableObject {
     @Published var username: String = ""
     @Published var password: String = ""
-    @Published var isLoggedIn: Bool = false
+    @Published var hasLoginFailed: Bool = false
     @Published var errorMessage: String?
     
     @Published var isLoading = false
     
     @AppStorage("loggedIn") private var loggedIn: Bool = false
     
-    @Published var isLoginValid: Bool = false
+    @Published var shouldShowValidationAlert: Bool = false
     
     private func validate() {
            errorMessage = ""
            
            if username.isEmpty {
                errorMessage = "Username is required."
+               shouldShowValidationAlert = true
+               return
            } else if password.isEmpty {
                errorMessage = "Password is required."
+               shouldShowValidationAlert = true
+               return
            } else if username.isEmpty && password.isEmpty {
                errorMessage = "Enter username and password"
-           } else {
-               isLoginValid = true
+               shouldShowValidationAlert = true
                return
            }
-           
-           isLoginValid = false
+        shouldShowValidationAlert = false
        }
     
     
@@ -43,7 +45,7 @@ class PosmLoginViewModel: ObservableObject {
         
         validate()
         
-        if isLoginValid {
+        if !shouldShowValidationAlert {
             
             isLoading = true
             
@@ -59,14 +61,14 @@ class PosmLoginViewModel: ObservableObject {
                     let accessToken = posmLoginSuccessResponse.accessToken
                     DispatchQueue.main.async {
                         _ = KeychainManager.save(key: "accessToken", data: accessToken)
-                        self.isLoggedIn = true
+                        self.hasLoginFailed = false
                         self.loggedIn = true
                         self.isLoading = false
                     }
                 case .failure(let failure) :
                     //TODO:
                     DispatchQueue.main.async {
-                        self.isLoggedIn = false
+                        self.hasLoginFailed = true
                         self.isLoading = false
                     }
                     print("HANDLE ERROR")

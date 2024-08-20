@@ -47,8 +47,8 @@ struct PosmLoginView: View {
                             .background(Color(red: 135/255, green: 62/255, blue: 242/255))
                             .cornerRadius(25)
                     }
-                    if viewModel.isLoggedIn {
-                        NavigationLink(destination: InitialView(), isActive: $viewModel.isLoggedIn) {
+                    if !viewModel.hasLoginFailed {
+                        NavigationLink(destination: InitialView(), isActive: $viewModel.hasLoginFailed) {
                             EmptyView()
                         }
                         .navigationBarBackButtonHidden(true)
@@ -62,7 +62,11 @@ struct PosmLoginView: View {
                 }
             }
         }
-        .alert(viewModel.errorMessage ?? "An error occured", isPresented: $viewModel.isLoggedIn) {
+        .alert(viewModel.errorMessage ?? "An error occured", isPresented: $viewModel.shouldShowValidationAlert) {
+            Button("OK", role: .cancel) { }
+        }
+        
+        .alert("Invalid Credentials", isPresented: $viewModel.hasLoginFailed) {
             Button("OK", role: .cancel) { }
         }
     }

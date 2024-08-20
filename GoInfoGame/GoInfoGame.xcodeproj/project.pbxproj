@@ -225,6 +225,7 @@
 		FAFDA20E2C6F58D600ECEAE9 /* UserProfile.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAFDA20D2C6F58D600ECEAE9 /* UserProfile.swift */; };
 		FAFDA2102C6F592700ECEAE9 /* UserProfileViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAFDA20F2C6F592700ECEAE9 /* UserProfileViewModel.swift */; };
 		FAFDA2122C6F64E800ECEAE9 /* UserProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAFDA2112C6F64E800ECEAE9 /* UserProfileView.swift */; };
+		FAFDA2142C7351CB00ECEAE9 /* APIError.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAFDA2132C7351CB00ECEAE9 /* APIError.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -532,6 +533,7 @@
 		FAFDA20D2C6F58D600ECEAE9 /* UserProfile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfile.swift; sourceTree = "<group>"; };
 		FAFDA20F2C6F592700ECEAE9 /* UserProfileViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfileViewModel.swift; sourceTree = "<group>"; };
 		FAFDA2112C6F64E800ECEAE9 /* UserProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfileView.swift; sourceTree = "<group>"; };
+		FAFDA2132C7351CB00ECEAE9 /* APIError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIError.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -634,6 +636,7 @@
 				FAFDA2032C6E8BEA00ECEAE9 /* APIEnvironment.swift */,
 				FAFDA2052C6E8D7A00ECEAE9 /* APIEndPoint.swift */,
 				FAFDA2072C6E8F2500ECEAE9 /* APIConfiguration.swift */,
+				FAFDA2132C7351CB00ECEAE9 /* APIError.swift */,
 			);
 			path = Network;
 			sourceTree = "<group>";
@@ -1979,6 +1982,7 @@
 				97AC1C112B70CF03004F0BF4 /* SidewalkSurfaceForm.swift in Sources */,
 				FAFDA2022C6D33C300ECEAE9 /* PosmLoginViewModel.swift in Sources */,
 				973FC03A2B59364F00878269 /* TactilePavingStepsForm.swift in Sources */,
+				FAFDA2142C7351CB00ECEAE9 /* APIError.swift in Sources */,
 				973FC0332B592BFE00878269 /* StairNumber.swift in Sources */,
 				059D47332B2C83BA000987FA /* Highway.swift in Sources */,
 				973FC0012B46CD5D00878269 /* QuestsListUIView.swift in Sources */,
