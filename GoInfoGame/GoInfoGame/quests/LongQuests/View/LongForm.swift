@@ -21,6 +21,10 @@ struct LongForm: View, QuestForm {
     typealias AnswerClass = [String:String]
     
     @Environment(\.presentationMode) var presentationMode
+    
+    @State private var shouldShowAlert = false
+    
+    @State private var alertMessage = ""
             
     var body: some View {
         VStack(alignment: .leading) {
@@ -51,7 +55,8 @@ struct LongForm: View, QuestForm {
                                       action(viewModel.answersToBeSubmitted)
                                   }
                             } else {
-                                print("Please answer atleast one quest to submit")
+                                self.shouldShowAlert = true
+                                self.alertMessage = "Please answer atleast one quest to submit"
                             }
  
                         }) {
@@ -70,6 +75,9 @@ struct LongForm: View, QuestForm {
                     Text("No Quests available")
                 }
             }
+        }
+        .alert(self.alertMessage, isPresented: $shouldShowAlert) {
+            Button("OK", role: .cancel) { }
         }
     }
     
