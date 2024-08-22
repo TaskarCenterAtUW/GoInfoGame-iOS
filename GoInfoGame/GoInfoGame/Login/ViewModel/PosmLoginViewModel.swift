@@ -13,6 +13,7 @@ class PosmLoginViewModel: ObservableObject {
     @Published var username: String = ""
     @Published var password: String = ""
     @Published var hasLoginFailed: Bool = false
+    @Published var isLoginSuccess: Bool = false
     @Published var errorMessage: String?
     
     @Published var isLoading = false
@@ -64,6 +65,7 @@ class PosmLoginViewModel: ObservableObject {
                         self.hasLoginFailed = false
                         self.loggedIn = true
                         self.isLoading = false
+                        self.isLoginSuccess = true
                     }
                 case .failure(let failure) :
                     //TODO:

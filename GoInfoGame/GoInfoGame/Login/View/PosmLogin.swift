@@ -17,7 +17,7 @@ struct PosmLoginView: View {
     @State private var shouldShowAlert = false
     
     var body: some View {
-        NavigationView {
+        NavigationStack {
             ZStack {
                 VStack(spacing: 20) {
                     Text("GoInfoGame")
@@ -47,13 +47,16 @@ struct PosmLoginView: View {
                             .background(Color(red: 135/255, green: 62/255, blue: 242/255))
                             .cornerRadius(25)
                     }
-                    if !viewModel.hasLoginFailed {
-                        NavigationLink(destination: InitialView(), isActive: $viewModel.hasLoginFailed) {
-                            EmptyView()
-                        }
-                        .navigationBarBackButtonHidden(true)
+                    .padding(.top, 20)
+                    
+                    if viewModel.hasLoginFailed {
+                        Text("Invalid Credentials")
+                            .foregroundColor(.red)
+                            .padding(.top, 10)
                     }
                 }
+                .padding()
+                
                 if viewModel.isLoading {
                     ActivityView(activityText: "Loading...")
                         .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -61,12 +64,11 @@ struct PosmLoginView: View {
                         .edgesIgnoringSafeArea(.all)
                 }
             }
+            .navigationDestination(isPresented: $viewModel.isLoginSuccess) {
+                InitialView()
+            }
         }
-        .alert(viewModel.errorMessage ?? "An error occured", isPresented: $viewModel.shouldShowValidationAlert) {
-            Button("OK", role: .cancel) { }
-        }
-        
-        .alert("Invalid Credentials", isPresented: $viewModel.hasLoginFailed) {
+        .alert("Invalid Credentials", isPresented: $viewModel.shouldShowValidationAlert) {
             Button("OK", role: .cancel) { }
         }
     }
