@@ -16,6 +16,8 @@ struct PosmLoginView: View {
     
     @State private var shouldShowAlert = false
     
+    @State private var selectedEnvironment: APIEnvironment = .staging
+    
     var body: some View {
         NavigationStack {
             ZStack {
@@ -24,6 +26,7 @@ struct PosmLoginView: View {
                         .font(.custom("Lato-Bold", size: 30))
                         .foregroundColor((Color(red: 135/255, green: 62/255, blue: 242/255)))
                         .padding([.bottom], 50)
+                                    
                     TextField("Username", text: $viewModel.username)
                         .padding()
                         .background(Color(.systemGray6))
@@ -36,6 +39,27 @@ struct PosmLoginView: View {
                         .background(Color(.systemGray6))
                         .cornerRadius(10)
                         .padding(.horizontal, 40)
+                    
+                    Menu {
+                        ForEach(APIEnvironment.allCases, id: \.self) { environment in
+                            Button(action: {
+                                selectedEnvironment = environment
+                                APIConfiguration.shared.environment = environment
+                            }) {
+                                Text(environment.rawValue)
+                            }
+                        }
+                    } label: {
+                        HStack {
+                            Text("Environment: \(selectedEnvironment.rawValue)")
+                                .foregroundColor(.black)
+                            Image(systemName: "chevron.down")
+                        }
+                        .padding()
+                        .background(Color(.systemGray6))
+                        .cornerRadius(10)
+                    }
+                    .padding(.horizontal, 40)
             
                     Button(action: {
                         viewModel.performLogin()
@@ -70,6 +94,9 @@ struct PosmLoginView: View {
         }
         .alert("Invalid Credentials", isPresented: $viewModel.shouldShowValidationAlert) {
             Button("OK", role: .cancel) { }
+        }
+        .onAppear {
+            selectedEnvironment = APIConfiguration.shared.environment
         }
     }
 }
