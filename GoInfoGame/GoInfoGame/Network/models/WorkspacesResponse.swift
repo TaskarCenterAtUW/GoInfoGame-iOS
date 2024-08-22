@@ -22,7 +22,7 @@ class WorkSpacesResponse: Codable {
 }
 
 // MARK: - Workspace
-struct Workspace: Codable, CustomStringConvertible {
+struct Workspace: Codable, CustomStringConvertible,Hashable {
     let id: Int
     let title: String
     let tdeiRecordId:String

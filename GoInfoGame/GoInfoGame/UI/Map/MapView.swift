@@ -79,6 +79,16 @@ struct MapView: View {
                     }
                 }
                 ToolbarItem(placement: .navigationBarTrailing) {
+                    Button(action: {
+                        print("Refresh icon tapped")
+                        viewModel.fetchOSMDataFor(currentLocation: viewModel.userlocation)
+                    }) {
+                        Image(systemName: "arrow.2.circlepath")
+                            .frame(width: 20, height: 20)
+                    }
+                }
+
+                ToolbarItem(placement: .navigationBarTrailing) {
                     if isSyncing {
                         ProgressView()
                     }else{

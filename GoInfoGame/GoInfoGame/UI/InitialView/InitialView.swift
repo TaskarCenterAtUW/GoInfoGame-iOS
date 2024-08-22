@@ -10,33 +10,21 @@ import SwiftUI
 struct InitialView: View {
     @StateObject private var viewModel = InitialViewModel()
     @State private var shouldNavigateToMapView = false
-    
     @StateObject private var locManagerDelegate = LocationManagerDelegate()
-    
+
     var body: some View {
-        NavigationView {
-            
+        NavigationStack {
             if locManagerDelegate.isLocationServicesOff || locManagerDelegate.isLocationDenied {
                 LocationDisabledView()
             } else {
-                // Checking if there are multiple workspaces
                 if viewModel.workspaces.count > 1 {
                     WorkspacesListView(workspaces: viewModel.workspaces, viewModel: viewModel)
-                    // Checking if there's only one workspace
                 } else if viewModel.workspaces.count == 1 {
                     if let selectedWorkspace = viewModel.workspaces.first {
                         VStack {
                             if !shouldNavigateToMapView {
                                 ActivityView(activityText: "Fetching workspace data...")
                             }
-                            NavigationLink(
-                                destination: MapView(selectedWorkspace: selectedWorkspace)
-                                    .navigationBarBackButtonHidden(true),
-                                isActive: $shouldNavigateToMapView,
-                                label: {
-                                    EmptyView()
-                                }
-                            )
                         }
                         .onAppear {
                             viewModel.fetchLongQuestsFor(workspaceId: "\(selectedWorkspace.id)") { success in
@@ -49,10 +37,12 @@ struct InitialView: View {
                                 }
                             }
                         }
+                        .navigationDestination(isPresented: $shouldNavigateToMapView) {
+                            MapView(selectedWorkspace: selectedWorkspace)
+                                .navigationBarBackButtonHidden(true)
+                        }
                     }
-                }
-                else {
-                    // Displaying progress view if no workspaces are available
+                } else {
                     ActivityView(activityText: "Looking for workspaces...")
                 }
             }
@@ -63,14 +53,14 @@ struct InitialView: View {
         .navigationBarBackButtonHidden(true)
     }
 }
+
 // WorkspacesListView - View for displaying a list of workspaces
 struct WorkspacesListView: View {
     let workspaces: [Workspace]
-    
     var viewModel: InitialViewModel
     @State private var shouldNavigateToMapView = false
     @State private var selectedWorkspace: Workspace?
-    
+
     var body: some View {
         ZStack {
             VStack(alignment: .leading) {
@@ -108,28 +98,22 @@ struct WorkspacesListView: View {
                             .padding()
                             .background(Color(red: 135/255, green: 62/255, blue: 242/255))
                             .buttonBorderShape(.roundedRectangle(radius: 10))
-                            .simultaneousGesture(TapGesture().onEnded {
-                              //  workspace.saveQuestsToUserDefaults()
-                            })
                         }
                     }
                 }
                 .padding()
             }
             .padding()
-            
-            if shouldNavigateToMapView, let selectedWorkspace = selectedWorkspace {
-         
-                           NavigationLink(
-                               destination: MapView(selectedWorkspace: selectedWorkspace)
 
-                                   .navigationBarBackButtonHidden(true),
-                               isActive: $shouldNavigateToMapView,
-                               label: {
-                                   EmptyView()
-                               }
-                           )
-                       }
+            if shouldNavigateToMapView, let selectedWorkspace = selectedWorkspace {
+                NavigationLink(value: selectedWorkspace) {
+                    EmptyView()
+                }
+                .navigationDestination(isPresented: $shouldNavigateToMapView) {
+                    MapView(selectedWorkspace: selectedWorkspace)
+                        .navigationBarBackButtonHidden(true)
+                }
+            }
         }
     }
 }
