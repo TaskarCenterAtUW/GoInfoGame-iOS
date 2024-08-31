@@ -257,6 +257,7 @@ class DatasyncManager {
                         }
                         continuation.resume(returning: .success(newVersion))
                     case .failure(let error):
+                        // handle 409
                         print(error)
                         continuation.resume(returning: .failure(error))
                     }
@@ -269,10 +270,29 @@ class DatasyncManager {
         return result
     }
 
+    func mergeWays(localWay: OSMWay, latestWay: OSMWay) -> OSMWay {
+          var mergedWay = latestWay
+          for (key, value) in localWay.tags {
+              mergedWay.tags[key] = value
+          }
+          return mergedWay
+      }
+    
+    func fetchLatestWay(wayId: String, completion: @escaping (Result<OSMWay, Error>) -> Void) {
+        let workspaceID = KeychainManager.load(key: "workspaceID")
+        
+        ApiManager.shared.performRequest(to: .fetchLatestWay(workspaceID!, wayId), setupType: .osm, modelType: OSMWayResponse.self) { result in
+            switch result {
+            case .success(let osmwayResponse):
+                let osmway = osmwayResponse.elements.first
+                completion(.success(osmway!))
 
-    
-    
-    
+            case .failure(let error):
+                completion(.failure(error))
+            }
+        }
+    }
+   
     /**
             Syncs the node along with the updated
      */
