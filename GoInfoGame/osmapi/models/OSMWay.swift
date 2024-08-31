@@ -9,10 +9,10 @@ import Foundation
 //import Foundation
 
 // MARK: - OSMWayResponse
-struct OSMWayResponse: Codable {
-    let version, generator, copyright: String
-    let attribution, license: String
-    let elements: [OSMWay]
+public struct OSMWayResponse: Codable {
+   public let version, generator, copyright: String
+   public let attribution, license: String
+   public let elements: [OSMWay]
 }
 
 // MARK: - Element
