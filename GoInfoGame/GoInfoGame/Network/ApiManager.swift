@@ -83,6 +83,11 @@ class ApiManager {
                 }
             }
             else {
+                if let response = response as? HTTPURLResponse, response.statusCode == 409 {
+                    let conflictError = NSError(domain: "goinfogame", code: 409, userInfo: [NSLocalizedDescriptionKey: "version mismatch"])
+                    completion(.failure(conflictError))
+                }
+                
                 do{
                     let decodedString = try String(data: data, encoding: .utf8)!
                     completion(.success(decodedString as! T))
