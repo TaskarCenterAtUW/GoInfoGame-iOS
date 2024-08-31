@@ -46,6 +46,16 @@ struct APIEndpoint {
         
        return APIEndpoint(path: "/way/\(wayID)", method: "PUT", body: body, headers: header)}
     
+    static let fetchLatestWay = { (workspaceId: String, wayId: String) in
+        let header = [
+            "X-Workspace": workspaceId,
+            "Content-Type": "application/json"
+        ]
+        
+        return APIEndpoint(path: "/way/\(wayId).json", method: "GET", body: nil, headers: header)
+        
+    }
+    
     static let uploadChangeset = { (accessToken: String,changesetId:String ,workspaceId: String, body: Data) in
             let header = [
                 "Authorization": "Bearer \(accessToken)",
