@@ -284,6 +284,10 @@ class DatasyncManager {
                 // Check 409 here.
                 let updatedWay = try await self.fetchWay2(wayId: wayId).get()
                 var mergedWay = self.mergeWays(localWay: way, latestWay: updatedWay)
+                print("Local way")
+                print(way)
+                print("Merged way ")
+                print(mergedWay)
                 let mergeResult = await self.updateWay(way: &mergedWay)
                 return mergeResult
                 
@@ -299,6 +303,7 @@ class DatasyncManager {
           for (key, value) in localWay.tags {
               mergedWay.tags[key] = value
           }
+          mergedWay.changeset = localWay.changeset
           return mergedWay
       }
     // this has to be async
@@ -358,6 +363,7 @@ class DatasyncManager {
                 // open changeset
                 let changesetId = try await openChangeset().get()
                 // update node
+                print("Opening changeset")
                 way.changeset = changesetId
                 // close changeset
                 let newVersion = try await updateWay2(way: &way).get()
@@ -365,6 +371,7 @@ class DatasyncManager {
                 self.dbInstance.updateWayVersion(wayId: String(way.id), version: newVersion)
                 way.version = newVersion
                 // Give back the new version and other stuff.
+                print("Closing changeset")
                 let closeResult = try await closeChangeset(id: String(changesetId)).get()
             
             return .success(true)

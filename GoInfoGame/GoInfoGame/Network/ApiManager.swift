@@ -80,21 +80,25 @@ class ApiManager {
                 } catch {
                     print("Failed to decode data: \(error.localizedDescription)")
                     completion(.failure(error))
+                    return
                 }
             }
             else {
                 if let response = response as? HTTPURLResponse, response.statusCode == 409 {
                     let conflictError = NSError(domain: "goinfogame", code: 409, userInfo: [NSLocalizedDescriptionKey: "version mismatch"])
                     completion(.failure(conflictError))
+                    return
                 }
                 
                 do{
                     let decodedString = try String(data: data, encoding: .utf8)!
                     completion(.success(decodedString as! T))
+                    return
                 }
                 catch {
                     print("Failed to decode the non JSON: \(error.localizedDescription)")
                     completion(.failure(error))
+                    return
                 }
             }
         }

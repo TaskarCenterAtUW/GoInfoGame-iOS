@@ -13,7 +13,7 @@ protocol OSMPayload {
 
 struct TagPayload: OSMPayload {
     let key:String
-    let value:String
+    var value:String
     
     func toPayload() -> String {
          return "<tag k=\"\(key)\" v=\"\(value)\"/>"
