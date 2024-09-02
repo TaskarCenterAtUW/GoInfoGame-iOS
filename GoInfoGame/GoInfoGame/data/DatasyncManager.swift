@@ -258,6 +258,9 @@ class DatasyncManager {
                         continuation.resume(returning: .success(newVersion))
                     case .failure(let error):
                         // handle 409
+//                        let latestWay = await self.fetchWay2(wayId: wayId).get()
+//                        let mergedWay = self.mergeWays(localWay: way, latestWay: latestWay)
+                        
                         print(error)
                         continuation.resume(returning: .failure(error))
                     }
@@ -269,6 +272,27 @@ class DatasyncManager {
         way = localWay
         return result
     }
+    
+    func updateWay2(way:inout OSMWay) async -> Result<Int,Error>{
+        let updatedResult = await self.updateWay(way: &way)
+        let wayId = "\(way.id)"
+        do {
+            switch updatedResult {
+            case .success(let value):
+                return updatedResult
+            case .failure(let error):
+                // Check 409 here.
+                let updatedWay = try await self.fetchWay2(wayId: wayId).get()
+                var mergedWay = self.mergeWays(localWay: way, latestWay: updatedWay)
+                let mergeResult = await self.updateWay(way: &mergedWay)
+                return mergeResult
+                
+            }
+        }
+        catch (let e){
+            return .failure(e)
+        }
+    }
 
     func mergeWays(localWay: OSMWay, latestWay: OSMWay) -> OSMWay {
           var mergedWay = latestWay
@@ -277,20 +301,30 @@ class DatasyncManager {
           }
           return mergedWay
       }
+    // this has to be async
+//    func fetchLatestWay(wayId: String, completion: @escaping (Result<OSMWay, Error>) -> Void) {
+//        let workspaceID = KeychainManager.load(key: "workspaceID")
+//        
+//        
+//    }
     
-    func fetchLatestWay(wayId: String, completion: @escaping (Result<OSMWay, Error>) -> Void) {
-        let workspaceID = KeychainManager.load(key: "workspaceID")
+    func fetchWay2(wayId:String) async -> Result<OSMWay,Error>{
         
-        ApiManager.shared.performRequest(to: .fetchLatestWay(workspaceID!, wayId), setupType: .osm, modelType: OSMWayResponse.self) { result in
-            switch result {
-            case .success(let osmwayResponse):
-                let osmway = osmwayResponse.elements.first
-                completion(.success(osmway!))
+        let result: Result<OSMWay,Error> = await withCheckedContinuation { continuation in
+            let workspaceID = KeychainManager.load(key: "workspaceID")
+            ApiManager.shared.performRequest(to: .fetchLatestWay(workspaceID!, wayId), setupType: .osm, modelType: OSMWayResponse.self) { result in
+                switch result {
+                case .success(let osmwayResponse):
+                    let osmway = osmwayResponse.elements.first
+                    continuation.resume(returning: .success(osmway!))
 
-            case .failure(let error):
-                completion(.failure(error))
+                case .failure(let error):
+                     continuation.resume(returning: .failure(error))
+                }
             }
         }
+        return result
+        
     }
    
     /**
@@ -326,7 +360,7 @@ class DatasyncManager {
                 // update node
                 way.changeset = changesetId
                 // close changeset
-                let newVersion = try await updateWay(way: &way).get()
+                let newVersion = try await updateWay2(way: &way).get()
                 // update the version in databse
                 self.dbInstance.updateWayVersion(wayId: String(way.id), version: newVersion)
                 way.version = newVersion

@@ -73,7 +73,7 @@ public class OSMConnection {
     /// Fetches a single way
     /// - parameter id: the `id` of the way
     /// - parameter completion: The completion handler that receives the way
-    func getWay(id: String,_ completion: @escaping (Result<OSMWayResponse, Error>)-> Void) {
+    public func getWay(id: String,_ completion: @escaping (Result<OSMWayResponse, Error>)-> Void) {
         //TODO: Write errors when way does not exist
         let urlString =  self.baseUrl.appending("way/").appending(id).appending(".json")
         guard let url = URL(string: urlString) else {
