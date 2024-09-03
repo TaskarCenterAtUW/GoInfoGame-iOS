@@ -395,7 +395,7 @@ class DatasyncManager {
                 // update node
                 node.changeset = changesetId
                 // close changeset
-                let newVersion = try await updateNode(node: &node).get()
+                let newVersion = try await updateNode2(node: &node).get()
                 node.version = newVersion
                 self.dbInstance.updateNodeVersion(nodeId: String(node.id), version: newVersion)
                 // Give back the new version and other stuff.
