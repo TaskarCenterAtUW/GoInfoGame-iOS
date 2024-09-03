@@ -56,6 +56,16 @@ struct APIEndpoint {
         
     }
     
+    static let fetchLatestNode = { (workspaceId: String, nodeId: String) in
+        let header = [
+            "X-Workspace": workspaceId,
+            "Content-Type": "application/json"
+        ]
+        
+        return APIEndpoint(path: "/node/\(nodeId).json", method: "GET", body: nil, headers: header)
+        
+    }
+    
     static let uploadChangeset = { (accessToken: String,changesetId:String ,workspaceId: String, body: Data) in
             let header = [
                 "Authorization": "Bearer \(accessToken)",
