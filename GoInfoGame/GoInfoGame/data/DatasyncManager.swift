@@ -196,43 +196,6 @@ class DatasyncManager {
             }
         }
     }
-    
-    // utility function to act as substitute for osmConnection functions
-    func updateNode(node: inout OSMNode) async -> Result<Int,Error> {
-        var localNode = node
-        // Same here with the upload
-        let result:Result<Int, Error> =  await withCheckedContinuation { continuation in
-            
-            let nodeBodyString = localNode.toPayload()
-            
-            let changesetUploadBody = "<osmChange version=\"0.6\" generator=\"GIG Change generator\">"+nodeBodyString+"</osmChange>"
-            let workspaceId = KeychainManager.load(key: "workspaceID")
-            
-            let wayBody = changesetUploadBody.data(using: .utf8)
-//            let wayId = "\(localNode.id)"
-            // Create the changeset upload payload
-            let newVersion = node.version + 1
-
-            if let accessToken = KeychainManager.load(key: "accessToken") {
-                ApiManager.shared.performRequest(to: .uploadChangeset(accessToken,"\(node.changeset)",workspaceId ?? "",wayBody! ), setupType: .osm, modelType: String.self,useJSON: false) { result in
-                    switch result {
-                    case .success(let success):
-                        localNode.tags.forEach { (key: String, value: String) in
-                            localNode.tags[key] = value
-                        }
-                        continuation.resume(returning: .success(newVersion))
-                    case .failure(let error):
-                        print(error)
-                        continuation.resume(returning: .failure(error))
-                    }
-                }
-            } else {
-                continuation.resume(returning: .failure(NSError(domain: "No AccessToken", code: 0, userInfo: nil)))
-            }
-        }
-        return result
-    }
-    
 
     // utility function to act as substitute for osmConnection functions
     func updateWay(way: inout OSMWay) async -> Result<Int, Error> {
@@ -273,6 +236,41 @@ class DatasyncManager {
         return result
     }
     
+    // utility function to act as substitute for osmConnection functions
+    func updateNode(node: inout OSMNode) async -> Result<Int, Error> {
+        var localNode = node
+
+        let result: Result<Int, Error> = await withCheckedContinuation { continuation in
+            let nodeBodyString = localNode.toPayload()
+            let changesetUploadBody = "<osmChange version=\"0.6\" generator=\"GIG Change generator\">"+nodeBodyString+"</osmChange>"
+            let workspaceId = KeychainManager.load(key: "workspaceID")
+            
+            let nodeBody = changesetUploadBody.data(using: .utf8)
+            let nodeId = "\(localNode.id)"
+            // Create the changeset upload payload
+            let newVersion = node.version + 1
+
+            if let accessToken = KeychainManager.load(key: "accessToken") {
+                ApiManager.shared.performRequest(to: .uploadChangeset(accessToken,"\(node.changeset)",workspaceId ?? "",nodeBody! ), setupType: .osm, modelType: String.self,useJSON: false) { result in
+                    switch result {
+                    case .success(let success):
+                        localNode.tags.forEach { (key: String, value: String) in
+                            localNode.tags[key] = value
+                        }
+                        continuation.resume(returning: .success(newVersion))
+                    case .failure(let error):
+                        print(error)
+                        continuation.resume(returning: .failure(error))
+                    }
+                }
+            } else {
+                continuation.resume(returning: .failure(NSError(domain: "No AccessToken", code: 0, userInfo: nil)))
+            }
+        }
+        node = localNode
+        return result
+    }
+    
     func updateWay2(way:inout OSMWay) async -> Result<Int,Error>{
         let updatedResult = await self.updateWay(way: &way)
         let wayId = "\(way.id)"
@@ -282,19 +280,50 @@ class DatasyncManager {
                 return updatedResult
             case .failure(let error):
                 // Check 409 here.
-                let updatedWay = try await self.fetchWay2(wayId: wayId).get()
-                var mergedWay = self.mergeWays(localWay: way, latestWay: updatedWay)
-                print("Local way")
-                print(way)
-                print("Merged way ")
-                print(mergedWay)
-                let mergeResult = await self.updateWay(way: &mergedWay)
-                return mergeResult
-                
+                if (error as NSError).code == 409 {
+                    let updatedWay = try await self.fetchWay2(wayId: wayId).get()
+                    var mergedWay = self.mergeWays(localWay: way, latestWay: updatedWay)
+                    print("Local way")
+                    print(way)
+                    print("Merged way ")
+                    print(mergedWay)
+                    let mergeResult = await self.updateWay(way: &mergedWay)
+                    return mergeResult
+
+                } else {
+                    return updatedResult
+                }
             }
         }
         catch (let e){
             return .failure(e)
+        }
+    }
+    
+    func updateNode2(node: inout OSMNode) async -> Result<Int,Error> {
+        let updatedResult = await self.updateNode(node: &node)
+        let nodeId = "\(node.id)"
+        do {
+            switch updatedResult {
+            case .success(let value):
+                return updatedResult
+            case .failure(let error):
+                if (error as NSError).code == 409 {
+                    let updatedNode = try await self.fetchNode2(nodeId: nodeId).get()
+                    var mergedNode = self.mergeNodes(localNode: node, latestNode: updatedNode)
+                    print("Local Node")
+                    print(node)
+                    print("Merged Node ")
+                    print(mergedNode)
+                    let mergeResult = await self.updateNode(node: &mergedNode)
+                    return mergeResult
+                } else {
+                    return updatedResult
+                }
+            }
+        } catch(let e) {
+            return .failure(e)
+            
         }
     }
 
@@ -306,12 +335,16 @@ class DatasyncManager {
           mergedWay.changeset = localWay.changeset
           return mergedWay
       }
-    // this has to be async
-//    func fetchLatestWay(wayId: String, completion: @escaping (Result<OSMWay, Error>) -> Void) {
-//        let workspaceID = KeychainManager.load(key: "workspaceID")
-//        
-//        
-//    }
+    
+    func mergeNodes(localNode: OSMNode, latestNode: OSMNode) -> OSMNode {
+        var mergedNode = latestNode
+        for (key, value) in localNode.tags {
+            mergedNode.tags[key] = value
+        }
+        mergedNode.changeset = localNode.changeset
+        return mergedNode
+    }
+
     
     func fetchWay2(wayId:String) async -> Result<OSMWay,Error>{
         
@@ -322,6 +355,25 @@ class DatasyncManager {
                 case .success(let osmwayResponse):
                     let osmway = osmwayResponse.elements.first
                     continuation.resume(returning: .success(osmway!))
+
+                case .failure(let error):
+                     continuation.resume(returning: .failure(error))
+                }
+            }
+        }
+        return result
+        
+    }
+    
+    func fetchNode2(nodeId:String) async -> Result<OSMNode,Error>{
+        
+        let result: Result<OSMNode,Error> = await withCheckedContinuation { continuation in
+            let workspaceID = KeychainManager.load(key: "workspaceID")
+            ApiManager.shared.performRequest(to: .fetchLatestWay(workspaceID!, nodeId), setupType: .osm, modelType: OSMNodeResponse.self) { result in
+                switch result {
+                case .success(let osNodeResponse):
+                    let osmnode = osNodeResponse.elements.first
+                    continuation.resume(returning: .success(osmnode!))
 
                 case .failure(let error):
                      continuation.resume(returning: .failure(error))
