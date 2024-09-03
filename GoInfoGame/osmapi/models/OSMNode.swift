@@ -9,10 +9,10 @@ import Foundation
 
 // Representation of a single node
 // MARK: - OSMNodeResponse
-struct OSMNodeResponse: Codable {
-    let version, generator, copyright: String
-    let attribution, license: String
-    let elements: [OSMNode]
+public struct OSMNodeResponse: Codable {
+  public let version, generator, copyright: String
+   public let attribution, license: String
+   public let elements: [OSMNode]
 }
 
 // MARK: - Element
