@@ -131,7 +131,7 @@ class QuestsRepository: ObservableObject {
 // Probably move somewhere else
 class DisplayUnitAnnotation: NSObject, MKAnnotation {
     let displayUnit: DisplayUnit
-    let coordinate: CLLocationCoordinate2D
+    var coordinate: CLLocationCoordinate2D
 
     var title: String? {
         return displayUnit.title
