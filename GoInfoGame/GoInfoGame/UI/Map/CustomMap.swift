@@ -119,45 +119,37 @@ struct CustomMap: UIViewRepresentable {
         // Customizes the view for each annotation
         func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
             
-            if let cluster = annotation as? MKClusterAnnotation {
-                let clusterView = MKMarkerAnnotationView()
-                if !cluster.memberAnnotations.isEmpty{
-                    // Create another display stuff here.
-                    guard let displayUnitAnnotation = cluster.memberAnnotations[0] as? DisplayUnitAnnotation else {
-                        return nil
-                    }
-                    let identifier = "customAnnotation1"
-                    var annotationView = mapView.dequeueReusableAnnotationView(withIdentifier: identifier)
-                    //                    annotationView?.isAccessibilityElement = true
-                    //                    annotationView?.accessibilityTraits = .button
-                    if annotationView == nil {
-                        annotationView = MKAnnotationView(annotation: annotation, reuseIdentifier: identifier)
-                    } else {
-                        annotationView?.annotation = annotation
-                    }
-                    // Customize annotation view
-                    customizeAnnotationView(annotationView, with: displayUnitAnnotation)
-                    return annotationView
-                }
-                return clusterView
-            } else {
-                // Ensure annotation is of the correct type
-                guard let displayUnitAnnotation = annotation as? DisplayUnitAnnotation else {
-                    return nil
-                }
-                let identifier = "customAnnotation"
-                var annotationView = mapView.dequeueReusableAnnotationView(withIdentifier: identifier)
-                if annotationView == nil {
-                    annotationView = MKAnnotationView(annotation: annotation, reuseIdentifier: identifier)
+            if let clusterAnnotation = annotation as? MKClusterAnnotation {
+                let identifier = "cluster"
+                var clusterView = mapView.dequeueReusableAnnotationView(withIdentifier: identifier) as? MKMarkerAnnotationView
+                if clusterView == nil {
+                    clusterView = MKMarkerAnnotationView(annotation: clusterAnnotation, reuseIdentifier: identifier)
                 } else {
-                    annotationView?.annotation = annotation
+                    clusterView?.annotation = annotation
                 }
-                annotationView?.clusteringIdentifier = "cluster"
                 
-                // Customize annotation view
-                customizeAnnotationView(annotationView, with: displayUnitAnnotation)
-                return annotationView
+                clusterView?.markerTintColor = UIColor(red: 135/255, green: 62/255, blue: 242/255, alpha: 1.0)
+                clusterView?.glyphText = "\(clusterAnnotation.memberAnnotations.count)"
+                
+                return clusterView
             }
+              
+                    
+            guard let displayUnitAnnotation = annotation as? DisplayUnitAnnotation else {
+                return nil
+            }
+            let identifier = "customAnnotation"
+            var annotationView = mapView.dequeueReusableAnnotationView(withIdentifier: identifier)
+            if annotationView == nil {
+                annotationView = MKAnnotationView(annotation: annotation, reuseIdentifier: identifier)
+            } else {
+                annotationView?.annotation = annotation
+            }
+            annotationView?.clusteringIdentifier = "cluster"
+            
+            // Customize annotation view
+            customizeAnnotationView(annotationView, with: displayUnitAnnotation)
+            return annotationView
         }
         
         // Handles selection of annotations
@@ -263,9 +255,15 @@ struct CustomMap: UIViewRepresentable {
         context.coordinator.isRegionSet = true
         
         
+        let annotations = items.map({$0.annotation})
+        
         if (existingCoordinates.isEmpty) {
             print("Adding annotations completely")
-            mapView.addAnnotations(items.compactMap({$0.annotation}))
+            
+            for (index, annotation) in annotations.enumerated() {
+                annotation.coordinate = adjustCoordinateForOverlap(annotation.coordinate, with: index)
+            }
+            mapView.addAnnotations(annotations)
         }
         
         let currentAnnotations = Set(mapView.annotations.compactMap { $0 as? DisplayUnitAnnotation })
@@ -277,6 +275,12 @@ struct CustomMap: UIViewRepresentable {
         mapView.removeAnnotations(Array(annotationsToRemove))
         mapView.addAnnotations(Array(annotationsToAdd))
     }
+    
+    func adjustCoordinateForOverlap(_ coordinate: CLLocationCoordinate2D, with index: Int) -> CLLocationCoordinate2D {
+             let offset = 0.00001 * Double(index)
+             return CLLocationCoordinate2D(latitude: coordinate.latitude + offset, longitude: coordinate.longitude + offset)
+         }
+
     
     // calculate distance between user current location and selected annotation
         func calculateDistance(selectedAnnotation: CLLocationCoordinate2D) -> CLLocationDistance {
