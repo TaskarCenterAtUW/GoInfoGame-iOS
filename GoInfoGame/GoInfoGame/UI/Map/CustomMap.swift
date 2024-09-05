@@ -155,10 +155,12 @@ struct CustomMap: UIViewRepresentable {
         // Handles selection of annotations
         func mapView(_ mapView: MKMapView, didSelect annotation: MKAnnotation) {
             print("did select ")
-          if let annotation = annotation as? DisplayUnitAnnotation {
+            if let annotation = annotation as? MKClusterAnnotation {
+                mapView.showAnnotations(annotation.memberAnnotations, animated: true)
+            } else if let annotation = annotation as? DisplayUnitAnnotation {
                 selectedAnAnnotation(selectedQuest: annotation)
+                centerAnnotationAtTop(mapView: mapView, annotation: annotation)
             }
-            centerAnnotationAtTop(mapView: mapView, annotation: annotation)
             // Deselect the annotation to prevent re-adding on selection
             mapView.deselectAnnotation(annotation, animated: false)
         }
