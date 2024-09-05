@@ -156,12 +156,11 @@ struct CustomMap: UIViewRepresentable {
         func mapView(_ mapView: MKMapView, didSelect annotation: MKAnnotation) {
             print("did select ")
             if let annotation = annotation as? MKClusterAnnotation {
-                let displayAnnotation = annotation.memberAnnotations.first as! DisplayUnitAnnotation
-                selectedAnAnnotation(selectedQuest: displayAnnotation)
+                mapView.showAnnotations(annotation.memberAnnotations, animated: true)
             } else if let annotation = annotation as? DisplayUnitAnnotation {
                 selectedAnAnnotation(selectedQuest: annotation)
+                centerAnnotationAtTop(mapView: mapView, annotation: annotation)
             }
-            centerAnnotationAtTop(mapView: mapView, annotation: annotation)
             // Deselect the annotation to prevent re-adding on selection
             mapView.deselectAnnotation(annotation, animated: false)
         }
@@ -277,7 +276,7 @@ struct CustomMap: UIViewRepresentable {
     }
     
     func adjustCoordinateForOverlap(_ coordinate: CLLocationCoordinate2D, with index: Int) -> CLLocationCoordinate2D {
-             let offset = 0.00001 * Double(index)
+             let offset = 0.00002 * Double(index)
              return CLLocationCoordinate2D(latitude: coordinate.latitude + offset, longitude: coordinate.longitude + offset)
          }
 
