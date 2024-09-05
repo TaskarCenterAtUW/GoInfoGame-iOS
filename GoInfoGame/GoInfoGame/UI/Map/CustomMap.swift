@@ -155,10 +155,7 @@ struct CustomMap: UIViewRepresentable {
         // Handles selection of annotations
         func mapView(_ mapView: MKMapView, didSelect annotation: MKAnnotation) {
             print("did select ")
-            if let annotation = annotation as? MKClusterAnnotation {
-                let displayAnnotation = annotation.memberAnnotations.first as! DisplayUnitAnnotation
-                selectedAnAnnotation(selectedQuest: displayAnnotation)
-            } else if let annotation = annotation as? DisplayUnitAnnotation {
+          if let annotation = annotation as? DisplayUnitAnnotation {
                 selectedAnAnnotation(selectedQuest: annotation)
             }
             centerAnnotationAtTop(mapView: mapView, annotation: annotation)
