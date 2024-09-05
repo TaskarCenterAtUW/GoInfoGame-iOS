@@ -277,7 +277,7 @@ struct CustomMap: UIViewRepresentable {
     }
     
     func adjustCoordinateForOverlap(_ coordinate: CLLocationCoordinate2D, with index: Int) -> CLLocationCoordinate2D {
-             let offset = 0.00001 * Double(index)
+             let offset = 0.00002 * Double(index)
              return CLLocationCoordinate2D(latitude: coordinate.latitude + offset, longitude: coordinate.longitude + offset)
          }
 
