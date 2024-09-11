@@ -110,16 +110,15 @@ struct MapView: View {
         
         .sheet(isPresented: $isPresented, content: {
             let selectedQuest = self.viewModel.selectedQuest
-            if #available(iOS 16.0, *) {
-                selectedQuest?.parent?.form.presentationDetents(getSheetSize(sheetSize: selectedQuest?.sheetSize ?? .MEDIUM))
-                    .environmentObject(contextualInfo)
-                    .interactiveDismissDisabled()
-                    .onAppear(perform: {
-                        shouldShowPolyline = true
-                    })
-            } else {
-                // Nothing here
-            }
+                selectedQuest?.parent?.form
+                .environmentObject(contextualInfo)
+                .interactiveDismissDisabled()
+                .presentationDragIndicator(.visible)
+                .presentationDetents([.fraction(0.8), .large])
+                .onAppear(perform: {
+                    shouldShowPolyline = true
+                })
+            
         })
         .onReceive(MapViewPublisher.shared.dismissSheet) { scenario in
             
