@@ -33,7 +33,8 @@ struct LongForm: View, QuestForm {
             VStack {
                 HStack {
                     Text("\(elementHeading())")
-                        .padding([.leading], 15)
+                        .font(.custom("Lato-Bold", size: 16))
+                      
                     LongFormDismissButtonView {
                         withAnimation {
                             presentationMode.wrappedValue.dismiss()
@@ -43,7 +44,9 @@ struct LongForm: View, QuestForm {
                 .padding([.all], 20)
             }
             Text("ID: \(questID ?? "0")")
-                .padding([.leading], 15)
+                .font(.custom("Lato-Regular", size: 13))
+                .padding([.leading], 20)
+             
             VStack {
                 List {
                     if let quests = questsForLongForm() {
