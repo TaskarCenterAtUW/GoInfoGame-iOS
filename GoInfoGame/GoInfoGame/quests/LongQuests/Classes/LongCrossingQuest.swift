@@ -45,13 +45,16 @@ class LongCrossingQuest: QuestBase, Quest {
         return DisplayUnit(title: self.title, description: "", id: "\(uid)-\(questId)",parent: self,sheetSize: .LONGFORM)
     }
     
-//    var sidewalkLongQuest: LongFormModel {
-//        return QuestsRepository.shared.sideWalkLongQuestModel!
-//    }
-//    
+    init(questId: String) {
+        super.init()
+        self.internalForm = LongForm(elementType: .crossing, questID: questId, action: { [self] tags in
+            self.onAnswer(answer: tags)
+        })
+    }
+    
     override init() {
         super.init()
-        self.internalForm = LongForm(elementType: .crossing, action: { tags in
+        self.internalForm = LongForm(elementType: .crossing, questID: String(self.relationData?.id ?? 0), action: { tags in
             self.onAnswer(answer: tags)
         })
     }
@@ -67,7 +70,8 @@ class LongCrossingQuest: QuestBase, Quest {
     var questId: String = "311"
     
     func copyWithElement(element: Element) -> any Quest {
-        let quest = LongCrossingQuest()
+        let questId = String(element.id)
+        let quest = LongCrossingQuest(questId: questId)
         quest.relationData = element
         return quest
     }

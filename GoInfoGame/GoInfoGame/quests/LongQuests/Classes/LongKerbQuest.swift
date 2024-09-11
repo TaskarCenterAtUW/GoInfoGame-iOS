@@ -46,10 +46,17 @@ class LongKerbQuest: QuestBase, Quest {
         let uid = String(self.relationData?.id ?? 0)
         return DisplayUnit(title: self.title, description: "", id: "\(uid)-\(questId)",parent: self,sheetSize: .LONGFORM)
     }
-            
+        
+    init(questId: String) {
+        super.init()
+        self.internalForm = LongForm(elementType: .kerb,questID: questId, action: { [self] tags in
+            self.onAnswer(answer: tags)
+        })
+    }
+    
     override init() {
         super.init()
-        self.internalForm = LongForm(elementType: .kerb, action: { [self] tags in
+        self.internalForm = LongForm(elementType: .kerb, questID: String(self.relationData?.id ?? 0), action: { [self] tags in
             self.onAnswer(answer: tags)
         })
     }
@@ -65,7 +72,8 @@ class LongKerbQuest: QuestBase, Quest {
     var questId: String = "312"
     
     func copyWithElement(element: Element) -> any Quest {
-        let quest = LongKerbQuest()
+        let questId = String(element.id)
+        let quest = LongKerbQuest(questId: questId)
         quest.relationData = element
         return quest
     }

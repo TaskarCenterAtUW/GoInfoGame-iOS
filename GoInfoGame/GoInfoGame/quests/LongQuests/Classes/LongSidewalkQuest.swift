@@ -51,6 +51,12 @@ class LongSidewalkQuest: QuestBase, Quest {
         return DisplayUnit(title: self.title, description: "", id: "\(uid)-\(questId)",parent: self,sheetSize: .LONGFORM)
     }
     
+    init(questId: String) {
+        super.init()
+        self.internalForm = LongForm(elementType: .sidewalk,questID: questId, action: { [self] tags in
+            self.onAnswer(answer: tags)
+        })
+    }
     override init() {
         super.init()
         
@@ -70,7 +76,8 @@ class LongSidewalkQuest: QuestBase, Quest {
     var questId: String = "311"
     
     func copyWithElement(element: Element) -> any Quest {
-        let quest = LongSidewalkQuest()
+        let questId = String(element.id)
+        let quest = LongSidewalkQuest(questId: questId)
         quest.relationData = element
         return quest
     }

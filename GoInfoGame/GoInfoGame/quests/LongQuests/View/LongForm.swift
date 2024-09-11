@@ -16,6 +16,8 @@ struct LongForm: View, QuestForm {
     
     var elementType: LongFormElementType?
     
+    var questID: String?
+    
     var action: (([String:String]) -> Void)?
     
     typealias AnswerClass = [String:String]
@@ -28,51 +30,57 @@ struct LongForm: View, QuestForm {
             
     var body: some View {
         VStack(alignment: .leading) {
-            HStack {
-                Text("\(elementHeading())")
-                    .padding([.leading], 15)
-                LongFormDismissButtonView {
-                    withAnimation {
-                        presentationMode.wrappedValue.dismiss()
+            VStack {
+                HStack {
+                    Text("\(elementHeading())")
+                        .padding([.leading], 15)
+                    LongFormDismissButtonView {
+                        withAnimation {
+                            presentationMode.wrappedValue.dismiss()
+                        }
                     }
                 }
+                .padding([.all], 20)
             }
-            .padding([.all], 20)
-            List {
-                if let quests = questsForLongForm() {
-                    ForEach(quests, id: \.questID) { quest in
-                        if viewModel.shouldShowQuest(quest) {
-                            LongQuestView(selectedAnswers: $selectedAnswers, quest: quest, onChoiceSelected: { selectedAnswerChoice in
-                                viewModel.updateAnswers(quest: quest, selectedAnswerChoice: selectedAnswerChoice)
-                            },currentAnswer: $viewModel
-                                .answersToBeSubmitted[quest.questTag])
-                        }
-                    }
-                    VStack {
-                        Button(action: {
-                            if !viewModel.answersToBeSubmitted.isEmpty {
-                                if let action = action {
-                                      action(viewModel.answersToBeSubmitted)
-                                  }
-                            } else {
-                                self.shouldShowAlert = true
-                                self.alertMessage = "Please answer atleast one quest to submit"
+            Text("ID: \(questID ?? "0")")
+                .padding([.leading], 15)
+            VStack {
+                List {
+                    if let quests = questsForLongForm() {
+                        ForEach(quests, id: \.questID) { quest in
+                            if viewModel.shouldShowQuest(quest) {
+                                LongQuestView(selectedAnswers: $selectedAnswers, quest: quest, onChoiceSelected: { selectedAnswerChoice in
+                                    viewModel.updateAnswers(quest: quest, selectedAnswerChoice: selectedAnswerChoice)
+                                },currentAnswer: $viewModel
+                                    .answersToBeSubmitted[quest.questTag])
                             }
- 
-                        }) {
-                            Text("Submit")
-                                .font(.custom("Lato-Bold", size: 16))
-                                .foregroundColor(.white)
-                                .padding()
-                                .frame(width: 200, height: 40)
-                                .background(Color(red: 135/255, green: 62/255, blue: 242/255))
-                                .cornerRadius(20)
+                        }
+                        VStack {
+                            Button(action: {
+                                if !viewModel.answersToBeSubmitted.isEmpty {
+                                    if let action = action {
+                                          action(viewModel.answersToBeSubmitted)
+                                      }
+                                } else {
+                                    self.shouldShowAlert = true
+                                    self.alertMessage = "Please answer atleast one quest to submit"
+                                }
+     
+                            }) {
+                                Text("Submit")
+                                    .font(.custom("Lato-Bold", size: 16))
+                                    .foregroundColor(.white)
+                                    .padding()
+                                    .frame(width: 200, height: 40)
+                                    .background(Color(red: 135/255, green: 62/255, blue: 242/255))
+                                    .cornerRadius(20)
+                            }
+                            .frame(maxWidth: .infinity)
                         }
                         .frame(maxWidth: .infinity)
+                    } else {
+                        Text("No Quests available")
                     }
-                    .frame(maxWidth: .infinity)
-                } else {
-                    Text("No Quests available")
                 }
             }
         }
@@ -86,7 +94,7 @@ struct LongForm: View, QuestForm {
         case .sidewalk:
             return "Sidewalks"
         case .kerb:
-            return "Kerb"
+            return "Curb"
         case .crossing:
             return "Crossings"
         case nil:
