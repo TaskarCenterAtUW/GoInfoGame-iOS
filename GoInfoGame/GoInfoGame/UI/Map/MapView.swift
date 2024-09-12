@@ -113,7 +113,7 @@ struct MapView: View {
             CustomSheetView {
                 selectedQuest?.parent?.form
             }
-            .presentationDetents([.fraction(0.8), .large])
+            .presentationDetents([.fraction(0.8), .fraction(0.9)])
             .scrollDisabled(false)
             .environmentObject(contextualInfo)
             .interactiveDismissDisabled()
