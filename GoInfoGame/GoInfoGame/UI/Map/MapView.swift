@@ -37,6 +37,9 @@ struct MapView: View {
                     print(contextualInfo)
                     self.setContextualInfo(contextualinfo: contextualInfo)
                 })
+                .onChange(of: viewModel.selectedQuest) { _ in
+                    shouldShowPolyline = false
+                }
                 .id(viewModel.refreshMap)
                 .edgesIgnoringSafeArea(.all)
                 if viewModel.isLoading {
@@ -113,10 +116,10 @@ struct MapView: View {
             CustomSheetView {
                 selectedQuest?.parent?.form
             }
-            .presentationDetents([.fraction(0.8), .fraction(0.9)])
+            .presentationDetents([.fraction(0.8), .fraction(0.5)])
             .scrollDisabled(false)
             .environmentObject(contextualInfo)
-            .interactiveDismissDisabled()
+//            .interactiveDismissDisabled()
             .onAppear {
                 shouldShowPolyline = true
             }
