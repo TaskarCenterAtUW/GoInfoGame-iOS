@@ -82,7 +82,14 @@ extension Quest {
 }
 
 
-struct DisplayUnit : Identifiable {
+struct DisplayUnit : Identifiable, Equatable {
+    static func == (lhs: DisplayUnit, rhs: DisplayUnit) -> Bool {
+        return lhs.id == rhs.id &&
+        lhs.title == rhs.title &&
+        lhs.description == rhs.description &&
+        lhs.sheetSize == rhs.sheetSize
+    }
+    
     let title:String
     let description : String
     let id: String
