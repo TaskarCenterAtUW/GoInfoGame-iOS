@@ -22,6 +22,8 @@ struct MapView: View {
     @State private var showAlert = false
     @StateObject var contextualInfo = ContextualInfo.shared
     
+    @State private var selectedDetent: PresentationDetent = .fraction(0.8)
+    
     @AppStorage("baseUrl") var baseUrl = ""
         
     var body: some View {
@@ -116,10 +118,9 @@ struct MapView: View {
             CustomSheetView {
                 selectedQuest?.parent?.form
             }
-            .presentationDetents([.fraction(0.8), .fraction(0.5)])
+            .presentationDetents([.fraction(0.8), .fraction(0.5), .fraction(0.1)], selection: $selectedDetent)
             .scrollDisabled(false)
             .environmentObject(contextualInfo)
-//            .interactiveDismissDisabled()
             .onAppear {
                 shouldShowPolyline = true
             }
