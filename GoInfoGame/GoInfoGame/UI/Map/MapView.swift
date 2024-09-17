@@ -37,6 +37,7 @@ struct MapView: View {
                           
                           isPresented: $isPresented, contextualInfo: { contextualInfo in
                     print(contextualInfo)
+                    selectedDetent = .fraction(0.8)
                     self.setContextualInfo(contextualinfo: contextualInfo)
                 })
                 .onChange(of: viewModel.selectedQuest) { _ in
@@ -120,6 +121,7 @@ struct MapView: View {
             }
             .presentationDetents([.fraction(0.8), .fraction(0.5), .fraction(0.1)], selection: $selectedDetent)
             .scrollDisabled(false)
+            .interactiveDismissDisabled()
             .environmentObject(contextualInfo)
             .onAppear {
                 shouldShowPolyline = true
