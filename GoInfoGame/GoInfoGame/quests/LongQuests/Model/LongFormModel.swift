@@ -103,7 +103,7 @@ struct QuestAnswerDependency: Codable {
 enum QuestType: String, Codable {
     case exclusiveChoice = "ExclusiveChoice"
     case numeric = "Numeric"
-    case excWithImg = "ExclusiveChoiceWithImg"
+//    case excWithImg = "ExclusiveChoiceWithImg"
 }
 
 
