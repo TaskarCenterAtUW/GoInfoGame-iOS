@@ -39,7 +39,7 @@ class KartaviewViewModel: ObservableObject {
     }
     
     func uploadPhoto(sequenceId: String) {
-        guard let image = UIImage(named: "food"), let imageData = imageToData(image: image) else {
+        guard let image = UIImage(named: "osmlogo"), let imageData = imageToData(image: image) else {
             print("NO image found")
             return
         }
@@ -105,8 +105,19 @@ class KartaviewViewModel: ObservableObject {
                 "value": "96aca5c4b80709fc6d9aced613b51905c0fbc37870640d7bdabede269165bde7",
                 "type": "text"
               ],
-             
         ]
+        
+        ApiManager.shared.performRequest(to: .finshedUploadingToKartaview(formData), setupType: .kartaview, modelType: FinishUploadingModel.self) { result in
+            switch result {
+            case .success(let success):
+                let status = success.status.httpCode
+                if status == 200 {
+                  print("PHOTO UPLOADED SUCCESSFULLY")
+                }
+            case .failure(let failure):
+                print("FINISHING FAILED")
+            }
+        }
     }
 
     
