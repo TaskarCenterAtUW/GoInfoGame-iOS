@@ -181,6 +181,7 @@
 		B0CCB98E2B8626C600AA73DE /* ProfileViewVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0CCB98D2B8626C600AA73DE /* ProfileViewVM.swift */; };
 		FA18CAE22CC7CD89008247F2 /* KartaviewViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA18CAE12CC7CD89008247F2 /* KartaviewViewModel.swift */; };
 		FA18CAE52CC7D0DD008247F2 /* SequenceModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA18CAE42CC7D0DD008247F2 /* SequenceModel.swift */; };
+		FA18CAE72CC80A34008247F2 /* UploadPhotoModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA18CAE62CC80A34008247F2 /* UploadPhotoModel.swift */; };
 		FA1992ED2BB1A78C003B4719 /* KeychainManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA1992EC2BB1A78C003B4719 /* KeychainManager.swift */; };
 		FA2EC4822BBECE38003B8B64 /* KeychainManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA1992EC2BB1A78C003B4719 /* KeychainManager.swift */; };
 		FA5853C12B21F17F00301CDA /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA5853C02B21F17F00301CDA /* OnboardingView.swift */; };
@@ -485,6 +486,7 @@
 		F008D431593E568E75C48C84 /* Pods-GoInfoGame.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-GoInfoGame.debug.xcconfig"; path = "Target Support Files/Pods-GoInfoGame/Pods-GoInfoGame.debug.xcconfig"; sourceTree = "<group>"; };
 		FA18CAE12CC7CD89008247F2 /* KartaviewViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KartaviewViewModel.swift; sourceTree = "<group>"; };
 		FA18CAE42CC7D0DD008247F2 /* SequenceModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SequenceModel.swift; sourceTree = "<group>"; };
+		FA18CAE62CC80A34008247F2 /* UploadPhotoModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadPhotoModel.swift; sourceTree = "<group>"; };
 		FA1992EC2BB1A78C003B4719 /* KeychainManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeychainManager.swift; sourceTree = "<group>"; };
 		FA5853C02B21F17F00301CDA /* OnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingView.swift; sourceTree = "<group>"; };
 		FA87A80F2B68142F000A6BEA /* LoadingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingView.swift; sourceTree = "<group>"; };
@@ -1251,6 +1253,7 @@
 			isa = PBXGroup;
 			children = (
 				FA18CAE42CC7D0DD008247F2 /* SequenceModel.swift */,
+				FA18CAE62CC80A34008247F2 /* UploadPhotoModel.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -2005,6 +2008,7 @@
 				973FC0192B4FB17000878269 /* LocalizedStrings.swift in Sources */,
 				A48037312BBA8C25007EE7E4 /* ApiManager.swift in Sources */,
 				FABF3D002B8607D80080EAC9 /* MeasureSidewalkView.swift in Sources */,
+				FA18CAE72CC80A34008247F2 /* UploadPhotoModel.swift in Sources */,
 				97439F782B87444200DA43E1 /* CrossingKerbHeightForm.swift in Sources */,
 				FA8C74DA2C60FD3100D28220 /* LongSidewalkQuest.swift in Sources */,
 				FAFDA1FA2C6B861A00ECEAE9 /* FileStorageManager.swift in Sources */,
