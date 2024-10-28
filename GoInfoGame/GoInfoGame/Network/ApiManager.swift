@@ -13,6 +13,7 @@ enum SetupType {
     case login
     case osm
     case userProfile
+    case kartaview
 }
 
 // Singleton object that deals with APIs
@@ -33,6 +34,8 @@ class ApiManager {
             finalUrl = APIConfiguration.shared.osmUrl(for: endpoint)
         case .userProfile:
             finalUrl = APIConfiguration.shared.userProfileUrl(for: endpoint)
+        case .kartaview:
+            finalUrl = APIConfiguration.shared.kartaViewUrl(for: endpoint)
         }
         
         guard let url = finalUrl else {
@@ -44,17 +47,61 @@ class ApiManager {
         var request = URLRequest(url: url, timeoutInterval: Double.infinity)
         request.httpMethod = endpoint.method
         
-        if let httpBody = endpoint.body {
-            request.httpBody = httpBody
-        }
+       
+        
+        if let formData = endpoint.formData {
+            let boundary = "Boundary-\(UUID().uuidString)"
+            request.setValue("multipart/form-data; boundary=\(boundary)", forHTTPHeaderField: "Content-Type")
+            
+            var body = Data()
+            
+            // Iterate over the form data and append to body
+            for param in formData {
+                guard let paramName = param["key"] as? String else {
+                    print("Invalid parameter key")
+                    continue
+                }
+                
+                // Append the boundary
+                body.append("--\(boundary)\r\n".data(using: .utf8)!)
+                
+                if let stringValue = param["value"] as? String {
+                    // Handle text data
+                    body.append("Content-Disposition: form-data; name=\"\(paramName)\"\r\n\r\n".data(using: .utf8)!)
+                    body.append("\(stringValue)\r\n".data(using: .utf8)!)
+                } else if let paramSrc = param["src"] as? Data {
+                    // Handle file upload
+                    do {
+                        let filename = param["filename"] as? String ?? "image.jpeg"
+                        let contentType = param["contentType"] as? String ?? "application/octet-stream" // Default content type
+
+                        // Append headers for file data
+                        body.append("Content-Disposition: form-data; name=\"\(paramName)\"; filename=\"\(filename)\"\r\n".data(using: .utf8)!)
+                        body.append("Content-Type: \(contentType)\r\n\r\n".data(using: .utf8)!)
+                        body.append(paramSrc)
+                        body.append("\r\n".data(using: .utf8)!)
+                    } catch {
+                        print("Error reading file data: \(error.localizedDescription)")
+                    }
+                } else {
+                    print("Unsupported value type for formData key: \(paramName)")
+                }
+            }
+            
+            // End the form with the final boundary
+            body.append("--\(boundary)--\r\n".data(using: .utf8)!)
+            
+            // Set the HTTP body
+            request.httpBody = body
+        } else if let httpBody = endpoint.body {
+                   request.httpBody = httpBody
+               }
         
         if let headers = endpoint.headers {
                for (key, value) in headers {
                    request.setValue(value, forHTTPHeaderField: key)
                }
            }
-        
-       
         
         let task = URLSession.shared.dataTask(with: request) { data, response, error in
             if let error = error {

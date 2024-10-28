@@ -179,6 +179,10 @@
 		A4E711B02B59011000C9DE08 /* StepsInclineForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4E711AF2B59011000C9DE08 /* StepsInclineForm.swift */; };
 		B0CCB98C2B8626AE00AA73DE /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0CCB98B2B8626AE00AA73DE /* ProfileView.swift */; };
 		B0CCB98E2B8626C600AA73DE /* ProfileViewVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0CCB98D2B8626C600AA73DE /* ProfileViewVM.swift */; };
+		FA18CAE22CC7CD89008247F2 /* KartaviewViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA18CAE12CC7CD89008247F2 /* KartaviewViewModel.swift */; };
+		FA18CAE52CC7D0DD008247F2 /* SequenceModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA18CAE42CC7D0DD008247F2 /* SequenceModel.swift */; };
+		FA18CAE72CC80A34008247F2 /* UploadPhotoModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA18CAE62CC80A34008247F2 /* UploadPhotoModel.swift */; };
+		FA18CAE92CCFD212008247F2 /* FinishUploadingModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA18CAE82CCFD212008247F2 /* FinishUploadingModel.swift */; };
 		FA1992ED2BB1A78C003B4719 /* KeychainManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA1992EC2BB1A78C003B4719 /* KeychainManager.swift */; };
 		FA2EC4822BBECE38003B8B64 /* KeychainManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA1992EC2BB1A78C003B4719 /* KeychainManager.swift */; };
 		FA5853C12B21F17F00301CDA /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA5853C02B21F17F00301CDA /* OnboardingView.swift */; };
@@ -481,6 +485,10 @@
 		C96303080D26026265099E0E /* Pods-GoInfoGame.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-GoInfoGame.release.xcconfig"; path = "Target Support Files/Pods-GoInfoGame/Pods-GoInfoGame.release.xcconfig"; sourceTree = "<group>"; };
 		D76D8E22AC705A38AFEA78B1 /* Pods-GoInfoGame-GoInfoGameUITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-GoInfoGame-GoInfoGameUITests.debug.xcconfig"; path = "Target Support Files/Pods-GoInfoGame-GoInfoGameUITests/Pods-GoInfoGame-GoInfoGameUITests.debug.xcconfig"; sourceTree = "<group>"; };
 		F008D431593E568E75C48C84 /* Pods-GoInfoGame.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-GoInfoGame.debug.xcconfig"; path = "Target Support Files/Pods-GoInfoGame/Pods-GoInfoGame.debug.xcconfig"; sourceTree = "<group>"; };
+		FA18CAE12CC7CD89008247F2 /* KartaviewViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KartaviewViewModel.swift; sourceTree = "<group>"; };
+		FA18CAE42CC7D0DD008247F2 /* SequenceModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SequenceModel.swift; sourceTree = "<group>"; };
+		FA18CAE62CC80A34008247F2 /* UploadPhotoModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadPhotoModel.swift; sourceTree = "<group>"; };
+		FA18CAE82CCFD212008247F2 /* FinishUploadingModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FinishUploadingModel.swift; sourceTree = "<group>"; };
 		FA1992EC2BB1A78C003B4719 /* KeychainManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeychainManager.swift; sourceTree = "<group>"; };
 		FA5853C02B21F17F00301CDA /* OnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingView.swift; sourceTree = "<group>"; };
 		FA87A80F2B68142F000A6BEA /* LoadingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingView.swift; sourceTree = "<group>"; };
@@ -1218,6 +1226,41 @@
 			path = Profile;
 			sourceTree = "<group>";
 		};
+		FA18CADE2CC7CD46008247F2 /* Kartaview */ = {
+			isa = PBXGroup;
+			children = (
+				FA18CAE32CC7CDAF008247F2 /* Model */,
+				FA18CAE02CC7CD61008247F2 /* ViewModel */,
+				FA18CADF2CC7CD5C008247F2 /* View */,
+			);
+			path = Kartaview;
+			sourceTree = "<group>";
+		};
+		FA18CADF2CC7CD5C008247F2 /* View */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
+		FA18CAE02CC7CD61008247F2 /* ViewModel */ = {
+			isa = PBXGroup;
+			children = (
+				FA18CAE12CC7CD89008247F2 /* KartaviewViewModel.swift */,
+			);
+			path = ViewModel;
+			sourceTree = "<group>";
+		};
+		FA18CAE32CC7CDAF008247F2 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				FA18CAE42CC7D0DD008247F2 /* SequenceModel.swift */,
+				FA18CAE62CC80A34008247F2 /* UploadPhotoModel.swift */,
+				FA18CAE82CCFD212008247F2 /* FinishUploadingModel.swift */,
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
 		FA5853BF2B21E3E000301CDA /* Onboarding */ = {
 			isa = PBXGroup;
 			children = (
@@ -1353,6 +1396,7 @@
 		FAD5C4F12AFCBE700040C61A /* GoInfoGame */ = {
 			isa = PBXGroup;
 			children = (
+				FA18CADE2CC7CD46008247F2 /* Kartaview */,
 				FAFDA2092C6F589900ECEAE9 /* UserProfile */,
 				FAFDA1FB2C6D321500ECEAE9 /* Login */,
 				FA8C74CF2C598F3D00D28220 /* Fonts */,
@@ -1967,6 +2011,7 @@
 				973FC0192B4FB17000878269 /* LocalizedStrings.swift in Sources */,
 				A48037312BBA8C25007EE7E4 /* ApiManager.swift in Sources */,
 				FABF3D002B8607D80080EAC9 /* MeasureSidewalkView.swift in Sources */,
+				FA18CAE72CC80A34008247F2 /* UploadPhotoModel.swift in Sources */,
 				97439F782B87444200DA43E1 /* CrossingKerbHeightForm.swift in Sources */,
 				FA8C74DA2C60FD3100D28220 /* LongSidewalkQuest.swift in Sources */,
 				FAFDA1FA2C6B861A00ECEAE9 /* FileStorageManager.swift in Sources */,
@@ -2015,6 +2060,7 @@
 				FAFDA2042C6E8BEA00ECEAE9 /* APIEnvironment.swift in Sources */,
 				973FC0032B47DE0700878269 /* QuestsVM.swift in Sources */,
 				A4E711AE2B59004700C9DE08 /* StepsIncline.swift in Sources */,
+				FA18CAE22CC7CD89008247F2 /* KartaviewViewModel.swift in Sources */,
 				973FC0142B4D353800878269 /* SideWalkWidthForm.swift in Sources */,
 				971575172B5FFD6F0044797C /* MapView.swift in Sources */,
 				FAFDA2102C6F592700ECEAE9 /* UserProfileViewModel.swift in Sources */,
@@ -2028,6 +2074,7 @@
 				FAFDA2062C6E8D7A00ECEAE9 /* APIEndPoint.swift in Sources */,
 				FA5853C12B21F17F00301CDA /* OnboardingView.swift in Sources */,
 				A4B83AF32B5F9385006684CA /* StoredWay.swift in Sources */,
+				FA18CAE52CC7D0DD008247F2 /* SequenceModel.swift in Sources */,
 				971F9FDF2B847349005397CC /* CrossingIslandForm.swift in Sources */,
 				05DBBB5F2B1263FF00B6F110 /* DatabaseConnector.swift in Sources */,
 				FAF44FC12B30850A004FE664 /* OnboardingView3.swift in Sources */,
@@ -2039,6 +2086,7 @@
 				FA1992ED2BB1A78C003B4719 /* KeychainManager.swift in Sources */,
 				0536DD972B0BD95100B04C4B /* URLSession+Extension.swift in Sources */,
 				973FC04C2B5A5F5F00878269 /* RadioItem.swift in Sources */,
+				FA18CAE92CCFD212008247F2 /* FinishUploadingModel.swift in Sources */,
 				A495DF2D2B6A190400478E44 /* CustomMapView.swift in Sources */,
 				05DBBB662B17209600B6F110 /* RealmOPMeta.swift in Sources */,
 				B0CCB98E2B8626C600AA73DE /* ProfileViewVM.swift in Sources */,
