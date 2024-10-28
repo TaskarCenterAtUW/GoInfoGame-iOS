@@ -49,7 +49,7 @@ class ApiManager {
         
        
         
-        if let formData = endpoint.formData as? [[String: Any]] {
+        if let formData = endpoint.formData {
             let boundary = "Boundary-\(UUID().uuidString)"
             request.setValue("multipart/form-data; boundary=\(boundary)", forHTTPHeaderField: "Content-Type")
             
@@ -69,16 +69,16 @@ class ApiManager {
                     // Handle text data
                     body.append("Content-Disposition: form-data; name=\"\(paramName)\"\r\n\r\n".data(using: .utf8)!)
                     body.append("\(stringValue)\r\n".data(using: .utf8)!)
-                } else if let paramSrc = param["src"] as? String {
+                } else if let paramSrc = param["src"] as? Data {
                     // Handle file upload
                     do {
-                        let fileData = try Data(contentsOf: URL(fileURLWithPath: paramSrc))
+                        let filename = param["filename"] as? String ?? "image.jpeg"
                         let contentType = param["contentType"] as? String ?? "application/octet-stream" // Default content type
 
                         // Append headers for file data
-                        body.append("Content-Disposition: form-data; name=\"\(paramName)\"; filename=\"\(paramSrc)\"\r\n".data(using: .utf8)!)
+                        body.append("Content-Disposition: form-data; name=\"\(paramName)\"; filename=\"\(filename)\"\r\n".data(using: .utf8)!)
                         body.append("Content-Type: \(contentType)\r\n\r\n".data(using: .utf8)!)
-                        body.append(fileData)
+                        body.append(paramSrc)
                         body.append("\r\n".data(using: .utf8)!)
                     } catch {
                         print("Error reading file data: \(error.localizedDescription)")
@@ -97,17 +97,11 @@ class ApiManager {
                    request.httpBody = httpBody
                }
         
-//        if let httpBody = endpoint.body {
-//            request.httpBody = httpBody
-//        }
-        
         if let headers = endpoint.headers {
                for (key, value) in headers {
                    request.setValue(value, forHTTPHeaderField: key)
                }
            }
-        
-       
         
         let task = URLSession.shared.dataTask(with: request) { data, response, error in
             if let error = error {
