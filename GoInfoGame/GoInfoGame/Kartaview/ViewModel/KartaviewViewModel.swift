@@ -71,8 +71,10 @@ class KartaviewViewModel: ObservableObject {
               [
                 "key": "photo",
                 "src": imageData,
+                "filename": "osmlogo.jpeg",
                 "type": "file"
               ]
+            
         ]
         
         ApiManager.shared.performRequest(to: .uploadPhotoToKartaview(formData), setupType: .kartaview, modelType: UploadPhotoModel.self) { result in
