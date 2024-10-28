@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import UIKit
 
 class KartaviewViewModel: ObservableObject {
     
@@ -27,8 +28,9 @@ class KartaviewViewModel: ObservableObject {
                 if  success.status.httpCode == 200 {
                     self.sequenceId = success.osv.sequence.id
                     print("Sequence created with ID: \(self.sequenceId)")
+                    print("SEQUENCE CREATED ------> PROCEEDING TO UPLOAD PHOTO")
                     // Step 2: Upload Photo after receiving sequenceId
-                  //  self.uploadPhoto(sequenceId: self.sequenceId!)
+                   self.uploadPhoto(sequenceId: self.sequenceId!)
                 }
             case .failure(let error):
                 print("Failed to create sequence: \(error.localizedDescription)")
@@ -36,44 +38,77 @@ class KartaviewViewModel: ObservableObject {
         }
     }
     
-//    func uploadPhoto(sequenceId: String) {
-//        guard let image = UIImage(named: "your_image"), let imageData = imageToData(image: image) else {
-//            print("No image found")
-//            return
-//        }
-//        
-//        let formData: [String: Any] = [
-//            "sequenceId": sequenceId,
-//            "image": imageData,
-//            "accessToken": "your_access_token"
-//        ]
-//        
-//        ApiManager.shared.performRequest(to: .uploadPhoto(formData), setupType: .kartaview, modelType: UploadPhotoResponseModel.self) { result in
-//            switch result {
-//            case .success(let success):
-//                print("Photo uploaded successfully")
-//                // Step 3: Call UploadingFinished API after photo upload
-//                self.uploadingFinished(sequenceId: sequenceId)
-//            case .failure(let error):
-//                print("Photo upload failed: \(error.localizedDescription)")
-//            }
-//        }
-//    }
-//    
-//    func uploadingFinished(sequenceId: String) {
-//        let body = ["sequenceId": sequenceId, "accessToken": "your_access_token"]
-//        
-//        ApiManager.shared.performRequest(to: .uploadingFinished(body), setupType: .kartaview, modelType: UploadFinishedResponseModel.self) { result in
-//            switch result {
-//            case .success(let success):
-//                print("Sequence upload finished successfully")
-//            case .failure(let error):
-//                print("Failed to finish sequence upload: \(error.localizedDescription)")
-//            }
-//        }
-//    }
-//    
-//    func imageToData(image: UIImage) -> Data? {
-//        return image.jpegData(compressionQuality: 1.0)
-//    }
+    func uploadPhoto(sequenceId: String) {
+        guard let image = UIImage(named: "food"), let imageData = imageToData(image: image) else {
+            print("NO image found")
+            return
+        }
+        
+        let kartaViewAccessToken = "96aca5c4b80709fc6d9aced613b51905c0fbc37870640d7bdabede269165bde7"
+        
+        let formData: [[String: Any]] = [
+            ["key": "access_token", "value": "96aca5c4b80709fc6d9aced613b51905c0fbc37870640d7bdabede269165bde7", "type": "text"],
+             [
+                "key": "sequenceId",
+                "value": sequenceId,
+                "type": "text"
+              ],
+              [
+                "key": "sequenceIndex",
+                "value": "1",
+                "type": "text"
+              ],
+              [
+                "key": "coordinate",
+                "value": "17.45566375642105, 78.36914176316918",
+                "type": "text"
+              ],
+              [
+                "key": "access_token",
+                "value": "96aca5c4b80709fc6d9aced613b51905c0fbc37870640d7bdabede269165bde7",
+                "type": "text"
+              ],
+              [
+                "key": "photo",
+                "src": imageData,
+                "type": "file"
+              ]
+        ]
+        
+        ApiManager.shared.performRequest(to: .uploadPhotoToKartaview(formData), setupType: .kartaview, modelType: UploadPhotoModel.self) { result in
+            switch result {
+            case .success(let success):
+                let status = success.status.httpCode
+                if status == 200 {
+                    print("PHOTO UPLOADED ----->>>> PROCEEDING TO FINISH UPLOAD")
+                    self.finishUploading(sequenceId: sequenceId)
+                }
+            case .failure(let failure):
+                print("FAILED")
+            }
+        }
+    }
+    
+    func finishUploading(sequenceId: String) {
+        let kartaViewAccessToken = "96aca5c4b80709fc6d9aced613b51905c0fbc37870640d7bdabede269165bde7"
+        
+        let formData: [[String: Any]] = [
+             [
+                "key": "sequenceId",
+                "value": sequenceId,
+                "type": "text"
+              ],
+              [
+                "key": "access_token",
+                "value": "96aca5c4b80709fc6d9aced613b51905c0fbc37870640d7bdabede269165bde7",
+                "type": "text"
+              ],
+             
+        ]
+    }
+
+    
+    func imageToData(image: UIImage) -> Data? {
+        return image.jpegData(compressionQuality: 1.0)
+    }
 }
