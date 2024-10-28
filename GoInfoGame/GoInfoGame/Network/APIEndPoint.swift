@@ -88,5 +88,14 @@ struct APIEndpoint {
     static let createKartaViewSequence = { (formData: [[String: Any]]) in
         return APIEndpoint(path: "/sequence/", method: "POST", body: nil, headers: nil, formData: formData)
     }
+    
+    static let uploadPhotoToKartaview = {(formData: [[String: Any]]) in
+        return APIEndpoint(path: "/photo/", method: "POST", body: nil, headers: nil, formData: formData)
+    }
+    
+    static let finshedUploadingToKartaview = { (formData: [[String: Any]]) in
+        return APIEndpoint(path: "/sequence/finished-uploading/", method: "POST", body: nil, headers: nil, formData: formData)
+    
+    }
 }
 
