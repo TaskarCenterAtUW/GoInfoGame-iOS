@@ -27,69 +27,137 @@ struct LongForm: View, QuestForm {
     @State private var shouldShowAlert = false
     
     @State private var alertMessage = ""
-            
+    
+    @State private var isCameraPresented = false
+    @State private var capturedImage: UIImage?
+    
+    @State private var isLoading = false
+
     var body: some View {
-        VStack(alignment: .leading) {
-            VStack {
-                HStack {
-                    Text("\(elementHeading())")
-                        .font(.custom("Lato-Bold", size: 16))
-                      
+        ZStack {
+            VStack(alignment: .leading) {
+                VStack {
+                    HStack {
+                        Text("\(elementHeading())")
+                            .font(.custom("Lato-Bold", size: 16))
+                            .padding([.leading], 20)
+                        Text("ID: \(questID ?? "0")")
+                            .font(.custom("Lato-Regular", size: 13))
+                            .padding([.leading], 20)
+                       Spacer()
+                            Button(action: {
+                                isCameraPresented = true
+                            }, label: {
+                                Image(systemName: "camera")
+                            })
+                    }
+                    .padding(EdgeInsets(top: 20, leading: 20, bottom: 10, trailing: 20))
                     LongFormDismissButtonView {
                         withAnimation {
                             presentationMode.wrappedValue.dismiss()
                         }
                     }
+                    .padding([.trailing], 20)
                 }
-                .padding([.all], 20)
-            }
-            Text("ID: \(questID ?? "0")")
-                .font(.custom("Lato-Regular", size: 13))
-                .padding([.leading], 20)
              
-            VStack {
-                List {
-                    if let quests = questsForLongForm() {
-                        ForEach(quests, id: \.questID) { quest in
-                            if viewModel.shouldShowQuest(quest) {
-                                LongQuestView(selectedAnswers: $selectedAnswers, quest: quest, onChoiceSelected: { selectedAnswerChoice in
-                                    viewModel.updateAnswers(quest: quest, selectedAnswerChoice: selectedAnswerChoice)
-                                },currentAnswer: $viewModel
-                                    .answersToBeSubmitted[quest.questTag])
-                            }
-                        }
-                        VStack {
-                            Button(action: {
-                                if !viewModel.answersToBeSubmitted.isEmpty {
-                                    if let action = action {
-                                          action(viewModel.answersToBeSubmitted)
-                                      }
-                                } else {
-                                    self.shouldShowAlert = true
-                                    self.alertMessage = "Please answer atleast one quest to submit"
+                 
+                VStack {
+                    List {
+                        if let quests = questsForLongForm() {
+                            ForEach(quests, id: \.questID) { quest in
+                                if viewModel.shouldShowQuest(quest) {
+                                    LongQuestView(selectedAnswers: $selectedAnswers, quest: quest, onChoiceSelected: { selectedAnswerChoice in
+                                        viewModel.updateAnswers(quest: quest, selectedAnswerChoice: selectedAnswerChoice)
+                                    },currentAnswer: $viewModel
+                                        .answersToBeSubmitted[quest.questTag])
                                 }
-     
-                            }) {
-                                Text("Submit")
-                                    .font(.custom("Lato-Bold", size: 16))
-                                    .foregroundColor(.white)
-                                    .padding()
-                                    .frame(width: 200, height: 40)
-                                    .background(Color(red: 135/255, green: 62/255, blue: 242/255))
-                                    .cornerRadius(20)
+                            }
+                            VStack {
+                                Button(action: {
+                                    if !viewModel.answersToBeSubmitted.isEmpty {
+                                        if let action = action {
+                                              action(viewModel.answersToBeSubmitted)
+                                          }
+                                    } else {
+                                        self.shouldShowAlert = true
+                                        self.alertMessage = "Please answer atleast one quest to submit"
+                                    }
+         
+                                }) {
+                                    Text("Submit")
+                                        .font(.custom("Lato-Bold", size: 16))
+                                        .foregroundColor(.white)
+                                        .padding()
+                                        .frame(width: 200, height: 40)
+                                        .background(Color(red: 135/255, green: 62/255, blue: 242/255))
+                                        .cornerRadius(20)
+                                }
+                                .frame(maxWidth: .infinity)
                             }
                             .frame(maxWidth: .infinity)
+                        } else {
+                            Text("No Quests available")
                         }
-                        .frame(maxWidth: .infinity)
-                    } else {
-                        Text("No Quests available")
                     }
                 }
             }
+            .onChange(of: capturedImage) { newValue in
+                if newValue != nil {
+                    uploadImageToKartaView()
+                }
+            }
+            .sheet(isPresented: $isCameraPresented) {
+                CameraView(capturedImage: $capturedImage, isPresented: $isCameraPresented)
+                   }
+            .alert(self.alertMessage, isPresented: $shouldShowAlert) {
+                Button("OK", role: .cancel) { }
         }
-        .alert(self.alertMessage, isPresented: $shouldShowAlert) {
-            Button("OK", role: .cancel) { }
         }
+        if shouldShowAlert {
+            VStack {
+                Image(systemName: "checkmark.circle.fill")
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .frame(width: 50, height: 50)
+                    .foregroundColor(.green)
+                    .padding(.bottom, 50)
+                Text("Image uploaded to Kartaview")
+                    .foregroundColor(.white)
+                    .padding()
+                    .background(Color.orange)
+                    .cornerRadius(10)
+            }
+            .padding([.all], 50)
+            .background(Color.white)
+            .accessibilityElement(children: .combine)
+            .accessibilityLabel("Image uploaded to Kartaview")
+            .onAppear {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                    shouldShowAlert = false // Dismiss notification box after 1 second
+                }
+            }
+        }
+        
+        if isLoading {
+            VStack {
+                ProgressView("Uploading...")
+                    .progressViewStyle(CircularProgressViewStyle())
+                    .padding()
+                    .background(Color.white)
+                    .cornerRadius(10)
+                    .shadow(radius: 10)
+            }
+        }
+    }
+    
+    func uploadImageToKartaView() {
+        isLoading = true
+        let kvViewModel = KartaviewViewModel(capturedImage: capturedImage!)
+        kvViewModel.createSequence(completion: { result in
+            isLoading = false
+            alertMessage = result ? "Upload Successful" : "Upload Failed"
+            shouldShowAlert = true
+        })
     }
     
     func elementHeading() -> String {
