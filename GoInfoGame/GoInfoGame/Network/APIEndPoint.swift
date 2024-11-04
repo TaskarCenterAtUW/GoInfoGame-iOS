@@ -18,7 +18,12 @@ struct APIEndpoint {
     
     static let login = { (loginParams:Data) in APIEndpoint(path: "/authenticate", method: "POST", body: loginParams, headers: ["Content-Type":"application/json"], formData: nil) }
     
-    static let fetchWorkspaceList = APIEndpoint(path: "/workspaces/mine", method: "GET", body: nil, headers: nil, formData: nil)
+    static let fetchWorkspaceList = { (accessToken: String) in
+           
+            let header = [
+                "Authorization" : "Bearer \(accessToken)"
+            ]
+        return APIEndpoint(path: "/workspaces/mine", method: "GET", body: nil, headers: header, formData: nil)}
     
     static let fetchLongQuests = { (workspaceId: String) in APIEndpoint(path: "/workspaces/\(workspaceId)/quests/long", method: "GET", body: nil, headers: ["Content-Type":"application/json"], formData: nil) }
     
