@@ -12,10 +12,14 @@ class KartaviewViewModel: ObservableObject {
     
     @Published var sequenceId: String?
     
-    init() {}
+     var capturedImage: UIImage
+    
+    init(capturedImage: UIImage) {
+        self.capturedImage = capturedImage
+    }
     
     // Step 1: Create Sequence
-    func createSequence() {
+    func createSequence(completion: @escaping (Bool) -> ()) {
         let kartaViewAccessToken = "96aca5c4b80709fc6d9aced613b51905c0fbc37870640d7bdabede269165bde7"
         let formData: [[String: Any]] =
         [["key": "access_token", "value": kartaViewAccessToken, "type": "text"]]
@@ -30,7 +34,7 @@ class KartaviewViewModel: ObservableObject {
                     print("Sequence created with ID: \(self.sequenceId)")
                     print("SEQUENCE CREATED ------> PROCEEDING TO UPLOAD PHOTO")
                     // Step 2: Upload Photo after receiving sequenceId
-                   self.uploadPhoto(sequenceId: self.sequenceId!)
+                    self.uploadPhoto(sequenceId: self.sequenceId!, completion: completion)
                 }
             case .failure(let error):
                 print("Failed to create sequence: \(error.localizedDescription)")
@@ -38,8 +42,8 @@ class KartaviewViewModel: ObservableObject {
         }
     }
     
-    func uploadPhoto(sequenceId: String) {
-        guard let image = UIImage(named: "osmlogo"), let imageData = imageToData(image: image) else {
+    func uploadPhoto(sequenceId: String, completion: @escaping (Bool) -> ()) {
+        guard let imageData = imageToData(image: capturedImage) else {
             print("NO image found")
             return
         }
@@ -83,7 +87,7 @@ class KartaviewViewModel: ObservableObject {
                 let status = success.status.httpCode
                 if status == 200 {
                     print("PHOTO UPLOADED ----->>>> PROCEEDING TO FINISH UPLOAD")
-                    self.finishUploading(sequenceId: sequenceId)
+                    self.finishUploading(sequenceId: sequenceId, completion: completion)
                 }
             case .failure(let failure):
                 print("FAILED")
@@ -91,7 +95,7 @@ class KartaviewViewModel: ObservableObject {
         }
     }
     
-    func finishUploading(sequenceId: String) {
+    func finishUploading(sequenceId: String, completion: @escaping (Bool) -> ()) {
         let kartaViewAccessToken = "96aca5c4b80709fc6d9aced613b51905c0fbc37870640d7bdabede269165bde7"
         
         let formData: [[String: Any]] = [
@@ -113,9 +117,11 @@ class KartaviewViewModel: ObservableObject {
                 let status = success.status.httpCode
                 if status == 200 {
                   print("PHOTO UPLOADED SUCCESSFULLY")
+                    completion(true)
                 }
             case .failure(let failure):
                 print("FINISHING FAILED")
+                completion(false)
             }
         }
     }
