@@ -31,10 +31,9 @@ class InitialViewModel: ObservableObject {
     
     // fetch workspaces list
     func fetchWorkspacesList() {
-        
-        let endpoint = APIEndpoint.fetchWorkspaceList
-        
-        ApiManager.shared.performRequest(to: endpoint, setupType: .workspace, modelType: [Workspace].self) { result in
+                
+        if let accessToken = KeychainManager.load(key: "accessToken") {
+            ApiManager.shared.performRequest(to: .fetchWorkspaceList(accessToken), setupType: .workspace, modelType: [Workspace].self) { result in
             
             DispatchQueue.main.async {
                 switch result {
@@ -47,6 +46,7 @@ class InitialViewModel: ObservableObject {
                 }
             }
         }
+    }
     }
     
     func fetchLongQuestsFor(workspaceId: String,completion: @escaping (Bool) -> Void) {
