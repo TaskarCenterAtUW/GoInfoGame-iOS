@@ -277,7 +277,7 @@ struct CustomMap: UIViewRepresentable {
         let annotations = items.map({$0.annotation})
         
         if (existingCoordinates.isEmpty) {
-            print("Adding annotations completely")
+           // print("Adding annotations completely")
             
 //            for (index, annotation) in annotations.enumerated() {
 //                annotation.coordinate = adjustCoordinateForOverlap(annotation.coordinate, with: index)
