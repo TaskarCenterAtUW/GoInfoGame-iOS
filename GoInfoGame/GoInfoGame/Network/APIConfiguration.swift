@@ -10,7 +10,20 @@ import Foundation
 class APIConfiguration {
     static let shared = APIConfiguration()
     
-    var environment: APIEnvironment = .staging
+    private let environmentKey = "APIEnvironment"
+        
+        var environment: APIEnvironment {
+            get {
+                if let savedValue = UserDefaults.standard.string(forKey: environmentKey),
+                   let savedEnvironment = APIEnvironment(rawValue: savedValue) {
+                    return savedEnvironment
+                }
+                return .staging // default value
+            }
+            set {
+                UserDefaults.standard.set(newValue.rawValue, forKey: environmentKey)
+            }
+        }
     
     func workspaceUrl(for endpoint: APIEndpoint) -> URL? {
         return URL(string: environment.workspaceBaseURL + endpoint.path)
