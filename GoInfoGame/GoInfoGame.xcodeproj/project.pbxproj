@@ -2603,10 +2603,10 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 4;
-				DEVELOPMENT_TEAM = NPCMG529DV;
+				DEVELOPMENT_TEAM = G8MQVE5WWW;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = GoInfoGame/Info.plist;
-				INFOPLIST_KEY_NSCameraUsageDescription = "This app requires to access your camera to measure width of sidewalk";
+				INFOPLIST_KEY_NSCameraUsageDescription = "This app requires access to your camera to upload images to Kartaview";
 				INFOPLIST_KEY_NSFileProviderDomainUsageDescription = "";
 				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "We need your location";
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "We need your location";
