@@ -77,7 +77,7 @@ struct WorkspacesListView: View {
                 .padding()
                 ScrollView {
                     VStack(spacing: 20) {
-                        ForEach(workspaces, id: \.id) { workspace in
+                        ForEach(workspaces.filter({$0.type == "osw"}), id: \.id) { workspace in
                             Button {
                                 viewModel.fetchLongQuestsFor(workspaceId: "\(workspace.id)", completion: { success in
                                     if success {
