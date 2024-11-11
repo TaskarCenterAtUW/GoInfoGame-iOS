@@ -22,31 +22,21 @@ class WorkSpacesResponse: Codable {
 }
 
 // MARK: - Workspace
-struct Workspace: Codable, CustomStringConvertible,Hashable {
+struct Workspace: Codable,Hashable {
     let id: Int
     let title: String
-//    let tdeiRecordId:String
-//    let tdeiProjectGroupId:String
-//    let tdeiServiceId: String
-//    let tdeiMetadata: String
+    let type: String?
     
-    init(id: Int, title: String) {
-        self.id = id
-        self.title = title
-//        self.tdeiRecordId = tdeiRecordId
-//        self.tdeiProjectGroupId = tdeiProjectGroupId
-//        self.tdeiServiceId = tdeiServiceId
-//        self.tdeiMetadata = tdeiMetadata
-//        
-    }
+    init(from decoder: Decoder) throws {
+           let container = try decoder.container(keyedBy: CodingKeys.self)
+           id = try container.decode(Int.self, forKey: .id)
+           title = try container.decode(String.self, forKey: .title)
+           type = try container.decodeIfPresent(String.self, forKey: .type) ?? "osw"
+       }
 
-    var description: String {
-        var d = "{ \n"
-        d += "name: \(self.title) \n"
-        d += "id: \(self.id) \n"
-        d += "}\n"
-        return d
-    }
+       enum CodingKeys: String, CodingKey {
+           case id, title, type
+       }
 }
 
 // MARK: - Polygon
