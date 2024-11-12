@@ -67,6 +67,7 @@ struct UserProfileView: View {
             _ = KeychainManager.delete(key: "accessToken")
             _ = KeychainManager.delete(key: "username")
         loggedIn = false
+            UserProfileCache.shared.clearUserProfile()
             
             if let window = UIApplication.shared.windows.first {
                    window.rootViewController = UIHostingController(rootView: PosmLoginView())
