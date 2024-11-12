@@ -19,7 +19,7 @@ class KartaviewViewModel: ObservableObject {
     }
     
     // Step 1: Create Sequence
-    func createSequence(completion: @escaping (Bool) -> ()) {
+    func createSequence(completion: @escaping (String, Bool) -> ()) {
         let kartaViewAccessToken = "96aca5c4b80709fc6d9aced613b51905c0fbc37870640d7bdabede269165bde7"
         let formData: [[String: Any]] =
         [["key": "access_token", "value": kartaViewAccessToken, "type": "text"]]
@@ -42,7 +42,7 @@ class KartaviewViewModel: ObservableObject {
         }
     }
     
-    func uploadPhoto(sequenceId: String, completion: @escaping (Bool) -> ()) {
+    func uploadPhoto(sequenceId: String, completion: @escaping (String, Bool) -> ()) {
         guard let imageData = imageToData(image: capturedImage) else {
             print("NO image found")
             return
@@ -87,7 +87,8 @@ class KartaviewViewModel: ObservableObject {
                 let status = success.status.httpCode
                 if status == 200 {
                     print("PHOTO UPLOADED ----->>>> PROCEEDING TO FINISH UPLOAD")
-                    self.finishUploading(sequenceId: sequenceId, completion: completion)
+                    let imagePath = "https://api.openstreetcam.org/" + "\(success.osv.photo.path)/" + "th/\(success.osv.photo.photoName)"
+                    self.finishUploading(path: imagePath,sequenceId: sequenceId, completion: completion)
                 }
             case .failure(let failure):
                 print("FAILED")
@@ -95,7 +96,7 @@ class KartaviewViewModel: ObservableObject {
         }
     }
     
-    func finishUploading(sequenceId: String, completion: @escaping (Bool) -> ()) {
+    func finishUploading(path: String, sequenceId: String, completion: @escaping (String, Bool) -> ()) {
         let kartaViewAccessToken = "96aca5c4b80709fc6d9aced613b51905c0fbc37870640d7bdabede269165bde7"
         
         let formData: [[String: Any]] = [
@@ -117,11 +118,11 @@ class KartaviewViewModel: ObservableObject {
                 let status = success.status.httpCode
                 if status == 200 {
                   print("PHOTO UPLOADED SUCCESSFULLY")
-                    completion(true)
+                    completion(path, true)
                 }
             case .failure(let failure):
                 print("FINISHING FAILED")
-                completion(false)
+                completion("An error occured", false)
             }
         }
     }

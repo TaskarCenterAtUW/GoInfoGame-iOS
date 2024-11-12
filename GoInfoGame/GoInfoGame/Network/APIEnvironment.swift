@@ -20,7 +20,7 @@ enum APIEnvironment: String, CaseIterable {
         case .staging:
             return "https://api.workspaces-stage.sidewalks.washington.edu/api/v1"
         case .production:
-            return "https://workspaces.sidewalks.washington.edu/api/v1"
+            return "https://api.workspaces.sidewalks.washington.edu/api/v1"
         }
     }
     

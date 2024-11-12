@@ -24,14 +24,22 @@ struct LongForm: View, QuestForm {
     
     @Environment(\.presentationMode) var presentationMode
     
-    @State private var shouldShowAlert = false
+    @State private var showSubmitAlert = false
     
-    @State private var alertMessage = ""
+    @State private var showKartaviewAlert = false
+    
+    @State private var submitAlert = ""
+    
+    @State private var kartaViewAlert = ""
     
     @State private var isCameraPresented = false
     @State private var capturedImage: UIImage?
     
     @State private var isLoading = false
+    
+    @State private var showImagePath = false
+    
+    @State private var imagePath = ""
 
     var body: some View {
         ZStack {
@@ -44,12 +52,6 @@ struct LongForm: View, QuestForm {
                         Text("ID: \(questID ?? "0")")
                             .font(.custom("Lato-Regular", size: 13))
                             .padding([.leading], 20)
-                       Spacer()
-                            Button(action: {
-                                isCameraPresented = true
-                            }, label: {
-                                Image(systemName: "camera")
-                            })
                     }
                     .padding(EdgeInsets(top: 20, leading: 20, bottom: 10, trailing: 20))
                     LongFormDismissButtonView {
@@ -72,6 +74,20 @@ struct LongForm: View, QuestForm {
                                         .answersToBeSubmitted[quest.questTag])
                                 }
                             }
+                            Button {
+                              isCameraPresented = true
+                            } label: {
+                                Text("Upload a picture")
+                            }
+                            
+                            
+                            if showImagePath {
+                                HStack {
+                                  Text("Image path: ")
+                                    Link("click here", destination: URL(string: imagePath)!)
+                                }
+                            }
+                            
                             VStack {
                                 Button(action: {
                                     if !viewModel.answersToBeSubmitted.isEmpty {
@@ -79,8 +95,8 @@ struct LongForm: View, QuestForm {
                                               action(viewModel.answersToBeSubmitted)
                                           }
                                     } else {
-                                        self.shouldShowAlert = true
-                                        self.alertMessage = "Please answer atleast one quest to submit"
+                                        self.showSubmitAlert = true
+                                        self.submitAlert = "Please answer atleast one quest to submit"
                                     }
          
                                 }) {
@@ -109,11 +125,11 @@ struct LongForm: View, QuestForm {
             .sheet(isPresented: $isCameraPresented) {
                 CameraView(capturedImage: $capturedImage, isPresented: $isCameraPresented)
                    }
-            .alert(self.alertMessage, isPresented: $shouldShowAlert) {
-                Button("OK", role: .cancel) { }
         }
+        .alert(self.submitAlert, isPresented: $showSubmitAlert) {
+            Button("OK", role: .cancel) { }
         }
-        if shouldShowAlert {
+        if showKartaviewAlert {
             VStack {
                 Image(systemName: "checkmark.circle.fill")
                     .resizable()
@@ -133,7 +149,7 @@ struct LongForm: View, QuestForm {
             .accessibilityLabel("Image uploaded to Kartaview")
             .onAppear {
                 DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-                    shouldShowAlert = false // Dismiss notification box after 1 second
+                    showKartaviewAlert = false // Dismiss notification box after 1 second
                 }
             }
         }
@@ -153,10 +169,13 @@ struct LongForm: View, QuestForm {
     func uploadImageToKartaView() {
         isLoading = true
         let kvViewModel = KartaviewViewModel(capturedImage: capturedImage!)
-        kvViewModel.createSequence(completion: { result in
+        kvViewModel.createSequence(completion: { (path,result) in
             isLoading = false
-            alertMessage = result ? "Upload Successful" : "Upload Failed"
-            shouldShowAlert = true
+            kartaViewAlert = result ? "Upload Successful" : "Upload Failed"
+            showKartaviewAlert = true
+            showImagePath = true
+            imagePath = path
+            print("KARTAVIEW IMAGE PATH --->>>\(path)")
         })
     }
     
