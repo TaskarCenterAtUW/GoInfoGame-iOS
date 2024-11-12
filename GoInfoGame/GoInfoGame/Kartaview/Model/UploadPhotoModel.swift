@@ -27,11 +27,12 @@ struct PhotoOsv: Codable {
 struct Photo: Codable {
     let id, sequenceID, dateAdded, sequenceIndex: String
     let photoName, lat, lng: String
+    let path: String
 
     enum CodingKeys: String, CodingKey {
         case id
         case sequenceID = "sequenceId"
-        case dateAdded, sequenceIndex, photoName, lat, lng
+        case dateAdded, sequenceIndex, photoName, lat, lng, path
     }
 }
 
