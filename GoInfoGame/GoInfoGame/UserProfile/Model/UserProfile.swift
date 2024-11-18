@@ -15,9 +15,6 @@ import Foundation
 // MARK: - UserProfileResponse
 struct TdeiUserProfile: Codable {
     let id, firstName, lastName, email: String?
-    let phone, apiKey: String?
-    let emailVerified: Bool?
-    let username: String?
 }
 
 
