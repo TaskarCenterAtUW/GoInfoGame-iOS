@@ -64,6 +64,13 @@ struct QuestOptions: View {
                                     .padding()
                                     .background(currentAnswer == option.value ? Color(red: 135/255, green: 62/255, blue: 242/255) : Color(red: 245/255, green: 245/255, blue: 245/255))
                                     .cornerRadius(25)
+                                
+                                if option.choiceFollowUp != nil && currentAnswer == option.value {
+                                    Text(option.choiceFollowUp ?? "NOTHING HERE")
+                                            .font(.custom("Lato-Bold", size: 13))
+                                            .foregroundStyle(.gray)
+                                }
+                                
                             }
                         }
                       
