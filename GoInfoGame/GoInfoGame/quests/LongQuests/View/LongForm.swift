@@ -40,6 +40,8 @@ struct LongForm: View, QuestForm {
     @State private var showImagePath = false
     
     @State private var imagePath = ""
+    
+    @State private var uploadedPhotos: [String] = []
 
     var body: some View {
         ZStack {
@@ -70,28 +72,22 @@ struct LongForm: View, QuestForm {
                                 if viewModel.shouldShowQuest(quest) {
                                     LongQuestView(selectedAnswers: $selectedAnswers, quest: quest, onChoiceSelected: { selectedAnswerChoice in
                                         viewModel.updateAnswers(quest: quest, selectedAnswerChoice: selectedAnswerChoice)
+                                    }, uploadPhoto:  { result in
+                                        if result {
+                                            isCameraPresented = true
+                                        }
                                     },currentAnswer: $viewModel
                                         .answersToBeSubmitted[quest.questTag])
                                 }
                             }
-                            Button {
-                              isCameraPresented = true
-                            } label: {
-                                Text("Upload a picture")
-                            }
-                            
-                            
-                            if showImagePath {
-                                HStack {
-                                  Text("Image path: ")
-                                    Link("click here", destination: URL(string: imagePath)!)
-                                }
-                            }
-                            
                             VStack {
                                 Button(action: {
                                     if !viewModel.answersToBeSubmitted.isEmpty {
                                         if let action = action {
+                                            if !uploadedPhotos.isEmpty {
+                                                viewModel.answersToBeSubmitted["ext:kartaview_url"] = uploadedPhotos.joined(separator: ", ")
+                                            }
+                                         
                                               action(viewModel.answersToBeSubmitted)
                                           }
                                     } else {
@@ -176,6 +172,8 @@ struct LongForm: View, QuestForm {
             showImagePath = true
             imagePath = path
             print("KARTAVIEW IMAGE PATH --->>>\(path)")
+            uploadedPhotos.append(path)
+            print(uploadedPhotos)
         })
     }
     
