@@ -60,9 +60,11 @@ struct WorkspacesListView: View {
     var viewModel: InitialViewModel
     @State private var shouldNavigateToMapView = false
     @State private var selectedWorkspace: Workspace?
+    
+    @AppStorage("loggedIn") private var loggedIn: Bool = false
 
     var body: some View {
-        ZStack {
+        ZStack(alignment: .topTrailing) {
             VStack(alignment: .leading) {
                 VStack(spacing: 30) {
                     Image("osmlogo")
@@ -114,6 +116,26 @@ struct WorkspacesListView: View {
                         .navigationBarBackButtonHidden(true)
                 }
             }
+            
+            Button(action: {
+                _ = KeychainManager.delete(key: "accessToken")
+                _ = KeychainManager.delete(key: "username")
+            loggedIn = false
+                UserProfileCache.shared.clearUserProfile()
+                
+                if let window = UIApplication.shared.windows.first {
+                       window.rootViewController = UIHostingController(rootView: PosmLoginView())
+                   }
+            }) {
+                Image(systemName: "rectangle.portrait.and.arrow.right")
+                    .font(.system(size: 15))
+                    .foregroundColor(.blue)
+                    .padding(8)
+                    .background(Color.white)
+                    .cornerRadius(8)
+                    .shadow(radius: 3)
+            }
+            .padding([.top, .trailing], 16)
         }
     }
 }
@@ -152,5 +174,8 @@ struct LocationDisabledView: View {
     LocationDisabledView()
     
 }
+
+
+
 
 
