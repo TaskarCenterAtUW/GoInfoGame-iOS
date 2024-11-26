@@ -20,7 +20,11 @@ struct QuestOptions: View {
     @State private var textFieldValue: String = ""
     
     @Binding var currentAnswer: String?
-       
+    
+    var uploadPhoto: (Bool) -> ()
+    
+    @State private var isCameraPresented = false
+
     var body: some View {
                 
         switch questType {
@@ -64,6 +68,35 @@ struct QuestOptions: View {
                                     .padding()
                                     .background(currentAnswer == option.value ? Color(red: 135/255, green: 62/255, blue: 242/255) : Color(red: 245/255, green: 245/255, blue: 245/255))
                                     .cornerRadius(25)
+                                
+                                if option.choiceFollowUp != nil && currentAnswer == option.value {
+                                    HStack {
+                                        Button(action: {
+                                            uploadPhoto(true)
+                                        }) {
+                                            HStack(spacing: 8) {
+                                                Image(systemName: "camera")
+                                                    .font(.system(size: 14, weight: .medium))
+                                                    .foregroundColor(.white)
+                                                
+                                                Text(option.choiceFollowUp ?? "Upload a picture")
+                                                    .font(.custom("Lato-Regular", size: 13))
+                                                    .foregroundColor(.white)
+                                            }
+                                            .padding(.horizontal, 16)
+                                            .padding(.vertical, 8)
+                                            .background(
+                                                LinearGradient(gradient: Gradient(colors: [Color.blue, Color.purple]), startPoint: .leading, endPoint: .trailing)
+                                            )
+                                            .cornerRadius(8)
+                                            .shadow(color: Color.gray.opacity(0.5), radius: 4, x: 2, y: 2)
+                                        }
+                                    }
+                                    .padding(.horizontal, 16)
+                                    .frame(maxWidth: .infinity)
+
+                                }
+                                
                             }
                         }
                       

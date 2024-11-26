@@ -14,6 +14,8 @@ struct LongQuestView: View {
     var quest: LongQuest
     
     var onChoiceSelected: (QuestAnswerChoice) -> ()
+    
+    var uploadPhoto: (Bool) -> ()
   
     var questOptions: [QuestAnswerChoice] {
         return quest.questAnswerChoices
@@ -34,7 +36,7 @@ struct LongQuestView: View {
             
             QuestOptions(options: questOptions, selectedAnswerId: $selectedAnswers[quest.id], onChoiceSelected: { selectedChoice in
                 onChoiceSelected(selectedChoice)
-            }, questType: quest.questType,currentAnswer: $currentAnswer)
+            }, questType: quest.questType,currentAnswer: $currentAnswer, uploadPhoto: uploadPhoto)
           }
           .padding(.vertical, 5)
     }
