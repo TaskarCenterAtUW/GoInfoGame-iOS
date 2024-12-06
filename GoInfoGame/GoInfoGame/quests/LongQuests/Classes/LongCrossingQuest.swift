@@ -35,7 +35,15 @@ class LongCrossingQuest: QuestBase, Quest {
             return _internalExpression
         }
         else {
-            _internalExpression = try? filter.toElementFilterExpression()
+            let crossingLongQuestQuery = QuestsRepository.shared.crossingsLongQuestModel?.questQuery
+            var crossingFilter = ""
+            
+            if let crossingLongQuestQuery = crossingLongQuestQuery {
+                crossingFilter = crossingLongQuestQuery + " and !ext:gig_complete"
+            } else {
+                crossingFilter = "ways with (highway=footway and footway=crossing) and !ext:gig_complete"
+            }
+            _internalExpression = try? crossingFilter.toElementFilterExpression()
             return _internalExpression
         }
     }
