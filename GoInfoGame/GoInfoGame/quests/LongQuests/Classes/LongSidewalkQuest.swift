@@ -41,7 +41,15 @@ class LongSidewalkQuest: QuestBase, Quest {
             return _internalExpression
         }
         else {
-            _internalExpression = try? filter.toElementFilterExpression()
+            let sideWalkLongQuestQuery = QuestsRepository.shared.sideWalkLongQuestModel?.questQuery
+            var sideWalkFilter = ""
+            
+            if let sideWalkLongQuestQuery = sideWalkLongQuestQuery {
+                sideWalkFilter = sideWalkLongQuestQuery + " and !ext:gig_complete"
+            } else {
+                sideWalkFilter = "ways with (highway=footway and footway=sidewalk) and !ext:gig_complete"
+            }
+            _internalExpression = try? sideWalkFilter.toElementFilterExpression()
             return _internalExpression
         }
     }
