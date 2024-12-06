@@ -37,7 +37,15 @@ class LongKerbQuest: QuestBase, Quest {
             return _internalExpression
         }
         else {
-            _internalExpression = try? filter.toElementFilterExpression()
+            let kerbLongQuestQuery = QuestsRepository.shared.kerbLongQuestModel?.questQuery
+            var kerbFilter = ""
+            
+            if let kerbLongQuestQuery = kerbLongQuestQuery {
+                kerbFilter = kerbLongQuestQuery + " and !ext:gig_complete"
+            } else {
+                kerbFilter = "nodes with barrier=kerb and !ext:gig_complete"
+            }
+            _internalExpression = try? kerbFilter.toElementFilterExpression()
             return _internalExpression
         }
     }
