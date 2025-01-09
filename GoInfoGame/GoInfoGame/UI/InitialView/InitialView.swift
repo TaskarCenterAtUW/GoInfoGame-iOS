@@ -73,6 +73,8 @@ struct WorkspacesListView: View {
     
     @Binding var isLoading: Bool
     
+    @State private var showAlert = false
+    
     var body: some View {
         
         if viewModel.workspaces.count == 1 {
@@ -90,6 +92,11 @@ struct WorkspacesListView: View {
                             _ = KeychainManager.save(key: "workspaceID", data: workspaceId)
                             DispatchQueue.main.async {
                                 self.shouldNavigateToMapView = true
+                            }
+                        } else {
+                            DispatchQueue.main.async {
+                                showAlert = true
+                                self.shouldNavigateToMapView = false
                             }
                         }
                     }
@@ -131,6 +138,11 @@ struct WorkspacesListView: View {
                                                 
                                                 let workspaceId = "\(workspace.id)"
                                                 _ = KeychainManager.save(key: "workspaceID", data: workspaceId)
+                                            } else {
+                                                DispatchQueue.main.async {
+                                                    showAlert = true
+                                                    self.shouldNavigateToMapView = false
+                                                }
                                             }
                                         })
                                     }  label: {
@@ -150,6 +162,9 @@ struct WorkspacesListView: View {
                     
                 }
                 .padding()
+            }
+            .alert("Workspace or quest not configured", isPresented: $showAlert) {
+                Button("OK", role: .cancel) { }
             }
         }
 
