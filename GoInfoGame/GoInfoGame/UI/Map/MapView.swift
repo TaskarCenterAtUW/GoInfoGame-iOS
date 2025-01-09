@@ -33,7 +33,7 @@ struct MapView: View {
                 CustomMap(region: viewModel.region,
                           userLocation: viewModel.userlocation,
                           trackingMode: $trackingMode,
-                          items: viewModel.items,
+                          items: $viewModel.items,
                           selectedQuest: $viewModel.selectedQuest,
                           shouldShowPolyline: $shouldShowPolyline,
                           
@@ -119,7 +119,7 @@ struct MapView: View {
             .popover(isPresented: $showPopover) {
                             VStack {
                                 Button("Hide Quest") {
-                                    // Handle hiding the quest
+                                    viewModel.hideQuest(elementId: viewModel.selectedQuest!.parent!.displayUnit.id)
                                     showPopover = false
                                 }
                                 .padding()
