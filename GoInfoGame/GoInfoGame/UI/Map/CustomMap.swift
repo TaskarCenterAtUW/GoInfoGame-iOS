@@ -16,7 +16,7 @@ struct CustomMap: UIViewRepresentable {
     var region: MKCoordinateRegion
     var userLocation = CLLocationCoordinate2D(latitude: 17.4700, longitude: 78.3534)
     @Binding var trackingMode: MapUserTrackingMode
-    var items: [DisplayUnitWithCoordinate]
+   @Binding var items: [DisplayUnitWithCoordinate]
     @Binding var selectedQuest: DisplayUnit?
     @Binding var shouldShowPolyline: Bool
     @Binding var isPresented: Bool
@@ -274,7 +274,9 @@ struct CustomMap: UIViewRepresentable {
         context.coordinator.isRegionSet = true
         
         
-        let annotations = items.map({$0.annotation})
+        let visibleAnnotations = items
+               .filter { !$0.isHidden }
+               .map { $0.annotation }
         
         if (existingCoordinates.isEmpty) {
            // print("Adding annotations completely")
@@ -282,11 +284,16 @@ struct CustomMap: UIViewRepresentable {
 //            for (index, annotation) in annotations.enumerated() {
 //                annotation.coordinate = adjustCoordinateForOverlap(annotation.coordinate, with: index)
 //            }
-            mapView.addAnnotations(annotations)
+            mapView.addAnnotations(visibleAnnotations)
         }
         
         let currentAnnotations = Set(mapView.annotations.compactMap { $0 as? DisplayUnitAnnotation })
-        let newAnnotations = Set(items.map({$0.annotation}))
+        
+        let currentVisibleAnnotations = items
+               .filter { !$0.isHidden }
+               .map { $0.annotation }
+        
+        let newAnnotations = Set(currentVisibleAnnotations)
         
         let annotationsToRemove = currentAnnotations.subtracting(newAnnotations)
         let annotationsToAdd = newAnnotations.subtracting(currentAnnotations)

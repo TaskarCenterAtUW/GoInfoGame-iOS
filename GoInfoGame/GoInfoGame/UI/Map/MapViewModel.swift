@@ -95,6 +95,15 @@ class MapViewModel: ObservableObject {
             }
       //  }
     }
+    
+    func hideQuest(elementId: String) {
+        print(elementId)
+        let questId = elementId.components(separatedBy: "-").first ?? ""
+        if let toBeHidden = self.items.first(where: {$0.id == Int(questId)!}) {
+            let index = self.items.firstIndex(where: {$0.id == Int(questId)!})
+            items[index!].isHidden = true
+        }
+    }
         
     private func boundingBoxAroundLocation(location: CLLocationCoordinate2D, distance: CLLocationDistance) -> BBox {
         let region = MKCoordinateRegion(center: location, latitudinalMeters: distance, longitudinalMeters: distance)

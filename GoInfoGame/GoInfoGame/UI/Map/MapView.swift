@@ -24,6 +24,8 @@ struct MapView: View {
     
     @State private var selectedDetent: PresentationDetent = .fraction(0.8)
     
+    @State private var showPopover = false
+    
     @AppStorage("baseUrl") var baseUrl = ""
         
     var body: some View {
@@ -31,11 +33,11 @@ struct MapView: View {
                 CustomMap(region: viewModel.region,
                           userLocation: viewModel.userlocation,
                           trackingMode: $trackingMode,
-                          items: viewModel.items,
+                          items: $viewModel.items,
                           selectedQuest: $viewModel.selectedQuest,
                           shouldShowPolyline: $shouldShowPolyline,
                           
-                          isPresented: $isPresented, contextualInfo: { contextualInfo in
+                          isPresented: $showPopover, contextualInfo: { contextualInfo in
                     print(contextualInfo)
                     selectedDetent = .fraction(0.8)
                     self.setContextualInfo(contextualinfo: contextualInfo)
@@ -114,6 +116,28 @@ struct MapView: View {
             }
             .toolbarBackground(.visible, for: .navigationBar)
         
+            .popover(isPresented: $showPopover) {
+                            VStack {
+                                Button("Hide Quest") {
+                                    viewModel.hideQuest(elementId: viewModel.selectedQuest!.parent!.displayUnit.id)
+                                    showPopover = false
+                                }
+                                .padding()
+                                
+                                Button("Answer Quest") {
+                                    showPopover = false
+                                    isPresented = true
+                                }
+                                .padding()
+                            }
+                            .onAppear {
+                                shouldShowPolyline = true
+                            }
+                            .frame(width: 200, height: 100)
+                            .presentationDetents([.fraction(0.5)])
+                        }
+           
+        
         .sheet(isPresented: $isPresented, content: {
             let selectedQuest = self.viewModel.selectedQuest
             CustomSheetView {
@@ -123,9 +147,7 @@ struct MapView: View {
             .scrollDisabled(false)
             .interactiveDismissDisabled()
             .environmentObject(contextualInfo)
-            .onAppear {
-                shouldShowPolyline = true
-            }
+           
         })
         .onReceive(MapViewPublisher.shared.dismissSheet) { scenario in
             

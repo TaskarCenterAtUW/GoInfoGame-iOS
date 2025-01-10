@@ -102,7 +102,7 @@ class QuestsRepository: ObservableObject {
                 return DisplayUnitWithCoordinate(
                     displayUnit: quest.quest.displayUnit,
                     coordinateInfo: randomCoordinate,
-                    id:Int64.random(in: 2...90000)
+                    id:Int64.random(in: 2...90000), isHidden: false
                 )
             }
     }
@@ -165,6 +165,7 @@ struct DisplayUnitWithCoordinate: Identifiable {
     let displayUnit: DisplayUnit
     let coordinateInfo: CLLocationCoordinate2D
     let id: Int64
+    var isHidden: Bool
 
     var annotation: DisplayUnitAnnotation {
         return DisplayUnitAnnotation(displayUnit: displayUnit, coordinate: coordinateInfo)
