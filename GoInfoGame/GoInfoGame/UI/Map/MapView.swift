@@ -119,8 +119,10 @@ struct MapView: View {
             .popover(isPresented: $showPopover) {
                             VStack {
                                 Button("Hide Quest") {
+                                                    
                                     viewModel.hideQuest(elementId: viewModel.selectedQuest!.parent!.displayUnit.id)
                                     showPopover = false
+                                    shouldShowPolyline = false
                                 }
                                 .padding()
                                 
