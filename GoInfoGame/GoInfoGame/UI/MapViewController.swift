@@ -24,8 +24,8 @@ class MapViewController: UIHostingController<MapView> {
         let profileButton = UIBarButtonItem(image: UIImage(systemName: "person.crop.circle.fill"), style: .plain, target: self, action: #selector(profileButtonTapped))
         navigationItem.leftBarButtonItem = profileButton
         
-        let settingsButton = UIBarButtonItem(image: UIImage(systemName: "gearshape.fill"), style: .plain, target: self, action: #selector(settingsButtonTapped))
-        navigationItem.rightBarButtonItem = settingsButton
+//        let settingsButton = UIBarButtonItem(image: UIImage(systemName: "gearshape.fill"), style: .plain, target: self, action: #selector(settingsButtonTapped))
+//        navigationItem.rightBarButtonItem = settingsButton
     }
     
     
@@ -45,11 +45,11 @@ class MapViewController: UIHostingController<MapView> {
         navigationController?.pushViewController(hostingController, animated: true)
      }
     
-    @objc func settingsButtonTapped() {
-         let settingsView = SettingsView()
-         let hostingController = UIHostingController(rootView: settingsView)
-        navigationController?.pushViewController(hostingController, animated: true)
-     }
+//    @objc func settingsButtonTapped() {
+//         let settingsView = QuestCategoryListView()
+//         let hostingController = UIHostingController(rootView: settingsView)
+//        navigationController?.pushViewController(hostingController, animated: true)
+//     }
     
     
     
