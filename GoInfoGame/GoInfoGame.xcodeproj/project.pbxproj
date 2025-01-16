@@ -217,6 +217,7 @@
 		FAD5C50A2AFCBE720040C61A /* GoInfoGameTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAD5C5092AFCBE720040C61A /* GoInfoGameTests.swift */; };
 		FAD5C5142AFCBE720040C61A /* GoInfoGameUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAD5C5132AFCBE720040C61A /* GoInfoGameUITests.swift */; };
 		FAD5C5162AFCBE720040C61A /* GoInfoGameUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAD5C5152AFCBE720040C61A /* GoInfoGameUITestsLaunchTests.swift */; };
+		FAE2584F2D39819300D2BB12 /* QuestCategoryListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAE2584E2D39819300D2BB12 /* QuestCategoryListView.swift */; };
 		FAF44FBD2B3084EC004FE664 /* OnboardingView1.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAF44FBC2B3084EC004FE664 /* OnboardingView1.swift */; };
 		FAF44FBF2B3084FB004FE664 /* OnboardingView2.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAF44FBE2B3084FB004FE664 /* OnboardingView2.swift */; };
 		FAF44FC12B30850A004FE664 /* OnboardingView3.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAF44FC02B30850A004FE664 /* OnboardingView3.swift */; };
@@ -529,6 +530,7 @@
 		FAD5C50F2AFCBE720040C61A /* GoInfoGameUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = GoInfoGameUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		FAD5C5132AFCBE720040C61A /* GoInfoGameUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoInfoGameUITests.swift; sourceTree = "<group>"; };
 		FAD5C5152AFCBE720040C61A /* GoInfoGameUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoInfoGameUITestsLaunchTests.swift; sourceTree = "<group>"; };
+		FAE2584E2D39819300D2BB12 /* QuestCategoryListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuestCategoryListView.swift; sourceTree = "<group>"; };
 		FAF44FBC2B3084EC004FE664 /* OnboardingView1.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingView1.swift; sourceTree = "<group>"; };
 		FAF44FBE2B3084FB004FE664 /* OnboardingView2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingView2.swift; sourceTree = "<group>"; };
 		FAF44FC02B30850A004FE664 /* OnboardingView3.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingView3.swift; sourceTree = "<group>"; };
@@ -1163,6 +1165,7 @@
 		A4E7119C2B57A22300C9DE08 /* quests */ = {
 			isa = PBXGroup;
 			children = (
+				FAE2584C2D39816600D2BB12 /* QuestCategory */,
 				FA8C74C02C4E89A600D28220 /* LongQuests */,
 				97412A972BBBF39000DF7983 /* KerbHeight */,
 				97412A922BBADACA00DF7983 /* StairFlights */,
@@ -1438,6 +1441,22 @@
 				FAD5C5152AFCBE720040C61A /* GoInfoGameUITestsLaunchTests.swift */,
 			);
 			path = GoInfoGameUITests;
+			sourceTree = "<group>";
+		};
+		FAE2584C2D39816600D2BB12 /* QuestCategory */ = {
+			isa = PBXGroup;
+			children = (
+				FAE2584D2D39817E00D2BB12 /* UI */,
+			);
+			path = QuestCategory;
+			sourceTree = "<group>";
+		};
+		FAE2584D2D39817E00D2BB12 /* UI */ = {
+			isa = PBXGroup;
+			children = (
+				FAE2584E2D39819300D2BB12 /* QuestCategoryListView.swift */,
+			);
+			path = UI;
 			sourceTree = "<group>";
 		};
 		FAFDA1FB2C6D321500ECEAE9 /* Login */ = {
@@ -2059,6 +2078,7 @@
 				97412A9B2BBBF3B400DF7983 /* KerbHeightForm.swift in Sources */,
 				FA8C74C42C4FDE1000D28220 /* LongFormModel.swift in Sources */,
 				973FC04A2B5A478C00878269 /* CrossMarkingForm.swift in Sources */,
+				FAE2584F2D39819300D2BB12 /* QuestCategoryListView.swift in Sources */,
 				FA8C74E32C639BA300D28220 /* LongCrossingQuest.swift in Sources */,
 				973FC03F2B59418B00878269 /* WayLit.swift in Sources */,
 				971342772BBD415600174EBF /* InitialViewController.swift in Sources */,
