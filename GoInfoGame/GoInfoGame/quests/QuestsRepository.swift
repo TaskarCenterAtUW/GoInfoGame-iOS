@@ -56,25 +56,35 @@ class QuestsRepository: ObservableObject {
           return longQuestModels.first(where: { $0.elementType.lowercased() == "crossings" })
       }
     
-    @Published var applicableQuests: [ApplicableQuest] = [
-       ApplicableQuest(quest: LongSidewalkQuest(), questId: "1"),
-        ApplicableQuest(quest: LongKerbQuest(), questId: "1"),
-       ApplicableQuest(quest: LongCrossingQuest(), questId: "2")
+    @Published var allQuests: [ApplicableQuest] = [
+           ApplicableQuest(quest: LongSidewalkQuest(), questId: "1"),
+           ApplicableQuest(quest: LongKerbQuest(), questId: "2"),
+           ApplicableQuest(quest: LongCrossingQuest(), questId: "3")
+       ]
        
-
-        
-//        ApplicableQuest(quest: CrossingType(), questId: "1"),
-//        ApplicableQuest(quest: CrossingIsland(), questId: "8"),
-//        ApplicableQuest(quest: CrossMarking(), questId: "10"),
-////        ApplicableQuest(quest: SidewalkSurface(), questId: "31"),
-//        ApplicableQuest(quest: StairFlights(), questId: "4"),
-//        ApplicableQuest(quest: TactilePavingSteps(), questId: "27"),
-////        ApplicableQuest(quest: SideWalkWidth(), questId: "3"),
-//        ApplicableQuest(quest: StepsIncline(), questId: "32"),
-//        ApplicableQuest(quest: TactilePavingCrosswalk(), questId: "14"),
-//        ApplicableQuest(quest: CrossingKerbHeight(), questId: "9"),
-//        ApplicableQuest(quest: KerbHeight(), questId: "19")
-    ]
+       var applicableQuests: [ApplicableQuest] {
+           allQuests.filter { $0.isDefault }
+       }
+    
+//    @Published var applicableQuests: [ApplicableQuest] = [
+//       ApplicableQuest(quest: LongSidewalkQuest(), questId: "1"),
+//        ApplicableQuest(quest: LongKerbQuest(), questId: "1"),
+//       ApplicableQuest(quest: LongCrossingQuest(), questId: "2")
+//       
+//
+//        
+////        ApplicableQuest(quest: CrossingType(), questId: "1"),
+////        ApplicableQuest(quest: CrossingIsland(), questId: "8"),
+////        ApplicableQuest(quest: CrossMarking(), questId: "10"),
+//////        ApplicableQuest(quest: SidewalkSurface(), questId: "31"),
+////        ApplicableQuest(quest: StairFlights(), questId: "4"),
+////        ApplicableQuest(quest: TactilePavingSteps(), questId: "27"),
+//////        ApplicableQuest(quest: SideWalkWidth(), questId: "3"),
+////        ApplicableQuest(quest: StepsIncline(), questId: "32"),
+////        ApplicableQuest(quest: TactilePavingCrosswalk(), questId: "14"),
+////        ApplicableQuest(quest: CrossingKerbHeight(), questId: "9"),
+////        ApplicableQuest(quest: KerbHeight(), questId: "19")
+//    ]
     
 //    @Published var applicableQuests: [ApplicableQuest] = [
 //        ApplicableQuest(quest: LongSidewalkQuest(), questId: "1"),
