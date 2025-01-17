@@ -128,7 +128,6 @@ struct MapView: View {
                         showPopover = false
                         shouldShowPolyline = false
                     }
-                    .padding()
                 
                     Button("Answer Quest") {
                         showPopover = false
@@ -136,11 +135,12 @@ struct MapView: View {
                     }
                     .padding()
                 }
+                .padding([.top], 50)
                 .frame(maxHeight: 50)
                 .onAppear {
                     shouldShowPolyline = true
                 }
-                .presentationDetents([.fraction(0.5)])
+                .presentationDetents([.fraction(0.1)])
             }
             .onChange(of: showPopover) { newValue in
                 if !newValue {
