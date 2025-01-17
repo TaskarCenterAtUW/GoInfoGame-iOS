@@ -147,10 +147,18 @@ struct MapView: View {
                     shouldShowPolyline = false
                 }
             }
+            .onChange(of: isPresented) { newValue in
+                if !newValue {
+                    shouldShowPolyline = false
+                }
+            }
         .sheet(isPresented: $isPresented, content: {
             let selectedQuest = self.viewModel.selectedQuest
             CustomSheetView {
                 selectedQuest?.parent?.form
+            }
+            .onAppear {
+                shouldShowPolyline = true
             }
             .presentationDetents([.fraction(0.8), .fraction(0.5), .fraction(0.1)], selection: $selectedDetent)
             .scrollDisabled(false)
