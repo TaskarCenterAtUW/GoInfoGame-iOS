@@ -140,7 +140,7 @@ struct MapView: View {
                 .onAppear {
                     shouldShowPolyline = true
                 }
-                .presentationDetents([.fraction(0.1)])
+                .presentationDetents([.fraction(0.2)])
             }
             .onChange(of: showPopover) { newValue in
                 if !newValue {
