@@ -15,18 +15,17 @@ struct QuestCategoryListView: View {
             List {
                 ForEach(questManager.allQuests.indices, id: \.self) { index in
                     HStack {
-                        Image(uiImage: questManager.allQuests[index].quest.icon)
-                            .resizable()
-                            .aspectRatio(contentMode: .fit)
-                            .frame(width: 30, height: 30)
-                        
-                        Text(questManager.allQuests[index].quest.title)
-                        
                         Button(action: {
                             questManager.allQuests[index].toggleIsDefault()
                         }) {
                             CheckBoxView(isChecked: questManager.allQuests[index].isDefault)
                         }
+                        
+                        Image(uiImage: questManager.allQuests[index].quest.icon)
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                            .frame(width: 30, height: 30)
+                        Text(questManager.allQuests[index].quest.title == "" ? questManager.longQuestModels[index].elementType : questManager.allQuests[index].quest.title)
                     }
                 }
             }

@@ -26,6 +26,7 @@ struct InitialView: View {
                                    .resizable()
                                    .frame(width: 27, height: 27)
                                    .padding([.leading], 18)
+                                   .foregroundStyle(Color(red: 135/255, green: 62/255, blue: 242/255))
                                 
                            }
                            Spacer()
