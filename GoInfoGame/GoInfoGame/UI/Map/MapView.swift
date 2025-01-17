@@ -87,6 +87,7 @@ struct MapView: View {
                 ToolbarItem(placement: .navigationBarLeading) {
                     NavigationLink(destination: UserProfileView()) {
                         Image(systemName: "person.crop.circle.fill")
+                            .foregroundStyle(Color(red: 135/255, green: 62/255, blue: 242/255))
                     }
                 }
                 ToolbarItem(placement: .navigationBarTrailing) {
@@ -96,6 +97,7 @@ struct MapView: View {
                     }) {
                         Image(systemName: "arrow.2.circlepath")
                             .frame(width: 20, height: 20)
+                            .foregroundStyle(Color(red: 135/255, green: 62/255, blue: 242/255))
                     }
                 }
 
