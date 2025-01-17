@@ -76,6 +76,9 @@ struct MapView: View {
                         }
                     }
                 }
+                
+                FloatingActionButton()
+                .padding([.bottom], 50)
             }
             .environmentObject(contextualInfo)
             .navigationBarHidden(isPresented)
