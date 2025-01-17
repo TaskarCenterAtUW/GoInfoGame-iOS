@@ -122,33 +122,43 @@ struct MapView: View {
             .toolbarBackground(.visible, for: .navigationBar)
         
             .popover(isPresented: $showPopover) {
-                            VStack {
-                                Button("Hide Quest") {
-                                                    
-                                    viewModel.hideQuest(elementId: viewModel.selectedQuest!.parent!.displayUnit.id)
-                                    showPopover = false
-                                    shouldShowPolyline = false
-                                }
-                                .padding()
-                                
-                                Button("Answer Quest") {
-                                    showPopover = false
-                                    isPresented = true
-                                }
-                                .padding()
-                            }
-                            .onAppear {
-                                shouldShowPolyline = true
-                            }
-                            .frame(width: 200, height: 100)
-                            .presentationDetents([.fraction(0.5)])
-                        }
-           
-        
+                VStack {
+                    Button("Hide Quest") {
+                        viewModel.hideQuest(elementId: viewModel.selectedQuest!.parent!.displayUnit.id)
+                        showPopover = false
+                        shouldShowPolyline = false
+                    }
+                    .padding()
+                
+                    Button("Answer Quest") {
+                        showPopover = false
+                        isPresented = true
+                    }
+                    .padding()
+                }
+                .frame(maxHeight: 50)
+                .onAppear {
+                    shouldShowPolyline = true
+                }
+                .presentationDetents([.fraction(0.5)])
+            }
+            .onChange(of: showPopover) { newValue in
+                if !newValue {
+                    shouldShowPolyline = false
+                }
+            }
+            .onChange(of: isPresented) { newValue in
+                if !newValue {
+                    shouldShowPolyline = false
+                }
+            }
         .sheet(isPresented: $isPresented, content: {
             let selectedQuest = self.viewModel.selectedQuest
             CustomSheetView {
                 selectedQuest?.parent?.form
+            }
+            .onAppear {
+                shouldShowPolyline = true
             }
             .presentationDetents([.fraction(0.8), .fraction(0.5), .fraction(0.1)], selection: $selectedDetent)
             .scrollDisabled(false)

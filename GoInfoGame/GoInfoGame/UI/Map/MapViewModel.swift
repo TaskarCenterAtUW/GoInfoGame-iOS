@@ -102,7 +102,17 @@ class MapViewModel: ObservableObject {
         if let toBeHidden = self.items.first(where: {$0.id == Int(questId)!}) {
             let index = self.items.firstIndex(where: {$0.id == Int(questId)!})
             items[index!].isHidden = true
+                        
+            var hiddenElementIds = UserDefaults.standard.array(forKey: "hiddenElements") as? [Int64] ?? []
+               
+               if !hiddenElementIds.contains(toBeHidden.id) {
+                   hiddenElementIds.append(toBeHidden.id)
+                   UserDefaults.standard.set(hiddenElementIds, forKey: "hiddenElements")
+               }
+
         }
+        
+        
     }
         
     private func boundingBoxAroundLocation(location: CLLocationCoordinate2D, distance: CLLocationDistance) -> BBox {
