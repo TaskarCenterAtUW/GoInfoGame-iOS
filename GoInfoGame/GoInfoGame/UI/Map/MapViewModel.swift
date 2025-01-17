@@ -106,7 +106,7 @@ class MapViewModel: ObservableObject {
             var hiddenElements = [Int64]()
 
             hiddenElements.append(toBeHidden.id)
-            UserDefaults.standard.set(hiddenElements, forKey: "hiddenElementIds")
+            UserDefaults.standard.set(hiddenElements, forKey: "hiddenElements")
 
         }
         
