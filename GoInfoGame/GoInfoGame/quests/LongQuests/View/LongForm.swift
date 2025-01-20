@@ -50,7 +50,7 @@ struct LongForm: View, QuestForm {
                         Text("\(elementHeading())")
                             .font(.custom("Lato-Bold", size: 16))
                         Spacer()
-                        Button("Hide Quest") {
+                        Button("Hide this") {
                             withAnimation {
                                 MapViewPublisher.shared.dismissSheet.send(.hideElement(questID ?? "0"))
                                 presentationMode.wrappedValue.dismiss()
