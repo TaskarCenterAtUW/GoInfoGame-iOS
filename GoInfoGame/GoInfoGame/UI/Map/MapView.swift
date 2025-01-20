@@ -182,6 +182,9 @@ struct MapView: View {
                 isSyncing = false
                 print("synced")
                 showAlert = true
+            case .hideElement(let elementId):
+                shouldShowPolyline = false
+                viewModel.hideQuest(elementId: elementId)
             }
         }
         .onReceive(QuestsPublisher.shared.refreshQuest, perform: { _ in
@@ -218,6 +221,7 @@ public enum SheetDismissalScenario {
     case submitted(String)
     case syncing
     case synced
+    case hideElement(String)
 }
 
 //TODO: Move to a new file
