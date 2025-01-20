@@ -46,23 +46,32 @@ struct LongForm: View, QuestForm {
     var body: some View {
         ZStack {
             VStack(alignment: .leading) {
-                VStack {
                     HStack {
                         Text("\(elementHeading())")
                             .font(.custom("Lato-Bold", size: 16))
-                            .padding([.leading], 20)
-                        Text("ID: \(questID ?? "0")")
-                            .font(.custom("Lato-Regular", size: 13))
-                            .padding([.leading], 20)
+                        Spacer()
+                        Button("Hide Quest") {
+                            withAnimation {
+                                MapViewPublisher.shared.dismissSheet.send(.hideElement(questID ?? "0"))
+                                presentationMode.wrappedValue.dismiss()
+                            }
+                            
+                        }
                     }
+                
                     .padding(EdgeInsets(top: 20, leading: 20, bottom: 10, trailing: 20))
+                
+                Text("ID: \(questID ?? "0")")
+                    .font(.custom("Lato-Regular", size: 13))
+                    .padding([.leading], 20)
+                
                     LongFormDismissButtonView {
                         withAnimation {
                             presentationMode.wrappedValue.dismiss()
                         }
                     }
                     .padding([.trailing], 20)
-                }
+                
              
                  
                 VStack {

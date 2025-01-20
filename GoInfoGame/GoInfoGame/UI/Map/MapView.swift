@@ -37,7 +37,7 @@ struct MapView: View {
                           selectedQuest: $viewModel.selectedQuest,
                           shouldShowPolyline: $shouldShowPolyline,
                           
-                          isPresented: $showPopover, contextualInfo: { contextualInfo in
+                          isPresented: $isPresented, contextualInfo: { contextualInfo in
                     print(contextualInfo)
                     selectedDetent = .fraction(0.8)
                     self.setContextualInfo(contextualinfo: contextualInfo)
@@ -108,40 +108,8 @@ struct MapView: View {
                         EmptyView()
                     }
                 }
-//                ToolbarItem(placement: .navigationBarTrailing) {
-//                    HStack {
-//                        NavigationLink(destination: QuestsListUIView())  {
-//                            Image(systemName: "list.bullet")
-//                        }
-//                        NavigationLink(destination: MeasureSidewalkView()) {
-//                            Image(systemName: "camera")
-//                        }
-//                    }
-//                }
             }
             .toolbarBackground(.visible, for: .navigationBar)
-        
-            .popover(isPresented: $showPopover) {
-                VStack {
-                    Button("Hide Quest") {
-                        viewModel.hideQuest(elementId: viewModel.selectedQuest!.parent!.displayUnit.id)
-                        showPopover = false
-                        shouldShowPolyline = false
-                    }
-                
-                    Button("Answer Quest") {
-                        showPopover = false
-                        isPresented = true
-                    }
-                    .padding()
-                }
-                .padding([.top], 50)
-                .frame(maxHeight: 50)
-                .onAppear {
-                    shouldShowPolyline = true
-                }
-                .presentationDetents([.fraction(0.2)])
-            }
             .onChange(of: showPopover) { newValue in
                 if !newValue {
                     shouldShowPolyline = false
@@ -182,6 +150,9 @@ struct MapView: View {
                 isSyncing = false
                 print("synced")
                 showAlert = true
+            case .hideElement(let elementId):
+                shouldShowPolyline = false
+                viewModel.hideQuest(elementId: elementId)
             }
         }
         .onReceive(QuestsPublisher.shared.refreshQuest, perform: { _ in
@@ -218,6 +189,7 @@ public enum SheetDismissalScenario {
     case submitted(String)
     case syncing
     case synced
+    case hideElement(String)
 }
 
 //TODO: Move to a new file
