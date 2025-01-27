@@ -14,6 +14,7 @@ class LocationManagerDelegate: NSObject, ObservableObject, CLLocationManagerDele
     @Published var isLocationDenied: Bool = false
     @Published var isLocationServicesOff: Bool = false
     var locationUpdateHandler: ((CLLocationCoordinate2D) -> Void)?
+    var headingUpdateHandler: ((Double) -> Void)?
     
     override init() {
         super.init()
@@ -83,6 +84,12 @@ class LocationManagerDelegate: NSObject, ObservableObject, CLLocationManagerDele
         DispatchQueue.main.async {
             self.location = mostRecentLocation
             self.locationUpdateHandler?(mostRecentLocation.coordinate)
+        }
+    }
+    
+    func locationManager(_ manager: CLLocationManager, didUpdateHeading newHeading: CLHeading) {
+        DispatchQueue.main.async {
+            self.headingUpdateHandler?(newHeading.trueHeading)
         }
     }
     
