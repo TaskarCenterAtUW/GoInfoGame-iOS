@@ -7,6 +7,7 @@
 
 import Foundation
 import UIKit
+import CoreLocation
 
 class KartaviewViewModel: ObservableObject {
     
@@ -14,8 +15,30 @@ class KartaviewViewModel: ObservableObject {
     
      var capturedImage: UIImage
     
+    let locationManagerDelegate = LocationManagerDelegate()
+    
+    private var heading: String?
+    
+    private var location: CLLocationCoordinate2D?
+    
     init(capturedImage: UIImage) {
         self.capturedImage = capturedImage
+        
+        locationManagerDelegate.locationManager.delegate = locationManagerDelegate
+        locationManagerDelegate.locationManager.requestWhenInUseAuthorization()
+        locationManagerDelegate.locationManager.startUpdatingLocation()
+        locationManagerDelegate.locationManager.startUpdatingHeading()
+        
+        locationManagerDelegate.locationUpdateHandler = { [weak self] location in
+            guard let self = self else { return }
+            self.location = location
+        }
+        
+        locationManagerDelegate.headingUpdateHandler = { [weak self] heading in
+            guard let self = self else { return }
+            self.heading = "\(heading)"
+            locationManagerDelegate.locationManager.stopUpdatingHeading()
+        }
     }
     
     // Step 1: Create Sequence
@@ -50,6 +73,9 @@ class KartaviewViewModel: ObservableObject {
         
         let kartaViewAccessToken = "96aca5c4b80709fc6d9aced613b51905c0fbc37870640d7bdabede269165bde7"
         
+        let latitude = location?.latitude.description ?? "0.0"
+        let longitude = location?.longitude.description ?? "0.0"
+        
         let formData: [[String: Any]] = [
             ["key": "access_token", "value": "96aca5c4b80709fc6d9aced613b51905c0fbc37870640d7bdabede269165bde7", "type": "text"],
              [
@@ -64,7 +90,7 @@ class KartaviewViewModel: ObservableObject {
               ],
               [
                 "key": "coordinate",
-                "value": "17.45566375642105, 78.36914176316918",
+                "value": "\(latitude), \(longitude)",
                 "type": "text"
               ],
               [
@@ -77,7 +103,12 @@ class KartaviewViewModel: ObservableObject {
                 "src": imageData,
                 "filename": "osmlogo.jpeg",
                 "type": "file"
-              ]
+              ],
+            [
+                "key": "headers",
+                "value": "\(heading ?? "0")",
+                "type": "text"
+            ]
             
         ]
         
