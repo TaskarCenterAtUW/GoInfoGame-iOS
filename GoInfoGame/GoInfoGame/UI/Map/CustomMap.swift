@@ -10,6 +10,42 @@ import SwiftUI
 import MapKit
 import osmparser
 
+
+
+class BingTileOverlay: MKTileOverlay {
+    private let apiKey = "AmsZqEUH1H00cfsKzQz44YOJ_hPQT1wkF-Po2TdhXVeTt23E_v5Sl64YMhlZnOsA"
+    
+     init() {
+        super.init(urlTemplate: nil)
+        self.tileSize = CGSize(width: 256, height: 256)
+        self.canReplaceMapContent = true
+    }
+    
+    override func url(forTilePath path: MKTileOverlayPath) -> URL {
+        let quadKey = quadKey(forTilePath: path)
+        let urlString = "https://ecn.t\(path.x % 4).tiles.virtualearth.net/tiles/a\(quadKey).jpeg?g=1&key=\(apiKey)"
+        
+        print("BING URL IS =====>>> \(urlString)")
+        
+        guard let url = URL(string: urlString) else {
+            fatalError("Invalid URL string: \(urlString)")
+        }
+        return url
+    }
+    
+    private func quadKey(forTilePath path: MKTileOverlayPath) -> String {
+        var quadKey = ""
+        for i in (0..<path.z).reversed() {
+            var digit = 0
+            let mask = 1 << i
+            if (path.x & mask) != 0 { digit += 1 }
+            if (path.y & mask) != 0 { digit += 2 }
+            quadKey.append("\(digit)")
+        }
+        return quadKey
+    }
+}
+
 // Custom Map for managing map interactions between SwiftUI and UIKit components
 struct CustomMap: UIViewRepresentable {
     
@@ -27,15 +63,29 @@ struct CustomMap: UIViewRepresentable {
     
     var contextualInfo: ((String) -> Void)?
     
+    @Binding var useBingMaps: Bool 
+    
     // Creates and configures the UIView
     func makeUIView(context: Context) -> MKMapView {
         let mapView = MKMapView()
+        mapView.mapType = .standard
         mapView.delegate = context.coordinator
         mapView.showsUserLocation = true
         // Set user tracking mode
         mapView.userTrackingMode = trackingMode.mkUserTrackingMode
         // Hide points of interest except street names
         mapView.pointOfInterestFilter = .excludingAll
+        
+        let currentAltitude = mapView.camera.altitude
+        
+        if useBingMaps {
+            let tileOverlay = BingTileOverlay()
+                  tileOverlay.minimumZ = 3  // Set minimum zoom level
+                  tileOverlay.maximumZ = 150 // Set maximum zoom level for better performance
+            DispatchQueue.main.async {
+                mapView.addOverlay(tileOverlay, level: .aboveLabels)
+            }
+        }
         
         return mapView
     }
@@ -46,6 +96,27 @@ struct CustomMap: UIViewRepresentable {
         context.coordinator.updateUserRegion(mapView)
         context.coordinator.updateVisibleAnnotations(in: mapView)
         manageAnnotations(mapView, context: context)
+        
+        // Remove existing overlays
+        mapView.overlays.forEach { mapView.removeOverlay($0) }
+
+           // Re-add overlays based on selection
+           if useBingMaps {
+               let tileOverlay = BingTileOverlay()
+               tileOverlay.minimumZ = 3
+               tileOverlay.maximumZ = 18
+               mapView.addOverlay(tileOverlay, level: .aboveLabels)
+           }
+        
+//        if useBingMaps {
+//            let tileOverlay = BingTileOverlay()
+//                  tileOverlay.minimumZ = 3  // Set minimum zoom level
+//                  tileOverlay.maximumZ = 18 // Set maximum zoom level for better performance
+//                  mapView.addOverlay(tileOverlay, level: .aboveLabels)
+//        } else {
+//            // If switching back to Apple Maps, remove any overlays
+//            mapView.removeOverlays(mapView.overlays)
+//        }
         
         if shouldShowPolyline {
             if !lineCoordinates.isEmpty {
@@ -110,7 +181,11 @@ struct CustomMap: UIViewRepresentable {
                 renderer.lineWidth = 5
                 return renderer
             }
-            return MKOverlayRenderer()
+            
+            if let tileOverlay = overlay as? MKTileOverlay {
+                return MKTileOverlayRenderer(tileOverlay: tileOverlay)
+            }
+            return MKOverlayRenderer(overlay: overlay)
         }
         
         func mapView(_ mapView: MKMapView, clusterAnnotationForMemberAnnotations memberAnnotations: [MKAnnotation]) -> MKClusterAnnotation {
