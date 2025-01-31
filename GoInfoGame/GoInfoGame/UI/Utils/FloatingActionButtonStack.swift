@@ -57,7 +57,7 @@ struct MapSwitcherButton: View {
                     .frame(width: 40, height: 40)
                     .shadow(radius: 5)
                 
-                Image(systemName: useBingMaps ? "map" : "globe")
+                Image(systemName: useBingMaps ? "square.3.layers.3d" : "map")
                     .font(.system(size: 28))
                     .foregroundColor(.white)
             }
