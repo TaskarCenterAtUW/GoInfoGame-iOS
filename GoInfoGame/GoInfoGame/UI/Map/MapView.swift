@@ -27,6 +27,8 @@ struct MapView: View {
     @State private var showPopover = false
     
     @AppStorage("baseUrl") var baseUrl = ""
+    
+    @State private var useBingMaps = false
         
     var body: some View {
             ZStack{
@@ -41,7 +43,7 @@ struct MapView: View {
                     print(contextualInfo)
                     selectedDetent = .fraction(0.8)
                     self.setContextualInfo(contextualinfo: contextualInfo)
-                })
+                }, useBingMaps: $useBingMaps)
                 .onChange(of: viewModel.selectedQuest) { _ in
                     shouldShowPolyline = false
                 }
@@ -77,8 +79,11 @@ struct MapView: View {
                     }
                 }
                 
-                FloatingActionButton()
-                .padding([.bottom], 50)
+              
+                FloatingActionButtonStack(mapButtonAction: {
+                    useBingMaps.toggle()
+                }, useBingMaps: useBingMaps)
+                   
             }
             .environmentObject(contextualInfo)
             .navigationBarHidden(isPresented)

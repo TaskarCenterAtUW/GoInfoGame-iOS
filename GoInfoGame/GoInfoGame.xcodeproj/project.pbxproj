@@ -218,7 +218,7 @@
 		FAD5C5142AFCBE720040C61A /* GoInfoGameUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAD5C5132AFCBE720040C61A /* GoInfoGameUITests.swift */; };
 		FAD5C5162AFCBE720040C61A /* GoInfoGameUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAD5C5152AFCBE720040C61A /* GoInfoGameUITestsLaunchTests.swift */; };
 		FAE2584F2D39819300D2BB12 /* QuestCategoryListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAE2584E2D39819300D2BB12 /* QuestCategoryListView.swift */; };
-		FAE258522D3A780F00D2BB12 /* FloatingActionButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAE258512D3A780F00D2BB12 /* FloatingActionButton.swift */; };
+		FAE258522D3A780F00D2BB12 /* FloatingActionButtonStack.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAE258512D3A780F00D2BB12 /* FloatingActionButtonStack.swift */; };
 		FAF44FBD2B3084EC004FE664 /* OnboardingView1.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAF44FBC2B3084EC004FE664 /* OnboardingView1.swift */; };
 		FAF44FBF2B3084FB004FE664 /* OnboardingView2.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAF44FBE2B3084FB004FE664 /* OnboardingView2.swift */; };
 		FAF44FC12B30850A004FE664 /* OnboardingView3.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAF44FC02B30850A004FE664 /* OnboardingView3.swift */; };
@@ -532,7 +532,7 @@
 		FAD5C5132AFCBE720040C61A /* GoInfoGameUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoInfoGameUITests.swift; sourceTree = "<group>"; };
 		FAD5C5152AFCBE720040C61A /* GoInfoGameUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoInfoGameUITestsLaunchTests.swift; sourceTree = "<group>"; };
 		FAE2584E2D39819300D2BB12 /* QuestCategoryListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuestCategoryListView.swift; sourceTree = "<group>"; };
-		FAE258512D3A780F00D2BB12 /* FloatingActionButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FloatingActionButton.swift; sourceTree = "<group>"; };
+		FAE258512D3A780F00D2BB12 /* FloatingActionButtonStack.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FloatingActionButtonStack.swift; sourceTree = "<group>"; };
 		FAF44FBC2B3084EC004FE664 /* OnboardingView1.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingView1.swift; sourceTree = "<group>"; };
 		FAF44FBE2B3084FB004FE664 /* OnboardingView2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingView2.swift; sourceTree = "<group>"; };
 		FAF44FC02B30850A004FE664 /* OnboardingView3.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingView3.swift; sourceTree = "<group>"; };
@@ -1281,7 +1281,7 @@
 			isa = PBXGroup;
 			children = (
 				FA87A80F2B68142F000A6BEA /* LoadingView.swift */,
-				FAE258512D3A780F00D2BB12 /* FloatingActionButton.swift */,
+				FAE258512D3A780F00D2BB12 /* FloatingActionButtonStack.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -2056,7 +2056,7 @@
 				05DBBB622B164D9A00B6F110 /* RealOPElement.swift in Sources */,
 				973FC0422B59467A00878269 /* BusStopLit.swift in Sources */,
 				97AC1C0A2B6B7F10004F0BF4 /* CustomVerticalButtonsList.swift in Sources */,
-				FAE258522D3A780F00D2BB12 /* FloatingActionButton.swift in Sources */,
+				FAE258522D3A780F00D2BB12 /* FloatingActionButtonStack.swift in Sources */,
 				973FC0352B592C0F00878269 /* StairNumberForm.swift in Sources */,
 				FA8C74C22C4E89C800D28220 /* LongForm.swift in Sources */,
 				FAC9E60F2B04F9C800E2C608 /* OverpassRequestManager.swift in Sources */,
