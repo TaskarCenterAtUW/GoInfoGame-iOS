@@ -19,6 +19,7 @@ class BingTileOverlay: MKTileOverlay {
         super.init(urlTemplate: nil)
         self.tileSize = CGSize(width: 256, height: 256)
         self.canReplaceMapContent = true
+         self.maximumZ = 24
     }
     
     override func url(forTilePath path: MKTileOverlayPath) -> URL {
@@ -35,6 +36,7 @@ class BingTileOverlay: MKTileOverlay {
     
     private func quadKey(forTilePath path: MKTileOverlayPath) -> String {
         var quadKey = ""
+        print("Z Level \(path.z)")
         for i in (0..<path.z).reversed() {
             var digit = 0
             let mask = 1 << i
@@ -104,7 +106,7 @@ struct CustomMap: UIViewRepresentable {
            if useBingMaps {
                let tileOverlay = BingTileOverlay()
                tileOverlay.minimumZ = 3
-               tileOverlay.maximumZ = 18
+               tileOverlay.maximumZ = 19
                mapView.addOverlay(tileOverlay, level: .aboveLabels)
            }
         
