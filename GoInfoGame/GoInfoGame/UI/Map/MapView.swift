@@ -29,7 +29,11 @@ struct MapView: View {
     @AppStorage("baseUrl") var baseUrl = ""
     
     @State private var useBingMaps = false
-        
+    
+    @State private var tappedCoordinate: CLLocationCoordinate2D? = nil
+    
+    @State private var showAddFeatureSheet = false
+                
     var body: some View {
             ZStack{
                 CustomMap(region: viewModel.region,
@@ -43,7 +47,10 @@ struct MapView: View {
                     print(contextualInfo)
                     selectedDetent = .fraction(0.8)
                     self.setContextualInfo(contextualinfo: contextualInfo)
-                }, useBingMaps: $useBingMaps)
+                }, useBingMaps: $useBingMaps, tappedCoordinate: $tappedCoordinate)
+                .onChange(of: tappedCoordinate) { _ in
+                    showAddFeatureSheet = tappedCoordinate != nil
+                }
                 .onChange(of: viewModel.selectedQuest) { _ in
                     shouldShowPolyline = false
                 }
@@ -125,6 +132,15 @@ struct MapView: View {
                     shouldShowPolyline = false
                 }
             }
+            .sheet(isPresented: $showAddFeatureSheet, content: {
+                if let coordinate = tappedCoordinate {
+                    AddFeatureView(isPresented: $showAddFeatureSheet)
+                    .presentationDetents([.fraction(0.8), .fraction(0.5)])
+                }
+            }
+                   
+            )
+        
         .sheet(isPresented: $isPresented, content: {
             let selectedQuest = self.viewModel.selectedQuest
             CustomSheetView {
