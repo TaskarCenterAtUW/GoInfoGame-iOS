@@ -42,6 +42,10 @@ struct LongForm: View, QuestForm {
     @State private var imagePath = ""
     
     @State private var uploadedPhotos: [String] = []
+    
+    @State private var showNotesBox = false
+    
+    @State private var noteText = ""
 
     var body: some View {
         ZStack {
@@ -65,15 +69,57 @@ struct LongForm: View, QuestForm {
                     .font(.custom("Lato-Regular", size: 13))
                     .padding([.leading], 20)
                 
+                HStack {
+                    Button {
+                        showNotesBox = true
+                    } label: {
+                        Text(" Compose Note")
+                            .font(.custom("Lato-Bold", size: 15))
+                    }
+                    .padding(EdgeInsets(top: 0, leading: 14, bottom: 0, trailing: 20))
+                    
+                    
                     LongFormDismissButtonView {
                         withAnimation {
                             presentationMode.wrappedValue.dismiss()
                         }
                     }
                     .padding([.trailing], 20)
+                }
                 
-             
-                 
+                if showNotesBox {
+                    VStack(alignment: .leading, spacing: 10) {
+                        TextEditor(text: $noteText)
+                            .textFieldStyle(RoundedBorderTextFieldStyle())
+                            .padding(.horizontal, 20)
+                            .border(Color(red: 135/255, green: 62/255, blue: 242/255))
+                        
+                        HStack {
+                            Button("Submit") {
+                                submitNote()
+                                showNotesBox = false
+                            }
+                            .padding()
+                            .frame(maxWidth: .infinity)
+                            .background(Color.blue)
+                            .foregroundColor(.white)
+                            .cornerRadius(8)
+                            .padding(.horizontal, 20)
+                            
+                            Button("Cancel") {
+                                showNotesBox = false
+                            }
+                            .padding()
+                            .frame(maxWidth: .infinity)
+                            .background(Color.red)
+                            .foregroundColor(.white)
+                            .cornerRadius(8)
+                            .padding(.horizontal, 20)
+                        }
+                    }
+                    .padding(.top, 10)
+                }
+                
                 VStack {
                     List {
                         if let quests = questsForLongForm() {
@@ -169,6 +215,10 @@ struct LongForm: View, QuestForm {
                     .shadow(radius: 10)
             }
         }
+    }
+    
+    func submitNote() {
+        print("Note to be submitted: \(noteText)")
     }
     
     func uploadImageToKartaView() {
