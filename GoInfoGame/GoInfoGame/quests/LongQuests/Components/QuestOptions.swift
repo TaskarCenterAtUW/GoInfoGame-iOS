@@ -37,7 +37,7 @@ struct QuestOptions: View {
                         }) {
                             VStack(alignment: .leading, spacing: 10) {
                                 if let imageUrl = option.imageURL, !imageUrl.isEmpty {
-                                    AsyncImage(url: URL(string: "https://media.istockphoto.com/id/1023284276/photo/black-asphalt-road-background-texture.jpg?s=612x612&w=0&k=20&c=ajA_pAZq95u_mprfKobNAGT_Q2OKn9Has28rhNxDRG0=")) { phase in
+                                    AsyncImage(url: URL(string: imageUrl)) { phase in
                                         switch phase {
                                         case .empty:
                                             // Display a placeholder while loading
