@@ -184,7 +184,7 @@ struct MapView: View {
                 }
             }
             .sheet(isPresented: $showCreateNoteSheet, content: {
-                CreateNoteView()
+                CreateNoteView(showNotesBox: $showCreateNoteSheet)
                     .presentationDetents([.fraction(0.6)])
                     .presentationDragIndicator(.visible)
                 
