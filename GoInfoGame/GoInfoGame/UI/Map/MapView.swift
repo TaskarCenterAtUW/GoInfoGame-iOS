@@ -32,7 +32,11 @@ struct MapView: View {
     
     @State private var tappedCoordinate: CLLocationCoordinate2D? = nil
     
+    @State private var showMapLongPressedSheet = false
+    
     @State private var showAddFeatureSheet = false
+    
+    @State private var showCreateNoteSheet = false
                 
     var body: some View {
             ZStack{
@@ -49,7 +53,7 @@ struct MapView: View {
                     self.setContextualInfo(contextualinfo: contextualInfo)
                 }, useBingMaps: $useBingMaps, tappedCoordinate: $tappedCoordinate)
                 .onChange(of: tappedCoordinate) { _ in
-                    showAddFeatureSheet = tappedCoordinate != nil
+                    showMapLongPressedSheet = tappedCoordinate != nil
                 }
                 .onChange(of: viewModel.selectedQuest) { _ in
                     shouldShowPolyline = false
@@ -132,15 +136,65 @@ struct MapView: View {
                     shouldShowPolyline = false
                 }
             }
-            .sheet(isPresented: $showAddFeatureSheet, content: {
-                if let coordinate = tappedCoordinate {
-                    AddFeatureView(isPresented: $showAddFeatureSheet)
-                    .presentationDetents([.fraction(0.8), .fraction(0.5)])
+            .sheet(isPresented: $showMapLongPressedSheet) {
+                if let _ = tappedCoordinate {
+                    VStack(spacing: 12) {
+                        Button(action: {
+                            showMapLongPressedSheet = false
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                                 showCreateNoteSheet = true
+                            }
+                        }) {
+                            HStack {
+                                Image(systemName: "note.text.badge.plus")
+                                Text("Create Note")
+                                    .fontWeight(.semibold)
+                            }
+                            .frame(maxWidth: .infinity)
+                            .padding()
+                            .background(Color.blue.opacity(0.2))
+                            .cornerRadius(12)
+                        }
+                        .foregroundColor(.blue)
+
+                        Button(action: {
+                            showMapLongPressedSheet = false
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                                showAddFeatureSheet = true
+                            }
+                        }) {
+                            HStack {
+                                Image(systemName: "plus.viewfinder")
+                                Text("Add Feature")
+                                    .fontWeight(.semibold)
+                            }
+                            .frame(maxWidth: .infinity)
+                            .padding()
+                            .background(Color.green.opacity(0.2))
+                            .cornerRadius(12)
+                        }
+                        .foregroundColor(.green)
+                    }
+                    .padding()
+                    .background(Color(.systemBackground))
+                    .cornerRadius(16)
+                    .shadow(radius: 5)
+                    .presentationDetents([.fraction(0.2)])
+                    .presentationDragIndicator(.visible)
                 }
             }
-                   
-            )
-        
+            .sheet(isPresented: $showCreateNoteSheet, content: {
+                CreateNoteView()
+                    .presentationDetents([.fraction(0.6)])
+                    .presentationDragIndicator(.visible)
+                
+            })
+            .sheet(isPresented: $showAddFeatureSheet) {
+                AddFeatureView(isPresented: $showAddFeatureSheet)
+                    .presentationDetents([.fraction(0.6)])
+                    .presentationDragIndicator(.visible)
+            }
+
         .sheet(isPresented: $isPresented, content: {
             let selectedQuest = self.viewModel.selectedQuest
             CustomSheetView {
@@ -150,6 +204,7 @@ struct MapView: View {
                 shouldShowPolyline = true
             }
             .presentationDetents([.fraction(0.8), .fraction(0.5), .fraction(0.1)], selection: $selectedDetent)
+            .presentationDragIndicator(.visible)
             .scrollDisabled(false)
             .interactiveDismissDisabled()
             .environmentObject(contextualInfo)
