@@ -10,7 +10,9 @@ protocol OSMPayload {
     
      func toPayload() -> String
 }
-
+protocol OSMCreatePayload {
+    func toCreatePayload() -> String
+}
 struct TagPayload: OSMPayload {
     let key:String
     var value:String
