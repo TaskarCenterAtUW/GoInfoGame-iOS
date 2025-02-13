@@ -271,6 +271,33 @@ class DatasyncManager {
         return result
     }
     
+    func uploadNode(node: inout OSMNode) async -> Result<Bool, Error> {
+        var localNode = node
+
+        let result: Result<Bool, Error> = await withCheckedContinuation { continuation in
+            let nodeBodyString = localNode.toCreatePayload()
+            let changesetUploadBody = "<osmChange version=\"0.6\" generator=\"GIG Change generator\">"+nodeBodyString+"</osmChange>"
+            let workspaceId = KeychainManager.load(key: "workspaceID")
+            
+            let nodeBody = changesetUploadBody.data(using: .utf8)
+    
+            if let accessToken = KeychainManager.load(key: "accessToken") {
+                ApiManager.shared.performRequest(to: .uploadChangeset(accessToken,"\(node.changeset)",workspaceId ?? "",nodeBody! ), setupType: .osm, modelType: String.self,useJSON: false) { result in
+                    switch result {
+                    case .success:
+                        continuation.resume(returning: .success(true))
+                    case .failure(let error):
+                        print(error)
+                        continuation.resume(returning: .failure(error))
+                    }
+                }
+            } else {
+                continuation.resume(returning: .failure(NSError(domain: "No AccessToken", code: 0, userInfo: nil)))
+            }
+        }
+        return result
+    }
+    
     func updateWay2(way:inout OSMWay) async -> Result<Int,Error>{
         let updatedResult = await self.updateWay(way: &way)
         let wayId = "\(way.id)"
@@ -409,6 +436,57 @@ class DatasyncManager {
         }
     }
     
+    func createNode(node: inout OSMNode) async -> Result<Bool, Error> {
+        do {
+            // Step 1: Open changeset
+            let changesetId = try await openChangeset().get()
+            node.changeset = changesetId
+            
+            // Step 2: Upload node
+            let uploadResult = await uploadNode(node: &node)
+            
+            switch uploadResult {
+            case .success:
+                // Step 3: Close changeset
+                let _ = try await closeChangeset(id: String(changesetId)).get()
+                return .success(true)
+            case .failure(let error):
+                return .failure(error)
+            }
+        } catch {
+            return .failure(error)
+        }
+    }
+
+
+
+
+
+
+    
+  //  @MainActor
+//    func createNode(node: inout OSMNode) async -> Result<Bool,Error> {
+//        do {
+//            //open changeset
+//            let changesetId = try await openChangeset().get()
+//            //create node/upload changeset
+//            node.changeset = changesetId
+//            let uploadNodeResult = await uploadNode(node: &node)
+//            
+//            switch uploadNodeResult {
+//            case .success:
+//                let _ = try await closeChangeset(id: String(changesetId)).get()
+//                return .success(true)
+//            case .failure(let failure):
+//                print(failure)
+//                return .failure(failure)
+//            }
+//        } catch (let error) {
+//            print(error)
+//            return .failure(error)
+//        }
+//    }
+    
     @MainActor
     func syncWay(way: inout OSMWay)  async -> Result<Bool,Error> {
         do {
@@ -434,3 +512,8 @@ class DatasyncManager {
         }
     }
 }
+
+// POSM has two components
+// Web ROR (ruby on rails) component -> handles /create,/modify -> No workspaces implementation POSM token
+// CGIMap component -> /changeset (create,upload,close) -> Workspaces + auth token integration-> TDEI token + workspace
+

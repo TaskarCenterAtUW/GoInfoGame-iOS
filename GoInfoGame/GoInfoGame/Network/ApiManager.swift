@@ -138,9 +138,11 @@ class ApiManager {
                 }
                 
                 do{
-                    let decodedString = try String(data: data, encoding: .utf8)!
-                    completion(.success(decodedString as! T))
-                    return
+                    if let response = response as? HTTPURLResponse, response.statusCode == 200 {
+                        let decodedString = try String(data: data, encoding: .utf8)!
+                        completion(.success(decodedString as! T))
+                        return
+                    }
                 }
                 catch {
                     print("Failed to decode the non JSON: \(error.localizedDescription)")
