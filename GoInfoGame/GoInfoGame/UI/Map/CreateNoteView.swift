@@ -10,7 +10,7 @@ import SwiftUI
 struct CreateNoteView: View {
     
     @State private var noteText = ""
-    @State private var showNotesBox = false
+    @Binding var showCreateNoteSheet: Bool
     
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
@@ -23,7 +23,7 @@ struct CreateNoteView: View {
             HStack {
                 Button("Submit") {
                     submitNote()
-                    showNotesBox = false
+                    showCreateNoteSheet = false
                 }
                 .padding()
                 .frame(maxWidth: .infinity)
@@ -33,7 +33,7 @@ struct CreateNoteView: View {
                 .padding(.horizontal, 20)
                 
                 Button("Cancel") {
-                    showNotesBox = false
+                    showCreateNoteSheet = false
                 }
                 .padding()
                 .frame(maxWidth: .infinity)
@@ -54,5 +54,5 @@ struct CreateNoteView: View {
 
 
 #Preview {
-    CreateNoteView()
+    CreateNoteView(showCreateNoteSheet: .constant(true))
 }
