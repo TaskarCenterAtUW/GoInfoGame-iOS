@@ -21,6 +21,7 @@ struct MapView: View {
     @State private var isSyncing = false
     @State private var showAlert = false
     @State private var alertMessage = ""
+    @State private var alertIcon = ""
     @StateObject var contextualInfo = ContextualInfo.shared
     
     @State private var selectedDetent: PresentationDetent = .fraction(0.8)
@@ -68,7 +69,7 @@ struct MapView: View {
                 }
                 if showAlert {
                     VStack {
-                        Image(systemName: "checkmark.circle.fill")
+                        Image(systemName: alertIcon)
                             .resizable()
                             .aspectRatio(contentMode: .fit)
                             .frame(width: 50, height: 50)
@@ -192,6 +193,11 @@ struct MapView: View {
             })
             .sheet(isPresented: $showAddFeatureSheet) {
                 AddFeatureView(tappedCoordinate: tappedCoordinate ?? CLLocationCoordinate2D(latitude: 0.0, longitude: 0.0), isPresented: $showAddFeatureSheet, dismissSheet: { message in
+                    if message.contains("wrong") {
+                        alertIcon = "exclamationmark.triangle.fill"
+                    } else {
+                        alertIcon = "checkmark.circle.fill"
+                    }
                     alertMessage = message
                     showAlert = true
                 })
@@ -231,6 +237,7 @@ struct MapView: View {
                 print("synced")
                 showAlert = true
                 alertMessage = "Quest Submitted"
+                alertIcon = "checkmark.circle.fill"
             case .hideElement(let elementId):
                 shouldShowPolyline = false
                 viewModel.hideQuest(elementId: elementId)
