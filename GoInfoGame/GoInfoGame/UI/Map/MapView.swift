@@ -20,6 +20,7 @@ struct MapView: View {
     @State private var shouldShowPolyline = true
     @State private var isSyncing = false
     @State private var showAlert = false
+    @State private var alertMessage = ""
     @StateObject var contextualInfo = ContextualInfo.shared
     
     @State private var selectedDetent: PresentationDetent = .fraction(0.8)
@@ -73,7 +74,7 @@ struct MapView: View {
                             .frame(width: 50, height: 50)
                             .foregroundColor(.green)
                             .padding(.bottom, 50)
-                        Text("Quest Submitted")
+                        Text(alertMessage)
                             .foregroundColor(.white)
                             .padding()
                             .background(Color.orange)
@@ -82,7 +83,7 @@ struct MapView: View {
                     .padding([.all], 50)
                     .background(Color.white)
                     .accessibilityElement(children: .combine)
-                    .accessibilityLabel("Quest Submitted")
+                    .accessibilityLabel(alertMessage)
                     .onAppear {
                         DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
                             showAlert = false // Dismiss notification box after 1 second
@@ -190,7 +191,10 @@ struct MapView: View {
                 
             })
             .sheet(isPresented: $showAddFeatureSheet) {
-                AddFeatureView(isPresented: $showAddFeatureSheet)
+                AddFeatureView(tappedCoordinate: tappedCoordinate ?? CLLocationCoordinate2D(latitude: 0.0, longitude: 0.0), isPresented: $showAddFeatureSheet, dismissSheet: { message in
+                    alertMessage = message
+                    showAlert = true
+                })
                     .presentationDetents([.fraction(0.6)])
                     .presentationDragIndicator(.visible)
             }
@@ -226,6 +230,7 @@ struct MapView: View {
                 isSyncing = false
                 print("synced")
                 showAlert = true
+                alertMessage = "Quest Submitted"
             case .hideElement(let elementId):
                 shouldShowPolyline = false
                 viewModel.hideQuest(elementId: elementId)
