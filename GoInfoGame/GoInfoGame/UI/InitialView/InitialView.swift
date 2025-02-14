@@ -164,7 +164,7 @@ struct WorkspacesListView: View {
                 }
                 .padding()
             }
-            .alert("Workspace or quest not configured", isPresented: $showAlert) {
+            .alert("Quests not configured. Choose another workspace.", isPresented: $showAlert) {
                 Button("OK", role: .cancel) { }
             }
         }
