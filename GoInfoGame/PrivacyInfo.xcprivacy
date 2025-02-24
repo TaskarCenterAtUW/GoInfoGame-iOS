@@ -8,8 +8,8 @@
    Copyright (c) 2025 ___ORGANIZATIONNAME___. All rights reserved.
 -->
 <plist version="1.0">
-
     <dict>
+        <!-- APIs accessed by RealmSwift -->
         <key>NSPrivacyAccessedAPITypes</key>
         <array>
             <dict>
@@ -21,8 +21,18 @@
                 <string>FileProviderMetadata</string>
             </dict>
         </array>
+
+        <!-- Data collected by RealmSwift -->
+        <key>NSPrivacyCollectedDataTypes</key>
+        <array>
+            <dict>
+                <key>NSPrivacyCollectedDataType</key>
+                <string>AppFunctionality</string>
+                <key>NSPrivacyCollectedDataTypeReason</key>
+                <string>Analytics</string>
+            </dict>
+        </array>
     </dict>
-    
 </plist>
 
 
