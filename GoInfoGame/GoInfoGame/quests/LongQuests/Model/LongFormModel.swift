@@ -37,7 +37,7 @@ struct LongQuest: Codable, Identifiable {
     var questTitle, questDescription: String
     var questType: QuestType
     var questTag: String
-    var questAnswerChoices: [QuestAnswerChoice]
+    var questAnswerChoices: [QuestAnswerChoice]?
     var questImageURL: String?
     var questAnswerValidation: QuestAnswerValidation?
     var questAnswerDependency: QuestAnswerDependency?

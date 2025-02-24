@@ -18,7 +18,7 @@ struct LongQuestView: View {
     var uploadPhoto: (Bool) -> ()
   
     var questOptions: [QuestAnswerChoice] {
-        return quest.questAnswerChoices
+        return quest.questAnswerChoices ?? []
     }
     
     @Binding var currentAnswer:String?
