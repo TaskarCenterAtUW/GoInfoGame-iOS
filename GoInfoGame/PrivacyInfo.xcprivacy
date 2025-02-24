@@ -21,7 +21,6 @@
                 <string>FileProviderMetadata</string>
             </dict>
         </array>
-
         <!-- Data collected by RealmSwift -->
         <key>NSPrivacyCollectedDataTypes</key>
         <array>
@@ -30,6 +29,15 @@
                 <string>AppFunctionality</string>
                 <key>NSPrivacyCollectedDataTypeReason</key>
                 <string>Analytics</string>
+                <key>NSPrivacyCollectedDataTypeLinked</key>
+                <false/>
+                <key>NSPrivacyCollectedDataTypeTracking</key>
+                <false/>
+                <key>NSPrivacyCollectedDataTypePurposes</key>
+                <array>
+                    <string>AppFunctionality</string>
+                    <string>Analytics</string>
+                </array>
             </dict>
         </array>
     </dict>
