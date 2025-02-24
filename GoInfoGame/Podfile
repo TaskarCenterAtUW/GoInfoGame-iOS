@@ -8,7 +8,7 @@ target 'GoInfoGame' do
   # Pods for GoInfoGame
   
 #  pod 'SwiftOverpassAPI'
-  pod 'RealmSwift'
+  pod 'RealmSwift', '10.46.0'
   
   post_install do |installer|
        installer.generated_projects.each do |project|
