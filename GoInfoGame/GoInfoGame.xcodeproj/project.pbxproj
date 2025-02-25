@@ -189,8 +189,6 @@
 		FA50718C2D54E08800CE9798 /* AddFeatureView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA50718B2D54E08800CE9798 /* AddFeatureView.swift */; };
 		FA50718E2D54E1D200CE9798 /* BingTileOverlay.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA50718D2D54E1D200CE9798 /* BingTileOverlay.swift */; };
 		FA5071902D5B31CC00CE9798 /* CreateNoteView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA50718F2D5B31CC00CE9798 /* CreateNoteView.swift */; };
-		FA5071922D6CA3AC00CE9798 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = FA5071912D6CA3AC00CE9798 /* PrivacyInfo.xcprivacy */; };
-		FA5071942D6CB23C00CE9798 /* GoInfoGame-PrivacyReport.pdf in Resources */ = {isa = PBXBuildFile; fileRef = FA5071932D6CB23C00CE9798 /* GoInfoGame-PrivacyReport.pdf */; };
 		FA5853C12B21F17F00301CDA /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA5853C02B21F17F00301CDA /* OnboardingView.swift */; };
 		FA87A8102B68142F000A6BEA /* LoadingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA87A80F2B68142F000A6BEA /* LoadingView.swift */; };
 		FA87A8132B6AC019000A6BEA /* StepsRampTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA87A8112B6AC019000A6BEA /* StepsRampTests.swift */; };
@@ -502,8 +500,6 @@
 		FA50718B2D54E08800CE9798 /* AddFeatureView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddFeatureView.swift; sourceTree = "<group>"; };
 		FA50718D2D54E1D200CE9798 /* BingTileOverlay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BingTileOverlay.swift; sourceTree = "<group>"; };
 		FA50718F2D5B31CC00CE9798 /* CreateNoteView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateNoteView.swift; sourceTree = "<group>"; };
-		FA5071912D6CA3AC00CE9798 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
-		FA5071932D6CB23C00CE9798 /* GoInfoGame-PrivacyReport.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = "GoInfoGame-PrivacyReport.pdf"; sourceTree = "<group>"; };
 		FA5853C02B21F17F00301CDA /* OnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingView.swift; sourceTree = "<group>"; };
 		FA87A80F2B68142F000A6BEA /* LoadingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingView.swift; sourceTree = "<group>"; };
 		FA87A8112B6AC019000A6BEA /* StepsRampTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StepsRampTests.swift; sourceTree = "<group>"; };
@@ -1388,8 +1384,6 @@
 		FAD5C4E62AFCBE700040C61A = {
 			isa = PBXGroup;
 			children = (
-				FA5071932D6CB23C00CE9798 /* GoInfoGame-PrivacyReport.pdf */,
-				FA5071912D6CA3AC00CE9798 /* PrivacyInfo.xcprivacy */,
 				FAD5C4F12AFCBE700040C61A /* GoInfoGame */,
 				FAD5C5082AFCBE720040C61A /* GoInfoGameTests */,
 				FAD5C5122AFCBE720040C61A /* GoInfoGameUITests */,
@@ -1808,9 +1802,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				FA5071922D6CA3AC00CE9798 /* PrivacyInfo.xcprivacy in Resources */,
 				973FC00A2B4D2A6D00878269 /* Localizable.strings in Resources */,
-				FA5071942D6CB23C00CE9798 /* GoInfoGame-PrivacyReport.pdf in Resources */,
 				0513BE772B2B464800FB61CF /* samplepoint.gpx in Resources */,
 				FAD5C4FF2AFCBE720040C61A /* LaunchScreen.storyboard in Resources */,
 				FAD5C4FC2AFCBE720040C61A /* Assets.xcassets in Resources */,
