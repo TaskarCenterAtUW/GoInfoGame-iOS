@@ -190,6 +190,7 @@
 		FA50718E2D54E1D200CE9798 /* BingTileOverlay.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA50718D2D54E1D200CE9798 /* BingTileOverlay.swift */; };
 		FA5071902D5B31CC00CE9798 /* CreateNoteView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA50718F2D5B31CC00CE9798 /* CreateNoteView.swift */; };
 		FA5853C12B21F17F00301CDA /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA5853C02B21F17F00301CDA /* OnboardingView.swift */; };
+		FA5B2BA02D6DD595001C7186 /* LongGeneric.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA5B2B9F2D6DD58D001C7186 /* LongGeneric.swift */; };
 		FA87A8102B68142F000A6BEA /* LoadingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA87A80F2B68142F000A6BEA /* LoadingView.swift */; };
 		FA87A8132B6AC019000A6BEA /* StepsRampTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA87A8112B6AC019000A6BEA /* StepsRampTests.swift */; };
 		FA87A8152B6AC4E2000A6BEA /* BusStopLitTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA87A8142B6AC4E2000A6BEA /* BusStopLitTests.swift */; };
@@ -501,6 +502,7 @@
 		FA50718D2D54E1D200CE9798 /* BingTileOverlay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BingTileOverlay.swift; sourceTree = "<group>"; };
 		FA50718F2D5B31CC00CE9798 /* CreateNoteView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateNoteView.swift; sourceTree = "<group>"; };
 		FA5853C02B21F17F00301CDA /* OnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingView.swift; sourceTree = "<group>"; };
+		FA5B2B9F2D6DD58D001C7186 /* LongGeneric.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LongGeneric.swift; sourceTree = "<group>"; };
 		FA87A80F2B68142F000A6BEA /* LoadingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingView.swift; sourceTree = "<group>"; };
 		FA87A8112B6AC019000A6BEA /* StepsRampTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StepsRampTests.swift; sourceTree = "<group>"; };
 		FA87A8142B6AC4E2000A6BEA /* BusStopLitTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BusStopLitTests.swift; sourceTree = "<group>"; };
@@ -1357,6 +1359,7 @@
 		FA8C74DF2C6394AF00D28220 /* Classes */ = {
 			isa = PBXGroup;
 			children = (
+				FA5B2B9F2D6DD58D001C7186 /* LongGeneric.swift */,
 				FA8C74D92C60FD3100D28220 /* LongSidewalkQuest.swift */,
 				FA8C74E02C639B7200D28220 /* LongKerbQuest.swift */,
 				FA8C74E22C639BA300D28220 /* LongCrossingQuest.swift */,
@@ -2077,6 +2080,7 @@
 				18EC425C2B84987200DE05D7 /* TactilePavingCrosswalkForm.swift in Sources */,
 				05DBBB622B164D9A00B6F110 /* RealOPElement.swift in Sources */,
 				973FC0422B59467A00878269 /* BusStopLit.swift in Sources */,
+				FA5B2BA02D6DD595001C7186 /* LongGeneric.swift in Sources */,
 				97AC1C0A2B6B7F10004F0BF4 /* CustomVerticalButtonsList.swift in Sources */,
 				FAE258522D3A780F00D2BB12 /* FloatingActionButtonStack.swift in Sources */,
 				FA50718E2D54E1D200CE9798 /* BingTileOverlay.swift in Sources */,

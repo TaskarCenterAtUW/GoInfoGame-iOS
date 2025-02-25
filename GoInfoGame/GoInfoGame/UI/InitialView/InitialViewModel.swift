@@ -59,6 +59,11 @@ class InitialViewModel: ObservableObject {
                 case .success(let longQuestsResponse):
                     self.longQuests = longQuestsResponse
                     self.saveLongQuestsToDefaults(longQuestJson: longQuestsResponse)
+                    // Add one generic form for each longquest
+                    for quest in self.longQuests {
+                        // Add questId based on index
+                        QuestsRepository.shared.allQuests.append(ApplicableQuest(quest: LongGenericQuest(questId: "22", questQuery: quest.questQuery), questId: "22"))
+                    }
                     self.isLoading = false
                     completion(true)
                 case .failure(let error):

@@ -244,6 +244,8 @@ struct LongForm: View, QuestForm {
             return "Curb"
         case .crossing:
             return "Crossings"
+        case .generic :
+            return "General"
         case nil:
             return ""
         }
@@ -259,6 +261,8 @@ struct LongForm: View, QuestForm {
             longQuest = QuestsRepository.shared.kerbLongQuestModel?.quests
         case .crossing:
             longQuest = QuestsRepository.shared.crossingsLongQuestModel?.quests
+        case .generic:
+            longQuest = QuestsRepository.shared.crossingsLongQuestModel?.quests
         case .none:
             print("None")
         }
@@ -272,5 +276,5 @@ struct LongForm: View, QuestForm {
 
 
 enum LongFormElementType {
-    case sidewalk,kerb,crossing
+    case sidewalk,kerb,crossing,generic
 }
