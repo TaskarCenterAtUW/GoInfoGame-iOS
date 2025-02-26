@@ -102,16 +102,14 @@ struct AddFeatureView: View {
         guard let feature = selectedFeature else { return }
         isLoading = true
 
-        Task {
-            var powerpole = UserNodesHelper.getPowerPole(
-                lat: tappedCoordinate.latitude,
-                lon: tappedCoordinate.longitude,
-                changeset: 1,
-                tags: feature.tags
-            )
-            
-            let result = await DatasyncManager.shared.createNode(node: &powerpole)
+        var powerpole = UserNodesHelper.getPowerPole(
+            lat: tappedCoordinate.latitude,
+            lon: tappedCoordinate.longitude,
+            changeset: 1,
+            tags: feature.tags
+        )
 
+        DatasyncManager.shared.createNode(node: &powerpole) { result in
             DispatchQueue.main.async {
                 isLoading = false
                 switch result {
@@ -125,6 +123,7 @@ struct AddFeatureView: View {
             }
         }
     }
+
 
 
 }

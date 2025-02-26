@@ -69,39 +69,43 @@ class DatasyncManager {
         }
         
         // sync each
-        for (key,node) in nodesToSync {
+        for (key, node) in nodesToSync {
             var payload = node.asOSMNode()
-            let result = await syncNode(node: &payload)
-            switch result{
-            case .success(let isFinished):
-                print("Synced \(payload)")
-                DispatchQueue.main.async {
-                    // your code here
-                    self.dbInstance.assignChangesetId(obj: key, changesetId: payload.changeset)
-                }
-                
-            case .failure(let error):
-                print("Failed to sync \(payload)")
-            }
-        }
-        // TODO: Add logic to sync Way
-        for (key,way) in waysToSync {
-            var payload = way.asOSMWay()
-            // update the way
-            let result = await syncWay(way: &payload)
-            switch result{
-            case .success(let isFinished):
-                print("Synced \(payload)")
-                DispatchQueue.main.async {
-                    // your code here
-                    self.dbInstance.assignChangesetId(obj: key, changesetId: payload.changeset)
-                }
-                
-            case .failure(let error):
-                print("Failed to sync \(payload)")
-            }
             
+            syncNode(node: &payload) { result in
+                switch result {
+                case .success(let isFinished):
+                    print("Synced \(payload)")
+                    DispatchQueue.main.async {
+                        // Your database update logic
+                        self.dbInstance.assignChangesetId(obj: key, changesetId: payload.changeset)
+                    }
+                    
+                case .failure(let error):
+                    print("Failed to sync \(payload): \(error.localizedDescription)")
+                }
+            }
         }
+
+        // TODO: Add logic to sync Way
+        for (key, way) in waysToSync {
+            var payload = way.asOSMWay()
+            
+            syncWay(way: &payload) { result in
+                switch result {
+                case .success:
+                    print("Synced \(payload)")
+                    DispatchQueue.main.async {
+                        self.dbInstance.assignChangesetId(obj: key, changesetId: payload.changeset)
+                    }
+                    
+                case .failure(let error):
+                    print("Failed to sync \(payload): \(error)")
+                }
+            }
+        }
+
+
         isSynching = false
         
     }
@@ -124,42 +128,38 @@ class DatasyncManager {
         }
     }
     
-    func openChangeset() async -> Result<Int,Error> {
+    func openChangeset(completion: @escaping (Result<Int, Error>) -> Void) {
+        var versionNumber = ""
+        var buildNumber = ""
         
-        await withCheckedContinuation { continuation in
-            
-            var versionNumber = ""
-            var buildNumber = ""
-            if let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String, let build = Bundle.main.infoDictionary?["CFBundleVersion"] as? String {
-                versionNumber = version
-                buildNumber = build
-            }
-            
-            let createdBy = "\(versionNumber)(\(buildNumber))"
-            
-            let osmPayloadString = OSMChangesetPayload(createdByTag: createdBy).toPayload()
-            
-            let osmPayload = osmPayloadString.data(using: .utf8)
-             
-            
-            let workspaceId = KeychainManager.load(key: "workspaceID")
-            
-            if let accessToken = KeychainManager.load(key: "accessToken") {
-                
-                ApiManager.shared.performRequest(to: .openChangesets(accessToken, workspaceId ?? "" ,osmPayload!), setupType: .osm, modelType: Int.self) { result in
-                    switch result {
-                    case .success(let changesetID):
-                      //  self.currentChangesetId = changesetID
-                         print("changesetID is ---\(changesetID)")
-                        continuation.resume(returning: .success(changesetID))
-                    case .failure(let error):
-                        print(error)
-                        continuation.resume(returning: .failure(error))
-                    }
-                }
+        if let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String,
+           let build = Bundle.main.infoDictionary?["CFBundleVersion"] as? String {
+            versionNumber = version
+            buildNumber = build
+        }
+        
+        let createdBy = "\(versionNumber)(\(buildNumber))"
+        let osmPayloadString = OSMChangesetPayload(createdByTag: createdBy).toPayload()
+        let osmPayload = osmPayloadString.data(using: .utf8)
+        let workspaceId = KeychainManager.load(key: "workspaceID")
+
+        guard let accessToken = KeychainManager.load(key: "accessToken") else {
+            completion(.failure(NSError(domain: "No AccessToken", code: 0, userInfo: nil)))
+            return
+        }
+        
+        ApiManager.shared.performRequest(to: .openChangesets(accessToken, workspaceId ?? "", osmPayload!), setupType: .osm, modelType: Int.self) { result in
+            switch result {
+            case .success(let changesetID):
+                print("ChangesetID is ---\(changesetID)")
+                completion(.success(changesetID))
+            case .failure(let error):
+                print(error)
+                completion(.failure(error))
             }
         }
     }
+
 
     ///////////////
 //    public func openChangeSet(createdByTag: String, _ completion: @escaping((Result<Int,Error>)->Void)) {
@@ -186,173 +186,210 @@ class DatasyncManager {
 //    }
     //////////
     
-    func closeChangeset(id:String ) async -> Result<Bool,Error> {
-        
-        
-        
-        await withCheckedContinuation { continuation in
-            osmConnection.closeChangeSet(id: id) { result in
-                continuation.resume(returning: result)
-            }
+    func closeChangeset(id: String, completion: @escaping (Result<Bool, Error>) -> Void) {
+        osmConnection.closeChangeSet(id: id) { result in
+            completion(result) // Simply pass along the result
         }
     }
 
+
     // utility function to act as substitute for osmConnection functions
-    func updateWay(way: inout OSMWay) async -> Result<Int, Error> {
+    func updateWay(way: inout OSMWay, completion: @escaping (Result<Int, Error>) -> Void) {
         var localWay = way
+        let wayBodyString = localWay.toPayload()
+        let changesetUploadBody = "<osmChange version=\"0.6\" generator=\"GIG Change generator\">" + wayBodyString + "</osmChange>"
+        let workspaceId = KeychainManager.load(key: "workspaceID")
+        let wayBody = changesetUploadBody.data(using: .utf8)
+        let wayId = "\(localWay.id)"
+        let newVersion = way.version + 1
 
-        let result: Result<Int, Error> = await withCheckedContinuation { continuation in
-            let wayBodyString = localWay.toPayload()
-            let changesetUploadBody = "<osmChange version=\"0.6\" generator=\"GIG Change generator\">"+wayBodyString+"</osmChange>"
-            let workspaceId = KeychainManager.load(key: "workspaceID")
-            
-            let wayBody = changesetUploadBody.data(using: .utf8)
-            let wayId = "\(localWay.id)"
-            // Create the changeset upload payload
-            let newVersion = way.version + 1
+        guard let accessToken = KeychainManager.load(key: "accessToken") else {
+            completion(.failure(NSError(domain: "No AccessToken", code: 0, userInfo: nil)))
+            return
+        }
 
-            if let accessToken = KeychainManager.load(key: "accessToken") {
-                ApiManager.shared.performRequest(to: .uploadChangeset(accessToken,"\(way.changeset)",workspaceId ?? "",wayBody! ), setupType: .osm, modelType: String.self,useJSON: false) { result in
-                    switch result {
-                    case .success(let success):
-                        localWay.tags.forEach { (key: String, value: String) in
-                            localWay.tags[key] = value
-                        }
-                        continuation.resume(returning: .success(newVersion))
-                    case .failure(let error):
-                        // handle 409
-//                        let latestWay = await self.fetchWay2(wayId: wayId).get()
-//                        let mergedWay = self.mergeWays(localWay: way, latestWay: latestWay)
-                        
-                        print(error)
-                        continuation.resume(returning: .failure(error))
-                    }
+        ApiManager.shared.performRequest(
+            to: .uploadChangeset(accessToken, "\(way.changeset)", workspaceId ?? "", wayBody!),
+            setupType: .osm,
+            modelType: String.self,
+            useJSON: false
+        ) { result in
+            switch result {
+            case .success:
+                localWay.tags.forEach { (key: String, value: String) in
+                    localWay.tags[key] = value
                 }
-            } else {
-                continuation.resume(returning: .failure(NSError(domain: "No AccessToken", code: 0, userInfo: nil)))
+                completion(.success(newVersion))
+
+            case .failure(let error):
+                print(error)
+                completion(.failure(error))
             }
         }
-        way = localWay
-        return result
     }
+
     
     // utility function to act as substitute for osmConnection functions
-    func updateNode(node: inout OSMNode) async -> Result<Int, Error> {
+    func updateNode(node: inout OSMNode, completion: @escaping (Result<Int, Error>) -> Void) {
+        var localNode = node  // ✅ Create a copy of `node`
+        let nodeBodyString = localNode.toPayload()
+        let changesetUploadBody = "<osmChange version=\"0.6\" generator=\"GIG Change generator\">" + nodeBodyString + "</osmChange>"
+        let workspaceId = KeychainManager.load(key: "workspaceID")
+
+        guard let nodeBody = changesetUploadBody.data(using: .utf8) else {
+            completion(.failure(NSError(domain: "Invalid Node Body", code: 0, userInfo: nil)))
+            return
+        }
+
+        let newVersion = localNode.version + 1
+
+        guard let accessToken = KeychainManager.load(key: "accessToken") else {
+            completion(.failure(NSError(domain: "No AccessToken", code: 0, userInfo: nil)))
+            return
+        }
+
+        ApiManager.shared.performRequest(
+            to: .uploadChangeset(accessToken, "\(localNode.changeset)", workspaceId ?? "", nodeBody),
+            setupType: .osm,
+            modelType: String.self,
+            useJSON: false
+        ) { result in
+            switch result {
+            case .success:
+                var updatedNode = localNode  // ✅ Create another copy for safety
+                updatedNode.tags.forEach { (key: String, value: String) in
+                    updatedNode.tags[key] = value
+                }
+                updatedNode.version = newVersion  // ✅ Update version
+                completion(.success(newVersion))
+
+            case .failure(let error):
+                print(error)
+                completion(.failure(error))
+            }
+        }
+    }
+
+
+    
+    func uploadNode(node: inout OSMNode, completion: @escaping (Result<Bool, Error>) -> Void) {
         var localNode = node
+        let nodeBodyString = localNode.toCreatePayload()
+        let changesetUploadBody = "<osmChange version=\"0.6\" generator=\"GIG Change generator\">\(nodeBodyString)</osmChange>"
+        let workspaceId = KeychainManager.load(key: "workspaceID")
+        
+        guard let nodeBody = changesetUploadBody.data(using: .utf8) else {
+            completion(.failure(NSError(domain: "Invalid Node Data", code: 0, userInfo: nil)))
+            return
+        }
+        
+        guard let accessToken = KeychainManager.load(key: "accessToken") else {
+            completion(.failure(NSError(domain: "No AccessToken", code: 0, userInfo: nil)))
+            return
+        }
+        
+        ApiManager.shared.performRequest(
+            to: .uploadChangeset(accessToken, "\(node.changeset)", workspaceId ?? "", nodeBody),
+            setupType: .osm,
+            modelType: String.self,
+            useJSON: false
+        ) { result in
+            switch result {
+            case .success:
+                completion(.success(true))
+            case .failure(let error):
+                print(error)
+                completion(.failure(error))
+            }
+        }
+    }
 
-        let result: Result<Int, Error> = await withCheckedContinuation { continuation in
-            let nodeBodyString = localNode.toPayload()
-            let changesetUploadBody = "<osmChange version=\"0.6\" generator=\"GIG Change generator\">"+nodeBodyString+"</osmChange>"
-            let workspaceId = KeychainManager.load(key: "workspaceID")
+    
+    func updateWay2(way: inout OSMWay, completion: @escaping (Result<Int, Error>) -> Void) {
+        var localWay = way  // ✅ Create a copy of `way`
+        
+        self.updateWay(way: &localWay) { updatedResult in
+            let wayId = "\(localWay.id)"
             
-            let nodeBody = changesetUploadBody.data(using: .utf8)
-            let nodeId = "\(localNode.id)"
-            // Create the changeset upload payload
-            let newVersion = node.version + 1
+            switch updatedResult {
+            case .success:
+                completion(updatedResult)
+                
+            case .failure(let error):
+                // Check for 409 Conflict Error
+                if (error as NSError).code == 409 {
+                    self.fetchWay2(wayId: wayId) { fetchResult in
+                        switch fetchResult {
+                        case .success(let updatedWay):
+                            var mergedWay = self.mergeWays(localWay: localWay, latestWay: updatedWay)
+                            print("Local way")
+                            print(localWay)
+                            print("Merged way")
+                            print(mergedWay)
 
-            if let accessToken = KeychainManager.load(key: "accessToken") {
-                ApiManager.shared.performRequest(to: .uploadChangeset(accessToken,"\(node.changeset)",workspaceId ?? "",nodeBody! ), setupType: .osm, modelType: String.self,useJSON: false) { result in
-                    switch result {
-                    case .success(let success):
-                        localNode.tags.forEach { (key: String, value: String) in
-                            localNode.tags[key] = value
+                            self.updateWay(way: &mergedWay) { mergeResult in
+                                completion(mergeResult)
+                            }
+
+                        case .failure(let fetchError):
+                            completion(.failure(fetchError))
                         }
-                        continuation.resume(returning: .success(newVersion))
-                    case .failure(let error):
-                        print(error)
-                        continuation.resume(returning: .failure(error))
                     }
-                }
-            } else {
-                continuation.resume(returning: .failure(NSError(domain: "No AccessToken", code: 0, userInfo: nil)))
-            }
-        }
-        node = localNode
-        return result
-    }
-    
-    func uploadNode(node: inout OSMNode) async -> Result<Bool, Error> {
-        var localNode = node
-
-        let result: Result<Bool, Error> = await withCheckedContinuation { continuation in
-            let nodeBodyString = localNode.toCreatePayload()
-            let changesetUploadBody = "<osmChange version=\"0.6\" generator=\"GIG Change generator\">"+nodeBodyString+"</osmChange>"
-            let workspaceId = KeychainManager.load(key: "workspaceID")
-            
-            let nodeBody = changesetUploadBody.data(using: .utf8)
-    
-            if let accessToken = KeychainManager.load(key: "accessToken") {
-                ApiManager.shared.performRequest(to: .uploadChangeset(accessToken,"\(node.changeset)",workspaceId ?? "",nodeBody! ), setupType: .osm, modelType: String.self,useJSON: false) { result in
-                    switch result {
-                    case .success:
-                        continuation.resume(returning: .success(true))
-                    case .failure(let error):
-                        print(error)
-                        continuation.resume(returning: .failure(error))
-                    }
-                }
-            } else {
-                continuation.resume(returning: .failure(NSError(domain: "No AccessToken", code: 0, userInfo: nil)))
-            }
-        }
-        return result
-    }
-    
-    func updateWay2(way:inout OSMWay) async -> Result<Int,Error>{
-        let updatedResult = await self.updateWay(way: &way)
-        let wayId = "\(way.id)"
-        do {
-            switch updatedResult {
-            case .success(let value):
-                return updatedResult
-            case .failure(let error):
-                // Check 409 here.
-                if (error as NSError).code == 409 {
-                    let updatedWay = try await self.fetchWay2(wayId: wayId).get()
-                    var mergedWay = self.mergeWays(localWay: way, latestWay: updatedWay)
-                    print("Local way")
-                    print(way)
-                    print("Merged way ")
-                    print(mergedWay)
-                    let mergeResult = await self.updateWay(way: &mergedWay)
-                    return mergeResult
-
+                    
                 } else {
-                    return updatedResult
+                    completion(updatedResult)
                 }
             }
         }
-        catch (let e){
-            return .failure(e)
-        }
     }
+
+
     
-    func updateNode2(node: inout OSMNode) async -> Result<Int,Error> {
-        let updatedResult = await self.updateNode(node: &node)
-        let nodeId = "\(node.id)"
-        do {
+    func updateNode2(node: inout OSMNode, completion: @escaping (Result<Int, Error>) -> Void) {
+        var localNode = node  // ✅ Create a local copy of `node`
+        
+        self.updateNode(node: &localNode) { updatedResult in
+            let nodeId = "\(localNode.id)"  // ✅ Use localNode instead of node
+
             switch updatedResult {
-            case .success(let value):
-                return updatedResult
+            case .success:
+                completion(updatedResult)
+
             case .failure(let error):
                 if (error as NSError).code == 409 {
-                    let updatedNode = try await self.fetchNode2(nodeId: nodeId).get()
-                    var mergedNode = self.mergeNodes(localNode: node, latestNode: updatedNode)
-                    print("Local Node")
-                    print(node)
-                    print("Merged Node ")
-                    print(mergedNode)
-                    let mergeResult = await self.updateNode(node: &mergedNode)
-                    return mergeResult
+                    self.fetchNode2(nodeId: nodeId) { fetchResult in
+                        switch fetchResult {
+                        case .success(let updatedNode):
+                            var mergedNode = self.mergeNodes(localNode: localNode, latestNode: updatedNode)
+                            print("Local Node:")
+                            print(localNode)
+                            print("Merged Node:")
+                            print(mergedNode)
+
+                            self.updateNode(node: &mergedNode) { mergeResult in
+                                completion(mergeResult)
+                            }
+
+                        case .failure(let fetchError):
+                            completion(.failure(fetchError))
+                        }
+                    }
                 } else {
-                    return updatedResult
+                    completion(updatedResult)
                 }
             }
-        } catch(let e) {
-            return .failure(e)
-            
         }
     }
+
+
+
+
+
+
+
+
+
+
 
     func mergeWays(localWay: OSMWay, latestWay: OSMWay) -> OSMWay {
           var mergedWay = latestWay
@@ -371,92 +408,143 @@ class DatasyncManager {
         mergedNode.changeset = localNode.changeset
         return mergedNode
     }
-
     
-    func fetchWay2(wayId:String) async -> Result<OSMWay,Error>{
+    func fetchWay21(wayId: String, completion: @escaping (Result<OSMWay, Error>) -> Void) {
+        guard let workspaceID = KeychainManager.load(key: "workspaceID") else {
+            let error = NSError(domain: "FetchWayError", code: 401, userInfo: [NSLocalizedDescriptionKey: "Missing workspace ID"])
+            completion(.failure(error))
+            return
+        }
         
-        let result: Result<OSMWay,Error> = await withCheckedContinuation { continuation in
-            let workspaceID = KeychainManager.load(key: "workspaceID")
-            ApiManager.shared.performRequest(to: .fetchLatestWay(workspaceID!, wayId), setupType: .osm, modelType: OSMWayResponse.self) { result in
-                switch result {
-                case .success(let osmwayResponse):
-                    let osmway = osmwayResponse.elements.first
-                    continuation.resume(returning: .success(osmway!))
-
-                case .failure(let error):
-                     continuation.resume(returning: .failure(error))
+        ApiManager.shared.performRequest(to: .fetchLatestWay(workspaceID, wayId), setupType: .osm, modelType: OSMWayResponse.self) { result in
+            switch result {
+            case .success(let osmwayResponse):
+                if let osmway = osmwayResponse.elements.first {
+                    completion(.success(osmway))
+                } else {
+                    let error = NSError(domain: "FetchWayError", code: 404, userInfo: [NSLocalizedDescriptionKey: "No OSM way found"])
+                    completion(.failure(error))
                 }
+                
+            case .failure(let error):
+                completion(.failure(error))
             }
         }
-        return result
-        
     }
-    
-    func fetchNode2(nodeId:String) async -> Result<OSMNode,Error>{
-        
-        let result: Result<OSMNode,Error> = await withCheckedContinuation { continuation in
-            let workspaceID = KeychainManager.load(key: "workspaceID")
-            ApiManager.shared.performRequest(to: .fetchLatestWay(workspaceID!, nodeId), setupType: .osm, modelType: OSMNodeResponse.self) { result in
-                switch result {
-                case .success(let osNodeResponse):
-                    let osmnode = osNodeResponse.elements.first
-                    continuation.resume(returning: .success(osmnode!))
 
-                case .failure(let error):
-                     continuation.resume(returning: .failure(error))
+
+    
+    func fetchWay2(wayId: String, completion: @escaping (Result<OSMWay, Error>) -> Void) {
+        let workspaceID = KeychainManager.load(key: "workspaceID")
+        ApiManager.shared.performRequest(to: .fetchLatestWay(workspaceID!, wayId), setupType: .osm, modelType: OSMWayResponse.self) { result in
+            switch result {
+            case .success(let osmwayResponse):
+                if let osmway = osmwayResponse.elements.first {
+                    completion(.success(osmway))
+                } else {
+                    completion(.failure(NSError(domain: "OSM", code: 404, userInfo: [NSLocalizedDescriptionKey: "Way not found"])))
                 }
+            case .failure(let error):
+                completion(.failure(error))
             }
         }
-        return result
-        
     }
+
+    
+    func fetchNode2(nodeId: String, completion: @escaping (Result<OSMNode, Error>) -> Void) {
+        guard let workspaceID = KeychainManager.load(key: "workspaceID") else {
+            completion(.failure(NSError(domain: "No WorkspaceID", code: 0, userInfo: nil)))
+            return
+        }
+        
+        ApiManager.shared.performRequest(
+            to: .fetchLatestWay(workspaceID, nodeId),
+            setupType: .osm,
+            modelType: OSMNodeResponse.self
+        ) { result in
+            switch result {
+            case .success(let osNodeResponse):
+                if let osmnode = osNodeResponse.elements.first {
+                    completion(.success(osmnode))
+                } else {
+                    completion(.failure(NSError(domain: "No Node Found", code: 0, userInfo: nil)))
+                }
+            case .failure(let error):
+                completion(.failure(error))
+            }
+        }
+    }
+
    
     /**
             Syncs the node along with the updated
      */
     @MainActor
-    func syncNode(node: inout OSMNode) async -> Result<Bool,Error> {
-        do {
-                // open changeset
-                let changesetId = try await openChangeset().get()
-                // update node
-                node.changeset = changesetId
-                // close changeset
-                let newVersion = try await updateNode2(node: &node).get()
-                node.version = newVersion
-                self.dbInstance.updateNodeVersion(nodeId: String(node.id), version: newVersion)
-                // Give back the new version and other stuff.
-                let closeResult = try await closeChangeset(id: String(changesetId)).get()
-            
-            return .success(true)
-            
-        } catch (let error){
-            print(error)
-            return .failure(error)
-        }
-    }
-    
-    func createNode(node: inout OSMNode) async -> Result<Bool, Error> {
-        do {
-            // Step 1: Open changeset
-            let changesetId = try await openChangeset().get()
-            node.changeset = changesetId
-            
-            // Step 2: Upload node
-            let uploadResult = await uploadNode(node: &node)
-            
-            switch uploadResult {
-            case .success:
-                // Step 3: Close changeset
-                let _ = try await closeChangeset(id: String(changesetId)).get()
-                return .success(true)
-            case .failure(let error):
-                return .failure(error)
+    func syncNode(node: inout OSMNode, completion: @escaping (Result<Bool, Error>) -> Void) {
+        var localNode = node  // ✅ Create a local copy of `node`
+        
+        // Step 1: Open changeset
+        openChangeset { result in
+            switch result {
+            case .success(let changesetId):
+                localNode.changeset = changesetId  // ✅ Modify local copy
+                
+                // Step 2: Update node
+                self.updateNode2(node: &localNode) { updateResult in
+                    switch updateResult {
+                    case .success(let newVersion):
+                        localNode.version = newVersion  // ✅ Modify local copy
+                        DispatchQueue.main.async {
+                            self.dbInstance.updateNodeVersion(nodeId: String(localNode.id), version: newVersion)
+                        }
+                        // Step 3: Close changeset
+                        self.closeChangeset(id: String(changesetId), completion: completion)
+
+                    case .failure(let updateError):
+                        completion(.failure(updateError))
+                    }
+                }
+                
+            case .failure(let openError):
+                completion(.failure(openError))
             }
-        } catch {
-            return .failure(error)
         }
     }
+
+
+
+    
+    func createNode(node: inout OSMNode, completion: @escaping (Result<Bool, Error>) -> Void) {
+        var localNode = node  // ✅ Create a local copy to avoid `inout` capture
+
+        openChangeset { result in
+            switch result {
+            case .success(let changesetId):
+                localNode.changeset = changesetId  // ✅ Modify local copy
+                
+                self.uploadNode(node: &localNode) { uploadResult in
+                    switch uploadResult {
+                    case .success:
+                        self.closeChangeset(id: String(changesetId)) { closeResult in
+                            switch closeResult {
+                            case .success:
+                                completion(.success(true))
+                            case .failure(let error):
+                                completion(.failure(error))
+                            }
+                        }
+                    case .failure(let error):
+                        completion(.failure(error))
+                    }
+                }
+                
+            case .failure(let error):
+                completion(.failure(error))
+            }
+        }
+    }
+
+
 
 
 
@@ -488,29 +576,47 @@ class DatasyncManager {
 //    }
     
     @MainActor
-    func syncWay(way: inout OSMWay)  async -> Result<Bool,Error> {
-        do {
-                // open changeset
-                let changesetId = try await openChangeset().get()
-                // update node
+    func syncWay(way: inout OSMWay, completion: @escaping (Result<Bool, Error>) -> Void) {
+        var localWay = way  // ✅ Create a local copy to avoid `inout` capture
+
+        openChangeset { result in
+            switch result {
+            case .success(let changesetId):
                 print("Opening changeset")
-                way.changeset = changesetId
-                // close changeset
-                let newVersion = try await updateWay2(way: &way).get()
-                // update the version in databse
-                self.dbInstance.updateWayVersion(wayId: String(way.id), version: newVersion)
-                way.version = newVersion
-                // Give back the new version and other stuff.
-                print("Closing changeset")
-                let closeResult = try await closeChangeset(id: String(changesetId)).get()
-            
-            return .success(true)
-            
-        } catch (let error){
-            print(error)
-            return .failure(error)
+                localWay.changeset = changesetId  // ✅ Modify local copy
+                
+                // Step 2: Update way
+                self.updateWay2(way: &localWay) { updateResult in
+                    switch updateResult {
+                    case .success(let newVersion):
+                        localWay.version = newVersion
+                        DispatchQueue.main.async {
+                            self.dbInstance.updateWayVersion(wayId: String(localWay.id), version: newVersion)
+                        }
+
+                        // Step 3: Close changeset
+                        self.closeChangeset(id: String(changesetId)) { closeResult in
+                            switch closeResult {
+                            case .success:
+                                print("Closing changeset")
+                                completion(.success(true))
+                            case .failure(let closeError):
+                                completion(.failure(closeError))
+                            }
+                        }
+
+                    case .failure(let updateError):
+                        completion(.failure(updateError))
+                    }
+                }
+
+            case .failure(let openError):
+                completion(.failure(openError))
+            }
         }
     }
+
+
 }
 
 // POSM has two components
