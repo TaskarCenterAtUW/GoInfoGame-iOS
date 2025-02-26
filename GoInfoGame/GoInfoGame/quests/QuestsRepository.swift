@@ -132,3 +132,13 @@ struct DisplayUnitWithCoordinate: Identifiable {
         return DisplayUnitAnnotation(displayUnit: displayUnit, coordinate: coordinateInfo)
     }
 }
+
+extension QuestsRepository {
+    func questQueryForElementType(_ elementType: String) -> String? {
+        return longQuestModels.first(where: { $0.elementType.lowercased() == elementType.lowercased() })?.questQuery
+    }
+    
+    func questsForQuery(_ query: String) -> [LongQuest]? {
+        return longQuestModels.first(where: {$0.questQuery == query})?.quests
+    }
+}
