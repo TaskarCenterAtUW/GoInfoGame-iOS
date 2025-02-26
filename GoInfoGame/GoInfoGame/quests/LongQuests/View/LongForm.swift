@@ -13,10 +13,12 @@ struct LongForm: View, QuestForm {
     @State private var selectedAnswers: [UUID: UUID] = [:]
     
     @ObservedObject private var viewModel = LongFormViewModel()
-    
-    var elementType: LongFormElementType?
+        
+    var elementName: String?
     
     var questID: String?
+    
+    var query: String?
     
     var action: (([String:String]) -> Void)?
     
@@ -51,7 +53,7 @@ struct LongForm: View, QuestForm {
         ZStack {
             VStack(alignment: .leading) {
                     HStack {
-                        Text("\(elementHeading())")
+                        Text(elementName ?? "")
                             .font(.custom("Lato-Bold", size: 16))
                         Spacer()
                         Button("Hide this") {
@@ -236,41 +238,11 @@ struct LongForm: View, QuestForm {
         })
     }
     
-    func elementHeading() -> String {
-        switch elementType {
-        case .sidewalk:
-            return "Sidewalks"
-        case .kerb:
-            return "Curb"
-        case .crossing:
-            return "Crossings"
-        case nil:
-            return ""
-        }
-    }
-    
     func questsForLongForm() -> [LongQuest]? {
-        var longQuest: [LongQuest]?
-        
-        switch elementType {
-        case .sidewalk:
-            longQuest = QuestsRepository.shared.sideWalkLongQuestModel?.quests
-        case .kerb:
-            longQuest = QuestsRepository.shared.kerbLongQuestModel?.quests
-        case .crossing:
-            longQuest = QuestsRepository.shared.crossingsLongQuestModel?.quests
-        case .none:
-            print("None")
-        }
-        return longQuest
+        return QuestsRepository.shared.questsForQuery(query ?? "")       
     }
 }
 
 #Preview {
     LongForm()
-}
-
-
-enum LongFormElementType {
-    case sidewalk,kerb,crossing
 }
