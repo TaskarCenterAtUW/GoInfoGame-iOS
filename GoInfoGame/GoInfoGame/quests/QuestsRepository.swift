@@ -43,61 +43,12 @@ class QuestsRepository: ObservableObject {
     private init() {
         print("QUEST REPO INITIALISED")
     }
-    
-    var sideWalkLongQuestModel: LongFormModel? {
-          return longQuestModels.first(where: { $0.elementType.lowercased() == "sidewalks" })
-      }
-    
-    var kerbLongQuestModel: LongFormModel? {
-          return longQuestModels.first(where: { $0.elementType.lowercased() == "kerb" })
-      }
-    
-    var crossingsLongQuestModel: LongFormModel? {
-          return longQuestModels.first(where: { $0.elementType.lowercased() == "crossings" })
-      }
-    
-    @Published var allQuests: [ApplicableQuest] = [
-           ApplicableQuest(quest: LongSidewalkQuest(), questId: "1"),
-           ApplicableQuest(quest: LongKerbQuest(), questId: "2"),
-           ApplicableQuest(quest: LongCrossingQuest(), questId: "3")
-       ]
+        
+    @Published var allQuests: [ApplicableQuest] = []
        
        var applicableQuests: [ApplicableQuest] {
            allQuests.filter { $0.isDefault }
        }
-    
-//    @Published var applicableQuests: [ApplicableQuest] = [
-//       ApplicableQuest(quest: LongSidewalkQuest(), questId: "1"),
-//        ApplicableQuest(quest: LongKerbQuest(), questId: "1"),
-//       ApplicableQuest(quest: LongCrossingQuest(), questId: "2")
-//       
-//
-//        
-////        ApplicableQuest(quest: CrossingType(), questId: "1"),
-////        ApplicableQuest(quest: CrossingIsland(), questId: "8"),
-////        ApplicableQuest(quest: CrossMarking(), questId: "10"),
-//////        ApplicableQuest(quest: SidewalkSurface(), questId: "31"),
-////        ApplicableQuest(quest: StairFlights(), questId: "4"),
-////        ApplicableQuest(quest: TactilePavingSteps(), questId: "27"),
-//////        ApplicableQuest(quest: SideWalkWidth(), questId: "3"),
-////        ApplicableQuest(quest: StepsIncline(), questId: "32"),
-////        ApplicableQuest(quest: TactilePavingCrosswalk(), questId: "14"),
-////        ApplicableQuest(quest: CrossingKerbHeight(), questId: "9"),
-////        ApplicableQuest(quest: KerbHeight(), questId: "19")
-//    ]
-    
-//    @Published var applicableQuests: [ApplicableQuest] = [
-//        ApplicableQuest(quest: LongSidewalkQuest(), questId: "1"),
-//    ]
-//    
-
-//        HandRail(),
-//        StepsRamp(),
-//        StairNumber(),
-//        WayLit(),
-//        BusStopLit(),
-//        SideWalkValidation(),
-//        TactilePavingKerb(),
     
     @Published var longQuestModels: [LongFormModel] = []
     
@@ -179,5 +130,15 @@ struct DisplayUnitWithCoordinate: Identifiable {
 
     var annotation: DisplayUnitAnnotation {
         return DisplayUnitAnnotation(displayUnit: displayUnit, coordinate: coordinateInfo)
+    }
+}
+
+extension QuestsRepository {
+    func questQueryForElementType(_ elementType: String) -> String? {
+        return longQuestModels.first(where: { $0.elementType.lowercased() == elementType.lowercased() })?.questQuery
+    }
+    
+    func questsForQuery(_ query: String) -> [LongQuest]? {
+        return longQuestModels.first(where: {$0.questQuery == query})?.quests
     }
 }
