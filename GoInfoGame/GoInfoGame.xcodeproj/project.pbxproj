@@ -204,9 +204,6 @@
 		FA8C74D42C5A443700D28220 /* QuestOptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA8C74D32C5A443700D28220 /* QuestOptions.swift */; };
 		FA8C74D62C5C0DBA00D28220 /* LongFormViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA8C74D52C5C0DBA00D28220 /* LongFormViewModel.swift */; };
 		FA8C74D82C60E95100D28220 /* PosmLogin.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA8C74D72C60E95100D28220 /* PosmLogin.swift */; };
-		FA8C74DA2C60FD3100D28220 /* LongSidewalkQuest.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA8C74D92C60FD3100D28220 /* LongSidewalkQuest.swift */; };
-		FA8C74E12C639B7200D28220 /* LongKerbQuest.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA8C74E02C639B7200D28220 /* LongKerbQuest.swift */; };
-		FA8C74E32C639BA300D28220 /* LongCrossingQuest.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA8C74E22C639BA300D28220 /* LongCrossingQuest.swift */; };
 		FA9AEC002D5CACB6006A3A31 /* UserNodesHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA9AEBFF2D5CACB3006A3A31 /* UserNodesHelper.swift */; };
 		FA9FE2D82BAC75390036F618 /* OAuthViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA9FE2D72BAC75390036F618 /* OAuthViewController.swift */; };
 		FABF3CF42B7419BB0080EAC9 /* LocationManagerDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = FABF3CF32B7419BB0080EAC9 /* LocationManagerDelegate.swift */; };
@@ -519,9 +516,6 @@
 		FA8C74D32C5A443700D28220 /* QuestOptions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuestOptions.swift; sourceTree = "<group>"; };
 		FA8C74D52C5C0DBA00D28220 /* LongFormViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LongFormViewModel.swift; sourceTree = "<group>"; };
 		FA8C74D72C60E95100D28220 /* PosmLogin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PosmLogin.swift; sourceTree = "<group>"; };
-		FA8C74D92C60FD3100D28220 /* LongSidewalkQuest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LongSidewalkQuest.swift; sourceTree = "<group>"; };
-		FA8C74E02C639B7200D28220 /* LongKerbQuest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LongKerbQuest.swift; sourceTree = "<group>"; };
-		FA8C74E22C639BA300D28220 /* LongCrossingQuest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LongCrossingQuest.swift; sourceTree = "<group>"; };
 		FA9AEBFF2D5CACB3006A3A31 /* UserNodesHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserNodesHelper.swift; sourceTree = "<group>"; };
 		FA9FE2D72BAC75390036F618 /* OAuthViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OAuthViewController.swift; sourceTree = "<group>"; };
 		FABF3CF32B7419BB0080EAC9 /* LocationManagerDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationManagerDelegate.swift; sourceTree = "<group>"; };
@@ -1359,10 +1353,7 @@
 		FA8C74DF2C6394AF00D28220 /* Classes */ = {
 			isa = PBXGroup;
 			children = (
-				FA8C74D92C60FD3100D28220 /* LongSidewalkQuest.swift */,
 				FA5071952D6DD31A00CE9798 /* LongElementQuest.swift */,
-				FA8C74E02C639B7200D28220 /* LongKerbQuest.swift */,
-				FA8C74E22C639BA300D28220 /* LongCrossingQuest.swift */,
 			);
 			path = Classes;
 			sourceTree = "<group>";
@@ -2038,7 +2029,6 @@
 				97AC1C0C2B6B843C004F0BF4 /* CustomAlert.swift in Sources */,
 				FA9AEC002D5CACB6006A3A31 /* UserNodesHelper.swift in Sources */,
 				A4834A412B67885E00D4F0AA /* DatasyncManager.swift in Sources */,
-				FA8C74E12C639B7200D28220 /* LongKerbQuest.swift in Sources */,
 				FA8C74D62C5C0DBA00D28220 /* LongFormViewModel.swift in Sources */,
 				0536DD852B0BD11A00B04C4B /* LoginViewController.swift in Sources */,
 				A4E711A42B57B13100C9DE08 /* QuestionHeader.swift in Sources */,
@@ -2051,7 +2041,6 @@
 				FABF3D002B8607D80080EAC9 /* MeasureSidewalkView.swift in Sources */,
 				FA18CAE72CC80A34008247F2 /* UploadPhotoModel.swift in Sources */,
 				97439F782B87444200DA43E1 /* CrossingKerbHeightForm.swift in Sources */,
-				FA8C74DA2C60FD3100D28220 /* LongSidewalkQuest.swift in Sources */,
 				FAFDA1FA2C6B861A00ECEAE9 /* FileStorageManager.swift in Sources */,
 				A4834A3F2B67737500D4F0AA /* StoredChangeset.swift in Sources */,
 				973FC02F2B58F81F00878269 /* StepsRamp.swift in Sources */,
@@ -2110,7 +2099,6 @@
 				FA8C74C42C4FDE1000D28220 /* LongFormModel.swift in Sources */,
 				973FC04A2B5A478C00878269 /* CrossMarkingForm.swift in Sources */,
 				FAE2584F2D39819300D2BB12 /* QuestCategoryListView.swift in Sources */,
-				FA8C74E32C639BA300D28220 /* LongCrossingQuest.swift in Sources */,
 				973FC03F2B59418B00878269 /* WayLit.swift in Sources */,
 				971342772BBD415600174EBF /* InitialViewController.swift in Sources */,
 				A40004EC2B62338400AF21FB /* AppQuestManager.swift in Sources */,
