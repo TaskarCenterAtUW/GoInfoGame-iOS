@@ -21,94 +21,102 @@ class DatasyncManager {
     
     private let osmConnection = OSMConnection(config: OSMConfig.testPOSM, currentChangesetId: nil)
     
-    func syncDataToOSM( completionHandler: @escaping ()-> Void?)  {
+    func syncDataToOSM(completionHandler: @escaping (Bool) -> Void) {
         Task {
-            await syncData()
-            completionHandler()
+            do {
+                try await syncData() // Assuming syncData() can throw
+                DispatchQueue.main.async {
+                    completionHandler(true) // Success
+                }
+            } catch {
+                print("Sync failed: \(error)")
+                DispatchQueue.main.async {
+                    completionHandler(false) // Failure
+                }
+            }
         }
     }
     
     /// *** Terminating app due to uncaught exception 'RLMException', reason: 'Realm accessed from incorrect thread.'
     ///  To fix the above error added @mainActor
     @MainActor
-    func syncData() async  {
-        if(isSynching){
+    func syncData() async -> Bool {
+        if isSynching {
             print("Already syncing")
-            return
-        }
-        else {
+            return false
+        } else {
             isSynching = true
         }
-        
-        //TODO: uncomment later
-        // check if the user is logged in
-        // if user not logged in, isSynching-false and return
-//        guard let accessToken = osmConnection.accessToken else {
-//            isSynching = false
-//            return
-//        }
+
         let changesets = dbInstance.getChangesets()
         print("Starting to sync data")
-        var nodesToSync: [String:StoredNode] = [:]
-        var waysToSync: [String:StoredWay] = [:]
+        
+        var nodesToSync: [String: StoredNode] = [:]
+        var waysToSync: [String: StoredWay] = [:]
+        
         for changeset in changesets {
-            // Get the element type
-            if changeset.elementType == .node {
-                print("Syncing node")
-                // Get the node
-                if let node  = dbInstance.getNode(id: changeset.elementId) {
-                    nodesToSync[changeset.id] = node
-                }
-            }else if changeset.elementType == .way {
-                print("Syncing Way")
-                // Get the way
-                if let way = dbInstance.getWay(id: changeset.elementId) {
-                    waysToSync[changeset.id] = way
-                }
+            if changeset.elementType == .node, let node = dbInstance.getNode(id: changeset.elementId) {
+                nodesToSync[changeset.id] = node
+            } else if changeset.elementType == .way, let way = dbInstance.getWay(id: changeset.elementId) {
+                waysToSync[changeset.id] = way
             }
         }
-        
-        // sync each
+
+        var syncSuccess = true
+
         for (key, node) in nodesToSync {
             var payload = node.asOSMNode()
-            
-            syncNode(node: &payload) { result in
-                switch result {
-                case .success(let isFinished):
-                    print("Synced \(payload)")
-                    DispatchQueue.main.async {
-                        // Your database update logic
-                        self.dbInstance.assignChangesetId(obj: key, changesetId: payload.changeset)
+            do {
+                let isFinished = try await withCheckedThrowingContinuation { continuation in
+                    syncNode(node: &payload) { result in
+                        switch result {
+                        case .success(let isFinished):
+                            DispatchQueue.main.async {
+                                self.dbInstance.assignChangesetId(obj: key, changesetId: payload.changeset)
+                            }
+                            continuation.resume(returning: isFinished)
+                        case .failure:
+                            syncSuccess = false
+                            continuation.resume(returning: false)
+                        }
                     }
-                    
-                case .failure(let error):
-                    print("Failed to sync \(payload): \(error.localizedDescription)")
                 }
+                print("Sync finished for node: \(isFinished)")
+            } catch {
+                print("Failed to sync node: \(error.localizedDescription)")
+                syncSuccess = false
             }
         }
 
-        // TODO: Add logic to sync Way
         for (key, way) in waysToSync {
             var payload = way.asOSMWay()
-            
-            syncWay(way: &payload) { result in
-                switch result {
-                case .success:
-                    print("Synced \(payload)")
-                    DispatchQueue.main.async {
-                        self.dbInstance.assignChangesetId(obj: key, changesetId: payload.changeset)
+            do {
+                let isFinished = try await withCheckedThrowingContinuation { continuation in
+                    syncWay(way: &payload) { result in
+                        switch result {
+                        case .success(let isFinished):
+                            DispatchQueue.main.async {
+                                self.dbInstance.assignChangesetId(obj: key, changesetId: payload.changeset)
+                            }
+                            continuation.resume(returning: isFinished)
+                        case .failure:
+                            syncSuccess = false
+                            continuation.resume(returning: false)
+                        }
                     }
-                    
-                case .failure(let error):
-                    print("Failed to sync \(payload): \(error)")
                 }
+                print("Sync finished for way: \(isFinished)")
+            } catch {
+                print("Failed to sync way: \(error.localizedDescription)")
+                syncSuccess = false
             }
         }
 
-
         isSynching = false
-        
+        return syncSuccess
     }
+
+
     
     func syncDataDummy() async  {
         
