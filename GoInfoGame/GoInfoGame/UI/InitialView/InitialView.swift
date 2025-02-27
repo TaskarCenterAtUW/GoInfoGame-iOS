@@ -76,6 +76,8 @@ struct WorkspacesListView: View {
     
     @State private var showAlert = false
     
+    @State private var alertMessage = ""
+
     var body: some View {
         
         if viewModel.workspaces.count == 1 {
@@ -87,7 +89,7 @@ struct WorkspacesListView: View {
                     }
                 }
                 .onAppear {
-                    viewModel.fetchLongQuestsFor(workspaceId: "\(selectedWorkspace.id)") { success in
+                    viewModel.fetchLongQuestsFor(workspaceId: "\(selectedWorkspace.id)") { success, errorMessage  in
                         if success {
                             let workspaceId = "\(selectedWorkspace.id)"
                             _ = KeychainManager.save(key: "workspaceID", data: workspaceId)
@@ -96,6 +98,7 @@ struct WorkspacesListView: View {
                             }
                         } else {
                             DispatchQueue.main.async {
+                                alertMessage = errorMessage ?? "Something went wrong. Please pick another workspace."
                                 showAlert = true
                                 self.shouldNavigateToMapView = false
                             }
@@ -132,7 +135,7 @@ struct WorkspacesListView: View {
                             VStack(spacing: 20) {
                                 ForEach(workspaces.filter({$0.type == "osw" && $0.externalAppAccess == 1}), id: \.id) { workspace in
                                     Button {
-                                        viewModel.fetchLongQuestsFor(workspaceId: "\(workspace.id)", completion: { success in
+                                        viewModel.fetchLongQuestsFor(workspaceId: "\(workspace.id)", completion: { success, errorMessage in
                                             if success {
                                                 self.shouldNavigateToMapView = true
                                                 self.selectedWorkspace = workspace
@@ -141,7 +144,10 @@ struct WorkspacesListView: View {
                                                 _ = KeychainManager.save(key: "workspaceID", data: workspaceId)
                                             } else {
                                                 DispatchQueue.main.async {
+                                                    alertMessage = errorMessage ?? "Something went wrong."
+                                                    
                                                     showAlert = true
+                                                
                                                     self.shouldNavigateToMapView = false
                                                 }
                                             }
@@ -164,7 +170,7 @@ struct WorkspacesListView: View {
                 }
                 .padding()
             }
-            .alert("Quests not configured. Choose another workspace.", isPresented: $showAlert) {
+            .alert(alertMessage, isPresented: $showAlert) {
                 Button("OK", role: .cancel) { }
             }
         }
