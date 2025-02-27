@@ -228,15 +228,15 @@ struct MapView: View {
                 shouldShowPolyline = false
             case .submitted(let elementId):
                 shouldShowPolyline = false
-                viewModel.refreshMapAfterSubmission(elementId: elementId)                
+                showAlert = true
+                alertMessage = "Quest Submitted"
+                viewModel.refreshMapAfterSubmission(elementId: elementId)
             case .syncing:
                 isSyncing = true
                 print("syncing")
             case .synced:
                 isSyncing = false
                 print("synced")
-                showAlert = true
-                alertMessage = "Quest Submitted"
                 alertIcon = "checkmark.circle.fill"
             case .hideElement(let elementId):
                 shouldShowPolyline = false
