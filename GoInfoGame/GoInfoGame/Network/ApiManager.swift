@@ -126,7 +126,14 @@ class ApiManager {
                     completion(.success(decodedData))
                 } catch {
                     print("Failed to decode data: \(error.localizedDescription)")
-                    completion(.failure(error))
+                    if let dataString = String(data: data, encoding: .utf8), !dataString.isEmpty {
+                        let invalidJsonError = NSError(domain: "goinfogame", code: 200, userInfo: [NSLocalizedDescriptionKey: "not a valid JSON"])
+                        completion(.failure(invalidJsonError))
+                    } else {
+                        let emptyJsonError = NSError(domain: "goinfogame", code: 200, userInfo: [NSLocalizedDescriptionKey: "empty JSON"])
+                        completion(.failure(emptyJsonError))
+                    }
+
                     return
                 }
             }
