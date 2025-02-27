@@ -49,12 +49,17 @@ class QuestBase {
        // Sync using datasyncmanager
        
        // Dismiss sheet after syncing to db
-       MapViewPublisher.shared.dismissSheet.send(.submitted(storedId))
        MapViewPublisher.shared.dismissSheet.send(.syncing)
-       DatasyncManager.shared.syncDataToOSM {
-           print("SYNC DONE")
+       
+       DatasyncManager.shared.syncDataToOSM { success in
+           print("SYNC DONE: \(success ? "Success" : "Failed")")
            DispatchQueue.main.async {
                MapViewPublisher.shared.dismissSheet.send(.synced)
+               if success {
+                   MapViewPublisher.shared.dismissSheet.send(.submitted(storedId))
+               } else {
+                   print("Sync failed. Handle accordingly.")
+               }
            }
        }
     }
