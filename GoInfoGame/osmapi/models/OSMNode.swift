@@ -51,19 +51,35 @@ public struct OSMNode: Codable, OSMPayload, OSMElement, OSMCreatePayload {
         return osmNode
          
     }
+    
+    ///
     public func toPayload() -> String {
-        var osmNode = "<modify>"
-        let xmlBuilder = OSMXMLBuilder(rootName: "node")
-        xmlBuilder.addAttribute(name: "id", value: "\(id)")
+         var osmNode = "<modify>"
+         let xmlBuilder = OSMXMLBuilder(rootName: "node")
+         xmlBuilder.addAttribute(name: "id", value: "\(id)")
         xmlBuilder.addAttribute(name: "lat", value: "\(lat)")
         xmlBuilder.addAttribute(name: "lon", value: "\(lon)")
-        xmlBuilder.addAttribute(name: "version", value: "\(version)")
-        xmlBuilder.addAttribute(name: "changeset", value: "\(changeset)")
-        tags.forEach { (key: String, value: String) in
-            let tagNode = TagPayload(key: key, value: value)
-            xmlBuilder.addChild(element: tagNode)
+         xmlBuilder.addAttribute(name: "version", value: "\(version)")
+         xmlBuilder.addAttribute(name: "changeset", value: "\(changeset)")
+        
+        // Add the gig payload tags.
+        var existingGigComplete: TagPayload? = nil
+        var existingGigUpdate: TagPayload? = nil
+         tags.forEach { (key: String, value: String) in
+             
+             let tagNode = TagPayload(key: key, value: value)
+             if (key == "ext:gig_complete"){
+                 existingGigComplete = tagNode
+             }
+             if (key == "ext:gig_last_updated"){
+                 existingGigUpdate = tagNode
+             }
+             xmlBuilder.addChild(element: tagNode)
+         }
+        if existingGigComplete == nil {
+            let gigCompleteTag = TagPayload(key: "ext:gig_complete", value: "yes")
+            xmlBuilder.addChild(element: gigCompleteTag)
         }
-        let gigCompleteTag = TagPayload(key: "ext:gig_complete", value: "yes")
         // Today date
         // Create a DateFormatter instance
         let dateFormatter = DateFormatter()
@@ -76,16 +92,20 @@ public struct OSMNode: Codable, OSMPayload, OSMElement, OSMCreatePayload {
 
         // Convert the Date object to a formatted string
         let formattedDate = dateFormatter.string(from: currentDate)
-
-        let gigLastUpdated = TagPayload(key: "ext:gig_last_updated", value: formattedDate)
-        xmlBuilder.addChild(element: gigCompleteTag)
-        xmlBuilder.addChild(element: gigLastUpdated)
         
-        let builtString = xmlBuilder.buildXML()
-        osmNode.append(builtString)
-        osmNode.append("</modify>")
-        return osmNode
-    }
+        if existingGigUpdate == nil{
+            let gigLastUpdated = TagPayload(key: "ext:gig_last_updated", value: formattedDate)
+            xmlBuilder.addChild(element: gigLastUpdated)
+        }
+        else {
+            existingGigUpdate!.value = formattedDate
+        }
+
+         let builtString = xmlBuilder.buildXML()
+         osmNode.append(builtString)
+         osmNode.append("</modify>")
+         return osmNode
+     }
     
     public let type: String
     public let id: Int
