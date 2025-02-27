@@ -187,6 +187,7 @@ class DatasyncManager {
     //////////
     
     func closeChangeset(id: String, completion: @escaping (Result<Bool, Error>) -> Void) {
+        print("Closing changeset \(id)")
         osmConnection.closeChangeSet(id: id) { result in
             completion(result) // Simply pass along the result
         }
@@ -240,6 +241,7 @@ class DatasyncManager {
             completion(.failure(NSError(domain: "Invalid Node Body", code: 0, userInfo: nil)))
             return
         }
+        print("Uploading changeset \(changesetUploadBody)")
 
         let newVersion = localNode.version + 1
 
@@ -350,7 +352,7 @@ class DatasyncManager {
         
         self.updateNode(node: &localNode) { updatedResult in
             let nodeId = "\(localNode.id)"  // ✅ Use localNode instead of node
-
+            print("Updating node \(nodeId) under new changeset")
             switch updatedResult {
             case .success:
                 completion(updatedResult)
@@ -487,6 +489,7 @@ class DatasyncManager {
         openChangeset { result in
             switch result {
             case .success(let changesetId):
+                print("Opened changeset \(changesetId)")
                 localNode.changeset = changesetId  // ✅ Modify local copy
                 
                 // Step 2: Update node
