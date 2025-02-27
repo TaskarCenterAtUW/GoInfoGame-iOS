@@ -49,7 +49,7 @@ class InitialViewModel: ObservableObject {
     }
     }
     
-    func fetchLongQuestsFor(workspaceId: String,completion: @escaping (Bool) -> Void) {
+    func fetchLongQuestsFor(workspaceId: String,completion: @escaping (Bool, String?) -> Void) {
         
         isLoading = true
         
@@ -75,10 +75,16 @@ class InitialViewModel: ObservableObject {
                     }
 
                     self.isLoading = false
-                    completion(true)
+                    completion(true, "")
                 case .failure(let error):
+                    print("ERROR FOR LONG FORM JSON IS ----?>>>>>>\(error.localizedDescription)")
                     self.isLoading = false
-                    completion(false)
+                    if error.localizedDescription.contains("empty") {
+                        completion(false, "Please configure longform." )
+                    } else {
+                        completion(false, "Unable to load quests.(invalid JSON)")
+                    }
+                    
                 }
             }
         }
