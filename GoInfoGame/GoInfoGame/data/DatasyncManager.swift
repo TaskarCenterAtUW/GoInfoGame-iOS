@@ -159,6 +159,27 @@ class DatasyncManager {
             }
         }
     }
+    
+    func closeChangeset(id: String) async throws -> Bool {
+        let workspaceId = KeychainManager.load(key: "workspaceID")
+        
+        guard let accessToken = KeychainManager.load(key: "accessToken") else {
+            throw NSError(domain: "NoAccessToken", code: 0, userInfo: [NSLocalizedDescriptionKey: "No Access Token found"])
+        }
+        
+        return try await withCheckedThrowingContinuation { continuation in
+            ApiManager.shared.performRequest(to: .closeChangeset(id, workspaceId ?? "", accessToken), setupType: .osm, modelType: Bool.self) { result in
+                switch result {
+                case .success(let closedResult):
+                    continuation.resume(returning: closedResult)
+                    
+                case .failure(let error):
+                    continuation.resume(throwing: error)
+                }
+            }
+        }
+        
+    }
 
 
     ///////////////
@@ -193,22 +214,21 @@ class DatasyncManager {
 //        }
 //    }
     
-    func closeChangeset(id: String) async throws -> Bool {
-        print("Closing changeset \(id)")
-        
-        return try await withCheckedThrowingContinuation { continuation in
-            osmConnection.closeChangeSet(id: id) { result in
-                switch result {
-                case .success(let success):
-                    continuation.resume(returning: success)
-                case .failure(let error):
-                    continuation.resume(throwing: error)
-                }
-            }
-        }
-    }
+//    func closeChangeset(id: String) async throws -> Bool {
+//        print("Closing changeset \(id)")
+//        
+//        return try await withCheckedThrowingContinuation { continuation in
+//            osmConnection.closeChangeSet(id: id) { result in
+//                switch result {
+//                case .success(let success):
+//                    continuation.resume(returning: success)
+//                case .failure(let error):
+//                    continuation.resume(throwing: error)
+//                }
+//            }
+//        }
+//    }
 
-    
     // utility function to act as substitute for osmConnection functions
     func updateWay(way: OSMWay) async throws -> Int {
         var localWay = way
@@ -289,7 +309,7 @@ class DatasyncManager {
     func uploadNode(node: OSMNode) async throws -> Bool {
         var localNode = node
         let nodeBodyString = localNode.toCreatePayload()
-        let changesetUploadBody = "<osmChange version=\"0.6\" generator=\"GIG Change generator\">\(nodeBodyString)</osmChange>"
+        let changesetUploadBody = "<osmChange version=\"0.6\" generator=\"GIG Change generator\">" + nodeBodyString + "</osmChange>"
         let workspaceId = KeychainManager.load(key: "workspaceID")
 
         guard let nodeBody = changesetUploadBody.data(using: .utf8) else {
@@ -299,18 +319,16 @@ class DatasyncManager {
         guard let accessToken = KeychainManager.load(key: "accessToken") else {
             throw APIError.unknown(NSError(domain: "No AccessToken", code: 0, userInfo: nil))
         }
-
-        do {
-            let result: String = try await ApiManager.shared.performRequestA(
-                to: .uploadChangeset(accessToken, "\(node.changeset)", workspaceId ?? "", nodeBody),
-                setupType: .osm,
-                modelType: String.self,
-                useJSON: false
-            )
-            return true;
-        } catch {
-            print("Upload failed: \(error)")
-            throw error;
+        
+        return try await withCheckedThrowingContinuation { continuation in
+            ApiManager.shared.performRequest(to: .uploadChangeset(accessToken, "\(node.changeset)", workspaceId ?? "", nodeBody), setupType: .osm, modelType: String.self, useJSON: false) { result in
+                switch result {
+                case .success:
+                    continuation.resume(returning: true)
+                case .failure(let failure):
+                    continuation.resume(throwing: failure)
+                }
+            }
         }
     }
 
