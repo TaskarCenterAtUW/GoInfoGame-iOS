@@ -10,7 +10,7 @@ import SwiftUI
 struct CreateNoteView: View {
     
     @State private var noteText = ""
-    @State private var showNotesBox = false
+    @Binding var showNotesBox: Bool
     
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
@@ -54,5 +54,5 @@ struct CreateNoteView: View {
 
 
 #Preview {
-    CreateNoteView()
+    CreateNoteView(showNotesBox: .constant(true))
 }
