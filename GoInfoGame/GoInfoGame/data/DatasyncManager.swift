@@ -154,8 +154,10 @@ class DatasyncManager {
             ApiManager.shared.performRequest(to: .openChangesets(accessToken, workspaceId ?? "", osmPayload!),setupType: .osm, modelType: Int.self) { result in
                 switch result {
                 case .success(let changesetID):
+                    SyncLogger.shared.logStep("✅ Created changeset. ID = \(changesetID)")
                     continuation.resume(returning: changesetID)
                 case .failure(let error):
+                    SyncLogger.shared.logStep("❌ Failed to create changeset: \(error.localizedDescription)")
                     continuation.resume(throwing: error)
                 }
             }
@@ -173,9 +175,11 @@ class DatasyncManager {
             ApiManager.shared.performRequest(to: .closeChangeset(id, workspaceId ?? "", accessToken), setupType: .osm, modelType: Bool.self) { result in
                 switch result {
                 case .success(let closedResult):
+                    SyncLogger.shared.logStep("Changeset closed")
                     continuation.resume(returning: closedResult)
                     
                 case .failure(let error):
+                    SyncLogger.shared.logStep("Closing Changeset Failed ---\(error.localizedDescription)")
                     continuation.resume(throwing: error)
                 }
             }
@@ -218,13 +222,16 @@ class DatasyncManager {
     
 //    func closeChangeset(id: String) async throws -> Bool {
 //        print("Closing changeset \(id)")
+//        SyncLogger.shared.logStep("Closing Changeset")
 //        
 //        return try await withCheckedThrowingContinuation { continuation in
 //            osmConnection.closeChangeSet(id: id) { result in
 //                switch result {
 //                case .success(let success):
+//                    SyncLogger.shared.logStep("Changeset closed")
 //                    continuation.resume(returning: success)
 //                case .failure(let error):
+//                    SyncLogger.shared.logStep("Closing Changeset Failed ---\(error.localizedDescription)")
 //                    continuation.resume(throwing: error)
 //                }
 //            }
@@ -299,9 +306,11 @@ class DatasyncManager {
                         updatedNode.tags[key] = value
                     }
                     updatedNode.version = newVersion
+                    SyncLogger.shared.logStep("Node Updated ----\(updatedNode.tags)")
                     continuation.resume(returning: newVersion)
                 case .failure(let error):
                     print(error)
+                    SyncLogger.shared.logStep("❌ Node updation failed ----\(error.localizedDescription)")
                     continuation.resume(throwing: error)
                 }
             }
@@ -403,7 +412,8 @@ class DatasyncManager {
         var localNode = node
         
         let nodeId = "\(localNode.id)"
-        print("Updating node \(nodeId) under new changeset")
+        SyncLogger.shared.logStep("Updating node \(nodeId) under new changeset")
+
         var updatedResult: Int = -1
         do {
              updatedResult = try await updateNode(node: localNode)
@@ -411,12 +421,15 @@ class DatasyncManager {
             
         } catch {
             if (error as NSError).code == 409 {
+                SyncLogger.shared.logStep("Fetching node due to conflict")
                 let fetchedResult = try await fetchNode2(nodeId: "\(localNode.id)")
+                
                 var mergedNode = self.mergeNodes(localNode: localNode, latestNode: fetchedResult)
                 print("Local Node:")
                 print(localNode)
                 print("Merged Node:")
                 print(mergedNode)
+                SyncLogger.shared.logStep("Nodes fetched and merged")
                 return try await updateNode(node: mergedNode)
             } else {
                 return updatedResult
@@ -559,6 +572,8 @@ class DatasyncManager {
     func syncNode(node: OSMNode) async throws -> Bool {
         var localNode = node
         
+        SyncLogger.shared.logStep("Open Changeset")
+        
         // Step 1: Open changeset
         do {
             let changesetID = try await openChangeset()
@@ -574,6 +589,7 @@ class DatasyncManager {
             }
             
             //Stepp 3:Close changeset
+            SyncLogger.shared.logStep("Close Changeset")
            return try await closeChangeset(id: String(changesetID))
         
         } catch {
