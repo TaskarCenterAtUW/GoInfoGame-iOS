@@ -80,7 +80,15 @@ struct APIEndpoint {
             ]
         return APIEndpoint(path: "/changeset/\(changesetId)/upload", method: "POST", body: body, headers: header, formData: nil)
     }
-    
+        
+    static let closeChangeset = { (changesetId: String, workspaceId: String, accessToken: String) in
+        let header = [
+            "Authorization": "Bearer \(accessToken)",
+            "X-Workspace": workspaceId,
+            "Content-Type": "application/xml"
+        ]
+        return APIEndpoint(path: "/changeset/\(changesetId)/close", method: "PUT", body: nil, headers: header, formData: nil)
+    }
     static let fetchuserProfile = { (userName: String, accessToken: String) in
         
         let header = [

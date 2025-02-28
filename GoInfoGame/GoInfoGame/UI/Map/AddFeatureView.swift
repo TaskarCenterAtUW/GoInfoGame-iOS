@@ -79,7 +79,15 @@ struct AddFeatureView: View {
                     
                     Spacer()
                     
-                    Button(action: addFeature) {
+                    Button(action: {
+                        Task {
+                            do {
+                                await addFeature()
+                            } catch {
+                                print("Error adding feature: \(error)")
+                            }
+                        }
+                    }) {
                         if isLoading {
                             ProgressView()
                         } else {
@@ -98,34 +106,31 @@ struct AddFeatureView: View {
             }
     }
 
-    func addFeature() {
+    func addFeature() async {
         guard let feature = selectedFeature else { return }
         isLoading = true
 
-        var powerpole = UserNodesHelper.getPowerPole(
+        let powerpole = UserNodesHelper.getPowerPole(
             lat: tappedCoordinate.latitude,
             lon: tappedCoordinate.longitude,
             changeset: 1,
             tags: feature.tags
         )
 
-        DatasyncManager.shared.createNode(node: &powerpole) { result in
-            DispatchQueue.main.async {
-                isLoading = false
-                switch result {
-                case .success:
-                    alertMessage = "Feature added successfully"
-                case .failure:
-                    alertMessage = "Something went wrong. Try again"
-                }
-                isPresented = false
-                dismissSheet(alertMessage)
-            }
+        do {
+            let _ = try await DatasyncManager.shared.createNode(node: powerpole)
+            alertMessage = "Feature added successfully"
+        } catch {
+            print("ERROR IN CREATING FEATURE ---->>> \(error)")
+            alertMessage = "Something went wrong. Try again"
+        }
+
+        await MainActor.run {
+            isLoading = false
+            isPresented = false
+            dismissSheet(alertMessage)
         }
     }
-
-
-
 }
 
 #Preview {
