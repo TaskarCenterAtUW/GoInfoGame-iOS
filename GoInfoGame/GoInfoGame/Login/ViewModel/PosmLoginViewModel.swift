@@ -60,8 +60,10 @@ class PosmLoginViewModel: ObservableObject {
                 switch result {
                 case .success(let posmLoginSuccessResponse):
                     let accessToken = posmLoginSuccessResponse.accessToken
+                    let refreshToken = posmLoginSuccessResponse.refreshToken
                     DispatchQueue.main.async {
                         _ = KeychainManager.save(key: "accessToken", data: accessToken)
+                        _ = KeychainManager.save(key: "refreshToken", data: refreshToken)
                         self.hasLoginFailed = false
                         self.loggedIn = true
                         self.isLoading = false

@@ -103,10 +103,30 @@ class ApiManager {
                }
            }
         
-        let task = URLSession.shared.dataTask(with: request) { data, response, error in
+        let task = URLSession.shared.dataTask(with: request) { [weak self] data, response, error in
+            guard let self = self else {
+                let noDataError = NSError(domain: "", code: -2, userInfo: [NSLocalizedDescriptionKey: "No data returned"])
+                print(noDataError.localizedDescription)
+                completion(.failure(noDataError))
+                return
+            }
             if let error = error {
                 print("Request failed with error: \(error.localizedDescription)")
                 completion(.failure(error))
+                return
+            }
+            
+            if let httpResponse = response as? HTTPURLResponse,
+                httpResponse.statusCode == 401,
+                request.url!.lastPathComponent.contains("refresh-token") == false {
+                TokenRefresher.shared.refreshToken { [weak self] status in
+                    if status {
+                        self?.performRequest(to: endpoint, setupType: setupType, modelType: modelType, completion: completion)
+                    }
+                    else {
+                        completion(.failure(NSError(domain: "", code: -3, userInfo: [NSLocalizedDescriptionKey: "Token refresh error"])))
+                    }
+                }
                 return
             }
             
