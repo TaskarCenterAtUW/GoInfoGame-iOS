@@ -226,8 +226,18 @@ class ApiManager {
             }
             
             if useJSON {
-                
                 do {
+                    if data.isEmpty {
+                        if T.self == Bool.self {
+                            completion(.success(true as! T)) // Assuming success means `true` and this is for cloae changeset
+                            return
+                        } else {
+                            completion(.failure(NSError(domain: "goinfogame", code: -1, userInfo: [NSLocalizedDescriptionKey: "Unexpected empty response"])))
+                            return
+                        }
+                    }
+                    
+                    
                     let theDecoder = JSONDecoder()
                     theDecoder.dateDecodingStrategy = .iso8601
                     let decodedData = try theDecoder.decode(T.self, from: data)
