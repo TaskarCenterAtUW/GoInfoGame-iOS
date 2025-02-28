@@ -41,12 +41,14 @@ class DatasyncManager {
     ///  To fix the above error added @mainActor
     @MainActor
     func syncData() async -> Bool {
-        if isSynching {
-            print("Already syncing")
-            return false
-        } else {
-            isSynching = true
-        }
+        
+        //Disabling temporarily. To be put back after incorporating syncing mechanism
+//        if isSynching {
+//            print("Already syncing")
+//            return false
+//        } else {
+//            isSynching = true
+//        }
 
         let changesets = dbInstance.getChangesets()
         print("Starting to sync data")
