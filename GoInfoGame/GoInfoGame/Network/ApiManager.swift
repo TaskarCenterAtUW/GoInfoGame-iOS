@@ -246,24 +246,32 @@ class ApiManager {
                 }
             }
             else {
-                if let response = response as? HTTPURLResponse, response.statusCode == 409 {
-                    let conflictError = NSError(domain: "goinfogame", code: 409, userInfo: [NSLocalizedDescriptionKey: "version mismatch"])
-                    completion(.failure(conflictError))
-                    return
-                }
-                
-                do{
-                    if let response = response as? HTTPURLResponse, response.statusCode == 200 {
-                        let decodedString = try String(data: data, encoding: .utf8)!
-                        completion(.success(decodedString as! T))
-                        return
+                    if let response = response as? HTTPURLResponse {
+                        switch response.statusCode {
+                        case 409:
+                            let conflictError = NSError(domain: "goinfogame", code: 409, userInfo: [NSLocalizedDescriptionKey: "version mismatch"])
+                            completion(.failure(conflictError))
+
+                        case 200:
+                            do {
+                                if let decodedString = String(data: data, encoding: .utf8) {
+                                    completion(.success(decodedString as! T))
+                                } else {
+                                    completion(.failure(NSError(domain: "goinfogame", code: -1, userInfo: [NSLocalizedDescriptionKey: "Failed to decode string"])))
+                                }
+                            } catch {
+                                print("Failed to decode the non JSON: \(error.localizedDescription)")
+                                completion(.failure(error))
+                            }
+
+                        default:
+                            let unknownError = NSError(domain: "goinfogame", code: response.statusCode, userInfo: [NSLocalizedDescriptionKey: "Unexpected HTTP status code: \(response.statusCode)"])
+                            completion(.failure(unknownError))
+                        }
+                    } else {
+                        let noResponseError = NSError(domain: "goinfogame", code: -2, userInfo: [NSLocalizedDescriptionKey: "No valid HTTP response received"])
+                        completion(.failure(noResponseError))
                     }
-                }
-                catch {
-                    print("Failed to decode the non JSON: \(error.localizedDescription)")
-                    completion(.failure(error))
-                    return
-                }
             }
         }
         task.resume()
