@@ -18,13 +18,11 @@ class DatasyncManager {
     private var isSynching: Bool = false
     
     private let dbInstance = DatabaseConnector.shared
-    
-    private let osmConnection = OSMConnection(config: OSMConfig.testPOSM, currentChangesetId: nil)
-    
+        
     func syncDataToOSM(completionHandler: @escaping (Bool) -> Void) {
         Task {
             do {
-                try await syncData() // Assuming syncData() can throw
+                try await syncData()
                 DispatchQueue.main.async {
                     completionHandler(true) // Success
                 }
@@ -187,57 +185,6 @@ class DatasyncManager {
         
     }
 
-
-    ///////////////
-//    public func openChangeSet(createdByTag: String, _ completion: @escaping((Result<Int,Error>)->Void)) {
-//        //TODO: Write errors when not authenticated and if there is already an open changeset with same user
-//        let urlString1 = self.baseUrl.appending("changeset/create")
-//        let urlString = "https://osm.workspaces-stage.sidewalks.washington.edu/api/0.6/changeset/create"
-//        guard let url = URL(string: urlString) else {
-//            print("Invalid URL given")
-//            return
-//        }
-//       // let workspaceID = KeychainManager.load(key: "workspaceID")
-//        BaseNetworkManager.shared.addOrSetHeaders(header: "Authorization", value: "Bearer \(accessToken!)")
-//        BaseNetworkManager.shared.postData(url: url,method: "PUT" ,body: OSMChangesetPayload(createdByTag: createdByTag)) { (result: Result<Int,Error>) in
-//            switch result {
-//            case .success(let changesetID):
-//                print("CHANGESET ID ===>\(changesetID)")
-//                self.currentChangesetId = changesetID
-//                
-//            case .failure(let error):
-//                print(error)
-//            }
-//            completion(result)
-//        }
-//    }
-    //////////
-    
-//    func closeChangeset(id: String, completion: @escaping (Result<Bool, Error>) -> Void) {
-//        print("Closing changeset \(id)")
-//        osmConnection.closeChangeSet(id: id) { result in
-//            completion(result) // Simply pass along the result
-//        }
-//    }
-    
-//    func closeChangeset(id: String) async throws -> Bool {
-//        print("Closing changeset \(id)")
-//        SyncLogger.shared.logStep("Closing Changeset")
-//        
-//        return try await withCheckedThrowingContinuation { continuation in
-//            osmConnection.closeChangeSet(id: id) { result in
-//                switch result {
-//                case .success(let success):
-//                    SyncLogger.shared.logStep("Changeset closed")
-//                    continuation.resume(returning: success)
-//                case .failure(let error):
-//                    SyncLogger.shared.logStep("Closing Changeset Failed ---\(error.localizedDescription)")
-//                    continuation.resume(throwing: error)
-//                }
-//            }
-//        }
-//    }
-
     // utility function to act as substitute for osmConnection functions
     func updateWay(way: OSMWay) async throws -> Int {
         var localWay = way
@@ -343,47 +290,6 @@ class DatasyncManager {
         }
     }
 
-    
-//    func uploadNode(node: OSMNode) async throws -> Bool {
-//        var localNode = node
-//        let nodeBodyString = localNode.toCreatePayload()
-//        let changesetUploadBody = "<osmChange version=\"0.6\" generator=\"GIG Change generator\">\(nodeBodyString)</osmChange>"
-//        let workspaceId = KeychainManager.load(key: "workspaceID")
-//
-//        guard let nodeBody = changesetUploadBody.data(using: .utf8) else {
-//            throw NSError(domain: "Invalid Node Data", code: 0, userInfo: nil)
-//        }
-//
-//        guard let accessToken = KeychainManager.load(key: "accessToken") else {
-//            throw NSError(domain: "No AccessToken", code: 0, userInfo: nil)
-//        }
-//
-//        return try await withCheckedThrowingContinuation { continuation in
-//            let workItem = DispatchWorkItem {
-//                continuation.resume(throwing: NSError(domain: "Request Timeout", code: -999, userInfo: nil))
-//            }
-//
-//            DispatchQueue.main.asyncAfter(deadline: .now() + 10, execute: workItem)
-//
-//            ApiManager.shared.performRequest(
-//                to: .uploadChangeset(accessToken, "\(node.changeset)", workspaceId ?? "", nodeBody),
-//                setupType: .osm,
-//                modelType: String.self,
-//                useJSON: false
-//            ) { result in
-//                workItem.cancel() // Cancel the DispatchWorkItem if the request completes
-//
-//                switch result {
-//                case .success:
-//                    continuation.resume(returning: true)
-//                case .failure(let error):
-//                    print("uploadNode error: \(error)")
-//                    continuation.resume(throwing: error)
-//                }
-//            }
-//        }
-//    }
-    
     func updateWay2(way: OSMWay) async throws -> Int {
         var localWay = way
         let wayId = "\(localWay.id)"
@@ -497,47 +403,6 @@ class DatasyncManager {
             }
         }
     }
-
-//    func fetchWay2(wayId: String, completion: @escaping (Result<OSMWay, Error>) -> Void) {
-//        let workspaceID = KeychainManager.load(key: "workspaceID")
-//        ApiManager.shared.performRequest(to: .fetchLatestWay(workspaceID!, wayId), setupType: .osm, modelType: OSMWayResponse.self) { result in
-//            switch result {
-//            case .success(let osmwayResponse):
-//                if let osmway = osmwayResponse.elements.first {
-//                    completion(.success(osmway))
-//                } else {
-//                    completion(.failure(NSError(domain: "OSM", code: 404, userInfo: [NSLocalizedDescriptionKey: "Way not found"])))
-//                }
-//            case .failure(let error):
-//                completion(.failure(error))
-//            }
-//        }
-//    }
-
-    
-//    func fetchNode2(nodeId: String, completion: @escaping (Result<OSMNode, Error>) -> Void) {
-//        guard let workspaceID = KeychainManager.load(key: "workspaceID") else {
-//            completion(.failure(NSError(domain: "No WorkspaceID", code: 0, userInfo: nil)))
-//            return
-//        }
-//        
-//        ApiManager.shared.performRequest(
-//            to: .fetchLatestWay(workspaceID, nodeId),
-//            setupType: .osm,
-//            modelType: OSMNodeResponse.self
-//        ) { result in
-//            switch result {
-//            case .success(let osNodeResponse):
-//                if let osmnode = osNodeResponse.elements.first {
-//                    completion(.success(osmnode))
-//                } else {
-//                    completion(.failure(NSError(domain: "No Node Found", code: 0, userInfo: nil)))
-//                }
-//            case .failure(let error):
-//                completion(.failure(error))
-//            }
-//        }
-//    }
     
     func fetchNode2(nodeId: String) async throws -> OSMNode {
         guard let workspaceID = KeychainManager.load(key: "workspaceID") else {
@@ -564,7 +429,6 @@ class DatasyncManager {
         }
     }
 
-   
     /**
             Syncs the node along with the updated
      */
@@ -618,37 +482,6 @@ class DatasyncManager {
             throw error;
         }
     }
-
-
-
-
-
-
-
-
-    
-  //  @MainActor
-//    func createNode(node: inout OSMNode) async -> Result<Bool,Error> {
-//        do {
-//            //open changeset
-//            let changesetId = try await openChangeset().get()
-//            //create node/upload changeset
-//            node.changeset = changesetId
-//            let uploadNodeResult = await uploadNode(node: &node)
-//            
-//            switch uploadNodeResult {
-//            case .success:
-//                let _ = try await closeChangeset(id: String(changesetId)).get()
-//                return .success(true)
-//            case .failure(let failure):
-//                print(failure)
-//                return .failure(failure)
-//            }
-//        } catch (let error) {
-//            print(error)
-//            return .failure(error)
-//        }
-//    }
     
     @MainActor
     func syncWay(way: OSMWay) async throws -> Bool {
