@@ -26,18 +26,22 @@ struct LongQuestView: View {
     var body: some View {
         VStack(alignment: .leading) {
             Text(quest.questTitle)
-                           .font(.custom("Lato-Bold", size: 16))
-                           .foregroundColor(Color(red: 66/255, green: 82/255, blue: 110/255))
-                           .padding([.bottom], 10)
+                .font(.custom("Lato-Bold", size: 16))
+                .foregroundColor(Color(red: 66/255, green: 82/255, blue: 110/255))
+                .padding([.bottom], 10)
             
-                       Text(quest.questDescription)
-                           .font(.custom("Lato-Regular", size: 12))
-                           .foregroundColor(Color(red: 131/255, green: 135/255, blue: 155/255))
+            if let imageUrl = quest.questImageURL, !imageUrl.isEmpty {
+                LongFormImageView(url: imageUrl, width: 100, height: 100, id: nil)
+            }
+            
+            Text(quest.questDescription)
+                .font(.custom("Lato-Regular", size: 12))
+                .foregroundColor(Color(red: 131/255, green: 135/255, blue: 155/255))
             
             QuestOptions(options: questOptions, selectedAnswerId: $selectedAnswers[quest.id], onChoiceSelected: { selectedChoice in
                 onChoiceSelected(selectedChoice)
             }, questType: quest.questType,currentAnswer: $currentAnswer, uploadPhoto: uploadPhoto)
-          }
+        }
           .padding(.vertical, 5)
     }
     

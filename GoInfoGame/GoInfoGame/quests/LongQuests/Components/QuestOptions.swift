@@ -37,29 +37,7 @@ struct QuestOptions: View {
                         }) {
                             VStack(alignment: .leading, spacing: 10) {
                                 if let imageUrl = option.imageURL, !imageUrl.isEmpty {
-                                    AsyncImage(url: URL(string: imageUrl)) { phase in
-                                        switch phase {
-                                        case .empty:
-                                            // Display a placeholder while loading
-                                            ProgressView()
-                                                .frame(width: 100, height: 100)
-                                        case .success(let image):
-                                            image
-                                                .resizable()
-                                                .scaledToFill()
-                                                .frame(width: 100, height: 100)
-                                                .clipped()
-                                        case .failure:
-                                            // Display a fallback image or an empty view on failure
-                                            Image(systemName: "photo")
-                                                .resizable()
-                                                .scaledToFit()
-                                                .frame(width: 100, height: 100)
-                                        @unknown default:
-                                            EmptyView()
-                                        }
-                                    }
-                                    .id(option.id)
+                                    LongFormImageView(url: imageUrl, width: 100, height: 100, id: option.id)
                                 }
                                 
                                 Text(option.choiceText)

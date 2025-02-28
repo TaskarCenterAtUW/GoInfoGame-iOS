@@ -191,6 +191,7 @@
 		FA5071902D5B31CC00CE9798 /* CreateNoteView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA50718F2D5B31CC00CE9798 /* CreateNoteView.swift */; };
 		FA5071962D6DD31A00CE9798 /* LongElementQuest.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA5071952D6DD31A00CE9798 /* LongElementQuest.swift */; };
 		FA5071982D71F1B000CE9798 /* SyncLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA5071972D71F1B000CE9798 /* SyncLogger.swift */; };
+		FA50719A2D7263F800CE9798 /* LongFormImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA5071992D7263F800CE9798 /* LongFormImageView.swift */; };
 		FA5853C12B21F17F00301CDA /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA5853C02B21F17F00301CDA /* OnboardingView.swift */; };
 		FA87A8102B68142F000A6BEA /* LoadingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA87A80F2B68142F000A6BEA /* LoadingView.swift */; };
 		FA87A8132B6AC019000A6BEA /* StepsRampTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA87A8112B6AC019000A6BEA /* StepsRampTests.swift */; };
@@ -501,6 +502,7 @@
 		FA50718F2D5B31CC00CE9798 /* CreateNoteView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateNoteView.swift; sourceTree = "<group>"; };
 		FA5071952D6DD31A00CE9798 /* LongElementQuest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LongElementQuest.swift; sourceTree = "<group>"; };
 		FA5071972D71F1B000CE9798 /* SyncLogger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncLogger.swift; sourceTree = "<group>"; };
+		FA5071992D7263F800CE9798 /* LongFormImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LongFormImageView.swift; sourceTree = "<group>"; };
 		FA5853C02B21F17F00301CDA /* OnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingView.swift; sourceTree = "<group>"; };
 		FA87A80F2B68142F000A6BEA /* LoadingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingView.swift; sourceTree = "<group>"; };
 		FA87A8112B6AC019000A6BEA /* StepsRampTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StepsRampTests.swift; sourceTree = "<group>"; };
@@ -1349,6 +1351,7 @@
 			children = (
 				FA8C74C62C4FE2E900D28220 /* LongFormWidthView.swift */,
 				FA8C74D32C5A443700D28220 /* QuestOptions.swift */,
+				FA5071992D7263F800CE9798 /* LongFormImageView.swift */,
 			);
 			path = Components;
 			sourceTree = "<group>";
@@ -2116,6 +2119,7 @@
 				971F9FE12B847358005397CC /* CrossingIsland.swift in Sources */,
 				970D5BD12B62B61300C20BE7 /* MapViewController.swift in Sources */,
 				FA9FE2D82BAC75390036F618 /* OAuthViewController.swift in Sources */,
+				FA50719A2D7263F800CE9798 /* LongFormImageView.swift in Sources */,
 				971342792BBD691500174EBF /* MapViewControllerView.swift in Sources */,
 				FA1992ED2BB1A78C003B4719 /* KeychainManager.swift in Sources */,
 				0536DD972B0BD95100B04C4B /* URLSession+Extension.swift in Sources */,
