@@ -11,6 +11,7 @@ struct FloatingActionButtonStack: View {
     
     var mapButtonAction: () -> ()
     var useBingMaps: Bool
+    @State private var showBottomSheet = false
     
     var body: some View {
         VStack {
@@ -20,7 +21,9 @@ struct FloatingActionButtonStack: View {
                 VStack {
                     MapSwitcherButton(action: mapButtonAction, useBingMaps: useBingMaps)
                     
-                    NavigationLink(destination: QuestCategoryListView()) {
+                    Button(action: {
+                        showBottomSheet.toggle()
+                    }) {
                         Image(systemName: "slider.horizontal.3")
                             .font(.system(size: 25))
                             .foregroundColor(.white)
@@ -29,6 +32,11 @@ struct FloatingActionButtonStack: View {
                             .cornerRadius(30)
                             .shadow(radius: 10)
                           
+                    }
+                    .sheet(isPresented: $showBottomSheet) {
+                        QuestCategoryListView()
+                            .presentationDetents([.fraction(0.85)])
+                            .presentationDragIndicator(.visible)
                     }
                 }
                 .offset(x: -25, y: 10)
