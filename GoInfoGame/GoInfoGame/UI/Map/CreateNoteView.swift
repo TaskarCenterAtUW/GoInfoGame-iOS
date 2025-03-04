@@ -6,53 +6,101 @@
 //
 
 import SwiftUI
+import CoreLocation
 
 struct CreateNoteView: View {
     
+    @State var coordinates: CLLocationCoordinate2D
     @State private var noteText = ""
     @Binding var showNotesBox: Bool
+    @State private var alertMessage = ""
+    @StateObject private var noteViewModel = NotesViewModel()
+    
+    @State var dismissSheet: (String) -> ()
     
     var body: some View {
-        VStack(alignment: .leading, spacing: 10) {
-            TextEditor(text: $noteText)
-                .padding(10)
-                .background(Color(.systemGray6))
-                .cornerRadius(8)
-                .padding(.horizontal, 20)
-            
-            HStack {
-                Button("Submit") {
-                    submitNote()
-                    showNotesBox = false
-                }
-                .padding()
-                .frame(maxWidth: .infinity)
-                .background(Color.blue)
-                .foregroundColor(.white)
-                .cornerRadius(8)
-                .padding(.horizontal, 20)
+        ZStack {
+            VStack(alignment: .leading, spacing: 10) {
+                TextEditor(text: $noteText)
+                    .padding(10)
+                    .background(Color(.systemGray6))
+                    .cornerRadius(8)
+                    .padding(.horizontal, 20)
                 
-                Button("Cancel") {
-                    showNotesBox = false
+                HStack {
+                    Button(action: {
+                        Task {
+                            do {
+                                try await submitNote()
+                            } catch {
+                                print("Error adding feature: \(error)")
+                            }
+                        }
+                    }) {
+                        if noteViewModel.isLoading {
+                            ProgressView()
+                        } else {
+                            Text("Submit")
+                                .font(.custom("Lato-Bold", size: 16))
+                                .foregroundColor(.white)
+                                .padding()
+                                .frame(maxWidth: .infinity)
+                                .background(noteText != "" ? Color(red: 135/255, green: 62/255, blue: 242/255) : Color.gray)
+                                .cornerRadius(9)
+                        }
+                    }
+        
+                    Button (action: {
+                        showNotesBox = false
+                    }) {
+                        Text("Cancel")
+                            .font(.custom("Lato-Bold", size: 16))
+                            .foregroundColor(.white)
+                            .padding()
+                            .frame(maxWidth: .infinity)
+                            .background(Color.red)
+                            .cornerRadius(9)
+                    }
                 }
-                .padding()
-                .frame(maxWidth: .infinity)
-                .background(Color.red)
-                .foregroundColor(.white)
-                .cornerRadius(8)
                 .padding(.horizontal, 20)
             }
-            .padding(.horizontal, 20)
+            .padding(.top, 10)
+            
+            if noteViewModel.isLoading {
+                Color.black.opacity(0.3)
+                    .edgesIgnoringSafeArea(.all)
+               ActivityView(activityText: "Submitting Note")
+            }
         }
-        .padding(.top, 10)
     }
     
-    func submitNote() {
+    func submitNote() async throws {
         print("Note to be submitted: \(noteText)")
+        
+        do {
+          let notesResult = try await noteViewModel.createNote(note: noteText, lat: coordinates.latitude, long: coordinates.longitude)
+            
+            if notesResult {
+                print("Notes composed successfully")
+                alertMessage = "Note submitted successfully"
+                dismissSheet(alertMessage)
+                
+            }
+        } catch {
+            alertMessage = "Error submitting note. Please try again later."
+            print("Error creating note: \(error.localizedDescription)")
+            dismissSheet(alertMessage)
+        }
+        
+        await MainActor.run {
+            noteViewModel.isLoading = false
+            showNotesBox = false
+            dismissSheet(alertMessage)
+        }
     }
 }
 
 
 #Preview {
-    CreateNoteView(showNotesBox: .constant(true))
+    CreateNoteView(coordinates: CLLocationCoordinate2D(latitude: 0.0, longitude: 0.0), showNotesBox: .constant(true), dismissSheet: {_ in })
 }

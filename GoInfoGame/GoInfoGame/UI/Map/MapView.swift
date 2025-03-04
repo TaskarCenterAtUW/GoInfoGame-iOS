@@ -186,7 +186,16 @@ struct MapView: View {
                 }
             }
             .sheet(isPresented: $showCreateNoteSheet, content: {
-                CreateNoteView(showNotesBox: $showCreateNoteSheet)
+                CreateNoteView(coordinates: tappedCoordinate ?? CLLocationCoordinate2D(latitude: 0.0, longitude: 0.0), showNotesBox: $showCreateNoteSheet, dismissSheet: { message in
+                    if message.contains("wrong") {
+                        alertIcon = "exclamationmark.triangle.fill"
+                    } else {
+                        alertIcon = "checkmark.circle.fill"
+                    }
+                    alertMessage = message
+                    showAlert = true
+                    
+                })
                     .presentationDetents([.fraction(0.6)])
                     .presentationDragIndicator(.visible)
                 
