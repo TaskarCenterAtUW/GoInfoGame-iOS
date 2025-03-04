@@ -192,6 +192,7 @@
 		FA5071962D6DD31A00CE9798 /* LongElementQuest.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA5071952D6DD31A00CE9798 /* LongElementQuest.swift */; };
 		FA5071982D71F1B000CE9798 /* SyncLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA5071972D71F1B000CE9798 /* SyncLogger.swift */; };
 		FA50719A2D7263F800CE9798 /* LongFormImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA5071992D7263F800CE9798 /* LongFormImageView.swift */; };
+		FA51484E2D76ED6C00C0D35B /* NotesViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA51484D2D76ED6300C0D35B /* NotesViewModel.swift */; };
 		FA5853C12B21F17F00301CDA /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA5853C02B21F17F00301CDA /* OnboardingView.swift */; };
 		FA87A8102B68142F000A6BEA /* LoadingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA87A80F2B68142F000A6BEA /* LoadingView.swift */; };
 		FA87A8132B6AC019000A6BEA /* StepsRampTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA87A8112B6AC019000A6BEA /* StepsRampTests.swift */; };
@@ -503,6 +504,7 @@
 		FA5071952D6DD31A00CE9798 /* LongElementQuest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LongElementQuest.swift; sourceTree = "<group>"; };
 		FA5071972D71F1B000CE9798 /* SyncLogger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncLogger.swift; sourceTree = "<group>"; };
 		FA5071992D7263F800CE9798 /* LongFormImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LongFormImageView.swift; sourceTree = "<group>"; };
+		FA51484D2D76ED6300C0D35B /* NotesViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotesViewModel.swift; sourceTree = "<group>"; };
 		FA5853C02B21F17F00301CDA /* OnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingView.swift; sourceTree = "<group>"; };
 		FA87A80F2B68142F000A6BEA /* LoadingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingView.swift; sourceTree = "<group>"; };
 		FA87A8112B6AC019000A6BEA /* StepsRampTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StepsRampTests.swift; sourceTree = "<group>"; };
@@ -797,6 +799,7 @@
 				971902102B983EFC009B3270 /* CustomMap.swift */,
 				FA50718B2D54E08800CE9798 /* AddFeatureView.swift */,
 				FA50718F2D5B31CC00CE9798 /* CreateNoteView.swift */,
+				FA51484D2D76ED6300C0D35B /* NotesViewModel.swift */,
 			);
 			path = Map;
 			sourceTree = "<group>";
@@ -2108,6 +2111,7 @@
 				973FC03F2B59418B00878269 /* WayLit.swift in Sources */,
 				971342772BBD415600174EBF /* InitialViewController.swift in Sources */,
 				A40004EC2B62338400AF21FB /* AppQuestManager.swift in Sources */,
+				FA51484E2D76ED6C00C0D35B /* NotesViewModel.swift in Sources */,
 				FAFDA2062C6E8D7A00ECEAE9 /* APIEndPoint.swift in Sources */,
 				FA5853C12B21F17F00301CDA /* OnboardingView.swift in Sources */,
 				A4B83AF32B5F9385006684CA /* StoredWay.swift in Sources */,
