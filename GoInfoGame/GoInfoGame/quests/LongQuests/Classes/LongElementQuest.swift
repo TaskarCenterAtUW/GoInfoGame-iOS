@@ -10,7 +10,21 @@ import osmparser
 import SwiftUI
 
 class LongElementQuest: QuestBase, Quest {
-    var icon: UIImage = #imageLiteral(resourceName: "mapPoint")
+    
+    var icon: UIImage {
+        let lowercasedFilter = filter.lowercased()
+        
+        if lowercasedFilter.contains("ways with (highway=footway and footway=sidewalk)") {
+            return UIImage(named: "sidewalk_surface.pdf")!
+        } else if lowercasedFilter.contains("ways with (highway=footway and footway=crossing)") {
+            return UIImage(named: "pedestrian")!
+        } else if lowercasedFilter.contains("nodes with barrier=kerb") {
+            return UIImage(named: "kerb_type")!
+        } else {
+            return UIImage(named: "mapPoint")!
+        }
+    }
+
     
     var title: String = ""
     
