@@ -110,5 +110,15 @@ struct APIEndpoint {
         return APIEndpoint(path: "/sequence/finished-uploading/", method: "POST", body: nil, headers: nil, formData: formData)
     
     }
+    
+    static let submitNote = { (note: String, accessToken: String, lat: Double, long: Double, workspaceId: String) in
+        let header = [
+            "Authorization": "Bearer \(accessToken)",
+            "X-Workspace": workspaceId,
+            "Content-Type": "application/xml"
+        ]
+        return APIEndpoint(path: "/notes?lat=\(lat)&lon=\(long)&text=\(note)", method: "POST", body: nil, headers: header, formData: nil)
+        
+    }
 }
 
