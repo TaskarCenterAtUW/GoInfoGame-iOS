@@ -187,7 +187,7 @@ struct MapView: View {
             }
             .sheet(isPresented: $showCreateNoteSheet, content: {
                 CreateNoteView(coordinates: tappedCoordinate ?? CLLocationCoordinate2D(latitude: 0.0, longitude: 0.0), showNotesBox: $showCreateNoteSheet, dismissSheet: { message in
-                    if message.contains("wrong") {
+                    if message.contains("error") {
                         alertIcon = "exclamationmark.triangle.fill"
                     } else {
                         alertIcon = "checkmark.circle.fill"
