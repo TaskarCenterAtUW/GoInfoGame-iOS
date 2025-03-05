@@ -221,7 +221,7 @@
 		FAD5C50A2AFCBE720040C61A /* GoInfoGameTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAD5C5092AFCBE720040C61A /* GoInfoGameTests.swift */; };
 		FAD5C5142AFCBE720040C61A /* GoInfoGameUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAD5C5132AFCBE720040C61A /* GoInfoGameUITests.swift */; };
 		FAD5C5162AFCBE720040C61A /* GoInfoGameUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAD5C5152AFCBE720040C61A /* GoInfoGameUITestsLaunchTests.swift */; };
-		FAE2584F2D39819300D2BB12 /* ManageQuestsView in Sources */ = {isa = PBXBuildFile; fileRef = FAE2584E2D39819300D2BB12 /* ManageQuestsView */; };
+		FAE2584F2D39819300D2BB12 /* ManageQuestsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAE2584E2D39819300D2BB12 /* ManageQuestsView.swift */; };
 		FAE258522D3A780F00D2BB12 /* FloatingActionButtonStack.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAE258512D3A780F00D2BB12 /* FloatingActionButtonStack.swift */; };
 		FAF44FBD2B3084EC004FE664 /* OnboardingView1.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAF44FBC2B3084EC004FE664 /* OnboardingView1.swift */; };
 		FAF44FBF2B3084FB004FE664 /* OnboardingView2.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAF44FBE2B3084FB004FE664 /* OnboardingView2.swift */; };
@@ -539,7 +539,7 @@
 		FAD5C50F2AFCBE720040C61A /* GoInfoGameUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = GoInfoGameUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		FAD5C5132AFCBE720040C61A /* GoInfoGameUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoInfoGameUITests.swift; sourceTree = "<group>"; };
 		FAD5C5152AFCBE720040C61A /* GoInfoGameUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoInfoGameUITestsLaunchTests.swift; sourceTree = "<group>"; };
-		FAE2584E2D39819300D2BB12 /* ManageQuestsView */ = {isa = PBXFileReference; lastKnownFileType = text; path = ManageQuestsView; sourceTree = "<group>"; };
+		FAE2584E2D39819300D2BB12 /* ManageQuestsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManageQuestsView.swift; sourceTree = "<group>"; };
 		FAE258512D3A780F00D2BB12 /* FloatingActionButtonStack.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FloatingActionButtonStack.swift; sourceTree = "<group>"; };
 		FAF44FBC2B3084EC004FE664 /* OnboardingView1.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingView1.swift; sourceTree = "<group>"; };
 		FAF44FBE2B3084FB004FE664 /* OnboardingView2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingView2.swift; sourceTree = "<group>"; };
@@ -1477,7 +1477,7 @@
 		FAE2584D2D39817E00D2BB12 /* UI */ = {
 			isa = PBXGroup;
 			children = (
-				FAE2584E2D39819300D2BB12 /* ManageQuestsView */,
+				FAE2584E2D39819300D2BB12 /* ManageQuestsView.swift */,
 			);
 			path = UI;
 			sourceTree = "<group>";
@@ -2104,7 +2104,7 @@
 				97412A9B2BBBF3B400DF7983 /* KerbHeightForm.swift in Sources */,
 				FA8C74C42C4FDE1000D28220 /* LongFormModel.swift in Sources */,
 				973FC04A2B5A478C00878269 /* CrossMarkingForm.swift in Sources */,
-				FAE2584F2D39819300D2BB12 /* ManageQuestsView in Sources */,
+				FAE2584F2D39819300D2BB12 /* ManageQuestsView.swift in Sources */,
 				973FC03F2B59418B00878269 /* WayLit.swift in Sources */,
 				971342772BBD415600174EBF /* InitialViewController.swift in Sources */,
 				A40004EC2B62338400AF21FB /* AppQuestManager.swift in Sources */,
