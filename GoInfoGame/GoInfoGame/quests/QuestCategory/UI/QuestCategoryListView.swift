@@ -7,62 +7,77 @@
 
 import SwiftUI
 
-struct SectionHeader: View {
-    let title: String
-    
-    var body: some View {
-        Text(title)
-            .font(.headline)
-            .foregroundColor(.gray)
-            .padding(.horizontal)
-            .padding(.top, 8)
-    }
-}
-
 struct QuestCategoryListView: View {
     @ObservedObject var questManager = QuestsRepository.shared
+    @Environment(\.presentationMode) var presentationMode
     
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
-            Text("Manage Quests")
-                .font(.title)
-                .bold()
-                .padding(.top, 16)
-                .padding(.horizontal)
+            HStack(alignment: .firstTextBaseline) { // Aligns with text baseline
+                Text("Manage Quests")
+                    .font(.custom("Lato-Bold", size: 20))
+                    .foregroundColor(Color(red: 69/255, green: 81/255, blue: 108/255))
+                    .padding(.top, 30)
+
+                Spacer()
+
+                Button(action: {
+                    presentationMode.wrappedValue.dismiss()
+                }, label: {
+                    Image("long-form-dismiss")
+                        .resizable()
+                        .frame(width: 25, height: 25)
+                })
+            }
+            .padding(.horizontal, 16)
+
 
             Text("Show all hidden elements on the map by individual item or type")
-                .font(.subheadline)
-                .foregroundColor(.gray)
+                .font(.custom("Lato-Bold", size: 12))
+                .foregroundColor(Color(red: 132/255, green: 135/255, blue: 153/255))
                 .padding(.horizontal)
-            
-            SectionHeader(title: "TYPES")
-            
-            List {
-                Section {
-                    ForEach(questManager.allQuests.indices, id: \.self) { index in
-                        HStack {
-                            Image(uiImage: questManager.allQuests[index].quest.icon)
-                                .resizable()
-                                .aspectRatio(contentMode: .fit)
-                                .frame(width: 30, height: 30)
 
-                            Toggle(isOn: $questManager.allQuests[index].isDefault) {
-                                Text(questManager.allQuests[index].quest.title.isEmpty ?
-                                     questManager.longQuestModels[index].elementType :
-                                     questManager.allQuests[index].quest.title)
-                                .font(.caption)
-                            }
-                            .toggleStyle(SwitchToggleStyle(tint: .purple))
+            Text("TYPES")
+                .font(.custom("Lato-Bold", size: 15))
+                .foregroundColor(Color(red: 132/255, green: 135/255, blue: 153/255))
+                .padding(.horizontal)
+                .padding(.top, 10)
+                .padding(.leading, 15)
+
+            GeometryReader { geometry in
+                VStack(spacing: 0) { // No extra spacing between rows
+                    ForEach(questManager.allQuests.indices, id: \.self) { index in
+                        let quest = questManager.allQuests[index]
+                        let title = quest.quest.title.isEmpty ?
+                                    (index < questManager.longQuestModels.count ? questManager.longQuestModels[index].elementType : "") :
+                                    quest.quest.title
+
+                        Toggle(isOn: $questManager.allQuests[index].isDefault) {
+                            Text(title)
+                                .font(.custom("Lato-Bold", size: 16))
+                                .foregroundColor(Color(red: 69/255, green: 81/255, blue: 108/255))
                         }
-                        .padding(.vertical, 5)
+                        .toggleStyle(SwitchToggleStyle(tint: .purple))
+                        .padding(.horizontal, 10)
+                        .padding(.vertical, 6)
+
+                        if index != questManager.allQuests.count - 1 {
+                            Divider().padding(.leading, 10)
+                        }
                     }
+
                 }
+                .frame(maxWidth: .infinity)
+                .background(Color.white)
+                .clipShape(RoundedRectangle(cornerRadius: 16))
+                .padding([.leading, .trailing], 22)
             }
-            .padding()
-            .frame(maxHeight: 300) // Limits List height to avoid full-screen expansion
+            .frame(height: CGFloat(questManager.allQuests.count) * 50) // Adjust height dynamically
+            
+            Spacer()
         }
-        .padding(.bottom, 16) // Padding for bottom safe area
-        .background(Color(.systemBackground))
+        .padding(.bottom, 16)
+        .background((Color(red: 248/255, green: 248/255, blue: 248/255)))
         .clipShape(RoundedRectangle(cornerRadius: 16))
         .onDisappear {
             QuestsPublisher.shared.refreshQuest.send("")
