@@ -36,7 +36,8 @@ struct FloatingActionButtonStack: View {
                     .sheet(isPresented: $showBottomSheet) {
                         QuestCategoryListView()
                             .presentationDetents([.fraction(0.85)])
-                            .presentationDragIndicator(.visible)
+                            .interactiveDismissDisabled()
+                            .presentationDragIndicator(.hidden)
                     }
                 }
                 .offset(x: -25, y: 10)
