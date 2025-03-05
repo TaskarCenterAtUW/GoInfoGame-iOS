@@ -34,7 +34,7 @@ struct FloatingActionButtonStack: View {
                           
                     }
                     .sheet(isPresented: $showBottomSheet) {
-                        QuestCategoryListView()
+                        ManageQuestsView()
                             .presentationDetents([.fraction(0.85)])
                             .interactiveDismissDisabled()
                             .presentationDragIndicator(.hidden)
