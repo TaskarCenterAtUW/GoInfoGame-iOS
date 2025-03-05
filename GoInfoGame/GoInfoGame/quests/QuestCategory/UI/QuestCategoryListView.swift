@@ -81,3 +81,11 @@ struct CheckBoxView: View {
             .foregroundColor(isChecked ? Color(UIColor.systemBlue) : Color.secondary)
     }
 }
+
+//preview for QuestCategoryListView
+struct QuestCategoryListView_Previews: PreviewProvider {
+    static var previews: some View {
+        QuestCategoryListView()
+        
+    }
+}
