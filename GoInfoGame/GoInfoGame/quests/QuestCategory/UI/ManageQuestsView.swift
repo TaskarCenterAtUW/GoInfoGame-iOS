@@ -46,7 +46,7 @@ struct ManageQuestsView: View {
 
             GeometryReader { geometry in
                 VStack(spacing: 0) { // No extra spacing between rows
-                    ForEach(questManager.allQuests.indices, id: \.self) { index in
+                    ForEach(questManager.longQuestModels.indices, id: \.self) { index in
                         let quest = questManager.allQuests[index]
                         let title = quest.quest.title.isEmpty ?
                                     (index < questManager.longQuestModels.count ? questManager.longQuestModels[index].elementType : "") :
