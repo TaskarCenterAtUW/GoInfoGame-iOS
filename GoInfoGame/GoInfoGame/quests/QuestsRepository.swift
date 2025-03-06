@@ -19,21 +19,21 @@ struct ApplicableQuest {
     var questId: String
     var isDefault: Bool {
         didSet {
-            UserDefaults.standard.set(isDefault, forKey: "\(quest)_isDefault")
+            UserDefaults.standard.set(isDefault, forKey: "\(questId)_isDefault")
         }
     }
     
     init(quest:any Quest, questId: String) {
         self.quest = quest
         self.questId = questId
-        self.isDefault = UserDefaults.standard.object(forKey: "\(quest)_isDefault") as? Bool ?? true
+        self.isDefault = UserDefaults.standard.object(forKey: "\(questId)_isDefault") as? Bool ?? true
     }
     
     mutating func toggleIsDefault() {
         isDefault.toggle()
-        let questDef =  "\(quest)_isDefault"
+        let questDef =  "\(questId)_isDefault"
         print(questDef)
-        UserDefaults.standard.set(isDefault, forKey: "\(quest)_isDefault")
+        UserDefaults.standard.set(isDefault, forKey: "\(questId)_isDefault")
     }
 }
 
