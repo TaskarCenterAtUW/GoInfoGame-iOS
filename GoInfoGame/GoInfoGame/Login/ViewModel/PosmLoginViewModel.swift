@@ -64,6 +64,8 @@ class PosmLoginViewModel: ObservableObject {
                     DispatchQueue.main.async {
                         _ = KeychainManager.save(key: "accessToken", data: accessToken)
                         _ = KeychainManager.save(key: "refreshToken", data: refreshToken)
+                        UserDefaults.standard.setValue(posmLoginSuccessResponse.expiresIn, forKey: "accessToken_expire_in")
+                        UserDefaults.standard.setValue(Date().timeIntervalSince1970, forKey: "accessToken_Generate")
                         self.hasLoginFailed = false
                         self.loggedIn = true
                         self.isLoading = false
