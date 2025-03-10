@@ -159,6 +159,9 @@ struct LoggedInView: View {
     private var logOutButton: some View {
         Button {
             _ = KeychainManager.delete(key: "accessToken")
+            _ = KeychainManager.delete(key: "refreshToken")
+            UserDefaults.standard.removeObject(forKey: "accessToken_expire_in")
+            UserDefaults.standard.removeObject(forKey: "accessToken_Generate")
             accessToken = nil
         } label: {
             Text("LOGOUT")

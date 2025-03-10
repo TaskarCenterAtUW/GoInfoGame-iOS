@@ -65,6 +65,7 @@ struct UserProfileView: View {
     private var logOutButton: some View {
         Button {
             _ = KeychainManager.delete(key: "accessToken")
+            _ = KeychainManager.delete(key: "refreshToken")
             _ = KeychainManager.delete(key: "username")
         loggedIn = false
             UserProfileCache.shared.clearUserProfile()
