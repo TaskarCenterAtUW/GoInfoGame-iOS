@@ -5,7 +5,7 @@
 //  Created by Achyut Kumar M on 09/11/23.
 //
 
-import UIKit
+import SwiftUI
 
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -54,7 +54,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         if timeIntervalFromSessionCreation >= sessionFireTime {
             refreshToken()
         } else {
-            refreshTokenTime = Timer(timeInterval: sessionFireTime - timeIntervalFromSessionCreation, repeats: false, block: { [weak self] _ in
+            refreshTokenTime = Timer.scheduledTimer(withTimeInterval: sessionFireTime - timeIntervalFromSessionCreation, repeats: false, block: { [weak self] _ in
                 self?.refreshToken()
             })
         }
@@ -63,6 +63,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     private func refreshToken() {
         TokenRefresher.shared.refreshToken { status in
             print("Refresh status \(status)")
+            if status == false {
+                DispatchQueue.main.async {
+                    Utilities.clearAllData()
+                    if let window = UIApplication.window() {
+                        window.rootViewController = UIHostingController(rootView: PosmLoginView())
+                    }
+                }
+            }
         }
     }
 
