@@ -116,3 +116,9 @@ extension SCNGeometry {
         return SCNGeometry(sources: [sources], elements: [element])
     }
 }
+
+extension UIApplication {
+    static func window() -> UIWindow? {
+        return UIApplication.shared.connectedScenes.flatMap { ($0 as? UIWindowScene)?.windows ?? [] }.first { $0.isKeyWindow }
+    }
+}
