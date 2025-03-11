@@ -32,7 +32,7 @@ class TokenRefresher {
                 appDelegate.invalidateRefreshTokenTimer()
             }
         }
-        print("refreshToken \(String(describing: refreshToken))")
+
         ApiManager.shared.performRequest(to: .refreshToken(refreshToken ?? ""), setupType: .login, modelType: PosmLoginSuccessResponse.self) { [weak self] result in
             
             guard let self = self else { return }
