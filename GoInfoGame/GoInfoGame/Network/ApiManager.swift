@@ -243,6 +243,9 @@ class ApiManager {
                             if let window = UIApplication.window() {
                                 Utilities.clearAllData()
                                 window.rootViewController = UIHostingController(rootView: PosmLoginView())
+                                DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                                    NotificationCenter.default.post(name: Notification.Name("SessionExpired"), object: nil)
+                                }
                             }
                         }
                     }

@@ -17,7 +17,7 @@ struct PosmLoginView: View {
     @State private var shouldShowAlert = false
     
     @State private var selectedEnvironment: APIEnvironment = .staging
-    
+    @State private var showAlert = false
     var body: some View {
         NavigationStack {
             ZStack {
@@ -98,6 +98,14 @@ struct PosmLoginView: View {
         .onAppear {
             selectedEnvironment = APIConfiguration.shared.environment
         }
+        .onReceive(NotificationCenter.default.publisher(for: Notification.Name("SessionExpired"))) { notification in
+                    showAlert = true
+                }
+                .alert("Logout", isPresented: $showAlert) {
+                    Button("OK", role: .cancel) {}
+                } message: {
+                    Text("Your session has expired. Please login again")
+                }
     }
 }
 
