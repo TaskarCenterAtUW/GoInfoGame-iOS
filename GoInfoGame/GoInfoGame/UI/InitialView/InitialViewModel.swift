@@ -57,6 +57,19 @@ class InitialViewModel: ObservableObject {
             DispatchQueue.main.async {
                 switch result {
                 case .success(let longQuestsResponse):
+                    
+                    // Validate quest query
+                    do {
+                            for item in longQuestsResponse {
+                                _ = try item.questQuery.toElementFilterExpression()
+                            }
+                        } catch {
+                            print("Invalid quest filter: \(error)")
+                            self.isLoading = false
+                            completion(false, "Invalid quest query.")
+                            return
+                        }
+
                     self.longQuests = longQuestsResponse
                     self.saveLongQuestsToDefaults(longQuestJson: longQuestsResponse)
                     
