@@ -7,6 +7,7 @@
 
 import Foundation
 import osmapi
+import SwiftUI
 
 enum SetupType {
     case workspace
@@ -227,12 +228,26 @@ class ApiManager {
             if let httpResponse = response as? HTTPURLResponse,
                 httpResponse.statusCode == 401,
                 request.url!.lastPathComponent.contains("refresh-token") == false {
+                print("Failed requests: \(String(describing: request.url))")
                 TokenRefresher.shared.refreshToken { [weak self] status in
                     if status {
-                        self?.performRequest(to: endpoint, setupType: setupType, modelType: modelType, completion: completion)
+                        let accessToken = KeychainManager.load(key: "accessToken") ?? ""
+                        var headers = endpoint.headers
+                        headers?["Authorization"] = "Bearer \(accessToken)"
+                        let urlEndPont = APIEndpoint(path: endpoint.path, method: endpoint.method, body: endpoint.body, headers: headers, formData: endpoint.formData)
+                        self?.performRequest(to: urlEndPont, setupType: setupType, modelType: modelType, completion: completion)
                     }
                     else {
                         completion(.failure(NSError(domain: "", code: -3, userInfo: [NSLocalizedDescriptionKey: "Token refresh error"])))
+                        DispatchQueue.main.async {
+                            if let window = UIApplication.window() {
+                                Utilities.clearAllData()
+                                window.rootViewController = UIHostingController(rootView: PosmLoginView())
+                                DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                                    NotificationCenter.default.post(name: Notification.Name("SessionExpired"), object: nil)
+                                }
+                            }
+                        }
                     }
                 }
                 return

@@ -66,6 +66,9 @@ class PosmLoginViewModel: ObservableObject {
                         _ = KeychainManager.save(key: "refreshToken", data: refreshToken)
                         UserDefaults.standard.setValue(posmLoginSuccessResponse.expiresIn, forKey: "accessToken_expire_in")
                         UserDefaults.standard.setValue(Date().timeIntervalSince1970, forKey: "accessToken_Generate")
+                        if let appDelegate = UIApplication.shared.delegate as? AppDelegate {
+                            appDelegate.validateAccessToken()
+                        }
                         self.hasLoginFailed = false
                         self.loggedIn = true
                         self.isLoading = false

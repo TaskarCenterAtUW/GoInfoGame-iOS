@@ -64,13 +64,9 @@ struct UserProfileView: View {
         
     private var logOutButton: some View {
         Button {
-            _ = KeychainManager.delete(key: "accessToken")
-            _ = KeychainManager.delete(key: "refreshToken")
-            _ = KeychainManager.delete(key: "username")
-        loggedIn = false
-            UserProfileCache.shared.clearUserProfile()
+            Utilities.clearAllData()
             
-            if let window = UIApplication.shared.windows.first {
+            if let window = UIApplication.window() {
                    window.rootViewController = UIHostingController(rootView: PosmLoginView())
                }
           //  accessToken = nil

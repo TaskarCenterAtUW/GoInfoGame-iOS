@@ -27,10 +27,12 @@ class TokenRefresher {
             self.isRefreshing = true
         }
         let refreshToken = KeychainManager.load(key: "refreshToken")
-        if let appDelegate = UIApplication.shared.delegate as? AppDelegate {
-            appDelegate.invalidateRefreshTokenTimer()
+        DispatchQueue.main.async {
+            if let appDelegate = UIApplication.shared.delegate as? AppDelegate {
+                appDelegate.invalidateRefreshTokenTimer()
+            }
         }
-        
+
         ApiManager.shared.performRequest(to: .refreshToken(refreshToken ?? ""), setupType: .login, modelType: PosmLoginSuccessResponse.self) { [weak self] result in
             
             guard let self = self else { return }
@@ -46,8 +48,10 @@ class TokenRefresher {
                 _ = KeychainManager.save(key: "accessToken", data: resp.accessToken)
                 UserDefaults.standard.setValue(resp.expiresIn, forKey: "accessToken_expire_in")
                 UserDefaults.standard.setValue(Date().timeIntervalSince1970, forKey: "accessToken_Generate")
-                if let appDelegate = UIApplication.shared.delegate as? AppDelegate {
-                    appDelegate.validateAccessToken()
+                DispatchQueue.main.async {
+                    if let appDelegate = UIApplication.shared.delegate as? AppDelegate {
+                        appDelegate.validateAccessToken()
+                    }
                 }
                 success = true
                 break
