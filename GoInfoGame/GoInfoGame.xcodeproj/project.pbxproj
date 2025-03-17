@@ -195,6 +195,7 @@
 		FA50719A2D7263F800CE9798 /* LongFormImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA5071992D7263F800CE9798 /* LongFormImageView.swift */; };
 		FA51484E2D76ED6C00C0D35B /* NotesViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA51484D2D76ED6300C0D35B /* NotesViewModel.swift */; };
 		FA5853C12B21F17F00301CDA /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA5853C02B21F17F00301CDA /* OnboardingView.swift */; };
+		FA6DB8B32D8853DD0070CCD3 /* UserSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA6DB8B22D8853D00070CCD3 /* UserSettingsView.swift */; };
 		FA87A8102B68142F000A6BEA /* LoadingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA87A80F2B68142F000A6BEA /* LoadingView.swift */; };
 		FA87A8132B6AC019000A6BEA /* StepsRampTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA87A8112B6AC019000A6BEA /* StepsRampTests.swift */; };
 		FA87A8152B6AC4E2000A6BEA /* BusStopLitTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA87A8142B6AC4E2000A6BEA /* BusStopLitTests.swift */; };
@@ -508,6 +509,7 @@
 		FA5071992D7263F800CE9798 /* LongFormImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LongFormImageView.swift; sourceTree = "<group>"; };
 		FA51484D2D76ED6300C0D35B /* NotesViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotesViewModel.swift; sourceTree = "<group>"; };
 		FA5853C02B21F17F00301CDA /* OnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingView.swift; sourceTree = "<group>"; };
+		FA6DB8B22D8853D00070CCD3 /* UserSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserSettingsView.swift; sourceTree = "<group>"; };
 		FA87A80F2B68142F000A6BEA /* LoadingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingView.swift; sourceTree = "<group>"; };
 		FA87A8112B6AC019000A6BEA /* StepsRampTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StepsRampTests.swift; sourceTree = "<group>"; };
 		FA87A8142B6AC4E2000A6BEA /* BusStopLitTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BusStopLitTests.swift; sourceTree = "<group>"; };
@@ -695,6 +697,7 @@
 		05CB71DD2B0FAEC200DED821 /* UI */ = {
 			isa = PBXGroup;
 			children = (
+				FA6DB8B22D8853D00070CCD3 /* UserSettingsView.swift */,
 				971342712BBD240500174EBF /* InitialView */,
 				FABF3CF92B86062E0080EAC9 /* Camera */,
 				FA87A80E2B681416000A6BEA /* Utils */,
@@ -2062,6 +2065,7 @@
 				A4E711AA2B58F6FB00C9DE08 /* HandRail.swift in Sources */,
 				973FC02D2B58F79B00878269 /* StepsRampForm.swift in Sources */,
 				FA5071902D5B31CC00CE9798 /* CreateNoteView.swift in Sources */,
+				FA6DB8B32D8853DD0070CCD3 /* UserSettingsView.swift in Sources */,
 				059D47312B2C81A9000987FA /* Style.swift in Sources */,
 				A4E711A82B57CA4300C9DE08 /* QuestsRepository.swift in Sources */,
 				97AC1C112B70CF03004F0BF4 /* SidewalkSurfaceForm.swift in Sources */,
