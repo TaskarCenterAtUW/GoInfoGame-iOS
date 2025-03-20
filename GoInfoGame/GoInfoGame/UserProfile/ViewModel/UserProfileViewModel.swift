@@ -15,6 +15,17 @@ class UserProfileViewModel: ObservableObject {
         loadCachedUserProfile()
     }
     
+    func userFullName() -> String? {
+        if let firstName = user?.firstName, let lastName = user?.lastName {
+            return "\(firstName) \(lastName)"
+        } else if let firstName = user?.firstName {
+            return firstName
+        } else if let lastName = user?.lastName {
+            return lastName
+        }
+        return nil
+    }
+    
     func loadCachedUserProfile() {
         if let cachedUser = UserProfileCache.shared.user {
             self.user = cachedUser
