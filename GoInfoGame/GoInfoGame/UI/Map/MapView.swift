@@ -39,6 +39,9 @@ struct MapView: View {
     @State private var showAddFeatureSheet = false
     
     @State private var showCreateNoteSheet = false
+    
+    @State private var showUserSettingsSheet = false
+    
                 
     var body: some View {
             ZStack{
@@ -118,7 +121,19 @@ struct MapView: View {
                             .foregroundStyle(Color(red: 135/255, green: 62/255, blue: 242/255))
                     }
                 }
-
+                
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button(action: {
+                        print("Settings icon tapped")
+                        showUserSettingsSheet = true
+                    }) {
+                        Image(systemName: "gear")
+                            .frame(width: 20, height: 20)
+                            .foregroundStyle(Color(red: 135/255, green: 62/255, blue: 242/255))
+                    }
+                }
+                
+                    
                 ToolbarItem(placement: .navigationBarTrailing) {
                     if isSyncing {
                         ProgressView()
@@ -138,6 +153,16 @@ struct MapView: View {
                     shouldShowPolyline = false
                 }
             }
+        
+            .sheet(isPresented: $showUserSettingsSheet) {
+                UserSettingsView()
+                    .background(Color(red: 248/255, green: 248/255, blue: 248/255))
+                    .presentationDetents([.fraction(0.36)])
+                    .interactiveDismissDisabled()
+                    .presentationDragIndicator(.hidden)
+            }
+
+    
             .sheet(isPresented: $showMapLongPressedSheet) {
                 if let _ = tappedCoordinate {
                     VStack(spacing: 12) {
