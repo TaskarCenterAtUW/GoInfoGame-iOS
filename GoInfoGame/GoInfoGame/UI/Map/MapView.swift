@@ -41,6 +41,7 @@ struct MapView: View {
     @State private var showCreateNoteSheet = false
     
     @State private var showUserSettingsSheet = false
+    
                 
     var body: some View {
             ZStack{
@@ -155,10 +156,12 @@ struct MapView: View {
         
             .sheet(isPresented: $showUserSettingsSheet) {
                 UserSettingsView()
+                    .background(Color(red: 248/255, green: 248/255, blue: 248/255))
+                    .presentationDetents([.fraction(0.36)])
+                    .interactiveDismissDisabled()
+                    .presentationDragIndicator(.hidden)
             }
-            .presentationDetents([.fraction(0.85)])
-            .interactiveDismissDisabled()
-            .presentationDragIndicator(.hidden)
+
     
             .sheet(isPresented: $showMapLongPressedSheet) {
                 if let _ = tappedCoordinate {
