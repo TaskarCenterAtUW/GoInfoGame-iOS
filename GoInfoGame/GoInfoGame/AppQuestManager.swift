@@ -124,9 +124,12 @@ class AppQuestManager {
         
         print(nodeElements.filter({ $0.id == 1026105 }))
         
-        let hiddenElements = UserDefaults.standard.array(forKey: "hiddenElements") as? [Int64] ?? []
         
-        let unitsToBeDisplayed = displayUnits.filter { !hiddenElements.contains($0.id) }
+        // get hidden ids from hiddenElements
+        let hiddenIds = HiddenQuestManager.shared.hiddenQuests.map { $0.id }
+        let unitsToBeDisplayed = displayUnits.filter { !hiddenIds.contains($0.id) }
         return unitsToBeDisplayed
     }
 }
+
+
