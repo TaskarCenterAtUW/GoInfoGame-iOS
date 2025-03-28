@@ -26,6 +26,7 @@ struct CustomMap: UIViewRepresentable {
     @Binding var selectedAnnotations: Set<DisplayUnitAnnotation>
     @Binding var isMultiSelectModeEnabled: Bool
     @Binding var selectedAnnotationType: String?
+    @Binding var showMultiSelectionBottomSheet: Bool
     
     @State var lineCoordinates: [CLLocationCoordinate2D] = []
     
@@ -69,6 +70,9 @@ struct CustomMap: UIViewRepresentable {
     // Updates the UIView with new data
     func updateUIView(_ mapView: MKMapView, context: Context) {
         //  mapView.setCenter(userLocation, animated: true)
+        if selectedAnnotations.isEmpty {
+            mapView.removeAnnotations(mapView.annotations)
+        }
         context.coordinator.updateUserRegion(mapView)
         context.coordinator.updateVisibleAnnotations(in: mapView)
         manageAnnotations(mapView, context: context)
@@ -312,6 +316,12 @@ struct CustomMap: UIViewRepresentable {
                                 }
                             }
                         }
+                    }
+                    if self.parent.selectedAnnotations.isEmpty {
+                        self.parent.selectedAnnotationType = nil
+                        self.parent.showMultiSelectionBottomSheet = false
+                    } else {
+                        self.parent.showMultiSelectionBottomSheet = true
                     }
                 } else {
                 selectedAnAnnotation(selectedQuest: annotation)
