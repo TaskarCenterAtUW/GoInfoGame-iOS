@@ -7,6 +7,11 @@
 
 import SwiftUI
 
+struct HiddenQuest: Identifiable, Codable {
+    let id: Int64
+    let name: String
+}
+
 class HiddenQuestManager: ObservableObject {
     static let shared = HiddenQuestManager()
 
