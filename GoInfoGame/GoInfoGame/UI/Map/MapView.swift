@@ -272,15 +272,16 @@ struct MapView: View {
                 isSyncing = false
                 print("synced")
                 alertIcon = "checkmark.circle.fill"
-            case .hideElement(let elementId):
+            case .hideElement(let elementId, let elementName):
                 shouldShowPolyline = false
-                viewModel.hideQuest(elementId: elementId)
+                viewModel.hideQuest(elementId: elementId, elementName: elementName)
             }
         }
         .onReceive(QuestsPublisher.shared.refreshQuest, perform: { _ in
             viewModel.refreshQuests()
         })
         .onAppear(){
+            HiddenQuestManager.shared.loadHiddenQuests()
             print("selected workspace",selectedWorkspace?.title ?? "")
             QuestsRepository.shared.loadLongQuests(from: "longQuestJson")
             self.baseUrl = "https://osm.workspaces-stage.sidewalks.washington.edu"
@@ -311,7 +312,7 @@ public enum SheetDismissalScenario {
     case submitted(String)
     case syncing
     case synced
-    case hideElement(String)
+    case hideElement(String, String)
 }
 
 //TODO: Move to a new file

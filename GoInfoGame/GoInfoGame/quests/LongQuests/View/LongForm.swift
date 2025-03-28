@@ -58,7 +58,7 @@ struct LongForm: View, QuestForm {
                         Spacer()
                         Button("Hide this") {
                             withAnimation {
-                                MapViewPublisher.shared.dismissSheet.send(.hideElement(questID ?? "0"))
+                                MapViewPublisher.shared.dismissSheet.send(.hideElement(questID ?? "0", elementName ?? ""))
                                 presentationMode.wrappedValue.dismiss()
                             }
                             
