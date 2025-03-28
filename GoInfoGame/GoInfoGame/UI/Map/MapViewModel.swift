@@ -24,6 +24,7 @@ class MapViewModel: ObservableObject {
     @Published var selectedQuest: DisplayUnit?
     let dataSpanDistance: CLLocationDistance = 1000 // Distance from user location to get the data
     @Published var selectedAnnotaions: Set<DisplayUnitAnnotation> = []
+    @Published var selectedAnnotationType: String?
     
     var isMultiSelectModeEnabled = true
     

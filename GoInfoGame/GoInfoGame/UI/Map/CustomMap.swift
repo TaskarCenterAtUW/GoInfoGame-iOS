@@ -25,6 +25,7 @@ struct CustomMap: UIViewRepresentable {
     
     @Binding var selectedAnnotations: Set<DisplayUnitAnnotation>
     @Binding var isMultiSelectModeEnabled: Bool
+    @Binding var selectedAnnotationType: String?
     
     @State var lineCoordinates: [CLLocationCoordinate2D] = []
     
@@ -234,7 +235,14 @@ struct CustomMap: UIViewRepresentable {
             annotationView.clusteringIdentifier = "cluster"
             
             if self.parent.isMultiSelectModeEnabled {
+                
                 if let ann = annotation as? DisplayUnitAnnotation {
+                    if let annotationType = (ann.displayUnit.parent as? LongElementQuest)?.elementType {
+                        let isSelectable = (parent.selectedAnnotationType == nil || parent.selectedAnnotationType == annotationType)
+                        // Dim other annotation types
+                        annotationView.alpha = isSelectable ? 1.0 : 0.5
+                        annotationView.isUserInteractionEnabled = isSelectable
+                    }
                     annotationView.updateSelectionState(isSelected: parent.selectedAnnotations.contains(ann))
                 }
             }
@@ -260,17 +268,49 @@ struct CustomMap: UIViewRepresentable {
                 
             } else if let annotation = annotation as? DisplayUnitAnnotation {
                 if self.parent.isMultiSelectModeEnabled {
+                    guard let annotationType = (annotation.displayUnit.parent as? LongElementQuest)?.elementType else {
+                        return
+                    }
+                    
                     DispatchQueue.main.async {
-                        if self.parent.selectedAnnotations.contains(annotation) {
-                            self.parent.selectedAnnotations.remove(annotation) // Deselect if already selected
-                            mapView.deselectAnnotation(annotation, animated: true)
-                        } else {
-                            self.parent.selectedAnnotations.insert(annotation) // Add to selection
+                        
+                        // If nothing is selected yet, set the type
+                        if self.parent.selectedAnnotationType == nil {
+                            self.parent.selectedAnnotationType = annotationType
+                        }
+                        
+                        // Allow selection only if the type matches
+                        if self.parent.selectedAnnotationType == annotationType {
+                            if self.parent.selectedAnnotations.contains(annotation) {
+                                self.parent.selectedAnnotations.remove(annotation) // Deselect if already selected
+                                mapView.deselectAnnotation(annotation, animated: true)
+                            } else {
+                                self.parent.selectedAnnotations.insert(annotation) // Add to selection
+                            }
                         }
                         
                         // Refresh annotation view to update checkmark
                         if let annotationView = mapView.view(for: annotation) as? CustomAnnotationView {
                             annotationView.updateSelectionState(isSelected: self.parent.selectedAnnotations.contains(annotation))
+                        }
+                        
+                        // If all annotations are deselected, reset type filter
+                        if self.parent.selectedAnnotations.isEmpty {
+                            self.parent.selectedAnnotationType = nil
+                        }
+                        
+                        mapView.deselectAnnotation(annotation, animated: true)
+                        
+                        // Refresh annotations to apply dimming effect
+                        for ann in mapView.annotations {
+                            if let view = mapView.view(for: ann) as? CustomAnnotationView {
+                                if let annotation = ann as? DisplayUnitAnnotation,
+                                   let annType = (annotation.displayUnit.parent as? LongElementQuest)?.elementType {
+                                    view.alpha = (self.parent.selectedAnnotationType == nil || self.parent.selectedAnnotationType == annType) ? 1.0 : 0.5
+                                    view.isUserInteractionEnabled = (self.parent.selectedAnnotationType == nil || self.parent.selectedAnnotationType == annType)
+                                    view.updateSelectionState(isSelected: self.parent.selectedAnnotations.contains(annotation))
+                                }
+                            }
                         }
                     }
                 } else {
@@ -519,14 +559,14 @@ class CustomAnnotationView: MKAnnotationView {
 
     private func addCheckmark() {
         if checkmarkImageView == nil {
-            let checkmarkImage = UIImage(systemName: "checkmark.circle.fill")?.withTintColor(.green, renderingMode: .alwaysOriginal)
+            let checkmarkImage = UIImage(systemName: "checkmark.circle")?.withTintColor(.red, renderingMode: .alwaysOriginal)
             let imageView = UIImageView(image: checkmarkImage)
             imageView.translatesAutoresizingMaskIntoConstraints = false
             addSubview(imageView)
 
             NSLayoutConstraint.activate([
-                imageView.topAnchor.constraint(equalTo: topAnchor, constant: -10),
-                imageView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -10),
+                imageView.bottomAnchor.constraint(equalTo: bottomAnchor, constant:0),
+                imageView.centerXAnchor.constraint(equalTo: centerXAnchor, constant: 0),
                 imageView.widthAnchor.constraint(equalToConstant: 24),
                 imageView.heightAnchor.constraint(equalToConstant: 24)
             ])
