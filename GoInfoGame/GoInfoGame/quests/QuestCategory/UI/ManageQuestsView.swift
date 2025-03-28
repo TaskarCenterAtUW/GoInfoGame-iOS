@@ -11,6 +11,8 @@ struct ManageQuestsView: View {
     @ObservedObject var questManager = QuestsRepository.shared
     @Environment(\.presentationMode) var presentationMode
     
+    @ObservedObject var hiddenQuestManager = HiddenQuestManager.shared
+    
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
             HStack(alignment: .firstTextBaseline) { // Aligns with text baseline
@@ -74,7 +76,34 @@ struct ManageQuestsView: View {
             }
             .frame(height: CGFloat(questManager.allQuests.count) * 50) // Adjust height dynamically
             
-            Spacer()
+            if hiddenQuestManager.hiddenQuests.count > 0 {
+                VStack {
+                    Text("HIDDEN QUESTS")
+                        .font(.custom("Lato-Bold", size: 15))
+                        .foregroundColor(Color(red: 132/255, green: 135/255, blue: 153/255))
+                        .padding(.horizontal)
+                        .padding(.top, 10)
+                        .padding(.leading, 15)
+                    
+                    ForEach(hiddenQuestManager.hiddenQuests) { quest in
+                        HStack {
+                            Text(quest.name)
+                                .font(.headline)
+                            Spacer()
+                            Text("ID: \(quest.id)")
+                                .font(.subheadline)
+                                .foregroundColor(.gray)
+                        }
+                        .padding()
+                        .background(Color(.systemGray6))
+                        .cornerRadius(10)
+                    }
+               
+                        
+                  
+                        
+                }
+            }
         }
         .padding(.bottom, 16)
         .background((Color(red: 248/255, green: 248/255, blue: 248/255)))
