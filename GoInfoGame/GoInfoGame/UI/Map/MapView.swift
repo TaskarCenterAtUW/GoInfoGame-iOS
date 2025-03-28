@@ -52,7 +52,7 @@ struct MapView: View {
                           selectedQuest: $viewModel.selectedQuest,
                           shouldShowPolyline: $shouldShowPolyline,
                           
-                          isPresented: $isPresented, contextualInfo: { contextualInfo in
+                          isPresented: $isPresented, selectedAnnotations: $viewModel.selectedAnnotaions, isMultiSelectModeEnabled: $viewModel.isMultiSelectModeEnabled, contextualInfo: { contextualInfo in
                     print(contextualInfo)
                     selectedDetent = .fraction(0.8)
                     self.setContextualInfo(contextualinfo: contextualInfo)
@@ -128,6 +128,17 @@ struct MapView: View {
                         showUserSettingsSheet = true
                     }) {
                         Image(systemName: "gear")
+                            .frame(width: 20, height: 20)
+                            .foregroundStyle(Color(red: 135/255, green: 62/255, blue: 242/255))
+                    }
+                }
+                
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button(action: {
+                        print("Send button pressed")
+                        isPresented = true
+                    }) {
+                        Image(systemName: "paperplane")
                             .frame(width: 20, height: 20)
                             .foregroundStyle(Color(red: 135/255, green: 62/255, blue: 242/255))
                     }
@@ -240,7 +251,7 @@ struct MapView: View {
             }
 
         .sheet(isPresented: $isPresented, content: {
-            let selectedQuest = self.viewModel.selectedQuest
+            let selectedQuest = self.viewModel.getSelectedQuest()
             CustomSheetView {
                 selectedQuest?.parent?.form
             }

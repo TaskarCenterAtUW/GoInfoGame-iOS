@@ -23,6 +23,8 @@ struct CustomMap: UIViewRepresentable {
     @Binding var isPresented: Bool
     @StateObject var locationManagerDelegate = LocationManagerDelegate()
     
+    @Binding var selectedAnnotations: Set<DisplayUnitAnnotation>
+    @Binding var isMultiSelectModeEnabled: Bool
     
     @State var lineCoordinates: [CLLocationCoordinate2D] = []
     
@@ -42,6 +44,7 @@ struct CustomMap: UIViewRepresentable {
         mapView.userTrackingMode = trackingMode.mkUserTrackingMode
         // Hide points of interest except street names
         mapView.pointOfInterestFilter = .excludingAll
+        mapView.register(CustomAnnotationView.self, forAnnotationViewWithReuseIdentifier: CustomAnnotationView.reuseIdentifier)
         
         let currentAltitude = mapView.camera.altitude
         
@@ -114,6 +117,7 @@ struct CustomMap: UIViewRepresentable {
         var parent: CustomMap
         var isRegionSet = false // boolean flag to track if region has been set
         var contextualInfo: ((String) -> Void)?
+        var isLongPressing = false
         
         private let maxZoomAltitude: CLLocationDistance = 100
         private var zoomReachedLimit: Bool = false
@@ -130,6 +134,27 @@ struct CustomMap: UIViewRepresentable {
             
             DispatchQueue.main.async {
                 self.parent.tappedCoordinate = coordinate
+            }
+        }
+        
+        // Handle Long Press
+        @objc func handleLongPress(_ gesture: UILongPressGestureRecognizer) {
+            guard let mapView = gesture.view as? MKMapView else { return }
+            
+            if gesture.state == .began {
+                isLongPressing = true
+                let touchPoint = gesture.location(in: mapView)
+                let touchCoordinate = mapView.convert(touchPoint, toCoordinateFrom: mapView)
+
+                for annotation in mapView.annotations {
+                    let annotationPoint = mapView.convert(annotation.coordinate, toPointTo: mapView)
+                    let distance = hypot(touchPoint.x - annotationPoint.x, touchPoint.y - annotationPoint.y)
+                    
+                    if distance < 30 { // Adjust tap detection range if needed
+//                        parent.longPressedAnnotation = annotation
+                        break
+                    }
+                }
             }
         }
             
@@ -198,16 +223,24 @@ struct CustomMap: UIViewRepresentable {
             guard let displayUnitAnnotation = annotation as? DisplayUnitAnnotation else {
                 return nil
             }
-            let identifier = "customAnnotation"
-            var annotationView = mapView.dequeueReusableAnnotationView(withIdentifier: identifier)
-            if annotationView == nil {
-                annotationView = MKAnnotationView(annotation: annotation, reuseIdentifier: identifier)
+            let annotationView: CustomAnnotationView
+            if var dequeuedView = mapView.dequeueReusableAnnotationView(withIdentifier: CustomAnnotationView.reuseIdentifier) as? CustomAnnotationView {
+                annotationView = dequeuedView
+                
             } else {
-                annotationView?.annotation = annotation
+                annotationView = CustomAnnotationView(annotation: annotation, reuseIdentifier: CustomAnnotationView.reuseIdentifier)
             }
-            annotationView?.clusteringIdentifier = "cluster"
+            annotationView.annotation = annotation
+            annotationView.clusteringIdentifier = "cluster"
             
+            if self.parent.isMultiSelectModeEnabled {
+                if let ann = annotation as? DisplayUnitAnnotation {
+                    annotationView.updateSelectionState(isSelected: parent.selectedAnnotations.contains(ann))
+                }
+            }
+
             // Customize annotation view
+            
             customizeAnnotationView(annotationView, with: displayUnitAnnotation)
             return annotationView
         }
@@ -226,8 +259,24 @@ struct CustomMap: UIViewRepresentable {
                 
                 
             } else if let annotation = annotation as? DisplayUnitAnnotation {
+                if self.parent.isMultiSelectModeEnabled {
+                    DispatchQueue.main.async {
+                        if self.parent.selectedAnnotations.contains(annotation) {
+                            self.parent.selectedAnnotations.remove(annotation) // Deselect if already selected
+                            mapView.deselectAnnotation(annotation, animated: true)
+                        } else {
+                            self.parent.selectedAnnotations.insert(annotation) // Add to selection
+                        }
+                        
+                        // Refresh annotation view to update checkmark
+                        if let annotationView = mapView.view(for: annotation) as? CustomAnnotationView {
+                            annotationView.updateSelectionState(isSelected: self.parent.selectedAnnotations.contains(annotation))
+                        }
+                    }
+                } else {
                 selectedAnAnnotation(selectedQuest: annotation)
                 centerAnnotationAtTop(mapView: mapView, annotation: annotation)
+                }
             }
             // Deselect the annotation to prevent re-adding on selection
             mapView.deselectAnnotation(annotation, animated: false)
@@ -445,5 +494,49 @@ extension MapUserTrackingMode {
         @unknown default:
             fatalError()
         }
+    }
+}
+
+
+class CustomAnnotationView: MKAnnotationView {
+    static let reuseIdentifier = "CustomAnnotationView"
+    
+    private var checkmarkImageView: UIImageView?
+
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        removeCheckmark()
+    }
+
+    // Show or remove the checkmark based on selection
+    func updateSelectionState(isSelected: Bool) {
+        if isSelected {
+            addCheckmark()
+        } else {
+            removeCheckmark()
+        }
+    }
+
+    private func addCheckmark() {
+        if checkmarkImageView == nil {
+            let checkmarkImage = UIImage(systemName: "checkmark.circle.fill")?.withTintColor(.green, renderingMode: .alwaysOriginal)
+            let imageView = UIImageView(image: checkmarkImage)
+            imageView.translatesAutoresizingMaskIntoConstraints = false
+            addSubview(imageView)
+
+            NSLayoutConstraint.activate([
+                imageView.topAnchor.constraint(equalTo: topAnchor, constant: -10),
+                imageView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -10),
+                imageView.widthAnchor.constraint(equalToConstant: 24),
+                imageView.heightAnchor.constraint(equalToConstant: 24)
+            ])
+
+            checkmarkImageView = imageView
+        }
+    }
+
+    private func removeCheckmark() {
+        checkmarkImageView?.removeFromSuperview()
+        checkmarkImageView = nil
     }
 }

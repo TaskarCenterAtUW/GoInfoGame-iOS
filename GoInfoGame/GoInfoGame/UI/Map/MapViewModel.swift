@@ -23,6 +23,9 @@ class MapViewModel: ObservableObject {
     @Published var items: [DisplayUnitWithCoordinate] = []
     @Published var selectedQuest: DisplayUnit?
     let dataSpanDistance: CLLocationDistance = 1000 // Distance from user location to get the data
+    @Published var selectedAnnotaions: Set<DisplayUnitAnnotation> = []
+    
+    var isMultiSelectModeEnabled = true
     
    private let dbInstance = DatabaseConnector.shared
     
@@ -35,6 +38,14 @@ class MapViewModel: ObservableObject {
             guard let self = self else { return }
             self.userlocation = location
             fetchOSMDataFor(currentLocation: location)
+        }
+    }
+    
+    func getSelectedQuest() -> DisplayUnit? {
+        if isMultiSelectModeEnabled {
+            return selectedAnnotaions.first?.displayUnit
+        } else {
+            return selectedQuest
         }
     }
     
