@@ -44,8 +44,32 @@ class MapViewModel: ObservableObject {
     
     func getSelectedQuest() -> DisplayUnit? {
         if isMultiSelectModeEnabled {
-            return selectedAnnotaions.first?.displayUnit
+            let displayUnit = selectedAnnotaions.first?.displayUnit
+            if let longElementQuest = displayUnit?.parent as? LongElementQuest {
+                longElementQuest.questAnswersSelected = { [weak self] tags in
+                    guard let self = self else {
+                        return
+                    }
+                    
+                    for quest in self.selectedAnnotaions {
+                        if let longElementQuest = quest.displayUnit.parent as? LongElementQuest {
+                            longElementQuest.onAnswer(answer: tags)
+                        }
+                    }
+                    
+                    self.selectedAnnotaions = []
+                }
+            }
+            return displayUnit
         } else {
+            if let longElementQuest = selectedQuest?.parent as? LongElementQuest {
+                longElementQuest.questAnswersSelected = { [weak self] tags in
+                    guard let self = self else {
+                        return
+                    }
+                    longElementQuest.onAnswer(answer: tags)
+                }
+            }
             return selectedQuest
         }
     }
