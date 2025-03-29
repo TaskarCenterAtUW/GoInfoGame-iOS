@@ -213,7 +213,6 @@ struct CustomMap: UIViewRepresentable {
             } else {
                 annotationView = CustomAnnotationView(annotation: annotation, reuseIdentifier: CustomAnnotationView.reuseIdentifier)
             }
-            annotationView.annotation = annotation
             annotationView.clusteringIdentifier = "cluster"
             
             if self.parent.isMultiSelectModeEnabled {
