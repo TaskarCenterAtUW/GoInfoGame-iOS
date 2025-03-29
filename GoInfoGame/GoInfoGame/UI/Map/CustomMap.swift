@@ -122,7 +122,6 @@ struct CustomMap: UIViewRepresentable {
         var parent: CustomMap
         var isRegionSet = false // boolean flag to track if region has been set
         var contextualInfo: ((String) -> Void)?
-        var isLongPressing = false
         
         private let maxZoomAltitude: CLLocationDistance = 100
         private var zoomReachedLimit: Bool = false
@@ -139,27 +138,6 @@ struct CustomMap: UIViewRepresentable {
             
             DispatchQueue.main.async {
                 self.parent.tappedCoordinate = coordinate
-            }
-        }
-        
-        // Handle Long Press
-        @objc func handleLongPress(_ gesture: UILongPressGestureRecognizer) {
-            guard let mapView = gesture.view as? MKMapView else { return }
-            
-            if gesture.state == .began {
-                isLongPressing = true
-                let touchPoint = gesture.location(in: mapView)
-                let touchCoordinate = mapView.convert(touchPoint, toCoordinateFrom: mapView)
-
-                for annotation in mapView.annotations {
-                    let annotationPoint = mapView.convert(annotation.coordinate, toPointTo: mapView)
-                    let distance = hypot(touchPoint.x - annotationPoint.x, touchPoint.y - annotationPoint.y)
-                    
-                    if distance < 30 { // Adjust tap detection range if needed
-//                        parent.longPressedAnnotation = annotation
-                        break
-                    }
-                }
             }
         }
             
