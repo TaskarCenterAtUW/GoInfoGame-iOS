@@ -70,7 +70,8 @@ struct CustomMap: UIViewRepresentable {
     // Updates the UIView with new data
     func updateUIView(_ mapView: MKMapView, context: Context) {
         //  mapView.setCenter(userLocation, animated: true)
-        if selectedAnnotations.isEmpty {
+        if isMultiSelectModeEnabled,
+           selectedAnnotations.isEmpty {
             mapView.removeAnnotations(mapView.annotations)
         }
         context.coordinator.updateUserRegion(mapView)
@@ -151,6 +152,14 @@ struct CustomMap: UIViewRepresentable {
                 isRegionSet = true
             }
         }
+        
+        func centerAnnotation(mapView: MKMapView, annotation: MKAnnotation) {
+            let coordinate = annotation.coordinate
+            var newRegion = mapView.region
+            newRegion.center = coordinate
+            mapView.setRegion(newRegion, animated: true)
+        }
+        
         // To keep the selected annotation visible at the top
               func centerAnnotationAtTop(mapView: MKMapView, annotation: MKAnnotation) {
                   let coordinate = annotation.coordinate
@@ -293,12 +302,13 @@ struct CustomMap: UIViewRepresentable {
                                 }
                             }
                         }
-                    }
-                    if self.parent.selectedAnnotations.isEmpty {
-                        self.parent.selectedAnnotationType = nil
-                        self.parent.showMultiSelectionBottomSheet = false
-                    } else {
-                        self.parent.showMultiSelectionBottomSheet = true
+                        if self.parent.selectedAnnotations.isEmpty {
+                            self.parent.selectedAnnotationType = nil
+                            self.parent.showMultiSelectionBottomSheet = false
+                        } else {
+                            self.parent.showMultiSelectionBottomSheet = true
+                        }
+                        self.centerAnnotation(mapView: mapView, annotation: annotation)
                     }
                 } else {
                 selectedAnAnnotation(selectedQuest: annotation)
