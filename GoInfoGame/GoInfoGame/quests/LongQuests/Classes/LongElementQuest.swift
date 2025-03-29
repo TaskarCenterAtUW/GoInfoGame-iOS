@@ -89,7 +89,7 @@ class LongElementQuest: QuestBase, Quest {
         super.init()
         
         self.internalForm = LongForm(elementName: elementType, action: { [self] tags in
-            self.onAnswer(answer: tags)
+//            self.onAnswer(answer: tags)
             self.questAnswersSelected?(tags)
         })
     }
