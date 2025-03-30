@@ -70,7 +70,8 @@ struct CustomMap: UIViewRepresentable {
     // Updates the UIView with new data
     func updateUIView(_ mapView: MKMapView, context: Context) {
         //  mapView.setCenter(userLocation, animated: true)
-        if selectedAnnotations.isEmpty {
+        if isMultiSelectModeEnabled,
+           selectedAnnotations.isEmpty {
             mapView.removeAnnotations(mapView.annotations)
         }
         context.coordinator.updateUserRegion(mapView)
