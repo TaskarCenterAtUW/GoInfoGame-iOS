@@ -110,9 +110,8 @@ struct MapView: View {
                                         selectedAnnotationImage: image,
                                         selectedCount: viewModel.selectedAnnotaions.count,
                                         onCancel: {
-                                            viewModel.selectedAnnotaions.removeAll()
-                                            viewModel.selectedAnnotationType = nil
                                             DispatchQueue.main.async {
+                                                viewModel.selectedAnnotationType = nil
                                                 viewModel.isMultiSelectModeEnabled = false
                                                 viewModel.selectedAnnotaions = Set<DisplayUnitAnnotation>()
                                             }

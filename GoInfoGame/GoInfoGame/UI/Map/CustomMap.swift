@@ -70,8 +70,7 @@ struct CustomMap: UIViewRepresentable {
     // Updates the UIView with new data
     func updateUIView(_ mapView: MKMapView, context: Context) {
         //  mapView.setCenter(userLocation, animated: true)
-        if isMultiSelectModeEnabled,
-           selectedAnnotations.isEmpty {
+        if selectedAnnotations.isEmpty {
             mapView.removeAnnotations(mapView.annotations)
         }
         context.coordinator.updateUserRegion(mapView)
@@ -157,12 +156,6 @@ struct CustomMap: UIViewRepresentable {
             }
         }
         
-        func centerAnnotation(mapView: MKMapView, annotation: MKAnnotation) {
-            let coordinate = annotation.coordinate
-            var newRegion = mapView.region
-            newRegion.center = coordinate
-            mapView.setRegion(newRegion, animated: true)
-        }
         
         // To keep the selected annotation visible at the top
               func centerAnnotationAtTop(mapView: MKMapView, annotation: MKAnnotation) {
@@ -317,9 +310,6 @@ struct CustomMap: UIViewRepresentable {
                             self.parent.showMultiSelectionBottomSheet = false
                         } else {
                             self.parent.showMultiSelectionBottomSheet = true
-                        }
-                        if let mapView = self.mapView {
-                            self.centerAnnotation(mapView: mapView, annotation: annotation)
                         }
                     }
                 } else {
