@@ -113,6 +113,7 @@ struct MapView: View {
                                             viewModel.selectedAnnotaions.removeAll()
                                             viewModel.selectedAnnotationType = nil
                                             DispatchQueue.main.async {
+                                                viewModel.isMultiSelectModeEnabled = false
                                                 viewModel.selectedAnnotaions = Set<DisplayUnitAnnotation>()
                                             }
                                         },

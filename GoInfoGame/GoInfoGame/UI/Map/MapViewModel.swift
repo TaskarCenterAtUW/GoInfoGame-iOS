@@ -26,7 +26,7 @@ class MapViewModel: ObservableObject {
     @Published var selectedAnnotaions: Set<DisplayUnitAnnotation> = []
     @Published var selectedAnnotationType: String?
     
-    var isMultiSelectModeEnabled = true
+    var isMultiSelectModeEnabled = false
     
    private let dbInstance = DatabaseConnector.shared
     
@@ -58,6 +58,7 @@ class MapViewModel: ObservableObject {
                     }
                     
                     self.selectedAnnotaions = []
+                    self.isMultiSelectModeEnabled = false
                 }
             }
             return displayUnit
