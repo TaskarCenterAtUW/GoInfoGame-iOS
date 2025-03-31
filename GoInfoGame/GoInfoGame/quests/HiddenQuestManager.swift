@@ -46,10 +46,19 @@ class HiddenQuestManager: ObservableObject {
         }
         if !hiddenQuests.contains(where: { $0.id == Int64(questId) }) {
             hiddenQuests.append(HiddenQuest(id: Int64(questId), name: elementName))
+            saveHiddenQuests()
+        }
+    }
+    
+    func removeQuest(atOffsets indexSet: IndexSet) {
+           hiddenQuests.remove(atOffsets: indexSet)
+           saveHiddenQuests()
+       }
+    
+    func saveHiddenQuests() {
             let encoder = JSONEncoder()
             if let encodedData = try? encoder.encode(hiddenQuests) {
                 UserDefaults.standard.set(encodedData, forKey: "hiddenElements")
             }
         }
-    }
 }
