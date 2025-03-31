@@ -42,6 +42,7 @@ struct MapView: View {
     
     @State private var showUserSettingsSheet = false
     
+    @State private var showMultiSelectionBottomSheet = false
                 
     var body: some View {
             ZStack{
@@ -52,7 +53,7 @@ struct MapView: View {
                           selectedQuest: $viewModel.selectedQuest,
                           shouldShowPolyline: $shouldShowPolyline,
                           
-                          isPresented: $isPresented, contextualInfo: { contextualInfo in
+                          isPresented: $isPresented, selectedAnnotations: $viewModel.selectedAnnotaions, isMultiSelectModeEnabled: $viewModel.isMultiSelectModeEnabled, selectedAnnotationType: $viewModel.selectedAnnotationType, showMultiSelectionBottomSheet: $showMultiSelectionBottomSheet, contextualInfo: { contextualInfo in
                     print(contextualInfo)
                     selectedDetent = .fraction(0.8)
                     self.setContextualInfo(contextualinfo: contextualInfo)
@@ -100,6 +101,29 @@ struct MapView: View {
                     useBingMaps.toggle()
                 }, useBingMaps: useBingMaps)
                    
+                if !viewModel.selectedAnnotaions.isEmpty,
+                   let selectedAnnotationType = viewModel.selectedAnnotationType,
+                   let image = viewModel.selectedAnnotaions.first?.displayUnit.parent?.icon {
+                    
+                    MultiQuestSelectionBottomSheet(
+                                        selectedAnnotationType: selectedAnnotationType,
+                                        selectedAnnotationImage: image,
+                                        selectedCount: viewModel.selectedAnnotaions.count,
+                                        onCancel: {
+                                            viewModel.selectedAnnotaions.removeAll()
+                                            viewModel.selectedAnnotationType = nil
+                                            DispatchQueue.main.async {
+                                                viewModel.isMultiSelectModeEnabled = false
+                                                viewModel.selectedAnnotaions = Set<DisplayUnitAnnotation>()
+                                            }
+                                        },
+                                        onAnswerQuests: {
+                                            isPresented = true
+                                        }
+                                    )
+                                    .transition(.move(edge: .bottom)) // Smooth animation
+                                    .animation(.easeInOut, value: viewModel.selectedAnnotaions.count)
+                }
             }
             .environmentObject(contextualInfo)
             .navigationBarHidden(isPresented)
@@ -132,7 +156,6 @@ struct MapView: View {
                             .foregroundStyle(Color(red: 135/255, green: 62/255, blue: 242/255))
                     }
                 }
-                
                     
                 ToolbarItem(placement: .navigationBarTrailing) {
                     if isSyncing {
@@ -240,7 +263,7 @@ struct MapView: View {
             }
 
         .sheet(isPresented: $isPresented, content: {
-            let selectedQuest = self.viewModel.selectedQuest
+            let selectedQuest = self.viewModel.getSelectedQuest()
             CustomSheetView {
                 selectedQuest?.parent?.form
             }
@@ -375,3 +398,61 @@ struct CustomSheetWrapper<Content: View>: UIViewControllerRepresentable {
         }
     }
 }
+
+struct MultiQuestSelectionBottomSheet: View {
+    var selectedAnnotationType: String
+    var selectedAnnotationImage: UIImage
+    var selectedCount: Int
+    var onCancel: () -> Void
+    var onAnswerQuests: () -> Void
+
+    var body: some View {
+        VStack() {
+            HStack {
+                Image(uiImage: selectedAnnotationImage) 
+                    .resizable()
+                    .frame(width: 20.0, height: 20.0)
+                    .foregroundColor(.gray)
+                Text("**Select \(selectedAnnotationType):**")
+                    .font(.headline)
+                Text("\(selectedCount) \(selectedAnnotationType.lowercased()) selected")
+                    .font(.subheadline)
+                    .foregroundColor(.gray)
+                Spacer()
+            }
+            .padding()
+            VStack() {
+                Button(action: onAnswerQuests) {
+                    HStack {
+                        Image(systemName: "bubble.left.and.bubble.right")
+                        Text("Answer Quests")
+                        Spacer()
+                    }
+                }
+                .padding()
+
+                Divider()
+
+                Button(action: onCancel) {
+                    HStack {
+                        Image(systemName: "xmark.circle")
+                        Text("Cancel")
+                        Spacer()
+                    }
+                }
+                .padding()
+            }
+            .background(Color.white)
+            .cornerRadius(20.0)
+            .padding()
+        }
+        .frame(maxWidth: .infinity)
+        .background(.ultraThinMaterial)
+        .cornerRadius(20)
+        .shadow(radius: 5)
+        .frame(maxHeight: .infinity, alignment: .bottom) // Ensures it stays at the bottom
+    }
+}
+
+
+

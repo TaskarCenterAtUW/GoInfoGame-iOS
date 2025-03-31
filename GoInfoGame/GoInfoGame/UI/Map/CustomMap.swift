@@ -23,6 +23,10 @@ struct CustomMap: UIViewRepresentable {
     @Binding var isPresented: Bool
     @StateObject var locationManagerDelegate = LocationManagerDelegate()
     
+    @Binding var selectedAnnotations: Set<DisplayUnitAnnotation>
+    @Binding var isMultiSelectModeEnabled: Bool
+    @Binding var selectedAnnotationType: String?
+    @Binding var showMultiSelectionBottomSheet: Bool
     
     @State var lineCoordinates: [CLLocationCoordinate2D] = []
     
@@ -42,6 +46,7 @@ struct CustomMap: UIViewRepresentable {
         mapView.userTrackingMode = trackingMode.mkUserTrackingMode
         // Hide points of interest except street names
         mapView.pointOfInterestFilter = .excludingAll
+        mapView.register(CustomAnnotationView.self, forAnnotationViewWithReuseIdentifier: CustomAnnotationView.reuseIdentifier)
         
         let currentAltitude = mapView.camera.altitude
         
@@ -65,6 +70,10 @@ struct CustomMap: UIViewRepresentable {
     // Updates the UIView with new data
     func updateUIView(_ mapView: MKMapView, context: Context) {
         //  mapView.setCenter(userLocation, animated: true)
+        if isMultiSelectModeEnabled,
+           selectedAnnotations.isEmpty {
+            mapView.removeAnnotations(mapView.annotations)
+        }
         context.coordinator.updateUserRegion(mapView)
         context.coordinator.updateVisibleAnnotations(in: mapView)
         manageAnnotations(mapView, context: context)
@@ -114,6 +123,10 @@ struct CustomMap: UIViewRepresentable {
         var parent: CustomMap
         var isRegionSet = false // boolean flag to track if region has been set
         var contextualInfo: ((String) -> Void)?
+        var touchStartTime: Date?
+        var longPressTimer: Timer?
+        var currentAnnotation: DisplayUnitAnnotation?
+        var mapView: MKMapView?
         
         private let maxZoomAltitude: CLLocationDistance = 100
         private var zoomReachedLimit: Bool = false
@@ -143,6 +156,8 @@ struct CustomMap: UIViewRepresentable {
                 isRegionSet = true
             }
         }
+        
+        
         // To keep the selected annotation visible at the top
               func centerAnnotationAtTop(mapView: MKMapView, annotation: MKAnnotation) {
                   let coordinate = annotation.coordinate
@@ -178,7 +193,7 @@ struct CustomMap: UIViewRepresentable {
         
         // Customizes the view for each annotation
         func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
-            
+            self.mapView = mapView
             if let clusterAnnotation = annotation as? MKClusterAnnotation {
                 let identifier = "cluster"
                 var clusterView = mapView.dequeueReusableAnnotationView(withIdentifier: identifier) as? MKMarkerAnnotationView
@@ -198,17 +213,31 @@ struct CustomMap: UIViewRepresentable {
             guard let displayUnitAnnotation = annotation as? DisplayUnitAnnotation else {
                 return nil
             }
-            let identifier = "customAnnotation"
-            var annotationView = mapView.dequeueReusableAnnotationView(withIdentifier: identifier)
-            if annotationView == nil {
-                annotationView = MKAnnotationView(annotation: annotation, reuseIdentifier: identifier)
+            let annotationView: CustomAnnotationView
+            if var dequeuedView = mapView.dequeueReusableAnnotationView(withIdentifier: CustomAnnotationView.reuseIdentifier) as? CustomAnnotationView {
+                annotationView = dequeuedView
+                
             } else {
-                annotationView?.annotation = annotation
+                annotationView = CustomAnnotationView(annotation: annotation, reuseIdentifier: CustomAnnotationView.reuseIdentifier)
             }
-            annotationView?.clusteringIdentifier = "cluster"
+            annotationView.clusteringIdentifier = "cluster"
             
+            if let ann = annotation as? DisplayUnitAnnotation {
+                if let annotationType = (ann.displayUnit.parent as? LongElementQuest)?.elementType {
+                    let isSelectable = (parent.selectedAnnotationType == nil || parent.selectedAnnotationType == annotationType)
+                    // Dim other annotation types
+                    annotationView.alpha = isSelectable ? 1.0 : 0.5
+                    annotationView.isUserInteractionEnabled = isSelectable
+                }
+                annotationView.updateSelectionState(isSelected: parent.selectedAnnotations.contains(ann))
+            }
+
             // Customize annotation view
             customizeAnnotationView(annotationView, with: displayUnitAnnotation)
+            // Add a touch handler
+            annotationView.isDraggable = false
+            annotationView.isUserInteractionEnabled = true
+            annotationView.addGestureRecognizer(CustomTouchGestureRecognizer(target: self, action: #selector(handleAnnotationTouch(_:))))
             return annotationView
         }
         
@@ -217,20 +246,80 @@ struct CustomMap: UIViewRepresentable {
             print("did select ")
             if let annotation = annotation as? MKClusterAnnotation {
                 mapView.showAnnotations(annotation.memberAnnotations, animated: true)
-                            
+                
                 if zoomReachedLimit && annotation.memberAnnotations.count <= 3 {
                     if let annotation = annotation.memberAnnotations.first as? DisplayUnitAnnotation {
                         selectedAnAnnotation(selectedQuest: annotation)
                     }
                 }
                 
-                
-            } else if let annotation = annotation as? DisplayUnitAnnotation {
-                selectedAnAnnotation(selectedQuest: annotation)
-                centerAnnotationAtTop(mapView: mapView, annotation: annotation)
             }
             // Deselect the annotation to prevent re-adding on selection
             mapView.deselectAnnotation(annotation, animated: false)
+        }
+        
+        func handleSelected(annotation: MKAnnotation) {
+            mapView?.selectAnnotation(annotation, animated: true)
+            if let annotation = annotation as? DisplayUnitAnnotation {
+                if self.parent.isMultiSelectModeEnabled {
+                    guard let annotationType = (annotation.displayUnit.parent as? LongElementQuest)?.elementType else {
+                        return
+                    }
+                    
+                    DispatchQueue.main.async {
+                        
+                        // If nothing is selected yet, set the type
+                        if self.parent.selectedAnnotationType == nil {
+                            self.parent.selectedAnnotationType = annotationType
+                        }
+                        
+                        // Allow selection only if the type matches
+                        if self.parent.selectedAnnotationType == annotationType {
+                            if self.parent.selectedAnnotations.contains(annotation) {
+                                self.parent.selectedAnnotations.remove(annotation) // Deselect if already selected
+                                self.mapView?.deselectAnnotation(annotation, animated: true)
+                            } else {
+                                self.parent.selectedAnnotations.insert(annotation) // Add to selection
+                            }
+                        }
+                        
+                        // Refresh annotation view to update checkmark
+                        if let annotationView = self.mapView?.view(for: annotation) as? CustomAnnotationView {
+                            annotationView.updateSelectionState(isSelected: self.parent.selectedAnnotations.contains(annotation))
+                        }
+                        
+                        // If all annotations are deselected, reset type filter
+                        if self.parent.selectedAnnotations.isEmpty {
+                            self.parent.selectedAnnotationType = nil
+                        }
+                        
+                        self.mapView?.deselectAnnotation(annotation, animated: true)
+                        
+                        // Refresh annotations to apply dimming effect
+                        for ann in self.mapView?.annotations ?? [] {
+                            if let view = self.mapView?.view(for: ann) as? CustomAnnotationView {
+                                if let annotation = ann as? DisplayUnitAnnotation,
+                                   let annType = (annotation.displayUnit.parent as? LongElementQuest)?.elementType {
+                                    view.alpha = (self.parent.selectedAnnotationType == nil || self.parent.selectedAnnotationType == annType) ? 1.0 : 0.5
+                                    view.isUserInteractionEnabled = (self.parent.selectedAnnotationType == nil || self.parent.selectedAnnotationType == annType)
+                                    view.updateSelectionState(isSelected: self.parent.selectedAnnotations.contains(annotation))
+                                }
+                            }
+                        }
+                        if self.parent.selectedAnnotations.isEmpty {
+                            self.parent.selectedAnnotationType = nil
+                            self.parent.showMultiSelectionBottomSheet = false
+                        } else {
+                            self.parent.showMultiSelectionBottomSheet = true
+                        }
+                    }
+                } else {
+                    selectedAnAnnotation(selectedQuest: annotation)
+                    if let mapView = mapView {
+                        centerAnnotationAtTop(mapView: mapView, annotation: annotation)
+                    }
+                }
+            }
         }
         
         func mapView(_ mapView: MKMapView, regionDidChangeAnimated animated: Bool) {
@@ -316,6 +405,41 @@ struct CustomMap: UIViewRepresentable {
             }
             // Notify the accessibility system of the updated annotations
             UIAccessibility.post(notification: .layoutChanged, argument: mapView)
+        }
+        
+        @objc func handleAnnotationTouch(_ gesture: CustomTouchGestureRecognizer) {
+            guard let annotation = gesture.annotation else { return }
+
+            switch gesture.state {
+            case .began:
+                touchStartTime = Date()
+                currentAnnotation = annotation
+                longPressTimer = Timer.scheduledTimer(withTimeInterval: 0.5, repeats: false) { [weak self] timer in
+                    if let currentAnnotation = self?.currentAnnotation {
+                        print("Long press detected on annotation: \(currentAnnotation.coordinate)")
+//                        self?.parent.onAnnotationLongPress?(currentAnnotation)
+                        self?.parent.isMultiSelectModeEnabled = true
+                        self?.handleSelected(annotation: annotation)
+                        self?.longPressTimer = nil
+                        self?.touchStartTime = nil
+                        self?.currentAnnotation = nil
+                    }
+                }
+            case .ended, .cancelled:
+                if let startTime = touchStartTime, let currentAnnotation = currentAnnotation {
+                    let touchDuration = Date().timeIntervalSince(startTime)
+                    if touchDuration < 0.5 {
+                        print("Tap detected on annotation: \(currentAnnotation.coordinate)")
+                        self.handleSelected(annotation: annotation)
+                    }
+                }
+                touchStartTime = nil
+                currentAnnotation = nil
+                longPressTimer?.invalidate()
+                longPressTimer = nil
+            default:
+                break
+            }
         }
     }
     
@@ -447,3 +571,69 @@ extension MapUserTrackingMode {
         }
     }
 }
+
+
+class CustomAnnotationView: MKAnnotationView {
+    static let reuseIdentifier = "CustomAnnotationView"
+    
+    private var checkmarkImageView: UIImageView?
+
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        removeCheckmark()
+    }
+
+    // Show or remove the checkmark based on selection
+    func updateSelectionState(isSelected: Bool) {
+        if isSelected {
+            addCheckmark()
+        } else {
+            removeCheckmark()
+        }
+    }
+
+    private func addCheckmark() {
+        if checkmarkImageView == nil {
+            let checkmarkImage = UIImage(systemName: "checkmark.circle.fill")?.withTintColor(.purple, renderingMode: .alwaysOriginal)
+            let imageView = UIImageView(image: checkmarkImage)
+            imageView.backgroundColor = .white
+            imageView.layer.cornerRadius = (checkmarkImage?.size.width ?? 0.0) / 2.0
+            imageView.translatesAutoresizingMaskIntoConstraints = false
+            addSubview(imageView)
+
+            NSLayoutConstraint.activate([
+                imageView.topAnchor.constraint(equalTo: topAnchor, constant:0),
+                imageView.centerXAnchor.constraint(equalTo: centerXAnchor, constant: 10),
+                imageView.widthAnchor.constraint(equalToConstant: 24),
+                imageView.heightAnchor.constraint(equalToConstant: 24)
+            ])
+
+            checkmarkImageView = imageView
+        }
+    }
+
+    private func removeCheckmark() {
+        checkmarkImageView?.removeFromSuperview()
+        checkmarkImageView = nil
+    }
+}
+
+class CustomTouchGestureRecognizer: UIGestureRecognizer {
+    weak var annotation: DisplayUnitAnnotation?
+
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent) {
+        state = .began
+        if let view = view as? CustomAnnotationView, let annotation = view.annotation as? DisplayUnitAnnotation {
+            self.annotation = annotation
+        }
+    }
+
+    override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent) {
+        state = .ended
+    }
+
+    override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent) {
+        state = .cancelled
+    }
+}
+

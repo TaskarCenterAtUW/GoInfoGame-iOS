@@ -23,6 +23,10 @@ class MapViewModel: ObservableObject {
     @Published var items: [DisplayUnitWithCoordinate] = []
     @Published var selectedQuest: DisplayUnit?
     let dataSpanDistance: CLLocationDistance = 1000 // Distance from user location to get the data
+    @Published var selectedAnnotaions: Set<DisplayUnitAnnotation> = []
+    @Published var selectedAnnotationType: String?
+    
+    var isMultiSelectModeEnabled = false
     
    private let dbInstance = DatabaseConnector.shared
     
@@ -35,6 +39,42 @@ class MapViewModel: ObservableObject {
             guard let self = self else { return }
             self.userlocation = location
             fetchOSMDataFor(currentLocation: location)
+        }
+    }
+    
+    func getSelectedQuest() -> DisplayUnit? {
+        if isMultiSelectModeEnabled {
+            let displayUnit = selectedAnnotaions.first?.displayUnit
+            if let longElementQuest = displayUnit?.parent as? LongElementQuest {
+                longElementQuest.questAnswersSelected = { [weak self] tags in
+                    guard let self = self else {
+                        return
+                    }
+                    
+                    for quest in self.selectedAnnotaions {
+                        if let longElementQuest = quest.displayUnit.parent as? LongElementQuest {
+                            longElementQuest.onAnswer(answer: tags)
+                        }
+                    }
+                    self.selectedAnnotaions.removeAll()
+                    self.selectedAnnotationType = nil
+                    DispatchQueue.main.async {
+                        self.isMultiSelectModeEnabled = false
+                        self.selectedAnnotaions = Set<DisplayUnitAnnotation>()
+                    }
+                }
+            }
+            return displayUnit
+        } else {
+            if let longElementQuest = selectedQuest?.parent as? LongElementQuest {
+                longElementQuest.questAnswersSelected = { [weak self] tags in
+                    guard let self = self else {
+                        return
+                    }
+                    longElementQuest.onAnswer(answer: tags)
+                }
+            }
+            return selectedQuest
         }
     }
     

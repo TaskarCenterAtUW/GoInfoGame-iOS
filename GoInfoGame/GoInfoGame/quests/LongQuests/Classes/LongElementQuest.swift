@@ -73,12 +73,15 @@ class LongElementQuest: QuestBase, Quest {
         return DisplayUnit(title: self.title, description: "", id: "\(uid)-\(questId)",parent: self,sheetSize: .LONGFORM)
     }
     
+    var questAnswersSelected: (([String:String]) -> Void)? = nil
+    
     init(questId: String, questQuery:String, elementType: String) {
         super.init()
         self._internalQueryString = questQuery
         self.elementType = elementType
         self.internalForm = LongForm(elementName: elementType, questID: questId,query: questQuery, action: { [self] tags in
-            self.onAnswer(answer: tags)
+//            self.onAnswer(answer: tags)
+            self.questAnswersSelected?(tags)
         })
     }
     
@@ -86,7 +89,8 @@ class LongElementQuest: QuestBase, Quest {
         super.init()
         
         self.internalForm = LongForm(elementName: elementType, action: { [self] tags in
-            self.onAnswer(answer: tags)
+//            self.onAnswer(answer: tags)
+            self.questAnswersSelected?(tags)
         })
     }
     
