@@ -10,10 +10,11 @@ import SwiftUI
 struct ManageQuestsView: View {
     @ObservedObject var questManager = QuestsRepository.shared
     @Environment(\.presentationMode) var presentationMode
+    @ObservedObject var hiddenQuestManager = HiddenQuestManager.shared
     
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
-            HStack(alignment: .firstTextBaseline) { // Aligns with text baseline
+            HStack(alignment: .firstTextBaseline) {
                 Text("Manage Quests")
                     .font(.custom("Lato-Bold", size: 20))
                     .foregroundColor(Color(red: 69/255, green: 81/255, blue: 108/255))
@@ -31,7 +32,6 @@ struct ManageQuestsView: View {
             }
             .padding(.horizontal, 16)
 
-
             Text("Show all hidden elements on the map by individual item or type")
                 .font(.custom("Lato-Bold", size: 12))
                 .foregroundColor(Color(red: 132/255, green: 135/255, blue: 153/255))
@@ -43,7 +43,7 @@ struct ManageQuestsView: View {
                 .padding(.horizontal)
                 .padding(.top, 10)
                 .padding(.leading, 15)
-
+            
             GeometryReader { geometry in
                 VStack(spacing: 0) { // No extra spacing between rows
                     ForEach(questManager.longQuestModels.indices, id: \.self) { index in
@@ -72,18 +72,55 @@ struct ManageQuestsView: View {
                 .clipShape(RoundedRectangle(cornerRadius: 16))
                 .padding([.leading, .trailing], 22)
             }
-            .frame(height: CGFloat(questManager.allQuests.count) * 50) // Adjust height dynamically
-            
-            Spacer()
+            .frame(height: CGFloat(questManager.allQuests.count) * 50)
+
+
+            if hiddenQuestManager.hiddenQuests.isEmpty {
+                Color.clear.frame(height: 50) // Placeholder to prevent jumpy UI
+            } else {
+                Text("HIDDEN QUESTS")
+                    .font(.custom("Lato-Bold", size: 15))
+                    .foregroundColor(Color(red: 132/255, green: 135/255, blue: 153/255))
+                    .padding(.horizontal)
+                    .padding(.top, 10)
+                    .padding(.leading, 15)
+
+                List {
+                    ForEach(hiddenQuestManager.hiddenQuests.indices, id: \.self) { index in
+                        let quest = hiddenQuestManager.hiddenQuests[index]
+
+                        HStack {
+                            Text("ID: \(quest.id)")
+                                .font(.custom("Lato-Bold", size: 15))
+                                .foregroundColor(Color(red: 69 / 255, green: 81 / 255, blue: 108 / 255))
+                        
+                            Spacer()
+                            Text(quest.name)
+                                .font(.custom("Lato-Bold", size: 13))
+                                .foregroundColor(.gray)
+                                
+                        }
+                       
+                        .listRowInsets(EdgeInsets(top: 6, leading: 10, bottom: 6, trailing: 10))
+                    }
+                    .onDelete { indexSet in
+                        hiddenQuestManager.removeQuest(atOffsets: indexSet)
+                    }
+                }
+                .listStyle(.plain)
+                .scrollContentBackground(.hidden)
+                .background(Color.white)
+                .clipShape(RoundedRectangle(cornerRadius: 16))
+                .padding(.horizontal, 22)
+            }
         }
+        .frame(maxHeight: .infinity, alignment: .top) // Keep Manage Quests at the top
         .padding(.bottom, 16)
-        .background((Color(red: 248/255, green: 248/255, blue: 248/255)))
-        .clipShape(RoundedRectangle(cornerRadius: 16))
+        .background(Color(red: 248 / 255, green: 248 / 255, blue: 248 / 255))
         .onDisappear {
             QuestsPublisher.shared.refreshQuest.send("")
         }
     }
-
 
 }
 
