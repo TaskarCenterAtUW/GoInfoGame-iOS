@@ -146,16 +146,16 @@ struct MapView: View {
                     }
                 }
                 
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    Button(action: {
-                        print("Settings icon tapped")
-                        showUserSettingsSheet = true
-                    }) {
-                        Image(systemName: "gear")
-                            .frame(width: 20, height: 20)
-                            .foregroundStyle(Color(red: 135/255, green: 62/255, blue: 242/255))
-                    }
-                }
+//                ToolbarItem(placement: .navigationBarTrailing) {
+//                    Button(action: {
+//                        print("Settings icon tapped")
+//                        showUserSettingsSheet = true
+//                    }) {
+//                        Image(systemName: "gear")
+//                            .frame(width: 20, height: 20)
+//                            .foregroundStyle(Color(red: 135/255, green: 62/255, blue: 242/255))
+//                    }
+//                }
                     
                 ToolbarItem(placement: .navigationBarTrailing) {
                     if isSyncing {
