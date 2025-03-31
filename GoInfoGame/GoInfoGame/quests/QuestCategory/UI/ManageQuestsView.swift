@@ -78,7 +78,7 @@ struct ManageQuestsView: View {
             if hiddenQuestManager.hiddenQuests.isEmpty {
                 Color.clear.frame(height: 50) // Placeholder to prevent jumpy UI
             } else {
-                Text("HIDDEN QUESTS")
+                Text("HIDDEN ELEMENTS")
                     .font(.custom("Lato-Bold", size: 15))
                     .foregroundColor(Color(red: 132/255, green: 135/255, blue: 153/255))
                     .padding(.horizontal)
