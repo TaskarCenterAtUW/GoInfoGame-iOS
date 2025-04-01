@@ -309,6 +309,7 @@ struct CustomMap: UIViewRepresentable {
                         if self.parent.selectedAnnotations.isEmpty {
                             self.parent.selectedAnnotationType = nil
                             self.parent.showMultiSelectionBottomSheet = false
+                            self.parent.isMultiSelectModeEnabled  = false // Disable multi-select mode
                         } else {
                             self.parent.showMultiSelectionBottomSheet = true
                         }

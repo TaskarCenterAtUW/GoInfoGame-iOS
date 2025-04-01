@@ -84,6 +84,10 @@ struct ManageQuestsView: View {
                     .padding(.horizontal)
                     .padding(.top, 10)
                     .padding(.leading, 15)
+                Text("Swipe left on item to show delete option and delete it from the list.")
+                    .font(.custom("Lato-Bold", size: 12))
+                    .foregroundColor(Color(red: 132/255, green: 135/255, blue: 153/255))
+                    .padding(.horizontal)
 
                 List {
                     ForEach(hiddenQuestManager.hiddenQuests.indices, id: \.self) { index in
