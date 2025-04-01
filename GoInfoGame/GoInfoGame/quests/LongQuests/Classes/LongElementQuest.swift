@@ -21,7 +21,7 @@ class LongElementQuest: QuestBase, Quest {
         } else if lowercasedFilter.contains("nodes with barrier=kerb") {
             return UIImage(named: "kerb_type")!
         } else {
-            return UIImage(named: "mapPoint")!
+            return UIImage(named: "other_element")!
         }
     }
 
