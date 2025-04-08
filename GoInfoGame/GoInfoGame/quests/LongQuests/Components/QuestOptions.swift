@@ -24,6 +24,10 @@ struct QuestOptions: View {
     var uploadPhoto: (Bool) -> ()
     
     @State private var isCameraPresented = false
+    
+    @State private var isImageExpanded = false
+    
+    @State private var expandedImageId: UUID? = nil
 
     var body: some View {
                 
@@ -37,7 +41,17 @@ struct QuestOptions: View {
                         }) {
                             VStack(alignment: .leading, spacing: 10) {
                                 if let imageUrl = option.imageURL, !imageUrl.isEmpty {
-                                    LongFormImageView(url: imageUrl, width: 100, height: 100, id: option.id)
+                                    LongFormImageView(urlString: imageUrl, width: expandedImageId == option.id ? 300 : 100, height: expandedImageId == option.id ? 300 : 100, id: option.id)
+                                        .onLongPressGesture(
+                                                    minimumDuration: 0.5,
+                                                    maximumDistance: 10,
+                                                    pressing: { isPressing in
+                                                        withAnimation {
+                                                            expandedImageId = isPressing ? option.id : nil
+                                                        }
+                                                    },
+                                                    perform: {}
+                                                )
                                 }
                                 
                                 Text(option.choiceText)

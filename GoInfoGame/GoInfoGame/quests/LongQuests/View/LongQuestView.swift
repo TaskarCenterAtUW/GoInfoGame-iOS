@@ -23,6 +23,8 @@ struct LongQuestView: View {
     
     @Binding var currentAnswer:String?
     
+    @State private var isImageExpanded: Bool = false
+    
     var body: some View {
         VStack(alignment: .leading) {
             Text(quest.questTitle)
@@ -31,7 +33,17 @@ struct LongQuestView: View {
                 .padding([.bottom], 10)
             
             if let imageUrl = quest.questImageURL, !imageUrl.isEmpty {
-                LongFormImageView(url: imageUrl, width: 100, height: 100, id: nil)
+                LongFormImageView(urlString: imageUrl, width: isImageExpanded ? 300 : 100, height: isImageExpanded ? 300 : 100, id: nil)
+                .onLongPressGesture(
+                            minimumDuration: 0.5,
+                            maximumDistance: 10,
+                            pressing: { isPressing in
+                                withAnimation {
+                                    isImageExpanded = isPressing
+                                }
+                            },
+                            perform: {}
+                        )
             }
             
             Text(quest.questDescription)
