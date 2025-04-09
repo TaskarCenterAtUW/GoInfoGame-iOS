@@ -18,7 +18,17 @@ struct TagPayload: OSMPayload {
     var value:String
     
     func toPayload() -> String {
-         return "<tag k=\"\(key)\" v=\"\(value)\"/>"
+        return "<tag k=\"\(key)\" v=\"\(escapeValue())\"/>"
+    }
+    
+    // function to escape characters in the value
+    func escapeValue() -> String {
+        let escapedValue = value.replacingOccurrences(of: "&", with: "&amp;")
+            .replacingOccurrences(of: "<", with: "&lt;")
+            .replacingOccurrences(of: ">", with: "&gt;")
+            .replacingOccurrences(of: "\"", with: "&quot;")
+            .replacingOccurrences(of: "'", with: "&apos;")
+        return escapedValue
     }
 }
 
