@@ -11,6 +11,11 @@ import MapKit
 import CoreLocation
 import osmapi
 
+enum BBoxSource {
+    case currentLocation(location: CLLocationCoordinate2D)
+    case visibleRect(mapView: MKMapView)
+}
+
 
 class MapViewModel: ObservableObject {
 
@@ -38,7 +43,7 @@ class MapViewModel: ObservableObject {
         locationManagerDelegate.locationUpdateHandler = { [weak self] location in
             guard let self = self else { return }
             self.userlocation = location
-            fetchOSMDataFor(currentLocation: location)
+            fetchOSMDataFor(from: .currentLocation(location: location))
         }
     }
     
@@ -80,17 +85,25 @@ class MapViewModel: ObservableObject {
     
     @objc private func locationDidChange() {
         guard let userLocation = locationManagerDelegate.location else { return }
-        fetchOSMDataFor(currentLocation: userLocation.coordinate)
+       // fetchOSMDataFor(currentLocation: userLocation.coordinate)
+        fetchOSMDataFor(from: .currentLocation(location: userLocation.coordinate))
     }
     
-    func fetchOSMDataFor(currentLocation: CLLocationCoordinate2D) {
+    func fetchOSMDataFor(from bboxSource: BBoxSource) {
         isLoading = true
-        let bBox = boundingBoxAroundLocation(location: currentLocation, distance: dataSpanDistance)
-        self.region = MKCoordinateRegion(center: currentLocation, span: MKCoordinateSpan(
-            latitudeDelta: viewSpanDelta,
-            longitudeDelta: viewSpanDelta
-        ))
-        
+        let bBox: BBox
+           switch bboxSource {
+           case .currentLocation(let center):
+               self.region = MKCoordinateRegion(center: center, span: MKCoordinateSpan(
+                   latitudeDelta: viewSpanDelta,
+                   longitudeDelta: viewSpanDelta
+               ))
+               bBox = boundingBoxAroundLocation(location: center, distance: dataSpanDistance)
+               
+           case .visibleRect(let mapView):
+               bBox = boundingBoxFromVisibleMapRect(mapView: mapView)
+           }
+
         if let workspaceID = KeychainManager.load(key: "workspaceID") {
             
             ApiManager.shared.performRequest(to: .fetchOSMElements(bBox.minLon, bBox.minLat, bBox.maxLon, bBox.maxLat, workspaceID), setupType: .osm, modelType: OSMMapDataResponse.self) { result in
@@ -140,6 +153,15 @@ class MapViewModel: ObservableObject {
         print(elementId)
         HiddenQuestManager.shared.hideQuest(elementId: elementId, elementName: elementName, items: &items)
     }
+    
+    private func getBBox(from source: BBoxSource) -> BBox {
+        switch source {
+        case .currentLocation(let center):
+            return boundingBoxAroundLocation(location: center, distance: dataSpanDistance)
+        case .visibleRect(let mapView):
+            return boundingBoxFromVisibleMapRect(mapView: mapView)
+        }
+    }
 
     private func boundingBoxAroundLocation(location: CLLocationCoordinate2D, distance: CLLocationDistance) -> BBox {
         let region = MKCoordinateRegion(center: location, latitudinalMeters: distance, longitudinalMeters: distance)
@@ -154,19 +176,20 @@ class MapViewModel: ObservableObject {
         return BBox(minLat: minLat, maxLat: maxLat, minLon: minLon, maxLon: maxLon)
     }
     
-//    func fetchOSMDataForx(currentLocation: CLLocationCoordinate2D) {
-//        isLoading = true
-//        let bBox = boundingBoxAroundLocation(location: currentLocation, distance: dataSpanDistance)
-//        self.region = MKCoordinateRegion(center: currentLocation, span: MKCoordinateSpan(
-//            latitudeDelta: viewSpanDelta,
-//            longitudeDelta: viewSpanDelta
-//        ))
-//        AppQuestManager.shared.fetchData(fromBBOx: bBox) { [weak self] in
-//            guard let self = self else { return }
-//            self.items = AppQuestManager.shared.fetchQuestsFromDB()
-//            self.isLoading = false
-//            if self.items.count == 0 {self.refreshMap = UUID()}
-//            
-//        }
-//    }
+    private func boundingBoxFromVisibleMapRect(mapView: MKMapView) -> BBox {
+        let mapRect = mapView.visibleMapRect
+        let topLeft = MKMapPoint(x: mapRect.origin.x, y: mapRect.origin.y)
+        let bottomRight = MKMapPoint(x: mapRect.origin.x + mapRect.size.width,
+                                     y: mapRect.origin.y + mapRect.size.height)
+
+        let topLeftCoord = topLeft.coordinate
+        let bottomRightCoord = bottomRight.coordinate
+
+        let minLat = bottomRightCoord.latitude
+        let maxLat = topLeftCoord.latitude
+        let minLon = topLeftCoord.longitude
+        let maxLon = bottomRightCoord.longitude
+
+        return BBox(minLat: minLat, maxLat: maxLat, minLon: minLon, maxLon: maxLon)
+    }
 }
