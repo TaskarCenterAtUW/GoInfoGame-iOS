@@ -43,6 +43,8 @@ struct MapView: View {
     @State private var showUserSettingsSheet = false
     
     @State private var showMultiSelectionBottomSheet = false
+    
+    @State private var mapViewRef: MKMapView?
                 
     var body: some View {
             ZStack{
@@ -53,7 +55,11 @@ struct MapView: View {
                           selectedQuest: $viewModel.selectedQuest,
                           shouldShowPolyline: $shouldShowPolyline,
                           
-                          isPresented: $isPresented, selectedAnnotations: $viewModel.selectedAnnotaions, isMultiSelectModeEnabled: $viewModel.isMultiSelectModeEnabled, selectedAnnotationType: $viewModel.selectedAnnotationType, showMultiSelectionBottomSheet: $showMultiSelectionBottomSheet, contextualInfo: { contextualInfo in
+                          isPresented: $isPresented, selectedAnnotations: $viewModel.selectedAnnotaions, isMultiSelectModeEnabled: $viewModel.isMultiSelectModeEnabled, selectedAnnotationType: $viewModel.selectedAnnotationType, showMultiSelectionBottomSheet: $showMultiSelectionBottomSheet,
+                          onMapViewCreated: { map in
+                                 self.mapViewRef = map
+                             },
+                          contextualInfo: { contextualInfo in
                     print(contextualInfo)
                     selectedDetent = .fraction(0.8)
                     self.setContextualInfo(contextualinfo: contextualInfo)
@@ -138,9 +144,21 @@ struct MapView: View {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button(action: {
                         print("Refresh icon tapped")
-                        viewModel.fetchOSMDataFor(currentLocation: viewModel.userlocation)
+                        viewModel.fetchOSMDataFor(from: .currentLocation(location: viewModel.userlocation))
                     }) {
                         Image(systemName: "arrow.2.circlepath")
+                            .frame(width: 20, height: 20)
+                            .foregroundStyle(Color(red: 135/255, green: 62/255, blue: 242/255))
+                    }
+                }
+                
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button(action: {
+                        print("Download data here icon tapped")
+                        guard let mapView = mapViewRef else { return }
+                        viewModel.fetchOSMDataFor(from: .visibleRect(mapView: mapView))
+                    }) {
+                        Image(systemName: "arrow.down.circle")
                             .frame(width: 20, height: 20)
                             .foregroundStyle(Color(red: 135/255, green: 62/255, blue: 242/255))
                     }
