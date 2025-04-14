@@ -30,6 +30,8 @@ struct CustomMap: UIViewRepresentable {
     
     @State var lineCoordinates: [CLLocationCoordinate2D] = []
     
+    var onMapViewCreated: ((MKMapView) -> Void)?
+    
     var contextualInfo: ((String) -> Void)?
     
     @Binding var useBingMaps: Bool 
@@ -62,7 +64,9 @@ struct CustomMap: UIViewRepresentable {
         let tapGesture = UILongPressGestureRecognizer(target: context.coordinator, action: #selector(Coordinator.handleMapTap(_:)))
         mapView.addGestureRecognizer(tapGesture)
         
-
+        DispatchQueue.main.async {
+            onMapViewCreated?(mapView)
+        }
         
         return mapView
     }
