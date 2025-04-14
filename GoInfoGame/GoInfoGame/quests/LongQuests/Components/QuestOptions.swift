@@ -33,68 +33,79 @@ struct QuestOptions: View {
                 
         switch questType {
         case .exclusiveChoice:
-            ScrollView {
-                ForEach(options, id: \.id) { option in
-                        Button(action: {
-                            selectedAnswerId = option.id
-                            onChoiceSelected(option)
-                        }) {
-                            VStack(alignment: .leading, spacing: 10) {
-                                if let imageUrl = option.imageURL, !imageUrl.isEmpty {
-                                    LongFormImageView(urlString: imageUrl, width: expandedImageId == option.id ? 300 : 100, height: expandedImageId == option.id ? 300 : 100, id: option.id)
-                                        .onLongPressGesture(
-                                                    minimumDuration: 0.5,
-                                                    maximumDistance: 10,
-                                                    pressing: { isPressing in
-                                                        withAnimation {
-                                                            expandedImageId = isPressing ? option.id : nil
-                                                        }
-                                                    },
-                                                    perform: {}
-                                                )
-                                }
-                                
-                                Text(option.choiceText)
-                                    .font(.custom("Lato-Bold", size: 14))
-                                    .foregroundColor(currentAnswer == option.value ? Color.white : Color(red: 66/255, green: 82/255, blue: 110/255))
-                                    .padding()
-                                    .background(currentAnswer == option.value ? Color(red: 135/255, green: 62/255, blue: 242/255) : Color(red: 245/255, green: 245/255, blue: 245/255))
-                                    .cornerRadius(25)
-                                
-                                if option.choiceFollowUp != nil && currentAnswer == option.value {
-                                    HStack {
-                                        Button(action: {
-                                            uploadPhoto(true)
-                                        }) {
-                                            HStack(spacing: 8) {
-                                                Image(systemName: "camera")
-                                                    .font(.system(size: 14, weight: .medium))
-                                                    .foregroundColor(.white)
-                                                
-                                                Text(option.choiceFollowUp ?? "Upload a picture")
-                                                    .font(.custom("Lato-Regular", size: 13))
-                                                    .foregroundColor(.white)
-                                            }
-                                            .padding(.horizontal, 16)
-                                            .padding(.vertical, 8)
-                                            .background(
-                                                LinearGradient(gradient: Gradient(colors: [Color.blue, Color.purple]), startPoint: .leading, endPoint: .trailing)
-                                            )
-                                            .cornerRadius(8)
-                                            .shadow(color: Color.gray.opacity(0.5), radius: 4, x: 2, y: 2)
-                                        }
-                                    }
-                                    .padding(.horizontal, 16)
-                                    .frame(maxWidth: .infinity)
+            let columns = [
+                GridItem(.flexible(), spacing: 30),
+                GridItem(.flexible(), spacing: 30),
+                GridItem(.flexible(), spacing: 30),
+            ]
 
+            ScrollView {
+                VStack(spacing: 16) {
+                    LazyVGrid(columns: columns, spacing: 16) {
+                        ForEach(options, id: \.id) { option in
+                            Button(action: {
+                                selectedAnswerId = option.id
+                                onChoiceSelected(option)
+                            }) {
+                                VStack(spacing: 8) {
+                                    if let imageUrl = option.imageURL, !imageUrl.isEmpty {
+                                        LongFormImageView(
+                                            urlString: imageUrl,
+                                            width: 100,
+                                            height: 100,
+                                            id: option.id,
+                                            label: option.choiceText,
+                                            isSelected: currentAnswer == option.value
+                                        )
+                                        .onLongPressGesture(
+                                            minimumDuration: 0.5,
+                                            maximumDistance: 10,
+                                            pressing: { isPressing in
+                                                withAnimation {
+                                                    expandedImageId = isPressing ? option.id : nil
+                                                }
+                                            },
+                                            perform: {}
+                                        )
+                                    }
                                 }
-                                
+                                .padding(8)
+                                .background(Color.white)
+                               
+                               
                             }
                         }
-                      
-                        .frame(maxWidth: .infinity, alignment: .leading)
                     }
+
+                    // Place follow-up button separately after the grid
+                    if let selected = options.first(where: { $0.id == selectedAnswerId }),
+                       selected.choiceFollowUp != nil {
+                        Button(action: {
+                            uploadPhoto(true)
+                        }) {
+                            VStack(spacing: 8) {
+                                Image(systemName: "camera")
+                                    .font(.system(size: 14, weight: .medium))
+                                    .foregroundColor(.white)
+
+                                Text(selected.choiceFollowUp ?? "Upload a picture")
+                                    .font(.custom("Lato-Regular", size: 13))
+                                    .foregroundColor(.white)
+                                    .multilineTextAlignment(.leading)
+                            }
+                            .padding(.horizontal, 12)
+                            .padding(.vertical, 6)
+                            .background(
+                                LinearGradient(gradient: Gradient(colors: [Color.blue, Color.purple]), startPoint: .leading, endPoint: .trailing)
+                            )
+                            .shadow(color: Color.gray.opacity(0.5), radius: 4, x: 2, y: 2)
+                        }
+                    }
+                }
+                .padding()
             }
+
+
             
         case .numeric:
                 HStack {
@@ -108,7 +119,6 @@ struct QuestOptions: View {
                                ))
                     .frame(width: 100)
                     .padding(.horizontal)
-                    .overlay(Rectangle().frame(height: 1).padding(.top, 25).foregroundColor(Color(red: 135/255, green: 62/255, blue: 242/255)), alignment: .bottom)
                     .textFieldStyle(PlainTextFieldStyle())
                     .keyboardType(UIKeyboardType.numberPad)
                 }

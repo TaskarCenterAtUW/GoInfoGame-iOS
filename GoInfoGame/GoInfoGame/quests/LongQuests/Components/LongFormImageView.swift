@@ -16,12 +16,30 @@ struct LongFormImageView: View {
     
     @State private var uiImage: UIImage?
     
+    var label: String? = nil
+    var isSelected: Bool = false
+    
     var body: some View {
         Group {
             if let uiImage = uiImage {
-                Image(uiImage: uiImage)
-                    .resizable()
-                    .scaledToFill()
+                
+                ZStack(alignment: .bottom) {
+                    Image(uiImage: uiImage)
+                        .resizable()
+                        .scaledToFill()
+                        .frame(width: width, height: height)
+                        .clipped()
+                    
+                    if let label = label {
+                        Text(label)
+                            .font(.custom("Lato-Bold", size: 14))
+                            .foregroundColor(Color.white)
+                            .padding(.bottom, 8)
+                    }
+                }
+                .frame(width: width, height: height)
+
+             
             } else {
                 ProgressView()
                     .frame(width: width, height: height)
@@ -32,6 +50,8 @@ struct LongFormImageView: View {
         }
         .frame(width: width, height: height)
         .clipped()
+        
+   
     }
     
     private func loadImage() {
