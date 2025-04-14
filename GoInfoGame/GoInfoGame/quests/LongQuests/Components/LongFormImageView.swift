@@ -38,7 +38,6 @@ struct LongFormImageView: View {
                     }
                 }
                 .frame(width: width, height: height)
-                .cornerRadius(12)
 
              
             } else {

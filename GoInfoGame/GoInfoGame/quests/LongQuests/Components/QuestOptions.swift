@@ -57,7 +57,6 @@ struct QuestOptions: View {
                                             label: option.choiceText,
                                             isSelected: currentAnswer == option.value
                                         )
-                                        .cornerRadius(12)
                                         .onLongPressGesture(
                                             minimumDuration: 0.5,
                                             maximumDistance: 10,
@@ -72,8 +71,8 @@ struct QuestOptions: View {
                                 }
                                 .padding(8)
                                 .background(Color.white)
-                                .cornerRadius(16)
-                                .shadow(color: .gray.opacity(0.2), radius: 4, x: 2, y: 2)
+                               
+                               
                             }
                         }
                     }
@@ -99,7 +98,6 @@ struct QuestOptions: View {
                             .background(
                                 LinearGradient(gradient: Gradient(colors: [Color.blue, Color.purple]), startPoint: .leading, endPoint: .trailing)
                             )
-                            .cornerRadius(8)
                             .shadow(color: Color.gray.opacity(0.5), radius: 4, x: 2, y: 2)
                         }
                     }
