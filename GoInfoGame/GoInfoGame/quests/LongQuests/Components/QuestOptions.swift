@@ -43,12 +43,6 @@ struct QuestOptions: View {
             ZStack {
                 ScrollView {
                     if let imageUrl = selectedImageURL {
-                                   Color.black.opacity(0.4)
-                                       .edgesIgnoringSafeArea(.all)
-                                       .onTapGesture {
-                                           selectedImageURL = nil
-                                       }
-
                                    VStack {
                                        LongFormImageView(
                                              urlString: imageUrl,
