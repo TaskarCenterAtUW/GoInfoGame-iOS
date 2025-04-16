@@ -67,6 +67,20 @@ struct QuestOptions: View {
                                             },
                                             perform: {}
                                         )
+                                    } else {
+                                        ZStack {
+                                            Image("no_image")
+                                                .resizable()
+                                                .scaledToFill()
+                                                .frame(width: 100, height: 100)
+                                                .clipped()
+                                            
+                                            Text(option.choiceText)
+                                                .font(.custom("Lato-Bold", size: 14))
+                                                .foregroundColor(Color.white)
+                                                .padding(.bottom, 8)
+                                        }
+                                       
                                     }
                                 }
                                 .padding(8)
@@ -118,7 +132,7 @@ struct QuestOptions: View {
                                    }
                                ))
                     .frame(width: 100)
-                    .padding(.horizontal)
+                    .padding(1)
                     .textFieldStyle(PlainTextFieldStyle())
                     .keyboardType(UIKeyboardType.numberPad)
                 }
