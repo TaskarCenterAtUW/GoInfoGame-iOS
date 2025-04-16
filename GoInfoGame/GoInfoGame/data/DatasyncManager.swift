@@ -279,11 +279,11 @@ class DatasyncManager {
         let workspaceId = KeychainManager.load(key: "workspaceID")
 
         guard let nodeBody = changesetUploadBody.data(using: .utf8) else {
-            throw APIError.decodingError(NSError(domain: "Invalid Node Data", code: 0, userInfo: nil))
+            throw APIError.decodingFailed("Invalid Node Body")
         }
 
         guard let accessToken = KeychainManager.load(key: "accessToken") else {
-            throw APIError.unknown(NSError(domain: "No AccessToken", code: 0, userInfo: nil))
+            throw APIError.unauthorized
         }
         
         return try await withCheckedThrowingContinuation { continuation in
