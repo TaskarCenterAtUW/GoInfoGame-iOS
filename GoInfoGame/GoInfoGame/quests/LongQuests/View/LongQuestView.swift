@@ -33,7 +33,7 @@ struct LongQuestView: View {
                 .padding([.bottom], 10)
             
             if let imageUrl = quest.questImageURL, !imageUrl.isEmpty {
-                LongFormImageView(urlString: imageUrl, width: isImageExpanded ? 300 : 100, height: isImageExpanded ? 300 : 100, id: nil)
+                LongFormImageView(urlString: imageUrl, width: isImageExpanded ? 300 : 100, height: isImageExpanded ? 300 : 100)
                 .onLongPressGesture(
                             minimumDuration: 0.5,
                             maximumDistance: 10,
