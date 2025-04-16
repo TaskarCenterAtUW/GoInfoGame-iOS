@@ -90,7 +90,7 @@ struct MapView: View {
                     .accessibilityElement(children: .combine)
                     .accessibilityLabel(alertMessage)
                     .onAppear {
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
                             showAlert = false // Dismiss notification box after 1 second
                         }
                     }
@@ -295,6 +295,11 @@ struct MapView: View {
                 isSyncing = false
                 print("synced")
                 alertIcon = "checkmark.circle.fill"
+            case .failed(let message):
+                isSyncing = false
+                alertIcon = "exclamationmark.triangle.fill"
+                alertMessage = message
+                showAlert = true
             case .hideElement(let elementId, let elementName):
                 shouldShowPolyline = false
                 viewModel.hideQuest(elementId: elementId, elementName: elementName)
@@ -335,6 +340,7 @@ public enum SheetDismissalScenario {
     case submitted(String)
     case syncing
     case synced
+    case failed(String)
     case hideElement(String, String)
 }
 
