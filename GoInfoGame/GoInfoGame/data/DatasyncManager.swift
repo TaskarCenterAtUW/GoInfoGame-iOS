@@ -305,18 +305,17 @@ class DatasyncManager {
         do {
              updatedResult = try await updateWay(way: localWay)
             return updatedResult
-        } catch {
-            if (error as NSError).code == 409 {
+        } catch let error as APIError {
+            switch error {
+            case .conflict:
                 let updatedWay = try await fetchway2(wayId: wayId)
                 var mergedWay = self.mergeWays(localWay: localWay, latestWay: updatedWay)
                 print("Local way")
                 print(localWay)
                 print("Merged way")
                 print(mergedWay)
-                
                 return try await updateWay(way: mergedWay)
-    
-            } else {
+            default:
                 throw error
             }
         }
@@ -333,8 +332,9 @@ class DatasyncManager {
              updatedResult = try await updateNode(node: localNode)
             return updatedResult
             
-        } catch {
-            if (error as NSError).code == 409 {
+        } catch let error as APIError {
+            switch error {
+            case .conflict:
                 SyncLogger.shared.logStep("Fetching node due to conflict")
                 let fetchedResult = try await fetchNode2(nodeId: "\(localNode.id)")
                 
@@ -345,9 +345,10 @@ class DatasyncManager {
                 print(mergedNode)
                 SyncLogger.shared.logStep("Nodes fetched and merged")
                 return try await updateNode(node: mergedNode)
-            } else {
+            default:
                 throw error
             }
+
         }
     }
 

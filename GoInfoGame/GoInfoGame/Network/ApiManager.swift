@@ -23,7 +23,7 @@ class ApiManager {
     static let shared = ApiManager()
     private init() {}
     
-    func performRequest<T: Decodable>(to endpoint: APIEndpoint, setupType: SetupType, modelType: T.Type, useJSON:Bool = true, completion: @escaping (Result<T, Error>) -> Void) {
+    func performRequest<T: Decodable>(to endpoint: APIEndpoint, setupType: SetupType, modelType: T.Type, useJSON:Bool = true, completion: @escaping (Result<T, APIError>) -> Void) {
         
         var finalUrl: URL?
         switch setupType {
@@ -111,7 +111,7 @@ class ApiManager {
             }
             if let error = error {
                 print("Request failed with error: \(error.localizedDescription)")
-                completion(.failure(error))
+                completion(.failure(APIError.custom("Request failed with error: \(error.localizedDescription)")))
                 return
             }
             
@@ -181,7 +181,7 @@ class ApiManager {
                         switch response.statusCode {
                         case 409:
                             let conflictError = NSError(domain: "goinfogame", code: 409, userInfo: [NSLocalizedDescriptionKey: "version mismatch"])
-                            completion(.failure(conflictError))
+                            completion(.failure(APIError.conflict))
 
                         case 200:
                             do {
