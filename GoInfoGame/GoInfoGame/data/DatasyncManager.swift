@@ -279,11 +279,11 @@ class DatasyncManager {
         let workspaceId = KeychainManager.load(key: "workspaceID")
 
         guard let nodeBody = changesetUploadBody.data(using: .utf8) else {
-            throw APIError.decodingError(NSError(domain: "Invalid Node Data", code: 0, userInfo: nil))
+            throw APIError.decodingFailed("Invalid Node Body")
         }
 
         guard let accessToken = KeychainManager.load(key: "accessToken") else {
-            throw APIError.unknown(NSError(domain: "No AccessToken", code: 0, userInfo: nil))
+            throw APIError.unauthorized
         }
         
         return try await withCheckedThrowingContinuation { continuation in
@@ -305,18 +305,17 @@ class DatasyncManager {
         do {
              updatedResult = try await updateWay(way: localWay)
             return updatedResult
-        } catch {
-            if (error as NSError).code == 409 {
+        } catch let error as APIError {
+            switch error {
+            case .conflict:
                 let updatedWay = try await fetchway2(wayId: wayId)
                 var mergedWay = self.mergeWays(localWay: localWay, latestWay: updatedWay)
                 print("Local way")
                 print(localWay)
                 print("Merged way")
                 print(mergedWay)
-                
                 return try await updateWay(way: mergedWay)
-    
-            } else {
+            default:
                 throw error
             }
         }
@@ -333,8 +332,9 @@ class DatasyncManager {
              updatedResult = try await updateNode(node: localNode)
             return updatedResult
             
-        } catch {
-            if (error as NSError).code == 409 {
+        } catch let error as APIError {
+            switch error {
+            case .conflict:
                 SyncLogger.shared.logStep("Fetching node due to conflict")
                 let fetchedResult = try await fetchNode2(nodeId: "\(localNode.id)")
                 
@@ -345,9 +345,10 @@ class DatasyncManager {
                 print(mergedNode)
                 SyncLogger.shared.logStep("Nodes fetched and merged")
                 return try await updateNode(node: mergedNode)
-            } else {
+            default:
                 throw error
             }
+
         }
     }
 
