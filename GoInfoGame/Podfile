@@ -9,6 +9,7 @@ target 'GoInfoGame' do
   
 #  pod 'SwiftOverpassAPI'
   pod 'RealmSwift', '10.46.0'
+  pod 'HTMLEntities', :git => 'https://github.com/Kitura/swift-html-entities.git'
   
   post_install do |installer|
        installer.generated_projects.each do |project|
@@ -20,6 +21,13 @@ target 'GoInfoGame' do
        end
    end
 
+  target 'osmapi' do
+     inherit! :search_paths
+
+     # Also add the pod here if you use the framework in isolation
+     pod 'HTMLEntities', :git => 'https://github.com/Kitura/swift-html-entities.git'
+   end
+  
   target 'GoInfoGameTests' do
     inherit! :search_paths
     # Pods for testing
