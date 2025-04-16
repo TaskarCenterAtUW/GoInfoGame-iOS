@@ -22,9 +22,18 @@ class DatasyncManager {
     func syncDataToOSM(completionHandler: @escaping (Bool) -> Void) {
         Task {
             do {
-                try await syncData()
-                DispatchQueue.main.async {
-                    completionHandler(true) // Success
+              let isSynced = try await syncData()
+                print("Sync finished")
+                if isSynced {
+                    print("Sync successful")
+                    DispatchQueue.main.async {
+                        completionHandler(true) // Success
+                    }
+                } else {
+                    print("Sync failed")
+                    DispatchQueue.main.async {
+                        completionHandler(false) // Failure
+                    }
                 }
             } catch {
                 print("Sync failed: \(error)")
@@ -38,7 +47,7 @@ class DatasyncManager {
     /// *** Terminating app due to uncaught exception 'RLMException', reason: 'Realm accessed from incorrect thread.'
     ///  To fix the above error added @mainActor
     @MainActor
-    func syncData() async -> Bool {
+    func syncData() async throws -> Bool {
         
         //Disabling temporarily. To be put back after incorporating syncing mechanism
 //        if isSynching {
@@ -81,7 +90,7 @@ class DatasyncManager {
             } catch {
                 print("Failed to sync node: \(error.localizedDescription)")
                 syncSuccess = false
-                return false
+                throw error
             }
         }
 
@@ -98,11 +107,10 @@ class DatasyncManager {
                     syncSuccess = false
                     return false
                 }
-                print("Sync finished for way: \(isFinished)")
             } catch {
                 print("Failed to sync way: \(error.localizedDescription)")
                 syncSuccess = false
-                return false
+                throw error
             }
         }
         isSynching = false
@@ -309,7 +317,7 @@ class DatasyncManager {
                 return try await updateWay(way: mergedWay)
     
             } else {
-               return updatedResult
+                throw error
             }
         }
     }
@@ -458,7 +466,7 @@ class DatasyncManager {
         
         } catch {
             print("Failed to open changeset:", error.localizedDescription)
-            return false
+            throw error
         }
     }
         
@@ -500,11 +508,10 @@ class DatasyncManager {
             DispatchQueue.main.async {
                 self.dbInstance.updateWayVersion(wayId: String(localWay.id), version: newVersion)
             }
-            
             return try await closeChangeset(id: String(changesetID))
             
         } catch {
-            return false
+            throw error
         }
     }
 

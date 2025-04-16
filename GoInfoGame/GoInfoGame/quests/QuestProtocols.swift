@@ -59,6 +59,7 @@ class QuestBase {
                    MapViewPublisher.shared.dismissSheet.send(.submitted(storedId))
                } else {
                    print("Sync failed. Handle accordingly.")
+                   MapViewPublisher.shared.dismissSheet.send(.failed("Submission failed. Please try again."))
                }
            }
        }
