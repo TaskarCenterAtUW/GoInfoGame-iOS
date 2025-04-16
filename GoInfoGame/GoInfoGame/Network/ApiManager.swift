@@ -196,7 +196,7 @@ class ApiManager {
                             }
 
                         default:
-                            completion(.failure(APIError.custom("Unexpected HTTP status code: \(response.statusCode)")))
+                            completion(.failure(APIError(statusCode: response.statusCode)))
                         }
                     } else {
                         completion(.failure(APIError.custom("No valid HTTP response received")))
