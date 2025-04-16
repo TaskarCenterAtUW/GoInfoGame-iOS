@@ -43,18 +43,11 @@ struct QuestOptions: View {
             ZStack {
                 ScrollView {
                     if let imageUrl = selectedImageURL {
-                                   Color.black.opacity(0.4)
-                                       .edgesIgnoringSafeArea(.all)
-                                       .onTapGesture {
-                                           selectedImageURL = nil
-                                       }
-
                                    VStack {
                                        LongFormImageView(
                                              urlString: imageUrl,
                                                 width: 300,
-                                                height: 300,
-                                                id: nil
+                                                height: 300
                                         )
                                        Spacer()
                                        Button("Close") {
@@ -81,7 +74,6 @@ struct QuestOptions: View {
                                                 urlString: imageUrl,
                                                 width: 100,
                                                 height: 100,
-                                                id: option.id,
                                                 label: option.choiceText,
                                                 isSelected: currentAnswer == option.value
                                             )
@@ -104,11 +96,11 @@ struct QuestOptions: View {
                                             
                                         }
                                     }
-                                    .padding(8)
-                                    .background(Color.white)
-                                    
-                                    
                                 }
+                                    .overlay(
+                                        RoundedRectangle(cornerRadius: 8)
+                                            .stroke(currentAnswer == option.value ? Color.blue : Color.clear, lineWidth: 3)
+                                    )
                             }
                         }
                         

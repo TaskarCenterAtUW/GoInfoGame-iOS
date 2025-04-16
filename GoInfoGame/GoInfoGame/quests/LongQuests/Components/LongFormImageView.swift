@@ -12,7 +12,6 @@ struct LongFormImageView: View {
     let urlString: String
     let width: CGFloat
     let height: CGFloat
-    let id: UUID? // Optional ID for tracking updates
     
     @State private var uiImage: UIImage?
     
