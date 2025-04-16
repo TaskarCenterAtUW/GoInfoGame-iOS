@@ -28,6 +28,8 @@ struct QuestOptions: View {
     @State private var isImageExpanded = false
     
     @State private var expandedImageId: UUID? = nil
+    
+    @State private var selectedImageURL: String? = nil
 
     var body: some View {
                 
@@ -38,88 +40,106 @@ struct QuestOptions: View {
                 GridItem(.flexible(), spacing: 30),
                 GridItem(.flexible(), spacing: 30),
             ]
+            ZStack {
+                ScrollView {
+                    if let imageUrl = selectedImageURL {
+                                   Color.black.opacity(0.4)
+                                       .edgesIgnoringSafeArea(.all)
+                                       .onTapGesture {
+                                           selectedImageURL = nil
+                                       }
 
-            ScrollView {
-                VStack(spacing: 16) {
-                    LazyVGrid(columns: columns, spacing: 16) {
-                        ForEach(options, id: \.id) { option in
+                                   VStack {
+                                       LongFormImageView(
+                                             urlString: imageUrl,
+                                                width: 300,
+                                                height: 300,
+                                                id: nil
+                                        )
+                                       Spacer()
+                                       Button("Close") {
+                                           selectedImageURL = nil
+                                       }
+                                       .padding()
+                                       .background(Color.white)
+                                       .cornerRadius(12)
+                                   }
+                                   .transition(.scale)
+                                   .animation(.easeInOut, value: selectedImageURL)
+                            }
+                    
+                    VStack(spacing: 16) {
+                        LazyVGrid(columns: columns, spacing: 16) {
+                            ForEach(options, id: \.id) { option in
+                                Button(action: {
+                                    selectedAnswerId = option.id
+                                    onChoiceSelected(option)
+                                }) {
+                                    VStack(spacing: 8) {
+                                        if let imageUrl = option.imageURL, !imageUrl.isEmpty {
+                                            LongFormImageView(
+                                                urlString: imageUrl,
+                                                width: 100,
+                                                height: 100,
+                                                id: option.id,
+                                                label: option.choiceText,
+                                                isSelected: currentAnswer == option.value
+                                            )
+                                            .onLongPressGesture {
+                                                selectedImageURL = imageUrl
+                                            }
+                                        } else {
+                                            ZStack {
+                                                Image("no_image")
+                                                    .resizable()
+                                                    .scaledToFill()
+                                                    .frame(width: 100, height: 100)
+                                                    .clipped()
+                                                
+                                                Text(option.choiceText)
+                                                    .font(.custom("Lato-Bold", size: 14))
+                                                    .foregroundColor(Color.white)
+                                                    .padding(.bottom, 8)
+                                            }
+                                            
+                                        }
+                                    }
+                                    .padding(8)
+                                    .background(Color.white)
+                                    
+                                    
+                                }
+                            }
+                        }
+                        
+                        // Place follow-up button separately after the grid
+                        if let selected = options.first(where: { $0.id == selectedAnswerId }),
+                           selected.choiceFollowUp != nil {
                             Button(action: {
-                                selectedAnswerId = option.id
-                                onChoiceSelected(option)
+                                uploadPhoto(true)
                             }) {
                                 VStack(spacing: 8) {
-                                    if let imageUrl = option.imageURL, !imageUrl.isEmpty {
-                                        LongFormImageView(
-                                            urlString: imageUrl,
-                                            width: 100,
-                                            height: 100,
-                                            id: option.id,
-                                            label: option.choiceText,
-                                            isSelected: currentAnswer == option.value
-                                        )
-                                        .onLongPressGesture(
-                                            minimumDuration: 0.5,
-                                            maximumDistance: 10,
-                                            pressing: { isPressing in
-                                                withAnimation {
-                                                    expandedImageId = isPressing ? option.id : nil
-                                                }
-                                            },
-                                            perform: {}
-                                        )
-                                    } else {
-                                        ZStack {
-                                            Image("no_image")
-                                                .resizable()
-                                                .scaledToFill()
-                                                .frame(width: 100, height: 100)
-                                                .clipped()
-                                            
-                                            Text(option.choiceText)
-                                                .font(.custom("Lato-Bold", size: 14))
-                                                .foregroundColor(Color.white)
-                                                .padding(.bottom, 8)
-                                        }
-                                       
-                                    }
+                                    Image(systemName: "camera")
+                                        .font(.system(size: 14, weight: .medium))
+                                        .foregroundColor(.white)
+                                    
+                                    Text(selected.choiceFollowUp ?? "Upload a picture")
+                                        .font(.custom("Lato-Regular", size: 13))
+                                        .foregroundColor(.white)
+                                        .multilineTextAlignment(.leading)
                                 }
-                                .padding(8)
-                                .background(Color.white)
-                               
-                               
+                                .padding(.horizontal, 12)
+                                .padding(.vertical, 6)
+                                .background(
+                                    LinearGradient(gradient: Gradient(colors: [Color.blue, Color.purple]), startPoint: .leading, endPoint: .trailing)
+                                )
+                                .shadow(color: Color.gray.opacity(0.5), radius: 4, x: 2, y: 2)
                             }
                         }
                     }
-
-                    // Place follow-up button separately after the grid
-                    if let selected = options.first(where: { $0.id == selectedAnswerId }),
-                       selected.choiceFollowUp != nil {
-                        Button(action: {
-                            uploadPhoto(true)
-                        }) {
-                            VStack(spacing: 8) {
-                                Image(systemName: "camera")
-                                    .font(.system(size: 14, weight: .medium))
-                                    .foregroundColor(.white)
-
-                                Text(selected.choiceFollowUp ?? "Upload a picture")
-                                    .font(.custom("Lato-Regular", size: 13))
-                                    .foregroundColor(.white)
-                                    .multilineTextAlignment(.leading)
-                            }
-                            .padding(.horizontal, 12)
-                            .padding(.vertical, 6)
-                            .background(
-                                LinearGradient(gradient: Gradient(colors: [Color.blue, Color.purple]), startPoint: .leading, endPoint: .trailing)
-                            )
-                            .shadow(color: Color.gray.opacity(0.5), radius: 4, x: 2, y: 2)
-                        }
-                    }
+                    .padding()
                 }
-                .padding()
             }
-
-
             
         case .numeric:
                 HStack {
