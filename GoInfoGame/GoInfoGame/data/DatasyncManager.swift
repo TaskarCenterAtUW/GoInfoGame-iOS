@@ -346,7 +346,7 @@ class DatasyncManager {
                 SyncLogger.shared.logStep("Nodes fetched and merged")
                 return try await updateNode(node: mergedNode)
             } else {
-                return updatedResult
+                throw error
             }
         }
     }
