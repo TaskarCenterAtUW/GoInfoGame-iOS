@@ -20,10 +20,8 @@ struct UserSettingsView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
             HStack(alignment: .firstTextBaseline) {
-                Text("User Name")
-                    .font(.custom("Lato-Bold", size: 19))
-                    .foregroundColor(Color(red: 69/255, green: 81/255, blue: 108/255))
-                    .padding(.top, 30)
+                Text("")
+
 
                 Spacer()
 
@@ -37,6 +35,7 @@ struct UserSettingsView: View {
             }
             .padding(.horizontal, 16)
             .padding(.bottom)
+            .padding(.top, 15)
 
             GeometryReader { geometry in
                 VStack(spacing: 0) {
