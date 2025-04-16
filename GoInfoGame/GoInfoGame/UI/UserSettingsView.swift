@@ -9,13 +9,31 @@ import SwiftUI
     
 import SwiftUI
 
+struct OptionModel: Identifiable, Hashable {
+    let id = UUID()
+    let title: String
+    let icon: String
+    let destination: SettingsDestination
+    
+    static let options: [OptionModel] = [
+           OptionModel(title: "User Profile", icon: "person.crop.circle.fill", destination: .profile),
+           OptionModel(title: "Manage Quests", icon: "slider.horizontal.3", destination: .manageQuests),
+           OptionModel(title: "Download Data", icon: "arrow.down.circle.fill", destination: .downloadData)
+       ]
+}
+
+enum SettingsDestination: Hashable {
+    case profile
+    case manageQuests
+    case downloadData
+
+}
 struct UserSettingsView: View {
     @Environment(\.presentationMode) var presentationMode
-    @State private var options: [(icon: String, title: String)] = [
-        ("person.fill", "User Profile"),
-        ("list.bullet", "Manage Quests"),
-        ("arrow.right.square", "Logout")
-    ]
+   
+    
+    let options: [OptionModel]
+    let onNavigate: (SettingsDestination) -> Void
 
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
@@ -47,9 +65,15 @@ struct UserSettingsView: View {
                                 .frame(width: 20, height: 20)
                                 .foregroundColor(Color(red: 69/255, green: 81/255, blue: 108/255))
                             
+                            //add tap gesture to navigate to the respective view
                             Text(option.title)
                                 .font(.custom("Lato-Bold", size: 16))
                                 .foregroundColor(Color(red: 69/255, green: 81/255, blue: 108/255))
+                                .padding(.leading, 8)
+                                .onTapGesture {
+                                    onNavigate(option.destination)
+                                }
+                                
 
                             Spacer()
                         }
@@ -72,12 +96,5 @@ struct UserSettingsView: View {
         .padding(.bottom, 16)
         .background(Color(red: 248/255, green: 248/255, blue: 248/255))
         .clipShape(RoundedRectangle(cornerRadius: 16))
-    }
-}
-
-
-struct UserSettingsView_Previews: PreviewProvider {
-    static var previews: some View {
-        UserSettingsView()
     }
 }
