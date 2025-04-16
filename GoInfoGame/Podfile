@@ -21,6 +21,13 @@ target 'GoInfoGame' do
        end
    end
 
+  target 'osmapi' do
+     inherit! :search_paths
+
+     # Also add the pod here if you use the framework in isolation
+     pod 'HTMLEntities', :git => 'https://github.com/Kitura/swift-html-entities.git'
+   end
+  
   target 'GoInfoGameTests' do
     inherit! :search_paths
     # Pods for testing
