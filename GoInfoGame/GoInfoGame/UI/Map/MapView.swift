@@ -45,92 +45,107 @@ struct MapView: View {
     @State private var showMultiSelectionBottomSheet = false
     
     @State private var mapViewRef: MKMapView?
+    
+    @State private var navigateToProfile = false
+    
+    @State private var showManageQuestSheet = false
                 
     var body: some View {
-            ZStack{
+        NavigationStack {
+            ZStack {
+                
+                NavigationLink(
+                           destination: UserProfileView(),
+                           isActive: $navigateToProfile
+                       ) {
+                           EmptyView() // Empty view as it's handled by isActive binding
+                       }
+                
+                
                 CustomMap(region: viewModel.region,
                           userLocation: viewModel.userlocation,
                           trackingMode: $trackingMode,
                           items: $viewModel.items,
                           selectedQuest: $viewModel.selectedQuest,
                           shouldShowPolyline: $shouldShowPolyline,
-                          
+                      
                           isPresented: $isPresented, selectedAnnotations: $viewModel.selectedAnnotaions, isMultiSelectModeEnabled: $viewModel.isMultiSelectModeEnabled, selectedAnnotationType: $viewModel.selectedAnnotationType, showMultiSelectionBottomSheet: $showMultiSelectionBottomSheet,
-                          onMapViewCreated: { map in
-                                 self.mapViewRef = map
-                             },
-                          contextualInfo: { contextualInfo in
-                    print(contextualInfo)
-                    selectedDetent = .fraction(0.8)
-                    self.setContextualInfo(contextualinfo: contextualInfo)
-                }, useBingMaps: $useBingMaps, tappedCoordinate: $tappedCoordinate)
-                .onChange(of: tappedCoordinate) { _ in
-                    showMapLongPressedSheet = tappedCoordinate != nil
+                      onMapViewCreated: { map in
+                self.mapViewRef = map
+            },
+                      contextualInfo: { contextualInfo in
+                print(contextualInfo)
+                selectedDetent = .fraction(0.8)
+                self.setContextualInfo(contextualinfo: contextualInfo)
+            }, useBingMaps: $useBingMaps, tappedCoordinate: $tappedCoordinate)
+            .onChange(of: tappedCoordinate) { _ in
+                showMapLongPressedSheet = tappedCoordinate != nil
+            }
+            .onChange(of: viewModel.selectedQuest) { _ in
+                shouldShowPolyline = false
+            }
+            .id(viewModel.refreshMap)
+            .edgesIgnoringSafeArea(.all)
+            if viewModel.isLoading {
+                Color.black.opacity(0.3)
+                    .edgesIgnoringSafeArea(.all)
+                ActivityView(activityText: "Looking for quests...")
+            }
+            if showAlert {
+                VStack {
+                    Image(systemName: alertIcon)
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .frame(width: 50, height: 50)
+                        .foregroundColor(.green)
+                        .padding(.bottom, 50)
+                    Text(alertMessage)
+                        .foregroundColor(.white)
+                        .padding()
+                        .background(Color.orange)
+                        .cornerRadius(10)
                 }
-                .onChange(of: viewModel.selectedQuest) { _ in
-                    shouldShowPolyline = false
-                }
-                .id(viewModel.refreshMap)
-                .edgesIgnoringSafeArea(.all)
-                if viewModel.isLoading {
-                    Color.black.opacity(0.3)
-                        .edgesIgnoringSafeArea(.all)
-                   ActivityView(activityText: "Looking for quests...")
-                }
-                if showAlert {
-                    VStack {
-                        Image(systemName: alertIcon)
-                            .resizable()
-                            .aspectRatio(contentMode: .fit)
-                            .frame(width: 50, height: 50)
-                            .foregroundColor(.green)
-                            .padding(.bottom, 50)
-                        Text(alertMessage)
-                            .foregroundColor(.white)
-                            .padding()
-                            .background(Color.orange)
-                            .cornerRadius(10)
+                .padding([.all], 50)
+                .background(Color.white)
+                .accessibilityElement(children: .combine)
+                .accessibilityLabel(alertMessage)
+                .onAppear {
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                        showAlert = false // Dismiss notification box after 1 second
                     }
-                    .padding([.all], 50)
-                    .background(Color.white)
-                    .accessibilityElement(children: .combine)
-                    .accessibilityLabel(alertMessage)
-                    .onAppear {
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-                            showAlert = false // Dismiss notification box after 1 second
-                        }
-                    }
-                }
-                
-              
-                FloatingActionButtonStack(mapButtonAction: {
-                    useBingMaps.toggle()
-                }, useBingMaps: useBingMaps)
-                   
-                if !viewModel.selectedAnnotaions.isEmpty,
-                   let selectedAnnotationType = viewModel.selectedAnnotationType,
-                   let image = viewModel.selectedAnnotaions.first?.displayUnit.parent?.icon {
-                    
-                    MultiQuestSelectionBottomSheet(
-                                        selectedAnnotationType: selectedAnnotationType,
-                                        selectedAnnotationImage: image,
-                                        selectedCount: viewModel.selectedAnnotaions.count,
-                                        onCancel: {
-                                            viewModel.selectedAnnotaions.removeAll()
-                                            viewModel.selectedAnnotationType = nil
-                                            DispatchQueue.main.async {
-                                                viewModel.isMultiSelectModeEnabled = false
-                                                viewModel.selectedAnnotaions = Set<DisplayUnitAnnotation>()
-                                            }
-                                        },
-                                        onAnswerQuests: {
-                                            isPresented = true
-                                        }
-                                    )
-                                    .transition(.move(edge: .bottom)) // Smooth animation
-                                    .animation(.easeInOut, value: viewModel.selectedAnnotaions.count)
                 }
             }
+            
+            
+            FloatingActionButtonStack(mapButtonAction: {
+                useBingMaps.toggle()
+            }, useBingMaps: useBingMaps)
+            
+            if !viewModel.selectedAnnotaions.isEmpty,
+               let selectedAnnotationType = viewModel.selectedAnnotationType,
+               let image = viewModel.selectedAnnotaions.first?.displayUnit.parent?.icon {
+                
+                MultiQuestSelectionBottomSheet(
+                    selectedAnnotationType: selectedAnnotationType,
+                    selectedAnnotationImage: image,
+                    selectedCount: viewModel.selectedAnnotaions.count,
+                    onCancel: {
+                        viewModel.selectedAnnotaions.removeAll()
+                        viewModel.selectedAnnotationType = nil
+                        DispatchQueue.main.async {
+                            viewModel.isMultiSelectModeEnabled = false
+                            viewModel.selectedAnnotaions = Set<DisplayUnitAnnotation>()
+                        }
+                    },
+                    onAnswerQuests: {
+                        isPresented = true
+                    }
+                )
+                .transition(.move(edge: .bottom)) // Smooth animation
+                .animation(.easeInOut, value: viewModel.selectedAnnotaions.count)
+            }
+        }
+    }
             .environmentObject(contextualInfo)
             .navigationBarHidden(isPresented)
             .navigationBarItems(leading: EmptyView())
@@ -141,39 +156,27 @@ struct MapView: View {
                             .foregroundStyle(Color(red: 135/255, green: 62/255, blue: 242/255))
                     }
                 }
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    Button(action: {
-                        print("Refresh icon tapped")
-                        viewModel.fetchOSMDataFor(from: .currentLocation(location: viewModel.userlocation))
-                    }) {
-                        Image(systemName: "arrow.2.circlepath")
-                            .frame(width: 20, height: 20)
-                            .foregroundStyle(Color(red: 135/255, green: 62/255, blue: 242/255))
-                    }
-                }
-                
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    Button(action: {
-                        print("Download data here icon tapped")
-                        guard let mapView = mapViewRef else { return }
-                        viewModel.fetchOSMDataFor(from: .visibleRect(mapView: mapView))
-                    }) {
-                        Image(systemName: "arrow.down.circle")
-                            .frame(width: 20, height: 20)
-                            .foregroundStyle(Color(red: 135/255, green: 62/255, blue: 242/255))
-                    }
-                }
-                
 //                ToolbarItem(placement: .navigationBarTrailing) {
 //                    Button(action: {
-//                        print("Settings icon tapped")
-//                        showUserSettingsSheet = true
+//                        print("Refresh icon tapped")
+//                        viewModel.fetchOSMDataFor(from: .currentLocation(location: viewModel.userlocation))
 //                    }) {
-//                        Image(systemName: "gear")
+//                        Image(systemName: "arrow.2.circlepath")
 //                            .frame(width: 20, height: 20)
 //                            .foregroundStyle(Color(red: 135/255, green: 62/255, blue: 242/255))
 //                    }
 //                }
+            
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button(action: {
+                        print("Settings icon tapped")
+                        showUserSettingsSheet = true
+                    }) {
+                        Image(systemName: "gear")
+                            .frame(width: 20, height: 20)
+                            .foregroundStyle(Color(red: 135/255, green: 62/255, blue: 242/255))
+                    }
+                }
                     
                 ToolbarItem(placement: .navigationBarTrailing) {
                     if isSyncing {
@@ -195,8 +198,37 @@ struct MapView: View {
                 }
             }
         
+            .sheet(isPresented: $showManageQuestSheet) {
+                ManageQuestsView()
+                    .presentationDetents([.fraction(0.85)])
+                    .interactiveDismissDisabled()
+                    .presentationDragIndicator(.hidden)
+            }
+        
             .sheet(isPresented: $showUserSettingsSheet) {
-                UserSettingsView()
+                UserSettingsView( options: OptionModel.options, onNavigate: { navigate in
+                    showUserSettingsSheet = false
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                        //   navigateToProfileSettings = true
+                        
+                        switch navigate {
+                        case .profile:
+                            print("Navigate to profile")
+                            // Handle navigation to profile
+                            navigateToProfile = true
+                            
+                        case .manageQuests:
+                            showManageQuestSheet = true
+                            
+                        case .downloadData:
+                            print("Download data here")
+                            guard let mapView = mapViewRef else { return }
+                            viewModel.fetchOSMDataFor(from: .visibleRect(mapView: mapView))
+                            
+                        }
+                    }
+                    
+                })
                     .background(Color(red: 248/255, green: 248/255, blue: 248/255))
                     .presentationDetents([.fraction(0.36)])
                     .interactiveDismissDisabled()
