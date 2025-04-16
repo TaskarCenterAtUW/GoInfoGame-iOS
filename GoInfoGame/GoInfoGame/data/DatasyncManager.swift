@@ -18,8 +18,8 @@ class DatasyncManager {
     private var isSynching: Bool = false
     
     private let dbInstance = DatabaseConnector.shared
-        
-    func syncDataToOSM(completionHandler: @escaping (Bool) -> Void) {
+    
+    func syncDataToOSM(completionHandler: @escaping (Result<Bool, APIError>)  -> Void) {
         Task {
             do {
               let isSynced = try await syncData()
@@ -27,18 +27,18 @@ class DatasyncManager {
                 if isSynced {
                     print("Sync successful")
                     DispatchQueue.main.async {
-                        completionHandler(true) // Success
+                        completionHandler(.success(true)) // Success
                     }
                 } else {
                     print("Sync failed")
                     DispatchQueue.main.async {
-                        completionHandler(false) // Failure
+                        completionHandler(.failure(APIError.custom("Sync failed. Please try again."))) // Failure
                     }
                 }
             } catch {
                 print("Sync failed: \(error)")
                 DispatchQueue.main.async {
-                    completionHandler(false) // Failure
+                    completionHandler(.failure(error as! APIError)) // Failure
                 }
             }
         }
