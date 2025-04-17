@@ -89,7 +89,7 @@ struct QuestOptions: View {
                                                     .clipped()
                                                 
                                                 Text(option.choiceText)
-                                                    .font(.custom("Lato-Bold", size: 14))
+                                                    .font(.system(size: 15, weight: .bold))
                                                     .foregroundColor(Color.white)
                                                     .padding(.bottom, 8)
                                             }

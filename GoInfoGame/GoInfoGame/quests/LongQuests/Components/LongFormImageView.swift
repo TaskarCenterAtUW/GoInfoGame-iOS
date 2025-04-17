@@ -31,7 +31,8 @@ struct LongFormImageView: View {
                     
                     if let label = label {
                         Text(label)
-                            .font(.custom("Lato-Bold", size: 14))
+                           // system bold font of size 14
+                            .font(.system(size: 15, weight: .bold))
                             .foregroundColor(Color.white)
                             .padding(.bottom, 8)
                     }
