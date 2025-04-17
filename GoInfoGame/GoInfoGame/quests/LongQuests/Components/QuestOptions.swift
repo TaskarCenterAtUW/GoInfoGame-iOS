@@ -30,6 +30,8 @@ struct QuestOptions: View {
     @State private var expandedImageId: UUID? = nil
     
     @State private var selectedImageURL: String? = nil
+    
+    @State private var selectedImageText: String? = nil
 
     var body: some View {
                 
@@ -49,6 +51,10 @@ struct QuestOptions: View {
                                                 width: 300,
                                                 height: 300
                                         )
+                                       Text(selectedImageText ?? "")
+                                           .font(.system(size: 15, weight: .bold))
+                                           .foregroundColor(Color.black)
+                                           .padding(.bottom, 8)
                                        Spacer()
                                        Button("Close") {
                                            selectedImageURL = nil
@@ -79,6 +85,8 @@ struct QuestOptions: View {
                                             )
                                             .onLongPressGesture {
                                                 selectedImageURL = imageUrl
+                                                selectedImageText = option.choiceText
+                                                
                                             }
                                         } else {
                                             ZStack {
