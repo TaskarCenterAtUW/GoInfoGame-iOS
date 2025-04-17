@@ -52,14 +52,21 @@ class QuestBase {
        MapViewPublisher.shared.dismissSheet.send(.syncing)
        
        DatasyncManager.shared.syncDataToOSM { success in
-           print("SYNC DONE: \(success ? "Success" : "Failed")")
            DispatchQueue.main.async {
                MapViewPublisher.shared.dismissSheet.send(.synced)
-               if success {
-                   MapViewPublisher.shared.dismissSheet.send(.submitted(storedId))
-               } else {
-                   print("Sync failed. Handle accordingly.")
-                   MapViewPublisher.shared.dismissSheet.send(.failed("Submission failed. Please try again."))
+               
+               switch success {
+               case .success(let success):
+                   if success {
+                       MapViewPublisher.shared.dismissSheet.send(.submitted(storedId))
+                   } else {
+                       print("Sync failed. Handle accordingly.")
+                       MapViewPublisher.shared.dismissSheet.send(.failed("Submission failed. Please try again."))
+                   }
+               case .failure(let error):
+                   print("Error during sync: \(error)")
+                   let errorMessage = error.localizedDescription
+                   MapViewPublisher.shared.dismissSheet.send(.failed(errorMessage))
                }
            }
        }
