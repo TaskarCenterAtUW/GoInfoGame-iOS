@@ -49,6 +49,8 @@ struct MapView: View {
     @State private var navigateToProfile = false
     
     @State private var showManageQuestSheet = false
+    
+    @State private var showZoomInAlert = false
                 
     var body: some View {
         NavigationStack {
@@ -145,6 +147,11 @@ struct MapView: View {
                 .animation(.easeInOut, value: viewModel.selectedAnnotaions.count)
             }
         }
+            .alert("Zoom in to download data", isPresented: $showZoomInAlert) {
+                Button("OK", role: .cancel) { }
+            } message: {
+                Text("The map area is too large. Please zoom in and try again.")
+            }
     }
             .environmentObject(contextualInfo)
             .navigationBarHidden(isPresented)
@@ -222,7 +229,13 @@ struct MapView: View {
                             
                         case .downloadData:
                             print("Download data here")
+                            
                             guard let mapView = mapViewRef else { return }
+                            let bbox = viewModel.boundingBoxFromVisibleMapRect(mapView: mapView)
+                               if !isBBoxValid(bbox) {
+                                   showZoomInAlert = true
+                                   return
+                               }
                             viewModel.fetchOSMDataFor(from: .visibleRect(mapView: mapView))
                             
                         }
@@ -369,6 +382,12 @@ struct MapView: View {
     private func setContextualInfo(contextualinfo: String) {
         contextualInfo.info = contextualinfo
         
+    }
+    
+    func isBBoxValid(_ bbox: BBox) -> Bool {
+        let latDelta = bbox.maxLat - bbox.minLat
+        let lonDelta = bbox.maxLon - bbox.minLon
+        return latDelta * lonDelta <= 1.0
     }
 }
 
