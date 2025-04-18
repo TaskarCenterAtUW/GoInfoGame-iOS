@@ -84,7 +84,14 @@ struct CustomMap: UIViewRepresentable {
         
         // Remove existing overlays
         mapView.overlays.forEach { mapView.removeOverlay($0) }
-
+                
+        // Add shadow overlay with rectangular cutouts
+        if mapView.overlays.first(where: { $0 is ShadowOverlay }) == nil {
+               let overlay = ShadowOverlay(annotations: mapView.annotations)
+               mapView.addOverlay(overlay)
+           }
+                
+        
            // Re-add overlays based on selection
            if useBingMaps {
                let tileOverlay = BingTileOverlay()
@@ -181,6 +188,10 @@ struct CustomMap: UIViewRepresentable {
                 renderer.strokeColor = UIColor.orange
                 renderer.lineWidth = 5
                 return renderer
+            }
+            
+            if let shadowOverlay = overlay as? ShadowOverlay {
+                return ShadowOverlayRenderer(overlay: shadowOverlay)
             }
             
             if let tileOverlay = overlay as? MKTileOverlay {
