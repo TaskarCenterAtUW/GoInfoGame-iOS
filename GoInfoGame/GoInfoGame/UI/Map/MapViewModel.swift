@@ -176,7 +176,7 @@ class MapViewModel: ObservableObject {
         return BBox(minLat: minLat, maxLat: maxLat, minLon: minLon, maxLon: maxLon)
     }
     
-    private func boundingBoxFromVisibleMapRect(mapView: MKMapView) -> BBox {
+     func boundingBoxFromVisibleMapRect(mapView: MKMapView) -> BBox {
         let mapRect = mapView.visibleMapRect
         let topLeft = MKMapPoint(x: mapRect.origin.x, y: mapRect.origin.y)
         let bottomRight = MKMapPoint(x: mapRect.origin.x + mapRect.size.width,
