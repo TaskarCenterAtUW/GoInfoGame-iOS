@@ -236,7 +236,6 @@ struct MapView: View {
                                    showZoomInAlert = true
                                    return
                                }
-                            guard let mapView = mapViewRef else { return }
                             viewModel.fetchOSMDataFor(from: .visibleRect(mapView: mapView))
                             
                         }
