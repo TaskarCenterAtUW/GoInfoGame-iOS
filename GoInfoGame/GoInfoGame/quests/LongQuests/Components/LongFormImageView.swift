@@ -30,10 +30,26 @@ struct LongFormImageView: View {
                         .clipped()
                     
                     if let label = label {
-                        Text(label)
-                            .font(.system(size: 15, weight: .bold))
-                            .foregroundColor(Color.white)
-                            .padding(.bottom, 8)
+                        let strokeOffsets: [(CGFloat, CGFloat)] = [
+                              (-1, -1), (1, -1),
+                              (-1, 1), (1, 1),
+                              (0, -1), (0, 1),
+                              (-1, 0), (1, 0)
+                          ]
+
+                          ForEach(0..<strokeOffsets.count, id: \.self) { i in
+                              let offset = strokeOffsets[i]
+                              Text(label)
+                                  .font(.system(size: 15, weight: .bold))
+                                  .foregroundColor(.black)
+                                  .offset(x: offset.0, y: offset.1)
+                          }
+
+                          Text(label)
+                              .font(.system(size: 15, weight: .bold))
+                              .foregroundColor(.white)
+                              .shadow(color: Color.black.opacity(0.7), radius: 4, x: 0, y: 2)
+                            
                     }
                 }
                 .frame(width: width, height: height)

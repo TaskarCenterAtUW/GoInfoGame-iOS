@@ -51,10 +51,28 @@ struct QuestOptions: View {
                                                 width: 300,
                                                 height: 300
                                         )
-                                       Text(selectedImageText ?? "")
-                                           .font(.system(size: 15, weight: .bold))
-                                           .foregroundColor(Color.black)
-                                           .padding(.bottom, 8)
+                                       
+                                       ZStack {
+                                           let strokeOffsets: [(CGFloat, CGFloat)] = [
+                                            (-1, -1), (1, -1),
+                                            (-1, 1), (1, 1),
+                                            (0, -1), (0, 1),
+                                            (-1, 0), (1, 0)
+                                           ]
+                                           
+                                           ForEach(0..<strokeOffsets.count, id: \.self) { i in
+                                               let offset = strokeOffsets[i]
+                                               Text(selectedImageText ?? "")
+                                                   .font(.system(size: 15, weight: .bold))
+                                                   .foregroundColor(.black)
+                                                   .offset(x: offset.0, y: offset.1)
+                                           }
+                                           
+                                           Text(selectedImageText ?? "")
+                                               .font(.system(size: 15, weight: .bold))
+                                               .foregroundColor(.white)
+                                               .shadow(color: Color.black.opacity(0.7), radius: 4, x: 0, y: 2)
+                                       }
                                        Spacer()
                                        Button("Close") {
                                            selectedImageURL = nil
@@ -96,10 +114,27 @@ struct QuestOptions: View {
                                                     .frame(width: 100, height: 100)
                                                     .clipped()
                                                 
-                                                Text(option.choiceText)
-                                                    .font(.system(size: 15, weight: .bold))
-                                                    .foregroundColor(Color.white)
-                                                    .padding(.bottom, 8)
+                                                ZStack {
+                                                    let strokeOffsets: [(CGFloat, CGFloat)] = [
+                                                     (-1, -1), (1, -1),
+                                                     (-1, 1), (1, 1),
+                                                     (0, -1), (0, 1),
+                                                     (-1, 0), (1, 0)
+                                                    ]
+                                                    
+                                                    ForEach(0..<strokeOffsets.count, id: \.self) { i in
+                                                        let offset = strokeOffsets[i]
+                                                        Text(option.choiceText)
+                                                            .font(.system(size: 15, weight: .bold))
+                                                            .foregroundColor(.black)
+                                                            .offset(x: offset.0, y: offset.1)
+                                                    }
+                                                    
+                                                    Text(option.choiceText)
+                                                        .font(.system(size: 15, weight: .bold))
+                                                        .foregroundColor(.white)
+                                                        .shadow(color: Color.black.opacity(0.7), radius: 4, x: 0, y: 2)
+                                                }
                                             }
                                             
                                         }
