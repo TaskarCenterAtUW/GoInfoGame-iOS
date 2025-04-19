@@ -20,47 +20,29 @@ class ShadowOverlayRenderer: MKOverlayRenderer {
         context.setBlendMode(.clear)
         context.setAllowsAntialiasing(false)
         context.setShouldAntialias(false)
-
-        for mapRect in shadowOverlay.annotationRects {
-            let cutout = self.rect(for: mapRect).integral
+        
+        for rect in shadowOverlay.visibleRects {
+            let cutout = self.rect(for: rect).integral
             context.fill(cutout)
         }
-
+        
         context.setBlendMode(.normal)
     }
+    
+    func addVisibleRect(_ rect: MKMapRect) {
+           guard let shadowOverlay = overlay as? ShadowOverlay else { return }
+           shadowOverlay.addVisibleRect(rect)
+           setNeedsDisplay()
+       }
 }
 
 class ShadowOverlay: NSObject, MKOverlay {
     let coordinate: CLLocationCoordinate2D = CLLocationCoordinate2D(latitude: 0, longitude: 0)
     let boundingMapRect: MKMapRect = MKMapRect.world
-    let annotationRects: [MKMapRect]
+    private(set) var visibleRects: [MKMapRect] = []
 
-    init(annotations: [MKAnnotation]) {
-        self.annotationRects = annotations.map { annotation in
-            let center = MKMapPoint(annotation.coordinate)
-            let width = MKMapPointsPerMeterAtLatitude(annotation.coordinate.latitude) * 500 // 500m box
-            return MKMapRect(
-                origin: MKMapPoint(x: center.x - width / 2, y: center.y - width / 2),
-                size: MKMapSize(width: width, height: width)
-            )
-        }
-    }
-}
-
-
-
-extension MKCoordinateRegion {
-    func corners() -> [CLLocationCoordinate2D] {
-        let latMin = center.latitude - span.latitudeDelta / 2
-        let latMax = center.latitude + span.latitudeDelta / 2
-        let lonMin = center.longitude - span.longitudeDelta / 2
-        let lonMax = center.longitude + span.longitudeDelta / 2
-        return [
-            CLLocationCoordinate2D(latitude: latMin, longitude: lonMin),
-            CLLocationCoordinate2D(latitude: latMin, longitude: lonMax),
-            CLLocationCoordinate2D(latitude: latMax, longitude: lonMax),
-            CLLocationCoordinate2D(latitude: latMax, longitude: lonMin)
-        ]
+    func addVisibleRect(_ rect: MKMapRect) {
+        visibleRects.append(rect)
     }
 }
 

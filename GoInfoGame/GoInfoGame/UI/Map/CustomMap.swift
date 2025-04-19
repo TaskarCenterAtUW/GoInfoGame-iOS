@@ -37,6 +37,8 @@ struct CustomMap: UIViewRepresentable {
     @Binding var useBingMaps: Bool 
     
     @Binding var tappedCoordinate: CLLocationCoordinate2D?
+    
+    var shadowOverlay: ShadowOverlay
         
     // Creates and configures the UIView
     func makeUIView(context: Context) -> MKMapView {
@@ -84,13 +86,9 @@ struct CustomMap: UIViewRepresentable {
         
         // Remove existing overlays
         mapView.overlays.forEach { mapView.removeOverlay($0) }
-                
-        // Add shadow overlay with rectangular cutouts
-        if mapView.overlays.first(where: { $0 is ShadowOverlay }) == nil {
-               let overlay = ShadowOverlay(annotations: mapView.annotations)
-               mapView.addOverlay(overlay)
-           }
-                
+        
+        mapView.addOverlay(shadowOverlay)
+
         
            // Re-add overlays based on selection
            if useBingMaps {
@@ -126,7 +124,7 @@ struct CustomMap: UIViewRepresentable {
     
     // Creates the coordinator
     func makeCoordinator() -> Coordinator {
-        Coordinator(self)
+        Coordinator(self, shadowOverlay: shadowOverlay)
     }
     
     // Coordinator class for managing delegate methods
@@ -139,12 +137,15 @@ struct CustomMap: UIViewRepresentable {
         var currentAnnotation: DisplayUnitAnnotation?
         var mapView: MKMapView?
         
+        let shadowOverlay: ShadowOverlay
+        
         private let maxZoomAltitude: CLLocationDistance = 100
         private var zoomReachedLimit: Bool = false
         
-        init(_ parent: CustomMap) {
+        init(_ parent: CustomMap, shadowOverlay: ShadowOverlay) {
             self.parent = parent
             self.contextualInfo = parent.contextualInfo
+            self.shadowOverlay = shadowOverlay
         }
         
         @objc func handleMapTap(_ gestureRecognizer: UITapGestureRecognizer) {
@@ -180,6 +181,16 @@ struct CustomMap: UIViewRepresentable {
                   
                   mapView.setRegion(newRegion, animated: true)
               }
+        
+        func mapViewDidFinishRenderingMap(_ mapView: MKMapView, fullyRendered: Bool) {
+            guard fullyRendered else { return }
+            
+            if shadowOverlay.visibleRects.isEmpty {
+                shadowOverlay.addVisibleRect(mapView.visibleMapRect)
+                mapView.removeOverlay(shadowOverlay)
+                mapView.addOverlay(shadowOverlay)
+            }
+        }
         
         //renders polyline
         func mapView(_ mapView: MKMapView, rendererFor overlay: MKOverlay) -> MKOverlayRenderer {
