@@ -51,6 +51,8 @@ struct MapView: View {
     @State private var showManageQuestSheet = false
     
     @State private var showZoomInAlert = false
+    
+    @State private var shadowOverlay = ShadowOverlay()
                 
     var body: some View {
         NavigationStack {
@@ -79,7 +81,7 @@ struct MapView: View {
                 print(contextualInfo)
                 selectedDetent = .fraction(0.8)
                 self.setContextualInfo(contextualinfo: contextualInfo)
-            }, useBingMaps: $useBingMaps, tappedCoordinate: $tappedCoordinate)
+                }, useBingMaps: $useBingMaps, tappedCoordinate: $tappedCoordinate, shadowOverlay: shadowOverlay)
             .onChange(of: tappedCoordinate) { _ in
                 showMapLongPressedSheet = tappedCoordinate != nil
             }
@@ -237,6 +239,9 @@ struct MapView: View {
                                    return
                                }
                             viewModel.fetchOSMDataFor(from: .visibleRect(mapView: mapView))
+                            let rect = mapView.visibleMapRect
+                            let extendedVisibleRect = rect.insetBy(dx: -rect.size.width * 0.25, dy: -rect.size.height * 0.25)
+                            shadowOverlay.addVisibleRect(extendedVisibleRect)
                             
                         }
                     }
