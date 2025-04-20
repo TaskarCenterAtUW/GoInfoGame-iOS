@@ -55,6 +55,12 @@ class HiddenQuestManager: ObservableObject {
            saveHiddenQuests()
        }
     
+    //remove all hidden quests
+    func removeAllHiddenQuests() {
+        hiddenQuests.removeAll()
+        saveHiddenQuests()
+    }
+    
     func saveHiddenQuests() {
             let encoder = JSONEncoder()
             if let encodedData = try? encoder.encode(hiddenQuests) {
