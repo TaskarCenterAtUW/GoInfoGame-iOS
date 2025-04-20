@@ -11,6 +11,10 @@ import SwiftUI
 import osmparser
 import MapKit
 
+enum ElementSubmittingToPOSM {
+    case node, way
+}
+
 protocol Quest {
     associatedtype AnswerClass // The class that represents answer
     var title:String {get}
@@ -30,6 +34,9 @@ protocol Quest {
 
 class QuestBase {
    public var internalForm: (any QuestForm)? = nil
+    
+   private var elementSubmittingToPOSM: ElementSubmittingToPOSM?
+    
     // Add a custom implementation
     
    public func updateTags(id: Int64, tags:[String:String], type: ElementType){
@@ -40,8 +47,10 @@ class QuestBase {
        _ = DatabaseConnector.shared.createChangeset(id: storedId, type: storedElementType, tags: tags)
        switch (storedElementType){
        case .way:
+           elementSubmittingToPOSM = .way
           _ = DatabaseConnector.shared.addWayTags(id: storedId, tags: tags)
        case .node:
+           elementSubmittingToPOSM = .node
           _ = DatabaseConnector.shared.addNodeTags(id: storedId, tags: tags)
        case .unknown:
            print("Unknown Stored element type received")
@@ -58,6 +67,16 @@ class QuestBase {
                switch success {
                case .success(let success):
                    if success {
+                       if let elementSubmittingToPOSM = self.elementSubmittingToPOSM {
+                           switch elementSubmittingToPOSM {
+                           case .node:
+                               print("Node submitted successfully")
+                               _ = DatabaseConnector.shared.addNodeTags(id: storedId, tags: ["ext:gig_complete" : "yes"])
+                           case .way:
+                               print("Way submitted successfully")
+                               _ = DatabaseConnector.shared.addWayTags(id: storedId, tags: ["ext:gig_complete" : "yes"])
+                           }
+                       }
                        MapViewPublisher.shared.dismissSheet.send(.submitted(storedId))
                    } else {
                        print("Sync failed. Handle accordingly.")
