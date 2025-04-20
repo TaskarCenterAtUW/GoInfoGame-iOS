@@ -48,6 +48,12 @@ struct LongForm: View, QuestForm {
     @State private var showNotesBox = false
     
     @State private var noteText = ""
+    
+    @State private var alertMessage = ""
+    
+    @State private var showCreateNoteMessage = false
+    
+    @StateObject private var noteViewModel = NotesViewModel()
 
     var body: some View {
         ZStack {
@@ -89,6 +95,17 @@ struct LongForm: View, QuestForm {
                     .padding([.trailing], 20)
                 }
                 
+                if showCreateNoteMessage {
+                    Text(alertMessage)
+                        .foregroundColor(alertMessage == "Note submitted successfully" ? Color.green : Color.red)
+                        .padding(.horizontal, 20)
+                        .onAppear {
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
+                                showCreateNoteMessage = false
+                            }
+                        }
+                }
+        
                 if showNotesBox {
                     VStack(alignment: .leading, spacing: 10) {
                         TextEditor(text: $noteText)
@@ -97,27 +114,44 @@ struct LongForm: View, QuestForm {
                             .border(Color(red: 135/255, green: 62/255, blue: 242/255))
                         
                         HStack {
-                            Button("Submit") {
-                                submitNote()
-                                showNotesBox = false
+                            Button(action: {
+                                Task {
+                                    do {
+                                        try await submitNote()
+                                    } catch {
+                                       showCreateNoteMessage = true
+                                        showNotesBox = false
+                                        
+                                    }
+                                }
+                            }) {
+                                if noteViewModel.isLoading {
+                                    ProgressView()
+                                } else {
+                                    Text("Submit")
+                                        .font(.custom("Lato-Bold", size: 16))
+                                        .foregroundColor(.white)
+                                        .padding()
+                                        .frame(maxWidth: .infinity)
+                                        .background(noteText != "" ? Color(red: 135/255, green: 62/255, blue: 242/255) : Color.gray)
+                                        .cornerRadius(9)
+                                }
                             }
-                            .padding()
-                            .frame(maxWidth: .infinity)
-                            .background(Color.blue)
-                            .foregroundColor(.white)
-                            .cornerRadius(8)
-                            .padding(.horizontal, 20)
-                            
-                            Button("Cancel") {
+                            .disabled(noteText == "")
+                
+                            Button (action: {
                                 showNotesBox = false
+                            }) {
+                                Text("Cancel")
+                                    .font(.custom("Lato-Bold", size: 16))
+                                    .foregroundColor(.white)
+                                    .padding()
+                                    .frame(maxWidth: .infinity)
+                                    .background(Color.red)
+                                    .cornerRadius(9)
                             }
-                            .padding()
-                            .frame(maxWidth: .infinity)
-                            .background(Color.red)
-                            .foregroundColor(.white)
-                            .cornerRadius(8)
-                            .padding(.horizontal, 20)
                         }
+                        .padding(.horizontal, 20)
                     }
                     .padding(.top, 10)
                 }
@@ -138,6 +172,17 @@ struct LongForm: View, QuestForm {
                                 }
                             }
                             VStack {
+                                if showSubmitAlert {
+                                    Text(submitAlert)
+                                        .font(.custom("Lato-Bold", size: 16))
+                                        .foregroundColor(.red)
+                                        .background(Color.white)
+                                        .onAppear {
+                                            DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                                                showSubmitAlert = false
+                                            }
+                                        }
+                                }
                                 Button(action: {
                                     if !viewModel.answersToBeSubmitted.isEmpty {
                                         if let action = action {
@@ -219,8 +264,31 @@ struct LongForm: View, QuestForm {
         }
     }
     
-    func submitNote() {
+    func submitNote() async throws {
         print("Note to be submitted: \(noteText)")
+        
+        do {
+            let notesResult = try await noteViewModel.createNote(note: noteText, lat: 0.0, long: 0.0)
+            
+            if notesResult {
+                print("Notes composed successfully")
+                alertMessage = "Note submitted successfully"
+                showCreateNoteMessage = true
+                
+            } else {
+                alertMessage = "Error creating note"
+                showCreateNoteMessage = true
+            }
+        } catch {
+            alertMessage = "Error creating note: \(error.localizedDescription)"
+            print("Error creating note: \(error.localizedDescription)")
+            throw error
+        }
+        
+        await MainActor.run {
+            noteViewModel.isLoading = false
+            showNotesBox = false
+        }
     }
     
     func uploadImageToKartaView() {
