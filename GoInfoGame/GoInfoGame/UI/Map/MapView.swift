@@ -95,30 +95,38 @@ struct MapView: View {
                     .edgesIgnoringSafeArea(.all)
                 ActivityView(activityText: "Looking for quests...")
             }
-            if showAlert {
-                VStack {
-                    Image(systemName: alertIcon)
-                        .resizable()
-                        .aspectRatio(contentMode: .fit)
-                        .frame(width: 50, height: 50)
-                        .foregroundColor(.green)
-                        .padding(.bottom, 50)
-                    Text(alertMessage)
-                        .foregroundColor(.white)
-                        .padding()
-                        .background(Color.orange)
-                        .cornerRadius(10)
-                }
-                .padding([.all], 50)
-                .background(Color.white)
-                .accessibilityElement(children: .combine)
-                .accessibilityLabel(alertMessage)
-                .onAppear {
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-                        showAlert = false // Dismiss notification box after 1 second
+                if showAlert {
+                    VStack(spacing: 20) {
+                        Image(systemName: alertIcon)
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 40, height: 40)
+                            .foregroundColor(.green)
+                        
+                        Text(alertMessage)
+                            .foregroundColor(.white)
+                            .font(.system(size: 16, weight: .medium))
+                            .multilineTextAlignment(.center)
+                            .padding()
+                            .frame(maxWidth: .infinity) // stretch text inside fixed card
+                            .background(Color.orange)
+                            .cornerRadius(12)
+                    }
+                    .padding(24)
+                    .frame(maxWidth: 350) // increased card width
+                    .background(
+                        RoundedRectangle(cornerRadius: 20)
+                            .fill(Color.white)
+                            .shadow(color: .black.opacity(0.1), radius: 10, x: 0, y: 4)
+                    )
+                    .accessibilityElement(children: .combine)
+                    .accessibilityLabel(alertMessage)
+                    .onAppear {
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                            showAlert = false
+                        }
                     }
                 }
-            }
             
             
             FloatingActionButtonStack(mapButtonAction: {
