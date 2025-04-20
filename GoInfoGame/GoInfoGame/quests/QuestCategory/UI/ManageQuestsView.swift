@@ -94,7 +94,7 @@ struct ManageQuestsView: View {
                         let quest = hiddenQuestManager.hiddenQuests[index]
 
                         HStack {
-                            Text("ID: \(quest.id)")
+                            Text("ID: \(String(quest.id))")
                                 .font(.custom("Lato-Bold", size: 15))
                                 .foregroundColor(Color(red: 69 / 255, green: 81 / 255, blue: 108 / 255))
                         
