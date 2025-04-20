@@ -78,12 +78,29 @@ struct ManageQuestsView: View {
             if hiddenQuestManager.hiddenQuests.isEmpty {
                 Color.clear.frame(height: 50) // Placeholder to prevent jumpy UI
             } else {
-                Text("HIDDEN ELEMENTS")
-                    .font(.custom("Lato-Bold", size: 15))
-                    .foregroundColor(Color(red: 132/255, green: 135/255, blue: 153/255))
-                    .padding(.horizontal)
-                    .padding(.top, 10)
-                    .padding(.leading, 15)
+                HStack(alignment: .firstTextBaseline) {
+                    Text("HIDDEN ELEMENTS")
+                        .font(.custom("Lato-Bold", size: 15))
+                        .foregroundColor(Color(red: 132/255, green: 135/255, blue: 153/255))
+                        .padding(.horizontal)
+                        .padding(.top, 10)
+                        .padding(.leading, 15)
+                    Spacer()
+                    Button(action: {
+                        hiddenQuestManager.removeAllHiddenQuests()
+                    }) {
+                        Text("Unhide All")
+                            .font(.custom("Lato-Bold", size: 16))
+                            .foregroundColor(.white)
+                            .padding(.vertical, 10) // vertical padding
+                            .padding(.horizontal, 20) // horizontal padding
+                            .background(Color(red: 135/255, green: 62/255, blue: 242/255))
+                            .cornerRadius(10)
+                    }
+                    .padding(.trailing, 15)
+
+                    
+                }
                 Text("Swipe left on item to show delete option and delete it from the list.")
                     .font(.custom("Lato-Bold", size: 12))
                     .foregroundColor(Color(red: 132/255, green: 135/255, blue: 153/255))
@@ -94,7 +111,7 @@ struct ManageQuestsView: View {
                         let quest = hiddenQuestManager.hiddenQuests[index]
 
                         HStack {
-                            Text("ID: \(quest.id)")
+                            Text("ID: \(String(quest.id))")
                                 .font(.custom("Lato-Bold", size: 15))
                                 .foregroundColor(Color(red: 69 / 255, green: 81 / 255, blue: 108 / 255))
                         
