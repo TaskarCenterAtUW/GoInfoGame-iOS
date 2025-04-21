@@ -214,11 +214,11 @@ struct LongForm: View, QuestForm {
                         }
                     }
                 }
-                .onTapGesture {
-                    print("DISMISS KEYBAORD")
-                    //hide keyboard if keyboard is open
-                    UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
-                }
+                .simultaneousGesture(
+                    TapGesture().onEnded {
+                        hideKeyboard()
+                    }
+                )
             }
             .onChange(of: capturedImage) { newValue in
                 if newValue != nil {
