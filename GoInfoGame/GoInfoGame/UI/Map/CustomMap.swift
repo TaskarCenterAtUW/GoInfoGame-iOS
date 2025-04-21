@@ -139,7 +139,7 @@ struct CustomMap: UIViewRepresentable {
         
         let shadowOverlay: ShadowOverlay
         
-        private let maxZoomAltitude: CLLocationDistance = 100
+        private let maxZoomAltitude: CLLocationDistance = 120
         private var zoomReachedLimit: Bool = false
         
         init(_ parent: CustomMap, shadowOverlay: ShadowOverlay) {
@@ -274,6 +274,9 @@ struct CustomMap: UIViewRepresentable {
                 mapView.showAnnotations(annotation.memberAnnotations, animated: true)
                 
                 if zoomReachedLimit && annotation.memberAnnotations.count <= 3 {
+                    let firstAnnotation = annotation.memberAnnotations.first as! DisplayUnitAnnotation
+                    let secondAnnotation = annotation.memberAnnotations.last as! DisplayUnitAnnotation
+                    
                     if let annotation = annotation.memberAnnotations.first as? DisplayUnitAnnotation {
                         selectedAnAnnotation(selectedQuest: annotation)
                     }
@@ -350,12 +353,7 @@ struct CustomMap: UIViewRepresentable {
         }
         
         func mapView(_ mapView: MKMapView, regionDidChangeAnimated animated: Bool) {
-            let currentAltitude = mapView.camera.altitude
-            if currentAltitude < maxZoomAltitude {
-                zoomReachedLimit = true
-            } else {
-                zoomReachedLimit = false
-            }
+            zoomReachedLimit = mapView.isZoomedIn()
         }
         
         private func selectedAnAnnotation(selectedQuest: DisplayUnitAnnotation) {

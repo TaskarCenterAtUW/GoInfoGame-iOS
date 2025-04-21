@@ -31,6 +31,12 @@ extension View {
 }
 
 
+extension MKMapView {
+    func isZoomedIn(maxLatitudeDelta: CLLocationDegrees = 0.005) -> Bool {
+        return self.region.span.latitudeDelta <= maxLatitudeDelta
+    }
+}
+
 extension CLLocationCoordinate2D: CustomPersistable {
     
     public static func == (lhs: CLLocationCoordinate2D, rhs: CLLocationCoordinate2D) -> Bool {
