@@ -49,6 +49,7 @@ struct CreateNoteView: View {
                                 .cornerRadius(9)
                         }
                     }
+                    .disabled(noteText == "")
         
                     Button (action: {
                         showNotesBox = false
@@ -87,8 +88,8 @@ struct CreateNoteView: View {
                 
             }
         } catch {
-            alertMessage = "Error submitting note. Please try again later."
-            print("Error creating note: \(error.localizedDescription)")
+            alertMessage = "Error submitting note: \(error.localizedDescription)"
+           
             dismissSheet(alertMessage)
         }
         
