@@ -214,6 +214,11 @@ struct LongForm: View, QuestForm {
                         }
                     }
                 }
+                .simultaneousGesture(
+                    TapGesture().onEnded {
+                        hideKeyboard()
+                    }
+                )
             }
             .onChange(of: capturedImage) { newValue in
                 if newValue != nil {

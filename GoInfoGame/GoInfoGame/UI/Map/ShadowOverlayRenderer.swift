@@ -14,7 +14,7 @@ class ShadowOverlayRenderer: MKOverlayRenderer {
         guard let shadowOverlay = overlay as? ShadowOverlay else { return }
 
         let fullRect = self.rect(for: shadowOverlay.boundingMapRect)
-        context.setFillColor(CGColor(red: 0, green: 0, blue: 0, alpha: 0.5))
+        context.setFillColor(CGColor(red: 0, green: 0, blue: 0, alpha: 0.25))
         context.fill(fullRect)
 
         context.setBlendMode(.clear)

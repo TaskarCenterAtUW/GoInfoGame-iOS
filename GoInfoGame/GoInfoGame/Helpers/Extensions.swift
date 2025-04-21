@@ -9,6 +9,7 @@ import Foundation
 import MapKit
 import RealmSwift
 import ARKit
+import SwiftUI
 
 
 // Extension to check if a polyline intersects with a coordinate
@@ -22,6 +23,13 @@ extension MKPolyline {
         return polylineBounds.contains(polylinePoint)
     }
 }
+
+extension View {
+    func hideKeyboard() {
+        UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
+    }
+}
+
 
 extension CLLocationCoordinate2D: CustomPersistable {
     
