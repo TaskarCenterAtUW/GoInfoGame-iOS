@@ -21,6 +21,7 @@ struct CustomMap: UIViewRepresentable {
     @Binding var selectedQuest: DisplayUnit?
     @Binding var shouldShowPolyline: Bool
     @Binding var isPresented: Bool
+    @Binding var isUserSettingsPresented: Bool
     @StateObject var locationManagerDelegate = LocationManagerDelegate()
     
     @Binding var selectedAnnotations: Set<DisplayUnitAnnotation>
@@ -136,6 +137,8 @@ struct CustomMap: UIViewRepresentable {
         var mapView: MKMapView?
         
         let shadowOverlay: ShadowOverlay
+        
+        var isCenteredOnUser = false
         
         private let maxZoomAltitude: CLLocationDistance = 120
         private var zoomReachedLimit: Bool = false
@@ -476,12 +479,21 @@ struct CustomMap: UIViewRepresentable {
     // Helper method to manage annotations
     private func manageAnnotations(_ mapView: MKMapView, context: Context) {
         
-        let existingCoordinates = mapView.annotations.compactMap { ($0 as? DisplayUnitAnnotation)?.coordinate }
+        let existingCoordinates = mapView.annotations.compactMap {
+             ($0 as? DisplayUnitAnnotation)?.coordinate
+         }
         
-        /// resetting region only when app is launched/re-launched
-        if existingCoordinates.count == 0 {
-            mapView.setCenter(userLocation, animated: true)
-        }
+         // Check for modals or settings before changing map
+         if isPresented || isUserSettingsPresented {
+             return
+         }
+
+         // ✅ Only if no annotations and safe state
+        if existingCoordinates.isEmpty  && !context.coordinator.isCenteredOnUser {
+             mapView.setCenter(userLocation, animated: true)
+             context.coordinator.isCenteredOnUser = true
+         }
+
         context.coordinator.isRegionSet = true
         
         
