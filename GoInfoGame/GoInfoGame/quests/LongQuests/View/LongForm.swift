@@ -183,30 +183,6 @@ struct LongForm: View, QuestForm {
                                             }
                                         }
                                 }
-                                Button(action: {
-                                    if !viewModel.answersToBeSubmitted.isEmpty {
-                                        if let action = action {
-                                            if !uploadedPhotos.isEmpty {
-                                                viewModel.answersToBeSubmitted["ext:kartaview_url"] = uploadedPhotos.joined(separator: ", ")
-                                            }
-                                         
-                                              action(viewModel.answersToBeSubmitted)
-                                          }
-                                    } else {
-                                        self.showSubmitAlert = true
-                                        self.submitAlert = "Please answer atleast one quest to submit"
-                                    }
-         
-                                }) {
-                                    Text("Submit")
-                                        .font(.custom("Lato-Bold", size: 16))
-                                        .foregroundColor(.white)
-                                        .padding()
-                                        .frame(width: 200, height: 40)
-                                        .background(Color(red: 135/255, green: 62/255, blue: 242/255))
-                                        .cornerRadius(20)
-                                }
-                                .frame(maxWidth: .infinity)
                             }
                             .frame(maxWidth: .infinity)
                         } else {
@@ -214,11 +190,33 @@ struct LongForm: View, QuestForm {
                         }
                     }
                 }
-                .simultaneousGesture(
-                    TapGesture().onEnded {
-                        hideKeyboard()
+                .hideKeyboardOnTap()
+                
+                Button(action: {
+                    if !viewModel.answersToBeSubmitted.isEmpty {
+                        if let action = action {
+                            if !uploadedPhotos.isEmpty {
+                                viewModel.answersToBeSubmitted["ext:kartaview_url"] = uploadedPhotos.joined(separator: ", ")
+                            }
+                         
+                              action(viewModel.answersToBeSubmitted)
+                          }
+                    } else {
+                        self.showSubmitAlert = true
+                        self.submitAlert = "Please answer atleast one quest to submit"
                     }
-                )
+
+                }) {
+                    Text("Submit")
+                        .font(.custom("Lato-Bold", size: 16))
+                        .foregroundColor(.white)
+                        .padding()
+                        .frame(width: 200, height: 40)
+                        .background(Color(red: 135/255, green: 62/255, blue: 242/255))
+                        .cornerRadius(20)
+                }
+                .frame(maxWidth: .infinity)
+
             }
             .onChange(of: capturedImage) { newValue in
                 if newValue != nil {

@@ -64,22 +64,22 @@ struct UserSettingsView: View {
                                 .scaledToFit()
                                 .frame(width: 20, height: 20)
                                 .foregroundColor(Color(red: 69/255, green: 81/255, blue: 108/255))
-                            
-                            //add tap gesture to navigate to the respective view
+
                             Text(option.title)
                                 .font(.custom("Lato-Bold", size: 16))
                                 .foregroundColor(Color(red: 69/255, green: 81/255, blue: 108/255))
                                 .padding(.leading, 8)
-                                .onTapGesture {
-                                    onNavigate(option.destination)
-                                }
-                                
 
                             Spacer()
                         }
                         .padding(.horizontal, 16)
-                        .frame(height: 50) // Increased row height
-                        
+                        .frame(height: 50)
+                        .frame(maxWidth: .infinity)
+                        .contentShape(Rectangle())
+                        .onTapGesture {
+                            onNavigate(option.destination)
+                        }
+
                         if option.title != options.last?.title {
                             Divider().padding(.leading, 16)
                         }
@@ -90,7 +90,7 @@ struct UserSettingsView: View {
                 .clipShape(RoundedRectangle(cornerRadius: 16))
                 .padding([.leading, .trailing], 22)
             }
-
+            
             Spacer()
         }
         .padding(.bottom, 16)

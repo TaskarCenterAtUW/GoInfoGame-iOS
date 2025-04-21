@@ -15,7 +15,7 @@ struct ManageQuestsView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
             HStack(alignment: .firstTextBaseline) {
-                Text("Manage Quests")
+                Text("Choose which features to survey")
                     .font(.custom("Lato-Bold", size: 20))
                     .foregroundColor(Color(red: 69/255, green: 81/255, blue: 108/255))
                     .padding(.top, 30)
@@ -37,7 +37,7 @@ struct ManageQuestsView: View {
                 .foregroundColor(Color(red: 132/255, green: 135/255, blue: 153/255))
                 .padding(.horizontal)
 
-            Text("TYPES")
+            Text("FEATURES")
                 .font(.custom("Lato-Bold", size: 15))
                 .foregroundColor(Color(red: 132/255, green: 135/255, blue: 153/255))
                 .padding(.horizontal)
