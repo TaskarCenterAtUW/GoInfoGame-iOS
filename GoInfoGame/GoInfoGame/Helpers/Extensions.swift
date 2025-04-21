@@ -25,11 +25,37 @@ extension MKPolyline {
 }
 
 extension View {
-    func hideKeyboard() {
-        UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
+    func hideKeyboardOnTap() -> some View {
+        self.simultaneousGesture(
+            TapGesture()
+                .onEnded {
+                    UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder),
+                                                    to: nil, from: nil, for: nil)
+                }
+        )
     }
 }
 
+extension MKMapRect {
+    init(_ region: MKCoordinateRegion) {
+        let topLeft = CLLocationCoordinate2D(
+            latitude: region.center.latitude + (region.span.latitudeDelta / 2),
+            longitude: region.center.longitude - (region.span.longitudeDelta / 2)
+        )
+        let bottomRight = CLLocationCoordinate2D(
+            latitude: region.center.latitude - (region.span.latitudeDelta / 2),
+            longitude: region.center.longitude + (region.span.longitudeDelta / 2)
+        )
+
+        let a = MKMapPoint(topLeft)
+        let b = MKMapPoint(bottomRight)
+
+        self = MKMapRect(
+            origin: MKMapPoint(x: min(a.x, b.x), y: min(a.y, b.y)),
+            size: MKMapSize(width: abs(a.x - b.x), height: abs(a.y - b.y))
+        )
+    }
+}
 
 extension MKMapView {
     func isZoomedIn(maxLatitudeDelta: CLLocationDegrees = 0.005) -> Bool {

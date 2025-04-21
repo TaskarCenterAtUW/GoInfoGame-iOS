@@ -113,6 +113,11 @@ struct QuestOptions: View {
                                                     .scaledToFill()
                                                     .frame(width: 100, height: 100)
                                                     .clipped()
+                                                    //add grey border to image
+                                                    .overlay(
+                                                        RoundedRectangle(cornerRadius: 8)
+                                                            .stroke(Color.gray, lineWidth: 1)
+                                                    )
                                                 
                                                 ZStack {
                                                     let strokeOffsets: [(CGFloat, CGFloat)] = [
