@@ -51,9 +51,7 @@ struct CustomMap: UIViewRepresentable {
         // Hide points of interest except street names
         mapView.pointOfInterestFilter = .excludingAll
         mapView.register(CustomAnnotationView.self, forAnnotationViewWithReuseIdentifier: CustomAnnotationView.reuseIdentifier)
-        
-        let currentAltitude = mapView.camera.altitude
-        
+                
         if useBingMaps {
             let tileOverlay = BingTileOverlay()
                   tileOverlay.minimumZ = 3  // Set minimum zoom level
@@ -184,13 +182,20 @@ struct CustomMap: UIViewRepresentable {
         
         func mapViewDidFinishRenderingMap(_ mapView: MKMapView, fullyRendered: Bool) {
             guard fullyRendered else { return }
-            
+
+            let userCoordinate = mapView.userLocation.coordinate
+            guard CLLocationCoordinate2DIsValid(userCoordinate) else { return }
+
+            let region = MKCoordinateRegion(center: userCoordinate, latitudinalMeters: 1000, longitudinalMeters: 1000)
+            let userLocationRect = MKMapRect(region)
+
             if shadowOverlay.visibleRects.isEmpty {
-                shadowOverlay.addVisibleRect(mapView.visibleMapRect)
+                shadowOverlay.addVisibleRect(userLocationRect)
                 mapView.removeOverlay(shadowOverlay)
                 mapView.addOverlay(shadowOverlay)
             }
         }
+
         
         //renders polyline
         func mapView(_ mapView: MKMapView, rendererFor overlay: MKOverlay) -> MKOverlayRenderer {
