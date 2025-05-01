@@ -16,6 +16,10 @@ class LocationManagerDelegate: NSObject, ObservableObject, CLLocationManagerDele
     var locationUpdateHandler: ((CLLocationCoordinate2D) -> Void)?
     var headingUpdateHandler: ((Double) -> Void)?
     
+    var coordinate: CLLocationCoordinate2D? {
+        location?.coordinate
+    }
+    
     override init() {
         super.init()
         locationManager.delegate = self

@@ -67,7 +67,6 @@ struct MapView: View {
                 
                 
                 CustomMap(region: viewModel.region,
-                          userLocation: viewModel.userlocation,
                           trackingMode: $trackingMode,
                           items: $viewModel.items,
                           selectedQuest: $viewModel.selectedQuest,

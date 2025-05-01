@@ -15,7 +15,6 @@ import osmparser
 struct CustomMap: UIViewRepresentable {
     
     var region: MKCoordinateRegion
-    var userLocation = CLLocationCoordinate2D(latitude: 17.4700, longitude: 78.3534)
     @Binding var trackingMode: MapUserTrackingMode
    @Binding var items: [DisplayUnitWithCoordinate]
     @Binding var selectedQuest: DisplayUnit?
@@ -484,15 +483,14 @@ struct CustomMap: UIViewRepresentable {
          }
         
          // Check for modals or settings before changing map
-         if isPresented || isUserSettingsPresented {
+         if isPresented  {
              return
          }
 
          // ✅ Only if no annotations and safe state
-        if existingCoordinates.isEmpty  && !context.coordinator.isCenteredOnUser {
-             mapView.setCenter(userLocation, animated: true)
-             context.coordinator.isCenteredOnUser = true
-         }
+//        if existingCoordinates.count == 0 {
+//             mapView.setCenter(userLocation, animated: true)
+//         }
 
         context.coordinator.isRegionSet = true
         
