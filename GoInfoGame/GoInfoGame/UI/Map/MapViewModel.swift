@@ -21,9 +21,11 @@ class MapViewModel: ObservableObject {
 
     let locationManagerDelegate = LocationManagerDelegate()
     @Published var isLoading: Bool = false
-    var region = MKCoordinateRegion(center: CLLocationCoordinate2D(latitude: 37.3318, longitude: -122.0312), span: MKCoordinateSpan(latitudeDelta: 0.0009 , longitudeDelta: 0.0009))
+//    var region = MKCoordinateRegion(center: CLLocationCoordinate2D(latitude: 37.3318, longitude: -122.0312), span: MKCoordinateSpan(latitudeDelta: 0.0009 , longitudeDelta: 0.0009))
+    @Published var region = MKCoordinateRegion()
     let viewSpanDelta = 0.005 // Delta lat/lng to show to the user
-    var userlocation =  CLLocationCoordinate2D(latitude: 17.4700, longitude: 78.3534)
+   // var userlocation =  CLLocationCoordinate2D(latitude: 17.4700, longitude: 78.3534)
+    @Published var userlocation: CLLocationCoordinate2D? = nil
     @Published var refreshMap = UUID()
     @Published var items: [DisplayUnitWithCoordinate] = []
     @Published var selectedQuest: DisplayUnit?
@@ -36,16 +38,22 @@ class MapViewModel: ObservableObject {
    private let dbInstance = DatabaseConnector.shared
     
     init() {
-        locationManagerDelegate.locationManager.delegate = locationManagerDelegate
-        locationManagerDelegate.locationManager.requestWhenInUseAuthorization()
-        locationManagerDelegate.locationManager.startUpdatingLocation()
-        
-        locationManagerDelegate.locationUpdateHandler = { [weak self] location in
-            guard let self = self else { return }
-            self.userlocation = location
-            fetchOSMDataFor(from: .currentLocation(location: location))
-        }
-    }
+           locationManagerDelegate.locationUpdateHandler = { [weak self] location in
+               guard let self = self else { return }
+
+               DispatchQueue.main.async {
+                   self.userlocation = location
+                   self.region = MKCoordinateRegion(
+                       center: location,
+                       span: MKCoordinateSpan(latitudeDelta: self.viewSpanDelta, longitudeDelta: self.viewSpanDelta)
+                   )
+                   self.fetchOSMDataFor(from: .currentLocation(location: location))
+               }
+           }
+
+           locationManagerDelegate.requestLocationAuthorization()
+           locationManagerDelegate.startUpdatingLocation()
+       }
     
     func getSelectedQuest() -> DisplayUnit? {
         if isMultiSelectModeEnabled {
