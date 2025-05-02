@@ -12,16 +12,29 @@ import osmparser
 import MapKit
 import osmapi
 
+enum StoredWayVersion: String {
+    case original
+    case edited
+}
+
+
 // Represents one stored way
 class StoredWay: Object {
     
-    @Persisted(primaryKey: true) var id: Int = 0
+    @Persisted(primaryKey: true) var compoundId: String
+    @Persisted var id: Int
     @Persisted var tags = Map<String,String>()
     @Persisted var version: Int = 0
     @Persisted var timestamp : String = ""
     @Persisted var nodes: List<Int64> = List<Int64>()
     // Need to persist the points
     @Persisted var polyline: List<CLLocationCoordinate2D> = List<CLLocationCoordinate2D>()
+    
+    @Persisted var isOriginal: Bool = false
+    
+    func generateCompoundId() {
+            self.compoundId = "\(id)-\(isOriginal ? "original" : "edited")"
+        }
     
     
     public func asWay() -> Way {
