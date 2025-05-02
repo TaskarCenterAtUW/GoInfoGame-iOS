@@ -20,6 +20,8 @@ class StoredNode : Object {
     @Persisted var timestamp : String = ""
     @Persisted var point: CLLocationCoordinate2D = CLLocationCoordinate2D(latitude: 0.0, longitude: 0.0)
     
+    @Persisted var isOriginal: Bool = false
+    
     // Give another method that gives node
     public func asNode() -> Node {
         let position = LatLon(latitude: point.latitude , longitude: point.longitude)

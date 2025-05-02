@@ -60,6 +60,7 @@ class DatabaseConnector {
                         let timestampString = dateFormatter.string(from: node.timestamp)
                         storedElement.version = node.version
                         storedElement.timestamp = timestampString
+                        storedElement.isOriginal = true
 //                    }
                     if let asNode = node as? OSMNode{
                         // coordinate from lat long
@@ -71,7 +72,7 @@ class DatabaseConnector {
 //                            continue
 //                        }
                     }
-                    realm.add(storedElement, update: .modified)
+                    realm.add(storedElement, update: .all)
                 }
                 // Store the ways
                 for way in ways {
@@ -85,6 +86,7 @@ class DatabaseConnector {
                     }
                     storedWay.version = way.version
                     storedWay.timestamp = timestampString
+                    storedWay.isOriginal = true
                     if let asWay = way as? OSMWay {
                         storedWay.nodes.append(objectsIn: asWay.nodes.map({Int64($0)}))
                         // Get all the points for the p
@@ -106,6 +108,7 @@ class DatabaseConnector {
 //                            print("Ignoring geometry")
 //                        }
                     }
+                    storedWay.generateCompoundId()
                     realm.add(storedWay, update: .modified)
                 }
             }
@@ -230,9 +233,10 @@ class DatabaseConnector {
      */
     func getCenterForWay(id: String) -> CLLocationCoordinate2D? {
         // Get all the objects for the way
-        guard let way = realm.object(ofType: StoredWay.self, forPrimaryKey: Int(id))  else {
-            return nil
-        }
+        let compoundId = "\(id)-original" // 
+           guard let way = realm.object(ofType: StoredWay.self, forPrimaryKey: compoundId) else {
+               return nil
+           }
         let nodeIds = way.nodes
         // Get the nodes for each
         var nodeCoords: [CLLocationCoordinate2D] = []
@@ -263,9 +267,18 @@ class DatabaseConnector {
      @param id: String value of the wayId
      @return StoredWay
      */
-    func getWay(id: String) -> StoredWay? {
-        return realm.object(ofType: StoredWay.self, forPrimaryKey: Int(id))
+//    func getWay(id: String) -> StoredWay? {
+//        return realm.object(ofType: StoredWay.self, forPrimaryKey: Int(id))
+//    }
+    
+    func getWay(id: Int, version: StoredWayVersion) -> StoredWay? {
+        let compoundId = "\(id)-\(version.rawValue)"
+        return realm.object(ofType: StoredWay.self, forPrimaryKey: compoundId)
     }
+
+    
+    
+    
     /**
      Adds tags to the existing node and stores the same
      @param id : String value of the node ID
@@ -295,21 +308,77 @@ class DatabaseConnector {
      @param tags `[String:String]` map of the added tags
      @return `StoredWay`
      */
-    func addWayTags(id: String, tags:[String:String]) -> StoredWay? {
-        guard let theWay = getWay(id: id) else { return nil }
+//    func addWayTags(id: String, tags:[String:String]) -> StoredWay? {
+//        guard let theWay = getWay(id: id) else { return nil }
+//        
+//        
+//        do {
+//            try realm.write {
+//                theWay.isOriginal = false
+//                tags.forEach { (key: String, value: String) in
+//                    theWay.tags.setValue(value, forKey: key)
+//                }
+//            }
+//        }
+//        catch {
+//            print("Error while writing tags")
+//        }
+//        return theWay
+//    }
+    
+    
+    func addWayTags(id: String, tags: [String: String]) -> StoredWay? {
+        let intId = Int(id) ?? -1
+
+        // Step 1: Try to get the editable copy first
+        if let editable = getWay(id: intId, version: .edited) {
+            // Step 2: Update the existing editable copy
+            do {
+                try realm.write {
+                    tags.forEach { editable.tags[$0.key] = $0.value }
+                }
+            } catch {
+                print("Error while writing tags")
+            }
+            return editable
+        }
+
+        // Step 3: If not found, create from original
+        guard let original = getWay(id: intId, version: .original) else {
+            print("❌ Original not found")
+            return nil
+        }
+
+        let copy = StoredWay()
+        copy.id = original.id
+        copy.version = original.version
+        copy.timestamp = original.timestamp
         
+        original.tags.forEach { entry in
+            copy.tags[entry.key] = entry.value
+        }
+        
+        copy.nodes.append(objectsIn: original.nodes)
+        copy.polyline.append(objectsIn: original.polyline)
+        copy.isOriginal = false
+        copy.generateCompoundId()
+
+        // Step 4: Apply the new tags to this new editable copy
+        tags.forEach { copy.tags[$0.key] = $0.value }
+
         do {
             try realm.write {
-                tags.forEach { (key: String, value: String) in
-                    theWay.tags.setValue(value, forKey: key)
-                }
+                realm.add(copy)
             }
+        } catch {
+            print("Error while saving editable copy")
         }
-        catch {
-            print("Error while writing tags")
-        }
-        return theWay
+
+        return copy
     }
+
+    
+    
     /**
      Creates a changeset for an element with specific ID. This does not store the updated nodes. That is to be done separately
      - parameter id: String id of the changed element
@@ -378,7 +447,8 @@ class DatabaseConnector {
     }
     
     func updateWayVersion(wayId: String, version: Int) -> StoredWay? {
-        guard let theWay = getWay(id: wayId) else { return nil }
+        let intId = Int(wayId) ?? -1
+        guard let theWay = getWay(id: intId, version: .edited) else { return nil }
         
         do {
             try realm.write {

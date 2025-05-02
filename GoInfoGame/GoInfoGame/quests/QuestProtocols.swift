@@ -40,6 +40,14 @@ class QuestBase {
     // Add a custom implementation
     
    public func updateTags(id: Int64, tags:[String:String], type: ElementType){
+       
+       if MapUndoManager.shared.updateTagsHandler == nil {
+                  MapUndoManager.shared.updateTagsHandler = { [weak self] id, tags, type in
+                      self?.updateTags(id: id, tags: tags, type: type)
+                  }
+              }
+       
+       
        // Convert from ElementType enum to StoredElementEnum
        let storedElementType: StoredElementEnum = type == .way ? .way : .node
        let storedId = String(id)

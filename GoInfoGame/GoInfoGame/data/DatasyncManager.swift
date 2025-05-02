@@ -15,7 +15,7 @@ class DatasyncManager {
     static let shared = DatasyncManager()
     private init() {}
     
-//    private var isSynching: Bool = false
+    private var isSynching: Bool = false
     
     private let dbInstance = DatabaseConnector.shared
     private let barrierQueue: DispatchQueue = DispatchQueue(label: "com.goinfogame.DatasyncManager.barrierQueue", attributes: .concurrent)
@@ -60,12 +60,12 @@ class DatasyncManager {
     func syncData() async throws -> Bool {
         
         //Disabling temporarily. To be put back after incorporating syncing mechanism
-//        if isSynching {
-//            print("Already syncing")
-//            return false
-//        } else {
-//            isSynching = true
-//        }
+        if isSynching {
+            print("Already syncing")
+            return false
+        } else {
+            isSynching = true
+        }
 
         let changesets = dbInstance.getChangesets()
         print("Starting to sync data changesets: \(changesets.count)")
@@ -76,7 +76,7 @@ class DatasyncManager {
         for changeset in changesets {
             if changeset.elementType == .node, let node = dbInstance.getNode(id: changeset.elementId) {
                 nodesToSync[changeset.id] = node
-            } else if changeset.elementType == .way, let way = dbInstance.getWay(id: changeset.elementId) {
+            } else if changeset.elementType == .way, let way = dbInstance.getWay(id: Int(changeset.elementId) ?? -1, version: .edited) {
                 waysToSync[changeset.id] = way
             }
         }
@@ -123,7 +123,7 @@ class DatasyncManager {
                 throw error
             }
         }
-//        isSynching = false
+        isSynching = false
         return syncSuccess
     }
 
