@@ -65,6 +65,7 @@ class MapViewModel: ObservableObject {
                     }
                     
                     for quest in self.selectedAnnotaions {
+                        print("Quest ID: \(quest.displayUnit.id) Tags: \(tags)")
                         if let longElementQuest = quest.displayUnit.parent as? LongElementQuest {
                             longElementQuest.onAnswer(answer: tags)
                         }

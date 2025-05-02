@@ -15,36 +15,46 @@ class DatasyncManager {
     static let shared = DatasyncManager()
     private init() {}
     
-    private var isSynching: Bool = false
+//    private var isSynching: Bool = false
     
     private let dbInstance = DatabaseConnector.shared
+    private let barrierQueue: DispatchQueue = DispatchQueue(label: "com.goinfogame.DatasyncManager.barrierQueue", attributes: .concurrent)
     
     func syncDataToOSM(completionHandler: @escaping (Result<Bool, APIError>)  -> Void) {
-        Task {
-            do {
-              let isSynced = try await syncData()
-                print("Sync finished")
-                if isSynced {
-                    print("Sync successful")
-                    DispatchQueue.main.async {
-                        completionHandler(.success(true)) // Success
+        barrierQueue.async(flags: .barrier) { [weak self] in
+            guard let self = self else { return }
+            let semaphore = DispatchSemaphore(value: 0)
+            
+            Task.detached(priority: .userInitiated) {
+                do {
+                    let isSynced = try await self.syncData()
+                    
+                    print("Sync finished")
+                    if isSynced {
+                        print("Sync successful")
+                        DispatchQueue.main.async {
+                            completionHandler(.success(true)) // Success
+                        }
+                    } else {
+                        print("Sync failed")
+                        DispatchQueue.main.async {
+                            completionHandler(.failure(APIError.custom("Sync failed. Please try again."))) // Failure
+                        }
                     }
-                } else {
-                    print("Sync failed")
+                } catch {
+                    print("Sync failed: \(error)")
                     DispatchQueue.main.async {
-                        completionHandler(.failure(APIError.custom("Sync failed. Please try again."))) // Failure
+                        completionHandler(.failure(error as! APIError)) // Failure
                     }
                 }
-            } catch {
-                print("Sync failed: \(error)")
-                DispatchQueue.main.async {
-                    completionHandler(.failure(error as! APIError)) // Failure
-                }
+                semaphore.signal()
             }
+            
+            semaphore.wait()
         }
     }
     
-    /// *** Terminating app due to uncaught exception 'RLMException', reason: 'Realm accessed from incorrect thread.'
+    /// *** Terminating app due     to uncaught exception 'RLMException', reason: 'Realm accessed from incorrect thread.'
     ///  To fix the above error added @mainActor
     @MainActor
     func syncData() async throws -> Bool {
@@ -58,7 +68,7 @@ class DatasyncManager {
 //        }
 
         let changesets = dbInstance.getChangesets()
-        print("Starting to sync data")
+        print("Starting to sync data changesets: \(changesets.count)")
         
         var nodesToSync: [String: StoredNode] = [:]
         var waysToSync: [String: StoredWay] = [:]
@@ -113,7 +123,7 @@ class DatasyncManager {
                 throw error
             }
         }
-        isSynching = false
+//        isSynching = false
         return syncSuccess
     }
 
@@ -202,7 +212,7 @@ class DatasyncManager {
         let wayBody = changesetUploadBody.data(using: .utf8)
         let wayId = "\(localWay.id)"
         let newVersion = way.version + 1
-
+        print("Uploading changeset \(changesetUploadBody)")
         guard let accessToken = KeychainManager.load(key: "accessToken") else {
             throw NSError(domain: "No AccessToken", code: 0, userInfo: nil)
         }
