@@ -127,6 +127,17 @@ struct MapView: View {
                     }
                 }
             
+            //create a normal button
+            Button(action: {
+                MapUndoManager.shared.undo(for: 525877, type: .way)
+            }) {
+                Text("Edit")
+                    .foregroundColor(.white)
+                    .font(.system(size: 24))
+                    .padding()
+                    .background(Color.blue)
+                    .clipShape(Circle())
+            }
             
             FloatingActionButtonStack(mapButtonAction: {
                 useBingMaps.toggle()
@@ -388,6 +399,10 @@ struct MapView: View {
             print("selected workspace",selectedWorkspace?.title ?? "")
             QuestsRepository.shared.loadLongQuests(from: "longQuestJson")
             self.baseUrl = "https://osm.workspaces-stage.sidewalks.washington.edu"
+            let original = DatabaseConnector.shared.getWay(id: 525877, version: .original)
+            let edited = DatabaseConnector.shared.getWay(id: 525877, version: .edited)
+            print("ORIGINAL --->>>\(original)")
+            print("EDITED --->>>\(edited)")
         }
     }
     
