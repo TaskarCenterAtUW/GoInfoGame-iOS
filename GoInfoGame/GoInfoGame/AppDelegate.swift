@@ -16,7 +16,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Override point for customization after application launch.
         
         //clear DB to avoid overlap of data after workspace selection
-        DatabaseConnector.shared.clearDB()
+       // DatabaseConnector.shared.clearDB()
         validateAccessToken()
         return true
     }
