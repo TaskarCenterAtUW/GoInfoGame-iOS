@@ -97,13 +97,14 @@ final class UserFlowTests: XCTestCase {
             for node in nodeElements {
                 // Get the quests and try to iterate
                 for quest in allQuests {
-                    if quest.filter.isEmpty {continue} // Ignore quest
-                    if quest.isApplicable(element: node){
-                        // Create a duplicate of the quest
-                        nodeQuests.append(quest)
-                        print(quest)
-                        break
-                    }
+//                    if quest.filter.isEmpty {continue} // Ignore quest
+                    // isApplicable API is not being used and is not available now.
+//                    if quest.isApplicable(element: node){
+//                        // Create a duplicate of the quest
+//                        nodeQuests.append(quest)
+//                        print(quest)
+//                        break
+//                    }
                 }
             }
             print(nodeQuests.count)
@@ -113,13 +114,14 @@ final class UserFlowTests: XCTestCase {
             //        print(nodeQuests.count)
             for way in wayElements{
                 for quest in allQuests {
-                    if quest.filter.isEmpty {continue} // Ignore quest
-                    if quest.isApplicable(element: way){
-                        // Create a duplicate of the quest
-                        wayQuests.append(quest)
-                        print(quest)
-                        break
-                    }
+//                    if quest.filter.isEmpty {continue} // Ignore quest
+//                    isApplicable API is not being used and is not available now.
+//                    if quest.isApplicable(element: way){
+//                        // Create a duplicate of the quest
+//                        wayQuests.append(quest)
+//                        print(quest)
+//                        break
+//                    }
                 }
             }
             print(wayQuests.count)
@@ -172,7 +174,7 @@ final class UserFlowTests: XCTestCase {
                     XCTAssert(node.tags.keys.contains("width"))
                     // Publish the node here.
                     let osmConnection = OSMConnection()
-                    osmConnection.openChangeSet { result in
+                    osmConnection.openChangeSet(createdByTag: "") { result in
                         switch result {
                         case .success(let changesetId):
                             DispatchQueue.main.async {

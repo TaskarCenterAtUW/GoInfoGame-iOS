@@ -20,23 +20,24 @@ final class WorkspacesApiManagerTests: XCTestCase {
     }
 
     func testExample() throws {
-        let workspacesAPI = ApiManager.shared
-        let expec = expectation(description: "Fetches the workspaces around user")
+//        let workspacesAPI = ApiManager.shared
+//        let expec = expectation(description: "Fetches the workspaces around user")
         
         
-        workspacesAPI.fetchWorkspaces(lat:"",lon:""){result in
-            switch result {
-            case .success(let workspacesResponse):
-                print(workspacesResponse)
-                print(workspacesResponse.workspaces)
-                
-            case .failure(let error):
-                print(error)
-                
-            }
-            expec.fulfill()
-        }
-        waitForExpectations(timeout: 15)
+        // No API found called fetchWorkspaces
+//        workspacesAPI.fetchWorkspaces(lat:"",lon:""){result in
+//            switch result {
+//            case .success(let workspacesResponse):
+//                print(workspacesResponse)
+//                print(workspacesResponse.workspaces)
+//                
+//            case .failure(let error):
+//                print(error)
+//                
+//            }
+//            expec.fulfill()
+//        }
+//        waitForExpectations(timeout: 15)
         // This is an example of a functional test case.
         // Use XCTAssert and related functions to verify your tests produce the correct results.
         // Any test you write for XCTest can be annotated as throws and async.
