@@ -74,6 +74,7 @@ class DatasyncManager {
         var waysToSync: [String: StoredWay] = [:]
         
         for changeset in changesets {
+            print("changeset.elementType \(changeset.elementType), ID \(changeset.id) changeset.elementId \(changeset.elementId)")
             if changeset.elementType == .node, let node = dbInstance.getNode(id: changeset.elementId) {
                 nodesToSync[changeset.id] = node
             } else if changeset.elementType == .way, let way = dbInstance.getWay(id: Int(changeset.elementId) ?? -1, version: .edited) {
@@ -89,9 +90,8 @@ class DatasyncManager {
                 let isFinished = try await syncNode(node: payload)
                 if isFinished {
                     DispatchQueue.main.async {
-                        self.dbInstance.assignChangesetId(obj: key, changesetId: payload.changeset)
+                        self.dbInstance.assignChangesetId(obj: key, changesetId: 0)
                     }
-                    return isFinished
                 } else {
                     syncSuccess = false
                     return false
@@ -110,9 +110,8 @@ class DatasyncManager {
                 let isFinished = try await syncWay(way: payload)
                 if isFinished {
                     DispatchQueue.main.async {
-                        self.dbInstance.assignChangesetId(obj: key, changesetId: payload.changeset)
+                        self.dbInstance.assignChangesetId(obj: key, changesetId: 0)
                     }
-                    return isFinished
                 } else {
                     syncSuccess = false
                     return false
