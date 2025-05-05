@@ -109,7 +109,7 @@ class DatabaseConnector {
 //                        }
                     }
                     storedWay.generateCompoundId()
-                    realm.add(storedWay, update: .modified)
+                    realm.add(storedWay, update: .all)
                 }
             }
         } catch {
@@ -205,7 +205,7 @@ class DatabaseConnector {
                         realmElement.nodes.append(objectsIn: element.nodes)
                     }
                     
-                    realm.add(realmElement, update: .modified)
+                    realm.add(realmElement, update: .all)
                 }
             }
         } catch {
@@ -233,7 +233,7 @@ class DatabaseConnector {
      */
     func getCenterForWay(id: String) -> CLLocationCoordinate2D? {
         // Get all the objects for the way
-        let compoundId = "\(id)-original" // 
+        let compoundId = "\(id)-original" //
            guard let way = realm.object(ofType: StoredWay.self, forPrimaryKey: compoundId) else {
                return nil
            }
