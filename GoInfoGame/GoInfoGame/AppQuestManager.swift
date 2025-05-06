@@ -70,8 +70,16 @@ class AppQuestManager {
             
         let allOriginalNodes = dbInstance.getNodes().filter { $0.isOriginal && $0.tags.count != 0 }
         
-        let nodesFromStorage = dbInstance.getNodes().filter { n in
-            n.tags.count != 0
+        let nodesFromStorage = allOriginalNodes.compactMap { original in
+            if let edited = self.dbInstance.getNode(id: original.id, version: .edited),
+               edited.tags.count != 0,
+               edited.tags["ext:gig_complete"] != "yes" {
+                return edited
+            } else if original.tags["ext:gig_complete"] != "yes" {
+                return original
+            } else {
+                return nil
+            }
         }
              
         let allOriginalWays = dbInstance.getWays().filter {
@@ -128,11 +136,6 @@ class AppQuestManager {
                         let position  = dbInstance.getCenterForWay(id: String(way.id)) ?? CLLocationCoordinate2D()
                         let unit = DisplayUnitWithCoordinate(displayUnit: duplicateQuest.displayUnit, coordinateInfo: position, id: way.id, isHidden: false)
                         displayUnits.append(unit)
-    //                    if(quest is SideWalkWidth){
-    //                        if let q = quest as? SideWalkWidth {
-    //                            q.assignAnsweringHandler()
-    //                        }
-    //                    }
                         wayQuests.append(duplicateQuest)
                         break
                     }

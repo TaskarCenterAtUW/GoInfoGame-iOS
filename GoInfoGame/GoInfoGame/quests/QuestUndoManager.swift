@@ -45,22 +45,21 @@ class MapUndoManager {
             updateTagsHandler?(id, current.tags.toDictionary(), .way)
 
         case .node:
-            print("TO DO")
-//            guard let original = DatabaseConnector.shared.getNode(id: "\(id)", isOriginal: true),
-//                  let current = DatabaseConnector.shared.getNode(id: "\(id)", isOriginal: false) else {
-//                print(" Undo failed: Node not found")
-//                return
-//            }
-//
-//            try? RealmManager.shared.write {
-//                current.tags.removeAll()
-//                original.tags.forEach { current.tags[$0.key] = $0.value }
-//
-//                current.point = original.point
-//                current.version += 1
-//            }
-//
-//            updateTagsHandler?(id, current.tags.toDictionary(), .node)
+            guard let original = DatabaseConnector.shared.getNode(id: Int(id), version: .original),
+                  let current = DatabaseConnector.shared.getNode(id: Int(id), version: .edited)else {
+                print(" Undo failed: Node not found")
+                return
+            }
+
+            try? realm.write {
+                current.tags.removeAll()
+                original.tags.forEach { current.tags[$0.key] = $0.value }
+
+                current.point = original.point
+                current.version += 1
+            }
+
+            updateTagsHandler?(id, current.tags.toDictionary(), .node)
 
         default:
             print(" Unknown element type")

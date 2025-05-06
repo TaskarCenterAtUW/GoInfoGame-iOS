@@ -60,12 +60,12 @@ class DatasyncManager {
     func syncData() async throws -> Bool {
         
         //Disabling temporarily. To be put back after incorporating syncing mechanism
-        if isSynching {
-            print("Already syncing")
-            return false
-        } else {
-            isSynching = true
-        }
+//        if isSynching {
+//            print("Already syncing")
+//            return false
+//        } else {
+//            isSynching = true
+//        }
 
         let changesets = dbInstance.getChangesets()
         print("Starting to sync data changesets: \(changesets.count)")
@@ -75,7 +75,7 @@ class DatasyncManager {
         
         for changeset in changesets {
             print("changeset.elementType \(changeset.elementType), ID \(changeset.id) changeset.elementId \(changeset.elementId)")
-            if changeset.elementType == .node, let node = dbInstance.getNode(id: changeset.elementId) {
+            if changeset.elementType == .node, let node = dbInstance.getNode(id: Int(changeset.elementId) ?? -1, version: .edited) {
                 nodesToSync[changeset.id] = node
             } else if changeset.elementType == .way, let way = dbInstance.getWay(id: Int(changeset.elementId) ?? -1, version: .edited) {
                 waysToSync[changeset.id] = way

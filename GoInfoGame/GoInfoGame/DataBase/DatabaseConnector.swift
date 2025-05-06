@@ -72,6 +72,7 @@ class DatabaseConnector {
 //                            continue
 //                        }
                     }
+                    storedElement.generateCompoundId()
                     realm.add(storedElement, update: .all)
                 }
                 // Store the ways
@@ -138,7 +139,7 @@ class DatabaseConnector {
 //                    realmElement.id = element.id
 //                    realmElement.isInteresting = element.isInteresting
 //                    realmElement.isSkippable = element.isSkippable
-//                    
+//
 //                    let realmTags = element.tags.map { tag in
 //                        let realmTag = RealmOPElementTag()
 //                        realmTag.key = tag.key
@@ -146,7 +147,7 @@ class DatabaseConnector {
 //                        return realmTag
 //                    }
 //                    realmElement.tags.append(objectsIn: realmTags)
-//                    
+//
 //                    if let meta = element.meta {
 //                        let realmMeta = RealmOPMeta()
 //                        realmMeta.version = meta.version
@@ -158,7 +159,7 @@ class DatabaseConnector {
 //                    } else {
 //                        realmElement.meta = RealmOPMeta()
 //                    }
-//                    
+//
 //                    if !element.nodes.isEmpty {
 //                        realmElement.nodes.append(objectsIn: element.nodes)
 //                    }
@@ -166,8 +167,8 @@ class DatabaseConnector {
 //                    realmElement.geometry.append(geometry)
 //                    realm.add(realmElement, update: .modified)
 //                }
-//                
-//                
+//
+//
 //            }
 //        } catch {
 //            print("Error saving elements to Realm: \(error)")
@@ -241,7 +242,8 @@ class DatabaseConnector {
         // Get the nodes for each
         var nodeCoords: [CLLocationCoordinate2D] = []
         for nodeId in nodeIds {
-            if let node = realm.object(ofType: StoredNode.self , forPrimaryKey: Int(nodeId)){
+            let compoundNodeId = "\(nodeId)-original"
+            if let node = realm.object(ofType: StoredNode.self , forPrimaryKey: compoundNodeId){
                 nodeCoords.append(node.point)
             }
         }
@@ -259,8 +261,9 @@ class DatabaseConnector {
      @param id: String value of the node ID
      @return StoredNode
      */
-    func getNode(id:String) -> StoredNode? {
-        return realm.object(ofType: StoredNode.self, forPrimaryKey: Int(id))
+    func getNode(id:Int, version: StoredWayVersion) -> StoredNode? {
+        let compoundId = "\(id)-\(version.rawValue)"
+        return realm.object(ofType: StoredNode.self, forPrimaryKey: compoundId)
     }
     /**
      Fetches single Way from the database
@@ -279,28 +282,8 @@ class DatabaseConnector {
     
     
     
-    /**
-     Adds tags to the existing node and stores the same
-     @param id : String value of the node ID
-     @param tags [String:String] map of the added tags
-     @return StoredNode
-     */
-    func addNodeTags(id: String, tags:[String: String]) -> StoredNode? {
-        guard let theNode = getNode(id: id) else { return nil }
-        do {
-            try realm.write {
-                tags.forEach { (key: String, value: String) in
-                    theNode.tags.setValue(value, forKey: key)
-                }
-            }
-        }
-        catch {
-            print("Error while writing tags")
-        }
-       
-        //realm.add(theNode, update: .all) // Test this
-        return theNode
-    }
+    
+
     
     /**
      Adds tags to the existing way and stores the same
@@ -310,8 +293,8 @@ class DatabaseConnector {
      */
 //    func addWayTags(id: String, tags:[String:String]) -> StoredWay? {
 //        guard let theWay = getWay(id: id) else { return nil }
-//        
-//        
+//
+//
 //        do {
 //            try realm.write {
 //                theWay.isOriginal = false
@@ -376,6 +359,61 @@ class DatabaseConnector {
 
         return copy
     }
+    
+    
+    /**
+     Adds tags to the existing node and stores the same
+     @param id : String value of the node ID
+     @param tags [String:String] map of the added tags
+     @return StoredNode
+     */
+    func addNodeTags(id: String, tags: [String: String]) -> StoredNode? {
+        let intId = Int(id) ?? -1
+
+        // Step 1: Try to get the editable copy first
+        if let editable = getNode(id: intId, version: .edited) {
+            do {
+                try realm.write {
+                    tags.forEach { editable.tags[$0.key] = $0.value }
+                }
+            } catch {
+                print("Error while writing node tags")
+            }
+            return editable
+        }
+
+        // Step 2: If not found, create from original
+        guard let original = getNode(id: intId, version: .original) else {
+            print("❌ Original node not found")
+            return nil
+        }
+
+        let copy = StoredNode()
+        copy.id = original.id
+        copy.version = original.version
+        copy.timestamp = original.timestamp
+        copy.point = original.point
+        copy.isOriginal = false
+        copy.generateCompoundId()
+
+        original.tags.forEach { entry in
+            copy.tags[entry.key] = entry.value
+        }
+
+        // Step 3: Apply new tags
+        tags.forEach { copy.tags[$0.key] = $0.value }
+
+        do {
+            try realm.write {
+                realm.add(copy)
+            }
+        } catch {
+            print("Error while saving editable node copy")
+        }
+
+        return copy
+    }
+
 
     
     
@@ -432,8 +470,9 @@ class DatabaseConnector {
         }
     }
     
-    func updateNodeVersion(nodeId:String, version:Int) -> StoredNode?{
-        guard let theNode = getNode(id: nodeId) else { return nil }
+    func updateNodeVersion(nodeId: String, version:Int) -> StoredNode?{
+        let intId = Int(nodeId) ?? -1
+        guard let theNode = getNode(id: intId, version: .edited) else { return nil }
         do {
             try realm.write {
                 theNode.version = version

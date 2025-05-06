@@ -17,6 +17,11 @@ enum StoredWayVersion: String {
     case edited
 }
 
+enum StoredNodeVersion: String {
+    case original
+    case edited
+}
+
 
 // Represents one stored way
 class StoredWay: Object {
@@ -33,8 +38,8 @@ class StoredWay: Object {
     @Persisted var isOriginal: Bool = false
     
     func generateCompoundId() {
-            self.compoundId = "\(id)-\(isOriginal ? "original" : "edited")"
-        }
+        self.compoundId = "\(id)-\(isOriginal ? "original" : "edited")"
+    }
     
     
     public func asWay() -> Way {
