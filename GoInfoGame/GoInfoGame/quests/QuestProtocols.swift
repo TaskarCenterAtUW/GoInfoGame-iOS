@@ -79,10 +79,10 @@ class QuestBase {
                            switch elementSubmittingToPOSM {
                            case .node:
                                print("Node submitted successfully")
-                             //  _ = DatabaseConnector.shared.addNodeTags(id: storedId, tags: ["ext:gig_complete" : "yes"])
+                               _ = DatabaseConnector.shared.addNodeTags(id: storedId, tags: ["ext:gig_complete" : "yes"])
                            case .way:
                                print("Way submitted successfully")
-                            //   _ = DatabaseConnector.shared.addWayTags(id: storedId, tags: ["ext:gig_complete" : "yes"])
+                               _ = DatabaseConnector.shared.addWayTags(id: storedId, tags: ["ext:gig_complete" : "yes"])
                            }
                        }
                        MapViewPublisher.shared.dismissSheet.send(.submitted(storedId))

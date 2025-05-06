@@ -39,7 +39,7 @@ class MapUndoManager {
                 current.nodes.removeAll()
                 current.nodes.append(objectsIn: original.nodes)
 
-                current.version += 1
+//                current.version += 1
             }
 
             updateTagsHandler?(id, current.tags.toDictionary(), .way)

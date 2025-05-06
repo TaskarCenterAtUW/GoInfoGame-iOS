@@ -214,6 +214,7 @@
 		FA9AEC002D5CACB6006A3A31 /* UserNodesHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA9AEBFF2D5CACB3006A3A31 /* UserNodesHelper.swift */; };
 		FA9F381C2DB2FF4B00D7AABF /* ShadowOverlayRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA9F381B2DB2FF3E00D7AABF /* ShadowOverlayRenderer.swift */; };
 		FA9F38202DC5585600D7AABF /* QuestUndoManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA9F381F2DC5584D00D7AABF /* QuestUndoManager.swift */; };
+		FA9F38222DC93F5300D7AABF /* UndoSidebarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA9F38212DC93F3D00D7AABF /* UndoSidebarView.swift */; };
 		FA9FE2D82BAC75390036F618 /* OAuthViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA9FE2D72BAC75390036F618 /* OAuthViewController.swift */; };
 		FABF3CF42B7419BB0080EAC9 /* LocationManagerDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = FABF3CF32B7419BB0080EAC9 /* LocationManagerDelegate.swift */; };
 		FABF3CF82B822F120080EAC9 /* CustomSureAlert.swift in Sources */ = {isa = PBXBuildFile; fileRef = FABF3CF72B822F120080EAC9 /* CustomSureAlert.swift */; };
@@ -230,6 +231,7 @@
 		FAD5C5162AFCBE720040C61A /* GoInfoGameUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAD5C5152AFCBE720040C61A /* GoInfoGameUITestsLaunchTests.swift */; };
 		FAE2584F2D39819300D2BB12 /* ManageQuestsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAE2584E2D39819300D2BB12 /* ManageQuestsView.swift */; };
 		FAE258522D3A780F00D2BB12 /* FloatingActionButtonStack.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAE258512D3A780F00D2BB12 /* FloatingActionButtonStack.swift */; };
+		FAEE21DB2DCA1963002F9BEC /* UndoButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAEE21DA2DCA1963002F9BEC /* UndoButton.swift */; };
 		FAF44FBD2B3084EC004FE664 /* OnboardingView1.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAF44FBC2B3084EC004FE664 /* OnboardingView1.swift */; };
 		FAF44FBF2B3084FB004FE664 /* OnboardingView2.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAF44FBE2B3084FB004FE664 /* OnboardingView2.swift */; };
 		FAF44FC12B30850A004FE664 /* OnboardingView3.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAF44FC02B30850A004FE664 /* OnboardingView3.swift */; };
@@ -537,6 +539,7 @@
 		FA9AEBFF2D5CACB3006A3A31 /* UserNodesHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserNodesHelper.swift; sourceTree = "<group>"; };
 		FA9F381B2DB2FF3E00D7AABF /* ShadowOverlayRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShadowOverlayRenderer.swift; sourceTree = "<group>"; };
 		FA9F381F2DC5584D00D7AABF /* QuestUndoManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuestUndoManager.swift; sourceTree = "<group>"; };
+		FA9F38212DC93F3D00D7AABF /* UndoSidebarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UndoSidebarView.swift; sourceTree = "<group>"; };
 		FA9FE2D72BAC75390036F618 /* OAuthViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OAuthViewController.swift; sourceTree = "<group>"; };
 		FABF3CF32B7419BB0080EAC9 /* LocationManagerDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationManagerDelegate.swift; sourceTree = "<group>"; };
 		FABF3CF72B822F120080EAC9 /* CustomSureAlert.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomSureAlert.swift; sourceTree = "<group>"; };
@@ -557,6 +560,7 @@
 		FAD5C5152AFCBE720040C61A /* GoInfoGameUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoInfoGameUITestsLaunchTests.swift; sourceTree = "<group>"; };
 		FAE2584E2D39819300D2BB12 /* ManageQuestsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManageQuestsView.swift; sourceTree = "<group>"; };
 		FAE258512D3A780F00D2BB12 /* FloatingActionButtonStack.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FloatingActionButtonStack.swift; sourceTree = "<group>"; };
+		FAEE21DA2DCA1963002F9BEC /* UndoButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UndoButton.swift; sourceTree = "<group>"; };
 		FAF44FBC2B3084EC004FE664 /* OnboardingView1.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingView1.swift; sourceTree = "<group>"; };
 		FAF44FBE2B3084FB004FE664 /* OnboardingView2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingView2.swift; sourceTree = "<group>"; };
 		FAF44FC02B30850A004FE664 /* OnboardingView3.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingView3.swift; sourceTree = "<group>"; };
@@ -1320,6 +1324,8 @@
 			children = (
 				FA87A80F2B68142F000A6BEA /* LoadingView.swift */,
 				FAE258512D3A780F00D2BB12 /* FloatingActionButtonStack.swift */,
+				FA9F38212DC93F3D00D7AABF /* UndoSidebarView.swift */,
+				FAEE21DA2DCA1963002F9BEC /* UndoButton.swift */,
 				FA5071972D71F1B000CE9798 /* SyncLogger.swift */,
 			);
 			path = Utils;
@@ -2107,6 +2113,7 @@
 				FA18CAE72CC80A34008247F2 /* UploadPhotoModel.swift in Sources */,
 				97439F782B87444200DA43E1 /* CrossingKerbHeightForm.swift in Sources */,
 				FAFDA1FA2C6B861A00ECEAE9 /* FileStorageManager.swift in Sources */,
+				FAEE21DB2DCA1963002F9BEC /* UndoButton.swift in Sources */,
 				A4834A3F2B67737500D4F0AA /* StoredChangeset.swift in Sources */,
 				973FC02F2B58F81F00878269 /* StepsRamp.swift in Sources */,
 				FAFDA2082C6E8F2500ECEAE9 /* APIConfiguration.swift in Sources */,
@@ -2141,6 +2148,7 @@
 				FA50718E2D54E1D200CE9798 /* BingTileOverlay.swift in Sources */,
 				973FC0352B592C0F00878269 /* StairNumberForm.swift in Sources */,
 				FA8C74C22C4E89C800D28220 /* LongForm.swift in Sources */,
+				FA9F38222DC93F5300D7AABF /* UndoSidebarView.swift in Sources */,
 				FAC9E60F2B04F9C800E2C608 /* OverpassRequestManager.swift in Sources */,
 				18EC425E2B849FE000DE05D7 /* TactilePavingCrosswalk.swift in Sources */,
 				FA8C74D82C60E95100D28220 /* PosmLogin.swift in Sources */,
