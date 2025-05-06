@@ -7,12 +7,11 @@ struct UndoItem: Identifiable {
     let elementId: Int
     let type: ElementType
     let changedKeys: [String]
-
-    var id: String { "\(type)-\(elementId)" } // unique identifier
+    var id: String { "\(type)-\(elementId)" }
 }
 
 struct UndoSidebarView: View {
-    let undoItems: [UndoItem]
+    @State private var undoItems: [UndoItem] = []
     var onUndo: (Int, ElementType) -> Void
     var onClose: () -> Void
 
@@ -27,6 +26,13 @@ struct UndoSidebarView: View {
                         .foregroundColor(.gray)
                 }
             }
+            
+            Button("Undo") {
+                MapUndoManager.shared.undo(for: 44, type: .node)
+            }
+            .foregroundColor(.blue)
+            .padding(.top, 4)
+                      
 
             ScrollView {
                 ForEach(undoItems) { item in
@@ -61,6 +67,9 @@ struct UndoSidebarView: View {
                 }
             }
             Spacer()
+        }
+        .onAppear {
+            undoItems = MapUndoManager.shared.getUndoItems()
         }
         .padding()
         .frame(width: 240)

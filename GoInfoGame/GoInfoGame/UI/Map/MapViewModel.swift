@@ -119,7 +119,7 @@ class MapViewModel: ObservableObject {
                 switch result {
                 case .success(let success):
                    let osmElements = success.getOSMElements()
-                    print("OSM ELEMENTS ??? \(osmElements)")
+                  //  print("OSM ELEMENTS ??? \(osmElements)")
                     
                     let response = Array(osmElements.values)
                     let allValues = response

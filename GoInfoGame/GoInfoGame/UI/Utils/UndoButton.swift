@@ -15,10 +15,9 @@ struct UndoButton: View {
         ZStack(alignment: .leading) {
             if showSidebar {
                 UndoSidebarView(
-                    undoItems: undoItems,
                     onUndo: { id, type in
                         MapUndoManager.shared.undo(for: Int64(id), type: type)
-                      //  undoItems = fetchUndoItems()
+                        undoItems = MapUndoManager.shared.getUndoItems()
                     },
                     onClose: {
                         withAnimation {
