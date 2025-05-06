@@ -9,6 +9,7 @@ import Foundation
 import RealmSwift
 import MapKit
 import osmapi
+import osmparser
 
 class DatabaseConnector {
     static let shared = DatabaseConnector()
@@ -446,12 +447,24 @@ class DatabaseConnector {
     /// - parameter synced: Optional variable of whether synced or non synced
     /// - Returns: an instance of `Results<StoredChangeset>`
     func getChangesets(synced: Bool = false) -> Results<StoredChangeset> {
-        
-        if (synced == true){
-            return  realm.objects(StoredChangeset.self).where({$0.changesetId != -1 })
+        let results: Results<StoredChangeset>
+        if synced {
+            results = realm.objects(StoredChangeset.self).where { $0.changesetId != -1 }
+        } else {
+            results = realm.objects(StoredChangeset.self).where { $0.changesetId == -1 }
         }
-        return realm.objects(StoredChangeset.self).where({$0.changesetId == -1 })
+        print("Found \(results.count) changesets for synced=\(synced)")
+        return results
     }
+    
+    func getChangeset(for id: Int64, type: ElementType) -> StoredChangeset? {
+        let storedType: StoredElementEnum = (type == .way) ? .way : .node
+        let stringId = String(id)
+        return realm.objects(StoredChangeset.self)
+            .filter("elementId == %@ AND elementType == %@", stringId, storedType.rawValue)
+            .first
+    }
+
     /// Assigns changesetId for a stored changeset
     /// - parameter obj: Internal id for the changeset in the database (unique ID)
     /// - parameter changesetId: Assigned changeset ID from the server
