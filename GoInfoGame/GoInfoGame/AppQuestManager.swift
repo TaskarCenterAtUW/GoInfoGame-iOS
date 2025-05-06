@@ -68,10 +68,29 @@ class AppQuestManager {
     // Fetches all the available quests from Database
     func fetchQuestsFromDB() ->  [DisplayUnitWithCoordinate] {
             
+        let allOriginalNodes = dbInstance.getNodes().filter { $0.isOriginal && $0.tags.count != 0 }
+        
         let nodesFromStorage = dbInstance.getNodes().filter { n in
             n.tags.count != 0
         }
-        let waysFromStorage = dbInstance.getWays().filter{w in w.tags.count != 0 }
+             
+        let allOriginalWays = dbInstance.getWays().filter {
+            $0.isOriginal && $0.tags.count != 0
+        }
+
+        let waysFromStorage = allOriginalWays.compactMap { original in
+            if let edited = self.dbInstance.getWay(id: original.id, version: .edited),
+               edited.tags.count != 0,
+               edited.tags["ext:gig_complete"] != "yes" {
+                return edited
+            } else if original.tags["ext:gig_complete"] != "yes" {
+                return original
+            } else {
+                return nil
+            }
+        }
+    
+        
         let nodeElements = nodesFromStorage.map({$0.asNode()})
         let wayElements = waysFromStorage.map({$0.asWay()})
                 
