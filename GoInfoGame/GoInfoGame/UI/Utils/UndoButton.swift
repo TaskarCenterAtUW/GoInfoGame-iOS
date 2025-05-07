@@ -18,6 +18,9 @@ struct UndoButton: View {
                     onUndo: { id, type in
                         MapUndoManager.shared.undo(for: Int64(id), type: type)
                         undoItems = MapUndoManager.shared.getUndoItems()
+                        withAnimation {
+                            showSidebar = false
+                        }
                     },
                     onClose: {
                         withAnimation {
