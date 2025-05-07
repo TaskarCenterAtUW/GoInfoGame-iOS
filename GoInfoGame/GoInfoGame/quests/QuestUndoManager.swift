@@ -49,6 +49,12 @@ class MapUndoManager {
                     realm.delete(changeset)
                 }
             }
+            
+            if let edited = DatabaseConnector.shared.getWay(id: Int(id), version: .edited) {
+                try? realm.write {
+                    realm.delete(edited)
+                }
+            }
 
         case .node:
             guard let original = DatabaseConnector.shared.getNode(id: Int(id), version: .original),
@@ -72,6 +78,12 @@ class MapUndoManager {
                     realm.delete(changeset)
                 }
             }
+            
+            if let edited = DatabaseConnector.shared.getNode(id: Int(id), version: .edited) {
+                try? realm.write {
+                    realm.delete(edited)
+                }
+            }
 
         default:
             print(" Unknown element type")
@@ -81,12 +93,22 @@ class MapUndoManager {
     func getUndoItems() -> [UndoItem] {
         let changesets = DatabaseConnector.shared.getChangesets(synced: true)
 
+        var seen = Set<String>()
+        
         return changesets.compactMap { cs in
             guard let type = cs.elementType.toElementType() else { return nil }
-            let changedKeys = cs.tags.map { $0.key }
-            return UndoItem(elementId: Int(cs.elementId) ?? -1, type: type, changedKeys: changedKeys)
+            let key = "\(cs.elementId)-\(type)"
+            
+            if seen.contains(key) {
+                return nil // Skip duplicates
+            } else {
+                seen.insert(key)
+                let changedKeys = cs.tags.map { $0.key }
+                return UndoItem(elementId: Int(cs.elementId) ?? -1, type: type, changedKeys: changedKeys)
+            }
         }
     }
+
 }
 
 extension Map where Key == String, Value == String {

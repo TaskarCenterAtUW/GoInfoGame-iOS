@@ -26,18 +26,11 @@ struct UndoSidebarView: View {
                         .foregroundColor(.gray)
                 }
             }
-            
-            Button("Undo") {
-                MapUndoManager.shared.undo(for: 44, type: .node)
-            }
-            .foregroundColor(.blue)
-            .padding(.top, 4)
-                      
-
+        
             ScrollView {
                 ForEach(undoItems) { item in
                     VStack(alignment: .leading, spacing: 4) {
-                        Text("\(item.type == .way ? "Way" : "Node") #\(item.elementId)")
+                        Text("\(item.type == .way ? "Way" : "Node") #\(String(item.elementId))")
                             .font(.subheadline)
                             .bold()
 
