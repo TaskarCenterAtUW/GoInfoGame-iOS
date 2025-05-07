@@ -89,29 +89,40 @@ class DatasyncManager {
             do {
                 let isFinished = try await syncNode(node: payload)
                 if isFinished {
+                    // ✅ Mark changeset as submitted
                     DispatchQueue.main.async {
                         self.dbInstance.assignChangesetId(obj: key, changesetId: 0)
                     }
+
+                    // 🔄 Fetch updated node from OSM
+                    let updatedNode = try await fetchNode2(nodeId: "\(payload.id)")
+                    refreshOriginalNodeIfNewer(updatedNode)
+
+                    print("✅ Sync finished for node: \(payload.id)")
                 } else {
                     syncSuccess = false
                     return false
                 }
-                print("Sync finished for node: \(isFinished)")
             } catch {
-                print("Failed to sync node: \(error.localizedDescription)")
+                print("❌ Failed to sync node: \(error.localizedDescription)")
                 syncSuccess = false
                 throw error
             }
         }
+
 
         for (key, way) in waysToSync {
             var payload = way.asOSMWay()
             do {
                 let isFinished = try await syncWay(way: payload)
                 if isFinished {
+                    // Update changeset locally
                     DispatchQueue.main.async {
                         self.dbInstance.assignChangesetId(obj: key, changesetId: 0)
                     }
+
+                    let updatedWay = try await fetchway2(wayId: "\(payload.id)")
+                    refreshOriginalWayIfNewer(updatedWay)
                 } else {
                     syncSuccess = false
                     return false
@@ -122,12 +133,33 @@ class DatasyncManager {
                 throw error
             }
         }
+
         isSynching = false
         return syncSuccess
     }
 
+    func refreshOriginalWayIfNewer(_ newWay: OSMWay) {
+        guard let existing = DatabaseConnector.shared.getWay(id: newWay.id, version: .original) else {
+            DatabaseConnector.shared.saveOSMElements([newWay])
+            return
+        }
 
+        if newWay.version > existing.version {
+            DatabaseConnector.shared.saveOSMElements([newWay])
+        }
+    }
     
+    func refreshOriginalNodeIfNewer(_ newNode: OSMNode) {
+        guard let existing = DatabaseConnector.shared.getNode(id: newNode.id, version: .original) else {
+            DatabaseConnector.shared.saveOSMElements([newNode])
+            return
+        }
+
+        if newNode.version > existing.version {
+            DatabaseConnector.shared.saveOSMElements([newNode])
+        }
+    }
+
     func syncDataDummy() async  {
         
         let changesets = dbInstance.getChangesets()
@@ -429,7 +461,7 @@ class DatasyncManager {
         
         return try await withCheckedThrowingContinuation { continuation in
             ApiManager.shared.performRequest(
-                to: .fetchLatestWay(workspaceID, nodeId),
+                to: .fetchLatestNode(workspaceID, nodeId),
                 setupType: .osm,
                 modelType: OSMNodeResponse.self
             ) { result in

@@ -54,8 +54,9 @@ class DatabaseConnector {
                 for node in nodes {
                     let storedElement = StoredNode()
                     storedElement.id = node.id
-                    for tag in node.tags {
-                        storedElement.tags.setValue(tag.value, forKey: tag.key)
+                    storedElement.tags.removeAll()
+                    node.tags.forEach { key, value in
+                        storedElement.tags[key] = value
                     }
 //                    if let meta = node {
                         let timestampString = dateFormatter.string(from: node.timestamp)
@@ -81,9 +82,10 @@ class DatabaseConnector {
                     let storedWay = StoredWay()
                     storedWay.id = way.id
                     let timestampString = dateFormatter.string(from: way.timestamp)
-                    for tag in way.tags {
-                        if(!tag.key.contains(".")){ // Do a utility function
-                            storedWay.tags.setValue(tag.value, forKey: tag.key)
+                    storedWay.tags.removeAll()
+                    way.tags.forEach { key, value in
+                        if !key.contains(".") {
+                            storedWay.tags[key] = value
                         }
                     }
                     storedWay.version = way.version
