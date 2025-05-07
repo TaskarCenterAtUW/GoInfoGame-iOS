@@ -96,7 +96,7 @@ class DatasyncManager {
 
                     // 🔄 Fetch updated node from OSM
                     let updatedNode = try await fetchNode2(nodeId: "\(payload.id)")
-                    refreshOriginalNodeIfNewer(updatedNode)
+                 //   refreshOriginalNodeIfNewer(updatedNode)
 
                     print("✅ Sync finished for node: \(payload.id)")
                 } else {
@@ -122,7 +122,7 @@ class DatasyncManager {
                     }
 
                     let updatedWay = try await fetchway2(wayId: "\(payload.id)")
-                    refreshOriginalWayIfNewer(updatedWay)
+                    //refreshOriginalWayIfNewer(updatedWay)
                 } else {
                     syncSuccess = false
                     return false
