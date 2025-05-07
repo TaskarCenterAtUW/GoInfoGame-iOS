@@ -39,11 +39,11 @@ class QuestBase {
     
     // Add a custom implementation
     
-   public func updateTags(id: Int64, tags:[String:String], type: ElementType){
+   public func updateTags(id: Int64, tags:[String:String], type: ElementType, isUndo: Bool = false) {
        
        if MapUndoManager.shared.updateTagsHandler == nil {
                   MapUndoManager.shared.updateTagsHandler = { [weak self] id, tags, type in
-                      self?.updateTags(id: id, tags: tags, type: type)
+                      self?.updateTags(id: id, tags: tags, type: type, isUndo: true)
                   }
               }
        
@@ -52,7 +52,7 @@ class QuestBase {
        let storedElementType: StoredElementEnum = type == .way ? .way : .node
        let storedId = String(id)
        // Create a changeset
-       _ = DatabaseConnector.shared.createChangeset(id: storedId, type: storedElementType, tags: tags)
+       _ = DatabaseConnector.shared.createChangeset(id: storedId, type: storedElementType, tags: tags, isUndo: isUndo)
        switch (storedElementType){
        case .way:
            elementSubmittingToPOSM = .way
