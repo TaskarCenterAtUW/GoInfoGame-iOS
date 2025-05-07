@@ -89,8 +89,19 @@ struct QuestOptions: View {
                         LazyVGrid(columns: columns, spacing: 16) {
                             ForEach(options, id: \.id) { option in
                                 Button(action: {
-                                    selectedAnswerId = option.id
-                                    onChoiceSelected(option)
+                                    if selectedAnswerId == option.id {
+                                        // Deselect
+                                        selectedAnswerId = nil
+                                        currentAnswer = nil
+                                        selectedImageURL = nil
+                                        selectedImageText = nil
+                                        // Don't call onChoiceSelected if you want to ignore blank assignment
+                                    } else {
+                                        // Select
+                                        selectedAnswerId = option.id
+                                        currentAnswer = option.value
+                                        onChoiceSelected(option)
+                                    }
                                 }) {
                                     VStack(spacing: 8) {
                                         if let imageUrl = option.imageURL, !imageUrl.isEmpty {
@@ -104,7 +115,6 @@ struct QuestOptions: View {
                                             .onLongPressGesture {
                                                 selectedImageURL = imageUrl
                                                 selectedImageText = option.choiceText
-                                                
                                             }
                                         } else {
                                             ZStack {
@@ -113,7 +123,6 @@ struct QuestOptions: View {
                                                     .scaledToFill()
                                                     .frame(width: 100, height: 100)
                                                     .clipped()
-                                                    //add grey border to image
                                                     .overlay(
                                                         RoundedRectangle(cornerRadius: 8)
                                                             .stroke(Color.gray, lineWidth: 1)
@@ -121,10 +130,10 @@ struct QuestOptions: View {
                                                 
                                                 ZStack {
                                                     let strokeOffsets: [(CGFloat, CGFloat)] = [
-                                                     (-1, -1), (1, -1),
-                                                     (-1, 1), (1, 1),
-                                                     (0, -1), (0, 1),
-                                                     (-1, 0), (1, 0)
+                                                        (-1, -1), (1, -1),
+                                                        (-1, 1), (1, 1),
+                                                        (0, -1), (0, 1),
+                                                        (-1, 0), (1, 0)
                                                     ]
                                                     
                                                     ForEach(0..<strokeOffsets.count, id: \.self) { i in
@@ -141,20 +150,22 @@ struct QuestOptions: View {
                                                         .shadow(color: Color.black.opacity(0.7), radius: 4, x: 0, y: 2)
                                                 }
                                             }
-                                            
                                         }
                                     }
                                 }
-                                    .overlay(
-                                        RoundedRectangle(cornerRadius: 8)
-                                            .stroke(currentAnswer == option.value ? Color.blue : Color.clear, lineWidth: 3)
-                                    )
+                                .overlay(
+                                    RoundedRectangle(cornerRadius: 8)
+                                        .stroke(currentAnswer == option.value ? Color.blue : Color.clear, lineWidth: 3)
+                                )
+
                             }
                         }
+
                         
                         // Place follow-up button separately after the grid
-                        if let selected = options.first(where: { $0.id == selectedAnswerId }),
-                           selected.choiceFollowUp != nil {
+                        if let selected = selectedAnswerId.flatMap({ id in
+                            options.first(where: { $0.id == id && $0.choiceFollowUp != nil })
+                        }) {
                             Button(action: {
                                 uploadPhoto(true)
                             }) {
