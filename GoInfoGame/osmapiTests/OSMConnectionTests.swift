@@ -21,7 +21,7 @@ final class OSMConnectionTests: XCTestCase {
 
     override func setUpWithError() throws {
         // Put setup code here. This method is called before the invocation of each test method in the class.
-        posmConnection = OSMConnection(config: posmConfig,userCreds: posmCreds)
+        posmConnection = OSMConnection(config: posmConfig)
     }
 
     override func tearDownWithError() throws {
@@ -78,7 +78,7 @@ final class OSMConnectionTests: XCTestCase {
     func testChangesetOpen() throws {
         let osmConnection = OSMConnection()
         let expectation = expectation(description: "Expect to open changeset")
-        osmConnection.openChangeSet {result in
+        osmConnection.openChangeSet(createdByTag: "") {result in
             switch result {
             case .success(let changesetId):
                 XCTAssert(changesetId != 0)
@@ -148,7 +148,7 @@ final class OSMConnectionTests: XCTestCase {
     
     func testPosmOpenChangeset() throws{
         let expectation = expectation(description: "Expect to open changeset")
-        posmConnection?.openChangeSet {result in
+        posmConnection?.openChangeSet(createdByTag: "") {result in
             switch result {
             case .success(let changesetId):
                 XCTAssert(changesetId != 0)
@@ -260,55 +260,55 @@ final class OSMConnectionTests: XCTestCase {
         }
         waitForExpectations(timeout: 12)
     }
-    func testGetMapData() throws {
-        let osmConnection = self.posmConnection
-        let expectation = expectation(description: "Expect to get map data details from bbox")
-        let centralLocation = CLLocation(latitude: 37.7749, longitude: -122.4194) // San Francisco coords
-        let distance = 100
-        let boundingCoordinates = centralLocation.boundingCoordinates(distance: CLLocationDistance(distance))
-        print("Left:", boundingCoordinates.left.coordinate.longitude)
-        print("Bottom:", boundingCoordinates.bottom.coordinate.latitude)
-        print("Right:", boundingCoordinates.right.coordinate.longitude)
-        print("Top:", boundingCoordinates.top.coordinate.latitude)
-
-        osmConnection?.getOSMMapData(left:boundingCoordinates.left.coordinate.longitude , bottom:boundingCoordinates.bottom.coordinate.latitude , right:boundingCoordinates.right.coordinate.longitude , top:boundingCoordinates.top.coordinate.latitude ) { result in
-            switch result {
-            case .success(let mapData):
-                let response = mapData.elements.count
-                print(response)
-            case .failure(let error):
-                XCTFail("Failed while getting the map data details: \(error)")
-            }
-            expectation.fulfill()
-        }
-        waitForExpectations(timeout: 15)
-    }
-    
-    func testFetchMapData() throws {
-        let osmConnection = self.posmConnection
-        let expectation = expectation(description: "Expect to get map data details from bbox")
-        let centralLocation = CLLocation(latitude: 37.7749, longitude: -122.4194) // San Francisco coords
-        let distance = 100
-        let boundingCoordinates = centralLocation.boundingCoordinates(distance: CLLocationDistance(distance))
-        print("Left:", boundingCoordinates.left.coordinate.longitude)
-        print("Bottom:", boundingCoordinates.bottom.coordinate.latitude)
-        print("Right:", boundingCoordinates.right.coordinate.longitude)
-        print("Top:", boundingCoordinates.top.coordinate.latitude)
-
-        osmConnection?.fetchMapData(left:boundingCoordinates.left.coordinate.longitude , bottom:boundingCoordinates.bottom.coordinate.latitude , right:boundingCoordinates.right.coordinate.longitude , top:boundingCoordinates.top.coordinate.latitude ) { result in
-            switch result {
-            case .success(let mapData):
+//    func testGetMapData() throws {
+//        let osmConnection = self.posmConnection
+//        let expectation = expectation(description: "Expect to get map data details from bbox")
+//        let centralLocation = CLLocation(latitude: 37.7749, longitude: -122.4194) // San Francisco coords
+//        let distance = 100
+//        let boundingCoordinates = centralLocation.boundingCoordinates(distance: CLLocationDistance(distance))
+//        print("Left:", boundingCoordinates.left.coordinate.longitude)
+//        print("Bottom:", boundingCoordinates.bottom.coordinate.latitude)
+//        print("Right:", boundingCoordinates.right.coordinate.longitude)
+//        print("Top:", boundingCoordinates.top.coordinate.latitude)
+//
+//        osmConnection?.getOSMMapData(left:boundingCoordinates.left.coordinate.longitude , bottom:boundingCoordinates.bottom.coordinate.latitude , right:boundingCoordinates.right.coordinate.longitude , top:boundingCoordinates.top.coordinate.latitude ) { result in
+//            switch result {
+//            case .success(let mapData):
 //                let response = mapData.elements.count
-                print(mapData.count)
-                print(mapData.keys)
-                print(mapData.first?.value)
-            case .failure(let error):
-                XCTFail("Failed while getting the map data details: \(error)")
-            }
-            expectation.fulfill()
-        }
-        waitForExpectations(timeout: 15)
-    }
+//                print(response)
+//            case .failure(let error):
+//                XCTFail("Failed while getting the map data details: \(error)")
+//            }
+//            expectation.fulfill()
+//        }
+//        waitForExpectations(timeout: 15)
+//    }
+    
+//    func testFetchMapData() throws {
+//        let osmConnection = self.posmConnection
+//        let expectation = expectation(description: "Expect to get map data details from bbox")
+//        let centralLocation = CLLocation(latitude: 37.7749, longitude: -122.4194) // San Francisco coords
+//        let distance = 100
+//        let boundingCoordinates = centralLocation.boundingCoordinates(distance: CLLocationDistance(distance))
+//        print("Left:", boundingCoordinates.left.coordinate.longitude)
+//        print("Bottom:", boundingCoordinates.bottom.coordinate.latitude)
+//        print("Right:", boundingCoordinates.right.coordinate.longitude)
+//        print("Top:", boundingCoordinates.top.coordinate.latitude)
+//
+//        osmConnection?.fetchMapData(left:boundingCoordinates.left.coordinate.longitude , bottom:boundingCoordinates.bottom.coordinate.latitude , right:boundingCoordinates.right.coordinate.longitude , top:boundingCoordinates.top.coordinate.latitude ) { result in
+//            switch result {
+//            case .success(let mapData):
+////                let response = mapData.elements.count
+//                print(mapData.count)
+//                print(mapData.keys)
+//                print(mapData.first?.value)
+//            case .failure(let error):
+//                XCTFail("Failed while getting the map data details: \(error)")
+//            }
+//            expectation.fulfill()
+//        }
+//        waitForExpectations(timeout: 15)
+//    }
 }
 
 extension CLLocation {

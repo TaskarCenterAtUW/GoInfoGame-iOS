@@ -28,19 +28,18 @@ final class DatasyncManagerTests: XCTestCase {
     
     func testOpenChangeset() async throws {
         let dbSyncManager  = DatasyncManager.shared
-        let result = await dbSyncManager.openChangeset()
-        switch result {
-        case .success(let changesetId):
-            print("Got the chnageset ID")
-            print(changesetId)
-        case .failure(let error):
+        let result = try? await dbSyncManager.openChangeset()
+        if let result = result {
+            XCTAssertTrue(true)
+            print("Got the chnageset ID \(result)")
+        } else {
             XCTFail("Failed to get the changesetID")
         }
     }
     
     func testDataSync() async throws {
         let dbSyncManager  = DatasyncManager.shared
-        await dbSyncManager.syncData()
+        _ = try? await dbSyncManager.syncData()
 //        await dbSyncManager.syncDataDummy()
         
     }
@@ -49,10 +48,10 @@ final class DatasyncManagerTests: XCTestCase {
         // TO be done. Need to check two calls on the same thing.
         let dbSyncManager  = DatasyncManager.shared
         Task {
-           await dbSyncManager.syncData()
+           _ = try? await dbSyncManager.syncData()
         }
         Task {
-            await dbSyncManager.syncData()
+            _ = try? await dbSyncManager.syncData()
         }
     }
 

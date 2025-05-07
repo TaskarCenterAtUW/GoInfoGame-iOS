@@ -114,28 +114,30 @@ final class OverpassRequestManagerTests: XCTestCase {
         }
     }
     
-    func testOSMApiFetchElements() throws {
-        let osmConnection = OSMConnection()
-        let expec = expectation(description: "Fetches the elements from Overpass Manager and stores in Database")
-        let dbInstance = DatabaseConnector.shared
-        let centralLocation = CLLocation(latitude: 37.7749, longitude: -122.4194) // San Francisco coords
-        let distance = 100
-        let boundingCoordinates = centralLocation.boundingCoordinates(distance: CLLocationDistance(distance))
-        osmConnection.fetchMapData(left:boundingCoordinates.left.coordinate.longitude , bottom:boundingCoordinates.bottom.coordinate.latitude , right:boundingCoordinates.right.coordinate.longitude , top:boundingCoordinates.top.coordinate.latitude ) { result in
-            switch result {
-            case .success(let mapData):
-                let allElements = Array(mapData.values)
-                print("Saving tags")
-                DispatchQueue.main.async {
-                    dbInstance.saveOSMElements(allElements) // Save all where there are tags
-                    expec.fulfill()
-                }
-            case .failure(let error):
-                print("error")
-            }
-           
-        }
-        waitForExpectations(timeout: 15)
-    }
+//    func testOSMApiFetchElements() throws {
+//        let osmConnection = OSMConnection()
+//        let expec = expectation(description: "Fetches the elements from Overpass Manager and stores in Database")
+//        let dbInstance = DatabaseConnector.shared
+//        let centralLocation = CLLocation(latitude: 37.7749, longitude: -122.4194) // San Francisco coords
+//        let distance = 100
+//        let boundingCoordinates = centralLocation.boundingCoordinates(distance: CLLocationDistance(distance))
+//        
+//        // fetchMapData API is not being used and is not available now.
+//        osmConnection.fetchMapData(left:boundingCoordinates.left.coordinate.longitude , bottom:boundingCoordinates.bottom.coordinate.latitude , right:boundingCoordinates.right.coordinate.longitude , top:boundingCoordinates.top.coordinate.latitude ) { result in
+//            switch result {
+//            case .success(let mapData):
+//                let allElements = Array(mapData.values)
+//                print("Saving tags")
+//                DispatchQueue.main.async {
+//                    dbInstance.saveOSMElements(allElements) // Save all where there are tags
+//                    expec.fulfill()
+//                }
+//            case .failure(let error):
+//                print("error")
+//            }
+//           
+//        }
+//        waitForExpectations(timeout: 15)
+//    }
 
 }

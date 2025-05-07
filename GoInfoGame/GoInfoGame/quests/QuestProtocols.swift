@@ -39,12 +39,18 @@ class QuestBase {
     
     // Add a custom implementation
     
-   public func updateTags(id: Int64, tags:[String:String], type: ElementType){
+   public func updateTags(id: Int64, tags:[String:String], type: ElementType, isUndo: Bool = false) {
+       
+       MapUndoManager.shared.updateTagsHandler = { [weak self] id, tags, type in
+           self?.updateTags(id: id, tags: tags, type: type)
+       }
+       
+       
        // Convert from ElementType enum to StoredElementEnum
        let storedElementType: StoredElementEnum = type == .way ? .way : .node
        let storedId = String(id)
        // Create a changeset
-       _ = DatabaseConnector.shared.createChangeset(id: storedId, type: storedElementType, tags: tags)
+       _ = DatabaseConnector.shared.createChangeset(id: storedId, type: storedElementType, tags: tags, isUndo: isUndo)
        switch (storedElementType){
        case .way:
            elementSubmittingToPOSM = .way
@@ -67,18 +73,14 @@ class QuestBase {
                switch success {
                case .success(let success):
                    if success {
-                       if let elementSubmittingToPOSM = self.elementSubmittingToPOSM {
-                           switch elementSubmittingToPOSM {
-                           case .node:
-                               print("Node submitted successfully")
-                               _ = DatabaseConnector.shared.addNodeTags(id: storedId, tags: ["ext:gig_complete" : "yes"])
-                           case .way:
-                               print("Way submitted successfully")
-                               _ = DatabaseConnector.shared.addWayTags(id: storedId, tags: ["ext:gig_complete" : "yes"])
-                           }
+                       if MapUndoManager.shared.isUndoInProgress {
+                           MapUndoManager.shared.finalizeSuccessfulSubmit(id: Int(id), type: type)
+                           MapUndoManager.shared.isUndoInProgress = false
                        }
-                       MapViewPublisher.shared.dismissSheet.send(.submitted(storedId))
-                   } else {
+
+                       MapViewPublisher.shared.dismissSheet.send(.submitted("\(id)"))
+                   }
+ else {
                        print("Sync failed. Handle accordingly.")
                        MapViewPublisher.shared.dismissSheet.send(.failed("Submission failed. Please try again."))
                    }

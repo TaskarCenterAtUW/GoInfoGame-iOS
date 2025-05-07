@@ -53,6 +53,9 @@ struct MapView: View {
     @State private var showZoomInAlert = false
     
     @State private var shadowOverlay = ShadowOverlay()
+    
+    @State private var showUndoSidebar = false
+    
                 
     var body: some View {
         NavigationStack {
@@ -126,11 +129,36 @@ struct MapView: View {
                         }
                     }
                 }
-            
-            
-            FloatingActionButtonStack(mapButtonAction: {
-                useBingMaps.toggle()
-            }, useBingMaps: useBingMaps)
+                VStack {
+                    Spacer()
+                    HStack {
+                        UndoButton()
+                        .padding(.bottom, 24)
+                        .padding(.leading, 16)
+                        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottomLeading)
+                        Spacer()
+                        FloatingActionButtonStack(mapButtonAction: {
+                            useBingMaps.toggle()
+                        }, useBingMaps: useBingMaps)
+                    }
+                }
+                
+//                if showUndoSidebar {
+//                    UndoSidebarView(
+//                        onUndo: { id, type in
+//                            MapUndoManager.shared.undo(for: Int64(id), type: type)
+//                         //   undoItems = MapUndoManager.shared.getUndoItems() // refresh
+//                        },
+//                        onClose: {
+//                            withAnimation {
+//                                showUndoSidebar = false
+//                            }
+//                        }
+//                    )
+//                    .transition(.move(edge: .leading))
+//                    .padding(.top, 20)
+//                }
+
             
             if !viewModel.selectedAnnotaions.isEmpty,
                let selectedAnnotationType = viewModel.selectedAnnotationType,
@@ -388,6 +416,10 @@ struct MapView: View {
             print("selected workspace",selectedWorkspace?.title ?? "")
             QuestsRepository.shared.loadLongQuests(from: "longQuestJson")
             self.baseUrl = "https://osm.workspaces-stage.sidewalks.washington.edu"
+            let original = DatabaseConnector.shared.getNode(id: 43, version: .original)
+            let edited = DatabaseConnector.shared.getNode(id: 43, version: .edited)
+            print("ORIGINAL --->>>\(original)")
+            print("EDITED --->>>\(edited)")
         }
     }
     
@@ -496,7 +528,7 @@ struct MultiQuestSelectionBottomSheet: View {
     var body: some View {
         VStack() {
             HStack {
-                Image(uiImage: selectedAnnotationImage) 
+                Image(uiImage: selectedAnnotationImage)
                     .resizable()
                     .frame(width: 20.0, height: 20.0)
                     .foregroundColor(.gray)

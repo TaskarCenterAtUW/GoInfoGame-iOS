@@ -15,7 +15,7 @@ class DatasyncManager {
     static let shared = DatasyncManager()
     private init() {}
     
-//    private var isSynching: Bool = false
+    private var isSynching: Bool = false
     
     private let dbInstance = DatabaseConnector.shared
     private let barrierQueue: DispatchQueue = DispatchQueue(label: "com.goinfogame.DatasyncManager.barrierQueue", attributes: .concurrent)
@@ -58,76 +58,125 @@ class DatasyncManager {
     ///  To fix the above error added @mainActor
     @MainActor
     func syncData() async throws -> Bool {
-        
-        //Disabling temporarily. To be put back after incorporating syncing mechanism
-//        if isSynching {
-//            print("Already syncing")
-//            return false
-//        } else {
-//            isSynching = true
-//        }
+        print("🔄 Starting sync...")
 
         let changesets = dbInstance.getChangesets()
-        print("Starting to sync data changesets: \(changesets.count)")
-        
+        print("Found \(changesets.count) changesets for synced=false")
+
+        // Filter changesets that have valid edited versions
+        let validChangesets = changesets.filter {
+            let intId = Int($0.elementId) ?? -1
+            switch $0.elementType {
+            case .way:
+                let exists = self.dbInstance.getWay(id: intId, version: .edited) != nil
+                if !exists {
+                    print("⚠️ Edited way not found for ID: \(intId)")
+                }
+                return exists
+            case .node:
+                let exists = self.dbInstance.getNode(id: intId, version: .edited) != nil
+                if !exists {
+                    print("⚠️ Edited node not found for ID: \(intId)")
+                }
+                return exists
+            default:
+                return false
+            }
+        }
+
+        print("📦 Found \(validChangesets.count) unsynced changesets with valid edits")
+
         var nodesToSync: [String: StoredNode] = [:]
         var waysToSync: [String: StoredWay] = [:]
-        
-        for changeset in changesets {
-            print("changeset.elementType \(changeset.elementType), ID \(changeset.id) changeset.elementId \(changeset.elementId)")
-            if changeset.elementType == .node, let node = dbInstance.getNode(id: changeset.elementId) {
-                nodesToSync[changeset.id] = node
-            } else if changeset.elementType == .way, let way = dbInstance.getWay(id: changeset.elementId) {
-                waysToSync[changeset.id] = way
+
+        for cs in validChangesets {
+            let intId = Int(cs.elementId) ?? -1
+            if cs.elementType == .node,
+               let node = dbInstance.getNode(id: intId, version: .edited) {
+                nodesToSync[cs.id] = node
+            } else if cs.elementType == .way,
+                      let way = dbInstance.getWay(id: intId, version: .edited) {
+                waysToSync[cs.id] = way
             }
         }
 
         var syncSuccess = true
 
+        if nodesToSync.isEmpty && waysToSync.isEmpty {
+            print("✅ No edited elements found to sync")
+            return true
+        }
+
         for (key, node) in nodesToSync {
-            var payload = node.asOSMNode()
+            print("📤 Syncing node ID: \(node.id)")
+            let payload = node.asOSMNode()
             do {
                 let isFinished = try await syncNode(node: payload)
                 if isFinished {
                     DispatchQueue.main.async {
                         self.dbInstance.assignChangesetId(obj: key, changesetId: 0)
                     }
+                    print("✅ Node sync finished: \(payload.id)")
                 } else {
+                    print("❌ Node sync failed silently: \(payload.id)")
                     syncSuccess = false
-                    return false
                 }
-                print("Sync finished for node: \(isFinished)")
             } catch {
-                print("Failed to sync node: \(error.localizedDescription)")
+                print("❌ Failed to sync node: \(error.localizedDescription)")
                 syncSuccess = false
                 throw error
             }
         }
 
         for (key, way) in waysToSync {
-            var payload = way.asOSMWay()
+            print("📤 Syncing way ID: \(way.id)")
+            let payload = way.asOSMWay()
             do {
                 let isFinished = try await syncWay(way: payload)
                 if isFinished {
                     DispatchQueue.main.async {
                         self.dbInstance.assignChangesetId(obj: key, changesetId: 0)
                     }
+                    print("✅ Way sync finished: \(payload.id)")
                 } else {
+                    print("❌ Way sync failed silently: \(payload.id)")
                     syncSuccess = false
-                    return false
                 }
             } catch {
-                print("Failed to sync way: \(error.localizedDescription)")
+                print("❌ Failed to sync way: \(error.localizedDescription)")
                 syncSuccess = false
                 throw error
             }
         }
-//        isSynching = false
+
+        print("Sync finished")
         return syncSuccess
     }
 
 
+
+    func refreshOriginalWayIfNewer(_ newWay: OSMWay) {
+        guard let existing = DatabaseConnector.shared.getWay(id: newWay.id, version: .original) else {
+            DatabaseConnector.shared.saveOSMElements([newWay])
+            return
+        }
+
+        if newWay.version > existing.version {
+            DatabaseConnector.shared.saveOSMElements([newWay])
+        }
+    }
     
+    func refreshOriginalNodeIfNewer(_ newNode: OSMNode) {
+        guard let existing = DatabaseConnector.shared.getNode(id: newNode.id, version: .original) else {
+            DatabaseConnector.shared.saveOSMElements([newNode])
+            return
+        }
+
+        if newNode.version > existing.version {
+            DatabaseConnector.shared.saveOSMElements([newNode])
+        }
+    }
+
     func syncDataDummy() async  {
         
         let changesets = dbInstance.getChangesets()
@@ -429,7 +478,7 @@ class DatasyncManager {
         
         return try await withCheckedThrowingContinuation { continuation in
             ApiManager.shared.performRequest(
-                to: .fetchLatestWay(workspaceID, nodeId),
+                to: .fetchLatestNode(workspaceID, nodeId),
                 setupType: .osm,
                 modelType: OSMNodeResponse.self
             ) { result in
