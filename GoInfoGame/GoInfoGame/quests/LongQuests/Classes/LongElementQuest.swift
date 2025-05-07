@@ -8,6 +8,7 @@
 import Foundation
 import osmparser
 import SwiftUI
+import CoreLocation
 
 class LongElementQuest: QuestBase, Quest {
     
@@ -74,6 +75,20 @@ class LongElementQuest: QuestBase, Quest {
     }
     
     var questAnswersSelected: (([String:String]) -> Void)? = nil
+    
+    var annotationCoordinate: CLLocationCoordinate2D? {
+          didSet {
+              updateForm()
+          }
+      }
+    
+    private func updateForm() {
+          self.internalForm = LongForm(
+            elementName: elementType, questID: questId, query: _internalQueryString, action: { [self] tags in
+                self.questAnswersSelected?(tags)
+            }, coordinate: annotationCoordinate ?? CLLocationCoordinate2D(latitude: 0, longitude: 0)
+          )
+      }
     
     init(questId: String, questQuery:String, elementType: String) {
         super.init()

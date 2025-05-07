@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import CoreLocation
 
 
 struct LongForm: View, QuestForm {
@@ -23,6 +24,8 @@ struct LongForm: View, QuestForm {
     var action: (([String:String]) -> Void)?
     
     typealias AnswerClass = [String:String]
+    
+    var coordinate: CLLocationCoordinate2D?
     
     @Environment(\.presentationMode) var presentationMode
     
@@ -268,10 +271,17 @@ struct LongForm: View, QuestForm {
     }
     
     func submitNote() async throws {
-        print("Note to be submitted: \(noteText)")
+        print("Note to be submitted: \(noteText.htmlEscape())")
         
         do {
-            let notesResult = try await noteViewModel.createNote(note: noteText, lat: 0.0, long: 0.0)
+            //gt lat long from coordinate
+            let lat = coordinate?.latitude ?? 0.0
+            let long = coordinate?.longitude ?? 0.0
+            print("Latitude: \(lat), Longitude: \(long)")
+            
+            let noteToBeSubmitted = noteText.htmlEscape()
+            
+            let notesResult = try await noteViewModel.createNote(note: noteToBeSubmitted, lat: lat, long: long)
             
             if notesResult {
                 print("Notes composed successfully")
