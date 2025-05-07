@@ -45,10 +45,6 @@ class MapUndoManager {
 
             updateTagsHandler?(id, edited.tags.toDictionary(), .way)
 
-            try? realm.write {
-                realm.delete(edited)
-            }
-
         case .node:
             guard let original = DatabaseConnector.shared.getNode(id: Int(id), version: .original),
                   let edited = DatabaseConnector.shared.getNode(id: Int(id), version: .edited) else {
