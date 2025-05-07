@@ -10,6 +10,8 @@ import XCTest
 //@testable import SwiftOverpassAPI
 @testable import osmparser
 @testable import osmapi
+import Combine
+import CoreLocation
 
 /**
  Used to test the flow of information
@@ -144,7 +146,7 @@ final class UserFlowTests: XCTestCase {
         let addedTags = ["lit":"yes"]
         let changedNode = dbInstance.addNodeTags(id: String(nodeId), tags: addedTags)
         // Create a changeset
-        let newChangeset = dbInstance.createChangeset(id: String(nodeId), type: .node, tags: addedTags)
+        let newChangeset = dbInstance.createChangeset(id: String(nodeId), type: .node, tags: addedTags, isUndo: false )
         // Need to figure out the id of the changeset
         XCTAssertEqual(newChangeset?.elementType, .node)
         XCTAssertEqual(newChangeset?.elementId, String(nodeId))
@@ -170,7 +172,7 @@ final class UserFlowTests: XCTestCase {
             // Get the element type
             if changeset.elementType == .node {
                 // Get the node
-                if let node  = dbInstance.getNode(id: changeset.elementId) {
+                if let node  = dbInstance.getNode(id: Int(changeset.elementId) ?? 0, version: .original) {
                     XCTAssert(node.tags.keys.contains("width"))
                     // Publish the node here.
                     let osmConnection = OSMConnection()
@@ -212,4 +214,111 @@ final class UserFlowTests: XCTestCase {
         }
     }
 
+    
+    @MainActor
+    func testQuestUndoFlow() {
+        // 1. login
+        // 2. Fetching Workspaces
+        // 3. Selecting one workspace (hardcoded to 380)
+        // 4. Fetching Longquests
+        // 5. Loading elements
+        // 6. Selecting one node (hardcoded to 301834)
+        // 7. validating is test tag exists
+        // 8. updating tag with test tags (Hardcoded tags)
+        
+        // 9. get the node tags and compare
+        // 10. undo the node tags
+        // 11. get the node tags and copare
+        // 12. logout
+        
+        var cancellables: Set<AnyCancellable> = []
+        
+        let expectation = XCTestExpectation(description: "Login successful")
+        
+        let testingTagKey: String = "Testing"
+        let testingTagValue: String = "testQuestUndoFlow"
+        let workspaceID: Int = 380 // 380 workspace id is for Medina City Test under Test Project Group 1
+        let nodeID: Int = 301834
+        
+        // 1. login
+        let loginViewModel = PosmLoginViewModel()
+        loginViewModel.username = "prateekan6@gmail.com"
+        loginViewModel.password = "Test@1234"
+        DatabaseConnector.shared.clearDB()
+        loginViewModel.$isLoginSuccess
+            .dropFirst()
+            .receive(on: DispatchQueue.main)
+            .sink { isLoggedIn in
+                XCTAssertTrue(isLoggedIn)
+                cancellables.first?.cancel()
+                cancellables.removeFirst()
+                
+                // 2. fetching workspaces
+                let initialViewModel = InitialViewModel()
+                initialViewModel.$isLoading
+                    .dropFirst()
+                    .receive(on: DispatchQueue.main)
+                    .sink { isloading in
+                        cancellables.first?.cancel()
+                        cancellables.removeFirst()
+                        
+                        // 3. select the workspace
+                        let workspaceId: String = "\(workspaceID)"
+                        _ = GoInfoGame.KeychainManager.save(key: "workspaceID", data: workspaceId)
+                        
+                        // 4. get the node tages
+                        initialViewModel.fetchLongQuestsFor(workspaceId: "\(workspaceID)") { result, string in
+                            XCTAssert(result)
+                            
+                            let mapViewModel = MapViewModel()
+                            let location = CLLocationCoordinate2D(latitude: 47.62619, longitude: -122.24255)
+                            mapViewModel.$isLoading
+                                .dropFirst(2)
+                                .receive(on: DispatchQueue.main)
+                                .sink { _ in
+                                    cancellables.first?.cancel()
+                                    cancellables.removeFirst()
+                                    
+                                    if let node = AppQuestManager.shared.fetchQuestsFromDB().first(where: { element in
+                                        element.id == nodeID
+                                    }),
+                                       let element = DatabaseConnector.shared.getNode(id: nodeID, version: .original) {
+                                        let tags = element.tags
+                                        XCTAssert(tags[testingTagKey] != testingTagValue, "Testing tag is already present")
+                                        
+                                        // 4. update node tags
+                                        let newTestingTags = [testingTagKey: testingTagValue]
+                                        if let lognFormQuest = node.displayUnit.parent as? LongElementQuest {
+                                            lognFormQuest.updateTags(id: node.id, tags: newTestingTags, type: .node)
+                                            DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
+                                                if let element = DatabaseConnector.shared.getNode(id: nodeID, version: .original) {
+                                                    XCTAssert(element.tags[testingTagKey] == testingTagValue, "Testing tag is not updated")
+                                                }
+                                                expectation.fulfill()
+                                            }
+                                        } else {
+                                            XCTAssert(false, "long quest not found")
+                                            expectation.fulfill()
+                                        }
+                                        
+                                    } else  {
+                                        XCTAssert(false, "No node found")
+                                        expectation.fulfill()
+                                    }
+                                }
+                                .store(in: &cancellables)
+                            mapViewModel.fetchOSMDataFor(from: .currentLocation(location: location))
+                        }
+                    }
+                    .store(in: &cancellables)
+                
+                initialViewModel.fetchWorkspacesList()
+            }
+            .store(in: &cancellables)
+        loginViewModel.performLogin()
+
+        
+        wait(for: [expectation], timeout: 25.0)
+        
+    }
 }
