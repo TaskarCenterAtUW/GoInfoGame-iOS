@@ -143,9 +143,7 @@ class AppQuestManager {
         }
         print("Sending back items")
         print(allQuests)
-        
-        print(nodeElements.filter({ $0.id == 1026105 }))
-        
+                
         
         // get hidden ids from hiddenElements
         let hiddenIds = HiddenQuestManager.shared.hiddenQuests.map { $0.id }
