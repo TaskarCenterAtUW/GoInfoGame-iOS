@@ -130,53 +130,7 @@ class DatabaseConnector {
             print("Error clearing DB")
         }
     }
-    /**
-            Earlier implementation of saveElements. This used to save only the Way type of objects.
-            This is not used anymore
-     */
-//    func saveElements(_ elements: [OPWay]) {
-//        do {
-//            try realm.write {
-//                for element in elements {
-//                    let realmElement = RealmOPElement()
-//                    realmElement.id = element.id
-//                    realmElement.isInteresting = element.isInteresting
-//                    realmElement.isSkippable = element.isSkippable
-//
-//                    let realmTags = element.tags.map { tag in
-//                        let realmTag = RealmOPElementTag()
-//                        realmTag.key = tag.key
-//                        realmTag.value = tag.value
-//                        return realmTag
-//                    }
-//                    realmElement.tags.append(objectsIn: realmTags)
-//
-//                    if let meta = element.meta {
-//                        let realmMeta = RealmOPMeta()
-//                        realmMeta.version = meta.version
-//                        realmMeta.timestamp = meta.timestamp
-//                        realmMeta.changeset = meta.changeset
-//                        realmMeta.userId = meta.userId
-//                        realmMeta.username = meta.username
-//                        realmElement.meta = realmMeta
-//                    } else {
-//                        realmElement.meta = RealmOPMeta()
-//                    }
-//
-//                    if !element.nodes.isEmpty {
-//                        realmElement.nodes.append(objectsIn: element.nodes)
-//                    }
-//                    let geometry =  RealmOPGeometry(geometry: element.geometry)
-//                    realmElement.geometry.append(geometry)
-//                    realm.add(realmElement, update: .modified)
-//                }
-//
-//
-//            }
-//        } catch {
-//            print("Error saving elements to Realm: \(error)")
-//        }
-//    }
+
     func saveElements(_ elements: [OSMWay]) {
         do {
             try realm.write {
@@ -264,7 +218,7 @@ class DatabaseConnector {
      @param id: String value of the node ID
      @return StoredNode
      */
-    func getNode(id:Int, version: StoredWayVersion) -> StoredNode? {
+    func getNode(id:Int, version: StoredNodeVersion) -> StoredNode? {
         let compoundId = "\(id)-\(version.rawValue)"
         return realm.object(ofType: StoredNode.self, forPrimaryKey: compoundId)
     }
@@ -293,26 +247,7 @@ class DatabaseConnector {
      @param id: String value of the way ID
      @param tags `[String:String]` map of the added tags
      @return `StoredWay`
-     */
-//    func addWayTags(id: String, tags:[String:String]) -> StoredWay? {
-//        guard let theWay = getWay(id: id) else { return nil }
-//
-//
-//        do {
-//            try realm.write {
-//                theWay.isOriginal = false
-//                tags.forEach { (key: String, value: String) in
-//                    theWay.tags.setValue(value, forKey: key)
-//                }
-//            }
-//        }
-//        catch {
-//            print("Error while writing tags")
-//        }
-//        return theWay
-//    }
-    
-    
+     */    
     func addWayTags(id: String, tags: [String: String]) -> StoredWay? {
         let intId = Int(id) ?? -1
 
@@ -372,24 +307,27 @@ class DatabaseConnector {
      */
     func addNodeTags(id: String, tags: [String: String]) -> StoredNode? {
         let intId = Int(id) ?? -1
+        print("🟣 addNodeTags called for id: \(intId) with tags: \(tags)")
 
-        // Step 1: Try to get the editable copy first
         if let editable = getNode(id: intId, version: .edited) {
+            print("✏️ Editable node exists: \(editable.compoundId)")
             do {
                 try realm.write {
                     tags.forEach { editable.tags[$0.key] = $0.value }
                 }
+                print("✅ Updated editable node.")
             } catch {
-                print("Error while writing node tags")
+                print("❌ Error while writing node tags: \(error)")
             }
             return editable
         }
 
-        // Step 2: If not found, create from original
         guard let original = getNode(id: intId, version: .original) else {
-            print("❌ Original node not found")
+            print("❌ Original node not found for id: \(intId)")
             return nil
         }
+
+        print("📄 Creating editable copy from original: \(original.compoundId)")
 
         let copy = StoredNode()
         copy.id = original.id
@@ -399,23 +337,27 @@ class DatabaseConnector {
         copy.isOriginal = false
         copy.generateCompoundId()
 
+        print("🛠️ New compoundId: \(copy.compoundId)")
+
         original.tags.forEach { entry in
             copy.tags[entry.key] = entry.value
         }
 
-        // Step 3: Apply new tags
         tags.forEach { copy.tags[$0.key] = $0.value }
 
         do {
             try realm.write {
                 realm.add(copy)
             }
+            print("✅ Editable node copy saved to DB: \(copy.compoundId)")
         } catch {
-            print("Error while saving editable node copy")
+            print("❌ Error while saving editable node copy: \(error)")
         }
 
         return copy
     }
+
+
 
 
     
