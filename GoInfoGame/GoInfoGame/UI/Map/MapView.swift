@@ -34,6 +34,8 @@ struct MapView: View {
     
     @State private var tappedCoordinate: CLLocationCoordinate2D? = nil
     
+    @State private var annotationCoordinate: CLLocationCoordinate2D? = nil
+    
     @State private var showMapLongPressedSheet = false
     
     @State private var showAddFeatureSheet = false
@@ -83,7 +85,7 @@ struct MapView: View {
                 print(contextualInfo)
                 selectedDetent = .fraction(0.8)
                 self.setContextualInfo(contextualinfo: contextualInfo)
-                }, useBingMaps: $useBingMaps, tappedCoordinate: $tappedCoordinate, shadowOverlay: shadowOverlay)
+                }, useBingMaps: $useBingMaps, tappedCoordinate: $tappedCoordinate, annotationCoordinate: $annotationCoordinate, shadowOverlay: shadowOverlay)
             .onChange(of: tappedCoordinate) { _ in
                 showMapLongPressedSheet = tappedCoordinate != nil
             }
@@ -366,10 +368,7 @@ struct MapView: View {
             }
 
         .sheet(isPresented: $isPresented, content: {
-            let selectedQuest = self.viewModel.getSelectedQuest()
-            CustomSheetView {
-                selectedQuest?.parent?.form
-            }
+            QuestSheetView(viewModel: viewModel, annotationCoordinate: annotationCoordinate)
             .onAppear {
                 shouldShowPolyline = true
             }
@@ -435,6 +434,32 @@ struct MapView: View {
     }
 }
 
+struct QuestSheetView: View {
+    @ObservedObject var viewModel: MapViewModel
+    let annotationCoordinate: CLLocationCoordinate2D?
+
+    init(viewModel: MapViewModel, annotationCoordinate: CLLocationCoordinate2D?) {
+        self.viewModel = viewModel
+        self.annotationCoordinate = annotationCoordinate
+
+        if let quest = viewModel.getSelectedQuest(),
+           let longQuest = quest.parent as? LongElementQuest {
+            longQuest.annotationCoordinate = annotationCoordinate
+        }
+    }
+
+    var body: some View {
+        Group {
+            if let selectedQuest = viewModel.getSelectedQuest() {
+                CustomSheetView {
+                    selectedQuest.parent?.form
+                }
+            } else {
+                EmptyView()
+            }
+        }
+    }
+}
 
 public class MapViewPublisher: ObservableObject {
     public let dismissSheet = PassthroughSubject<SheetDismissalScenario, Never>()

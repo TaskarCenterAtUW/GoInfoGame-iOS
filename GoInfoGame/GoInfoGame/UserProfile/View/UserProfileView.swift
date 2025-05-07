@@ -18,14 +18,17 @@ struct UserProfileView: View {
                 VStack {
                     Text("My Profile")
                         .font(.custom("Lato-Bold", size: 25))
-                    HStack {
+                        .padding(.bottom, 50)
+                    HStack(alignment: .center, spacing: 16) {
                         profileImage
-                        VStack (alignment: .leading,spacing: 0){
+
+                        VStack(alignment: .leading, spacing: 4) {
                             Text(userFullName())
                                 .font(.custom("Lato-Bold", size: 20))
                             Text(viewModel.user?.email ?? "")
                                 .font(.custom("Lato-Regular", size: 18))
                         }
+
                         Spacer()
                     }
                     .padding([.bottom], 200)
@@ -51,16 +54,12 @@ struct UserProfileView: View {
     }
     
     private var profileImage: some View {
-        VStack {
-            Image(systemName: "person.circle.fill")
-                .resizable()
-                .frame(width: 50, height: 50, alignment: .center)
-                .cornerRadius(60)
-        }
-        .padding([.top], 50)
-           
-        
+        Image(systemName: "person.circle.fill")
+            .resizable()
+            .frame(width: 50, height: 50)
+            .clipShape(Circle())
     }
+
         
     private var logOutButton: some View {
         Button {

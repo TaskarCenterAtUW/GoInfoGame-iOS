@@ -38,6 +38,8 @@ struct CustomMap: UIViewRepresentable {
     
     @Binding var tappedCoordinate: CLLocationCoordinate2D?
     
+    @Binding var annotationCoordinate: CLLocationCoordinate2D?
+    
     var shadowOverlay: ShadowOverlay
         
     // Creates and configures the UIView
@@ -364,6 +366,7 @@ struct CustomMap: UIViewRepresentable {
         }
         
         private func selectedAnAnnotation(selectedQuest: DisplayUnitAnnotation) {
+            parent.annotationCoordinate = selectedQuest.coordinate
             parent.selectedQuest = selectedQuest.displayUnit
             parent.isPresented = true
             var contextualString = ""
