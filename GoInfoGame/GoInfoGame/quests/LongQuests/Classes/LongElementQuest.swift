@@ -117,7 +117,9 @@ class LongElementQuest: QuestBase, Quest {
         }
     }
         
-    var questId: String = "311"
+    var questId: String {
+        return String(self.relationData?.id ?? 0)
+    }
     
     func copyWithElement(element: Element) -> any Quest {
         let questId = String(element.id)
