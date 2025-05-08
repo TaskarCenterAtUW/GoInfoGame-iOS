@@ -137,30 +137,6 @@ struct MapView: View {
                         UndoButton(
                             onPreview: { id, type in
                                 
-                                switch type {
-                                case .node:
-                                    print("NODE")
-                                case .way:
-                                    print("WAY")
-                                    
-                                    //get item based on id
-                                    let item = viewModel.items.first(where: { $0.id == id })
-                                    mapViewRef?.addAnnotation(item!.annotation)
-                                    mapViewRef!.setCenter(item!.annotation.coordinate, animated: true)
-                                
-                                    //build display unit
-                                 //   mapViewRef?.addAnnotation(item)
-                                    
-//                                    if let item = item {
-//                                        let annotation = DisplayUnitAnnotation(element: item)
-//                                        mapViewRef?.addAnnotation(annotation)
-//                                        mapViewRef?.setCenter(annotation.coordinate, animated: true)
-//                                    }
-                                    
-                                case .relation:
-                                    print("RELATION")
-                                    
-                                }
                                 
 //                                if let element = DatabaseConnector.shared.getElement(withId: id, type: type) {
 //                                    let annotation = DisplayUnitAnnotation(element: element)
@@ -169,11 +145,9 @@ struct MapView: View {
 //                                }
                             },
                             onRemovePreview: {
-                               // mapViewRef?.removeAnnotations(where: { $0.isPreview }) // however you tag temp annotations
                             },
                             onRevert: { id, type in
-                                // Do actual undo + keep annotation
-                                // Optionally, remove "preview" flag if needed
+                              
                             }
                         )
                         .padding(.bottom, 24)
@@ -185,24 +159,7 @@ struct MapView: View {
                         }, useBingMaps: useBingMaps)
                     }
                 }
-                
-//                if showUndoSidebar {
-//                    UndoSidebarView(
-//                        onUndo: { id, type in
-//                            MapUndoManager.shared.undo(for: Int64(id), type: type)
-//                         //   undoItems = MapUndoManager.shared.getUndoItems() // refresh
-//                        },
-//                        onClose: {
-//                            withAnimation {
-//                                showUndoSidebar = false
-//                            }
-//                        }
-//                    )
-//                    .transition(.move(edge: .leading))
-//                    .padding(.top, 20)
-//                }
-
-            
+                            
             if !viewModel.selectedAnnotaions.isEmpty,
                let selectedAnnotationType = viewModel.selectedAnnotationType,
                let image = viewModel.selectedAnnotaions.first?.displayUnit.parent?.icon {
