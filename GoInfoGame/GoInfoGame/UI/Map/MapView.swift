@@ -194,12 +194,6 @@ struct MapView: View {
             .navigationBarHidden(isPresented)
             .navigationBarItems(leading: EmptyView())
             .toolbar {
-                ToolbarItem(placement: .navigationBarLeading) {
-                    NavigationLink(destination: UserProfileView()) {
-                        Image(systemName: "person.crop.circle.fill")
-                            .foregroundStyle(Color(red: 135/255, green: 62/255, blue: 242/255))
-                    }
-                }
 
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button(action: {
