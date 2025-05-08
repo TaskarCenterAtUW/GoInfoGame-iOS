@@ -24,6 +24,7 @@ class MapUndoManager {
 
     func undo(for id: Int64, type: ElementType) {
         MapUndoManager.shared.isUndoInProgress = true
+
         switch type {
         case .way:
             guard let original = DatabaseConnector.shared.getWay(id: Int(id), version: .original),
@@ -32,15 +33,26 @@ class MapUndoManager {
                 return
             }
 
-            try? realm.write {
-                edited.tags.removeAll()
-                original.tags.forEach { edited.tags[$0.key] = $0.value }
+            do {
+                try realm.write {
+                    edited.tags.removeAll()
 
-                edited.polyline.removeAll()
-                edited.polyline.append(objectsIn: original.polyline)
+                    for entry in original.tags {
+                        let key = entry.key
+                        let value = entry.value
+                        if key != "ext:gig_complete", key != "ext:gig_last_updated" {
+                            edited.tags[key] = value
+                        }
+                    }
 
-                edited.nodes.removeAll()
-                edited.nodes.append(objectsIn: original.nodes)
+                    edited.polyline.removeAll()
+                    edited.polyline.append(objectsIn: original.polyline)
+
+                    edited.nodes.removeAll()
+                    edited.nodes.append(objectsIn: original.nodes)
+                }
+            } catch {
+                print("❌ Realm write failed during undo (way): \(error)")
             }
 
             updateTagsHandler?(id, edited.tags.toDictionary(), .way)
@@ -52,10 +64,25 @@ class MapUndoManager {
                 return
             }
 
-            try? realm.write {
-                edited.tags.removeAll()
-                original.tags.forEach { edited.tags[$0.key] = $0.value }
-                edited.point = original.point
+            do {
+                try realm.write {
+                    // Step 1: Clear all tags in edited
+                    edited.tags.removeAll()
+
+                    // Step 2: Copy original tags except gig tags
+                    for entry in original.tags {
+                        let key = entry.key
+                        let value = entry.value
+                        if key != "ext:gig_complete", key != "ext:gig_last_updated" {
+                            edited.tags[key] = value
+                        }
+                    }
+
+                    // Step 3: Restore location
+                    edited.point = original.point
+                }
+            } catch {
+                print("❌ Realm write failed during undo (node): \(error)")
             }
 
             updateTagsHandler?(id, edited.tags.toDictionary(), .node)
@@ -66,53 +93,40 @@ class MapUndoManager {
     }
 
 
+
+
+    func fetchUndoItems() -> [UndoItem] {
+        var items: [UndoItem] = []
+        
+        
+        
+        
+        return items
+        
+    }
+
     
     func getUndoItems() -> [UndoItem] {
-        let excludedKeys: Set<String> = ["ext:gig_complete", "ext:gig_last_updated"]
         var items: [UndoItem] = []
 
-        let editedNodes = realm.objects(StoredNode.self)
+        let editedNodes = realm.objects(StoredNode.self).filter("isOriginal == false")
         for edited in editedNodes {
-            guard let original = DatabaseConnector.shared.getNode(id: edited.id, version: .original) else {
-                print("⚠️ Original node not found for id: \(edited.id)")
-                continue
-            }
-
-            let changedKeys = Set(edited.tags.keys)
-                .union(original.tags.keys)
-                .filter { key in
-                    edited.tags[key] != original.tags[key] && !excludedKeys.contains(key)
-                }
-
-            if !changedKeys.isEmpty {
-                items.append(UndoItem(elementId: edited.id, type: .node, changedKeys: Array(changedKeys)))
+            let keys = Array(edited.tags.keys)
+            if !keys.isEmpty {
+                items.append(UndoItem(elementId: edited.id, type: .node, changedKeys: keys))
             }
         }
 
-        let editedWays = realm.objects(StoredWay.self)
+        let editedWays = realm.objects(StoredWay.self).filter("isOriginal == false")
         for edited in editedWays {
-            guard let original = DatabaseConnector.shared.getWay(id: edited.id, version: .original) else {
-                print("⚠️ Original way not found for id: \(edited.id)")
-                continue
-            }
-
-            let changedKeys = Set(edited.tags.keys)
-                .union(original.tags.keys)
-                .filter { key in
-                    edited.tags[key] != original.tags[key] && !excludedKeys.contains(key)
-                }
-
-            if !changedKeys.isEmpty {
-                items.append(UndoItem(elementId: edited.id, type: .way, changedKeys: Array(changedKeys)))
+            let keys = Array(edited.tags.keys)
+            if !keys.isEmpty {
+                items.append(UndoItem(elementId: edited.id, type: .way, changedKeys: keys))
             }
         }
 
         return items
     }
-
-
-
-
 }
 
 extension MapUndoManager {
