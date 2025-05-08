@@ -369,9 +369,7 @@ class DatabaseConnector {
      - parameter tags [String:String] tags changed with this
      - Returns: An instance of `StoredChangeset`
         */
-    func createChangeset(id:String, type: StoredElementEnum, tags:[String:String], isUndo: Bool) -> StoredChangeset? {
-        if isUndo { return nil }
-            
+    func createChangeset(id:String, type: StoredElementEnum, tags:[String:String]) -> StoredChangeset? {            
         let storedChangeset = StoredChangeset()
         storedChangeset.elementId = id
         storedChangeset.elementType = type

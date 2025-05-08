@@ -10,16 +10,16 @@ import HTMLEntities
 
 protocol OSMPayload {
     
-     func toPayload() -> String
+    func toPayload(exclude_gig_tags: Bool) -> String
 }
 protocol OSMCreatePayload {
-    func toCreatePayload() -> String
+    func toCreatePayload(exclude_gig_tags: Bool) -> String
 }
 struct TagPayload: OSMPayload {
     let key:String
     var value:String
     
-    func toPayload() -> String {
+    func toPayload(exclude_gig_tags: Bool = false) -> String {
         let htmlEscapeValue = value.htmlEscape()
         return "<tag k=\"\(key)\" v=\"\(htmlEscapeValue)\"/>"
     }
@@ -27,7 +27,7 @@ struct TagPayload: OSMPayload {
 
 struct WayNodePayload: OSMPayload{
     let nodeId: Int
-    func toPayload() -> String {
+    func toPayload(exclude_gig_tags: Bool = false) -> String {
         return "<nd ref=\"\(nodeId)\" />"
     }
 }

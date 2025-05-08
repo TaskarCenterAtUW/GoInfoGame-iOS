@@ -58,7 +58,7 @@ final class OSMXMLBuilderTests: XCTestCase {
         let xmlBuilder = OSMXMLBuilder(rootName: "osm")
         xmlBuilder.addAttribute(name: "version", value: "1")
         xmlBuilder.addAttribute(name: "changeset", value: "188021")
-        let builtString = xmlBuilder.buildXML()
+        let builtString = xmlBuilder.buildXML(exclude_gig_tags: false)
         print(builtString)
         XCTAssertNotNil(builtString)
         let expectedString = "<osm version = \"1\",changeset = \"188021\" />"

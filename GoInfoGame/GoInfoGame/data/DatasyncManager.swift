@@ -20,14 +20,14 @@ class DatasyncManager {
     private let dbInstance = DatabaseConnector.shared
     private let barrierQueue: DispatchQueue = DispatchQueue(label: "com.goinfogame.DatasyncManager.barrierQueue", attributes: .concurrent)
     
-    func syncDataToOSM(completionHandler: @escaping (Result<Bool, APIError>)  -> Void) {
+    func syncDataToOSM(exclude_gig_tags: Bool, completionHandler: @escaping (Result<Bool, APIError>)  -> Void) {
         barrierQueue.async(flags: .barrier) { [weak self] in
             guard let self = self else { return }
             let semaphore = DispatchSemaphore(value: 0)
             
             Task.detached(priority: .userInitiated) {
                 do {
-                    let isSynced = try await self.syncData()
+                    let isSynced = try await self.syncData(exclude_gig_tags: exclude_gig_tags)
                     
                     print("Sync finished")
                     if isSynced {
@@ -57,7 +57,7 @@ class DatasyncManager {
     /// *** Terminating app due     to uncaught exception 'RLMException', reason: 'Realm accessed from incorrect thread.'
     ///  To fix the above error added @mainActor
     @MainActor
-    func syncData() async throws -> Bool {
+    func syncData(exclude_gig_tags: Bool = false) async throws -> Bool {
         print("🔄 Starting sync...")
 
         let changesets = dbInstance.getChangesets()
@@ -132,7 +132,7 @@ class DatasyncManager {
             print("📤 Syncing way ID: \(way.id)")
             let payload = way.asOSMWay()
             do {
-                let isFinished = try await syncWay(way: payload)
+                let isFinished = try await syncWay(way: payload, exclude_gig_tags: exclude_gig_tags)
                 if isFinished {
                     DispatchQueue.main.async {
                         self.dbInstance.assignChangesetId(obj: key, changesetId: 0)
@@ -195,7 +195,7 @@ class DatasyncManager {
         }
     }
     
-    func openChangeset() async throws -> Int {
+    func openChangeset(exclude_gig_tags: Bool = false) async throws -> Int {
         var versionNumber = ""
         var buildNumber = ""
         
@@ -206,7 +206,7 @@ class DatasyncManager {
         }
         
         let createdBy = "\(versionNumber)(\(buildNumber))"
-        let osmPayloadString = OSMChangesetPayload(createdByTag: createdBy).toPayload()
+        let osmPayloadString = OSMChangesetPayload(createdByTag: createdBy).toPayload(exclude_gig_tags: exclude_gig_tags)
         let osmPayload = osmPayloadString.data(using: .utf8)
         let workspaceId = KeychainManager.load(key: "workspaceID")
         
@@ -252,9 +252,9 @@ class DatasyncManager {
     }
 
     // utility function to act as substitute for osmConnection functions
-    func updateWay(way: OSMWay) async throws -> Int {
+    func updateWay(way: OSMWay, exclude_gig_tags: Bool = false) async throws -> Int {
         var localWay = way
-        let wayBodyString = localWay.toPayload()
+        let wayBodyString = localWay.toPayload(exclude_gig_tags: exclude_gig_tags)
         let changesetUploadBody = "<osmChange version=\"0.6\" generator=\"GIG Change generator\">" + wayBodyString + "</osmChange>"
         let workspaceId = KeychainManager.load(key: "workspaceID")
         let wayBody = changesetUploadBody.data(using: .utf8)
@@ -288,9 +288,9 @@ class DatasyncManager {
     }
   
     // utility function to act as substitute for osmConnection functions
-    func updateNode(node: OSMNode) async throws -> Int {
+    func updateNode(node: OSMNode, exclude_gig_tags: Bool = false) async throws -> Int {
         var localNode = node
-        let nodeBodyString = localNode.toPayload()
+        let nodeBodyString = localNode.toPayload(exclude_gig_tags: exclude_gig_tags)
         let changesetUploadBody = "<osmChange version=\"0.6\" generator=\"GIG Change generator\">" + nodeBodyString + "</osmChange>"
         let workspaceId = KeychainManager.load(key: "workspaceID")
 
@@ -330,9 +330,9 @@ class DatasyncManager {
         }
     }
 
-    func uploadNode(node: OSMNode) async throws -> Bool {
+    func uploadNode(node: OSMNode, exclude_gig_tags: Bool = false) async throws -> Bool {
         var localNode = node
-        let nodeBodyString = localNode.toCreatePayload()
+        let nodeBodyString = localNode.toCreatePayload(exclude_gig_tags: exclude_gig_tags)
         let changesetUploadBody = "<osmChange version=\"0.6\" generator=\"GIG Change generator\">" + nodeBodyString + "</osmChange>"
         let workspaceId = KeychainManager.load(key: "workspaceID")
 
@@ -356,12 +356,12 @@ class DatasyncManager {
         }
     }
 
-    func updateWay2(way: OSMWay) async throws -> Int {
+    func updateWay2(way: OSMWay, exclude_gig_tags: Bool = false) async throws -> Int {
         var localWay = way
         let wayId = "\(localWay.id)"
         var updatedResult: Int = -1
         do {
-             updatedResult = try await updateWay(way: localWay)
+            updatedResult = try await updateWay(way: localWay, exclude_gig_tags: exclude_gig_tags)
             return updatedResult
         } catch let error as APIError {
             switch error {
@@ -551,7 +551,7 @@ class DatasyncManager {
     }
     
     @MainActor
-    func syncWay(way: OSMWay) async throws -> Bool {
+    func syncWay(way: OSMWay, exclude_gig_tags: Bool = false) async throws -> Bool {
         var localWay = way
         
         do {
@@ -560,7 +560,7 @@ class DatasyncManager {
             
             localWay.changeset = changesetID
             
-            let newVersion = try await updateWay2(way: localWay)
+            let newVersion = try await updateWay2(way: localWay, exclude_gig_tags: exclude_gig_tags)
             
             localWay.version = newVersion
             

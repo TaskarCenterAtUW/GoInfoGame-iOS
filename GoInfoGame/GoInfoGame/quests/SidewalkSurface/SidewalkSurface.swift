@@ -39,7 +39,7 @@ class SidewalkSurface: QuestBase, Quest {
     
     func onAnswer(answer: SidewalkSurfaceAnswer) {
         if let rData = self.relationData , let surface = answer.value.surface?.rawValue {
-            self.updateTags(id: rData.id, tags: ["surface":surface], type: rData.type)
+            self.updateTags(id: rData.id, tags: ["surface":surface], type: rData.type, exclude_gig_tags: false)
         }
     }
     

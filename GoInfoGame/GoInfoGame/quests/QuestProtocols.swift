@@ -39,10 +39,10 @@ class QuestBase {
     
     // Add a custom implementation
     
-   public func updateTags(id: Int64, tags:[String:String], type: ElementType, isUndo: Bool = false) {
+   public func updateTags(id: Int64, tags:[String:String], type: ElementType, exclude_gig_tags: Bool = false) {
        
        MapUndoManager.shared.updateTagsHandler = { [weak self] id, tags, type in
-           self?.updateTags(id: id, tags: tags, type: type)
+           self?.updateTags(id: id, tags: tags, type: type, exclude_gig_tags: true)
        }
        
        
@@ -50,7 +50,7 @@ class QuestBase {
        let storedElementType: StoredElementEnum = type == .way ? .way : .node
        let storedId = String(id)
        // Create a changeset
-       _ = DatabaseConnector.shared.createChangeset(id: storedId, type: storedElementType, tags: tags, isUndo: isUndo)
+       _ = DatabaseConnector.shared.createChangeset(id: storedId, type: storedElementType, tags: tags)
        switch (storedElementType){
        case .way:
            elementSubmittingToPOSM = .way
@@ -66,7 +66,7 @@ class QuestBase {
        // Dismiss sheet after syncing to db
        MapViewPublisher.shared.dismissSheet.send(.syncing)
        
-       DatasyncManager.shared.syncDataToOSM { success in
+       DatasyncManager.shared.syncDataToOSM(exclude_gig_tags: exclude_gig_tags) { success in
            DispatchQueue.main.async {
                MapViewPublisher.shared.dismissSheet.send(.synced)
                
