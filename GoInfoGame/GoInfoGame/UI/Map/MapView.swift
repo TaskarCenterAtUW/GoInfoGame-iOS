@@ -252,7 +252,7 @@ struct MapView: View {
             }
         
             .sheet(isPresented: $showUserSettingsSheet) {
-                UserSettingsView( options: OptionModel.options, onNavigate: { navigate in
+                UserSettingsView(selectedWorkspace: selectedWorkspace?.title ?? "", options: OptionModel.options, onNavigate: { navigate in
                     showUserSettingsSheet = false
                     DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
                         //   navigateToProfileSettings = true
@@ -280,6 +280,10 @@ struct MapView: View {
                             let extendedVisibleRect = rect.insetBy(dx: -rect.size.width * 0.25, dy: -rect.size.height * 0.25)
                             shadowOverlay.addVisibleRect(extendedVisibleRect)
                             
+                        case .switchWorkspace:
+                            //navigate to inital view
+                            print("Switch workspace here")
+                          switchToInitialView()
                         }
                     }
                     
@@ -419,6 +423,14 @@ struct MapView: View {
             let edited = DatabaseConnector.shared.getNode(id: 43, version: .edited)
             print("ORIGINAL --->>>\(original)")
             print("EDITED --->>>\(edited)")
+        }
+    }
+    
+    func switchToInitialView() {
+        if let scene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+           let window = scene.windows.first {
+            window.rootViewController = UIHostingController(rootView: InitialView())
+            window.makeKeyAndVisible()
         }
     }
     
