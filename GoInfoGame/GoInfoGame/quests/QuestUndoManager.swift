@@ -66,10 +66,8 @@ class MapUndoManager {
 
             do {
                 try realm.write {
-                    // Step 1: Clear all tags in edited
                     edited.tags.removeAll()
 
-                    // Step 2: Copy original tags except gig tags
                     for entry in original.tags {
                         let key = entry.key
                         let value = entry.value
@@ -78,7 +76,6 @@ class MapUndoManager {
                         }
                     }
 
-                    // Step 3: Restore location
                     edited.point = original.point
                 }
             } catch {

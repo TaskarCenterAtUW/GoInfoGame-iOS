@@ -23,7 +23,6 @@ struct UndoButton: View {
             if showSidebar {
                 UndoSidebarView(
                     onUndo: { id, type in
-                        MapUndoManager.shared.undo(for: Int64(id), type: type)
                         onRevert(id, type)
                         undoItems = MapUndoManager.shared.getUndoItems()
                         withAnimation { showSidebar = false }
@@ -90,8 +89,7 @@ struct UndoButton: View {
                         Spacer()
 
                         Button("Revert") {
-                            MapUndoManager.shared.undo(for: Int64(item.elementId), type: item.type)
-                            onRevert(item.elementId, item.type) 
+                            onRevert(item.elementId, item.type)
                             showUndoPopup = false
                             showSidebar = false
                         }
