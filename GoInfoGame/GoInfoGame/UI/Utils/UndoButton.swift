@@ -6,10 +6,17 @@
 //
 
 import SwiftUI
+import osmparser
 
 struct UndoButton: View {
+    var onPreview: (Int, ElementType) -> Void
+    var onRemovePreview: () -> Void
+    var onRevert: (Int, ElementType) -> Void
+
     @State private var showSidebar = false
     @State private var undoItems: [UndoItem] = []
+    @State private var selectedUndoItem: UndoItem? = nil
+    @State private var showUndoPopup = false
 
     var body: some View {
         ZStack(alignment: .leading) {
@@ -17,25 +24,23 @@ struct UndoButton: View {
                 UndoSidebarView(
                     onUndo: { id, type in
                         MapUndoManager.shared.undo(for: Int64(id), type: type)
+                        onRevert(id, type)
                         undoItems = MapUndoManager.shared.getUndoItems()
-                        withAnimation {
-                            showSidebar = false
-                        }
+                        withAnimation { showSidebar = false }
                     },
-                    onClose: {
-                        withAnimation {
-                            showSidebar = false
-                        }
+                    onClose: { withAnimation { showSidebar = false } },
+                    onItemSelected: { item in
+                        selectedUndoItem = item
+                        showUndoPopup = true
+                        onPreview(item.elementId, item.type)
                     }
                 )
                 .transition(.move(edge: .leading))
                 .padding(.top, 20)
             } else {
                 Button(action: {
-                  //  undoItems = fetchUndoItems()
-                    withAnimation {
-                        showSidebar = true
-                    }
+                    undoItems = MapUndoManager.shared.getUndoItems()
+                    withAnimation { showSidebar = true }
                 }) {
                     ZStack {
                         Circle()
@@ -51,10 +56,60 @@ struct UndoButton: View {
                 .padding(.leading, 12)
                 .padding(.top, 20)
             }
+
+            if showUndoPopup, let item = selectedUndoItem {
+                Color.black.opacity(0.3)
+                    .ignoresSafeArea()
+                    .onTapGesture {
+                        showUndoPopup = false
+                        onRemovePreview()
+                    }
+
+                VStack(spacing: 16) {
+                    Text("\(item.type == .way ? "Way" : "Node") #\(item.elementId)")
+                        .font(.headline)
+
+                    if !item.changedKeys.isEmpty {
+                        VStack(alignment: .leading, spacing: 4) {
+                            Text("Changed keys:")
+                                .font(.subheadline)
+                                .foregroundColor(.gray)
+                            ForEach(item.changedKeys, id: \.self) { key in
+                                Text("• \(key)")
+                                    .font(.caption)
+                            }
+                        }
+                    }
+
+                    HStack {
+                        Button("Cancel") {
+                            showUndoPopup = false
+                            onRemovePreview()
+                        }
+
+                        Spacer()
+
+                        Button("Revert") {
+                            MapUndoManager.shared.undo(for: Int64(item.elementId), type: item.type)
+                            onRevert(item.elementId, item.type) 
+                            showUndoPopup = false
+                            showSidebar = false
+                        }
+                        .foregroundColor(.white)
+                        .padding(.horizontal, 12)
+                        .padding(.vertical, 6)
+                        .background(Color.red)
+                        .cornerRadius(8)
+                    }
+                }
+                .padding()
+                .frame(maxWidth: 300)
+                .background(Color.white)
+                .cornerRadius(12)
+                .shadow(radius: 10)
+            }
         }
     }
-
-//    func fetchUndoItems() -> [UndoItem] {
-//        let changesets = DatabaseConnector.shared.getChangesets()
-//    }
 }
+
+

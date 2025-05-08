@@ -134,7 +134,22 @@ struct MapView: View {
                 VStack {
                     Spacer()
                     HStack {
-                        UndoButton()
+                        UndoButton(
+                            onPreview: { id, type in
+                                
+                                
+//                                if let element = DatabaseConnector.shared.getElement(withId: id, type: type) {
+//                                    let annotation = DisplayUnitAnnotation(element: element)
+//                                    mapViewRef?.addAnnotation(annotation)
+//                                    mapViewRef?.setCenter(annotation.coordinate, animated: true)
+//                                }
+                            },
+                            onRemovePreview: {
+                            },
+                            onRevert: { id, type in
+                              
+                            }
+                        )
                         .padding(.bottom, 24)
                         .padding(.leading, 16)
                         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottomLeading)
@@ -144,24 +159,7 @@ struct MapView: View {
                         }, useBingMaps: useBingMaps)
                     }
                 }
-                
-//                if showUndoSidebar {
-//                    UndoSidebarView(
-//                        onUndo: { id, type in
-//                            MapUndoManager.shared.undo(for: Int64(id), type: type)
-//                         //   undoItems = MapUndoManager.shared.getUndoItems() // refresh
-//                        },
-//                        onClose: {
-//                            withAnimation {
-//                                showUndoSidebar = false
-//                            }
-//                        }
-//                    )
-//                    .transition(.move(edge: .leading))
-//                    .padding(.top, 20)
-//                }
-
-            
+                            
             if !viewModel.selectedAnnotaions.isEmpty,
                let selectedAnnotationType = viewModel.selectedAnnotationType,
                let image = viewModel.selectedAnnotaions.first?.displayUnit.parent?.icon {
@@ -196,23 +194,7 @@ struct MapView: View {
             .navigationBarHidden(isPresented)
             .navigationBarItems(leading: EmptyView())
             .toolbar {
-                ToolbarItem(placement: .navigationBarLeading) {
-                    NavigationLink(destination: UserProfileView()) {
-                        Image(systemName: "person.crop.circle.fill")
-                            .foregroundStyle(Color(red: 135/255, green: 62/255, blue: 242/255))
-                    }
-                }
-//                ToolbarItem(placement: .navigationBarTrailing) {
-//                    Button(action: {
-//                        print("Refresh icon tapped")
-//                        viewModel.fetchOSMDataFor(from: .currentLocation(location: viewModel.userlocation))
-//                    }) {
-//                        Image(systemName: "arrow.2.circlepath")
-//                            .frame(width: 20, height: 20)
-//                            .foregroundStyle(Color(red: 135/255, green: 62/255, blue: 242/255))
-//                    }
-//                }
-            
+
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button(action: {
                         print("Settings icon tapped")
