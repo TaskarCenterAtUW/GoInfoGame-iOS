@@ -140,7 +140,7 @@ class BaseNetworkManager {
 
             do {
                 // Encode the request body
-                let data = body.toPayload()
+                let data = body.toPayload(exclude_gig_tags: false)
                 request.httpBody = data.data(using: .utf8)
 
                 URLSession.shared.dataTask(with: request) { data, response, error in

@@ -70,32 +70,17 @@ class AppQuestManager {
             
         let allOriginalNodes = dbInstance.getNodes().filter { $0.isOriginal && $0.tags.count != 0 }
         
-        let nodesFromStorage = allOriginalNodes.compactMap { original in
-            if let edited = self.dbInstance.getNode(id: original.id, version: .edited),
-               edited.tags.count != 0,
-               edited.tags["ext:gig_complete"] != "yes" {
-                return edited
-            } else if original.tags["ext:gig_complete"] != "yes" {
-                return original
-            } else {
-                return nil
-            }
+    
+        let nodesFromStorage: [StoredNode] = allOriginalNodes.compactMap { original in
+            original.tags["ext:gig_complete"] == "yes" ? nil : original
         }
              
         let allOriginalWays = dbInstance.getWays().filter {
             $0.isOriginal && $0.tags.count != 0
         }
 
-        let waysFromStorage = allOriginalWays.compactMap { original in
-            if let edited = self.dbInstance.getWay(id: original.id, version: .edited),
-               edited.tags.count != 0,
-               edited.tags["ext:gig_complete"] != "yes" {
-                return edited
-            } else if original.tags["ext:gig_complete"] != "yes" {
-                return original
-            } else {
-                return nil
-            }
+        let waysFromStorage: [StoredWay] = allOriginalWays.compactMap { original in
+            original.tags["ext:gig_complete"] == "yes" ? nil : original
         }
     
         

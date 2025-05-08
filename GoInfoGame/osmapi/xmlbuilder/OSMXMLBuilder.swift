@@ -44,7 +44,7 @@ class OSMXMLBuilder {
         xmlString += attributeMap
     }
     
-        func buildXML() -> String {
+    func buildXML(exclude_gig_tags: Bool) -> String {
             addTagStart()
             xmlString += nodeName+" "
             if(attributes.count > 0){
@@ -53,7 +53,7 @@ class OSMXMLBuilder {
             if(children.count > 0){
                 addTagEnd()
                 children.forEach { element in
-                    xmlString += element.toPayload()
+                    xmlString += element.toPayload(exclude_gig_tags: exclude_gig_tags)
                     xmlString += "\n"
                 }
                 

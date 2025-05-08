@@ -49,7 +49,7 @@ class StairNumber: QuestBase, Quest {
     
     func onAnswer(answer: Int) {
         if let rData = self.relationData {
-            self.updateTags(id: rData.id, tags: ["step_count":"\(answer)"], type: rData.type)
+            self.updateTags(id: rData.id, tags: ["step_count":"\(answer)"], type: rData.type, exclude_gig_tags: false)
         }
     }
     

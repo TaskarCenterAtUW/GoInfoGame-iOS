@@ -64,7 +64,7 @@ class BusStopLit: QuestBase, Quest {
     
     func onAnswer(answer: YesNoAnswer) {
         if let rData = self.relationData {
-            self.updateTags(id: rData.id, tags: ["lit":answer.rawValue], type: rData.type)
+            self.updateTags(id: rData.id, tags: ["lit":answer.rawValue], type: rData.type, exclude_gig_tags: false)
         }
     }
     

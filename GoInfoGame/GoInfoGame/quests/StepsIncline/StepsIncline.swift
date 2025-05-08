@@ -50,7 +50,7 @@ class StepsIncline: QuestBase, Quest {
     
     func onAnswer(answer: StepsInclineDirection) {
         if let rData = self.relationData {
-            self.updateTags(id: rData.id, tags: ["climb":answer.rawValue], type: rData.type)
+            self.updateTags(id: rData.id, tags: ["climb":answer.rawValue], type: rData.type, exclude_gig_tags: false)
         }
     }
     

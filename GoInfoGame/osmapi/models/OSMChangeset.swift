@@ -46,7 +46,7 @@ public struct OSMChangesetPayload: OSMPayload {
         self.createdByTag = createdByTag
     }
     
-   public func toPayload() -> String {
+    public func toPayload(exclude_gig_tags: Bool) -> String {
         """
         <osm>
         <changeset>

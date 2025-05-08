@@ -53,7 +53,7 @@ class SideWalkWidth : QuestBase, Quest {
     
     func onAnswer(answer: WidthAnswer)  {
         if let rData = self.relationData {
-            self.updateTags(id: rData.id, tags: ["width":answer.width], type: rData.type)
+            self.updateTags(id: rData.id, tags: ["width":answer.width], type: rData.type, exclude_gig_tags: false)
         }
     }
     

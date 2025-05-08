@@ -15,61 +15,61 @@ import CoreLocation
 
 /**
  Used to test the flow of information
-  This fetches the information and sends things down 
+ This fetches the information and sends things down 
  */
 final class UserFlowTests: XCTestCase {
-
-//    let opManager = OverpassRequestManager()
+    
+    //    let opManager = OverpassRequestManager()
     
     let dbInstance = DatabaseConnector.shared
     
     override func setUpWithError() throws {
         // Put setup code here. This method is called before the invocation of each test method in the class.
-//       seedData()
+        //       seedData()
     }
     
     func seedData() {
-//        let expec = expectation(description: "Fetches the elements from Overpass Manager and stores in Database")
-//        let kirklandBBox = BBox(minLat: 47.70312160869372, maxLat: 47.718964653825054, minLon: -122.20866792353317, maxLon: -122.18570621653987)
-//        opManager.fetchElements(fromBBox: kirklandBBox) { fetchedElements in
-//            // Get the count of nodes and ways
-//            let allValues = fetchedElements.values
-//            
-//            let nodes = allValues.filter({$0 is OPNode}).filter({!$0.tags.isEmpty})
-//            let ways = allValues.filter({$0  is OPWay}).filter({!$0.tags.isEmpty})
-//            let allElements = allValues.filter({!$0.tags.isEmpty})
-//            self.dbInstance.saveElements(allElements) // Save all where there are tags
-//            expec.fulfill()
-//        }
-//        
-//        waitForExpectations(timeout: 10)
+        //        let expec = expectation(description: "Fetches the elements from Overpass Manager and stores in Database")
+        //        let kirklandBBox = BBox(minLat: 47.70312160869372, maxLat: 47.718964653825054, minLon: -122.20866792353317, maxLon: -122.18570621653987)
+        //        opManager.fetchElements(fromBBox: kirklandBBox) { fetchedElements in
+        //            // Get the count of nodes and ways
+        //            let allValues = fetchedElements.values
+        //            
+        //            let nodes = allValues.filter({$0 is OPNode}).filter({!$0.tags.isEmpty})
+        //            let ways = allValues.filter({$0  is OPWay}).filter({!$0.tags.isEmpty})
+        //            let allElements = allValues.filter({!$0.tags.isEmpty})
+        //            self.dbInstance.saveElements(allElements) // Save all where there are tags
+        //            expec.fulfill()
+        //        }
+        //        
+        //        waitForExpectations(timeout: 10)
     }
     
     func testDataInserts() throws {
-//        let nodesFromStorage = dbInstance.getNodes()
-//        let waysFromStorage = dbInstance.getWays()
-//        XCTAssert(nodesFromStorage.count > 0)
-//        // Get the Nodes from the above
-//        let nodeElements = nodesFromStorage.map({$0.asNode()})
-//        let wayElements = waysFromStorage.map({$0.asWay()})
-//        let testQuest = TestQuest()
-//        var applicableElements: [Element] = []
-//        for singleNode in nodeElements {
-////            testQuest.isApplicable(element: singleNode)
-//            let isApplicable = testQuest.isApplicable(element: singleNode)
-//            if (isApplicable){
-//                applicableElements.append(singleNode)
-//                print(singleNode.tags)
-//            }
-//        }
-//        for singleWay in wayElements {
-//            let isApplicable = testQuest.isApplicable(element: singleWay)
-//            if (isApplicable){
-//                applicableElements.append(singleWay)
-//                print(singleWay.tags)
-//            }
-//        }
-//        print(applicableElements.count)
+        //        let nodesFromStorage = dbInstance.getNodes()
+        //        let waysFromStorage = dbInstance.getWays()
+        //        XCTAssert(nodesFromStorage.count > 0)
+        //        // Get the Nodes from the above
+        //        let nodeElements = nodesFromStorage.map({$0.asNode()})
+        //        let wayElements = waysFromStorage.map({$0.asWay()})
+        //        let testQuest = TestQuest()
+        //        var applicableElements: [Element] = []
+        //        for singleNode in nodeElements {
+        ////            testQuest.isApplicable(element: singleNode)
+        //            let isApplicable = testQuest.isApplicable(element: singleNode)
+        //            if (isApplicable){
+        //                applicableElements.append(singleNode)
+        //                print(singleNode.tags)
+        //            }
+        //        }
+        //        for singleWay in wayElements {
+        //            let isApplicable = testQuest.isApplicable(element: singleWay)
+        //            if (isApplicable){
+        //                applicableElements.append(singleWay)
+        //                print(singleWay.tags)
+        //            }
+        //        }
+        //        print(applicableElements.count)
     }
     
     func testPerformanceDBFetch() throws {
@@ -99,14 +99,14 @@ final class UserFlowTests: XCTestCase {
             for node in nodeElements {
                 // Get the quests and try to iterate
                 for quest in allQuests {
-//                    if quest.filter.isEmpty {continue} // Ignore quest
+                    //                    if quest.filter.isEmpty {continue} // Ignore quest
                     // isApplicable API is not being used and is not available now.
-//                    if quest.isApplicable(element: node){
-//                        // Create a duplicate of the quest
-//                        nodeQuests.append(quest)
-//                        print(quest)
-//                        break
-//                    }
+                    //                    if quest.isApplicable(element: node){
+                    //                        // Create a duplicate of the quest
+                    //                        nodeQuests.append(quest)
+                    //                        print(quest)
+                    //                        break
+                    //                    }
                 }
             }
             print(nodeQuests.count)
@@ -116,20 +116,20 @@ final class UserFlowTests: XCTestCase {
             //        print(nodeQuests.count)
             for way in wayElements{
                 for quest in allQuests {
-//                    if quest.filter.isEmpty {continue} // Ignore quest
-//                    isApplicable API is not being used and is not available now.
-//                    if quest.isApplicable(element: way){
-//                        // Create a duplicate of the quest
-//                        wayQuests.append(quest)
-//                        print(quest)
-//                        break
-//                    }
+                    //                    if quest.filter.isEmpty {continue} // Ignore quest
+                    //                    isApplicable API is not being used and is not available now.
+                    //                    if quest.isApplicable(element: way){
+                    //                        // Create a duplicate of the quest
+                    //                        wayQuests.append(quest)
+                    //                        print(quest)
+                    //                        break
+                    //                    }
                 }
             }
             print(wayQuests.count)
         }
     }
-
+    
     override func tearDownWithError() throws {
         // Put teardown code here. This method is called after the invocation of each test method in the class.
     }
@@ -146,7 +146,7 @@ final class UserFlowTests: XCTestCase {
         let addedTags = ["lit":"yes"]
         let changedNode = dbInstance.addNodeTags(id: String(nodeId), tags: addedTags)
         // Create a changeset
-        let newChangeset = dbInstance.createChangeset(id: String(nodeId), type: .node, tags: addedTags, isUndo: false )
+        let newChangeset = dbInstance.createChangeset(id: String(nodeId), type: .node, tags: addedTags)
         // Need to figure out the id of the changeset
         XCTAssertEqual(newChangeset?.elementType, .node)
         XCTAssertEqual(newChangeset?.elementId, String(nodeId))
@@ -180,7 +180,7 @@ final class UserFlowTests: XCTestCase {
                         switch result {
                         case .success(let changesetId):
                             DispatchQueue.main.async {
-                              // your code here
+                                // your code here
                                 self.dbInstance.assignChangesetId(obj: changeset.id, changesetId: changesetId)
                             }
                             
@@ -198,7 +198,7 @@ final class UserFlowTests: XCTestCase {
         }
         waitForExpectations(timeout: 10)
     }
-
+    
     func testExample() throws {
         // This is an example of a functional test case.
         // Use XCTAssert and related functions to verify your tests produce the correct results.
@@ -206,14 +206,14 @@ final class UserFlowTests: XCTestCase {
         // Mark your test throws to produce an unexpected failure when your test encounters an uncaught error.
         // Mark your test async to allow awaiting for asynchronous code to complete. Check the results with assertions afterwards.
     }
-
+    
     func testPerformanceExample() throws {
         // This is an example of a performance test case.
         self.measure {
             // Put the code you want to measure the time of here.
         }
     }
-
+    
     
     @MainActor
     func testQuestUndoFlow() {
@@ -240,11 +240,12 @@ final class UserFlowTests: XCTestCase {
         let workspaceID: Int = 380 // 380 workspace id is for Medina City Test under Test Project Group 1
         let nodeID: Int = 301834
         
+        DatabaseConnector.shared.clearDB()
+        
         // 1. login
         let loginViewModel = PosmLoginViewModel()
         loginViewModel.username = "prateekan6@gmail.com"
         loginViewModel.password = "Test@1234"
-        DatabaseConnector.shared.clearDB()
         loginViewModel.$isLoginSuccess
             .dropFirst()
             .receive(on: DispatchQueue.main)
@@ -290,11 +291,17 @@ final class UserFlowTests: XCTestCase {
                                         let newTestingTags = [testingTagKey: testingTagValue]
                                         if let lognFormQuest = node.displayUnit.parent as? LongElementQuest {
                                             lognFormQuest.updateTags(id: node.id, tags: newTestingTags, type: .node)
-                                            DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
-                                                if let element = DatabaseConnector.shared.getNode(id: nodeID, version: .original) {
-                                                    XCTAssert(element.tags[testingTagKey] == testingTagValue, "Testing tag is not updated")
-                                                }
-                                                expectation.fulfill()
+                                            DispatchQueue.main.asyncAfter(deadline: .now() + 5) { [weak self] in
+                                                self?.getNodeTags(id: nodeID, workspaceId: workspaceID, completion: { result in
+                                                    switch result {
+                                                    case .failure(let error):
+                                                        XCTFail("\(error)")
+                                                    case .success(let tags):
+                                                        XCTAssert(tags[testingTagKey] == testingTagValue, "Testing tag is not present")
+                                                        XCTAssertEqual(tags["ext:gig_complete"], "yes","Gig complete tag not preset")
+                                                    }
+                                                    expectation.fulfill()
+                                                })
                                             }
                                         } else {
                                             XCTAssert(false, "long quest not found")
@@ -316,9 +323,41 @@ final class UserFlowTests: XCTestCase {
             }
             .store(in: &cancellables)
         loginViewModel.performLogin()
-
         
-        wait(for: [expectation], timeout: 25.0)
+        
+        wait(for: [expectation], timeout: 50.0)
+        
+    }
+    
+    func getNodeTags(id: Int, workspaceId: Int, completion: @escaping (Result<[String: String], Error>) -> Void) {
+        var request = URLRequest(url: URL(string: "https://osm.workspaces-stage.sidewalks.washington.edu/api/0.6/node/\(id).json")!,timeoutInterval: Double.infinity)
+        request.addValue("\(workspaceId)", forHTTPHeaderField: "X-Workspace")
+        
+        request.httpMethod = "GET"
+        
+        let task = URLSession.shared.dataTask(with: request) { data, response, error in
+            guard let data = data else {
+                print(String(describing: error))
+                completion(.failure(error ?? NSError(domain: "failed", code: 101, userInfo: nil)))
+                return
+            }
+            do {
+                if let jsonObject = try JSONSerialization.jsonObject(with: data) as? [String: Any] {
+                    print(jsonObject)
+                    if let element = (jsonObject["elements"] as? [[String: Any]])?.first,
+                       let tags = element["tags"] as? [String : String] {
+                        completion(.success(tags))
+                    } else {
+                        completion(.failure(NSError(domain: "tags not found", code: 101, userInfo: nil)))
+                    }
+                }
+            } catch {
+                print("JSON parsing error: \(error)")
+                completion(.failure(error))
+            }
+        }
+        
+        task.resume()
         
     }
 }

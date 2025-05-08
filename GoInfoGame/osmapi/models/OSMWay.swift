@@ -19,7 +19,7 @@ public struct OSMWayResponse: Codable {
 public struct OSMWay: Codable, OSMPayload, OSMElement  {
     public var isInteresting: Bool? = false
     public var isSkippable: Bool? = false
-   public func toPayload() -> String {
+    public func toPayload(exclude_gig_tags: Bool = false) -> String {
         var osmNode = "<modify>"
         let xmlBuilder = OSMXMLBuilder(rootName: "way")
         xmlBuilder.addAttribute(name: "id", value: "\(id)")
@@ -34,18 +34,23 @@ public struct OSMWay: Codable, OSMPayload, OSMElement  {
         tags.forEach { (key: String, value: String) in
             
             let tagNode = TagPayload(key: key, value: value)
-            if (key == "ext:gig_complete"){
-                existingGigComplete = tagNode
-            }
-            if (key == "ext:gig_last_updated"){
-                existingGigUpdate = tagNode
+            if !exclude_gig_tags {
+                if (key == "ext:gig_complete"){
+                    existingGigComplete = tagNode
+                }
+                if (key == "ext:gig_last_updated"){
+                    existingGigUpdate = tagNode
+                }
             }
             xmlBuilder.addChild(element: tagNode)
         }
-       if existingGigComplete == nil {
-           let gigCompleteTag = TagPayload(key: "ext:gig_complete", value: "yes")
-           xmlBuilder.addChild(element: gigCompleteTag)
-       }
+        if !exclude_gig_tags {
+            if existingGigComplete == nil {
+                let gigCompleteTag = TagPayload(key: "ext:gig_complete", value: "yes")
+                xmlBuilder.addChild(element: gigCompleteTag)
+            }
+        }
+
        // Today date
        // Create a DateFormatter instance
        let dateFormatter = DateFormatter()
@@ -59,19 +64,21 @@ public struct OSMWay: Codable, OSMPayload, OSMElement  {
        // Convert the Date object to a formatted string
        let formattedDate = dateFormatter.string(from: currentDate)
        
-       if existingGigUpdate == nil{
-           let gigLastUpdated = TagPayload(key: "ext:gig_last_updated", value: formattedDate)
-           xmlBuilder.addChild(element: gigLastUpdated)
-       }
-       else {
-           existingGigUpdate!.value = formattedDate
-       }
+        if !exclude_gig_tags {
+            if existingGigUpdate == nil{
+                let gigLastUpdated = TagPayload(key: "ext:gig_last_updated", value: formattedDate)
+                xmlBuilder.addChild(element: gigLastUpdated)
+            }  else {
+                existingGigUpdate!.value = formattedDate
+            }
+        }
+
 
        nodes.forEach { nodeId in
            let wayNode = WayNodePayload(nodeId: nodeId)
            xmlBuilder.addChild(element: wayNode)
        }
-        let builtString = xmlBuilder.buildXML()
+        let builtString = xmlBuilder.buildXML(exclude_gig_tags: exclude_gig_tags)
         osmNode.append(builtString)
         osmNode.append("</modify>")
         return osmNode
