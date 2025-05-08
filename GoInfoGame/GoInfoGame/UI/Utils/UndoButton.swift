@@ -24,7 +24,7 @@ struct UndoButton: View {
                 UndoSidebarView(
                     onUndo: { id, type in
                         MapUndoManager.shared.undo(for: Int64(id), type: type)
-                        onRevert(id, type) // Permanently keep annotation
+                        onRevert(id, type)
                         undoItems = MapUndoManager.shared.getUndoItems()
                         withAnimation { showSidebar = false }
                     },
@@ -32,7 +32,7 @@ struct UndoButton: View {
                     onItemSelected: { item in
                         selectedUndoItem = item
                         showUndoPopup = true
-                        onPreview(item.elementId, item.type) // Show temp annotation
+                        onPreview(item.elementId, item.type)
                     }
                 )
                 .transition(.move(edge: .leading))
@@ -62,7 +62,7 @@ struct UndoButton: View {
                     .ignoresSafeArea()
                     .onTapGesture {
                         showUndoPopup = false
-                        onRemovePreview() // Remove temp annotation
+                        onRemovePreview()
                     }
 
                 VStack(spacing: 16) {
@@ -84,14 +84,14 @@ struct UndoButton: View {
                     HStack {
                         Button("Cancel") {
                             showUndoPopup = false
-                            onRemovePreview() // Remove temp annotation
+                            onRemovePreview()
                         }
 
                         Spacer()
 
                         Button("Revert") {
                             MapUndoManager.shared.undo(for: Int64(item.elementId), type: item.type)
-                            onRevert(item.elementId, item.type) // Keep annotation
+                            onRevert(item.elementId, item.type) 
                             showUndoPopup = false
                             showSidebar = false
                         }

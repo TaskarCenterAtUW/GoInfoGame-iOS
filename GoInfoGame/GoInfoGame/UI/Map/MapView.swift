@@ -200,17 +200,7 @@ struct MapView: View {
                             .foregroundStyle(Color(red: 135/255, green: 62/255, blue: 242/255))
                     }
                 }
-//                ToolbarItem(placement: .navigationBarTrailing) {
-//                    Button(action: {
-//                        print("Refresh icon tapped")
-//                        viewModel.fetchOSMDataFor(from: .currentLocation(location: viewModel.userlocation))
-//                    }) {
-//                        Image(systemName: "arrow.2.circlepath")
-//                            .frame(width: 20, height: 20)
-//                            .foregroundStyle(Color(red: 135/255, green: 62/255, blue: 242/255))
-//                    }
-//                }
-            
+
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button(action: {
                         print("Settings icon tapped")
