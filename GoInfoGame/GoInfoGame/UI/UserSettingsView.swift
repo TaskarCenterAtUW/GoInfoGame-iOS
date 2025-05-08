@@ -18,7 +18,8 @@ struct OptionModel: Identifiable, Hashable {
     static let options: [OptionModel] = [
            OptionModel(title: "User Profile", icon: "person.crop.circle.fill", destination: .profile),
            OptionModel(title: "Manage Quests", icon: "slider.horizontal.3", destination: .manageQuests),
-           OptionModel(title: "Download Data", icon: "arrow.down.circle.fill", destination: .downloadData)
+           OptionModel(title: "Download Data", icon: "arrow.down.circle.fill", destination: .downloadData),
+           OptionModel(title: "Switch Workspace", icon: "arrow.right.arrow.left.circle.fill", destination: .switchWorkspace)
        ]
 }
 
@@ -26,19 +27,20 @@ enum SettingsDestination: Hashable {
     case profile
     case manageQuests
     case downloadData
+    case switchWorkspace
 
 }
 struct UserSettingsView: View {
     @Environment(\.presentationMode) var presentationMode
    
-    
+    @State var selectedWorkspace: String = ""
     let options: [OptionModel]
     let onNavigate: (SettingsDestination) -> Void
 
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
             HStack(alignment: .firstTextBaseline) {
-                Text("")
+                Text(selectedWorkspace)
 
 
                 Spacer()

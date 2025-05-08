@@ -162,14 +162,20 @@ struct CustomMap: UIViewRepresentable {
             
         // Helper method to update the region
         func updateUserRegion(_ mapView: MKMapView) {
-            // Update the region only if it hasn't been set yet
-            if self.parent.isPresented  {
-                return
-            } else if !isRegionSet {
+            guard !parent.isPresented else { return }
+
+            let center = parent.region.center
+            guard CLLocationCoordinate2DIsValid(center),
+                  !(center.latitude == 0 && center.longitude == 0) else { return }
+
+            if parent.selectedAnnotations.isEmpty && !isRegionSet {
                 mapView.setRegion(parent.region, animated: true)
                 isRegionSet = true
             }
+
         }
+
+
         
         
         // To keep the selected annotation visible at the top
@@ -229,6 +235,9 @@ struct CustomMap: UIViewRepresentable {
         // Customizes the view for each annotation
         func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
             self.mapView = mapView
+            if annotation is MKUserLocation {
+                   return nil
+               }
             if let clusterAnnotation = annotation as? MKClusterAnnotation {
                 let identifier = "cluster"
                 var clusterView = mapView.dequeueReusableAnnotationView(withIdentifier: identifier) as? MKMarkerAnnotationView
