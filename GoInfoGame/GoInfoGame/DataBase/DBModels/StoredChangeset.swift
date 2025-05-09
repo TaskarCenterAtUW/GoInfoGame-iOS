@@ -16,6 +16,17 @@ enum StoredElementEnum: String, PersistableEnum {
     case node
     case way
     case unknown
+    
+    func elementType() -> ElementType {
+        switch self {
+        case .node:
+            return .node
+        case .way:
+            return .way
+        default:
+            return .node
+        }
+    }
 }
 
 // Represents one stored way

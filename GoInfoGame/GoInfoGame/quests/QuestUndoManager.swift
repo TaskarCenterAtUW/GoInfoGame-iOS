@@ -89,36 +89,15 @@ class MapUndoManager {
         }
     }
 
-
-
-
-    func fetchUndoItems() -> [UndoItem] {
-        var items: [UndoItem] = []
-        
-        
-        
-        
-        return items
-        
-    }
-
     
     func getUndoItems() -> [UndoItem] {
         var items: [UndoItem] = []
 
-        let editedNodes = realm.objects(StoredNode.self).filter("isOriginal == false")
+        let editedNodes = realm.objects(StoredChangeset.self).filter("changesetId == 0")
         for edited in editedNodes {
             let keys = Array(edited.tags.keys)
             if !keys.isEmpty {
-                items.append(UndoItem(elementId: edited.id, type: .node, changedKeys: keys))
-            }
-        }
-
-        let editedWays = realm.objects(StoredWay.self).filter("isOriginal == false")
-        for edited in editedWays {
-            let keys = Array(edited.tags.keys)
-            if !keys.isEmpty {
-                items.append(UndoItem(elementId: edited.id, type: .way, changedKeys: keys))
+                items.append(UndoItem(elementId: edited.elementId, type: edited.elementType.elementType(), changedKeys: keys))
             }
         }
 
