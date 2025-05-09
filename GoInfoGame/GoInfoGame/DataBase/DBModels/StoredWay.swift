@@ -44,7 +44,7 @@ class StoredWay: Object {
     
     public func asWay() -> Way {
         var theTags: [String:String] = [:]
-        for (key,value) in tags.asKeyValueSequence(){
+        for (key,value) in tags{
             theTags[key] = value
         }
         let nodeList:[Int64] = nodes.map({$0})

@@ -31,7 +31,7 @@ class StoredNode : Object {
     public func asNode() -> Node {
         let position = LatLon(latitude: point.latitude , longitude: point.longitude)
         var theTags: [String:String] = [:]
-        for (key,value) in tags.asKeyValueSequence(){
+        for (key,value) in tags{
             theTags[key] = value
         }
         let n = Node(id: Int64(id), version: version, tags: theTags, timestampEdited: 0, position: position)
