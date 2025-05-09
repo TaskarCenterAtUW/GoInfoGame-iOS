@@ -369,14 +369,27 @@ class DatabaseConnector {
      - parameter tags [String:String] tags changed with this
      - Returns: An instance of `StoredChangeset`
         */
-    func createChangeset(id:String, type: StoredElementEnum, tags:[String:String]) -> StoredChangeset? {            
+    func createChangeset(id:Int, type: StoredElementEnum, originalTags:[String:String], tags:[String:String], version: Int, point: CLLocationCoordinate2D? = nil, nodes: List<Int64>? = nil) -> StoredChangeset? {
         let storedChangeset = StoredChangeset()
         storedChangeset.elementId = id
         storedChangeset.elementType = type
+        storedChangeset.version = version
+        if let point = point {
+            storedChangeset.point = point
+        }
+        if let nodes = nodes {
+            storedChangeset.nodes = nodes
+        }
+        
         storedChangeset.timestamp =  String(Date().timeIntervalSince1970)
         for tag in tags {
             storedChangeset.tags.setValue(tag.value, forKey: tag.key)
         }
+        
+        for tag in originalTags {
+            storedChangeset.originalTags.setValue(tag.value, forKey: tag.key)
+        }
+        
         do {
             try realm.write {
                 realm.add(storedChangeset)

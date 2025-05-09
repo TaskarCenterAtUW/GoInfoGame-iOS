@@ -68,13 +68,13 @@ class DatasyncManager {
             let intId = Int($0.elementId) ?? -1
             switch $0.elementType {
             case .way:
-                let exists = self.dbInstance.getWay(id: intId, version: .edited) != nil
+                let exists = self.dbInstance.getWay(id: intId, version: .original) != nil
                 if !exists {
                     print("⚠️ Edited way not found for ID: \(intId)")
                 }
                 return exists
             case .node:
-                let exists = self.dbInstance.getNode(id: intId, version: .edited) != nil
+                let exists = self.dbInstance.getNode(id: intId, version: .original) != nil
                 if !exists {
                     print("⚠️ Edited node not found for ID: \(intId)")
                 }
@@ -86,17 +86,17 @@ class DatasyncManager {
 
         print("📦 Found \(validChangesets.count) unsynced changesets with valid edits")
 
-        var nodesToSync: [String: StoredNode] = [:]
-        var waysToSync: [String: StoredWay] = [:]
+        var nodesToSync: [String: StoredChangeset] = [:]
+        var waysToSync: [String: StoredChangeset] = [:]
 
         for cs in validChangesets {
             let intId = Int(cs.elementId) ?? -1
             if cs.elementType == .node,
-               let node = dbInstance.getNode(id: intId, version: .edited) {
-                nodesToSync[cs.id] = node
+               let node = dbInstance.getNode(id: intId, version: .original) {
+                nodesToSync[cs.id] = cs
             } else if cs.elementType == .way,
-                      let way = dbInstance.getWay(id: intId, version: .edited) {
-                waysToSync[cs.id] = way
+                      let way = dbInstance.getWay(id: intId, version: .original) {
+                waysToSync[cs.id] = cs
             }
         }
 
