@@ -6,6 +6,8 @@
 //
 
 import SwiftUI
+import LocalAuthentication
+
 // InitialView - Main view for displaying available workspaces and navigating to MapVie
 struct InitialView: View {
     @StateObject private var viewModel = InitialViewModel()
@@ -15,6 +17,30 @@ struct InitialView: View {
     @State private var isLoading: Bool = false
     
     @AppStorage("loggedIn") private var loggedIn: Bool = false
+    
+    @AppStorage("useBiometricID") private var useBiometricID: Bool = false
+
+    @AppStorage("biometricOptInDeclined") private var biometricOptInDeclined: Bool = false
+
+    @State private var showBiometricOptInPrompt = false
+    
+    private var shouldShowBiometricOptIn: Bool {
+           !useBiometricID &&
+           !biometricOptInDeclined &&
+           KeychainManager.load(key: "username") != nil &&
+           KeychainManager.load(key: "password") != nil
+       }
+
+       private var biometricPromptMessage: String {
+           let context = LAContext()
+           _ = context.canEvaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, error: nil)
+           switch context.biometryType {
+           case .faceID: return "Enable Face ID for faster login?"
+           case .touchID: return "Enable Touch ID for faster login?"
+           default: return "Enable biometric login for faster access?"
+           }
+       }
+
     
     var body: some View {
         NavigationStack {
@@ -62,7 +88,27 @@ struct InitialView: View {
             isLoading = true
         }
         .toolbar(.hidden)
+        
+        .onAppear {
+                  if shouldShowBiometricOptIn {
+                      DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
+                          showBiometricOptInPrompt = true
+                      }
+                  }
+              }
+              .alert("Enable Biometric Login?", isPresented: $showBiometricOptInPrompt) {
+                  Button("Enable") {
+                      useBiometricID = true
+                      biometricOptInDeclined = false
+                  }
+                  Button("Not Now", role: .cancel) {
+                      biometricOptInDeclined = true
+                  }
+              } message: {
+                  Text(biometricPromptMessage)
+              }
        }
+    
 }
 
 // WorkspacesListView - View for displaying a list of workspaces
