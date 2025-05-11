@@ -7,25 +7,62 @@
 
 import SwiftUI
 
+import SwiftUI
+import LocalAuthentication
+
 struct PosmLoginView: View {
     
     @ObservedObject var viewModel = PosmLoginViewModel()
     
-    @State private var isShowingAlert = false
-    @State private var shouldLogin = false
-    
-    @State private var shouldShowAlert = false
+    @AppStorage("useBiometricID") private var useBiometricID: Bool = false
     
     @State private var selectedEnvironment: APIEnvironment = .staging
+    @State private var showBiometricOptInPrompt = false
     @State private var showAlert = false
+    
+    private var canUseBiometricLogin: Bool {
+        let hasCredentials = KeychainManager.load(key: "username") != nil &&
+                             KeychainManager.load(key: "password") != nil
+        return useBiometricID && hasCredentials
+    }
+
+    private var biometricLabelText: String {
+        let context = LAContext()
+        _ = context.canEvaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, error: nil)
+        return context.biometryType == .faceID ? "Login with Face ID" :
+               context.biometryType == .touchID ? "Login with Touch ID" :
+               "Login with Biometrics"
+    }
+
+    private var biometricIcon: String {
+        let context = LAContext()
+        _ = context.canEvaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, error: nil)
+        return context.biometryType == .faceID ? "faceid" :
+               context.biometryType == .touchID ? "touchid" : "lock"
+    }
+    
+    private var biometricPromptMessage: String {
+        let context = LAContext()
+        _ = context.canEvaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, error: nil)
+        
+        switch context.biometryType {
+        case .faceID:
+            return "Enable Face ID for faster login?"
+        case .touchID:
+            return "Enable Touch ID for faster login?"
+        default:
+            return "Enable biometric login for faster access?"
+        }
+    }
+
     var body: some View {
         NavigationStack {
             ZStack {
                 VStack(spacing: 20) {
                     Text("GoInfoGame")
                         .font(.custom("Lato-Bold", size: 30))
-                        .foregroundColor((Color(red: 135/255, green: 62/255, blue: 242/255)))
-                        .padding([.bottom], 50)
+                        .foregroundColor(Color(red: 135/255, green: 62/255, blue: 242/255))
+                        .padding(.bottom, 50)
                                     
                     TextField("Username", text: $viewModel.username)
                         .padding()
@@ -66,12 +103,23 @@ struct PosmLoginView: View {
                     }) {
                         Text("Login")
                             .font(.custom("Lato-Bold", size: 20))
-                            .foregroundColor(Color.white)
+                            .foregroundColor(.white)
                             .padding()
                             .background(Color(red: 135/255, green: 62/255, blue: 242/255))
                             .cornerRadius(25)
                     }
                     .padding(.top, 20)
+
+                    if canUseBiometricLogin {
+                        Button(action: {
+                            viewModel.loginWithBiometricID()
+                        }) {
+                            Label(biometricLabelText, systemImage: biometricIcon)
+                                .font(.custom("Lato-Bold", size: 18))
+                                .foregroundColor(.blue)
+                        }
+                        .padding(.top, 10)
+                    }
                     
                     if viewModel.hasLoginFailed {
                         Text("Invalid Credentials")
@@ -95,19 +143,46 @@ struct PosmLoginView: View {
         .alert("Invalid Credentials", isPresented: $viewModel.shouldShowValidationAlert) {
             Button("OK", role: .cancel) { }
         }
+        .alert("Enable Biometric Login?", isPresented: $showBiometricOptInPrompt) {
+            Button("Enable") {
+                useBiometricID = true
+            }
+            Button("Not Now", role: .cancel) { }
+        } message: {
+            Text(biometricPromptMessage)
+        }
+
+        .alert("Biometric Login Failed", isPresented: $viewModel.shouldShowBiometricErrorAlert) {
+            Button("OK", role: .cancel) { }
+        } message: {
+            Text(viewModel.biometricIDErrorMessage ?? "Something went wrong.")
+        }
+        .onChange(of: viewModel.isLoginSuccess) { success in
+            if success && !useBiometricID {
+                showBiometricOptInPrompt = true
+            }
+        }
         .onAppear {
             selectedEnvironment = APIConfiguration.shared.environment
+
+            if canUseBiometricLogin {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                    viewModel.loginWithBiometricID()
+                }
+            }
         }
-        .onReceive(NotificationCenter.default.publisher(for: Notification.Name("SessionExpired"))) { notification in
-                    showAlert = true
-                }
-                .alert("Logout", isPresented: $showAlert) {
-                    Button("OK", role: .cancel) {}
-                } message: {
-                    Text("Your session has expired. Please login again")
-                }
+        .onReceive(NotificationCenter.default.publisher(for: Notification.Name("SessionExpired"))) { _ in
+            showAlert = true
+        }
+        .alert("Logout", isPresented: $showAlert) {
+            Button("OK", role: .cancel) {}
+        } message: {
+            Text("Your session has expired. Please login again")
+        }
     }
 }
+
+
 
 #Preview {
     PosmLoginView()
