@@ -12,6 +12,8 @@ struct UserProfileView: View {
     @StateObject private var viewModel = UserProfileViewModel()
     
     @AppStorage("loggedIn") private var loggedIn: Bool = false
+    
+    @AppStorage("useBiometricID") private var useBiometricID: Bool = false
                 
     var body: some View {
         Group {
@@ -32,6 +34,17 @@ struct UserProfileView: View {
                         Spacer()
                     }
                     .padding([.bottom], 200)
+                    
+                    Toggle(isOn: $useBiometricID) {
+                        Text("Use Face ID for Login")
+                    }
+                    .onChange(of: useBiometricID) { isEnabled in
+                        if !isEnabled {
+                          _ = KeychainManager.delete(key: "username")
+                          _ = KeychainManager.delete(key: "password")
+                        }
+                    }
+                    .padding([.bottom], 30)
                     logOutButton
                    
                     Spacer()
