@@ -55,6 +55,21 @@ struct KeychainManager {
         let status = SecItemDelete(query as CFDictionary)
         return status == errSecSuccess
     }
+    
+    static func loadSessionValue(_ key: String) -> String? {
+        let env = APIConfiguration.shared.environment
+
+        switch key {
+        case "username":
+            return load(.username, for: env)
+        case "password":
+            return load(.password, for: env)
+        case "accessToken":
+            return load(.accessToken, for: env)
+        default:
+            return load(key: key) // Fallback to loading from the generic keychain
+        }
+    }
 }
 
 

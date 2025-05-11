@@ -32,7 +32,7 @@ class InitialViewModel: ObservableObject {
     // fetch workspaces list
     func fetchWorkspacesList() {
                 
-        if let accessToken = KeychainManager.load(key: "accessToken") {
+        if let accessToken = KeychainManager.loadSessionValue("accessToken"){
             ApiManager.shared.performRequest(to: .fetchWorkspaceList(accessToken), setupType: .workspace, modelType: [Workspace].self) { result in
             
             DispatchQueue.main.async {

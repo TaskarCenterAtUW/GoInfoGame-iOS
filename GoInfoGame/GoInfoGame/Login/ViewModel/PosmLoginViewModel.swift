@@ -61,16 +61,18 @@ class PosmLoginViewModel: ObservableObject {
             
             let postBody  = try? JSONSerialization.data(withJSONObject: postParams)
             
+            let env = APIConfiguration.shared.environment
+            
             ApiManager.shared.performRequest(to: .login(postBody!), setupType: .login, modelType: PosmLoginSuccessResponse.self) { result in
                 switch result {
                 case .success(let posmLoginSuccessResponse):
                     let accessToken = posmLoginSuccessResponse.accessToken
                     let refreshToken = posmLoginSuccessResponse.refreshToken
                     DispatchQueue.main.async {
-                      _ =  KeychainManager.save(key: "username", data: self.username)
-                       _ = KeychainManager.save(key: "password", data: self.password)
-                        _ = KeychainManager.save(key: "accessToken", data: accessToken)
-                        _ = KeychainManager.save(key: "refreshToken", data: refreshToken)
+                            _ = KeychainManager.save(.username, value: self.username, for: env)
+                            _ =  KeychainManager.save(.password, value: self.password, for: env)
+                            _ = KeychainManager.save(.accessToken, value: accessToken, for: env)
+                            _ = KeychainManager.save(key: "refreshToken", data: refreshToken)
                         UserDefaults.standard.setValue(posmLoginSuccessResponse.expiresIn, forKey: "accessToken_expire_in")
                         UserDefaults.standard.setValue(Date().timeIntervalSince1970, forKey: "accessToken_Generate")
                         if let appDelegate = UIApplication.shared.delegate as? AppDelegate {
@@ -94,12 +96,15 @@ class PosmLoginViewModel: ObservableObject {
     }
     
     func loginWithBiometricID() {
+        
+        let env = APIConfiguration.shared.environment
+        
         biometricAuthenticator.authenticate { [weak self] success, error in
             guard let self = self else { return }
 
             if success {
-                if let savedUsername = KeychainManager.load(key: "username"),
-                   let savedPassword = KeychainManager.load(key: "password") {
+                if let savedUsername = KeychainManager.load(.username, for: env),
+                   let savedPassword = KeychainManager.load(.password, for: env)  {
                     
                     self.username = savedUsername
                     self.password = savedPassword

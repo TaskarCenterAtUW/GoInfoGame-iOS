@@ -13,7 +13,7 @@ class ProfileViewVM: ObservableObject {
     
     init() {
         let posmConnection = OSMConnection(config: OSMConfig.testPOSM)
-        let accessToken = KeychainManager.load(key: "accessToken")
+        let accessToken = KeychainManager.loadSessionValue("accessToken")
       //  if accessToken != nil {
             posmConnection.getUserDetails { [weak self] result in
                 switch result {
