@@ -414,11 +414,8 @@ class DatabaseConnector {
         return results
     }
     
-    func getChangeset(for id: Int64, type: ElementType) -> StoredChangeset? {
-        let storedType: StoredElementEnum = (type == .way) ? .way : .node
-        return realm.objects(StoredChangeset.self)
-            .filter("elementId == %@ AND elementType == %@", id, storedType.rawValue)
-            .first
+    func getChangeset(for id: String) -> StoredChangeset? {
+        return realm.object(ofType: StoredChangeset.self, forPrimaryKey: id)
     }
 
     /// Assigns changesetId for a stored changeset

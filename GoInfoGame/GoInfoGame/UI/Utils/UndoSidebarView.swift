@@ -7,12 +7,12 @@ struct UndoItem: Identifiable {
     let elementId: Int
     let type: ElementType
     let changedKeys: [String]
-    var id: String { "\(type)-\(elementId)" }
+    var id: String
 }
 
 struct UndoSidebarView: View {
     @State private var undoItems: [UndoItem] = []
-    var onUndo: (Int, ElementType) -> Void
+    var onUndo: (String) -> Void
     var onClose: () -> Void
     var onItemSelected: (UndoItem) -> Void
 

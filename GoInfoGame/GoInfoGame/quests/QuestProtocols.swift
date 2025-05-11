@@ -37,6 +37,14 @@ class QuestBase {
     
    private var elementSubmittingToPOSM: ElementSubmittingToPOSM?
     
+    init () {
+        MapUndoManager.shared.updateTagsHandler = { [weak self] changeset in
+            guard let changeSet = changeset else { return }
+            
+            self?.updateUndoTags(changeSet: changeSet)
+        }
+    }
+    
     func updateUndoTags(changeSet: StoredChangeset) {
         // Convert from ElementType enum to StoredElementEnum
         Task.detached(operation: { @MainActor in
@@ -67,13 +75,6 @@ class QuestBase {
     // Add a custom implementation
     
    public func updateTags(id: Int64, tags:[String:String], type: ElementType, exclude_gig_tags: Bool = false) {
-       
-       MapUndoManager.shared.updateTagsHandler = { [weak self] changeset in
-           guard let changeSet = changeset else { return }
-           
-           self?.updateUndoTags(changeSet: changeSet)
-       }
-       
        
        // Convert from ElementType enum to StoredElementEnum
        let storedElementType: StoredElementEnum = type == .way ? .way : .node
@@ -106,10 +107,6 @@ class QuestBase {
                switch success {
                case .success(let success):
                    if success {
-                       if MapUndoManager.shared.isUndoInProgress {
-                           MapUndoManager.shared.finalizeSuccessfulSubmit(id: Int(id), type: type)
-                           MapUndoManager.shared.isUndoInProgress = false
-                       }
 
                        MapViewPublisher.shared.dismissSheet.send(.submitted("\(id)"))
                    }

@@ -146,8 +146,8 @@ struct MapView: View {
                             },
                             onRemovePreview: {
                             },
-                            onRevert: { id, type in
-                                MapUndoManager.shared.undo(for: Int64(id), type: type)
+                            onRevert: { id in
+                                MapUndoManager.shared.undo(for: id)
                             }
                         )
                         .padding(.bottom, 24)

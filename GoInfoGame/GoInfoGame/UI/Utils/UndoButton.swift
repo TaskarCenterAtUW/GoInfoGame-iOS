@@ -11,7 +11,7 @@ import osmparser
 struct UndoButton: View {
     var onPreview: (Int, ElementType) -> Void
     var onRemovePreview: () -> Void
-    var onRevert: (Int, ElementType) -> Void
+    var onRevert: (String) -> Void
 
     @State private var showSidebar = false
     @State private var undoItems: [UndoItem] = []
@@ -22,8 +22,8 @@ struct UndoButton: View {
         ZStack(alignment: .leading) {
             if showSidebar {
                 UndoSidebarView(
-                    onUndo: { id, type in
-                        onRevert(id, type)
+                    onUndo: { id in
+                        onRevert(id)
                         undoItems = MapUndoManager.shared.getUndoItems()
                         withAnimation { showSidebar = false }
                     },
@@ -65,7 +65,7 @@ struct UndoButton: View {
                     }
 
                 VStack(spacing: 16) {
-                    Text("\(item.type == .way ? "Way" : "Node") #\(item.elementId)")
+                    Text("\(item.type == .way ? "Way" : "Node") #\(String(item.elementId))")
                         .font(.headline)
 
                     if !item.changedKeys.isEmpty {
@@ -89,7 +89,7 @@ struct UndoButton: View {
                         Spacer()
 
                         Button("Revert") {
-                            onRevert(item.elementId, item.type)
+                            onRevert(item.id)
                             showUndoPopup = false
                             showSidebar = false
                         }
