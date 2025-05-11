@@ -187,7 +187,6 @@
 		FA18CAE92CCFD212008247F2 /* FinishUploadingModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA18CAE82CCFD212008247F2 /* FinishUploadingModel.swift */; };
 		FA18CAEB2CD0F718008247F2 /* CameraView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA18CAEA2CD0F718008247F2 /* CameraView.swift */; };
 		FA1992ED2BB1A78C003B4719 /* KeychainManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA1992EC2BB1A78C003B4719 /* KeychainManager.swift */; };
-		FA2EC4822BBECE38003B8B64 /* KeychainManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA1992EC2BB1A78C003B4719 /* KeychainManager.swift */; };
 		FA50718C2D54E08800CE9798 /* AddFeatureView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA50718B2D54E08800CE9798 /* AddFeatureView.swift */; };
 		FA50718E2D54E1D200CE9798 /* BingTileOverlay.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA50718D2D54E1D200CE9798 /* BingTileOverlay.swift */; };
 		FA5071902D5B31CC00CE9798 /* CreateNoteView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA50718F2D5B31CC00CE9798 /* CreateNoteView.swift */; };
@@ -2009,7 +2008,6 @@
 				A475C7CE2B5D4FE200BABEDA /* OSMChangeset.swift in Sources */,
 				A40E728B2B5D48A800328848 /* OSMConnection.swift in Sources */,
 				A475C7D32B5E22C800BABEDA /* OSMNode.swift in Sources */,
-				FA2EC4822BBECE38003B8B64 /* KeychainManager.swift in Sources */,
 				A475C7D92B5E264700BABEDA /* OSMWay.swift in Sources */,
 				A475C7DD2B5E3E7C00BABEDA /* OSMPayload.swift in Sources */,
 				97A014BF2B7B580700F7C277 /* OSMMapData.swift in Sources */,
