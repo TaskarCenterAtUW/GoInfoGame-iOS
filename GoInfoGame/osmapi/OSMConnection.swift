@@ -52,9 +52,9 @@ public class OSMConnection {
         self.currentChangesetId = currentChangesetId
         
      
-       if let token = KeychainManager.load(key: "accessToken") {
-           self.accessToken = token
-        }
+//       if let token = KeychainManager.load(key: "accessToken") {
+//           self.accessToken = token
+//        }
     }
     /// Fetches a single node
     /// - parameter id : the `id` of the node
