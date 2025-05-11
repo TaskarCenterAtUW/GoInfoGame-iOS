@@ -11,13 +11,11 @@ import SwiftUI
 import LocalAuthentication
 
 struct PosmLoginView: View {
-    
+
     @ObservedObject var viewModel = PosmLoginViewModel()
-    
+
     @AppStorage("useBiometricID") private var useBiometricID: Bool = false
-    
     @State private var selectedEnvironment: APIEnvironment = .staging
-    @State private var showBiometricOptInPrompt = false
     @State private var showAlert = false
     
     private var canUseBiometricLogin: Bool {
@@ -40,20 +38,6 @@ struct PosmLoginView: View {
         return context.biometryType == .faceID ? "faceid" :
                context.biometryType == .touchID ? "touchid" : "lock"
     }
-    
-    private var biometricPromptMessage: String {
-        let context = LAContext()
-        _ = context.canEvaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, error: nil)
-        
-        switch context.biometryType {
-        case .faceID:
-            return "Enable Face ID for faster login?"
-        case .touchID:
-            return "Enable Touch ID for faster login?"
-        default:
-            return "Enable biometric login for faster access?"
-        }
-    }
 
     var body: some View {
         NavigationStack {
@@ -63,20 +47,20 @@ struct PosmLoginView: View {
                         .font(.custom("Lato-Bold", size: 30))
                         .foregroundColor(Color(red: 135/255, green: 62/255, blue: 242/255))
                         .padding(.bottom, 50)
-                                    
+
                     TextField("Username", text: $viewModel.username)
                         .padding()
                         .background(Color(.systemGray6))
                         .cornerRadius(10)
                         .padding(.horizontal, 40)
                         .textInputAutocapitalization(.never)
-                    
+
                     SecureField("Password", text: $viewModel.password)
                         .padding()
                         .background(Color(.systemGray6))
                         .cornerRadius(10)
                         .padding(.horizontal, 40)
-                    
+
                     Menu {
                         ForEach(APIEnvironment.allCases, id: \.self) { environment in
                             Button(action: {
@@ -97,7 +81,7 @@ struct PosmLoginView: View {
                         .cornerRadius(10)
                     }
                     .padding(.horizontal, 40)
-            
+
                     Button(action: {
                         viewModel.performLogin()
                     }) {
@@ -120,7 +104,7 @@ struct PosmLoginView: View {
                         }
                         .padding(.top, 10)
                     }
-                    
+
                     if viewModel.hasLoginFailed {
                         Text("Invalid Credentials")
                             .foregroundColor(.red)
@@ -128,7 +112,7 @@ struct PosmLoginView: View {
                     }
                 }
                 .padding()
-                
+
                 if viewModel.isLoading {
                     ActivityView(activityText: "Loading...")
                         .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -142,25 +126,6 @@ struct PosmLoginView: View {
         }
         .alert("Invalid Credentials", isPresented: $viewModel.shouldShowValidationAlert) {
             Button("OK", role: .cancel) { }
-        }
-        .alert("Enable Biometric Login?", isPresented: $showBiometricOptInPrompt) {
-            Button("Enable") {
-                useBiometricID = true
-            }
-            Button("Not Now", role: .cancel) { }
-        } message: {
-            Text(biometricPromptMessage)
-        }
-
-        .alert("Biometric Login Failed", isPresented: $viewModel.shouldShowBiometricErrorAlert) {
-            Button("OK", role: .cancel) { }
-        } message: {
-            Text(viewModel.biometricIDErrorMessage ?? "Something went wrong.")
-        }
-        .onChange(of: viewModel.isLoginSuccess) { success in
-            if success && !useBiometricID {
-                showBiometricOptInPrompt = true
-            }
         }
         .onAppear {
             selectedEnvironment = APIConfiguration.shared.environment
@@ -177,10 +142,11 @@ struct PosmLoginView: View {
         .alert("Logout", isPresented: $showAlert) {
             Button("OK", role: .cancel) {}
         } message: {
-            Text("Your session has expired. Please login again")
+            Text("Your session has expired. Please login again.")
         }
     }
 }
+
 
 
 
