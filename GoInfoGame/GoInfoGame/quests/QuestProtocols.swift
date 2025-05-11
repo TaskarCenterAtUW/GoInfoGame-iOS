@@ -41,6 +41,7 @@ class QuestBase {
         // Convert from ElementType enum to StoredElementEnum
         Task.detached(operation: { @MainActor in
             let storedElementType: StoredElementEnum = changeSet.elementType
+            let changesetId = changeSet.id
             do {
                 var result: (result: Bool, version: Int) = (false, -1)
                 switch storedElementType {
@@ -51,6 +52,11 @@ class QuestBase {
                 case .unknown:
                     print("❌ Undo failed: Element type not found")
                 }
+                print("undo result \(result)")
+                DispatchQueue.main.async {
+                    _ = DatabaseConnector.shared.updateChangesetWithUndoResultSuccess(obj: changesetId)
+                }
+                
             }
             catch {
                 print("❌ Undo failed: \(error)")

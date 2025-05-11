@@ -440,6 +440,21 @@ class DatabaseConnector {
         }
     }
     
+    func updateChangesetWithUndoResultSuccess(obj:String) -> StoredChangeset? {
+        guard let changeset = realm.object(ofType: StoredChangeset.self, forPrimaryKey: obj) else {
+            return nil
+        }
+        do {
+            try realm.write {
+                changeset.undoOn = Date()
+                changeset.isUndoCompleted = true
+            }
+            return changeset
+        } catch (let error){
+            return nil
+        }
+    }
+    
     func updateNodeVersion(nodeId: String, version:Int) -> StoredNode?{
         let intId = Int(nodeId) ?? -1
         guard let theNode = getNode(id: intId, version: .original) else { return nil }

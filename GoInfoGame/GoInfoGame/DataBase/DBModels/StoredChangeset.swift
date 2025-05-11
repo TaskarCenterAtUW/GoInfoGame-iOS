@@ -43,6 +43,8 @@ class StoredChangeset: Object {
     @Persisted var point: CLLocationCoordinate2D = CLLocationCoordinate2D(latitude: 0.0, longitude: 0.0)
     @Persisted var nodes: List<Int64> = List<Int64>()
     @Persisted var updatedVersion: Int = -1
+    @Persisted var isUndoCompleted: Bool = false
+    @Persisted var undoOn: Date? = nil
     
     public func asOSMWay(isUndo: Bool = false) -> OSMWay {
         var storage = originalTags.toDictionary()

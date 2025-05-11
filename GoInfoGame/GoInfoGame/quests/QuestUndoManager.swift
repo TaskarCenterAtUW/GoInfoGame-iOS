@@ -38,7 +38,7 @@ class MapUndoManager {
     func getUndoItems() -> [UndoItem] {
         var items: [UndoItem] = []
 
-        let editedNodes = realm.objects(StoredChangeset.self).filter("changesetId == 0")
+        let editedNodes = realm.objects(StoredChangeset.self).filter("changesetId == 0 && isUndoCompleted == false")
         for edited in editedNodes {
             let keys = Array(edited.tags.keys)
             if !keys.isEmpty {
