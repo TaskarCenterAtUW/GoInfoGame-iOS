@@ -7,6 +7,7 @@
 
 import Foundation
 import SwiftUI
+import LocalAuthentication
 
 @MainActor
 class PosmLoginViewModel: ObservableObject {
@@ -21,6 +22,10 @@ class PosmLoginViewModel: ObservableObject {
     @AppStorage("loggedIn") private var loggedIn: Bool = false
     
     @Published var shouldShowValidationAlert: Bool = false
+    
+    private let faceIDAuthenticator = FaceIDAuthenticator()
+    @Published var faceIDErrorMessage: String?
+    @Published var shouldShowFaceIDErrorAlert: Bool = false
     
     private func validate() {
            errorMessage = ""
@@ -52,7 +57,7 @@ class PosmLoginViewModel: ObservableObject {
             
             let postParams = ["username": username, "password": password]
             
-            _ = KeychainManager.save(key: "username", data: username)
+          //  _ = KeychainManager.save(key: "username", data: username)
             
             let postBody  = try? JSONSerialization.data(withJSONObject: postParams)
             
@@ -62,6 +67,8 @@ class PosmLoginViewModel: ObservableObject {
                     let accessToken = posmLoginSuccessResponse.accessToken
                     let refreshToken = posmLoginSuccessResponse.refreshToken
                     DispatchQueue.main.async {
+                      _ =  KeychainManager.save(key: "username", data: self.username)
+                       _ = KeychainManager.save(key: "password", data: self.password)
                         _ = KeychainManager.save(key: "accessToken", data: accessToken)
                         _ = KeychainManager.save(key: "refreshToken", data: refreshToken)
                         UserDefaults.standard.setValue(posmLoginSuccessResponse.expiresIn, forKey: "accessToken_expire_in")
@@ -82,6 +89,41 @@ class PosmLoginViewModel: ObservableObject {
                     }
                     print("HANDLE ERROR")
                 }
+            }
+        }
+    }
+    
+    func loginWithFaceID() {
+        faceIDAuthenticator.authenticate { [weak self] success, error in
+            guard let self = self else { return }
+
+            if success {
+                if let savedUsername = KeychainManager.load(key: "username"),
+                   let savedPassword = KeychainManager.load(key: "password") {
+                    
+                    self.username = savedUsername
+                    self.password = savedPassword
+
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+                        self.performLogin()
+                    }
+                } else {
+                    self.faceIDErrorMessage = "Saved credentials not found. Please login manually."
+                    self.shouldShowFaceIDErrorAlert = true
+                }
+            } else {
+                if let error = error?.lowercased() {
+                    if error.contains("canceled") {
+                        self.faceIDErrorMessage = "Face ID was canceled."
+                    } else if error.contains("not available") || error.contains("not enrolled") {
+                        self.faceIDErrorMessage = "Face ID is not available or not set up."
+                    } else {
+                        self.faceIDErrorMessage = "Authentication failed: \(error)"
+                    }
+                } else {
+                    self.faceIDErrorMessage = "An unknown error occurred. Please try again."
+                }
+                self.shouldShowFaceIDErrorAlert = true
             }
         }
     }
