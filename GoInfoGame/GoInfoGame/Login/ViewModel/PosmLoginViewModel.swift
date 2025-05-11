@@ -23,9 +23,9 @@ class PosmLoginViewModel: ObservableObject {
     
     @Published var shouldShowValidationAlert: Bool = false
     
-    private let faceIDAuthenticator = FaceIDAuthenticator()
-    @Published var faceIDErrorMessage: String?
-    @Published var shouldShowFaceIDErrorAlert: Bool = false
+    private let biometricAuthenticator = BiometricAuthenticator()
+    @Published var biometricIDErrorMessage: String?
+    @Published var shouldShowBiometricErrorAlert: Bool = false
     
     private func validate() {
            errorMessage = ""
@@ -93,8 +93,8 @@ class PosmLoginViewModel: ObservableObject {
         }
     }
     
-    func loginWithFaceID() {
-        faceIDAuthenticator.authenticate { [weak self] success, error in
+    func loginWithBiometricID() {
+        biometricAuthenticator.authenticate { [weak self] success, error in
             guard let self = self else { return }
 
             if success {
@@ -108,22 +108,22 @@ class PosmLoginViewModel: ObservableObject {
                         self.performLogin()
                     }
                 } else {
-                    self.faceIDErrorMessage = "Saved credentials not found. Please login manually."
-                    self.shouldShowFaceIDErrorAlert = true
+                    self.biometricIDErrorMessage = "Saved credentials not found. Please login manually."
+                    self.shouldShowBiometricErrorAlert = true
                 }
             } else {
                 if let error = error?.lowercased() {
                     if error.contains("canceled") {
-                        self.faceIDErrorMessage = "Face ID was canceled."
+                        self.biometricIDErrorMessage = "Biometric ID was canceled."
                     } else if error.contains("not available") || error.contains("not enrolled") {
-                        self.faceIDErrorMessage = "Face ID is not available or not set up."
+                        self.biometricIDErrorMessage = "Biometric ID is not available or not set up."
                     } else {
-                        self.faceIDErrorMessage = "Authentication failed: \(error)"
+                        self.biometricIDErrorMessage = "Authentication failed: \(error)"
                     }
                 } else {
-                    self.faceIDErrorMessage = "An unknown error occurred. Please try again."
+                    self.biometricIDErrorMessage = "An unknown error occurred. Please try again."
                 }
-                self.shouldShowFaceIDErrorAlert = true
+                self.shouldShowBiometricErrorAlert = true
             }
         }
     }
