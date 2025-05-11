@@ -56,3 +56,32 @@ struct KeychainManager {
         return status == errSecSuccess
     }
 }
+
+
+extension KeychainManager {
+    
+    enum Key: String {
+        case username
+        case password
+        case accessToken
+
+        func namespaced(for environment: APIEnvironment) -> String {
+            return "\(rawValue)_\(environment.rawValue)"
+        }
+    }
+
+    static func save(_ key: Key, value: String, for environment: APIEnvironment) -> Bool {
+        let namespacedKey = key.namespaced(for: environment)
+        return save(key: namespacedKey, data: value)
+    }
+
+    static func load(_ key: Key, for environment: APIEnvironment) -> String? {
+        let namespacedKey = key.namespaced(for: environment)
+        return load(key: namespacedKey)
+    }
+
+    static func delete(_ key: Key, for environment: APIEnvironment) -> Bool {
+        let namespacedKey = key.namespaced(for: environment)
+        return delete(key: namespacedKey)
+    }
+}
