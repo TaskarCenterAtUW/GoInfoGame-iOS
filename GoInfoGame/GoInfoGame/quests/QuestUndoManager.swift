@@ -20,73 +20,18 @@ class MapUndoManager {
         realm = try! Realm()
     }
 
-    var updateTagsHandler: ((_ id: Int64, _ tags: [String: String], _ type: ElementType) -> Void)?
+    var updateTagsHandler: ((_ changeset: StoredChangeset?) -> Void)?
 
     func undo(for id: Int64, type: ElementType) {
         MapUndoManager.shared.isUndoInProgress = true
 
-        switch type {
-        case .way:
-            guard let original = DatabaseConnector.shared.getWay(id: Int(id), version: .original),
-                  let edited = DatabaseConnector.shared.getWay(id: Int(id), version: .edited) else {
-                print("❌ Undo failed: Way not found")
-                return
-            }
-
-            do {
-                try realm.write {
-                    edited.tags.removeAll()
-
-                    for entry in original.tags {
-                        let key = entry.key
-                        let value = entry.value
-                        if key != "ext:gig_complete", key != "ext:gig_last_updated" {
-                            edited.tags[key] = value
-                        }
-                    }
-
-                    edited.polyline.removeAll()
-                    edited.polyline.append(objectsIn: original.polyline)
-
-                    edited.nodes.removeAll()
-                    edited.nodes.append(objectsIn: original.nodes)
-                }
-            } catch {
-                print("❌ Realm write failed during undo (way): \(error)")
-            }
-
-            updateTagsHandler?(id, edited.tags.toDictionary(), .way)
-
-        case .node:
-            guard let original = DatabaseConnector.shared.getNode(id: Int(id), version: .original),
-                  let edited = DatabaseConnector.shared.getNode(id: Int(id), version: .edited) else {
-                print("❌ Undo failed: Node not found")
-                return
-            }
-
-            do {
-                try realm.write {
-                    edited.tags.removeAll()
-
-                    for entry in original.tags {
-                        let key = entry.key
-                        let value = entry.value
-                        if key != "ext:gig_complete", key != "ext:gig_last_updated" {
-                            edited.tags[key] = value
-                        }
-                    }
-
-                    edited.point = original.point
-                }
-            } catch {
-                print("❌ Realm write failed during undo (node): \(error)")
-            }
-
-            updateTagsHandler?(id, edited.tags.toDictionary(), .node)
-
-        default:
-            print("Unknown element type")
+        guard let changeSet = DatabaseConnector.shared.getChangeset(for: id, type: type) else {
+            print("❌ Undo failed: Element not found")
+            updateTagsHandler?(nil)
+            return
         }
+
+        updateTagsHandler?(changeSet)
     }
 
     

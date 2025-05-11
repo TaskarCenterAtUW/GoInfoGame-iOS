@@ -42,21 +42,43 @@ class StoredChangeset: Object {
     @Persisted var version: Int = 0
     @Persisted var point: CLLocationCoordinate2D = CLLocationCoordinate2D(latitude: 0.0, longitude: 0.0)
     @Persisted var nodes: List<Int64> = List<Int64>()
+    @Persisted var updatedVersion: Int = -1
     
-    public func asOSMWay() -> OSMWay {
+    public func asOSMWay(isUndo: Bool = false) -> OSMWay {
         var storage = originalTags.toDictionary()
-        for tag in tags {
-            storage[tag.key] = tag.value
+        if !isUndo {
+            for tag in tags {
+                storage[tag.key] = tag.value
+            }
         }
         let nodes = Array(nodes.map { Int($0) })
-        return OSMWay(type: "way", id: elementId, timestamp: Date(), version: version, changeset: -1, user: "", uid: -1, nodes: nodes, tags: storage)
+        return OSMWay(type: "way",
+                      id: elementId,
+                      timestamp: Date(),
+                      version: isUndo ? updatedVersion : version,
+                      changeset: -1,
+                      user: "",
+                      uid: -1,
+                      nodes: nodes,
+                      tags: storage)
     }
     
-    public func asOSMNode() -> OSMNode {
+    public func asOSMNode(isUndo: Bool = false) -> OSMNode {
         var storage = originalTags.toDictionary()
-        for tag in tags {
-            storage[tag.key] = tag.value
+        if !isUndo {
+            for tag in tags {
+                storage[tag.key] = tag.value
+            }
         }
-        return OSMNode(type: "node", id: elementId, lat: point.latitude, lon: point.longitude, timestamp: Date(), version: version, changeset: -1, user: "", uid: -1, tags: storage)
+        return OSMNode(type: "node",
+                       id: elementId,
+                       lat: point.latitude,
+                       lon: point.longitude,
+                       timestamp: Date(),
+                       version: isUndo ? updatedVersion : version,
+                       changeset: -1,
+                       user: "",
+                       uid: -1,
+                       tags: storage)
     }
 }

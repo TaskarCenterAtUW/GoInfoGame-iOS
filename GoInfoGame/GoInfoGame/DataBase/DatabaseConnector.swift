@@ -416,9 +416,8 @@ class DatabaseConnector {
     
     func getChangeset(for id: Int64, type: ElementType) -> StoredChangeset? {
         let storedType: StoredElementEnum = (type == .way) ? .way : .node
-        let stringId = String(id)
         return realm.objects(StoredChangeset.self)
-            .filter("elementId == %@ AND elementType == %@", stringId, storedType.rawValue)
+            .filter("elementId == %@ AND elementType == %@", id, storedType.rawValue)
             .first
     }
 
@@ -426,13 +425,14 @@ class DatabaseConnector {
     /// - parameter obj: Internal id for the changeset in the database (unique ID)
     /// - parameter changesetId: Assigned changeset ID from the server
     /// - Returns updated `StoredChangeset`
-    func assignChangesetId(obj:String, changesetId: Int) -> StoredChangeset? {
+    func assignChangesetId(obj:String, changesetId: Int, updatedVersion: Int) -> StoredChangeset? {
         guard let changeset = realm.object(ofType: StoredChangeset.self, forPrimaryKey: obj) else {
             return nil
         }
         do {
             try realm.write {
                 changeset.changesetId = changesetId // Not sure if this changes the value
+                changeset.updatedVersion = updatedVersion
             }
             return changeset
         } catch (let error){
@@ -442,7 +442,7 @@ class DatabaseConnector {
     
     func updateNodeVersion(nodeId: String, version:Int) -> StoredNode?{
         let intId = Int(nodeId) ?? -1
-        guard let theNode = getNode(id: intId, version: .edited) else { return nil }
+        guard let theNode = getNode(id: intId, version: .original) else { return nil }
         do {
             try realm.write {
                 theNode.version = version
@@ -457,7 +457,7 @@ class DatabaseConnector {
     
     func updateWayVersion(wayId: String, version: Int) -> StoredWay? {
         let intId = Int(wayId) ?? -1
-        guard let theWay = getWay(id: intId, version: .edited) else { return nil }
+        guard let theWay = getWay(id: intId, version: .original) else { return nil }
         
         do {
             try realm.write {

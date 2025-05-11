@@ -37,12 +37,35 @@ class QuestBase {
     
    private var elementSubmittingToPOSM: ElementSubmittingToPOSM?
     
+    func updateUndoTags(changeSet: StoredChangeset) {
+        // Convert from ElementType enum to StoredElementEnum
+        Task.detached(operation: { @MainActor in
+            let storedElementType: StoredElementEnum = changeSet.elementType
+            do {
+                var result: (result: Bool, version: Int) = (false, -1)
+                switch storedElementType {
+                case .node:
+                    result = try await DatasyncManager.shared.syncNode(node: changeSet.asOSMNode(isUndo: true), exclude_gig_tags: true)
+                case .way:
+                    result = try await DatasyncManager.shared.syncWay(way: changeSet.asOSMWay(isUndo: true), exclude_gig_tags: true)
+                case .unknown:
+                    print("❌ Undo failed: Element type not found")
+                }
+            }
+            catch {
+                print("❌ Undo failed: \(error)")
+            }
+        })
+    }
+    
     // Add a custom implementation
     
    public func updateTags(id: Int64, tags:[String:String], type: ElementType, exclude_gig_tags: Bool = false) {
        
-       MapUndoManager.shared.updateTagsHandler = { [weak self] id, tags, type in
-           self?.updateTags(id: id, tags: tags, type: type, exclude_gig_tags: true)
+       MapUndoManager.shared.updateTagsHandler = { [weak self] changeset in
+           guard let changeSet = changeset else { return }
+           
+           self?.updateUndoTags(changeSet: changeSet)
        }
        
        

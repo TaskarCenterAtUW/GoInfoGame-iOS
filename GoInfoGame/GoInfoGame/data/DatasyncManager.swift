@@ -111,10 +111,10 @@ class DatasyncManager {
             print("📤 Syncing node ID: \(node.id)")
             let payload = node.asOSMNode()
             do {
-                let isFinished = try await syncNode(node: payload)
-                if isFinished {
+                let status = try await syncNode(node: payload, exclude_gig_tags: exclude_gig_tags)
+                if status.result {
                     DispatchQueue.main.async {
-                        self.dbInstance.assignChangesetId(obj: key, changesetId: 0)
+                        self.dbInstance.assignChangesetId(obj: key, changesetId: 0, updatedVersion: status.version)
                     }
                     print("✅ Node sync finished: \(payload.id)")
                 } else {
@@ -132,10 +132,10 @@ class DatasyncManager {
             print("📤 Syncing way ID: \(way.id)")
             let payload = way.asOSMWay()
             do {
-                let isFinished = try await syncWay(way: payload, exclude_gig_tags: exclude_gig_tags)
-                if isFinished {
+                let status = try await syncWay(way: payload, exclude_gig_tags: exclude_gig_tags)
+                if status.result {
                     DispatchQueue.main.async {
-                        self.dbInstance.assignChangesetId(obj: key, changesetId: 0)
+                        self.dbInstance.assignChangesetId(obj: key, changesetId: 0, updatedVersion: status.version)
                     }
                     print("✅ Way sync finished: \(payload.id)")
                 } else {
@@ -252,7 +252,7 @@ class DatasyncManager {
     }
 
     // utility function to act as substitute for osmConnection functions
-    func updateWay(way: OSMWay, exclude_gig_tags: Bool = false) async throws -> Int {
+    func updateWay(way: OSMWay, exclude_gig_tags: Bool) async throws -> Int {
         var localWay = way
         let wayBodyString = localWay.toPayload(exclude_gig_tags: exclude_gig_tags)
         let changesetUploadBody = "<osmChange version=\"0.6\" generator=\"GIG Change generator\">" + wayBodyString + "</osmChange>"
@@ -372,14 +372,14 @@ class DatasyncManager {
                 print(localWay)
                 print("Merged way")
                 print(mergedWay)
-                return try await updateWay(way: mergedWay)
+                return try await updateWay(way: mergedWay, exclude_gig_tags: exclude_gig_tags)
             default:
                 throw error
             }
         }
     }
 
-    func updateNode2(node: OSMNode) async throws -> Int {
+    func updateNode2(node: OSMNode, exclude_gig_tags: Bool) async throws -> Int {
         var localNode = node
         
         let nodeId = "\(localNode.id)"
@@ -387,7 +387,7 @@ class DatasyncManager {
 
         var updatedResult: Int = -1
         do {
-             updatedResult = try await updateNode(node: localNode)
+             updatedResult = try await updateNode(node: localNode, exclude_gig_tags: exclude_gig_tags)
             return updatedResult
             
         } catch let error as APIError {
@@ -500,7 +500,7 @@ class DatasyncManager {
             Syncs the node along with the updated
      */
     @MainActor
-    func syncNode(node: OSMNode) async throws -> Bool {
+    func syncNode(node: OSMNode, exclude_gig_tags: Bool) async throws -> (result:Bool, version: Int) {
         var localNode = node
         
         SyncLogger.shared.logStep("Open Changeset")
@@ -513,7 +513,7 @@ class DatasyncManager {
             localNode.changeset = changesetID
             
             //Step 2: Update Node
-            let newVersion = try await updateNode2(node: localNode)
+            let newVersion = try await updateNode2(node: localNode, exclude_gig_tags: exclude_gig_tags)
             localNode.version = newVersion
             DispatchQueue.main.async {
                 self.dbInstance.updateNodeVersion(nodeId: String(localNode.id), version: newVersion)
@@ -521,7 +521,8 @@ class DatasyncManager {
             
             //Stepp 3:Close changeset
             SyncLogger.shared.logStep("Close Changeset")
-           return try await closeChangeset(id: String(changesetID))
+            let result = try await closeChangeset(id: String(changesetID))
+            return (result, newVersion)
         
         } catch {
             print("Failed to open changeset:", error.localizedDescription)
@@ -551,7 +552,7 @@ class DatasyncManager {
     }
     
     @MainActor
-    func syncWay(way: OSMWay, exclude_gig_tags: Bool = false) async throws -> Bool {
+    func syncWay(way: OSMWay, exclude_gig_tags: Bool = false) async throws -> (result: Bool, version: Int) {
         var localWay = way
         
         do {
@@ -567,7 +568,8 @@ class DatasyncManager {
             DispatchQueue.main.async {
                 self.dbInstance.updateWayVersion(wayId: String(localWay.id), version: newVersion)
             }
-            return try await closeChangeset(id: String(changesetID))
+            let result = try await closeChangeset(id: String(changesetID))
+            return  (result, newVersion)
             
         } catch {
             throw error
