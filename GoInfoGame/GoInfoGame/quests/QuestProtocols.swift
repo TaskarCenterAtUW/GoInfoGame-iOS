@@ -45,9 +45,9 @@ class QuestBase {
                 var result: (result: Bool, version: Int) = (false, -1)
                 switch storedElementType {
                 case .node:
-                    result = try await DatasyncManager.shared.syncNode(node: changeSet.asOSMNode(isUndo: true), exclude_gig_tags: true)
+                    result = try await DatasyncManager.shared.syncNode(node: changeSet.asOSMNode(isUndo: true), exclude_gig_tags: true, editedTags: changeSet.tags.toDictionary())
                 case .way:
-                    result = try await DatasyncManager.shared.syncWay(way: changeSet.asOSMWay(isUndo: true), exclude_gig_tags: true)
+                    result = try await DatasyncManager.shared.syncWay(way: changeSet.asOSMWay(isUndo: true), exclude_gig_tags: true, editedTags: changeSet.tags.toDictionary())
                 case .unknown:
                     print("❌ Undo failed: Element type not found")
                 }

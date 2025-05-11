@@ -111,7 +111,7 @@ class DatasyncManager {
             print("📤 Syncing node ID: \(node.id)")
             let payload = node.asOSMNode()
             do {
-                let status = try await syncNode(node: payload, exclude_gig_tags: exclude_gig_tags)
+                let status = try await syncNode(node: payload, exclude_gig_tags: exclude_gig_tags, editedTags: node.tags.toDictionary())
                 if status.result {
                     DispatchQueue.main.async {
                         self.dbInstance.assignChangesetId(obj: key, changesetId: 0, updatedVersion: status.version)
@@ -132,7 +132,7 @@ class DatasyncManager {
             print("📤 Syncing way ID: \(way.id)")
             let payload = way.asOSMWay()
             do {
-                let status = try await syncWay(way: payload, exclude_gig_tags: exclude_gig_tags)
+                let status = try await syncWay(way: payload, exclude_gig_tags: exclude_gig_tags, editedTags: way.tags.toDictionary())
                 if status.result {
                     DispatchQueue.main.async {
                         self.dbInstance.assignChangesetId(obj: key, changesetId: 0, updatedVersion: status.version)
@@ -288,7 +288,7 @@ class DatasyncManager {
     }
   
     // utility function to act as substitute for osmConnection functions
-    func updateNode(node: OSMNode, exclude_gig_tags: Bool = false) async throws -> Int {
+    func updateNode(node: OSMNode, exclude_gig_tags: Bool) async throws -> Int {
         var localNode = node
         let nodeBodyString = localNode.toPayload(exclude_gig_tags: exclude_gig_tags)
         let changesetUploadBody = "<osmChange version=\"0.6\" generator=\"GIG Change generator\">" + nodeBodyString + "</osmChange>"
@@ -356,7 +356,7 @@ class DatasyncManager {
         }
     }
 
-    func updateWay2(way: OSMWay, exclude_gig_tags: Bool = false) async throws -> Int {
+    func updateWay2(way: OSMWay, exclude_gig_tags: Bool, editedTags: [String : String]) async throws -> Int {
         var localWay = way
         let wayId = "\(localWay.id)"
         var updatedResult: Int = -1
@@ -367,19 +367,24 @@ class DatasyncManager {
             switch error {
             case .conflict:
                 let updatedWay = try await fetchway2(wayId: wayId)
-                var mergedWay = self.mergeWays(localWay: localWay, latestWay: updatedWay)
-                print("Local way")
-                print(localWay)
-                print("Merged way")
-                print(mergedWay)
-                return try await updateWay(way: mergedWay, exclude_gig_tags: exclude_gig_tags)
+                if let mergedWay = self.mergeWays(localWay: localWay, latestWay: updatedWay, exclude_gig_tags: exclude_gig_tags, editedTags: editedTags) {
+                    print("Local way")
+                    print(localWay)
+                    print("Merged way")
+                    print(mergedWay)
+                    return try await updateWay(way: mergedWay, exclude_gig_tags: exclude_gig_tags)
+                } else {
+                    print("Undo operation is not possible")
+                    return updatedWay.version
+                }
+                
             default:
                 throw error
             }
         }
     }
 
-    func updateNode2(node: OSMNode, exclude_gig_tags: Bool) async throws -> Int {
+    func updateNode2(node: OSMNode, exclude_gig_tags: Bool, editedTags: [String : String]) async throws -> Int {
         var localNode = node
         
         let nodeId = "\(localNode.id)"
@@ -396,13 +401,18 @@ class DatasyncManager {
                 SyncLogger.shared.logStep("Fetching node due to conflict")
                 let fetchedResult = try await fetchNode2(nodeId: "\(localNode.id)")
                 
-                var mergedNode = self.mergeNodes(localNode: localNode, latestNode: fetchedResult)
-                print("Local Node:")
-                print(localNode)
-                print("Merged Node:")
-                print(mergedNode)
-                SyncLogger.shared.logStep("Nodes fetched and merged")
-                return try await updateNode(node: mergedNode)
+                if let mergedNode = self.mergeNodes(localNode: localNode, latestNode: fetchedResult, exclude_gig_tags: exclude_gig_tags, editedTags: editedTags) {
+                    print("Local Node:")
+                    print(localNode)
+                    print("Merged Node:")
+                    print(mergedNode)
+                    SyncLogger.shared.logStep("Nodes fetched and merged")
+                    return try await updateNode(node: mergedNode, exclude_gig_tags: exclude_gig_tags)
+                } else {
+                    print("Undo operation is not possible")
+                    return fetchedResult.version
+                }
+                
             default:
                 throw error
             }
@@ -411,19 +421,78 @@ class DatasyncManager {
     }
 
 
-    func mergeWays(localWay: OSMWay, latestWay: OSMWay) -> OSMWay {
+    func mergeTagsForUndo(originalTags: [String : String], edited: [String : String], serverTags: [String : String]) -> [String : String]? {
+        var resultTags: [String: String] = [:]
+        print("mergeTagsForUndo originalTags \(originalTags) \n edited \(edited) \n serverTags \(serverTags)")
+        for (key, value) in edited {
+            if let orgValue = originalTags[key] {
+                if let serverVal = serverTags[key] {
+                    if orgValue != serverVal, value != serverVal {
+                        return nil
+                    }
+                } else {
+                    return nil
+                }
+            } else {
+                if let serverVal = serverTags[key], value != serverVal {
+                    return nil
+                }
+            }
+        }
+        
+        let unionKeys = Set(originalTags.keys).union(Set(serverTags.keys))
+        
+        for key in unionKeys {
+            if let serverValue = serverTags[key] {
+                if let editValue = edited[key] {
+                    if editValue == serverValue {
+                        if let originalValue = originalTags[key]  {
+                            resultTags[key] = originalValue
+                            continue
+                        }
+                        continue
+                    }
+                }
+                resultTags[key] = serverValue
+            } else {
+                resultTags.removeValue(forKey: key)
+            }
+        }
+        resultTags.removeValue(forKey: "ext:gig_last_updated")
+        resultTags.removeValue(forKey: "ext:gig_complete")
+        print("mergeTagsForUndo resultTags \(resultTags)")
+        return resultTags
+    }
+    
+    func mergeWays(localWay: OSMWay, latestWay: OSMWay, exclude_gig_tags: Bool, editedTags: [String : String]) -> OSMWay? {
           var mergedWay = latestWay
-          for (key, value) in localWay.tags {
-              mergedWay.tags[key] = value
-          }
+        if exclude_gig_tags {
+            if let resultTags = mergeTagsForUndo(originalTags: localWay.tags, edited: editedTags, serverTags: latestWay.tags) {
+                mergedWay.tags = resultTags
+            } else {
+                return nil
+            }
+        } else {
+            for (key, value) in localWay.tags {
+                mergedWay.tags[key] = value
+            }
+        }
           mergedWay.changeset = localWay.changeset
           return mergedWay
       }
     
-    func mergeNodes(localNode: OSMNode, latestNode: OSMNode) -> OSMNode {
+    func mergeNodes(localNode: OSMNode, latestNode: OSMNode, exclude_gig_tags: Bool, editedTags: [String : String]) -> OSMNode? {
         var mergedNode = latestNode
-        for (key, value) in localNode.tags {
-            mergedNode.tags[key] = value
+        if exclude_gig_tags {
+            if let resultTags = mergeTagsForUndo(originalTags: localNode.tags, edited: editedTags, serverTags: latestNode.tags) {
+                mergedNode.tags = resultTags
+            } else {
+                return nil
+            }
+        } else {
+            for (key, value) in localNode.tags {
+                mergedNode.tags[key] = value
+            }
         }
         mergedNode.changeset = localNode.changeset
         return mergedNode
@@ -500,7 +569,7 @@ class DatasyncManager {
             Syncs the node along with the updated
      */
     @MainActor
-    func syncNode(node: OSMNode, exclude_gig_tags: Bool) async throws -> (result:Bool, version: Int) {
+    func syncNode(node: OSMNode, exclude_gig_tags: Bool, editedTags: [String : String]) async throws -> (result:Bool, version: Int) {
         var localNode = node
         
         SyncLogger.shared.logStep("Open Changeset")
@@ -513,7 +582,7 @@ class DatasyncManager {
             localNode.changeset = changesetID
             
             //Step 2: Update Node
-            let newVersion = try await updateNode2(node: localNode, exclude_gig_tags: exclude_gig_tags)
+            let newVersion = try await updateNode2(node: localNode, exclude_gig_tags: exclude_gig_tags, editedTags: editedTags)
             localNode.version = newVersion
             DispatchQueue.main.async {
                 self.dbInstance.updateNodeVersion(nodeId: String(localNode.id), version: newVersion)
@@ -552,7 +621,7 @@ class DatasyncManager {
     }
     
     @MainActor
-    func syncWay(way: OSMWay, exclude_gig_tags: Bool = false) async throws -> (result: Bool, version: Int) {
+    func syncWay(way: OSMWay, exclude_gig_tags: Bool, editedTags: [String : String]) async throws -> (result: Bool, version: Int) {
         var localWay = way
         
         do {
@@ -561,7 +630,7 @@ class DatasyncManager {
             
             localWay.changeset = changesetID
             
-            let newVersion = try await updateWay2(way: localWay, exclude_gig_tags: exclude_gig_tags)
+            let newVersion = try await updateWay2(way: localWay, exclude_gig_tags: exclude_gig_tags, editedTags: editedTags)
             
             localWay.version = newVersion
             
