@@ -277,6 +277,11 @@ class DatasyncManager {
                     localWay.tags.forEach { (key: String, value: String) in
                         localWay.tags[key] = value
                     }
+                    let id = localWay.id
+                    let tags = localWay.tags
+                    DispatchQueue.main.async {
+                        _ = DatabaseConnector.shared.addWayTags(id: id, tags: tags, version: newVersion)
+                    }
                     continuation.resume(returning: newVersion)
 
                 case .failure(let error):
@@ -320,6 +325,9 @@ class DatasyncManager {
                     }
                     updatedNode.version = newVersion
                     SyncLogger.shared.logStep("Node Updated ----\(updatedNode.tags)")
+                    DispatchQueue.main.async {
+                        _ = DatabaseConnector.shared.addNodeTags(id: updatedNode.id, tags: updatedNode.tags, version: newVersion)
+                    }
                     continuation.resume(returning: newVersion)
                 case .failure(let error):
                     print(error)

@@ -248,54 +248,23 @@ class DatabaseConnector {
      @param tags `[String:String]` map of the added tags
      @return `StoredWay`
      */    
-    func addWayTags(id: String, tags: [String: String]) -> StoredWay? {
-        let intId = Int(id) ?? -1
+    func addWayTags(id: Int, tags: [String: String], version: Int) -> StoredWay? {
 
         // Step 1: Try to get the editable copy first
-        if let editable = getWay(id: intId, version: .edited) {
+        if let editable = getWay(id: id, version: .original) {
             // Step 2: Update the existing editable copy
             do {
                 try realm.write {
+                    editable.tags.removeAll()
                     tags.forEach { editable.tags[$0.key] = $0.value }
+                    editable.version = version
                 }
             } catch {
                 print("Error while writing tags")
             }
             return editable
         }
-
-        // Step 3: If not found, create from original
-        guard let original = getWay(id: intId, version: .original) else {
-            print("❌ Original not found")
-            return nil
-        }
-
-        let copy = StoredWay()
-        copy.id = original.id
-        copy.version = original.version
-        copy.timestamp = original.timestamp
-        
-        original.tags.forEach { entry in
-            copy.tags[entry.key] = entry.value
-        }
-        
-        copy.nodes.append(objectsIn: original.nodes)
-        copy.polyline.append(objectsIn: original.polyline)
-        copy.isOriginal = false
-        copy.generateCompoundId()
-
-        // Step 4: Apply the new tags to this new editable copy
-        tags.forEach { copy.tags[$0.key] = $0.value }
-
-        do {
-            try realm.write {
-                realm.add(copy)
-            }
-        } catch {
-            print("Error while saving editable copy")
-        }
-
-        return copy
+        return nil
     }
     
     
@@ -305,15 +274,16 @@ class DatabaseConnector {
      @param tags [String:String] map of the added tags
      @return StoredNode
      */
-    func addNodeTags(id: String, tags: [String: String]) -> StoredNode? {
-        let intId = Int(id) ?? -1
-        print("🟣 addNodeTags called for id: \(intId) with tags: \(tags)")
+    func addNodeTags(id: Int, tags: [String: String], version: Int) -> StoredNode? {
+        print("🟣 addNodeTags called for id: \(id) with tags: \(tags)")
 
-        if let editable = getNode(id: intId, version: .edited) {
+        if let editable = getNode(id: id, version: .original) {
             print("✏️ Editable node exists: \(editable.compoundId)")
             do {
                 try realm.write {
+                    editable.tags.removeAll()
                     tags.forEach { editable.tags[$0.key] = $0.value }
+                    editable.version = version
                 }
                 print("✅ Updated editable node.")
             } catch {
@@ -321,40 +291,7 @@ class DatabaseConnector {
             }
             return editable
         }
-
-        guard let original = getNode(id: intId, version: .original) else {
-            print("❌ Original node not found for id: \(intId)")
-            return nil
-        }
-
-        print("📄 Creating editable copy from original: \(original.compoundId)")
-
-        let copy = StoredNode()
-        copy.id = original.id
-        copy.version = original.version
-        copy.timestamp = original.timestamp
-        copy.point = original.point
-        copy.isOriginal = false
-        copy.generateCompoundId()
-
-        print("🛠️ New compoundId: \(copy.compoundId)")
-
-        original.tags.forEach { entry in
-            copy.tags[entry.key] = entry.value
-        }
-
-        tags.forEach { copy.tags[$0.key] = $0.value }
-
-        do {
-            try realm.write {
-                realm.add(copy)
-            }
-            print("✅ Editable node copy saved to DB: \(copy.compoundId)")
-        } catch {
-            print("❌ Error while saving editable node copy: \(error)")
-        }
-
-        return copy
+        return nil
     }
 
 
