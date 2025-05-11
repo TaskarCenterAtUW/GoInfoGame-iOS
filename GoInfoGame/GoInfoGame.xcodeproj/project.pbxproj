@@ -231,7 +231,7 @@
 		FAD5C5162AFCBE720040C61A /* GoInfoGameUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAD5C5152AFCBE720040C61A /* GoInfoGameUITestsLaunchTests.swift */; };
 		FAE2584F2D39819300D2BB12 /* ManageQuestsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAE2584E2D39819300D2BB12 /* ManageQuestsView.swift */; };
 		FAE258522D3A780F00D2BB12 /* FloatingActionButtonStack.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAE258512D3A780F00D2BB12 /* FloatingActionButtonStack.swift */; };
-		FAE481A02DD0BFDC00149A48 /* FaceIDAuthenticator.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAE4819F2DD0BFD300149A48 /* FaceIDAuthenticator.swift */; };
+		FAE481A02DD0BFDC00149A48 /* BiometricAuthenticator.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAE4819F2DD0BFD300149A48 /* BiometricAuthenticator.swift */; };
 		FAEE21DB2DCA1963002F9BEC /* UndoButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAEE21DA2DCA1963002F9BEC /* UndoButton.swift */; };
 		FAF44FBD2B3084EC004FE664 /* OnboardingView1.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAF44FBC2B3084EC004FE664 /* OnboardingView1.swift */; };
 		FAF44FBF2B3084FB004FE664 /* OnboardingView2.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAF44FBE2B3084FB004FE664 /* OnboardingView2.swift */; };
@@ -561,7 +561,7 @@
 		FAD5C5152AFCBE720040C61A /* GoInfoGameUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoInfoGameUITestsLaunchTests.swift; sourceTree = "<group>"; };
 		FAE2584E2D39819300D2BB12 /* ManageQuestsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManageQuestsView.swift; sourceTree = "<group>"; };
 		FAE258512D3A780F00D2BB12 /* FloatingActionButtonStack.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FloatingActionButtonStack.swift; sourceTree = "<group>"; };
-		FAE4819F2DD0BFD300149A48 /* FaceIDAuthenticator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FaceIDAuthenticator.swift; sourceTree = "<group>"; };
+		FAE4819F2DD0BFD300149A48 /* BiometricAuthenticator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BiometricAuthenticator.swift; sourceTree = "<group>"; };
 		FAEE21DA2DCA1963002F9BEC /* UndoButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UndoButton.swift; sourceTree = "<group>"; };
 		FAF44FBC2B3084EC004FE664 /* OnboardingView1.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingView1.swift; sourceTree = "<group>"; };
 		FAF44FBE2B3084FB004FE664 /* OnboardingView2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingView2.swift; sourceTree = "<group>"; };
@@ -1519,7 +1519,7 @@
 		FAFDA1FB2C6D321500ECEAE9 /* Login */ = {
 			isa = PBXGroup;
 			children = (
-				FAE4819F2DD0BFD300149A48 /* FaceIDAuthenticator.swift */,
+				FAE4819F2DD0BFD300149A48 /* BiometricAuthenticator.swift */,
 				FAFDA2002C6D338400ECEAE9 /* ViewModel */,
 				FAFDA1FD2C6D335300ECEAE9 /* Model */,
 				FAFDA1FC2C6D322800ECEAE9 /* View */,
@@ -2233,7 +2233,7 @@
 				B0CCB98C2B8626AE00AA73DE /* ProfileView.swift in Sources */,
 				FAF44FBD2B3084EC004FE664 /* OnboardingView1.swift in Sources */,
 				973FC01D2B4FEE1B00878269 /* YesNoView.swift in Sources */,
-				FAE481A02DD0BFDC00149A48 /* FaceIDAuthenticator.swift in Sources */,
+				FAE481A02DD0BFDC00149A48 /* BiometricAuthenticator.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
