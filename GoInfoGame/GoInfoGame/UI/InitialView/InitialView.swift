@@ -25,11 +25,12 @@ struct InitialView: View {
     @State private var showBiometricOptInPrompt = false
     
     private var shouldShowBiometricOptIn: Bool {
-           !useBiometricID &&
-           !biometricOptInDeclined &&
-           KeychainManager.load(key: "username") != nil &&
-           KeychainManager.load(key: "password") != nil
-       }
+        let env = APIConfiguration.shared.environment
+        return !useBiometricID &&
+               !biometricOptInDeclined &&
+               KeychainManager.load(.username, for: env) != nil &&
+               KeychainManager.load(.password, for: env) != nil
+    }
 
        private var biometricPromptMessage: String {
            let context = LAContext()

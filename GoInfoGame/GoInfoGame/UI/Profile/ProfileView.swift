@@ -54,7 +54,7 @@ struct ProfileView: View {
                 }
             }
             .onAppear {
-                if let token = KeychainManager.load(key: "accessToken") {
+                if let token = KeychainManager.loadSessionValue("accessToken") {
                     accessToken = token
                 }
             }

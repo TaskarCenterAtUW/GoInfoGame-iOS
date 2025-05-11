@@ -24,7 +24,7 @@ class NotesViewModel: ObservableObject {
             throw NSError(domain: "NoAccessToken", code: 0, userInfo: [NSLocalizedDescriptionKey: "Workspace Error"])
         }
         
-        guard let accessToken = KeychainManager.load(key: "accessToken") else {
+        guard let accessToken = KeychainManager.loadSessionValue("accessToken")else {
             throw NSError(domain: "NoAccessToken", code: 0, userInfo: [NSLocalizedDescriptionKey: "No Access Token found"])
         }
         

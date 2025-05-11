@@ -210,7 +210,7 @@ class DatasyncManager {
         let osmPayload = osmPayloadString.data(using: .utf8)
         let workspaceId = KeychainManager.load(key: "workspaceID")
         
-        guard let accessToken = KeychainManager.load(key: "accessToken") else {
+        guard let accessToken = KeychainManager.loadSessionValue("accessToken")else {
                throw NSError(domain: "NoAccessToken", code: 0, userInfo: [NSLocalizedDescriptionKey: "No Access Token found"])
            }
         
@@ -231,7 +231,7 @@ class DatasyncManager {
     func closeChangeset(id: String) async throws -> Bool {
         let workspaceId = KeychainManager.load(key: "workspaceID")
         
-        guard let accessToken = KeychainManager.load(key: "accessToken") else {
+        guard let accessToken = KeychainManager.loadSessionValue("accessToken") else {
             throw NSError(domain: "NoAccessToken", code: 0, userInfo: [NSLocalizedDescriptionKey: "No Access Token found"])
         }
         
@@ -261,7 +261,7 @@ class DatasyncManager {
         let wayId = "\(localWay.id)"
         let newVersion = way.version + 1
         print("Uploading changeset \(changesetUploadBody)")
-        guard let accessToken = KeychainManager.load(key: "accessToken") else {
+        guard let accessToken = KeychainManager.loadSessionValue("accessToken")else {
             throw NSError(domain: "No AccessToken", code: 0, userInfo: nil)
         }
         
@@ -301,7 +301,7 @@ class DatasyncManager {
 
         let newVersion = localNode.version + 1
 
-        guard let accessToken = KeychainManager.load(key: "accessToken") else {
+        guard let accessToken = KeychainManager.loadSessionValue("accessToken") else {
             throw NSError(domain: "No AccessToken", code: 0, userInfo: nil)
         }
         
@@ -340,7 +340,7 @@ class DatasyncManager {
             throw APIError.decodingFailed("Invalid Node Body")
         }
 
-        guard let accessToken = KeychainManager.load(key: "accessToken") else {
+        guard let accessToken = KeychainManager.loadSessionValue("accessToken") else {
             throw APIError.unauthorized
         }
         

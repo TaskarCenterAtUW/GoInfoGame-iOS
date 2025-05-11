@@ -19,8 +19,9 @@ struct PosmLoginView: View {
     @State private var showAlert = false
     
     private var canUseBiometricLogin: Bool {
-        let hasCredentials = KeychainManager.load(key: "username") != nil &&
-                             KeychainManager.load(key: "password") != nil
+        let env = selectedEnvironment
+        let hasCredentials = KeychainManager.load(.username, for: env) != nil &&
+                             KeychainManager.load(.password, for: env) != nil
         return useBiometricID && hasCredentials
     }
 

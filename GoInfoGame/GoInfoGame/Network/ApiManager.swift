@@ -121,7 +121,7 @@ class ApiManager {
                 print("Failed requests: \(String(describing: request.url))")
                 TokenRefresher.shared.refreshToken { [weak self] status in
                     if status {
-                        let accessToken = KeychainManager.load(key: "accessToken") ?? ""
+                        let accessToken = KeychainManager.loadSessionValue("accessToken") ?? ""
                         var headers = endpoint.headers
                         headers?["Authorization"] = "Bearer \(accessToken)"
                         let urlEndPont = APIEndpoint(path: endpoint.path, method: endpoint.method, body: endpoint.body, headers: headers, formData: endpoint.formData)
