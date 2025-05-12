@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import LocalAuthentication
 
 struct UserProfileView: View {
 
@@ -14,6 +15,20 @@ struct UserProfileView: View {
     @AppStorage("loggedIn") private var loggedIn: Bool = false
     
     @AppStorage("useBiometricID") private var useBiometricID: Bool = false
+    
+    private var biometricToggleText: String {
+        let context = LAContext()
+        _ = context.canEvaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, error: nil)
+
+        switch context.biometryType {
+        case .faceID:
+            return "Use Face ID for Login"
+        case .touchID:
+            return "Use Touch ID for Login"
+        default:
+            return "Use Biometric Login"
+        }
+    }
                 
     var body: some View {
         Group {
@@ -36,7 +51,7 @@ struct UserProfileView: View {
                     .padding([.bottom], 200)
                     
                     Toggle(isOn: $useBiometricID) {
-                        Text("Use Face ID for Login")
+                        Text(biometricToggleText)
                     }
                     .onChange(of: useBiometricID) { isEnabled in
                         if !isEnabled {
