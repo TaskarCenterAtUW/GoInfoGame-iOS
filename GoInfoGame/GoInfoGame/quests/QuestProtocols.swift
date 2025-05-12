@@ -37,27 +37,65 @@ class QuestBase {
     
    private var elementSubmittingToPOSM: ElementSubmittingToPOSM?
     
+    init () {
+        MapUndoManager.shared.updateTagsHandler = { [weak self] changeset in
+            guard let changeSet = changeset else { return }
+            
+            self?.updateUndoTags(changeSet: changeSet)
+        }
+    }
+    
+    func updateUndoTags(changeSet: StoredChangeset) {
+        // Convert from ElementType enum to StoredElementEnum
+        Task.detached(operation: { @MainActor in
+            MapViewPublisher.shared.dismissSheet.send(.syncing)
+            let storedElementType: StoredElementEnum = changeSet.elementType
+            let changesetId = changeSet.id
+            do {
+                var result: (result: Bool, version: Int) = (false, -1)
+                switch storedElementType {
+                case .node:
+                    result = try await DatasyncManager.shared.syncNode(node: changeSet.asOSMNode(isUndo: true), exclude_gig_tags: true, editedTags: changeSet.tags.toDictionary())
+                case .way:
+                    result = try await DatasyncManager.shared.syncWay(way: changeSet.asOSMWay(isUndo: true), exclude_gig_tags: true, editedTags: changeSet.tags.toDictionary())
+                case .unknown:
+                    print("❌ Undo failed: Element type not found")
+                }
+                print("undo result \(result)")
+                DispatchQueue.main.async {
+                    _ = DatabaseConnector.shared.updateChangesetWithUndoResultSuccess(obj: changesetId)
+                }
+                MapViewPublisher.shared.dismissSheet.send(.synced)
+//                MapViewPublisher.shared.dismissSheet.send(.submitted(""))
+                MapViewPublisher.shared.dismissSheet.send(.undoDone(changesetId))
+            }
+            catch {
+                print("❌ Undo failed: \(error)")
+                MapViewPublisher.shared.dismissSheet.send(.failed("Failed to Undo changes. Please try again"))
+            }
+        })
+    }
+    
     // Add a custom implementation
     
    public func updateTags(id: Int64, tags:[String:String], type: ElementType, exclude_gig_tags: Bool = false) {
        
-       MapUndoManager.shared.updateTagsHandler = { [weak self] id, tags, type in
-           self?.updateTags(id: id, tags: tags, type: type, exclude_gig_tags: true)
-       }
-       
-       
        // Convert from ElementType enum to StoredElementEnum
        let storedElementType: StoredElementEnum = type == .way ? .way : .node
-       let storedId = String(id)
-       // Create a changeset
-       _ = DatabaseConnector.shared.createChangeset(id: storedId, type: storedElementType, tags: tags)
+       
        switch (storedElementType){
        case .way:
            elementSubmittingToPOSM = .way
-          _ = DatabaseConnector.shared.addWayTags(id: storedId, tags: tags)
+//          _ = DatabaseConnector.shared.addWayTags(id: storedId, tags: tags)
+           let way =  DatabaseConnector.shared.getWay(id: Int(id), version: .original)!
+           // Create a changeset
+           _ = DatabaseConnector.shared.createChangeset(id: Int(id), type: storedElementType, originalTags: way.tags.toDictionary(), tags: tags, version: way.version, nodes: way.nodes)
        case .node:
            elementSubmittingToPOSM = .node
-          _ = DatabaseConnector.shared.addNodeTags(id: storedId, tags: tags)
+//          _ = DatabaseConnector.shared.addNodeTags(id: storedId, tags: tags)
+           let node =  DatabaseConnector.shared.getNode(id: Int(id), version: .original)!
+           // Create a changeset
+           _ = DatabaseConnector.shared.createChangeset(id: Int(id), type: storedElementType, originalTags: node.tags.toDictionary(), tags: tags, version: node.version, point: node.point)
        case .unknown:
            print("Unknown Stored element type received")
        }
@@ -73,10 +111,6 @@ class QuestBase {
                switch success {
                case .success(let success):
                    if success {
-                       if MapUndoManager.shared.isUndoInProgress {
-                           MapUndoManager.shared.finalizeSuccessfulSubmit(id: Int(id), type: type)
-                           MapUndoManager.shared.isUndoInProgress = false
-                       }
 
                        MapViewPublisher.shared.dismissSheet.send(.submitted("\(id)"))
                    }

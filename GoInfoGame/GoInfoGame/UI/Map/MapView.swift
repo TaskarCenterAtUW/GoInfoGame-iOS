@@ -146,8 +146,8 @@ struct MapView: View {
                             },
                             onRemovePreview: {
                             },
-                            onRevert: { id, type in
-                                MapUndoManager.shared.undo(for: Int64(id), type: type)
+                            onRevert: { id in
+                                MapUndoManager.shared.undo(for: id)
                             }
                         )
                         .padding(.bottom, 24)
@@ -391,6 +391,11 @@ struct MapView: View {
             case .hideElement(let elementId, let elementName):
                 shouldShowPolyline = false
                 viewModel.hideQuest(elementId: elementId, elementName: elementName)
+            case .undoDone(let changesetId):
+                shouldShowPolyline = false
+                showAlert = true
+                alertMessage = "Changes reverted"
+                viewModel.refreshMapAfterUndoSumbit(storedChangesetId: changesetId)
             }
         }
         .onReceive(QuestsPublisher.shared.refreshQuest, perform: { _ in
@@ -400,11 +405,11 @@ struct MapView: View {
             HiddenQuestManager.shared.loadHiddenQuests()
             print("selected workspace",selectedWorkspace?.title ?? "")
             QuestsRepository.shared.loadLongQuests(from: "longQuestJson")
-            self.baseUrl = "https://osm.workspaces-stage.sidewalks.washington.edu"
-            let original = DatabaseConnector.shared.getNode(id: 43, version: .original)
-            let edited = DatabaseConnector.shared.getNode(id: 43, version: .edited)
-            print("ORIGINAL --->>>\(original)")
-            print("EDITED --->>>\(edited)")
+//            self.baseUrl = "https://osm.workspaces-stage.sidewalks.washington.edu"
+//            let original = DatabaseConnector.shared.getNode(id: 43, version: .original)
+//            let edited = DatabaseConnector.shared.getNode(id: 43, version: .edited)
+//            print("ORIGINAL --->>>\(original)")
+//            print("EDITED --->>>\(edited)")
         }
     }
     
@@ -474,6 +479,7 @@ public enum SheetDismissalScenario {
     case synced
     case failed(String)
     case hideElement(String, String)
+    case undoDone(String)
 }
 
 //TODO: Move to a new file

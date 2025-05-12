@@ -44,7 +44,7 @@ class StoredWay: Object {
     
     public func asWay() -> Way {
         var theTags: [String:String] = [:]
-        for (key,value) in tags.asKeyValueSequence(){
+        for (key,value) in tags{
             theTags[key] = value
         }
         let nodeList:[Int64] = nodes.map({$0})
@@ -58,14 +58,5 @@ class StoredWay: Object {
         
         way.polyline = latLong
         return way
-    }
-    
-    public func asOSMWay() -> OSMWay {
-        var storage = [String: String]()
-        for tag in tags {
-            storage[tag.key] = tag.value
-        }
-        let nodes = Array(nodes.map { Int($0) })
-        return OSMWay(type: "way", id: id, timestamp: Date(), version: version, changeset: -1, user: "", uid: -1, nodes: nodes, tags: storage)
     }
 }

@@ -19,6 +19,28 @@ public struct OSMWayResponse: Codable {
 public struct OSMWay: Codable, OSMPayload, OSMElement  {
     public var isInteresting: Bool? = false
     public var isSkippable: Bool? = false
+    
+    public func fetchInternalGigTags() -> [String:String] {
+        
+        var internalTags:[String:String] = [:]
+        let dateFormatter = DateFormatter()
+
+        // Set the date format to "yyyy-MM-dd"
+        dateFormatter.dateFormat = "yyyy-MM-dd"
+
+        // Create a Date object (for example, the current date)
+        let currentDate = Date()
+
+        // Convert the Date object to a formatted string
+        let formattedDate = dateFormatter.string(from: currentDate)
+        //"ext:gig_last_updated"
+        internalTags["ext:gig_last_updated"] = formattedDate
+        internalTags["ext:gig_complete"] = "yes"
+        
+        return internalTags
+    }
+    
+    
     public func toPayload(exclude_gig_tags: Bool = false) -> String {
         var osmNode = "<modify>"
         let xmlBuilder = OSMXMLBuilder(rootName: "way")

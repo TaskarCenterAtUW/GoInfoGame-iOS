@@ -130,6 +130,8 @@ class DatabaseConnector {
             print("Error clearing DB")
         }
     }
+    
+   
 
     func saveElements(_ elements: [OSMWay]) {
         do {
@@ -248,54 +250,23 @@ class DatabaseConnector {
      @param tags `[String:String]` map of the added tags
      @return `StoredWay`
      */    
-    func addWayTags(id: String, tags: [String: String]) -> StoredWay? {
-        let intId = Int(id) ?? -1
+    func addWayTags(id: Int, tags: [String: String], version: Int) -> StoredWay? {
 
         // Step 1: Try to get the editable copy first
-        if let editable = getWay(id: intId, version: .edited) {
+        if let editable = getWay(id: id, version: .original) {
             // Step 2: Update the existing editable copy
             do {
                 try realm.write {
+                    editable.tags.removeAll()
                     tags.forEach { editable.tags[$0.key] = $0.value }
+                    editable.version = version
                 }
             } catch {
                 print("Error while writing tags")
             }
             return editable
         }
-
-        // Step 3: If not found, create from original
-        guard let original = getWay(id: intId, version: .original) else {
-            print("❌ Original not found")
-            return nil
-        }
-
-        let copy = StoredWay()
-        copy.id = original.id
-        copy.version = original.version
-        copy.timestamp = original.timestamp
-        
-        original.tags.forEach { entry in
-            copy.tags[entry.key] = entry.value
-        }
-        
-        copy.nodes.append(objectsIn: original.nodes)
-        copy.polyline.append(objectsIn: original.polyline)
-        copy.isOriginal = false
-        copy.generateCompoundId()
-
-        // Step 4: Apply the new tags to this new editable copy
-        tags.forEach { copy.tags[$0.key] = $0.value }
-
-        do {
-            try realm.write {
-                realm.add(copy)
-            }
-        } catch {
-            print("Error while saving editable copy")
-        }
-
-        return copy
+        return nil
     }
     
     
@@ -305,15 +276,16 @@ class DatabaseConnector {
      @param tags [String:String] map of the added tags
      @return StoredNode
      */
-    func addNodeTags(id: String, tags: [String: String]) -> StoredNode? {
-        let intId = Int(id) ?? -1
-        print("🟣 addNodeTags called for id: \(intId) with tags: \(tags)")
+    func addNodeTags(id: Int, tags: [String: String], version: Int) -> StoredNode? {
+        print("🟣 addNodeTags called for id: \(id) with tags: \(tags)")
 
-        if let editable = getNode(id: intId, version: .edited) {
+        if let editable = getNode(id: id, version: .original) {
             print("✏️ Editable node exists: \(editable.compoundId)")
             do {
                 try realm.write {
+                    editable.tags.removeAll()
                     tags.forEach { editable.tags[$0.key] = $0.value }
+                    editable.version = version
                 }
                 print("✅ Updated editable node.")
             } catch {
@@ -321,40 +293,7 @@ class DatabaseConnector {
             }
             return editable
         }
-
-        guard let original = getNode(id: intId, version: .original) else {
-            print("❌ Original node not found for id: \(intId)")
-            return nil
-        }
-
-        print("📄 Creating editable copy from original: \(original.compoundId)")
-
-        let copy = StoredNode()
-        copy.id = original.id
-        copy.version = original.version
-        copy.timestamp = original.timestamp
-        copy.point = original.point
-        copy.isOriginal = false
-        copy.generateCompoundId()
-
-        print("🛠️ New compoundId: \(copy.compoundId)")
-
-        original.tags.forEach { entry in
-            copy.tags[entry.key] = entry.value
-        }
-
-        tags.forEach { copy.tags[$0.key] = $0.value }
-
-        do {
-            try realm.write {
-                realm.add(copy)
-            }
-            print("✅ Editable node copy saved to DB: \(copy.compoundId)")
-        } catch {
-            print("❌ Error while saving editable node copy: \(error)")
-        }
-
-        return copy
+        return nil
     }
 
 
@@ -369,14 +308,27 @@ class DatabaseConnector {
      - parameter tags [String:String] tags changed with this
      - Returns: An instance of `StoredChangeset`
         */
-    func createChangeset(id:String, type: StoredElementEnum, tags:[String:String]) -> StoredChangeset? {            
+    func createChangeset(id:Int, type: StoredElementEnum, originalTags:[String:String], tags:[String:String], version: Int, point: CLLocationCoordinate2D? = nil, nodes: List<Int64>? = nil) -> StoredChangeset? {
         let storedChangeset = StoredChangeset()
         storedChangeset.elementId = id
         storedChangeset.elementType = type
+        storedChangeset.version = version
+        if let point = point {
+            storedChangeset.point = point
+        }
+        if let nodes = nodes {
+            storedChangeset.nodes = nodes
+        }
+        
         storedChangeset.timestamp =  String(Date().timeIntervalSince1970)
         for tag in tags {
             storedChangeset.tags.setValue(tag.value, forKey: tag.key)
         }
+        
+        for tag in originalTags {
+            storedChangeset.originalTags.setValue(tag.value, forKey: tag.key)
+        }
+        
         do {
             try realm.write {
                 realm.add(storedChangeset)
@@ -401,25 +353,37 @@ class DatabaseConnector {
         return results
     }
     
-    func getChangeset(for id: Int64, type: ElementType) -> StoredChangeset? {
-        let storedType: StoredElementEnum = (type == .way) ? .way : .node
-        let stringId = String(id)
-        return realm.objects(StoredChangeset.self)
-            .filter("elementId == %@ AND elementType == %@", stringId, storedType.rawValue)
-            .first
+    func getChangeset(for id: String) -> StoredChangeset? {
+        return realm.object(ofType: StoredChangeset.self, forPrimaryKey: id)
     }
 
     /// Assigns changesetId for a stored changeset
     /// - parameter obj: Internal id for the changeset in the database (unique ID)
     /// - parameter changesetId: Assigned changeset ID from the server
     /// - Returns updated `StoredChangeset`
-    func assignChangesetId(obj:String, changesetId: Int) -> StoredChangeset? {
+    func assignChangesetId(obj:String, changesetId: Int, updatedVersion: Int) -> StoredChangeset? {
         guard let changeset = realm.object(ofType: StoredChangeset.self, forPrimaryKey: obj) else {
             return nil
         }
         do {
             try realm.write {
                 changeset.changesetId = changesetId // Not sure if this changes the value
+                changeset.updatedVersion = updatedVersion
+            }
+            return changeset
+        } catch (let error){
+            return nil
+        }
+    }
+    
+    func updateChangesetWithUndoResultSuccess(obj:String) -> StoredChangeset? {
+        guard let changeset = realm.object(ofType: StoredChangeset.self, forPrimaryKey: obj) else {
+            return nil
+        }
+        do {
+            try realm.write {
+                changeset.undoOn = Date()
+                changeset.isUndoCompleted = true
             }
             return changeset
         } catch (let error){
@@ -429,7 +393,7 @@ class DatabaseConnector {
     
     func updateNodeVersion(nodeId: String, version:Int) -> StoredNode?{
         let intId = Int(nodeId) ?? -1
-        guard let theNode = getNode(id: intId, version: .edited) else { return nil }
+        guard let theNode = getNode(id: intId, version: .original) else { return nil }
         do {
             try realm.write {
                 theNode.version = version
@@ -444,7 +408,7 @@ class DatabaseConnector {
     
     func updateWayVersion(wayId: String, version: Int) -> StoredWay? {
         let intId = Int(wayId) ?? -1
-        guard let theWay = getWay(id: intId, version: .edited) else { return nil }
+        guard let theWay = getWay(id: intId, version: .original) else { return nil }
         
         do {
             try realm.write {

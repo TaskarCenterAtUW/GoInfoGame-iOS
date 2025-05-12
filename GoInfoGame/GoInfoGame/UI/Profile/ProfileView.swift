@@ -162,6 +162,8 @@ struct LoggedInView: View {
             _ = KeychainManager.delete(key: "refreshToken")
             UserDefaults.standard.removeObject(forKey: "accessToken_expire_in")
             UserDefaults.standard.removeObject(forKey: "accessToken_Generate")
+            // Removing all the data from database as well.
+            DatabaseConnector.shared.clearDB()
             accessToken = nil
         } label: {
             Text("LOGOUT")

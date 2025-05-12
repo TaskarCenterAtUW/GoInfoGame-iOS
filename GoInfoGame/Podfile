@@ -8,7 +8,7 @@ target 'GoInfoGame' do
   # Pods for GoInfoGame
   
 #  pod 'SwiftOverpassAPI'
-  pod 'RealmSwift', '10.46.0'
+  pod 'RealmSwift'
   pod 'HTMLEntities', :git => 'https://github.com/Kitura/swift-html-entities.git'
   
   post_install do |installer|
