@@ -73,11 +73,11 @@ struct UserProfileView: View {
     }
     
     private func userFullName() -> String {
-        var fullName = ""
-        if let firstName = viewModel.user?.firstName, let lastNane = viewModel.user?.lastName {
-            fullName = firstName + " " + lastNane
+        
+        if let userModel = viewModel.user {
+            return userModel.getFullName()
         }
-        return fullName
+        return ""
         
     }
     
