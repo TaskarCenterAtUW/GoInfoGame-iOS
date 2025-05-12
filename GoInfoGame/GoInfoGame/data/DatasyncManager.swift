@@ -278,7 +278,15 @@ class DatasyncManager {
                         localWay.tags[key] = value
                     }
                     let id = localWay.id
-                    let tags = localWay.tags
+                    var tags = localWay.tags
+                    // The gig tags are not added into the db when pushing directly
+                    // Adding them forcibly here.
+                    if (!exclude_gig_tags) {
+                        let gig_internal_tags = localWay.fetchInternalGigTags()
+                        gig_internal_tags.forEach { (key: String, value: String) in
+                            tags[key] = value
+                        }
+                    }
                     DispatchQueue.main.async {
                         _ = DatabaseConnector.shared.addWayTags(id: id, tags: tags, version: newVersion)
                     }
@@ -324,8 +332,18 @@ class DatasyncManager {
                         updatedNode.tags[key] = value
                     }
                     updatedNode.version = newVersion
+                    
+                    // Gig tags are not added to DB when pushing changes
+                    // those are added manually here
+                    if (!exclude_gig_tags) {
+                        let gig_internal_tags = updatedNode.fetchInternalGigTags()
+                        gig_internal_tags.forEach { (key: String, value: String) in
+                            updatedNode.tags[key] = value
+                        }
+                    }
                     SyncLogger.shared.logStep("Node Updated ----\(updatedNode.tags)")
                     DispatchQueue.main.async {
+                        
                         _ = DatabaseConnector.shared.addNodeTags(id: updatedNode.id, tags: updatedNode.tags, version: newVersion)
                     }
                     continuation.resume(returning: newVersion)
@@ -418,6 +436,8 @@ class DatasyncManager {
                     return try await updateNode(node: mergedNode, exclude_gig_tags: exclude_gig_tags)
                 } else {
                     print("Undo operation is not possible")
+                    // update the original node with the server node.
+                    // FIXME: this is not done. Need to do something.
                     return fetchedResult.version
                 }
                 

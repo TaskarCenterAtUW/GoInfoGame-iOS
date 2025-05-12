@@ -46,6 +46,7 @@ class MapUndoManager {
     }
 }
 
+//FIXME: This is completely removed
 extension MapUndoManager {
 //    func finalizeSuccessfulSubmit(id: Int, type: ElementType) {
 //        let realm = try! Realm()
@@ -93,6 +94,7 @@ extension Map where Key == String, Value == String {
 }
 
 extension StoredElementEnum {
+    //FIXME: this is shown twice
     func toElementType() -> ElementType? {
         switch self {
         case .node: return .node

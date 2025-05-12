@@ -48,6 +48,7 @@ class QuestBase {
     func updateUndoTags(changeSet: StoredChangeset) {
         // Convert from ElementType enum to StoredElementEnum
         Task.detached(operation: { @MainActor in
+            MapViewPublisher.shared.dismissSheet.send(.syncing)
             let storedElementType: StoredElementEnum = changeSet.elementType
             let changesetId = changeSet.id
             do {
@@ -64,7 +65,9 @@ class QuestBase {
                 DispatchQueue.main.async {
                     _ = DatabaseConnector.shared.updateChangesetWithUndoResultSuccess(obj: changesetId)
                 }
-                
+                MapViewPublisher.shared.dismissSheet.send(.synced)
+//                MapViewPublisher.shared.dismissSheet.send(.submitted(""))
+                MapViewPublisher.shared.dismissSheet.send(.undoDone(changesetId))
             }
             catch {
                 print("❌ Undo failed: \(error)")

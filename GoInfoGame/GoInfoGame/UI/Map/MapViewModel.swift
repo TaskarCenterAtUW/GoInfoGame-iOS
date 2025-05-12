@@ -158,6 +158,19 @@ class MapViewModel: ObservableObject {
       //  }
     }
     
+    // The item may have been already resolved or changed.
+    // Try and add the item to items
+    func refreshMapAfterUndoSumbit(storedChangesetId: String) {
+        print("Refreshing map after undo submit")
+        
+        if let newItem = AppQuestManager.shared.fetchQuestForChangeset(storedChangesetId: storedChangesetId) {
+            self.items.append(newItem)
+        } else {
+            print("No new item got")
+        }
+        
+    }
+    
     func hideQuest(elementId: String, elementName: String) {
         print(elementId)
         HiddenQuestManager.shared.hideQuest(elementId: elementId, elementName: elementName, items: &items)

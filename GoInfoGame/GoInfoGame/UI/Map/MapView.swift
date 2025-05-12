@@ -391,6 +391,11 @@ struct MapView: View {
             case .hideElement(let elementId, let elementName):
                 shouldShowPolyline = false
                 viewModel.hideQuest(elementId: elementId, elementName: elementName)
+            case .undoDone(let changesetId):
+                shouldShowPolyline = false
+                showAlert = true
+                alertMessage = "Changes reverted"
+                viewModel.refreshMapAfterUndoSumbit(storedChangesetId: changesetId)
             }
         }
         .onReceive(QuestsPublisher.shared.refreshQuest, perform: { _ in
@@ -474,6 +479,7 @@ public enum SheetDismissalScenario {
     case synced
     case failed(String)
     case hideElement(String, String)
+    case undoDone(String)
 }
 
 //TODO: Move to a new file
