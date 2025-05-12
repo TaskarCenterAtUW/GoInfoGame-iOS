@@ -15,6 +15,21 @@ import Foundation
 // MARK: - UserProfileResponse
 struct TdeiUserProfile: Codable {
     let id, firstName, lastName, email: String?
+    
+    func getFullName()-> String {
+           var fullName: String = ""
+           if let firstName = firstName {
+               fullName += firstName
+           }
+
+           if let lastName = lastName {
+               if !fullName.isEmpty {
+                   fullName += " "
+               }
+               fullName += lastName
+           }
+           return fullName
+       }
 }
 
 
