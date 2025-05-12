@@ -44,8 +44,10 @@ class TokenRefresher {
                 success = false
                 break
             case .success(let resp):
+                let env = APIConfiguration.shared.environment
                 _ = KeychainManager.save(key: "refreshToken", data: resp.refreshToken)
-                _ = KeychainManager.save(key: "accessToken", data: resp.accessToken)
+                _ = KeychainManager.save(.accessToken, value: resp.accessToken, for: env)
+//                _ = KeychainManager.save(key: "accessToken", data: resp.accessToken)
                 UserDefaults.standard.setValue(resp.expiresIn, forKey: "accessToken_expire_in")
                 UserDefaults.standard.setValue(Date().timeIntervalSince1970, forKey: "accessToken_Generate")
                 DispatchQueue.main.async {
