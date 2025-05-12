@@ -98,6 +98,7 @@ struct UndoButton: View {
                         .padding(.vertical, 6)
                         .background(Color.red)
                         .cornerRadius(8)
+//                        .frame(width: 200)
                     }
                 }
                 .padding()
@@ -108,6 +109,16 @@ struct UndoButton: View {
             }
         }
     }
+}
+
+#Preview {
+    UndoButton(onPreview: { id, type in
+        
+    }, onRemovePreview: {
+         
+    }, onRevert: { changesetid in
+        
+    })
 }
 
 

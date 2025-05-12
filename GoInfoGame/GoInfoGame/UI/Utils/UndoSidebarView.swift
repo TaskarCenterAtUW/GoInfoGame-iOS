@@ -63,5 +63,15 @@ struct UndoSidebarView: View {
         .shadow(radius: 5)
     }
 }
+#Preview {
+    UndoSidebarView(
+        
+        onUndo: {_ in
+            
+        },
+        onClose: {},
+        onItemSelected: {_ in })
+    
+}
 
 
