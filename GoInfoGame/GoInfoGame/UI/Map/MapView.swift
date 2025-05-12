@@ -405,11 +405,11 @@ struct MapView: View {
             HiddenQuestManager.shared.loadHiddenQuests()
             print("selected workspace",selectedWorkspace?.title ?? "")
             QuestsRepository.shared.loadLongQuests(from: "longQuestJson")
-            self.baseUrl = "https://osm.workspaces-stage.sidewalks.washington.edu"
-            let original = DatabaseConnector.shared.getNode(id: 43, version: .original)
-            let edited = DatabaseConnector.shared.getNode(id: 43, version: .edited)
-            print("ORIGINAL --->>>\(original)")
-            print("EDITED --->>>\(edited)")
+//            self.baseUrl = "https://osm.workspaces-stage.sidewalks.washington.edu"
+//            let original = DatabaseConnector.shared.getNode(id: 43, version: .original)
+//            let edited = DatabaseConnector.shared.getNode(id: 43, version: .edited)
+//            print("ORIGINAL --->>>\(original)")
+//            print("EDITED --->>>\(edited)")
         }
     }
     
