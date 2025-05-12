@@ -102,6 +102,8 @@ struct OAuthViewController: UIViewControllerRepresentable {
                     let parsedData = try JSONSerialization.jsonObject(with: data!, options: []) as! [String:Any]
                     if let theAccessToken = parsedData["access_token"] as? String {
                         let accessToken = theAccessToken
+                        let env = APIConfiguration.shared.environment
+                        _ = KeychainManager.save(.accessToken, value: accessToken, for: env)
                       _ = KeychainManager.save(key: "accessToken", data: accessToken)
                         completion(accessToken)
                     }
