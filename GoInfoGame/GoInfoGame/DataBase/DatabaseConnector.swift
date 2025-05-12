@@ -130,6 +130,8 @@ class DatabaseConnector {
             print("Error clearing DB")
         }
     }
+    
+   
 
     func saveElements(_ elements: [OSMWay]) {
         do {

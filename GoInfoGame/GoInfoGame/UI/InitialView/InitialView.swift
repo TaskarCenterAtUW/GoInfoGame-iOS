@@ -135,6 +135,7 @@ struct WorkspacesListView: View {
                             VStack(spacing: 20) {
                                 ForEach(workspaces.filter({$0.type == "osw" && $0.externalAppAccess == 1}), id: \.id) { workspace in
                                     Button {
+                                        viewModel.checkAndDeleteWorkspaceDB(workspaceId: "\(workspace.id)")
                                         viewModel.fetchLongQuestsFor(workspaceId: "\(workspace.id)", completion: { success, errorMessage in
                                             if success {
                                                 self.shouldNavigateToMapView = true

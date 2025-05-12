@@ -168,7 +168,7 @@ class ApiManager {
                 } catch {
                     print("Failed to decode data: \(error.localizedDescription)")
                     if let dataString = String(data: data, encoding: .utf8), !dataString.isEmpty {
-                        completion(.failure(APIError.custom("Not a valid JSON")))
+                        completion(.failure(APIError.custom("Not a valid JSON \(dataString)")))
                     } else {
                         completion(.failure(APIError.custom("Empty JSON")))
                     }

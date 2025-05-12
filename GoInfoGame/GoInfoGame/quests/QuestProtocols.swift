@@ -71,6 +71,7 @@ class QuestBase {
             }
             catch {
                 print("❌ Undo failed: \(error)")
+                MapViewPublisher.shared.dismissSheet.send(.failed("Failed to Undo changes. Please try again"))
             }
         })
     }
