@@ -104,7 +104,6 @@ struct OAuthViewController: UIViewControllerRepresentable {
                         let accessToken = theAccessToken
                         let env = APIConfiguration.shared.environment
                         _ = KeychainManager.save(.accessToken, value: accessToken, for: env)
-                      _ = KeychainManager.save(key: "accessToken", data: accessToken)
                         completion(accessToken)
                     }
                 } catch let error as NSError {
