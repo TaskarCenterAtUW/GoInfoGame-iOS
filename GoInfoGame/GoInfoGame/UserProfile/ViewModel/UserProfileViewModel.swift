@@ -36,7 +36,9 @@ class UserProfileViewModel: ObservableObject {
     
     func fetchUserProfile() {
         
-        let username = KeychainManager.load(key: "username")
+        let env = APIConfiguration.shared.environment
+        
+        let username = KeychainManager.load(.username, for: env)
         
         if let accessToken = KeychainManager.load(key: "accessToken") {
             ApiManager.shared.performRequest(to: .fetchuserProfile(username!, accessToken), setupType: .userProfile, modelType: TdeiUserProfile.self) { result in
