@@ -15,6 +15,7 @@ struct InitialView: View {
     @State private var isLoading: Bool = false
     
     @AppStorage("loggedIn") private var loggedIn: Bool = false
+    @State private var showBiometricPrompt = false
     
     var body: some View {
         NavigationStack {
@@ -60,6 +61,18 @@ struct InitialView: View {
         }
         .onAppear {
             isLoading = true
+            viewModel.checkBiometricOptInCondition() 
+            showBiometricPrompt = viewModel.shouldShowBiometricOptInPrompt
+        }
+        .alert("Enable Biometric Login?", isPresented: $showBiometricPrompt) {
+            Button("Enable") {
+                viewModel.userAcceptedBiometricOptIn()
+            }
+            Button("Not Now", role: .cancel) {
+                viewModel.userDeclinedBiometricOptIn()
+            }
+        } message: {
+            Text("Would you like to use Face ID or Touch ID for faster logins?")
         }
         .toolbar(.hidden)
        }
