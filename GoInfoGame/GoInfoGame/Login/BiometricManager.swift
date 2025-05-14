@@ -7,7 +7,7 @@
 
 import LocalAuthentication
 
-class BiometricAuthenticator {
+class BiometricManager {
     
     func authenticateUser(completion: @escaping (Result<Bool, Error>) -> Void) {
         let context = LAContext()

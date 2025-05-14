@@ -196,7 +196,7 @@
 		FA50719A2D7263F800CE9798 /* LongFormImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA5071992D7263F800CE9798 /* LongFormImageView.swift */; };
 		FA51484E2D76ED6C00C0D35B /* NotesViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA51484D2D76ED6300C0D35B /* NotesViewModel.swift */; };
 		FA5853C12B21F17F00301CDA /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA5853C02B21F17F00301CDA /* OnboardingView.swift */; };
-		FA633CB42DD4843B00324404 /* BiometricAuthenticator.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA633CB32DD4842D00324404 /* BiometricAuthenticator.swift */; };
+		FA633CB42DD4843B00324404 /* BiometricManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA633CB32DD4842D00324404 /* BiometricManager.swift */; };
 		FA6DB8B32D8853DD0070CCD3 /* UserSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA6DB8B22D8853D00070CCD3 /* UserSettingsView.swift */; };
 		FA6DB8B52D96BE510070CCD3 /* HiddenQuestManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA6DB8B42D96BE510070CCD3 /* HiddenQuestManager.swift */; };
 		FA87A8102B68142F000A6BEA /* LoadingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA87A80F2B68142F000A6BEA /* LoadingView.swift */; };
@@ -519,7 +519,7 @@
 		FA5071992D7263F800CE9798 /* LongFormImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LongFormImageView.swift; sourceTree = "<group>"; };
 		FA51484D2D76ED6300C0D35B /* NotesViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotesViewModel.swift; sourceTree = "<group>"; };
 		FA5853C02B21F17F00301CDA /* OnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingView.swift; sourceTree = "<group>"; };
-		FA633CB32DD4842D00324404 /* BiometricAuthenticator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BiometricAuthenticator.swift; sourceTree = "<group>"; };
+		FA633CB32DD4842D00324404 /* BiometricManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BiometricManager.swift; sourceTree = "<group>"; };
 		FA6DB8B22D8853D00070CCD3 /* UserSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserSettingsView.swift; sourceTree = "<group>"; };
 		FA6DB8B42D96BE510070CCD3 /* HiddenQuestManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HiddenQuestManager.swift; sourceTree = "<group>"; };
 		FA87A80F2B68142F000A6BEA /* LoadingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingView.swift; sourceTree = "<group>"; };
@@ -1519,7 +1519,7 @@
 		FAFDA1FB2C6D321500ECEAE9 /* Login */ = {
 			isa = PBXGroup;
 			children = (
-				FA633CB32DD4842D00324404 /* BiometricAuthenticator.swift */,
+				FA633CB32DD4842D00324404 /* BiometricManager.swift */,
 				FAFDA2002C6D338400ECEAE9 /* ViewModel */,
 				FAFDA1FD2C6D335300ECEAE9 /* Model */,
 				FAFDA1FC2C6D322800ECEAE9 /* View */,
@@ -2138,7 +2138,7 @@
 				973FC0012B46CD5D00878269 /* QuestsListUIView.swift in Sources */,
 				973FC01F2B50DE7E00878269 /* ImageGridItemView.swift in Sources */,
 				97AC1C212B726AC9004F0BF4 /* TactilePavingKerb.swift in Sources */,
-				FA633CB42DD4843B00324404 /* BiometricAuthenticator.swift in Sources */,
+				FA633CB42DD4843B00324404 /* BiometricManager.swift in Sources */,
 				A4E711A22B57A3B400C9DE08 /* SideWalkWidth.swift in Sources */,
 				05CB71E02B0FAFD200DED821 /* GenericUIViewControllerRepresentable.swift in Sources */,
 				971F9FE42B84CDBF005397CC /* CrossingType.swift in Sources */,
