@@ -9,12 +9,19 @@ import Foundation
 import SwiftUI
 import MapKit
 import CoreLocation
+import LocalAuthentication
 // InitialViewModel - ViewModel for managing data related to initial view
+@MainActor
 class InitialViewModel: ObservableObject {
     let locationManagerDelegate = LocationManagerDelegate()
     @Published var workspaces: [Workspace] = [] 
     @Published var longQuests: [LongFormModel] = []
     @Published var isLoading: Bool = false
+    
+    @Published var shouldShowBiometricOptInPrompt = false
+    @Published var showBiometricIDError: Bool = false
+    @Published var biometricIDErrorMessage: String?
+
     
     init() {
         locationManagerDelegate.locationManager.delegate = locationManagerDelegate
@@ -28,6 +35,20 @@ class InitialViewModel: ObservableObject {
             fetchWorkspacesList()
         }
     }
+    
+    func checkBiometricOptInCondition() {
+          let env = APIConfiguration.shared.environment
+          let useBiometricID = UserDefaults.standard.bool(forKey: "useBiometricID")
+          let biometricOptInDeclined = UserDefaults.standard.bool(forKey: "biometricOptInDeclined")
+
+          if !useBiometricID && !biometricOptInDeclined,
+             KeychainManager.load(.username, for: env) != nil,
+             SessionManager.shared.lastLoginPassword != nil {
+              shouldShowBiometricOptInPrompt = true
+          }
+      }
+    
+    
     
     // fetch workspaces list
     func fetchWorkspacesList() {
@@ -122,4 +143,15 @@ class InitialViewModel: ObservableObject {
             print("Failed to save file: \(error)")
         }
     }
+    
+    func userAcceptedBiometricOptIn() {
+        UserDefaults.standard.setValue(true, forKey: "useBiometricID")
+        UserDefaults.standard.setValue(false, forKey: "biometricOptInDeclined")
+        SessionManager.shared.savePasswordForBiometric()
+    }
+
+    func userDeclinedBiometricOptIn() {
+        UserDefaults.standard.setValue(true, forKey: "biometricOptInDeclined")
+    }
+
 }
