@@ -79,13 +79,21 @@ struct PosmLoginView: View {
                     
                     if SessionManager.shared.canUseBiometricLogin(for: selectedEnvironment) {
                         Button(action: {
-                            BiometricAuthManager.authenticate(reason: BiometricAuthManager.biometricLabelText()) { result in
+                            BiometricAuthManager.authenticate(reason: "Login using Face ID") { result in
                                 switch result {
                                 case .success:
-                                    SessionManager.shared.loginWithBiometrics(for: selectedEnvironment) { success in
-                                        viewModel.isLoginSuccess = success
-                                        viewModel.hasLoginFailed = !success
+                                    if let username = KeychainManager.load(.username, for: selectedEnvironment),
+                                       let password = KeychainManager.load(.password, for: selectedEnvironment) {
+
+                                        viewModel.username = username
+                                        viewModel.password = password
+                                        
+                                        viewModel.performLogin()
+                                    } else {
+                                        print("Missing credentials in Keychain")
+                                        viewModel.hasLoginFailed = true
                                     }
+
                                 case .failure(let message), .unavailable(let message):
                                     print("Biometric login failed: \(message)")
                                     viewModel.hasLoginFailed = true
