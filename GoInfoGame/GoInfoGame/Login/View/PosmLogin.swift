@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import LocalAuthentication
 
 struct PosmLoginView: View {
     
@@ -18,6 +19,24 @@ struct PosmLoginView: View {
     
     @State private var selectedEnvironment: APIEnvironment = .staging
     @State private var showAlert = false
+    
+    @AppStorage("useBiometricID") private var useBiometricID: Bool = false
+    
+    private var biometricLabelText: String {
+        let context = LAContext()
+        _ = context.canEvaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, error: nil)
+        return context.biometryType == .faceID ? "Login with Face ID" :
+               context.biometryType == .touchID ? "Login with Touch ID" :
+               "Login with Biometrics"
+    }
+
+    private var biometricIcon: String {
+        let context = LAContext()
+        _ = context.canEvaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, error: nil)
+        return context.biometryType == .faceID ? "faceid" :
+               context.biometryType == .touchID ? "touchid" : "lock"
+    }
+    
     var body: some View {
         NavigationStack {
             ZStack {
@@ -73,6 +92,23 @@ struct PosmLoginView: View {
                     }
                     .padding(.top, 20)
                     
+                    if SessionManager.shared.canUseBiometricLogin(for: selectedEnvironment) {
+                                           Button(action: {
+                                               SessionManager.shared.loginWithBiometrics(for: selectedEnvironment) { success in
+                                                   if success {
+                                                       viewModel.isLoginSuccess = true
+                                                   } else {
+                                                       viewModel.hasLoginFailed = true
+                                                   }
+                                               }
+                                           }) {
+                                               Label(biometricLabelText, systemImage: biometricIcon)
+                                                   .font(.custom("Lato-Bold", size: 18))
+                                                   .foregroundColor(.blue)
+                                           }
+                                           .padding(.top, 10)
+                                       }
+                    
                     if viewModel.hasLoginFailed {
                         Text("Invalid Credentials")
                             .foregroundColor(.red)
@@ -94,9 +130,6 @@ struct PosmLoginView: View {
         }
         .alert("Invalid Credentials", isPresented: $viewModel.shouldShowValidationAlert) {
             Button("OK", role: .cancel) { }
-        }
-        .onAppear {
-            selectedEnvironment = APIConfiguration.shared.environment
         }
         .onReceive(NotificationCenter.default.publisher(for: Notification.Name("SessionExpired"))) { notification in
                     showAlert = true
