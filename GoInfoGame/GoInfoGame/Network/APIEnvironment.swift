@@ -36,15 +36,15 @@ enum APIEnvironment: String, CaseIterable {
     }
     
     var osmBaseURL: String {
-        switch self {
-        case .development:
-            return "https://osm.workspaces-dev.sidewalks.washington.edu/api/0.6"
-        case .staging:
-            return "https://osm.workspaces-stage.sidewalks.washington.edu/api/0.6"
-        case .production:
-            return "https://osm.workspaces.sidewalks.washington.edu/api/0.6"
-        }
-    }
+           switch self {
+           case .development:
+               return "https://osm-workspaces-proxy.azurewebsites.net/dev/api/0.6"
+           case .staging:
+               return "https://osm-workspaces-proxy.azurewebsites.net/stage/api/0.6"
+           case .production:
+               return "https://osm-workspaces-proxy.azurewebsites.net/prod/api/0.6"
+           }
+       }
     
     var userProfileBaseURL: String {
         switch self {
