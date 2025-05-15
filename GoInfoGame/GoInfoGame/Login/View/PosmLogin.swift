@@ -19,9 +19,7 @@ struct PosmLoginView: View {
     
     @State private var selectedEnvironment: APIEnvironment = .staging
     @State private var showAlert = false
-    
-    @AppStorage("useBiometricID") private var useBiometricID: Bool = false
-        
+            
     var body: some View {
         NavigationStack {
             ZStack {

@@ -14,7 +14,8 @@ struct UserProfileView: View {
     
     @AppStorage("loggedIn") private var loggedIn: Bool = false
     
-    @AppStorage("useBiometricID") private var useBiometricID: Bool = false
+    @State private var useBiometricID: Bool = false
+    
     private var biometricToggleText: String {
         let context = LAContext()
         _ = context.canEvaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, error: nil)
@@ -68,6 +69,7 @@ struct UserProfileView: View {
                 .navigationBarTitleDisplayMode(.inline)
         }
         .onAppear {
+            useBiometricID = SessionManager.shared.isBiometricEnabled(for: APIConfiguration.shared.environment)
             viewModel.fetchUserProfile()
         }
     }
