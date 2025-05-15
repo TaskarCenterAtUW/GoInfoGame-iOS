@@ -16,6 +16,10 @@ struct UserProfileView: View {
     
     @State private var useBiometricID: Bool = false
     
+    @State private var userManuallyToggled = false
+    
+    @State private var showPasswordAuthenticationView: Bool = false
+    
     private var biometricToggleText: String {
         let context = LAContext()
         _ = context.canEvaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, error: nil)
@@ -32,20 +36,21 @@ struct UserProfileView: View {
                 
     var body: some View {
         Group {
+            ZStack {
                 VStack {
                     Text("My Profile")
                         .font(.custom("Lato-Bold", size: 25))
                         .padding(.bottom, 50)
                     HStack(alignment: .center, spacing: 16) {
                         profileImage
-
+                        
                         VStack(alignment: .leading, spacing: 4) {
                             Text(userFullName())
                                 .font(.custom("Lato-Bold", size: 20))
                             Text(viewModel.user?.email ?? "")
                                 .font(.custom("Lato-Regular", size: 18))
                         }
-
+                        
                         Spacer()
                     }
                     .padding([.bottom], 200)
@@ -53,20 +58,50 @@ struct UserProfileView: View {
                     Toggle(isOn: $useBiometricID) {
                         Text(biometricToggleText)
                     }
+                    .gesture(
+                        TapGesture()
+                            .onEnded {
+                                userManuallyToggled = true
+                            }
+                    )
                     .onChange(of: useBiometricID) { isEnabled in
-                        if !isEnabled {
-                            SessionManager.shared.logout(environment: APIConfiguration.shared.environment, clearBiometricCreds: true)
+                        let env = APIConfiguration.shared.environment
+
+                        guard userManuallyToggled else { return }
+                        userManuallyToggled = false
+
+                        if isEnabled {
+                          
+                            showPasswordAuthenticationView = true
+                        } else {
+                            useBiometricID = false
                         }
                     }
                     .padding([.bottom], 30)
                     
                     
                     logOutButton
-                   
+                    
                     Spacer()
                 }
                 .padding(20)
                 .navigationBarTitleDisplayMode(.inline)
+            }
+            .overlay {
+                if showPasswordAuthenticationView {
+                    PasswordAuthenticationView {
+                        useBiometricID = true
+                        SessionManager.shared.setBiometricEnabled(true, for: APIConfiguration.shared.environment)
+                        showPasswordAuthenticationView = false
+                    } onCancel: {
+                        useBiometricID = false
+                        SessionManager.shared.setBiometricEnabled(false, for: APIConfiguration.shared.environment)
+                        showPasswordAuthenticationView = false
+                    }
+                    .transition(.scale)
+                    .zIndex(1)
+                }
+            }
         }
         .onAppear {
             useBiometricID = SessionManager.shared.isBiometricEnabled(for: APIConfiguration.shared.environment)
@@ -93,6 +128,10 @@ struct UserProfileView: View {
     private var logOutButton: some View {
         Button {
             Utilities.clearAllData()
+            
+            if useBiometricID == false {
+                SessionManager.shared.logout(environment: APIConfiguration.shared.environment, clearBiometricCreds: true)
+            }
             
             if let window = UIApplication.window() {
                    window.rootViewController = UIHostingController(rootView: PosmLoginView())
