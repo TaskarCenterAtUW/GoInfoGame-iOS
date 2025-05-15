@@ -30,26 +30,33 @@ class InitialViewModel: ObservableObject {
         
         locationManagerDelegate.locationUpdateHandler = { [weak self] location in
             guard let self = self else { return }
-            // fetch workspace
-           // fetchWorkspaceFor(currentLocation: location)
             fetchWorkspacesList()
         }
+        
+        checkBiometricOptInCondition(for: APIConfiguration.shared.environment)
     }
     
-    func checkBiometricOptInCondition() {
-          let env = APIConfiguration.shared.environment
-          let useBiometricID = UserDefaults.standard.bool(forKey: "useBiometricID")
-          let biometricOptInDeclined = UserDefaults.standard.bool(forKey: "biometricOptInDeclined")
+    func checkBiometricOptInCondition(for env: APIEnvironment) {
+           if !SessionManager.shared.isBiometricEnabled(for: env) &&
+              !SessionManager.shared.hasDeclinedBiometric(for: env) &&
+              KeychainManager.load(.username, for: env) != nil &&
+              SessionManager.shared.lastLoginPassword != nil {
+               shouldShowBiometricOptInPrompt = true
+           } else {
+               shouldShowBiometricOptInPrompt = false
+           }
+       }
 
-          if !useBiometricID && !biometricOptInDeclined,
-             KeychainManager.load(.username, for: env) != nil,
-             SessionManager.shared.lastLoginPassword != nil {
-              shouldShowBiometricOptInPrompt = true
-          }
-      }
-    
-    
-    
+       func userAcceptedBiometricOptIn(for env: APIEnvironment) {
+           SessionManager.shared.setBiometricEnabled(true, for: env)
+           SessionManager.shared.setDeclinedBiometric(false, for: env)
+           SessionManager.shared.savePasswordForBiometric(for: env)
+       }
+
+       func userDeclinedBiometricOptIn(for env: APIEnvironment) {
+           SessionManager.shared.setDeclinedBiometric(true, for: env)
+       }
+
     // fetch workspaces list
     func fetchWorkspacesList() {
                 
@@ -143,15 +150,4 @@ class InitialViewModel: ObservableObject {
             print("Failed to save file: \(error)")
         }
     }
-    
-    func userAcceptedBiometricOptIn() {
-        UserDefaults.standard.setValue(true, forKey: "useBiometricID")
-        UserDefaults.standard.setValue(false, forKey: "biometricOptInDeclined")
-        SessionManager.shared.savePasswordForBiometric()
-    }
-
-    func userDeclinedBiometricOptIn() {
-        UserDefaults.standard.setValue(true, forKey: "biometricOptInDeclined")
-    }
-
 }

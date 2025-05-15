@@ -54,7 +54,7 @@ struct UserProfileView: View {
                     }
                     .onChange(of: useBiometricID) { isEnabled in
                         if !isEnabled {
-                            SessionManager.shared.logout(clearBiometricCreds: true)
+                            SessionManager.shared.logout(environment: APIConfiguration.shared.environment, clearBiometricCreds: true)
                         }
                     }
                     .padding([.bottom], 30)

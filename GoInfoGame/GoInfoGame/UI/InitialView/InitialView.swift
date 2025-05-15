@@ -61,15 +61,15 @@ struct InitialView: View {
         }
         .onAppear {
             isLoading = true
-            viewModel.checkBiometricOptInCondition() 
+            viewModel.checkBiometricOptInCondition(for: APIConfiguration.shared.environment)
             showBiometricPrompt = viewModel.shouldShowBiometricOptInPrompt
         }
         .alert("Enable Biometric Login?", isPresented: $showBiometricPrompt) {
             Button("Enable") {
-                viewModel.userAcceptedBiometricOptIn()
+                viewModel.userAcceptedBiometricOptIn(for: APIConfiguration.shared.environment)
             }
             Button("Not Now", role: .cancel) {
-                viewModel.userDeclinedBiometricOptIn()
+                viewModel.userDeclinedBiometricOptIn(for: APIConfiguration.shared.environment)
             }
         } message: {
             Text("Would you like to use Face ID or Touch ID for faster logins?")
