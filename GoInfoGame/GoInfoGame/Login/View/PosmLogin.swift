@@ -78,6 +78,7 @@ struct PosmLoginView: View {
                     
                     if SessionManager.shared.canUseBiometricLogin(for: selectedEnvironment) {
                         Button(action: {
+                            APIConfiguration.shared.environment = selectedEnvironment
                             BiometricAuthManager.authenticate(reason: "Login using Face ID") { result in
                                 switch result {
                                 case .success:
