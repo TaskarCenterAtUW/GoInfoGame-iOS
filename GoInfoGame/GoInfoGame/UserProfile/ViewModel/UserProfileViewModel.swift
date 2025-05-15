@@ -38,10 +38,10 @@ class UserProfileViewModel: ObservableObject {
         
         let env = APIConfiguration.shared.environment
         
-        let username = KeychainManager.load(.username, for: env)
+        guard let username = KeychainManager.load(.username, for: env) else { return }
         
         if let accessToken = KeychainManager.load(key: "accessToken") {
-            ApiManager.shared.performRequest(to: .fetchuserProfile(username!, accessToken), setupType: .userProfile, modelType: TdeiUserProfile.self) { result in
+            ApiManager.shared.performRequest(to: .fetchuserProfile(username, accessToken), setupType: .userProfile, modelType: TdeiUserProfile.self) { result in
                 switch result {
                 case .success(let userprofile):
                     DispatchQueue.main.async {
