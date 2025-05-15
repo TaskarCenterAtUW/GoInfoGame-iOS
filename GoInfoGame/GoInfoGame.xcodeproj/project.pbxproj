@@ -232,6 +232,8 @@
 		FAD5C5162AFCBE720040C61A /* GoInfoGameUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAD5C5152AFCBE720040C61A /* GoInfoGameUITestsLaunchTests.swift */; };
 		FAE2584F2D39819300D2BB12 /* ManageQuestsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAE2584E2D39819300D2BB12 /* ManageQuestsView.swift */; };
 		FAE258522D3A780F00D2BB12 /* FloatingActionButtonStack.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAE258512D3A780F00D2BB12 /* FloatingActionButtonStack.swift */; };
+		FAE481A22DD5EF3800149A48 /* PasswordAuthenticationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAE481A12DD5EF2C00149A48 /* PasswordAuthenticationView.swift */; };
+		FAE481A42DD5F97800149A48 /* PasswordAuthenticationViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAE481A32DD5F96E00149A48 /* PasswordAuthenticationViewModel.swift */; };
 		FAEE21DB2DCA1963002F9BEC /* UndoButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAEE21DA2DCA1963002F9BEC /* UndoButton.swift */; };
 		FAF44FBD2B3084EC004FE664 /* OnboardingView1.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAF44FBC2B3084EC004FE664 /* OnboardingView1.swift */; };
 		FAF44FBF2B3084FB004FE664 /* OnboardingView2.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAF44FBE2B3084FB004FE664 /* OnboardingView2.swift */; };
@@ -563,6 +565,8 @@
 		FAD5C5152AFCBE720040C61A /* GoInfoGameUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoInfoGameUITestsLaunchTests.swift; sourceTree = "<group>"; };
 		FAE2584E2D39819300D2BB12 /* ManageQuestsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManageQuestsView.swift; sourceTree = "<group>"; };
 		FAE258512D3A780F00D2BB12 /* FloatingActionButtonStack.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FloatingActionButtonStack.swift; sourceTree = "<group>"; };
+		FAE481A12DD5EF2C00149A48 /* PasswordAuthenticationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PasswordAuthenticationView.swift; sourceTree = "<group>"; };
+		FAE481A32DD5F96E00149A48 /* PasswordAuthenticationViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PasswordAuthenticationViewModel.swift; sourceTree = "<group>"; };
 		FAEE21DA2DCA1963002F9BEC /* UndoButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UndoButton.swift; sourceTree = "<group>"; };
 		FAF44FBC2B3084EC004FE664 /* OnboardingView1.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingView1.swift; sourceTree = "<group>"; };
 		FAF44FBE2B3084FB004FE664 /* OnboardingView2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingView2.swift; sourceTree = "<group>"; };
@@ -1522,6 +1526,8 @@
 			children = (
 				FA633CB52DD48C3F00324404 /* SessionManager.swift */,
 				FA633CB32DD4842D00324404 /* BiometricAuthManager.swift */,
+				FAE481A12DD5EF2C00149A48 /* PasswordAuthenticationView.swift */,
+				FAE481A32DD5F96E00149A48 /* PasswordAuthenticationViewModel.swift */,
 				FAFDA2002C6D338400ECEAE9 /* ViewModel */,
 				FAFDA1FD2C6D335300ECEAE9 /* Model */,
 				FAFDA1FC2C6D322800ECEAE9 /* View */,
@@ -2173,6 +2179,7 @@
 				973FC04A2B5A478C00878269 /* CrossMarkingForm.swift in Sources */,
 				FAE2584F2D39819300D2BB12 /* ManageQuestsView.swift in Sources */,
 				973FC03F2B59418B00878269 /* WayLit.swift in Sources */,
+				FAE481A42DD5F97800149A48 /* PasswordAuthenticationViewModel.swift in Sources */,
 				971342772BBD415600174EBF /* InitialViewController.swift in Sources */,
 				A40004EC2B62338400AF21FB /* AppQuestManager.swift in Sources */,
 				FA51484E2D76ED6C00C0D35B /* NotesViewModel.swift in Sources */,
@@ -2181,6 +2188,7 @@
 				A4B83AF32B5F9385006684CA /* StoredWay.swift in Sources */,
 				FA18CAE52CC7D0DD008247F2 /* SequenceModel.swift in Sources */,
 				971F9FDF2B847349005397CC /* CrossingIslandForm.swift in Sources */,
+				FAE481A22DD5EF3800149A48 /* PasswordAuthenticationView.swift in Sources */,
 				05DBBB5F2B1263FF00B6F110 /* DatabaseConnector.swift in Sources */,
 				FAF44FC12B30850A004FE664 /* OnboardingView3.swift in Sources */,
 				97439F7A2B87447400DA43E1 /* CrossingKerbHeight.swift in Sources */,
@@ -2343,7 +2351,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEFINES_MODULE = YES;
-				DEVELOPMENT_TEAM = NPCMG529DV;
+				DEVELOPMENT_TEAM = G8MQVE5WWW;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
@@ -2468,7 +2476,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEFINES_MODULE = YES;
-				DEVELOPMENT_TEAM = NPCMG529DV;
+				DEVELOPMENT_TEAM = G8MQVE5WWW;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
