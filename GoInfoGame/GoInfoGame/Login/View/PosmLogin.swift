@@ -66,7 +66,8 @@ struct PosmLoginView: View {
                     .padding(.horizontal, 40)
             
                     Button(action: {
-                        viewModel.performLogin()
+                        APIConfiguration.shared.environment = selectedEnvironment
+                        viewModel.performLogin(for: selectedEnvironment)
                     }) {
                         Text("Login")
                             .font(.custom("Lato-Bold", size: 20))
@@ -88,7 +89,7 @@ struct PosmLoginView: View {
                                         viewModel.username = username
                                         viewModel.password = password
                                         
-                                        viewModel.performLogin()
+                                        viewModel.performLogin(for: selectedEnvironment)
                                     } else {
                                         print("Missing credentials in Keychain")
                                         viewModel.hasLoginFailed = true
