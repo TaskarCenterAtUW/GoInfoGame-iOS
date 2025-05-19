@@ -1,5 +1,5 @@
 //
-//  PasswordAuthenticationView.swift
+//  PasswordAuthenticationPopupView.swift
 //  GoInfoGame
 //
 //  Created by Achyut Kumar M on 15/05/25.
@@ -8,51 +8,58 @@
 import SwiftUI
 import LocalAuthentication
 
-struct PasswordAuthenticationView: View {
+import SwiftUI
+
+struct PasswordAuthenticationPopupView: View {
     let onSuccess: () -> Void
     let onCancel: () -> Void
-    
+
     @StateObject private var viewModel = PasswordAuthenticationViewModel()
-    
+
     var body: some View {
         ZStack {
-            Color.black.opacity(0.4).ignoresSafeArea()
-            
+            Color.black.opacity(0.4)
+                .ignoresSafeArea()
+                .onTapGesture {
+                    onCancel()
+                }
+
             VStack(spacing: 16) {
-                Text("Enter Password")
+                Text("Enable Biometric Login")
                     .font(.headline)
-                
+
                 SecureField("Enter your password", text: $viewModel.password)
                     .textContentType(.password)
                     .padding()
                     .background(Color(.systemGray6))
                     .cornerRadius(8)
-                
+
                 if !viewModel.errorMessage.isEmpty {
                     Text(viewModel.errorMessage)
                         .foregroundColor(.red)
                         .font(.caption)
                 }
-                
+
                 Button("Continue") {
                     handleContinue()
                 }
-                .padding()
                 .frame(maxWidth: .infinity)
+                .padding()
                 .background(Color.blue)
                 .foregroundColor(.white)
                 .cornerRadius(8)
-                
-                Button("Cancel") {                    
+
+                Button("Cancel") {
                     onCancel()
                 }
+                .foregroundColor(.gray)
                 .padding(.top, 4)
             }
             .padding()
             .background(Color.white)
             .cornerRadius(16)
-            .padding(40)
-            
+            .padding(.horizontal, 40)
+
             if viewModel.isLoading {
                 ProgressView("Logging in...")
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -60,21 +67,31 @@ struct PasswordAuthenticationView: View {
             }
         }
     }
-    
+
     private func handleContinue() {
         let environment = APIConfiguration.shared.environment
-        let username = KeychainManager.load(.username, for: environment) ?? ""
-        viewModel.performBiometricEnrollment(username: username, environment: environment) {
-            
-        } onFailure: {
-            
+        guard let username = KeychainManager.load(.username, for: environment) else {
+            viewModel.errorMessage = "Username not found"
+            return
         }
+
+        viewModel.performBiometricEnrollment(
+            username: username,
+            environment: environment,
+            onSuccess: {
+                onSuccess()
+            },
+            onFailure: {
+                viewModel.errorMessage = "Failed to enroll"
+            }
+        )
     }
 }
 
 
+
 #Preview {
-    PasswordAuthenticationView(
+    PasswordAuthenticationPopupView(
         onSuccess: {
             print("Biometric setup successful")
         },
