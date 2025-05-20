@@ -40,7 +40,7 @@ class PosmLoginViewModel: ObservableObject {
 
         isLoading = true
 
-        SessionManager.shared.performLogin(username: username, password: password, environment: environment) { [weak self] success in
+        SessionManager.shared.performLogin(username: username, password: password, environment: environment) { [weak self] success, error  in
             guard let self = self else { return }
 
             DispatchQueue.main.async {

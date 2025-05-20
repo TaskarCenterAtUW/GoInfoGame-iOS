@@ -16,12 +16,12 @@ class PasswordAuthenticationViewModel: ObservableObject {
         username: String,
         environment: APIEnvironment,
         onSuccess: @escaping () -> Void,
-        onFailure: @escaping () -> Void
+        onFailure: @escaping (String) -> Void
     ) {
         isLoading = true
         errorMessage = ""
         
-        SessionManager.shared.performLogin(username: username, password: password, environment: environment) { success in
+        SessionManager.shared.performLogin(username: username, password: password, environment: environment) { success, error  in
             DispatchQueue.main.async {
                 if success {
                     BiometricAuthManager.authenticate(reason: "Enable biometric login") { result in
@@ -34,14 +34,14 @@ class PasswordAuthenticationViewModel: ObservableObject {
                                 onSuccess()
                             case .failure(let msg), .unavailable(let msg):
                                 self.errorMessage = msg
-                                onFailure()
+                                onFailure("An error occured. Please try again.")
                             }
                         }
                     }
                 } else {
                     self.isLoading = false
                     self.errorMessage = "Invalid username or password."
-                    onFailure()
+                    onFailure("Invalid username or password.")
                 }
             }
         }

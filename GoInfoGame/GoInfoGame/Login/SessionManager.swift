@@ -17,11 +17,11 @@ final class SessionManager: ObservableObject {
 
     var lastLoginPassword: String?
 
-    func performLogin(username: String, password: String, environment: APIEnvironment, completion: @escaping (Bool) -> Void) {
+    func performLogin(username: String, password: String, environment: APIEnvironment, completion: @escaping (Bool, String) -> Void) {
         let userName = KeychainManager.load(.username, for: environment) ?? username
         let postParams = ["username": userName, "password": password]
         guard let postBody = try? JSONSerialization.data(withJSONObject: postParams) else {
-            completion(false)
+            completion(false, "Failed to serialize JSON")
             return
         }
 
@@ -39,13 +39,13 @@ final class SessionManager: ObservableObject {
 
                     self.isLoginSuccessful = true
                     self.hasLoginFailed = false
-                    completion(true)
+                    completion(true, "")
 
                 case .failure(let error):
                     print("Login failed:", error)
                     self.isLoginSuccessful = false
                     self.hasLoginFailed = true
-                    completion(false)
+                    completion(false, "Invalid credentials")
                 }
             }
         }
@@ -68,11 +68,11 @@ final class SessionManager: ObservableObject {
         lastLoginPassword = nil
     }
 
-    func loginWithBiometrics(for environment: APIEnvironment, completion: @escaping (Bool) -> Void) {
+    func loginWithBiometrics(for environment: APIEnvironment, completion: @escaping (Bool, String) -> Void) {
         guard let user = KeychainManager.load(.username, for: environment),
               let pass = KeychainManager.load(.password, for: environment) else {
             print(" Missing credentials for biometric login")
-            completion(false)
+            completion(false, "Missing credentials for biometric login")
             return
         }
         performLogin(username: user, password: pass, environment: environment, completion: completion)
