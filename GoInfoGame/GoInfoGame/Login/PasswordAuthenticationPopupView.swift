@@ -54,7 +54,7 @@ struct PasswordAuthenticationPopupView: View {
             .padding(40)
 
             if viewModel.isLoading {
-                ProgressView("Logging in...")
+                ProgressView("Autheticating...")
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
                     .background(Color.black.opacity(0.3).ignoresSafeArea())
             }
@@ -72,7 +72,6 @@ struct PasswordAuthenticationPopupView: View {
                 onSuccess()
             },
             onFailure: { error in
-                // Nothing here; viewModel will handle errorMessage
                 viewModel.errorMessage = error
                 onFailure(error)
             }

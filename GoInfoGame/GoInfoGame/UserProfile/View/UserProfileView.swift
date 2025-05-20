@@ -19,9 +19,7 @@ struct UserProfileView: View {
     @State private var userManuallyToggled = false
     
     @State private var showPasswordAuthenticationView: Bool = false
-    
-    @StateObject private var passwordAuthenticationViewModel = PasswordAuthenticationViewModel()
-    
+        
     private var biometricToggleText: String {
         let context = LAContext()
         _ = context.canEvaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, error: nil)
@@ -72,16 +70,15 @@ struct UserProfileView: View {
             }
             .overlay {
                 if showPasswordAuthenticationView {
-                    PasswordAuthenticationPopupView(viewModel: passwordAuthenticationViewModel) {
+                    PasswordAuthenticationPopupView(viewModel: PasswordAuthenticationViewModel()) {
                         useBiometricID = true
                         showPasswordAuthenticationView = false
-                        print("TO DO : Handle password authentication")
                     } onCancel: {
                         useBiometricID = false
                        showPasswordAuthenticationView = false
                     } onFailure: { error in
                         useBiometricID = false
-                        showPasswordAuthenticationView = false
+                        
                         
                     }
 
