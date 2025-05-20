@@ -15,25 +15,9 @@ struct UserProfileView: View {
     @AppStorage("loggedIn") private var loggedIn: Bool = false
     
     @State private var useBiometricID: Bool = false
-    
-    @State private var userManuallyToggled = false
-    
-    @State private var showPasswordAuthenticationView: Bool = false
         
-    private var biometricToggleText: String {
-        let context = LAContext()
-        _ = context.canEvaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, error: nil)
-
-        switch context.biometryType {
-        case .faceID:
-            return "Use Face ID for Login"
-        case .touchID:
-            return "Use Touch ID for Login"
-        default:
-            return "Use Biometric Login"
-        }
-    }
-                
+    @State private var showPasswordAuthenticationView: Bool = false
+                        
     var body: some View {
         Group {
             ZStack {
