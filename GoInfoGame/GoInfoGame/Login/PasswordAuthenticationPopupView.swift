@@ -8,21 +8,15 @@
 import SwiftUI
 import LocalAuthentication
 
-import SwiftUI
-
 struct PasswordAuthenticationPopupView: View {
+    @ObservedObject var viewModel: PasswordAuthenticationViewModel
     let onSuccess: () -> Void
     let onCancel: () -> Void
-
-    @StateObject private var viewModel = PasswordAuthenticationViewModel()
-
+    let onFailure: (String) -> Void
+    
     var body: some View {
         ZStack {
-            Color.black.opacity(0.4)
-                .ignoresSafeArea()
-                .onTapGesture {
-                    onCancel()
-                }
+            Color.black.opacity(0.4).ignoresSafeArea()
 
             VStack(spacing: 16) {
                 Text("Enable Biometric Login")
@@ -43,8 +37,8 @@ struct PasswordAuthenticationPopupView: View {
                 Button("Continue") {
                     handleContinue()
                 }
-                .frame(maxWidth: .infinity)
                 .padding()
+                .frame(maxWidth: .infinity)
                 .background(Color.blue)
                 .foregroundColor(.white)
                 .cornerRadius(8)
@@ -52,13 +46,12 @@ struct PasswordAuthenticationPopupView: View {
                 Button("Cancel") {
                     onCancel()
                 }
-                .foregroundColor(.gray)
                 .padding(.top, 4)
             }
             .padding()
             .background(Color.white)
             .cornerRadius(16)
-            .padding(.horizontal, 40)
+            .padding(40)
 
             if viewModel.isLoading {
                 ProgressView("Logging in...")
@@ -70,10 +63,7 @@ struct PasswordAuthenticationPopupView: View {
 
     private func handleContinue() {
         let environment = APIConfiguration.shared.environment
-        guard let username = KeychainManager.load(.username, for: environment) else {
-            viewModel.errorMessage = "Username not found"
-            return
-        }
+        let username = KeychainManager.load(.username, for: environment) ?? ""
 
         viewModel.performBiometricEnrollment(
             username: username,
@@ -81,8 +71,10 @@ struct PasswordAuthenticationPopupView: View {
             onSuccess: {
                 onSuccess()
             },
-            onFailure: {
-                viewModel.errorMessage = "Failed to enroll"
+            onFailure: { error in
+                // Nothing here; viewModel will handle errorMessage
+                viewModel.errorMessage = error
+                onFailure(error)
             }
         )
     }
@@ -90,13 +82,14 @@ struct PasswordAuthenticationPopupView: View {
 
 
 
-#Preview {
-    PasswordAuthenticationPopupView(
-        onSuccess: {
-            print("Biometric setup successful")
-        },
-        onCancel: {
-            print("Biometric setup cancelled")
-        }
-    )
-}
+
+//#Preview {
+//    PasswordAuthenticationPopupView(
+//        viewModel: <#PasswordAuthenticationViewModel#>, onSuccess: {
+//            print("Biometric setup successful")
+//        },
+//        onCancel: {
+//            print("Biometric setup cancelled")
+//        }
+//    )
+//}

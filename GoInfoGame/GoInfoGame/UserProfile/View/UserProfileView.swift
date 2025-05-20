@@ -20,6 +20,8 @@ struct UserProfileView: View {
     
     @State private var showPasswordAuthenticationView: Bool = false
     
+    @StateObject private var passwordAuthenticationViewModel = PasswordAuthenticationViewModel()
+    
     private var biometricToggleText: String {
         let context = LAContext()
         _ = context.canEvaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, error: nil)
@@ -55,27 +57,8 @@ struct UserProfileView: View {
                     }
                     .padding([.bottom], 200)
                     
-                    Toggle(isOn: $useBiometricID) {
-                        Text(biometricToggleText)
-                    }
-                    .gesture(
-                        TapGesture()
-                            .onEnded {
-                                userManuallyToggled = true
-                            }
-                    )
-                    .onChange(of: useBiometricID) { isEnabled in
-                        let env = APIConfiguration.shared.environment
-
-                        guard userManuallyToggled else { return }
-                        userManuallyToggled = false
-
-                        if isEnabled {
-                          
-                            showPasswordAuthenticationView = true
-                        } else {
-                            useBiometricID = false
-                        }
+                    BiometricToggleView(isEnabled: $useBiometricID) {
+                        showPasswordAuthenticationView = true
                     }
                     .padding([.bottom], 30)
                     
@@ -89,17 +72,19 @@ struct UserProfileView: View {
             }
             .overlay {
                 if showPasswordAuthenticationView {
-                    PasswordAuthenticationView {
+                    PasswordAuthenticationPopupView(viewModel: passwordAuthenticationViewModel) {
                         useBiometricID = true
-                        SessionManager.shared.setBiometricEnabled(true, for: APIConfiguration.shared.environment)
                         showPasswordAuthenticationView = false
+                        print("TO DO : Handle password authentication")
                     } onCancel: {
                         useBiometricID = false
-                        SessionManager.shared.setBiometricEnabled(false, for: APIConfiguration.shared.environment)
+                       showPasswordAuthenticationView = false
+                    } onFailure: { error in
+                        useBiometricID = false
                         showPasswordAuthenticationView = false
+                        
                     }
-                    .transition(.scale)
-                    .zIndex(1)
+
                 }
             }
         }
