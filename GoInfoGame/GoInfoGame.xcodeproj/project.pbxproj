@@ -216,6 +216,13 @@
 		FA9F38202DC5585600D7AABF /* QuestUndoManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA9F381F2DC5584D00D7AABF /* QuestUndoManager.swift */; };
 		FA9F38222DC93F5300D7AABF /* UndoSidebarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA9F38212DC93F3D00D7AABF /* UndoSidebarView.swift */; };
 		FA9FE2D82BAC75390036F618 /* OAuthViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA9FE2D72BAC75390036F618 /* OAuthViewController.swift */; };
+		FAA01DA02DDDCB2600E4255A /* APIEnvironmentProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAA01D9F2DDDCB1F00E4255A /* APIEnvironmentProtocol.swift */; };
+		FAA01DA22DDDCB3C00E4255A /* APIConfigurationProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAA01DA12DDDCB3200E4255A /* APIConfigurationProtocol.swift */; };
+		FAA01DA42DDDCB4A00E4255A /* APIMethod.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAA01DA32DDDCB4500E4255A /* APIMethod.swift */; };
+		FAA01DA82DDDCB7200E4255A /* POSMAPIManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAA01DA72DDDCB6C00E4255A /* POSMAPIManager.swift */; };
+		FAA01DAA2DDDCB8800E4255A /* POSMAPIEnvironment.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAA01DA92DDDCB8400E4255A /* POSMAPIEnvironment.swift */; };
+		FAA01DAC2DDDCBA500E4255A /* POSMAPIConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAA01DAB2DDDCB9200E4255A /* POSMAPIConfiguration.swift */; };
+		FAA01DAE2DDDCBB600E4255A /* POSMAPIEndpoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAA01DAD2DDDCBB100E4255A /* POSMAPIEndpoint.swift */; };
 		FABF3CF42B7419BB0080EAC9 /* LocationManagerDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = FABF3CF32B7419BB0080EAC9 /* LocationManagerDelegate.swift */; };
 		FABF3CF82B822F120080EAC9 /* CustomSureAlert.swift in Sources */ = {isa = PBXBuildFile; fileRef = FABF3CF72B822F120080EAC9 /* CustomSureAlert.swift */; };
 		FABF3CFD2B8607860080EAC9 /* MeasureWidthContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = FABF3CFC2B8607860080EAC9 /* MeasureWidthContainer.swift */; };
@@ -541,6 +548,13 @@
 		FA9F381F2DC5584D00D7AABF /* QuestUndoManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuestUndoManager.swift; sourceTree = "<group>"; };
 		FA9F38212DC93F3D00D7AABF /* UndoSidebarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UndoSidebarView.swift; sourceTree = "<group>"; };
 		FA9FE2D72BAC75390036F618 /* OAuthViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OAuthViewController.swift; sourceTree = "<group>"; };
+		FAA01D9F2DDDCB1F00E4255A /* APIEnvironmentProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIEnvironmentProtocol.swift; sourceTree = "<group>"; };
+		FAA01DA12DDDCB3200E4255A /* APIConfigurationProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIConfigurationProtocol.swift; sourceTree = "<group>"; };
+		FAA01DA32DDDCB4500E4255A /* APIMethod.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIMethod.swift; sourceTree = "<group>"; };
+		FAA01DA72DDDCB6C00E4255A /* POSMAPIManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POSMAPIManager.swift; sourceTree = "<group>"; };
+		FAA01DA92DDDCB8400E4255A /* POSMAPIEnvironment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POSMAPIEnvironment.swift; sourceTree = "<group>"; };
+		FAA01DAB2DDDCB9200E4255A /* POSMAPIConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POSMAPIConfiguration.swift; sourceTree = "<group>"; };
+		FAA01DAD2DDDCBB100E4255A /* POSMAPIEndpoint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POSMAPIEndpoint.swift; sourceTree = "<group>"; };
 		FABF3CF32B7419BB0080EAC9 /* LocationManagerDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationManagerDelegate.swift; sourceTree = "<group>"; };
 		FABF3CF72B822F120080EAC9 /* CustomSureAlert.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomSureAlert.swift; sourceTree = "<group>"; };
 		FABF3CFC2B8607860080EAC9 /* MeasureWidthContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeasureWidthContainer.swift; sourceTree = "<group>"; };
@@ -671,13 +685,14 @@
 		0536DD952B0BD91F00B04C4B /* Network */ = {
 			isa = PBXGroup;
 			children = (
+				FAA01DA52DDDCB5200E4255A /* Modules */,
+				FAA01D9E2DDDCAE200E4255A /* Core */,
 				A48037342BBA8DCB007EE7E4 /* models */,
 				0536DD962B0BD95100B04C4B /* URLSession+Extension.swift */,
 				A48037302BBA8C25007EE7E4 /* ApiManager.swift */,
 				FAFDA2032C6E8BEA00ECEAE9 /* APIEnvironment.swift */,
 				FAFDA2052C6E8D7A00ECEAE9 /* APIEndPoint.swift */,
 				FAFDA2072C6E8F2500ECEAE9 /* APIConfiguration.swift */,
-				FAFDA2132C7351CB00ECEAE9 /* APIError.swift */,
 				C7ED070E2D70E2EC001FFFE2 /* TokenRefresher.swift */,
 			);
 			path = Network;
@@ -1404,6 +1419,36 @@
 			path = UserNodes;
 			sourceTree = "<group>";
 		};
+		FAA01D9E2DDDCAE200E4255A /* Core */ = {
+			isa = PBXGroup;
+			children = (
+				FAA01DA32DDDCB4500E4255A /* APIMethod.swift */,
+				FAA01DA12DDDCB3200E4255A /* APIConfigurationProtocol.swift */,
+				FAA01D9F2DDDCB1F00E4255A /* APIEnvironmentProtocol.swift */,
+				FAFDA2132C7351CB00ECEAE9 /* APIError.swift */,
+			);
+			path = Core;
+			sourceTree = "<group>";
+		};
+		FAA01DA52DDDCB5200E4255A /* Modules */ = {
+			isa = PBXGroup;
+			children = (
+				FAA01DA62DDDCB5E00E4255A /* POSM */,
+			);
+			path = Modules;
+			sourceTree = "<group>";
+		};
+		FAA01DA62DDDCB5E00E4255A /* POSM */ = {
+			isa = PBXGroup;
+			children = (
+				FAA01DAD2DDDCBB100E4255A /* POSMAPIEndpoint.swift */,
+				FAA01DAB2DDDCB9200E4255A /* POSMAPIConfiguration.swift */,
+				FAA01DA92DDDCB8400E4255A /* POSMAPIEnvironment.swift */,
+				FAA01DA72DDDCB6C00E4255A /* POSMAPIManager.swift */,
+			);
+			path = POSM;
+			sourceTree = "<group>";
+		};
 		FABF3CF92B86062E0080EAC9 /* Camera */ = {
 			isa = PBXGroup;
 			children = (
@@ -2108,9 +2153,11 @@
 				FABF3CF42B7419BB0080EAC9 /* LocationManagerDelegate.swift in Sources */,
 				973FC0382B59363C00878269 /* TactilePavingSteps.swift in Sources */,
 				973FC0192B4FB17000878269 /* LocalizedStrings.swift in Sources */,
+				FAA01DAA2DDDCB8800E4255A /* POSMAPIEnvironment.swift in Sources */,
 				A48037312BBA8C25007EE7E4 /* ApiManager.swift in Sources */,
 				FABF3D002B8607D80080EAC9 /* MeasureSidewalkView.swift in Sources */,
 				FA18CAE72CC80A34008247F2 /* UploadPhotoModel.swift in Sources */,
+				FAA01DA02DDDCB2600E4255A /* APIEnvironmentProtocol.swift in Sources */,
 				97439F782B87444200DA43E1 /* CrossingKerbHeightForm.swift in Sources */,
 				FAFDA1FA2C6B861A00ECEAE9 /* FileStorageManager.swift in Sources */,
 				FAEE21DB2DCA1963002F9BEC /* UndoButton.swift in Sources */,
@@ -2159,9 +2206,12 @@
 				FA18CAEB2CD0F718008247F2 /* CameraView.swift in Sources */,
 				05DBBB642B17204300B6F110 /* RealmOPGeometry.swift in Sources */,
 				FA87A8102B68142F000A6BEA /* LoadingView.swift in Sources */,
+				FAA01DA82DDDCB7200E4255A /* POSMAPIManager.swift in Sources */,
 				973FC03D2B59417D00878269 /* WayLitForm.swift in Sources */,
 				0536DD922B0BD58800B04C4B /* OAuthService.swift in Sources */,
 				97AC1C0F2B70CEF5004F0BF4 /* SidewalkSurface.swift in Sources */,
+				FAA01DAE2DDDCBB600E4255A /* POSMAPIEndpoint.swift in Sources */,
+				FAA01DA22DDDCB3C00E4255A /* APIConfigurationProtocol.swift in Sources */,
 				973FC0112B4D2D1C00878269 /* QuestAndDescriptionView.swift in Sources */,
 				FAFDA2042C6E8BEA00ECEAE9 /* APIEnvironment.swift in Sources */,
 				973FC0032B47DE0700878269 /* QuestsVM.swift in Sources */,
@@ -2188,6 +2238,7 @@
 				97439F7A2B87447400DA43E1 /* CrossingKerbHeight.swift in Sources */,
 				971F9FE12B847358005397CC /* CrossingIsland.swift in Sources */,
 				970D5BD12B62B61300C20BE7 /* MapViewController.swift in Sources */,
+				FAA01DAC2DDDCBA500E4255A /* POSMAPIConfiguration.swift in Sources */,
 				FA9FE2D82BAC75390036F618 /* OAuthViewController.swift in Sources */,
 				FA50719A2D7263F800CE9798 /* LongFormImageView.swift in Sources */,
 				971342792BBD691500174EBF /* MapViewControllerView.swift in Sources */,
@@ -2226,6 +2277,7 @@
 				A4E711AC2B58F7C000C9DE08 /* HandRailForm.swift in Sources */,
 				A4E711A62B57BBCA00C9DE08 /* QuestProtocols.swift in Sources */,
 				FAFDA2122C6F64E800ECEAE9 /* UserProfileView.swift in Sources */,
+				FAA01DA42DDDCB4A00E4255A /* APIMethod.swift in Sources */,
 				973FBFFE2B46BB3800878269 /* Utils.swift in Sources */,
 				B0CCB98C2B8626AE00AA73DE /* ProfileView.swift in Sources */,
 				FAF44FBD2B3084EC004FE664 /* OnboardingView1.swift in Sources */,
