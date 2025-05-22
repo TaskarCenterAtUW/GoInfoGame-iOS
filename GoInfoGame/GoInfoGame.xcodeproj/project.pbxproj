@@ -216,13 +216,26 @@
 		FA9F38202DC5585600D7AABF /* QuestUndoManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA9F381F2DC5584D00D7AABF /* QuestUndoManager.swift */; };
 		FA9F38222DC93F5300D7AABF /* UndoSidebarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA9F38212DC93F3D00D7AABF /* UndoSidebarView.swift */; };
 		FA9FE2D82BAC75390036F618 /* OAuthViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA9FE2D72BAC75390036F618 /* OAuthViewController.swift */; };
-		FAA01DA02DDDCB2600E4255A /* APIEnvironmentProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAA01D9F2DDDCB1F00E4255A /* APIEnvironmentProtocol.swift */; };
-		FAA01DA22DDDCB3C00E4255A /* APIConfigurationProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAA01DA12DDDCB3200E4255A /* APIConfigurationProtocol.swift */; };
-		FAA01DA42DDDCB4A00E4255A /* APIMethod.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAA01DA32DDDCB4500E4255A /* APIMethod.swift */; };
+		FAA01DA02DDDCB2600E4255A /* ServerEnvironment.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAA01D9F2DDDCB1F00E4255A /* ServerEnvironment.swift */; };
+		FAA01DA22DDDCB3C00E4255A /* APIRequestConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAA01DA12DDDCB3200E4255A /* APIRequestConfig.swift */; };
 		FAA01DA82DDDCB7200E4255A /* POSMAPIManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAA01DA72DDDCB6C00E4255A /* POSMAPIManager.swift */; };
 		FAA01DAA2DDDCB8800E4255A /* POSMAPIEnvironment.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAA01DA92DDDCB8400E4255A /* POSMAPIEnvironment.swift */; };
 		FAA01DAC2DDDCBA500E4255A /* POSMAPIConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAA01DAB2DDDCB9200E4255A /* POSMAPIConfiguration.swift */; };
 		FAA01DAE2DDDCBB600E4255A /* POSMAPIEndpoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAA01DAD2DDDCBB100E4255A /* POSMAPIEndpoint.swift */; };
+		FAA01DB12DDDCC1F00E4255A /* WorkspaceAPIEndpoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAA01DB02DDDCC1500E4255A /* WorkspaceAPIEndpoint.swift */; };
+		FAA01DB32DDDCC3500E4255A /* WorkspaceAPIConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAA01DB22DDDCC2100E4255A /* WorkspaceAPIConfiguration.swift */; };
+		FAA01DB52DDDCC4100E4255A /* WorksapceAPIEnvironment.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAA01DB42DDDCC3700E4255A /* WorksapceAPIEnvironment.swift */; };
+		FAA01DB72DDDCC4E00E4255A /* WorkspaceAPIManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAA01DB62DDDCC4800E4255A /* WorkspaceAPIManager.swift */; };
+		FAA01DBA2DDE11A000E4255A /* TDEIAPIManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAA01DB92DDE117200E4255A /* TDEIAPIManager.swift */; };
+		FAA01DBC2DDE11B100E4255A /* TDEIServerEnvironment.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAA01DBB2DDE11A900E4255A /* TDEIServerEnvironment.swift */; };
+		FAA01DBE2DDE11C000E4255A /* TDEIRequestConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAA01DBD2DDE11B700E4255A /* TDEIRequestConfig.swift */; };
+		FAA01DC02DDE11DD00E4255A /* TDEIAPIEndpoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAA01DBF2DDE11D200E4255A /* TDEIAPIEndpoint.swift */; };
+		FAA01DC32DDE12C800E4255A /* KartaviewAPIManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAA01DC22DDE12C100E4255A /* KartaviewAPIManager.swift */; };
+		FAA01DC52DDE12D100E4255A /* KartaviewAPIEndpoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAA01DC42DDE12CC00E4255A /* KartaviewAPIEndpoint.swift */; };
+		FAA01DC72DDE12E600E4255A /* KartaviewAPIConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAA01DC62DDE12D400E4255A /* KartaviewAPIConfiguration.swift */; };
+		FAA01DC92DDE12F800E4255A /* KartaviewAPIEnvironment.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAA01DC82DDE12EF00E4255A /* KartaviewAPIEnvironment.swift */; };
+		FAA01DCB2DDE15EC00E4255A /* APIRequestPerformer.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAA01DCA2DDE15E200E4255A /* APIRequestPerformer.swift */; };
+		FAA01DCD2DDFB52900E4255A /* APIRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAA01DCC2DDFB52500E4255A /* APIRequest.swift */; };
 		FABF3CF42B7419BB0080EAC9 /* LocationManagerDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = FABF3CF32B7419BB0080EAC9 /* LocationManagerDelegate.swift */; };
 		FABF3CF82B822F120080EAC9 /* CustomSureAlert.swift in Sources */ = {isa = PBXBuildFile; fileRef = FABF3CF72B822F120080EAC9 /* CustomSureAlert.swift */; };
 		FABF3CFD2B8607860080EAC9 /* MeasureWidthContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = FABF3CFC2B8607860080EAC9 /* MeasureWidthContainer.swift */; };
@@ -252,6 +265,7 @@
 		FAFDA2102C6F592700ECEAE9 /* UserProfileViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAFDA20F2C6F592700ECEAE9 /* UserProfileViewModel.swift */; };
 		FAFDA2122C6F64E800ECEAE9 /* UserProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAFDA2112C6F64E800ECEAE9 /* UserProfileView.swift */; };
 		FAFDA2142C7351CB00ECEAE9 /* APIError.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAFDA2132C7351CB00ECEAE9 /* APIError.swift */; };
+		FAFFC9732DDFBDC700072B11 /* AppEnvManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAFFC9722DDFBDC100072B11 /* AppEnvManager.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -548,13 +562,26 @@
 		FA9F381F2DC5584D00D7AABF /* QuestUndoManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuestUndoManager.swift; sourceTree = "<group>"; };
 		FA9F38212DC93F3D00D7AABF /* UndoSidebarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UndoSidebarView.swift; sourceTree = "<group>"; };
 		FA9FE2D72BAC75390036F618 /* OAuthViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OAuthViewController.swift; sourceTree = "<group>"; };
-		FAA01D9F2DDDCB1F00E4255A /* APIEnvironmentProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIEnvironmentProtocol.swift; sourceTree = "<group>"; };
-		FAA01DA12DDDCB3200E4255A /* APIConfigurationProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIConfigurationProtocol.swift; sourceTree = "<group>"; };
-		FAA01DA32DDDCB4500E4255A /* APIMethod.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIMethod.swift; sourceTree = "<group>"; };
+		FAA01D9F2DDDCB1F00E4255A /* ServerEnvironment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServerEnvironment.swift; sourceTree = "<group>"; };
+		FAA01DA12DDDCB3200E4255A /* APIRequestConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIRequestConfig.swift; sourceTree = "<group>"; };
 		FAA01DA72DDDCB6C00E4255A /* POSMAPIManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POSMAPIManager.swift; sourceTree = "<group>"; };
 		FAA01DA92DDDCB8400E4255A /* POSMAPIEnvironment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POSMAPIEnvironment.swift; sourceTree = "<group>"; };
 		FAA01DAB2DDDCB9200E4255A /* POSMAPIConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POSMAPIConfiguration.swift; sourceTree = "<group>"; };
 		FAA01DAD2DDDCBB100E4255A /* POSMAPIEndpoint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POSMAPIEndpoint.swift; sourceTree = "<group>"; };
+		FAA01DB02DDDCC1500E4255A /* WorkspaceAPIEndpoint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkspaceAPIEndpoint.swift; sourceTree = "<group>"; };
+		FAA01DB22DDDCC2100E4255A /* WorkspaceAPIConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkspaceAPIConfiguration.swift; sourceTree = "<group>"; };
+		FAA01DB42DDDCC3700E4255A /* WorksapceAPIEnvironment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorksapceAPIEnvironment.swift; sourceTree = "<group>"; };
+		FAA01DB62DDDCC4800E4255A /* WorkspaceAPIManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkspaceAPIManager.swift; sourceTree = "<group>"; };
+		FAA01DB92DDE117200E4255A /* TDEIAPIManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TDEIAPIManager.swift; sourceTree = "<group>"; };
+		FAA01DBB2DDE11A900E4255A /* TDEIServerEnvironment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TDEIServerEnvironment.swift; sourceTree = "<group>"; };
+		FAA01DBD2DDE11B700E4255A /* TDEIRequestConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TDEIRequestConfig.swift; sourceTree = "<group>"; };
+		FAA01DBF2DDE11D200E4255A /* TDEIAPIEndpoint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TDEIAPIEndpoint.swift; sourceTree = "<group>"; };
+		FAA01DC22DDE12C100E4255A /* KartaviewAPIManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KartaviewAPIManager.swift; sourceTree = "<group>"; };
+		FAA01DC42DDE12CC00E4255A /* KartaviewAPIEndpoint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KartaviewAPIEndpoint.swift; sourceTree = "<group>"; };
+		FAA01DC62DDE12D400E4255A /* KartaviewAPIConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KartaviewAPIConfiguration.swift; sourceTree = "<group>"; };
+		FAA01DC82DDE12EF00E4255A /* KartaviewAPIEnvironment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KartaviewAPIEnvironment.swift; sourceTree = "<group>"; };
+		FAA01DCA2DDE15E200E4255A /* APIRequestPerformer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIRequestPerformer.swift; sourceTree = "<group>"; };
+		FAA01DCC2DDFB52500E4255A /* APIRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIRequest.swift; sourceTree = "<group>"; };
 		FABF3CF32B7419BB0080EAC9 /* LocationManagerDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationManagerDelegate.swift; sourceTree = "<group>"; };
 		FABF3CF72B822F120080EAC9 /* CustomSureAlert.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomSureAlert.swift; sourceTree = "<group>"; };
 		FABF3CFC2B8607860080EAC9 /* MeasureWidthContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeasureWidthContainer.swift; sourceTree = "<group>"; };
@@ -588,6 +615,7 @@
 		FAFDA20F2C6F592700ECEAE9 /* UserProfileViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfileViewModel.swift; sourceTree = "<group>"; };
 		FAFDA2112C6F64E800ECEAE9 /* UserProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfileView.swift; sourceTree = "<group>"; };
 		FAFDA2132C7351CB00ECEAE9 /* APIError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIError.swift; sourceTree = "<group>"; };
+		FAFFC9722DDFBDC100072B11 /* AppEnvManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppEnvManager.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -1422,9 +1450,11 @@
 		FAA01D9E2DDDCAE200E4255A /* Core */ = {
 			isa = PBXGroup;
 			children = (
-				FAA01DA32DDDCB4500E4255A /* APIMethod.swift */,
-				FAA01DA12DDDCB3200E4255A /* APIConfigurationProtocol.swift */,
-				FAA01D9F2DDDCB1F00E4255A /* APIEnvironmentProtocol.swift */,
+				FAA01DCC2DDFB52500E4255A /* APIRequest.swift */,
+				FAA01DCA2DDE15E200E4255A /* APIRequestPerformer.swift */,
+				FAFFC9722DDFBDC100072B11 /* AppEnvManager.swift */,
+				FAA01DA12DDDCB3200E4255A /* APIRequestConfig.swift */,
+				FAA01D9F2DDDCB1F00E4255A /* ServerEnvironment.swift */,
 				FAFDA2132C7351CB00ECEAE9 /* APIError.swift */,
 			);
 			path = Core;
@@ -1433,6 +1463,9 @@
 		FAA01DA52DDDCB5200E4255A /* Modules */ = {
 			isa = PBXGroup;
 			children = (
+				FAA01DC12DDE125300E4255A /* Kartaview */,
+				FAA01DB82DDE112400E4255A /* TDEI */,
+				FAA01DAF2DDDCBFC00E4255A /* Workspace */,
 				FAA01DA62DDDCB5E00E4255A /* POSM */,
 			);
 			path = Modules;
@@ -1447,6 +1480,39 @@
 				FAA01DA72DDDCB6C00E4255A /* POSMAPIManager.swift */,
 			);
 			path = POSM;
+			sourceTree = "<group>";
+		};
+		FAA01DAF2DDDCBFC00E4255A /* Workspace */ = {
+			isa = PBXGroup;
+			children = (
+				FAA01DB62DDDCC4800E4255A /* WorkspaceAPIManager.swift */,
+				FAA01DB42DDDCC3700E4255A /* WorksapceAPIEnvironment.swift */,
+				FAA01DB22DDDCC2100E4255A /* WorkspaceAPIConfiguration.swift */,
+				FAA01DB02DDDCC1500E4255A /* WorkspaceAPIEndpoint.swift */,
+			);
+			path = Workspace;
+			sourceTree = "<group>";
+		};
+		FAA01DB82DDE112400E4255A /* TDEI */ = {
+			isa = PBXGroup;
+			children = (
+				FAA01DB92DDE117200E4255A /* TDEIAPIManager.swift */,
+				FAA01DBF2DDE11D200E4255A /* TDEIAPIEndpoint.swift */,
+				FAA01DBD2DDE11B700E4255A /* TDEIRequestConfig.swift */,
+				FAA01DBB2DDE11A900E4255A /* TDEIServerEnvironment.swift */,
+			);
+			path = TDEI;
+			sourceTree = "<group>";
+		};
+		FAA01DC12DDE125300E4255A /* Kartaview */ = {
+			isa = PBXGroup;
+			children = (
+				FAA01DC82DDE12EF00E4255A /* KartaviewAPIEnvironment.swift */,
+				FAA01DC62DDE12D400E4255A /* KartaviewAPIConfiguration.swift */,
+				FAA01DC42DDE12CC00E4255A /* KartaviewAPIEndpoint.swift */,
+				FAA01DC22DDE12C100E4255A /* KartaviewAPIManager.swift */,
+			);
+			path = Kartaview;
 			sourceTree = "<group>";
 		};
 		FABF3CF92B86062E0080EAC9 /* Camera */ = {
@@ -2139,6 +2205,8 @@
 				FA9F38202DC5585600D7AABF /* QuestUndoManager.swift in Sources */,
 				FA8C74D42C5A443700D28220 /* QuestOptions.swift in Sources */,
 				A4AD130C2B5E80F20041A881 /* StoredElement.swift in Sources */,
+				FAA01DBA2DDE11A000E4255A /* TDEIAPIManager.swift in Sources */,
+				FAA01DBE2DDE11C000E4255A /* TDEIRequestConfig.swift in Sources */,
 				05DBBB5D2B1262BA00B6F110 /* OverpassRepository.swift in Sources */,
 				FA6DB8B52D96BE510070CCD3 /* HiddenQuestManager.swift in Sources */,
 				A4B83AF12B5F92FA006684CA /* StoredNode.swift in Sources */,
@@ -2151,13 +2219,14 @@
 				973FC0442B59468800878269 /* BusStopLitForm.swift in Sources */,
 				971575192B5FFE910044797C /* LocationManagerCoordinator.swift in Sources */,
 				FABF3CF42B7419BB0080EAC9 /* LocationManagerDelegate.swift in Sources */,
+				FAA01DB32DDDCC3500E4255A /* WorkspaceAPIConfiguration.swift in Sources */,
 				973FC0382B59363C00878269 /* TactilePavingSteps.swift in Sources */,
 				973FC0192B4FB17000878269 /* LocalizedStrings.swift in Sources */,
 				FAA01DAA2DDDCB8800E4255A /* POSMAPIEnvironment.swift in Sources */,
 				A48037312BBA8C25007EE7E4 /* ApiManager.swift in Sources */,
 				FABF3D002B8607D80080EAC9 /* MeasureSidewalkView.swift in Sources */,
 				FA18CAE72CC80A34008247F2 /* UploadPhotoModel.swift in Sources */,
-				FAA01DA02DDDCB2600E4255A /* APIEnvironmentProtocol.swift in Sources */,
+				FAA01DA02DDDCB2600E4255A /* ServerEnvironment.swift in Sources */,
 				97439F782B87444200DA43E1 /* CrossingKerbHeightForm.swift in Sources */,
 				FAFDA1FA2C6B861A00ECEAE9 /* FileStorageManager.swift in Sources */,
 				FAEE21DB2DCA1963002F9BEC /* UndoButton.swift in Sources */,
@@ -2167,12 +2236,14 @@
 				971F9FE62B84CDCE005397CC /* CrossingTypeForm.swift in Sources */,
 				971342752BBD254200174EBF /* InitialViewModel.swift in Sources */,
 				A4E711AA2B58F6FB00C9DE08 /* HandRail.swift in Sources */,
+				FAA01DC32DDE12C800E4255A /* KartaviewAPIManager.swift in Sources */,
 				973FC02D2B58F79B00878269 /* StepsRampForm.swift in Sources */,
 				FA5071902D5B31CC00CE9798 /* CreateNoteView.swift in Sources */,
 				FA6DB8B32D8853DD0070CCD3 /* UserSettingsView.swift in Sources */,
 				059D47312B2C81A9000987FA /* Style.swift in Sources */,
 				A4E711A82B57CA4300C9DE08 /* QuestsRepository.swift in Sources */,
 				97AC1C112B70CF03004F0BF4 /* SidewalkSurfaceForm.swift in Sources */,
+				FAFFC9732DDFBDC700072B11 /* AppEnvManager.swift in Sources */,
 				FAFDA2022C6D33C300ECEAE9 /* PosmLoginViewModel.swift in Sources */,
 				973FC03A2B59364F00878269 /* TactilePavingStepsForm.swift in Sources */,
 				FAFDA2142C7351CB00ECEAE9 /* APIError.swift in Sources */,
@@ -2201,6 +2272,7 @@
 				FA8C74D82C60E95100D28220 /* PosmLogin.swift in Sources */,
 				FA5071962D6DD31A00CE9798 /* LongElementQuest.swift in Sources */,
 				FAFDA20E2C6F58D600ECEAE9 /* UserProfile.swift in Sources */,
+				FAA01DB72DDDCC4E00E4255A /* WorkspaceAPIManager.swift in Sources */,
 				FABF3CF82B822F120080EAC9 /* CustomSureAlert.swift in Sources */,
 				973FC0482B5A477E00878269 /* CrossMarking.swift in Sources */,
 				FA18CAEB2CD0F718008247F2 /* CameraView.swift in Sources */,
@@ -2209,9 +2281,10 @@
 				FAA01DA82DDDCB7200E4255A /* POSMAPIManager.swift in Sources */,
 				973FC03D2B59417D00878269 /* WayLitForm.swift in Sources */,
 				0536DD922B0BD58800B04C4B /* OAuthService.swift in Sources */,
+				FAA01DCD2DDFB52900E4255A /* APIRequest.swift in Sources */,
 				97AC1C0F2B70CEF5004F0BF4 /* SidewalkSurface.swift in Sources */,
 				FAA01DAE2DDDCBB600E4255A /* POSMAPIEndpoint.swift in Sources */,
-				FAA01DA22DDDCB3C00E4255A /* APIConfigurationProtocol.swift in Sources */,
+				FAA01DA22DDDCB3C00E4255A /* APIRequestConfig.swift in Sources */,
 				973FC0112B4D2D1C00878269 /* QuestAndDescriptionView.swift in Sources */,
 				FAFDA2042C6E8BEA00ECEAE9 /* APIEnvironment.swift in Sources */,
 				973FC0032B47DE0700878269 /* QuestsVM.swift in Sources */,
@@ -2229,6 +2302,7 @@
 				A40004EC2B62338400AF21FB /* AppQuestManager.swift in Sources */,
 				FA51484E2D76ED6C00C0D35B /* NotesViewModel.swift in Sources */,
 				FAFDA2062C6E8D7A00ECEAE9 /* APIEndPoint.swift in Sources */,
+				FAA01DC02DDE11DD00E4255A /* TDEIAPIEndpoint.swift in Sources */,
 				FA5853C12B21F17F00301CDA /* OnboardingView.swift in Sources */,
 				A4B83AF32B5F9385006684CA /* StoredWay.swift in Sources */,
 				FA18CAE52CC7D0DD008247F2 /* SequenceModel.swift in Sources */,
@@ -2241,14 +2315,18 @@
 				FAA01DAC2DDDCBA500E4255A /* POSMAPIConfiguration.swift in Sources */,
 				FA9FE2D82BAC75390036F618 /* OAuthViewController.swift in Sources */,
 				FA50719A2D7263F800CE9798 /* LongFormImageView.swift in Sources */,
+				FAA01DB52DDDCC4100E4255A /* WorksapceAPIEnvironment.swift in Sources */,
 				971342792BBD691500174EBF /* MapViewControllerView.swift in Sources */,
+				FAA01DCB2DDE15EC00E4255A /* APIRequestPerformer.swift in Sources */,
 				FA1992ED2BB1A78C003B4719 /* KeychainManager.swift in Sources */,
 				0536DD972B0BD95100B04C4B /* URLSession+Extension.swift in Sources */,
 				973FC04C2B5A5F5F00878269 /* RadioItem.swift in Sources */,
 				FA18CAE92CCFD212008247F2 /* FinishUploadingModel.swift in Sources */,
 				C7ED070F2D70E2EC001FFFE2 /* TokenRefresher.swift in Sources */,
 				FA50718C2D54E08800CE9798 /* AddFeatureView.swift in Sources */,
+				FAA01DB12DDDCC1F00E4255A /* WorkspaceAPIEndpoint.swift in Sources */,
 				A495DF2D2B6A190400478E44 /* CustomMapView.swift in Sources */,
+				FAA01DC52DDE12D100E4255A /* KartaviewAPIEndpoint.swift in Sources */,
 				05DBBB662B17209600B6F110 /* RealmOPMeta.swift in Sources */,
 				B0CCB98E2B8626C600AA73DE /* ProfileViewVM.swift in Sources */,
 				97412A992BBBF3A300DF7983 /* KerbHeight.swift in Sources */,
@@ -2257,6 +2335,7 @@
 				97412A962BBADAFF00DF7983 /* StairFlights.swift in Sources */,
 				0536DD942B0BD59900B04C4B /* OAuthError.swift in Sources */,
 				973FC0172B4D567900878269 /* WidthView.swift in Sources */,
+				FAA01DC72DDE12E600E4255A /* KartaviewAPIConfiguration.swift in Sources */,
 				FABF3CFD2B8607860080EAC9 /* MeasureWidthContainer.swift in Sources */,
 				FA8C74C72C4FE2E900D28220 /* LongFormWidthView.swift in Sources */,
 				97AC1C082B6A45C9004F0BF4 /* SideWalkValidationForm.swift in Sources */,
@@ -2267,6 +2346,7 @@
 				971342732BBD242400174EBF /* InitialView.swift in Sources */,
 				97AC1C132B70EF0A004F0BF4 /* Surfaces.swift in Sources */,
 				A4E711B02B59011000C9DE08 /* StepsInclineForm.swift in Sources */,
+				FAA01DBC2DDE11B100E4255A /* TDEIServerEnvironment.swift in Sources */,
 				972454152B14A49A0036B91A /* Extensions.swift in Sources */,
 				0536DD8C2B0BD2C200B04C4B /* Constants.swift in Sources */,
 				970D5BD32B67638500C20BE7 /* MapViewModel.swift in Sources */,
@@ -2276,8 +2356,8 @@
 				0536DD992B0BDBFE00B04C4B /* OAuthManager.swift in Sources */,
 				A4E711AC2B58F7C000C9DE08 /* HandRailForm.swift in Sources */,
 				A4E711A62B57BBCA00C9DE08 /* QuestProtocols.swift in Sources */,
+				FAA01DC92DDE12F800E4255A /* KartaviewAPIEnvironment.swift in Sources */,
 				FAFDA2122C6F64E800ECEAE9 /* UserProfileView.swift in Sources */,
-				FAA01DA42DDDCB4A00E4255A /* APIMethod.swift in Sources */,
 				973FBFFE2B46BB3800878269 /* Utils.swift in Sources */,
 				B0CCB98C2B8626AE00AA73DE /* ProfileView.swift in Sources */,
 				FAF44FBD2B3084EC004FE664 /* OnboardingView1.swift in Sources */,

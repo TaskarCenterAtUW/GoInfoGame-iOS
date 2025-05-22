@@ -23,23 +23,23 @@ class PosmLoginViewModel: ObservableObject {
     @Published var shouldShowValidationAlert: Bool = false
     
     private func validate() {
-           errorMessage = ""
-           
-           if username.isEmpty {
-               errorMessage = "Username is required."
-               shouldShowValidationAlert = true
-               return
-           } else if password.isEmpty {
-               errorMessage = "Password is required."
-               shouldShowValidationAlert = true
-               return
-           } else if username.isEmpty && password.isEmpty {
-               errorMessage = "Enter username and password"
-               shouldShowValidationAlert = true
-               return
-           }
+        errorMessage = ""
+        
+        if username.isEmpty {
+            errorMessage = "Username is required."
+            shouldShowValidationAlert = true
+            return
+        } else if password.isEmpty {
+            errorMessage = "Password is required."
+            shouldShowValidationAlert = true
+            return
+        } else if username.isEmpty && password.isEmpty {
+            errorMessage = "Enter username and password"
+            shouldShowValidationAlert = true
+            return
+        }
         shouldShowValidationAlert = false
-       }
+    }
     
     
     func performLogin() {
@@ -56,7 +56,7 @@ class PosmLoginViewModel: ObservableObject {
             
             let postBody  = try? JSONSerialization.data(withJSONObject: postParams)
             
-            ApiManager.shared.performRequest(to: .login(postBody!), setupType: .login, modelType: PosmLoginSuccessResponse.self) { result in
+            TDEIAPIManager.shared.login(username: username, password: password) { [weak self] result in
                 switch result {
                 case .success(let posmLoginSuccessResponse):
                     let accessToken = posmLoginSuccessResponse.accessToken
@@ -69,18 +69,16 @@ class PosmLoginViewModel: ObservableObject {
                         if let appDelegate = UIApplication.shared.delegate as? AppDelegate {
                             appDelegate.validateAccessToken()
                         }
-                        self.hasLoginFailed = false
-                        self.loggedIn = true
-                        self.isLoading = false
-                        self.isLoginSuccess = true
+                        self?.hasLoginFailed = false
+                        self?.loggedIn = true
+                        self?.isLoading = false
+                        self?.isLoginSuccess = true
                     }
-                case .failure(let failure) :
-                    //TODO:
+                case .failure(_) :
                     DispatchQueue.main.async {
-                        self.hasLoginFailed = true
-                        self.isLoading = false
+                        self?.hasLoginFailed = true
+                        self?.isLoading = false
                     }
-                    print("HANDLE ERROR")
                 }
             }
         }
