@@ -221,15 +221,12 @@
 		FAA01DA82DDDCB7200E4255A /* POSMAPIManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAA01DA72DDDCB6C00E4255A /* POSMAPIManager.swift */; };
 		FAA01DAA2DDDCB8800E4255A /* POSMServerEnvironment.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAA01DA92DDDCB8400E4255A /* POSMServerEnvironment.swift */; };
 		FAA01DAC2DDDCBA500E4255A /* POSMRequestConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAA01DAB2DDDCB9200E4255A /* POSMRequestConfig.swift */; };
-		FAA01DAE2DDDCBB600E4255A /* POSMAPIEndpoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAA01DAD2DDDCBB100E4255A /* POSMAPIEndpoint.swift */; };
-		FAA01DB12DDDCC1F00E4255A /* WorkspaceAPIEndpoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAA01DB02DDDCC1500E4255A /* WorkspaceAPIEndpoint.swift */; };
 		FAA01DB32DDDCC3500E4255A /* WorkspaceRequestConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAA01DB22DDDCC2100E4255A /* WorkspaceRequestConfig.swift */; };
 		FAA01DB52DDDCC4100E4255A /* WorksapceServerEnvironment.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAA01DB42DDDCC3700E4255A /* WorksapceServerEnvironment.swift */; };
 		FAA01DB72DDDCC4E00E4255A /* WorkspaceAPIManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAA01DB62DDDCC4800E4255A /* WorkspaceAPIManager.swift */; };
 		FAA01DBA2DDE11A000E4255A /* TDEIAPIManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAA01DB92DDE117200E4255A /* TDEIAPIManager.swift */; };
 		FAA01DBC2DDE11B100E4255A /* TDEIServerEnvironment.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAA01DBB2DDE11A900E4255A /* TDEIServerEnvironment.swift */; };
 		FAA01DBE2DDE11C000E4255A /* TDEIRequestConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAA01DBD2DDE11B700E4255A /* TDEIRequestConfig.swift */; };
-		FAA01DC02DDE11DD00E4255A /* TDEIAPIEndpoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAA01DBF2DDE11D200E4255A /* TDEIAPIEndpoint.swift */; };
 		FAA01DC32DDE12C800E4255A /* KartaviewAPIManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAA01DC22DDE12C100E4255A /* KartaviewAPIManager.swift */; };
 		FAA01DC52DDE12D100E4255A /* KartaviewAPIEndpoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAA01DC42DDE12CC00E4255A /* KartaviewAPIEndpoint.swift */; };
 		FAA01DC72DDE12E600E4255A /* KartaviewAPIConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAA01DC62DDE12D400E4255A /* KartaviewAPIConfiguration.swift */; };
@@ -567,15 +564,12 @@
 		FAA01DA72DDDCB6C00E4255A /* POSMAPIManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POSMAPIManager.swift; sourceTree = "<group>"; };
 		FAA01DA92DDDCB8400E4255A /* POSMServerEnvironment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POSMServerEnvironment.swift; sourceTree = "<group>"; };
 		FAA01DAB2DDDCB9200E4255A /* POSMRequestConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POSMRequestConfig.swift; sourceTree = "<group>"; };
-		FAA01DAD2DDDCBB100E4255A /* POSMAPIEndpoint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POSMAPIEndpoint.swift; sourceTree = "<group>"; };
-		FAA01DB02DDDCC1500E4255A /* WorkspaceAPIEndpoint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkspaceAPIEndpoint.swift; sourceTree = "<group>"; };
 		FAA01DB22DDDCC2100E4255A /* WorkspaceRequestConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkspaceRequestConfig.swift; sourceTree = "<group>"; };
 		FAA01DB42DDDCC3700E4255A /* WorksapceServerEnvironment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorksapceServerEnvironment.swift; sourceTree = "<group>"; };
 		FAA01DB62DDDCC4800E4255A /* WorkspaceAPIManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkspaceAPIManager.swift; sourceTree = "<group>"; };
 		FAA01DB92DDE117200E4255A /* TDEIAPIManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TDEIAPIManager.swift; sourceTree = "<group>"; };
 		FAA01DBB2DDE11A900E4255A /* TDEIServerEnvironment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TDEIServerEnvironment.swift; sourceTree = "<group>"; };
 		FAA01DBD2DDE11B700E4255A /* TDEIRequestConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TDEIRequestConfig.swift; sourceTree = "<group>"; };
-		FAA01DBF2DDE11D200E4255A /* TDEIAPIEndpoint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TDEIAPIEndpoint.swift; sourceTree = "<group>"; };
 		FAA01DC22DDE12C100E4255A /* KartaviewAPIManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KartaviewAPIManager.swift; sourceTree = "<group>"; };
 		FAA01DC42DDE12CC00E4255A /* KartaviewAPIEndpoint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KartaviewAPIEndpoint.swift; sourceTree = "<group>"; };
 		FAA01DC62DDE12D400E4255A /* KartaviewAPIConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KartaviewAPIConfiguration.swift; sourceTree = "<group>"; };
@@ -714,6 +708,7 @@
 			isa = PBXGroup;
 			children = (
 				FAA01DA52DDDCB5200E4255A /* Modules */,
+				FAA01DA62DDDCB5E00E4255A /* POSM */,
 				FAA01D9E2DDDCAE200E4255A /* Core */,
 				A48037342BBA8DCB007EE7E4 /* models */,
 				0536DD962B0BD95100B04C4B /* URLSession+Extension.swift */,
@@ -1466,7 +1461,6 @@
 				FAA01DC12DDE125300E4255A /* Kartaview */,
 				FAA01DB82DDE112400E4255A /* TDEI */,
 				FAA01DAF2DDDCBFC00E4255A /* Workspace */,
-				FAA01DA62DDDCB5E00E4255A /* POSM */,
 			);
 			path = Modules;
 			sourceTree = "<group>";
@@ -1474,7 +1468,6 @@
 		FAA01DA62DDDCB5E00E4255A /* POSM */ = {
 			isa = PBXGroup;
 			children = (
-				FAA01DAD2DDDCBB100E4255A /* POSMAPIEndpoint.swift */,
 				FAA01DAB2DDDCB9200E4255A /* POSMRequestConfig.swift */,
 				FAA01DA92DDDCB8400E4255A /* POSMServerEnvironment.swift */,
 				FAA01DA72DDDCB6C00E4255A /* POSMAPIManager.swift */,
@@ -1488,7 +1481,6 @@
 				FAA01DB62DDDCC4800E4255A /* WorkspaceAPIManager.swift */,
 				FAA01DB42DDDCC3700E4255A /* WorksapceServerEnvironment.swift */,
 				FAA01DB22DDDCC2100E4255A /* WorkspaceRequestConfig.swift */,
-				FAA01DB02DDDCC1500E4255A /* WorkspaceAPIEndpoint.swift */,
 			);
 			path = Workspace;
 			sourceTree = "<group>";
@@ -1497,7 +1489,6 @@
 			isa = PBXGroup;
 			children = (
 				FAA01DB92DDE117200E4255A /* TDEIAPIManager.swift */,
-				FAA01DBF2DDE11D200E4255A /* TDEIAPIEndpoint.swift */,
 				FAA01DBD2DDE11B700E4255A /* TDEIRequestConfig.swift */,
 				FAA01DBB2DDE11A900E4255A /* TDEIServerEnvironment.swift */,
 			);
@@ -2283,7 +2274,6 @@
 				0536DD922B0BD58800B04C4B /* OAuthService.swift in Sources */,
 				FAA01DCD2DDFB52900E4255A /* APIRequest.swift in Sources */,
 				97AC1C0F2B70CEF5004F0BF4 /* SidewalkSurface.swift in Sources */,
-				FAA01DAE2DDDCBB600E4255A /* POSMAPIEndpoint.swift in Sources */,
 				FAA01DA22DDDCB3C00E4255A /* APIRequestConfig.swift in Sources */,
 				973FC0112B4D2D1C00878269 /* QuestAndDescriptionView.swift in Sources */,
 				FAFDA2042C6E8BEA00ECEAE9 /* APIEnvironment.swift in Sources */,
@@ -2302,7 +2292,6 @@
 				A40004EC2B62338400AF21FB /* AppQuestManager.swift in Sources */,
 				FA51484E2D76ED6C00C0D35B /* NotesViewModel.swift in Sources */,
 				FAFDA2062C6E8D7A00ECEAE9 /* APIEndPoint.swift in Sources */,
-				FAA01DC02DDE11DD00E4255A /* TDEIAPIEndpoint.swift in Sources */,
 				FA5853C12B21F17F00301CDA /* OnboardingView.swift in Sources */,
 				A4B83AF32B5F9385006684CA /* StoredWay.swift in Sources */,
 				FA18CAE52CC7D0DD008247F2 /* SequenceModel.swift in Sources */,
@@ -2324,7 +2313,6 @@
 				FA18CAE92CCFD212008247F2 /* FinishUploadingModel.swift in Sources */,
 				C7ED070F2D70E2EC001FFFE2 /* TokenRefresher.swift in Sources */,
 				FA50718C2D54E08800CE9798 /* AddFeatureView.swift in Sources */,
-				FAA01DB12DDDCC1F00E4255A /* WorkspaceAPIEndpoint.swift in Sources */,
 				A495DF2D2B6A190400478E44 /* CustomMapView.swift in Sources */,
 				FAA01DC52DDE12D100E4255A /* KartaviewAPIEndpoint.swift in Sources */,
 				05DBBB662B17209600B6F110 /* RealmOPMeta.swift in Sources */,
