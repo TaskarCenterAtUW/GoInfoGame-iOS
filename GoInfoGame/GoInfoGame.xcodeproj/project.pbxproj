@@ -31,9 +31,9 @@
 		970D5BD12B62B61300C20BE7 /* MapViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 970D5BD02B62B61300C20BE7 /* MapViewController.swift */; };
 		970D5BD32B67638500C20BE7 /* MapViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 970D5BD22B67638400C20BE7 /* MapViewModel.swift */; };
 		970D5BD52B677CC500C20BE7 /* OSMUserData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 970D5BD42B677CC500C20BE7 /* OSMUserData.swift */; };
-		971342732BBD242400174EBF /* InitialView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 971342722BBD242400174EBF /* InitialView.swift */; };
-		971342752BBD254200174EBF /* InitialViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 971342742BBD254200174EBF /* InitialViewModel.swift */; };
-		971342772BBD415600174EBF /* InitialViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 971342762BBD415600174EBF /* InitialViewController.swift */; };
+		971342732BBD242400174EBF /* WorkspaceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 971342722BBD242400174EBF /* WorkspaceView.swift */; };
+		971342752BBD254200174EBF /* WorkspacesViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 971342742BBD254200174EBF /* WorkspacesViewModel.swift */; };
+		971342772BBD415600174EBF /* WorkspacesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 971342762BBD415600174EBF /* WorkspacesViewController.swift */; };
 		971342792BBD691500174EBF /* MapViewControllerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 971342782BBD691500174EBF /* MapViewControllerView.swift */; };
 		971575172B5FFD6F0044797C /* MapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 971575162B5FFD6F0044797C /* MapView.swift */; };
 		971575192B5FFE910044797C /* LocationManagerCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 971575182B5FFE910044797C /* LocationManagerCoordinator.swift */; };
@@ -372,9 +372,9 @@
 		970D5BD02B62B61300C20BE7 /* MapViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapViewController.swift; sourceTree = "<group>"; };
 		970D5BD22B67638400C20BE7 /* MapViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapViewModel.swift; sourceTree = "<group>"; };
 		970D5BD42B677CC500C20BE7 /* OSMUserData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OSMUserData.swift; sourceTree = "<group>"; };
-		971342722BBD242400174EBF /* InitialView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InitialView.swift; sourceTree = "<group>"; };
-		971342742BBD254200174EBF /* InitialViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InitialViewModel.swift; sourceTree = "<group>"; };
-		971342762BBD415600174EBF /* InitialViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InitialViewController.swift; sourceTree = "<group>"; };
+		971342722BBD242400174EBF /* WorkspaceView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkspaceView.swift; sourceTree = "<group>"; };
+		971342742BBD254200174EBF /* WorkspacesViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkspacesViewModel.swift; sourceTree = "<group>"; };
+		971342762BBD415600174EBF /* WorkspacesViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkspacesViewController.swift; sourceTree = "<group>"; };
 		971342782BBD691500174EBF /* MapViewControllerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapViewControllerView.swift; sourceTree = "<group>"; };
 		971575162B5FFD6F0044797C /* MapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapView.swift; sourceTree = "<group>"; };
 		971575182B5FFE910044797C /* LocationManagerCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationManagerCoordinator.swift; sourceTree = "<group>"; };
@@ -756,7 +756,7 @@
 			isa = PBXGroup;
 			children = (
 				FA6DB8B22D8853D00070CCD3 /* UserSettingsView.swift */,
-				971342712BBD240500174EBF /* InitialView */,
+				971342712BBD240500174EBF /* Workspace */,
 				FABF3CF92B86062E0080EAC9 /* Camera */,
 				FA87A80E2B681416000A6BEA /* Utils */,
 				970D5BD02B62B61300C20BE7 /* MapViewController.swift */,
@@ -845,14 +845,14 @@
 			path = Pods;
 			sourceTree = "<group>";
 		};
-		971342712BBD240500174EBF /* InitialView */ = {
+		971342712BBD240500174EBF /* Workspace */ = {
 			isa = PBXGroup;
 			children = (
-				971342722BBD242400174EBF /* InitialView.swift */,
-				971342742BBD254200174EBF /* InitialViewModel.swift */,
-				971342762BBD415600174EBF /* InitialViewController.swift */,
+				971342722BBD242400174EBF /* WorkspaceView.swift */,
+				971342742BBD254200174EBF /* WorkspacesViewModel.swift */,
+				971342762BBD415600174EBF /* WorkspacesViewController.swift */,
 			);
-			path = InitialView;
+			path = Workspace;
 			sourceTree = "<group>";
 		};
 		971575152B5FFD5F0044797C /* Map */ = {
@@ -2234,7 +2234,7 @@
 				973FC02F2B58F81F00878269 /* StepsRamp.swift in Sources */,
 				FAFDA2082C6E8F2500ECEAE9 /* APIConfiguration.swift in Sources */,
 				971F9FE62B84CDCE005397CC /* CrossingTypeForm.swift in Sources */,
-				971342752BBD254200174EBF /* InitialViewModel.swift in Sources */,
+				971342752BBD254200174EBF /* WorkspacesViewModel.swift in Sources */,
 				A4E711AA2B58F6FB00C9DE08 /* HandRail.swift in Sources */,
 				FAA01DC32DDE12C800E4255A /* KartaviewAPIManager.swift in Sources */,
 				973FC02D2B58F79B00878269 /* StepsRampForm.swift in Sources */,
@@ -2298,7 +2298,7 @@
 				973FC04A2B5A478C00878269 /* CrossMarkingForm.swift in Sources */,
 				FAE2584F2D39819300D2BB12 /* ManageQuestsView.swift in Sources */,
 				973FC03F2B59418B00878269 /* WayLit.swift in Sources */,
-				971342772BBD415600174EBF /* InitialViewController.swift in Sources */,
+				971342772BBD415600174EBF /* WorkspacesViewController.swift in Sources */,
 				A40004EC2B62338400AF21FB /* AppQuestManager.swift in Sources */,
 				FA51484E2D76ED6C00C0D35B /* NotesViewModel.swift in Sources */,
 				FAFDA2062C6E8D7A00ECEAE9 /* APIEndPoint.swift in Sources */,
@@ -2343,7 +2343,7 @@
 				97AC1C232B726ADC004F0BF4 /* TactilePavingKerbForm.swift in Sources */,
 				97412A942BBADAED00DF7983 /* StairFlightsForm.swift in Sources */,
 				FAF44FBF2B3084FB004FE664 /* OnboardingView2.swift in Sources */,
-				971342732BBD242400174EBF /* InitialView.swift in Sources */,
+				971342732BBD242400174EBF /* WorkspaceView.swift in Sources */,
 				97AC1C132B70EF0A004F0BF4 /* Surfaces.swift in Sources */,
 				A4E711B02B59011000C9DE08 /* StepsInclineForm.swift in Sources */,
 				FAA01DBC2DDE11B100E4255A /* TDEIServerEnvironment.swift in Sources */,

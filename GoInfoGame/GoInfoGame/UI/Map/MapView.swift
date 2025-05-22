@@ -416,7 +416,7 @@ struct MapView: View {
     func switchToInitialView() {
         if let scene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
            let window = scene.windows.first {
-            window.rootViewController = UIHostingController(rootView: InitialView())
+            window.rootViewController = UIHostingController(rootView: WorkspaceView())
             window.makeKeyAndVisible()
         }
     }

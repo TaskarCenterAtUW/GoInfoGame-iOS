@@ -1,5 +1,5 @@
 //
-//  InitialView.swift
+//  WorkspaceView.swift
 //  GoInfoGame
 //
 //  Created by Lakshmi Shweta Pochiraju on 03/04/24.
@@ -7,8 +7,8 @@
 
 import SwiftUI
 // InitialView - Main view for displaying available workspaces and navigating to MapVie
-struct InitialView: View {
-    @StateObject private var viewModel = InitialViewModel()
+struct WorkspaceView: View {
+    @StateObject private var viewModel = WorkspacesViewModel()
     @State private var shouldNavigateToMapView = false
     @StateObject private var locManagerDelegate = LocationManagerDelegate()
     
@@ -68,7 +68,7 @@ struct InitialView: View {
 // WorkspacesListView - View for displaying a list of workspaces
 struct WorkspacesListView: View {
     let workspaces: [Workspace]
-    var viewModel: InitialViewModel
+    var viewModel: WorkspacesViewModel
     @State private var shouldNavigateToMapView = false
     @State private var selectedWorkspace: Workspace?
     
@@ -219,7 +219,7 @@ struct LocationDisabledView: View {
 }
 
 #Preview {
-    InitialView()
+    WorkspaceView()
     
 }
 

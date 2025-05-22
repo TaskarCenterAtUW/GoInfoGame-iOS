@@ -25,7 +25,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         
         
         if loggedIn {
-            let contentView = InitialView()
+            let contentView = WorkspaceView()
             // Use a UIHostingController as window root view controller.
             if let windowScene = scene as? UIWindowScene {
                 let window = UIWindow(windowScene: windowScene)

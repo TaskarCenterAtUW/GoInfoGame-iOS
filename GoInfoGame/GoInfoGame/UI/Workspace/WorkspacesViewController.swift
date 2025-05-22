@@ -1,10 +1,10 @@
 //
-//  InitialViewController.swift
+//  WorkspacesViewController.swift
 //  GoInfoGame
 //
 //  Created by Lakshmi Shweta Pochiraju on 03/04/24.
 //
-// InitialViewController - Hosting controller for InitialView
+// WorkspacesViewController - Hosting controller for InitialView
 import Foundation
 import SwiftUI
 class InitialViewController: UIHostingController<PosmLoginView> {

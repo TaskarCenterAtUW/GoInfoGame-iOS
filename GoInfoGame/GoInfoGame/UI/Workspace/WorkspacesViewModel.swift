@@ -1,5 +1,5 @@
 //
-//  InitialViewModel.swift
+//  WorkspacesViewModel.swift
 //  GoInfoGame
 //
 //  Created by Lakshmi Shweta Pochiraju on 03/04/24.
@@ -9,8 +9,8 @@ import Foundation
 import SwiftUI
 import MapKit
 import CoreLocation
-// InitialViewModel - ViewModel for managing data related to initial view
-class InitialViewModel: ObservableObject {
+// WorkspacesViewModel - ViewModel for managing data related to initial view
+class WorkspacesViewModel: ObservableObject {
     let locationManagerDelegate = LocationManagerDelegate()
     @Published var workspaces: [Workspace] = [] 
     @Published var longQuests: [LongFormModel] = []

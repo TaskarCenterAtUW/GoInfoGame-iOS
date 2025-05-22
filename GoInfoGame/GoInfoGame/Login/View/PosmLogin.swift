@@ -89,7 +89,7 @@ struct PosmLoginView: View {
                 }
             }
             .navigationDestination(isPresented: $viewModel.isLoginSuccess) {
-                InitialView()
+                WorkspaceView()
             }
         }
         .alert("Invalid Credentials", isPresented: $viewModel.shouldShowValidationAlert) {
