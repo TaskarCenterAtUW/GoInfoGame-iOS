@@ -31,22 +31,21 @@ class WorkspacesViewModel: ObservableObject {
     
     // fetch workspaces list
     func fetchWorkspacesList() {
-                
+    
         if let accessToken = KeychainManager.load(key: "accessToken") {
-            ApiManager.shared.performRequest(to: .fetchWorkspaceList(accessToken), setupType: .workspace, modelType: [Workspace].self) { result in
-            
-            DispatchQueue.main.async {
-                switch result {
-                case .success(let workspacesResponse):
-                    self.workspaces = workspacesResponse
-                    self.isLoading = false
-                case .failure(let error):
-                    print("Error fetching workspaces: \(error)")
-                    self.isLoading = false
+            WorkspaceAPIManager.shared.fetchWorkspaces(accessToken: accessToken) { [weak self] result in
+                DispatchQueue.main.async {
+                    switch result {
+                    case .success(let workspacesResponse):
+                        self?.workspaces = workspacesResponse
+                        self?.isLoading = false
+                    case .failure(let error):
+                        print("Error fetching workspaces: \(error)")
+                        self?.isLoading = false
+                    }
                 }
             }
         }
-    }
     }
     
     func checkAndDeleteWorkspaceDB(workspaceId: String) {
@@ -56,35 +55,32 @@ class WorkspacesViewModel: ObservableObject {
                 DatabaseConnector.shared.clearDB()
             }
         }
-        
-        
     }
     
     func fetchLongQuestsFor(workspaceId: String,completion: @escaping (Bool, String?) -> Void) {
         
         isLoading = true
         
-        ApiManager.shared.performRequest(to: .fetchLongQuests(workspaceId), setupType: .workspace, modelType: [LongFormModel].self) { result in
+        WorkspaceAPIManager.shared.fetchLongQuestsFor(workspaceId: workspaceId) { [weak self] result in
             DispatchQueue.main.async {
+                guard let self = self else { return }
+
                 switch result {
                 case .success(let longQuestsResponse):
-                    
-                    // Validate quest query
                     do {
-                            for item in longQuestsResponse {
-                                _ = try item.questQuery.toElementFilterExpression()
-                            }
-                        } catch {
-                            print("Invalid quest filter: \(error)")
-                            self.isLoading = false
-                            completion(false, "Invalid quest query.")
-                            return
+                        for item in longQuestsResponse {
+                            _ = try item.questQuery.toElementFilterExpression()
                         }
+                    } catch {
+                        print("Invalid quest filter: \(error)")
+                        self.isLoading = false
+                        completion(false, "Invalid quest query.")
+                        return
+                    }
 
                     self.longQuests = longQuestsResponse
                     self.saveLongQuestsToDefaults(longQuestJson: longQuestsResponse)
-                    
-                    // Add one generic form for each longquest
+
                     for (index, quest) in self.longQuests.enumerated() {
                         let applicableQuest = ApplicableQuest(
                             quest: LongElementQuest(
@@ -94,21 +90,21 @@ class WorkspacesViewModel: ObservableObject {
                             ),
                             questId: "\(index + 1)"
                         )
-                        
+
                         QuestsRepository.shared.allQuests.append(applicableQuest)
                     }
 
                     self.isLoading = false
-                    completion(true, "")
+                    completion(true, nil)
+
                 case .failure(let error):
                     print("ERROR FOR LONG FORM JSON IS ----?>>>>>>\(error.localizedDescription)")
                     self.isLoading = false
                     if error.localizedDescription.contains("empty") {
-                        completion(false, "Please configure longform." )
+                        completion(false, "Please configure longform.")
                     } else {
                         completion(false, "Unable to load quests.(invalid JSON)")
                     }
-                    
                 }
             }
         }
