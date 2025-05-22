@@ -219,12 +219,12 @@
 		FAA01DA02DDDCB2600E4255A /* ServerEnvironment.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAA01D9F2DDDCB1F00E4255A /* ServerEnvironment.swift */; };
 		FAA01DA22DDDCB3C00E4255A /* APIRequestConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAA01DA12DDDCB3200E4255A /* APIRequestConfig.swift */; };
 		FAA01DA82DDDCB7200E4255A /* POSMAPIManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAA01DA72DDDCB6C00E4255A /* POSMAPIManager.swift */; };
-		FAA01DAA2DDDCB8800E4255A /* POSMAPIEnvironment.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAA01DA92DDDCB8400E4255A /* POSMAPIEnvironment.swift */; };
-		FAA01DAC2DDDCBA500E4255A /* POSMAPIConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAA01DAB2DDDCB9200E4255A /* POSMAPIConfiguration.swift */; };
+		FAA01DAA2DDDCB8800E4255A /* POSMServerEnvironment.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAA01DA92DDDCB8400E4255A /* POSMServerEnvironment.swift */; };
+		FAA01DAC2DDDCBA500E4255A /* POSMRequestConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAA01DAB2DDDCB9200E4255A /* POSMRequestConfig.swift */; };
 		FAA01DAE2DDDCBB600E4255A /* POSMAPIEndpoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAA01DAD2DDDCBB100E4255A /* POSMAPIEndpoint.swift */; };
 		FAA01DB12DDDCC1F00E4255A /* WorkspaceAPIEndpoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAA01DB02DDDCC1500E4255A /* WorkspaceAPIEndpoint.swift */; };
-		FAA01DB32DDDCC3500E4255A /* WorkspaceAPIConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAA01DB22DDDCC2100E4255A /* WorkspaceAPIConfiguration.swift */; };
-		FAA01DB52DDDCC4100E4255A /* WorksapceAPIEnvironment.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAA01DB42DDDCC3700E4255A /* WorksapceAPIEnvironment.swift */; };
+		FAA01DB32DDDCC3500E4255A /* WorkspaceRequestConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAA01DB22DDDCC2100E4255A /* WorkspaceRequestConfig.swift */; };
+		FAA01DB52DDDCC4100E4255A /* WorksapceServerEnvironment.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAA01DB42DDDCC3700E4255A /* WorksapceServerEnvironment.swift */; };
 		FAA01DB72DDDCC4E00E4255A /* WorkspaceAPIManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAA01DB62DDDCC4800E4255A /* WorkspaceAPIManager.swift */; };
 		FAA01DBA2DDE11A000E4255A /* TDEIAPIManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAA01DB92DDE117200E4255A /* TDEIAPIManager.swift */; };
 		FAA01DBC2DDE11B100E4255A /* TDEIServerEnvironment.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAA01DBB2DDE11A900E4255A /* TDEIServerEnvironment.swift */; };
@@ -565,12 +565,12 @@
 		FAA01D9F2DDDCB1F00E4255A /* ServerEnvironment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServerEnvironment.swift; sourceTree = "<group>"; };
 		FAA01DA12DDDCB3200E4255A /* APIRequestConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIRequestConfig.swift; sourceTree = "<group>"; };
 		FAA01DA72DDDCB6C00E4255A /* POSMAPIManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POSMAPIManager.swift; sourceTree = "<group>"; };
-		FAA01DA92DDDCB8400E4255A /* POSMAPIEnvironment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POSMAPIEnvironment.swift; sourceTree = "<group>"; };
-		FAA01DAB2DDDCB9200E4255A /* POSMAPIConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POSMAPIConfiguration.swift; sourceTree = "<group>"; };
+		FAA01DA92DDDCB8400E4255A /* POSMServerEnvironment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POSMServerEnvironment.swift; sourceTree = "<group>"; };
+		FAA01DAB2DDDCB9200E4255A /* POSMRequestConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POSMRequestConfig.swift; sourceTree = "<group>"; };
 		FAA01DAD2DDDCBB100E4255A /* POSMAPIEndpoint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POSMAPIEndpoint.swift; sourceTree = "<group>"; };
 		FAA01DB02DDDCC1500E4255A /* WorkspaceAPIEndpoint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkspaceAPIEndpoint.swift; sourceTree = "<group>"; };
-		FAA01DB22DDDCC2100E4255A /* WorkspaceAPIConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkspaceAPIConfiguration.swift; sourceTree = "<group>"; };
-		FAA01DB42DDDCC3700E4255A /* WorksapceAPIEnvironment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorksapceAPIEnvironment.swift; sourceTree = "<group>"; };
+		FAA01DB22DDDCC2100E4255A /* WorkspaceRequestConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkspaceRequestConfig.swift; sourceTree = "<group>"; };
+		FAA01DB42DDDCC3700E4255A /* WorksapceServerEnvironment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorksapceServerEnvironment.swift; sourceTree = "<group>"; };
 		FAA01DB62DDDCC4800E4255A /* WorkspaceAPIManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkspaceAPIManager.swift; sourceTree = "<group>"; };
 		FAA01DB92DDE117200E4255A /* TDEIAPIManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TDEIAPIManager.swift; sourceTree = "<group>"; };
 		FAA01DBB2DDE11A900E4255A /* TDEIServerEnvironment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TDEIServerEnvironment.swift; sourceTree = "<group>"; };
@@ -1475,8 +1475,8 @@
 			isa = PBXGroup;
 			children = (
 				FAA01DAD2DDDCBB100E4255A /* POSMAPIEndpoint.swift */,
-				FAA01DAB2DDDCB9200E4255A /* POSMAPIConfiguration.swift */,
-				FAA01DA92DDDCB8400E4255A /* POSMAPIEnvironment.swift */,
+				FAA01DAB2DDDCB9200E4255A /* POSMRequestConfig.swift */,
+				FAA01DA92DDDCB8400E4255A /* POSMServerEnvironment.swift */,
 				FAA01DA72DDDCB6C00E4255A /* POSMAPIManager.swift */,
 			);
 			path = POSM;
@@ -1486,8 +1486,8 @@
 			isa = PBXGroup;
 			children = (
 				FAA01DB62DDDCC4800E4255A /* WorkspaceAPIManager.swift */,
-				FAA01DB42DDDCC3700E4255A /* WorksapceAPIEnvironment.swift */,
-				FAA01DB22DDDCC2100E4255A /* WorkspaceAPIConfiguration.swift */,
+				FAA01DB42DDDCC3700E4255A /* WorksapceServerEnvironment.swift */,
+				FAA01DB22DDDCC2100E4255A /* WorkspaceRequestConfig.swift */,
 				FAA01DB02DDDCC1500E4255A /* WorkspaceAPIEndpoint.swift */,
 			);
 			path = Workspace;
@@ -2219,10 +2219,10 @@
 				973FC0442B59468800878269 /* BusStopLitForm.swift in Sources */,
 				971575192B5FFE910044797C /* LocationManagerCoordinator.swift in Sources */,
 				FABF3CF42B7419BB0080EAC9 /* LocationManagerDelegate.swift in Sources */,
-				FAA01DB32DDDCC3500E4255A /* WorkspaceAPIConfiguration.swift in Sources */,
+				FAA01DB32DDDCC3500E4255A /* WorkspaceRequestConfig.swift in Sources */,
 				973FC0382B59363C00878269 /* TactilePavingSteps.swift in Sources */,
 				973FC0192B4FB17000878269 /* LocalizedStrings.swift in Sources */,
-				FAA01DAA2DDDCB8800E4255A /* POSMAPIEnvironment.swift in Sources */,
+				FAA01DAA2DDDCB8800E4255A /* POSMServerEnvironment.swift in Sources */,
 				A48037312BBA8C25007EE7E4 /* ApiManager.swift in Sources */,
 				FABF3D002B8607D80080EAC9 /* MeasureSidewalkView.swift in Sources */,
 				FA18CAE72CC80A34008247F2 /* UploadPhotoModel.swift in Sources */,
@@ -2312,10 +2312,10 @@
 				97439F7A2B87447400DA43E1 /* CrossingKerbHeight.swift in Sources */,
 				971F9FE12B847358005397CC /* CrossingIsland.swift in Sources */,
 				970D5BD12B62B61300C20BE7 /* MapViewController.swift in Sources */,
-				FAA01DAC2DDDCBA500E4255A /* POSMAPIConfiguration.swift in Sources */,
+				FAA01DAC2DDDCBA500E4255A /* POSMRequestConfig.swift in Sources */,
 				FA9FE2D82BAC75390036F618 /* OAuthViewController.swift in Sources */,
 				FA50719A2D7263F800CE9798 /* LongFormImageView.swift in Sources */,
-				FAA01DB52DDDCC4100E4255A /* WorksapceAPIEnvironment.swift in Sources */,
+				FAA01DB52DDDCC4100E4255A /* WorksapceServerEnvironment.swift in Sources */,
 				971342792BBD691500174EBF /* MapViewControllerView.swift in Sources */,
 				FAA01DCB2DDE15EC00E4255A /* APIRequestPerformer.swift in Sources */,
 				FA1992ED2BB1A78C003B4719 /* KeychainManager.swift in Sources */,
