@@ -20,10 +20,6 @@ struct APIRequestPerformer {
         
         var allHeaders: [String: String] = [:]
 
-     
-//        if let configWithHeaders = config as? APIRequestAdapter {
-//            allHeaders.merge(configWithHeaders.headers) { _, new in new }
-//        }
         for adapter in adapters {
             allHeaders.merge(adapter.headers) { _, new in new }
         }
