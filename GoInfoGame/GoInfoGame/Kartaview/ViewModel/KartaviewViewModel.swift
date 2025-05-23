@@ -43,12 +43,9 @@ class KartaviewViewModel: ObservableObject {
     
     // Step 1: Create Sequence
     func createSequence(completion: @escaping (String, Bool) -> ()) {
-        let kartaViewAccessToken = "96aca5c4b80709fc6d9aced613b51905c0fbc37870640d7bdabede269165bde7"
-        let formData: [[String: Any]] =
-        [["key": "access_token", "value": kartaViewAccessToken, "type": "text"]]
         
-        
-        ApiManager.shared.performRequest(to: .createKartaViewSequence(formData), setupType: .kartaview, modelType: SequenceModel.self) { result in
+        KartaviewAPIManager.shared.createSequence { [weak self] result in
+            guard let self = self else { return }
             switch result {
             case .success(let success):
                 // Extract the sequenceId from the response model
@@ -70,80 +67,29 @@ class KartaviewViewModel: ObservableObject {
             print("NO image found")
             return
         }
-        
-        let kartaViewAccessToken = "96aca5c4b80709fc6d9aced613b51905c0fbc37870640d7bdabede269165bde7"
-        
+            
         let latitude = location?.latitude.description ?? "0.0"
         let longitude = location?.longitude.description ?? "0.0"
         
-        let formData: [[String: Any]] = [
-            ["key": "access_token", "value": "96aca5c4b80709fc6d9aced613b51905c0fbc37870640d7bdabede269165bde7", "type": "text"],
-             [
-                "key": "sequenceId",
-                "value": sequenceId,
-                "type": "text"
-              ],
-              [
-                "key": "sequenceIndex",
-                "value": "1",
-                "type": "text"
-              ],
-              [
-                "key": "coordinate",
-                "value": "\(latitude), \(longitude)",
-                "type": "text"
-              ],
-              [
-                "key": "access_token",
-                "value": "96aca5c4b80709fc6d9aced613b51905c0fbc37870640d7bdabede269165bde7",
-                "type": "text"
-              ],
-              [
-                "key": "photo",
-                "src": imageData,
-                "filename": "osmlogo.jpeg",
-                "type": "file"
-              ],
-            [
-                "key": "headers",
-                "value": "\(heading ?? "0")",
-                "type": "text"
-            ]
-            
-        ]
-        
-        ApiManager.shared.performRequest(to: .uploadPhotoToKartaview(formData), setupType: .kartaview, modelType: UploadPhotoModel.self) { result in
+        KartaviewAPIManager.shared.uploadPhoto(imageData: imageData, heading: heading, sequenceId: sequenceId, latitude: latitude, longitude: longitude) { [weak self] result in
             switch result {
             case .success(let success):
                 let status = success.status.httpCode
                 if status == 200 {
                     print("PHOTO UPLOADED ----->>>> PROCEEDING TO FINISH UPLOAD")
                     let imagePath = "https://api.openstreetcam.org/" + "\(success.osv.photo.path)/" + "th/\(success.osv.photo.photoName)"
-                    self.finishUploading(path: imagePath,sequenceId: sequenceId, completion: completion)
+                    self?.finishUploading(path: imagePath,sequenceId: sequenceId, completion: completion)
                 }
             case .failure(let failure):
                 print("FAILED")
+                completion("An error occured", false)
             }
         }
     }
     
     func finishUploading(path: String, sequenceId: String, completion: @escaping (String, Bool) -> ()) {
-        let kartaViewAccessToken = "96aca5c4b80709fc6d9aced613b51905c0fbc37870640d7bdabede269165bde7"
         
-        let formData: [[String: Any]] = [
-             [
-                "key": "sequenceId",
-                "value": sequenceId,
-                "type": "text"
-              ],
-              [
-                "key": "access_token",
-                "value": "96aca5c4b80709fc6d9aced613b51905c0fbc37870640d7bdabede269165bde7",
-                "type": "text"
-              ],
-        ]
-        
-        ApiManager.shared.performRequest(to: .finshedUploadingToKartaview(formData), setupType: .kartaview, modelType: FinishUploadingModel.self) { result in
+        KartaviewAPIManager.shared.finishUploading(sequenceId: sequenceId) { result in
             switch result {
             case .success(let success):
                 let status = success.status.httpCode
@@ -158,7 +104,6 @@ class KartaviewViewModel: ObservableObject {
         }
     }
 
-    
     func imageToData(image: UIImage) -> Data? {
         return image.jpegData(compressionQuality: 1.0)
     }
