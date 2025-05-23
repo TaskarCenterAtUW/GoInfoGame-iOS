@@ -97,19 +97,62 @@ struct APIRequestPerformer {
                 completion(.failure(.custom("No valid HTTP response")))
                 return
             }
+            
+            if httpResponse.statusCode == 401,
+               !request.path.contains("refresh-token") {
 
+                print("⚠️ Access token expired. Attempting refresh...")
+
+                TokenRefresher.shared.refreshToken { status in
+                    if status {
+                        let newToken = AuthSessionManager.shared.accessToken ?? ""
+                        var retryHeaders = request.headers ?? [:]
+                        retryHeaders["Authorization"] = "Bearer \(newToken)"
+
+                        let retryRequest = APIRequest(
+                            path: request.path,
+                            method: request.method,
+                            headers: retryHeaders,
+                            body: request.body,
+                            formData: request.formData
+                        )
+
+                        self.perform(request: retryRequest, config: config, completion: completion)
+                    } else {
+                        DispatchQueue.main.async {
+                            Utilities.clearAllData()
+                            if let window = UIApplication.window() {
+                                window.rootViewController = UIHostingController(rootView: PosmLoginView())
+                                DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                                    NotificationCenter.default.post(name: Notification.Name("SessionExpired"), object: nil)
+                                }
+                            }
+                        }
+                        completion(.failure(.unauthorized))
+                    }
+                }
+
+                return
+            }
+
+            //  Conflict
+            if httpResponse.statusCode == 409 {
+                completion(.failure(.conflict))
+                return
+            }
+
+            //  Fail other non-success codes
+            guard (200...299).contains(httpResponse.statusCode) else {
+                completion(.failure(APIError(statusCode: httpResponse.statusCode)))
+                return
+            }
+            
             guard let data = data else {
                 completion(.failure(.custom("No data returned")))
                 return
             }
 
-            switch httpResponse.statusCode {
-            case 409: completion(.failure(.conflict)); return
-            case 401: completion(.failure(.unauthorized)); return
-            case 200...299: break
-            default: completion(.failure(APIError(statusCode: httpResponse.statusCode))); return
-            }
-
+   
             if T.self == String.self {
                 if let string = String(data: data, encoding: .utf8) {
                     completion(.success(string as! T))
