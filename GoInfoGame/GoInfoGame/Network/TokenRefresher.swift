@@ -63,8 +63,5 @@ class TokenRefresher {
             }
             completion(success)
         }
-
-        
-
     }
 }
