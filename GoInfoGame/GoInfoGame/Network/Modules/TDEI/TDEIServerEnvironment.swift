@@ -18,3 +18,16 @@ struct TDEIServerEnv: ServerEnvironment {
         }
     }
 }
+
+
+//for future reference
+//var userProfileBaseURL: String {
+//    switch self {
+//    case .development:
+//        return "https://tdei-usermanagement-be-dev.azurewebsites.net/api/v1"
+//    case .staging:
+//        return "https://tdei-usermanagement-stage.azurewebsites.net/api/v1"
+//    case .production:
+//        return "https://tdei-usermanagement-prod.azurewebsites.net/api/v1"
+//    }
+//}
