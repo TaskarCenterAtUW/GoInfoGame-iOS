@@ -73,6 +73,18 @@ final class POSMAPIManager {
         )
         APIRequestPerformer.perform(request: request, config: config, adapters: [workspaceAdapter], completion: completion)
     }
+    
+    func submitNote(note: String, lat: Double, long: Double, completion: @escaping (Result<Bool, APIError>) -> Void) {
+        
+        let request = APIRequest(
+            path: "/notes?lat=\(lat)&lon=\(long)&text=\(note)",
+            method: "POST",
+            headers: [
+                "Content-Type": "application/xml"
+            ]
+        )
+        APIRequestPerformer.perform(request: request, config: config, adapters: [workspaceAdapter, authAdapter], completion: completion)
+    }
 }
 
 

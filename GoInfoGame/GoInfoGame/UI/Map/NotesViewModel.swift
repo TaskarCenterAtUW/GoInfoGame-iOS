@@ -29,7 +29,7 @@ class NotesViewModel: ObservableObject {
         }
         
         return try await withCheckedThrowingContinuation { [weak self] continuation in
-            ApiManager.shared.performRequest(to: .submitNote(note, accessToken, lat, long, workspaceId), setupType: .osm, modelType: String.self, useJSON: false) { result in
+            POSMAPIManager.shared.submitNote(note: note, lat: lat, long: long) { result in
                 Task { @MainActor in
                     self?.isLoading = false
                 }
