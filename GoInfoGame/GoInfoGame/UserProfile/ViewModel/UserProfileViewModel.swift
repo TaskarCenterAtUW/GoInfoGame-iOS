@@ -8,7 +8,7 @@
 import Foundation
 
 class UserProfileViewModel: ObservableObject {
-
+    
     @Published var user: TdeiUserProfile?
     
     init() {
@@ -35,20 +35,16 @@ class UserProfileViewModel: ObservableObject {
     }
     
     func fetchUserProfile() {
-        
-        let username = KeychainManager.load(key: "username")
-        
-        if let accessToken = KeychainManager.load(key: "accessToken") {
-            ApiManager.shared.performRequest(to: .fetchuserProfile(username!, accessToken), setupType: .userProfile, modelType: TdeiUserProfile.self) { result in
-                switch result {
-                case .success(let userprofile):
-                    DispatchQueue.main.async {
-                        self.user = userprofile
-                        UserProfileCache.shared.cacheUserProfile(userprofile)
-                    }
-                case .failure(let error):
-                    print(error)
+                        
+        TDEIAPIManager.shared.fetchUserProfile { [weak self] result in
+            switch result {
+            case .success(let userprofile):
+                DispatchQueue.main.async {
+                    self?.user = userprofile
+                    UserProfileCache.shared.cacheUserProfile(userprofile)
                 }
+            case .failure(let error):
+                print(error)
             }
         }
     }

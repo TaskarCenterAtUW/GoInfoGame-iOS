@@ -16,7 +16,7 @@ struct APIEndpoint {
     let formData: [[String: Any]]?
     
     
-    static let login = { (loginParams:Data) in APIEndpoint(path: "/authenticate", method: "POST", body: loginParams, headers: ["Content-Type":"application/json"], formData: nil) }
+//    static let login = { (loginParams:Data) in APIEndpoint(path: "/authenticate", method: "POST", body: loginParams, headers: ["Content-Type":"application/json"], formData: nil) }
     
     static let refreshToken = { (refreshToken: String) in
         let headers = ["Content-Type":"application/json"]
@@ -29,30 +29,30 @@ struct APIEndpoint {
         
     }
     
-    static let fetchWorkspaceList = { (accessToken: String) in
-           
-            let header = [
-                "Authorization" : "Bearer \(accessToken)"
-            ]
-        return APIEndpoint(path: "/workspaces/mine", method: "GET", body: nil, headers: header, formData: nil)}
+//    static let fetchWorkspaceList = { (accessToken: String) in
+//           
+//            let header = [
+//                "Authorization" : "Bearer \(accessToken)"
+//            ]
+//        return APIEndpoint(path: "/workspaces/mine", method: "GET", body: nil, headers: header, formData: nil)}
     
-    static let fetchLongQuests = { (workspaceId: String) in APIEndpoint(path: "/workspaces/\(workspaceId)/quests/long", method: "GET", body: nil, headers: ["Content-Type":"application/json"], formData: nil) }
+//    static let fetchLongQuests = { (workspaceId: String) in APIEndpoint(path: "/workspaces/\(workspaceId)/quests/long", method: "GET", body: nil, headers: ["Content-Type":"application/json"], formData: nil) }
     
-    static let fetchOSMElements = { (left: Double, bottom: Double, right: Double, top: Double, workspaceID: String) in
-          let header = [
-            "X-Workspace": workspaceID
-        ]
-        return APIEndpoint(path: "/map.json?bbox=\(left),\(bottom),\(right),\(top)", method: "GET", body: nil, headers: header, formData: nil) }
+//    static let fetchOSMElements = { (left: Double, bottom: Double, right: Double, top: Double, workspaceID: String) in
+//          let header = [
+//            "X-Workspace": workspaceID
+//        ]
+//        return APIEndpoint(path: "/map.json?bbox=\(left),\(bottom),\(right),\(top)", method: "GET", body: nil, headers: header, formData: nil) }
     
-    static let openChangesets = { (accessToken: String, workspaceId:String ,body: Data)  in
-        
-        let header = [
-            "Authorization" : "Bearer \(accessToken)",
-            "X-Workspace": "\(workspaceId)",
-            "Content-Type" : "application/xml"
-        ]
-        
-        return APIEndpoint(path: "/changeset/create", method: "PUT", body: body, headers: header, formData: nil) }
+//    static let openChangesets = { (accessToken: String, workspaceId:String ,body: Data)  in
+//        
+//        let header = [
+//            "Authorization" : "Bearer \(accessToken)",
+//            "X-Workspace": "\(workspaceId)",
+//            "Content-Type" : "application/xml"
+//        ]
+//        
+//        return APIEndpoint(path: "/changeset/create", method: "PUT", body: body, headers: header, formData: nil) }
     
     static let updateWay = { (accessToken: String, wayID: String, body: Data) in
         
@@ -83,31 +83,31 @@ struct APIEndpoint {
         
     }
     
-    static let uploadChangeset = { (accessToken: String,changesetId:String ,workspaceId: String, body: Data) in
-            let header = [
-                "Authorization": "Bearer \(accessToken)",
-                "X-Workspace": workspaceId,
-                "Content-Type": "application/xml"
-            ]
-        return APIEndpoint(path: "/changeset/\(changesetId)/upload", method: "POST", body: body, headers: header, formData: nil)
-    }
+//    static let uploadChangeset = { (accessToken: String,changesetId:String ,workspaceId: String, body: Data) in
+//            let header = [
+//                "Authorization": "Bearer \(accessToken)",
+//                "X-Workspace": workspaceId,
+//                "Content-Type": "application/xml"
+//            ]
+//        return APIEndpoint(path: "/changeset/\(changesetId)/upload", method: "POST", body: body, headers: header, formData: nil)
+//    }
         
-    static let closeChangeset = { (changesetId: String, workspaceId: String, accessToken: String) in
-        let header = [
-            "Authorization": "Bearer \(accessToken)",
-            "X-Workspace": workspaceId,
-            "Content-Type": "application/xml"
-        ]
-        return APIEndpoint(path: "/changeset/\(changesetId)/close", method: "PUT", body: nil, headers: header, formData: nil)
-    }
-    static let fetchuserProfile = { (userName: String, accessToken: String) in
-        
-        let header = [
-            "Authorization": "Bearer \(accessToken)",
-            "Content-Type":"application/json"
-        ]
-        
-        return APIEndpoint(path: "/user-profile?user_name=\(userName)", method: "GET", body: nil, headers: header, formData: nil) }
+//    static let closeChangeset = { (changesetId: String, workspaceId: String, accessToken: String) in
+//        let header = [
+//            "Authorization": "Bearer \(accessToken)",
+//            "X-Workspace": workspaceId,
+//            "Content-Type": "application/xml"
+//        ]
+//        return APIEndpoint(path: "/changeset/\(changesetId)/close", method: "PUT", body: nil, headers: header, formData: nil)
+//    }
+//    static let fetchuserProfile = { (userName: String, accessToken: String) in
+//        
+//        let header = [
+//            "Authorization": "Bearer \(accessToken)",
+//            "Content-Type":"application/json"
+//        ]
+//        
+//        return APIEndpoint(path: "/user-profile?user_name=\(userName)", method: "GET", body: nil, headers: header, formData: nil) }
     
     static let createKartaViewSequence = { (formData: [[String: Any]]) in
         return APIEndpoint(path: "/sequence/", method: "POST", body: nil, headers: nil, formData: formData)

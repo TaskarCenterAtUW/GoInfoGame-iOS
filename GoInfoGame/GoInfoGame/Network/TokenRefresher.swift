@@ -32,9 +32,8 @@ class TokenRefresher {
                 appDelegate.invalidateRefreshTokenTimer()
             }
         }
-
-        ApiManager.shared.performRequest(to: .refreshToken(refreshToken ?? ""), setupType: .login, modelType: PosmLoginSuccessResponse.self) { [weak self] result in
-            
+        
+        TDEIAPIManager.shared.refreshToken(refreshToken: refreshToken ?? "") { [weak self] result in
             guard let self = self else { return }
             
             var success = false
@@ -57,14 +56,15 @@ class TokenRefresher {
                 break
                 
             }
-
             self.refreshQueue.async(flags: .barrier) {
                 self.isRefreshing = false
                 self.refreshCompletionHandlers.forEach { $0(success) }
                 self.refreshCompletionHandlers.removeAll()
             }
-            
             completion(success)
         }
+
+        
+
     }
 }

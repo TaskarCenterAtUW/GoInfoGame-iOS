@@ -92,7 +92,7 @@ struct WorkspacesListView: View {
                     viewModel.fetchLongQuestsFor(workspaceId: "\(selectedWorkspace.id)") { success, errorMessage  in
                         if success {
                             let workspaceId = "\(selectedWorkspace.id)"
-                            _ = KeychainManager.save(key: "workspaceID", data: workspaceId)
+                            AuthSessionManager.shared.setWorkspaceId(workspaceId)
                             DispatchQueue.main.async {
                                 self.shouldNavigateToMapView = true
                             }
@@ -142,7 +142,7 @@ struct WorkspacesListView: View {
                                                 self.selectedWorkspace = workspace
                                                 
                                                 let workspaceId = "\(workspace.id)"
-                                                _ = KeychainManager.save(key: "workspaceID", data: workspaceId)
+                                                AuthSessionManager.shared.setWorkspaceId(workspaceId)
                                             } else {
                                                 DispatchQueue.main.async {
                                                     alertMessage = errorMessage ?? "Something went wrong."

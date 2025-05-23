@@ -9,14 +9,33 @@ import Foundation
 import SwiftUI
 
 struct APIRequestPerformer {
-    static func perform<T: Decodable>(request: APIRequest, config: APIRequestConfig, completion: @escaping (Result<T, APIError>) -> Void) {
-        let url = config.environment.baseURL.appendingPathComponent(request.path)
+    static func perform<T: Decodable>(request: APIRequest, config: APIRequestConfig, adapters:[APIRequestAdapter] = [], completion: @escaping (Result<T, APIError>) -> Void) {
+        guard let url = URL(string: config.environment.baseURL.absoluteString + request.path) else {
+            completion(.failure(.invalidURL))
+            return
+        }
+        
         var urlRequest = URLRequest(url: url, timeoutInterval: Double.infinity)
         urlRequest.httpMethod = request.method
+        
+        var allHeaders: [String: String] = [:]
 
-        // Set headers
-        request.headers?.forEach {
-            urlRequest.setValue($0.value, forHTTPHeaderField: $0.key)
+     
+//        if let configWithHeaders = config as? APIRequestAdapter {
+//            allHeaders.merge(configWithHeaders.headers) { _, new in new }
+//        }
+        for adapter in adapters {
+            allHeaders.merge(adapter.headers) { _, new in new }
+        }
+     
+
+        if let requestHeaders = request.headers {
+            allHeaders.merge(requestHeaders) { _, new in new }
+        }
+
+        // Apply to URLRequest
+        for (key, value) in allHeaders {
+            urlRequest.setValue(value, forHTTPHeaderField: key)
         }
 
         // Handle multipart form-data
@@ -91,25 +110,28 @@ struct APIRequestPerformer {
             default: completion(.failure(APIError(statusCode: httpResponse.statusCode))); return
             }
 
-            if request.useJSON {
+            if T.self == String.self {
+                if let string = String(data: data, encoding: .utf8) {
+                    completion(.success(string as! T))
+                } else {
+                    completion(.failure(.custom("Expected plain text response but decoding failed")))
+                }
+            } else if T.self == Bool.self, data.isEmpty {
+                completion(.success(true as! T)) // Special case for empty body success
+            } else {
                 do {
-                    if data.isEmpty, T.self == Bool.self {
-                        completion(.success(true as! T))
-                        return
-                    }
-                    let decoded = try JSONDecoder().decode(T.self, from: data)
+                    let decoder = JSONDecoder()
+                    decoder.dateDecodingStrategy = .iso8601
+                    let decoded = try decoder.decode(T.self, from: data)
                     completion(.success(decoded))
                 } catch {
                     let raw = String(data: data, encoding: .utf8) ?? "Invalid JSON"
                     completion(.failure(.custom("Decoding failed: \(raw)")))
                 }
-            } else {
-                if let string = String(data: data, encoding: .utf8) {
-                    completion(.success(string as! T))
-                } else {
-                    completion(.failure(.custom("Plain text decoding failed")))
-                }
             }
+
+
+
         }.resume()
     }
 }

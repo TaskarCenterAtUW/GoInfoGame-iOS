@@ -9,20 +9,20 @@ final class WorkspaceAPIManager {
     
     static let shared = WorkspaceAPIManager()
     private let config = WorkspaceRequestConfig()
-    
-    
-    
+    private let authAdapter = AuthAdapter()
+        
     private init() {}
     
-    func fetchWorkspaces(accessToken: String, completion: @escaping (Result<[Workspace], APIError>) -> Void) {
-        
+    
+    func fetchWorkspaces(completion: @escaping (Result<[Workspace], APIError>) -> Void) {
+
         let request = APIRequest(
             path: "/workspaces/mine",
             method: "GET",
-            headers: ["Content-Type": "application/json", "Authorization": "Bearer \(accessToken)"]
+            headers: ["Content-Type": "application/json"]
         )
                 
-        APIRequestPerformer.perform(request: request, config: config, completion: completion)
+        APIRequestPerformer.perform(request: request, config: config, adapters: [authAdapter], completion: completion)
     }
     
     func fetchLongQuestsFor(workspaceId: String, completion: @escaping (Result<[LongFormModel], APIError>) -> Void) {

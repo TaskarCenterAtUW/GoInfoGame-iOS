@@ -112,14 +112,12 @@ class MapViewModel: ObservableObject {
            case .visibleRect(let mapView):
                bBox = boundingBoxFromVisibleMapRect(mapView: mapView)
            }
-
-        if let workspaceID = KeychainManager.load(key: "workspaceID") {
-            
-            ApiManager.shared.performRequest(to: .fetchOSMElements(bBox.minLon, bBox.minLat, bBox.maxLon, bBox.maxLat, workspaceID), setupType: .osm, modelType: OSMMapDataResponse.self) { result in
+        
+            POSMAPIManager.shared.fetchOSMElements(left: bBox.minLon, bottom: bBox.minLat, right:  bBox.maxLon, top: bBox.maxLat) { [weak self] result in
+                guard let self = self else { return }
                 switch result {
                 case .success(let success):
                    let osmElements = success.getOSMElements()
-                  //  print("OSM ELEMENTS ??? \(osmElements)")
                     
                     let response = Array(osmElements.values)
                     let allValues = response
@@ -134,7 +132,6 @@ class MapViewModel: ObservableObject {
                     print(failure)
                 }
             }
-        }
     }
     
     func refreshQuests() {

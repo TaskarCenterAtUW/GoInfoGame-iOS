@@ -31,9 +31,7 @@ class WorkspacesViewModel: ObservableObject {
     
     // fetch workspaces list
     func fetchWorkspacesList() {
-    
-        if let accessToken = KeychainManager.load(key: "accessToken") {
-            WorkspaceAPIManager.shared.fetchWorkspaces(accessToken: accessToken) { [weak self] result in
+            WorkspaceAPIManager.shared.fetchWorkspaces { [weak self] result in
                 DispatchQueue.main.async {
                     switch result {
                     case .success(let workspacesResponse):
@@ -45,7 +43,6 @@ class WorkspacesViewModel: ObservableObject {
                     }
                 }
             }
-        }
     }
     
     func checkAndDeleteWorkspaceDB(workspaceId: String) {

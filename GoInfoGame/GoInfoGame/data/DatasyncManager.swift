@@ -210,12 +210,9 @@ class DatasyncManager {
         let osmPayload = osmPayloadString.data(using: .utf8)
         let workspaceId = KeychainManager.load(key: "workspaceID")
         
-        guard let accessToken = KeychainManager.load(key: "accessToken") else {
-               throw NSError(domain: "NoAccessToken", code: 0, userInfo: [NSLocalizedDescriptionKey: "No Access Token found"])
-           }
-        
         return try await withCheckedThrowingContinuation { continuation in
-            ApiManager.shared.performRequest(to: .openChangesets(accessToken, workspaceId ?? "", osmPayload!),setupType: .osm, modelType: Int.self) { result in
+            
+            POSMAPIManager.shared.openChangeset(osmPayload: osmPayload, workspaceId: workspaceId ?? "") { result in
                 switch result {
                 case .success(let changesetID):
                     SyncLogger.shared.logStep("✅ Created changeset. ID = \(changesetID)")
@@ -229,14 +226,9 @@ class DatasyncManager {
     }
     
     func closeChangeset(id: String) async throws -> Bool {
-        let workspaceId = KeychainManager.load(key: "workspaceID")
-        
-        guard let accessToken = KeychainManager.load(key: "accessToken") else {
-            throw NSError(domain: "NoAccessToken", code: 0, userInfo: [NSLocalizedDescriptionKey: "No Access Token found"])
-        }
-        
+    
         return try await withCheckedThrowingContinuation { continuation in
-            ApiManager.shared.performRequest(to: .closeChangeset(id, workspaceId ?? "", accessToken), setupType: .osm, modelType: Bool.self) { result in
+            POSMAPIManager.shared.closeChangeset(changesetId: id) { result in
                 switch result {
                 case .success(let closedResult):
                     SyncLogger.shared.logStep("Changeset closed")
@@ -248,7 +240,6 @@ class DatasyncManager {
                 }
             }
         }
-        
     }
 
     // utility function to act as substitute for osmConnection functions
@@ -266,12 +257,8 @@ class DatasyncManager {
         }
         
         return try await withCheckedThrowingContinuation { continuation in
-            ApiManager.shared.performRequest(
-                to: .uploadChangeset(accessToken, "\(way.changeset)", workspaceId ?? "", wayBody!),
-                setupType: .osm,
-                modelType: String.self,
-                useJSON: false
-            ) { result in
+            
+            POSMAPIManager.shared.uploadChangeset(changesetBody: wayBody!, changesetId: "\(way.changeset)") { result in
                 switch result {
                 case .success:
                     localWay.tags.forEach { (key: String, value: String) in
@@ -314,17 +301,9 @@ class DatasyncManager {
 
         let newVersion = localNode.version + 1
 
-        guard let accessToken = KeychainManager.load(key: "accessToken") else {
-            throw NSError(domain: "No AccessToken", code: 0, userInfo: nil)
-        }
-        
         return try await withCheckedThrowingContinuation { continuation in
-            ApiManager.shared.performRequest(
-                to: .uploadChangeset(accessToken, "\(localNode.changeset)", workspaceId ?? "", nodeBody),
-                setupType: .osm,
-                modelType: String.self,
-                useJSON: false
-            ) { result in
+            
+            POSMAPIManager.shared.uploadChangeset(changesetBody: nodeBody, changesetId: "\(localNode.changeset)") { result in
                 switch result {
                 case .success:
                     var updatedNode = localNode
@@ -366,12 +345,9 @@ class DatasyncManager {
             throw APIError.decodingFailed("Invalid Node Body")
         }
 
-        guard let accessToken = KeychainManager.load(key: "accessToken") else {
-            throw APIError.unauthorized
-        }
-        
         return try await withCheckedThrowingContinuation { continuation in
-            ApiManager.shared.performRequest(to: .uploadChangeset(accessToken, "\(node.changeset)", workspaceId ?? "", nodeBody), setupType: .osm, modelType: String.self, useJSON: false) { result in
+            
+            POSMAPIManager.shared.uploadChangeset(changesetBody: nodeBody, changesetId: "\(node.changeset)") { result in
                 switch result {
                 case .success:
                     continuation.resume(returning: true)
@@ -526,34 +502,10 @@ class DatasyncManager {
         return mergedNode
     }
     
-    func fetchWay21(wayId: String, completion: @escaping (Result<OSMWay, Error>) -> Void) {
-        guard let workspaceID = KeychainManager.load(key: "workspaceID") else {
-            let error = NSError(domain: "FetchWayError", code: 401, userInfo: [NSLocalizedDescriptionKey: "Missing workspace ID"])
-            completion(.failure(error))
-            return
-        }
-        
-        ApiManager.shared.performRequest(to: .fetchLatestWay(workspaceID, wayId), setupType: .osm, modelType: OSMWayResponse.self) { result in
-            switch result {
-            case .success(let osmwayResponse):
-                if let osmway = osmwayResponse.elements.first {
-                    completion(.success(osmway))
-                } else {
-                    let error = NSError(domain: "FetchWayError", code: 404, userInfo: [NSLocalizedDescriptionKey: "No OSM way found"])
-                    completion(.failure(error))
-                }
-                
-            case .failure(let error):
-                completion(.failure(error))
-            }
-        }
-    }
-    
     func fetchway2(wayId: String) async throws -> OSMWay {
-        let workspaceID = KeychainManager.load(key: "workspaceID")
-        
+   
         return try await withCheckedThrowingContinuation { continuation in
-            ApiManager.shared.performRequest(to: .fetchLatestWay(workspaceID!, wayId), setupType: .osm, modelType: OSMWayResponse.self) { result in
+            POSMAPIManager.shared.fetchWay(wayId: wayId) { result in
                 switch result {
                 case .success(let osmwayResponse):
                     if let osmway = osmwayResponse.elements.first {
@@ -569,16 +521,9 @@ class DatasyncManager {
     }
     
     func fetchNode2(nodeId: String) async throws -> OSMNode {
-        guard let workspaceID = KeychainManager.load(key: "workspaceID") else {
-            throw NSError(domain: "No WorkspaceID", code: 0, userInfo: nil)
-        }
-        
+    
         return try await withCheckedThrowingContinuation { continuation in
-            ApiManager.shared.performRequest(
-                to: .fetchLatestNode(workspaceID, nodeId),
-                setupType: .osm,
-                modelType: OSMNodeResponse.self
-            ) { result in
+            POSMAPIManager.shared.fetchNode(nodeId: nodeId) { result in
                 switch result {
                 case .success(let osNodeResponse):
                     if let osmnode = osNodeResponse.elements.first {
