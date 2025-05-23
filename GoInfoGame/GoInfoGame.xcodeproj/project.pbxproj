@@ -228,9 +228,8 @@
 		FAA01DBC2DDE11B100E4255A /* TDEIServerEnvironment.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAA01DBB2DDE11A900E4255A /* TDEIServerEnvironment.swift */; };
 		FAA01DBE2DDE11C000E4255A /* TDEIRequestConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAA01DBD2DDE11B700E4255A /* TDEIRequestConfig.swift */; };
 		FAA01DC32DDE12C800E4255A /* KartaviewAPIManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAA01DC22DDE12C100E4255A /* KartaviewAPIManager.swift */; };
-		FAA01DC52DDE12D100E4255A /* KartaviewAPIEndpoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAA01DC42DDE12CC00E4255A /* KartaviewAPIEndpoint.swift */; };
-		FAA01DC72DDE12E600E4255A /* KartaviewAPIConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAA01DC62DDE12D400E4255A /* KartaviewAPIConfiguration.swift */; };
-		FAA01DC92DDE12F800E4255A /* KartaviewAPIEnvironment.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAA01DC82DDE12EF00E4255A /* KartaviewAPIEnvironment.swift */; };
+		FAA01DC72DDE12E600E4255A /* KartaviewRequestConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAA01DC62DDE12D400E4255A /* KartaviewRequestConfig.swift */; };
+		FAA01DC92DDE12F800E4255A /* KartaViewServerEnvironment.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAA01DC82DDE12EF00E4255A /* KartaViewServerEnvironment.swift */; };
 		FAA01DCB2DDE15EC00E4255A /* APIRequestPerformer.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAA01DCA2DDE15E200E4255A /* APIRequestPerformer.swift */; };
 		FAA01DCD2DDFB52900E4255A /* APIRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAA01DCC2DDFB52500E4255A /* APIRequest.swift */; };
 		FABF3CF42B7419BB0080EAC9 /* LocationManagerDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = FABF3CF32B7419BB0080EAC9 /* LocationManagerDelegate.swift */; };
@@ -573,9 +572,8 @@
 		FAA01DBB2DDE11A900E4255A /* TDEIServerEnvironment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TDEIServerEnvironment.swift; sourceTree = "<group>"; };
 		FAA01DBD2DDE11B700E4255A /* TDEIRequestConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TDEIRequestConfig.swift; sourceTree = "<group>"; };
 		FAA01DC22DDE12C100E4255A /* KartaviewAPIManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KartaviewAPIManager.swift; sourceTree = "<group>"; };
-		FAA01DC42DDE12CC00E4255A /* KartaviewAPIEndpoint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KartaviewAPIEndpoint.swift; sourceTree = "<group>"; };
-		FAA01DC62DDE12D400E4255A /* KartaviewAPIConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KartaviewAPIConfiguration.swift; sourceTree = "<group>"; };
-		FAA01DC82DDE12EF00E4255A /* KartaviewAPIEnvironment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KartaviewAPIEnvironment.swift; sourceTree = "<group>"; };
+		FAA01DC62DDE12D400E4255A /* KartaviewRequestConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KartaviewRequestConfig.swift; sourceTree = "<group>"; };
+		FAA01DC82DDE12EF00E4255A /* KartaViewServerEnvironment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KartaViewServerEnvironment.swift; sourceTree = "<group>"; };
 		FAA01DCA2DDE15E200E4255A /* APIRequestPerformer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIRequestPerformer.swift; sourceTree = "<group>"; };
 		FAA01DCC2DDFB52500E4255A /* APIRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIRequest.swift; sourceTree = "<group>"; };
 		FABF3CF32B7419BB0080EAC9 /* LocationManagerDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationManagerDelegate.swift; sourceTree = "<group>"; };
@@ -1503,9 +1501,8 @@
 		FAA01DC12DDE125300E4255A /* Kartaview */ = {
 			isa = PBXGroup;
 			children = (
-				FAA01DC82DDE12EF00E4255A /* KartaviewAPIEnvironment.swift */,
-				FAA01DC62DDE12D400E4255A /* KartaviewAPIConfiguration.swift */,
-				FAA01DC42DDE12CC00E4255A /* KartaviewAPIEndpoint.swift */,
+				FAA01DC82DDE12EF00E4255A /* KartaViewServerEnvironment.swift */,
+				FAA01DC62DDE12D400E4255A /* KartaviewRequestConfig.swift */,
 				FAA01DC22DDE12C100E4255A /* KartaviewAPIManager.swift */,
 			);
 			path = Kartaview;
@@ -2322,7 +2319,6 @@
 				C7ED070F2D70E2EC001FFFE2 /* TokenRefresher.swift in Sources */,
 				FA50718C2D54E08800CE9798 /* AddFeatureView.swift in Sources */,
 				A495DF2D2B6A190400478E44 /* CustomMapView.swift in Sources */,
-				FAA01DC52DDE12D100E4255A /* KartaviewAPIEndpoint.swift in Sources */,
 				05DBBB662B17209600B6F110 /* RealmOPMeta.swift in Sources */,
 				B0CCB98E2B8626C600AA73DE /* ProfileViewVM.swift in Sources */,
 				97412A992BBBF3A300DF7983 /* KerbHeight.swift in Sources */,
@@ -2331,7 +2327,7 @@
 				97412A962BBADAFF00DF7983 /* StairFlights.swift in Sources */,
 				0536DD942B0BD59900B04C4B /* OAuthError.swift in Sources */,
 				973FC0172B4D567900878269 /* WidthView.swift in Sources */,
-				FAA01DC72DDE12E600E4255A /* KartaviewAPIConfiguration.swift in Sources */,
+				FAA01DC72DDE12E600E4255A /* KartaviewRequestConfig.swift in Sources */,
 				FABF3CFD2B8607860080EAC9 /* MeasureWidthContainer.swift in Sources */,
 				FA8C74C72C4FE2E900D28220 /* LongFormWidthView.swift in Sources */,
 				97AC1C082B6A45C9004F0BF4 /* SideWalkValidationForm.swift in Sources */,
@@ -2352,7 +2348,7 @@
 				0536DD992B0BDBFE00B04C4B /* OAuthManager.swift in Sources */,
 				A4E711AC2B58F7C000C9DE08 /* HandRailForm.swift in Sources */,
 				A4E711A62B57BBCA00C9DE08 /* QuestProtocols.swift in Sources */,
-				FAA01DC92DDE12F800E4255A /* KartaviewAPIEnvironment.swift in Sources */,
+				FAA01DC92DDE12F800E4255A /* KartaViewServerEnvironment.swift in Sources */,
 				FAFDA2122C6F64E800ECEAE9 /* UserProfileView.swift in Sources */,
 				973FBFFE2B46BB3800878269 /* Utils.swift in Sources */,
 				B0CCB98C2B8626AE00AA73DE /* ProfileView.swift in Sources */,
