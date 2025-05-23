@@ -252,9 +252,6 @@ class DatasyncManager {
         let wayId = "\(localWay.id)"
         let newVersion = way.version + 1
         print("Uploading changeset \(changesetUploadBody)")
-        guard let accessToken = KeychainManager.load(key: "accessToken") else {
-            throw NSError(domain: "No AccessToken", code: 0, userInfo: nil)
-        }
         
         return try await withCheckedThrowingContinuation { continuation in
             

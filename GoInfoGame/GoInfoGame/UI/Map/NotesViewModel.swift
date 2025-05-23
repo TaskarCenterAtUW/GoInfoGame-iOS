@@ -20,14 +20,6 @@ class NotesViewModel: ObservableObject {
             self.isLoading = true
         }
         
-        guard let workspaceId = KeychainManager.load(key: "workspaceID") else {
-            throw NSError(domain: "NoAccessToken", code: 0, userInfo: [NSLocalizedDescriptionKey: "Workspace Error"])
-        }
-        
-        guard let accessToken = KeychainManager.load(key: "accessToken") else {
-            throw NSError(domain: "NoAccessToken", code: 0, userInfo: [NSLocalizedDescriptionKey: "No Access Token found"])
-        }
-        
         return try await withCheckedThrowingContinuation { [weak self] continuation in
             POSMAPIManager.shared.submitNote(note: note, lat: lat, long: long) { result in
                 Task { @MainActor in
