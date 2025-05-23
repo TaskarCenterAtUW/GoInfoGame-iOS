@@ -31,15 +31,17 @@ class WorkspacesViewModel: ObservableObject {
     
     // fetch workspaces list
     func fetchWorkspacesList() {
+            isLoading = true
             WorkspaceAPIManager.shared.fetchWorkspaces { [weak self] result in
                 DispatchQueue.main.async {
+                    self?.isLoading = false
                     switch result {
                     case .success(let workspacesResponse):
                         self?.workspaces = workspacesResponse
-                        self?.isLoading = false
+                       
                     case .failure(let error):
                         print("Error fetching workspaces: \(error)")
-                        self?.isLoading = false
+                      
                     }
                 }
             }

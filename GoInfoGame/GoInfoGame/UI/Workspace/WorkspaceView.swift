@@ -45,6 +45,15 @@ struct WorkspaceView: View {
                        .padding()
                   
                        Spacer()
+                    if viewModel.workspaces.count == 0 {
+                        Text("No workspaces available for you to work on.")
+                            .font(.custom("Lato-Bold", size: 20))
+                            .foregroundColor((Color(red: 135/255, green: 62/255, blue: 242/255)))
+                            .multilineTextAlignment(.center)
+                            .onAppear {
+                                isLoading = false
+                            }
+                    }
                        
       if viewModel.workspaces.count > 1 {
           WorkspacesListView(workspaces: viewModel.workspaces, viewModel: viewModel, isLoading: $isLoading)
@@ -52,7 +61,7 @@ struct WorkspaceView: View {
                    }
                 .padding()
                 
-                if isLoading {
+                if viewModel.isLoading {
                     ActivityView(activityText: "Fetching workspaces")
                        
                 }
