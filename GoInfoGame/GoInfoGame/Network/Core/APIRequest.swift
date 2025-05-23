@@ -13,21 +13,18 @@ struct APIRequest {
     let headers: [String: String]?
     let body: Data?
     let formData: [[String: Any]]?
-    let useJSON: Bool
-
+   
     init(
         path: String,
         method: String,
         headers: [String: String]? = nil,
         body: Data? = nil,
-        formData: [[String: Any]]? = nil,
-        useJSON: Bool = true
+        formData: [[String: Any]]? = nil
     ) {
         self.path = path
         self.method = method
         self.headers = headers
         self.body = body
         self.formData = formData
-        self.useJSON = useJSON
     }
 }
