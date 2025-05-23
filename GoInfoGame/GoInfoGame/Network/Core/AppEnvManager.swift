@@ -8,7 +8,7 @@
 import Foundation
 
 enum AppEnv: String, CaseIterable {
-    case development = "Development"
+    case dev = "Development"
     case staging = "Staging"
     case production = "Production"
 }
