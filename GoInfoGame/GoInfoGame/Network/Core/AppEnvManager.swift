@@ -7,8 +7,10 @@
 
 import Foundation
 
-enum AppEnv: String {
-    case staging, production, dev
+enum AppEnv: String, CaseIterable {
+    case development = "Development"
+    case staging = "Staging"
+    case production = "Production"
 }
 
 final class AppEnvManager {

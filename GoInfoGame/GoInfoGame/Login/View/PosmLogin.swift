@@ -16,7 +16,7 @@ struct PosmLoginView: View {
     
     @State private var shouldShowAlert = false
     
-    @State private var selectedEnvironment: APIEnvironment = .staging
+    @State private var selectedEnvironment: AppEnv = .staging
     @State private var showAlert = false
     var body: some View {
         NavigationStack {
@@ -41,10 +41,10 @@ struct PosmLoginView: View {
                         .padding(.horizontal, 40)
                     
                     Menu {
-                        ForEach(APIEnvironment.allCases, id: \.self) { environment in
+                        ForEach(AppEnv.allCases, id: \.self) { environment in
                             Button(action: {
                                 selectedEnvironment = environment
-                                APIConfiguration.shared.environment = environment
+                                AppEnvManager.shared.current = environment
                             }) {
                                 Text(environment.rawValue)
                             }
@@ -96,7 +96,7 @@ struct PosmLoginView: View {
             Button("OK", role: .cancel) { }
         }
         .onAppear {
-            selectedEnvironment = APIConfiguration.shared.environment
+            selectedEnvironment = AppEnvManager.shared.current
         }
         .onReceive(NotificationCenter.default.publisher(for: Notification.Name("SessionExpired"))) { notification in
                     showAlert = true
