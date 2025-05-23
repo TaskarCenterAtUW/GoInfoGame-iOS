@@ -12,7 +12,11 @@ class NotesViewModel: ObservableObject {
     
     @Published var isLoading = false
     
-    init() {}
+    private let api: POSMAPIProtocol
+    
+    init(api: POSMAPIProtocol = POSMAPIManager.shared) {
+        self.api = api
+    }
     
     func createNote(note: String, lat: Double, long: Double) async throws -> Bool {
         
@@ -21,7 +25,7 @@ class NotesViewModel: ObservableObject {
         }
         
         return try await withCheckedThrowingContinuation { [weak self] continuation in
-            POSMAPIManager.shared.submitNote(note: note, lat: lat, long: long) { result in
+            self?.api.submitNote(note: note, lat: lat, long: long) { result in
                 Task { @MainActor in
                     self?.isLoading = false
                 }

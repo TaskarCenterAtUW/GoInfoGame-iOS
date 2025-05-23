@@ -7,7 +7,7 @@
 
 import osmapi
 
-final class POSMAPIManager {
+final class POSMAPIManager: POSMAPIProtocol {
     static let shared = POSMAPIManager()
     private let config = POSMRequestConfig()
     private let workspaceAdapter = WorkspaceAdapter()

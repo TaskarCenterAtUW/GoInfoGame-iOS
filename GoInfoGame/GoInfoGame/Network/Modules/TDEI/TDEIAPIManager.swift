@@ -7,7 +7,7 @@
 
 import Foundation
 
-final class TDEIAPIManager {
+final class TDEIAPIManager: TDEIAPIProtocol {
     static let shared = TDEIAPIManager()
     private let config = TDEIRequestConfig()
         

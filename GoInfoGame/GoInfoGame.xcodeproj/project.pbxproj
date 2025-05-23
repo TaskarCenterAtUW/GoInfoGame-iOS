@@ -261,6 +261,10 @@
 		FAFFC9732DDFBDC700072B11 /* AppEnvManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAFFC9722DDFBDC100072B11 /* AppEnvManager.swift */; };
 		FAFFC9772DE0598500072B11 /* AuthSessionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAFFC9762DE0598000072B11 /* AuthSessionManager.swift */; };
 		FAFFC9792DE07D0B00072B11 /* APIRequestAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAFFC9782DE07D0400072B11 /* APIRequestAdapter.swift */; };
+		FAFFC97D2DE0FCD100072B11 /* POSMAPIProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAFFC97C2DE0FCCA00072B11 /* POSMAPIProtocol.swift */; };
+		FAFFC97F2DE0FDB100072B11 /* WorkspaceAPIProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAFFC97E2DE0FDA800072B11 /* WorkspaceAPIProtocol.swift */; };
+		FAFFC9812DE0FECC00072B11 /* TDEIAPIProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAFFC9802DE0FEC600072B11 /* TDEIAPIProtocol.swift */; };
+		FAFFC9832DE104CB00072B11 /* KartaviewAPIProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAFFC9822DE104C300072B11 /* KartaviewAPIProtocol.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -606,6 +610,10 @@
 		FAFFC9722DDFBDC100072B11 /* AppEnvManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppEnvManager.swift; sourceTree = "<group>"; };
 		FAFFC9762DE0598000072B11 /* AuthSessionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthSessionManager.swift; sourceTree = "<group>"; };
 		FAFFC9782DE07D0400072B11 /* APIRequestAdapter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIRequestAdapter.swift; sourceTree = "<group>"; };
+		FAFFC97C2DE0FCCA00072B11 /* POSMAPIProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POSMAPIProtocol.swift; sourceTree = "<group>"; };
+		FAFFC97E2DE0FDA800072B11 /* WorkspaceAPIProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkspaceAPIProtocol.swift; sourceTree = "<group>"; };
+		FAFFC9802DE0FEC600072B11 /* TDEIAPIProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TDEIAPIProtocol.swift; sourceTree = "<group>"; };
+		FAFFC9822DE104C300072B11 /* KartaviewAPIProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KartaviewAPIProtocol.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -1465,6 +1473,7 @@
 				FAA01DAB2DDDCB9200E4255A /* POSMRequestConfig.swift */,
 				FAA01DA92DDDCB8400E4255A /* POSMServerEnvironment.swift */,
 				FAA01DA72DDDCB6C00E4255A /* POSMAPIManager.swift */,
+				FAFFC97C2DE0FCCA00072B11 /* POSMAPIProtocol.swift */,
 			);
 			path = POSM;
 			sourceTree = "<group>";
@@ -1473,6 +1482,7 @@
 			isa = PBXGroup;
 			children = (
 				FAA01DB62DDDCC4800E4255A /* WorkspaceAPIManager.swift */,
+				FAFFC97E2DE0FDA800072B11 /* WorkspaceAPIProtocol.swift */,
 				FAA01DB42DDDCC3700E4255A /* WorksapceServerEnvironment.swift */,
 				FAA01DB22DDDCC2100E4255A /* WorkspaceRequestConfig.swift */,
 			);
@@ -1483,6 +1493,7 @@
 			isa = PBXGroup;
 			children = (
 				FAA01DB92DDE117200E4255A /* TDEIAPIManager.swift */,
+				FAFFC9802DE0FEC600072B11 /* TDEIAPIProtocol.swift */,
 				FAA01DBD2DDE11B700E4255A /* TDEIRequestConfig.swift */,
 				FAA01DBB2DDE11A900E4255A /* TDEIServerEnvironment.swift */,
 			);
@@ -1493,6 +1504,7 @@
 			isa = PBXGroup;
 			children = (
 				FAA01DC82DDE12EF00E4255A /* KartaViewServerEnvironment.swift */,
+				FAFFC9822DE104C300072B11 /* KartaviewAPIProtocol.swift */,
 				FAA01DC62DDE12D400E4255A /* KartaviewRequestConfig.swift */,
 				FAA01DC22DDE12C100E4255A /* KartaviewAPIManager.swift */,
 			);
@@ -2194,6 +2206,7 @@
 				FAA01DBE2DDE11C000E4255A /* TDEIRequestConfig.swift in Sources */,
 				05DBBB5D2B1262BA00B6F110 /* OverpassRepository.swift in Sources */,
 				FA6DB8B52D96BE510070CCD3 /* HiddenQuestManager.swift in Sources */,
+				FAFFC97D2DE0FCD100072B11 /* POSMAPIProtocol.swift in Sources */,
 				A4B83AF12B5F92FA006684CA /* StoredNode.swift in Sources */,
 				97AC1C0C2B6B843C004F0BF4 /* CustomAlert.swift in Sources */,
 				FA9AEC002D5CACB6006A3A31 /* UserNodesHelper.swift in Sources */,
@@ -2240,6 +2253,7 @@
 				97AC1C212B726AC9004F0BF4 /* TactilePavingKerb.swift in Sources */,
 				A4E711A22B57A3B400C9DE08 /* SideWalkWidth.swift in Sources */,
 				05CB71E02B0FAFD200DED821 /* GenericUIViewControllerRepresentable.swift in Sources */,
+				FAFFC9812DE0FECC00072B11 /* TDEIAPIProtocol.swift in Sources */,
 				971F9FE42B84CDBF005397CC /* CrossingType.swift in Sources */,
 				97AC1C062B6A45B0004F0BF4 /* SideWalkValidation.swift in Sources */,
 				FAD5C4F32AFCBE700040C61A /* AppDelegate.swift in Sources */,
@@ -2271,6 +2285,7 @@
 				FAA01DA22DDDCB3C00E4255A /* APIRequestConfig.swift in Sources */,
 				973FC0112B4D2D1C00878269 /* QuestAndDescriptionView.swift in Sources */,
 				973FC0032B47DE0700878269 /* QuestsVM.swift in Sources */,
+				FAFFC9832DE104CB00072B11 /* KartaviewAPIProtocol.swift in Sources */,
 				A4E711AE2B59004700C9DE08 /* StepsIncline.swift in Sources */,
 				FA18CAE22CC7CD89008247F2 /* KartaviewViewModel.swift in Sources */,
 				973FC0142B4D353800878269 /* SideWalkWidthForm.swift in Sources */,
@@ -2286,6 +2301,7 @@
 				FA51484E2D76ED6C00C0D35B /* NotesViewModel.swift in Sources */,
 				FAFDA2062C6E8D7A00ECEAE9 /* APIEndPoint.swift in Sources */,
 				FA5853C12B21F17F00301CDA /* OnboardingView.swift in Sources */,
+				FAFFC97F2DE0FDB100072B11 /* WorkspaceAPIProtocol.swift in Sources */,
 				A4B83AF32B5F9385006684CA /* StoredWay.swift in Sources */,
 				FA18CAE52CC7D0DD008247F2 /* SequenceModel.swift in Sources */,
 				971F9FDF2B847349005397CC /* CrossingIslandForm.swift in Sources */,

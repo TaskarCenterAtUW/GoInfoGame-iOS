@@ -16,7 +16,10 @@ class WorkspacesViewModel: ObservableObject {
     @Published var longQuests: [LongFormModel] = []
     @Published var isLoading: Bool = false
     
-    init() {
+    private let api: WorkspaceAPIProtocol
+    
+    init(api: WorkspaceAPIProtocol = WorkspaceAPIManager.shared) {
+        self.api = api
         locationManagerDelegate.locationManager.delegate = locationManagerDelegate
         locationManagerDelegate.locationManager.requestWhenInUseAuthorization()
         locationManagerDelegate.locationManager.startUpdatingLocation()
@@ -32,7 +35,7 @@ class WorkspacesViewModel: ObservableObject {
     // fetch workspaces list
     func fetchWorkspacesList() {
             isLoading = true
-            WorkspaceAPIManager.shared.fetchWorkspaces { [weak self] result in
+            api.fetchWorkspaces { [weak self] result in
                 DispatchQueue.main.async {
                     self?.isLoading = false
                     switch result {
@@ -60,7 +63,7 @@ class WorkspacesViewModel: ObservableObject {
         
         isLoading = true
         
-        WorkspaceAPIManager.shared.fetchLongQuestsFor(workspaceId: workspaceId) { [weak self] result in
+        api.fetchLongQuestsFor(workspaceId: workspaceId) { [weak self] result in
             DispatchQueue.main.async {
                 guard let self = self else { return }
 

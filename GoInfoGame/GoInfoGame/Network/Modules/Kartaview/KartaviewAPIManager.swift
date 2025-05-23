@@ -7,7 +7,7 @@
 
 import Foundation
 
-final class KartaviewAPIManager {
+final class KartaviewAPIManager: KartaviewAPIProtocol {
     static let shared = KartaviewAPIManager()
     private let config = KartaviewRequestConfig()
     private var accessToken = "96aca5c4b80709fc6d9aced613b51905c0fbc37870640d7bdabede269165bde7"

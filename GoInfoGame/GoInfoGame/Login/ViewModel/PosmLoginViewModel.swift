@@ -22,6 +22,12 @@ class PosmLoginViewModel: ObservableObject {
     
     @Published var shouldShowValidationAlert: Bool = false
     
+    private let api: TDEIAPIProtocol
+    
+    init(api: TDEIAPIProtocol = TDEIAPIManager.shared) {
+        self.api = api
+    }
+    
     private func validate() {
         errorMessage = ""
         
@@ -53,10 +59,8 @@ class PosmLoginViewModel: ObservableObject {
             let postParams = ["username": username, "password": password]
             
             _ = KeychainManager.save(key: "username", data: username)
-            
-            let postBody  = try? JSONSerialization.data(withJSONObject: postParams)
-            
-            TDEIAPIManager.shared.login(username: username, password: password) { [weak self] result in
+                        
+            api.login(username: username, password: password) { [weak self] result in
                 switch result {
                 case .success(let posmLoginSuccessResponse):
                     let accessToken = posmLoginSuccessResponse.accessToken

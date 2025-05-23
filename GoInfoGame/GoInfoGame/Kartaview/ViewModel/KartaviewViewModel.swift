@@ -21,7 +21,10 @@ class KartaviewViewModel: ObservableObject {
     
     private var location: CLLocationCoordinate2D?
     
-    init(capturedImage: UIImage) {
+    private let api: KartaviewAPIProtocol
+    
+    init(capturedImage: UIImage, api: KartaviewAPIProtocol = KartaviewAPIManager.shared) {
+        self.api = api
         self.capturedImage = capturedImage
         
         locationManagerDelegate.locationManager.delegate = locationManagerDelegate
@@ -44,7 +47,7 @@ class KartaviewViewModel: ObservableObject {
     // Step 1: Create Sequence
     func createSequence(completion: @escaping (String, Bool) -> ()) {
         
-        KartaviewAPIManager.shared.createSequence { [weak self] result in
+        api.createSequence { [weak self] result in
             guard let self = self else { return }
             switch result {
             case .success(let success):
@@ -71,7 +74,7 @@ class KartaviewViewModel: ObservableObject {
         let latitude = location?.latitude.description ?? "0.0"
         let longitude = location?.longitude.description ?? "0.0"
         
-        KartaviewAPIManager.shared.uploadPhoto(imageData: imageData, heading: heading, sequenceId: sequenceId, latitude: latitude, longitude: longitude) { [weak self] result in
+        api.uploadPhoto(imageData: imageData, heading: heading, sequenceId: sequenceId, latitude: latitude, longitude: longitude) { [weak self] result in
             switch result {
             case .success(let success):
                 let status = success.status.httpCode
@@ -89,7 +92,7 @@ class KartaviewViewModel: ObservableObject {
     
     func finishUploading(path: String, sequenceId: String, completion: @escaping (String, Bool) -> ()) {
         
-        KartaviewAPIManager.shared.finishUploading(sequenceId: sequenceId) { result in
+       api.finishUploading(sequenceId: sequenceId) { result in
             switch result {
             case .success(let success):
                 let status = success.status.httpCode

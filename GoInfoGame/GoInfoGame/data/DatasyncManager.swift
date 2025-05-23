@@ -13,12 +13,17 @@ import osmapi
 class DatasyncManager {
     
     static let shared = DatasyncManager()
-    private init() {}
     
+    private let api: POSMAPIProtocol
+
     private var isSynching: Bool = false
     
     private let dbInstance = DatabaseConnector.shared
     private let barrierQueue: DispatchQueue = DispatchQueue(label: "com.goinfogame.DatasyncManager.barrierQueue", attributes: .concurrent)
+    
+    init(api: POSMAPIProtocol = POSMAPIManager.shared) {
+        self.api = api
+    }
     
     func syncDataToOSM(exclude_gig_tags: Bool, completionHandler: @escaping (Result<Bool, APIError>)  -> Void) {
         barrierQueue.async(flags: .barrier) { [weak self] in
@@ -212,7 +217,7 @@ class DatasyncManager {
         
         return try await withCheckedThrowingContinuation { continuation in
             
-            POSMAPIManager.shared.openChangeset(osmPayload: osmPayload, workspaceId: workspaceId ?? "") { result in
+            api.openChangeset(osmPayload: osmPayload, workspaceId: workspaceId ?? "") { result in
                 switch result {
                 case .success(let changesetID):
                     SyncLogger.shared.logStep("✅ Created changeset. ID = \(changesetID)")
@@ -228,7 +233,7 @@ class DatasyncManager {
     func closeChangeset(id: String) async throws -> Bool {
     
         return try await withCheckedThrowingContinuation { continuation in
-            POSMAPIManager.shared.closeChangeset(changesetId: id) { result in
+            api.closeChangeset(changesetId: id) { result in
                 switch result {
                 case .success(let closedResult):
                     SyncLogger.shared.logStep("Changeset closed")
@@ -255,7 +260,7 @@ class DatasyncManager {
         
         return try await withCheckedThrowingContinuation { continuation in
             
-            POSMAPIManager.shared.uploadChangeset(changesetBody: wayBody!, changesetId: "\(way.changeset)") { result in
+            api.uploadChangeset(changesetBody: wayBody!, changesetId: "\(way.changeset)") { result in
                 switch result {
                 case .success:
                     localWay.tags.forEach { (key: String, value: String) in
@@ -300,7 +305,7 @@ class DatasyncManager {
 
         return try await withCheckedThrowingContinuation { continuation in
             
-            POSMAPIManager.shared.uploadChangeset(changesetBody: nodeBody, changesetId: "\(localNode.changeset)") { result in
+            api.uploadChangeset(changesetBody: nodeBody, changesetId: "\(localNode.changeset)") { result in
                 switch result {
                 case .success:
                     var updatedNode = localNode
@@ -344,7 +349,7 @@ class DatasyncManager {
 
         return try await withCheckedThrowingContinuation { continuation in
             
-            POSMAPIManager.shared.uploadChangeset(changesetBody: nodeBody, changesetId: "\(node.changeset)") { result in
+            api.uploadChangeset(changesetBody: nodeBody, changesetId: "\(node.changeset)") { result in
                 switch result {
                 case .success:
                     continuation.resume(returning: true)
@@ -502,7 +507,7 @@ class DatasyncManager {
     func fetchway2(wayId: String) async throws -> OSMWay {
    
         return try await withCheckedThrowingContinuation { continuation in
-            POSMAPIManager.shared.fetchWay(wayId: wayId) { result in
+            api.fetchWay(wayId: wayId) { result in
                 switch result {
                 case .success(let osmwayResponse):
                     if let osmway = osmwayResponse.elements.first {
@@ -520,7 +525,7 @@ class DatasyncManager {
     func fetchNode2(nodeId: String) async throws -> OSMNode {
     
         return try await withCheckedThrowingContinuation { continuation in
-            POSMAPIManager.shared.fetchNode(nodeId: nodeId) { result in
+            api.fetchNode(nodeId: nodeId) { result in
                 switch result {
                 case .success(let osNodeResponse):
                     if let osmnode = osNodeResponse.elements.first {

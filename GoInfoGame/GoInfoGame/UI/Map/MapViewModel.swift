@@ -37,7 +37,11 @@ class MapViewModel: ObservableObject {
     
    private let dbInstance = DatabaseConnector.shared
     
-    init() {
+    private let api: POSMAPIProtocol
+    
+    init(api: POSMAPIProtocol = POSMAPIManager.shared) {
+        self.api = api
+        
            locationManagerDelegate.locationUpdateHandler = { [weak self] location in
                guard let self = self else { return }
 
@@ -113,7 +117,7 @@ class MapViewModel: ObservableObject {
                bBox = boundingBoxFromVisibleMapRect(mapView: mapView)
            }
         
-            POSMAPIManager.shared.fetchOSMElements(left: bBox.minLon, bottom: bBox.minLat, right:  bBox.maxLon, top: bBox.maxLat) { [weak self] result in
+            api.fetchOSMElements(left: bBox.minLon, bottom: bBox.minLat, right:  bBox.maxLon, top: bBox.maxLat) { [weak self] result in
                 guard let self = self else { return }
                 switch result {
                 case .success(let success):

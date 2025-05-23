@@ -5,14 +5,13 @@
 //  Created by Achyut Kumar M on 21/05/25.
 //
 
-final class WorkspaceAPIManager {
+final class WorkspaceAPIManager: WorkspaceAPIProtocol {
     
     static let shared = WorkspaceAPIManager()
     private let config = WorkspaceRequestConfig()
     private let authAdapter = AuthAdapter()
         
     private init() {}
-    
     
     func fetchWorkspaces(completion: @escaping (Result<[Workspace], APIError>) -> Void) {
 
