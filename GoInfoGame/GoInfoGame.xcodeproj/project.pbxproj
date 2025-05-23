@@ -263,6 +263,8 @@
 		FAFDA2122C6F64E800ECEAE9 /* UserProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAFDA2112C6F64E800ECEAE9 /* UserProfileView.swift */; };
 		FAFDA2142C7351CB00ECEAE9 /* APIError.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAFDA2132C7351CB00ECEAE9 /* APIError.swift */; };
 		FAFFC9732DDFBDC700072B11 /* AppEnvManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAFFC9722DDFBDC100072B11 /* AppEnvManager.swift */; };
+		FAFFC9772DE0598500072B11 /* AuthSessionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAFFC9762DE0598000072B11 /* AuthSessionManager.swift */; };
+		FAFFC9792DE07D0B00072B11 /* APIRequestAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAFFC9782DE07D0400072B11 /* APIRequestAdapter.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -610,6 +612,8 @@
 		FAFDA2112C6F64E800ECEAE9 /* UserProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfileView.swift; sourceTree = "<group>"; };
 		FAFDA2132C7351CB00ECEAE9 /* APIError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIError.swift; sourceTree = "<group>"; };
 		FAFFC9722DDFBDC100072B11 /* AppEnvManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppEnvManager.swift; sourceTree = "<group>"; };
+		FAFFC9762DE0598000072B11 /* AuthSessionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthSessionManager.swift; sourceTree = "<group>"; };
+		FAFFC9782DE07D0400072B11 /* APIRequestAdapter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIRequestAdapter.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -1450,6 +1454,7 @@
 				FAFFC9722DDFBDC100072B11 /* AppEnvManager.swift */,
 				FAA01DA12DDDCB3200E4255A /* APIRequestConfig.swift */,
 				FAA01D9F2DDDCB1F00E4255A /* ServerEnvironment.swift */,
+				FAFFC9782DE07D0400072B11 /* APIRequestAdapter.swift */,
 				FAFDA2132C7351CB00ECEAE9 /* APIError.swift */,
 			);
 			path = Core;
@@ -1560,6 +1565,7 @@
 				FAC9E60E2B04F9C800E2C608 /* OverpassRequestManager.swift */,
 				FABF3CF32B7419BB0080EAC9 /* LocationManagerDelegate.swift */,
 				FA1992EC2BB1A78C003B4719 /* KeychainManager.swift */,
+				FAFFC9762DE0598000072B11 /* AuthSessionManager.swift */,
 				FAFDA1F92C6B861A00ECEAE9 /* FileStorageManager.swift */,
 				05CB71DD2B0FAEC200DED821 /* UI */,
 				05CB71DE2B0FAFAA00DED821 /* Bridges */,
@@ -2217,6 +2223,7 @@
 				A48037312BBA8C25007EE7E4 /* ApiManager.swift in Sources */,
 				FABF3D002B8607D80080EAC9 /* MeasureSidewalkView.swift in Sources */,
 				FA18CAE72CC80A34008247F2 /* UploadPhotoModel.swift in Sources */,
+				FAFFC9772DE0598500072B11 /* AuthSessionManager.swift in Sources */,
 				FAA01DA02DDDCB2600E4255A /* ServerEnvironment.swift in Sources */,
 				97439F782B87444200DA43E1 /* CrossingKerbHeightForm.swift in Sources */,
 				FAFDA1FA2C6B861A00ECEAE9 /* FileStorageManager.swift in Sources */,
@@ -2306,6 +2313,7 @@
 				FA50719A2D7263F800CE9798 /* LongFormImageView.swift in Sources */,
 				FAA01DB52DDDCC4100E4255A /* WorksapceServerEnvironment.swift in Sources */,
 				971342792BBD691500174EBF /* MapViewControllerView.swift in Sources */,
+				FAFFC9792DE07D0B00072B11 /* APIRequestAdapter.swift in Sources */,
 				FAA01DCB2DDE15EC00E4255A /* APIRequestPerformer.swift in Sources */,
 				FA1992ED2BB1A78C003B4719 /* KeychainManager.swift in Sources */,
 				0536DD972B0BD95100B04C4B /* URLSession+Extension.swift in Sources */,
