@@ -31,7 +31,7 @@ final class KartaviewAPIManager: KartaviewAPIProtocol {
     func uploadPhoto(imageData: Data, heading: String?,sequenceId: String, latitude: String, longitude: String, completion: @escaping (Result<UploadPhotoModel, APIError>) -> Void) {
         
         let formData: [[String: Any]] = [
-            ["key": "access_token", "value": "96aca5c4b80709fc6d9aced613b51905c0fbc37870640d7bdabede269165bde7", "type": "text"],
+            ["key": "access_token", "value": accessToken, "type": "text"],
             [
                 "key": "sequenceId",
                 "value": sequenceId,
@@ -49,7 +49,7 @@ final class KartaviewAPIManager: KartaviewAPIProtocol {
             ],
             [
                 "key": "access_token",
-                "value": "96aca5c4b80709fc6d9aced613b51905c0fbc37870640d7bdabede269165bde7",
+                "value": accessToken,
                 "type": "text"
             ],
             [
@@ -85,7 +85,7 @@ final class KartaviewAPIManager: KartaviewAPIProtocol {
             ],
             [
                 "key": "access_token",
-                "value": "96aca5c4b80709fc6d9aced613b51905c0fbc37870640d7bdabede269165bde7",
+                "value": accessToken,
                 "type": "text"
             ],
         ]
