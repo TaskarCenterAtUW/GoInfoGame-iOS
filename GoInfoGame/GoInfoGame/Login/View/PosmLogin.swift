@@ -9,16 +9,19 @@ import SwiftUI
 
 struct PosmLoginView: View {
     
-    @ObservedObject var viewModel = PosmLoginViewModel()
-    
-    @State private var isShowingAlert = false
-    @State private var shouldLogin = false
-    
-    @State private var shouldShowAlert = false
-    
+    @ObservedObject var viewModel: PosmLoginViewModel
+            
     @State private var selectedEnvironment: AppEnv = .staging
-    @State private var showAlert = false
+    @State private var showSessionExpiredAlert = false
+    
+    @State private var route: NavigationRoute?
+        
+    init(viewModel: PosmLoginViewModel = PosmLoginViewModel()) {
+        self.viewModel = viewModel
+    }
+    
     var body: some View {
+        
         NavigationStack {
             ZStack {
                 VStack(spacing: 20) {
@@ -26,7 +29,7 @@ struct PosmLoginView: View {
                         .font(.custom("Lato-Bold", size: 30))
                         .foregroundColor((Color(red: 135/255, green: 62/255, blue: 242/255)))
                         .padding([.bottom], 50)
-                                    
+                    
                     TextField("Username", text: $viewModel.username)
                         .padding()
                         .background(Color(.systemGray6))
@@ -39,6 +42,7 @@ struct PosmLoginView: View {
                         .background(Color(.systemGray6))
                         .cornerRadius(10)
                         .padding(.horizontal, 40)
+                    
                     
                     Menu {
                         ForEach(AppEnv.allCases, id: \.self) { environment in
@@ -60,7 +64,7 @@ struct PosmLoginView: View {
                         .cornerRadius(10)
                     }
                     .padding(.horizontal, 40)
-            
+                    
                     Button(action: {
                         viewModel.performLogin()
                     }) {
@@ -73,42 +77,64 @@ struct PosmLoginView: View {
                     }
                     .padding(.top, 20)
                     
-                    if viewModel.hasLoginFailed {
-                        Text("Invalid Credentials")
+                    if case let .error(errorMessage) = viewModel.state {
+                        Text(errorMessage)
                             .foregroundColor(.red)
-                            .padding(.top, 10)
+                            .font(.caption)
+                            .padding(.top, 8)
+                            .onAppear {
+                                DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                                    if case .error = viewModel.state {
+                                        viewModel.state = .idle
+                                    }
+                                }
+                            }
                     }
                 }
                 .padding()
                 
-                if viewModel.isLoading {
-                    ActivityView(activityText: "Loading...")
+                switch viewModel.state {
+                case .idle:
+                    EmptyView()
+                case .loading:
+                    ActivityView(activityText: "Loggin In...")
                         .frame(maxWidth: .infinity, maxHeight: .infinity)
                         .background(Color.black.opacity(0.4))
                         .edgesIgnoringSafeArea(.all)
+                case .loaded:
+                    EmptyView()
+                case .error(_):
+                    EmptyView()
                 }
+                
+                NavigationCoordinator(route: $viewModel.route)
             }
-            .navigationDestination(isPresented: $viewModel.isLoginSuccess) {
-                WorkspaceView()
-            }
-        }
-        .alert("Invalid Credentials", isPresented: $viewModel.shouldShowValidationAlert) {
-            Button("OK", role: .cancel) { }
         }
         .onAppear {
             selectedEnvironment = AppEnvManager.shared.current
         }
         .onReceive(NotificationCenter.default.publisher(for: Notification.Name("SessionExpired"))) { notification in
-                    showAlert = true
-                }
-                .alert("Logout", isPresented: $showAlert) {
-                    Button("OK", role: .cancel) {}
-                } message: {
-                    Text("Your session has expired. Please login again")
-                }
+            showSessionExpiredAlert = true
+        }
+        .alert("Logout", isPresented: $showSessionExpiredAlert) {
+            Button("OK", role: .cancel) {}
+        } message: {
+            Text("Your session has expired. Please login again")
+        }
     }
 }
 
-#Preview {
-    PosmLoginView()
+#Preview("IDLE") {
+    PosmLoginView(viewModel: PosmLoginViewModel(state: .idle))
+}
+
+#Preview("Loading") {
+    PosmLoginView(viewModel: PosmLoginViewModel(state: .loading))
+}
+
+#Preview("Error") {
+    PosmLoginView(viewModel: PosmLoginViewModel(state: .error("Login Failed")))
+}
+#Preview("Loaded") {
+    PosmLoginView(viewModel: PosmLoginViewModel(state: .loaded))
 }
