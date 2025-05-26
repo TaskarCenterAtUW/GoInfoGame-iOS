@@ -8,56 +8,33 @@
 import Foundation
 import SwiftUI
 
-@MainActor
-class PosmLoginViewModel: ObservableObject {
+final class PosmLoginViewModel: ObservableObject {
     @Published var username: String = ""
     @Published var password: String = ""
-    @Published var hasLoginFailed: Bool = false
-    @Published var isLoginSuccess: Bool = false
+
     @Published var errorMessage: String?
-    
-    @Published var isLoading = false
-    
+        
     @AppStorage("loggedIn") private var loggedIn: Bool = false
-    
-    @Published var shouldShowValidationAlert: Bool = false
+        
+    @Published var state: ViewModelState = .idle
     
     private let api: TDEIAPIProtocol
     
-    init(api: TDEIAPIProtocol = TDEIAPIManager.shared) {
+    @Published var route: NavigationRoute?
+    
+    init(api: TDEIAPIProtocol = TDEIAPIManager.shared, state: ViewModelState = .idle) {
         self.api = api
+        self.state = state
     }
-    
-    private func validate() {
-        errorMessage = ""
-        
-        if username.isEmpty {
-            errorMessage = "Username is required."
-            shouldShowValidationAlert = true
-            return
-        } else if password.isEmpty {
-            errorMessage = "Password is required."
-            shouldShowValidationAlert = true
-            return
-        } else if username.isEmpty && password.isEmpty {
-            errorMessage = "Enter username and password"
-            shouldShowValidationAlert = true
-            return
-        }
-        shouldShowValidationAlert = false
-    }
-    
-    
+
     func performLogin() {
         
-        validate()
-        
-        if !shouldShowValidationAlert {
-            
-            isLoading = true
-            
-            let postParams = ["username": username, "password": password]
-            
+            guard !username.isEmpty, !password.isEmpty else {
+                state = .error("Username and Password cannot be empty.")
+                return
+            }
+            state = .loading
+                        
             _ = KeychainManager.save(key: "username", data: username)
                         
             api.login(username: username, password: password) { [weak self] result in
@@ -73,18 +50,15 @@ class PosmLoginViewModel: ObservableObject {
                         if let appDelegate = UIApplication.shared.delegate as? AppDelegate {
                             appDelegate.validateAccessToken()
                         }
-                        self?.hasLoginFailed = false
+                        self?.state = .loaded
+                        self?.route = .workspace
                         self?.loggedIn = true
-                        self?.isLoading = false
-                        self?.isLoginSuccess = true
                     }
-                case .failure(_) :
+                case .failure(let error):
                     DispatchQueue.main.async {
-                        self?.hasLoginFailed = true
-                        self?.isLoading = false
+                        self?.state = .error(error.localizedDescription)
                     }
                 }
             }
-        }
     }
 }
