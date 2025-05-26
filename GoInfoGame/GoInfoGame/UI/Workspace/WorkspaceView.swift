@@ -9,8 +9,9 @@ import SwiftUI
 // InitialView - Main view for displaying available workspaces and navigating to MapVie
 struct WorkspaceView: View {
     @StateObject private var viewModel = WorkspacesViewModel()
+    @Environment(\.scenePhase) private var scenePhase
+    
     @State private var shouldNavigateToMapView = false
-    @StateObject private var locManagerDelegate = LocationManagerDelegate()
     
     @State private var isLoading: Bool = false
     
@@ -65,6 +66,19 @@ struct WorkspaceView: View {
                     ActivityView(activityText: "Fetching workspaces")
                        
                 }
+            }
+        }
+        .onAppear {
+            viewModel.enableLocationTracking()
+        }
+        .onChange(of: scenePhase) { phase in
+            switch phase {
+            case .active:
+                viewModel.enableLocationTracking()
+            case .background:
+                viewModel.disableLocationTracking()
+            default:
+                break
             }
         }
         .onAppear {

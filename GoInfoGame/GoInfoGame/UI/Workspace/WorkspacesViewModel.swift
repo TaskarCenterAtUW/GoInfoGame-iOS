@@ -11,25 +11,29 @@ import MapKit
 import CoreLocation
 // WorkspacesViewModel - ViewModel for managing data related to initial view
 class WorkspacesViewModel: ObservableObject {
-    let locationManagerDelegate = LocationManagerDelegate()
-    @Published var workspaces: [Workspace] = [] 
+    private var locationService: LocationServiceProtocol
+    
+    @Published var workspaces: [Workspace] = []
     @Published var longQuests: [LongFormModel] = []
     @Published var isLoading: Bool = false
     
     private let api: WorkspaceAPIProtocol
     
-    init(api: WorkspaceAPIProtocol = WorkspaceAPIManager.shared) {
+    init(api: WorkspaceAPIProtocol = WorkspaceAPIManager.shared, locationService: LocationServiceProtocol = LocationManagerDelegate()) {
         self.api = api
-        locationManagerDelegate.locationManager.delegate = locationManagerDelegate
-        locationManagerDelegate.locationManager.requestWhenInUseAuthorization()
-        locationManagerDelegate.locationManager.startUpdatingLocation()
-        
-        locationManagerDelegate.locationUpdateHandler = { [weak self] location in
-            guard let self = self else { return }
-            // fetch workspace
-           // fetchWorkspaceFor(currentLocation: location)
-            fetchWorkspacesList()
+        self.locationService = locationService
+    }
+    
+    func enableLocationTracking() {
+        locationService.requestLocationAuthorization()
+        locationService.startUpdatingLocation()
+        locationService.locationUpdateHandler = { [weak self] coordinate in
+            self?.fetchWorkspacesList()
         }
+    }
+    
+    func disableLocationTracking() {
+        locationService.stopUpdatingLocation()
     }
     
     // fetch workspaces list
