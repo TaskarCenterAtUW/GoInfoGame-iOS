@@ -12,8 +12,6 @@ struct GoInfoGameApp: App {
     @AppStorage("loggedIn") private var loggedIn: Bool = false
     @Environment(\.scenePhase) private var scenePhase
     
-    private let locationManagerDelegate = LocationManagerDelegate()
-
     init() {
         AuthSessionManager.shared.validateAccessToken()
     }
@@ -25,16 +23,6 @@ struct GoInfoGameApp: App {
                     WorkspaceView()
                 } else {
                     PosmLoginView()
-                }
-            }
-            .onChange(of: scenePhase) { phase in
-                switch phase {
-                case .active:
-                    locationManagerDelegate.startUpdatingLocation()
-                case .background:
-                    locationManagerDelegate.stopUpdatingLocation()
-                default:
-                    break
                 }
             }
         }
