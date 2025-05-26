@@ -8,6 +8,16 @@
 import Foundation
 import MapKit
 
+
+class AzureTileOverlay: MKTileOverlay {
+    let subscriptionKey = "6wbzwfhewBRYD9m9sQ1ZIZXCMYISpv4bvIgdH8uWIdKKzBzN3umfJQQJ99BEAC8vTInXtnAjAAAgAZMP4U23"
+
+    override func url(forTilePath path: MKTileOverlayPath) -> URL {
+        let template = "https://atlas.microsoft.com/map/tile?api-version=2.1&tilesetId=microsoft.imagery&zoom=\(path.z)&x=\(path.x)&y=\(path.y)&subscription-key=\(subscriptionKey)"
+        return URL(string: template)!
+    }
+}
+
 class BingTileOverlay: MKTileOverlay {
     private let apiKey = "AmsZqEUH1H00cfsKzQz44YOJ_hPQT1wkF-Po2TdhXVeTt23E_v5Sl64YMhlZnOsA"
     

@@ -55,7 +55,7 @@ struct CustomMap: UIViewRepresentable {
         mapView.register(CustomAnnotationView.self, forAnnotationViewWithReuseIdentifier: CustomAnnotationView.reuseIdentifier)
                 
         if useBingMaps {
-            let tileOverlay = BingTileOverlay()
+            let tileOverlay = AzureTileOverlay()
                   tileOverlay.minimumZ = 3  // Set minimum zoom level
                   tileOverlay.maximumZ = 150 // Set maximum zoom level for better performance
             DispatchQueue.main.async {
@@ -92,7 +92,7 @@ struct CustomMap: UIViewRepresentable {
         
            // Re-add overlays based on selection
            if useBingMaps {
-               let tileOverlay = BingTileOverlay()
+               let tileOverlay = AzureTileOverlay()
                tileOverlay.minimumZ = 3
                tileOverlay.maximumZ = 19
                mapView.addOverlay(tileOverlay, level: .aboveLabels)
