@@ -210,6 +210,7 @@
 		FA8C74D42C5A443700D28220 /* QuestOptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA8C74D32C5A443700D28220 /* QuestOptions.swift */; };
 		FA8C74D62C5C0DBA00D28220 /* LongFormViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA8C74D52C5C0DBA00D28220 /* LongFormViewModel.swift */; };
 		FA8C74D82C60E95100D28220 /* PosmLogin.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA8C74D72C60E95100D28220 /* PosmLogin.swift */; };
+		FA93879C2DE4F14200F7A460 /* ViewModelState.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA93879B2DE4F13900F7A460 /* ViewModelState.swift */; };
 		FA9AEC002D5CACB6006A3A31 /* UserNodesHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA9AEBFF2D5CACB3006A3A31 /* UserNodesHelper.swift */; };
 		FA9F381C2DB2FF4B00D7AABF /* ShadowOverlayRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA9F381B2DB2FF3E00D7AABF /* ShadowOverlayRenderer.swift */; };
 		FA9F38202DC5585600D7AABF /* QuestUndoManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA9F381F2DC5584D00D7AABF /* QuestUndoManager.swift */; };
@@ -265,6 +266,7 @@
 		FAFFC97F2DE0FDB100072B11 /* WorkspaceAPIProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAFFC97E2DE0FDA800072B11 /* WorkspaceAPIProtocol.swift */; };
 		FAFFC9812DE0FECC00072B11 /* TDEIAPIProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAFFC9802DE0FEC600072B11 /* TDEIAPIProtocol.swift */; };
 		FAFFC9832DE104CB00072B11 /* KartaviewAPIProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAFFC9822DE104C300072B11 /* KartaviewAPIProtocol.swift */; };
+		FAFFC9852DE4AD7600072B11 /* RouteHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAFFC9842DE4AD6F00072B11 /* RouteHandler.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -555,6 +557,7 @@
 		FA8C74D32C5A443700D28220 /* QuestOptions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuestOptions.swift; sourceTree = "<group>"; };
 		FA8C74D52C5C0DBA00D28220 /* LongFormViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LongFormViewModel.swift; sourceTree = "<group>"; };
 		FA8C74D72C60E95100D28220 /* PosmLogin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PosmLogin.swift; sourceTree = "<group>"; };
+		FA93879B2DE4F13900F7A460 /* ViewModelState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewModelState.swift; sourceTree = "<group>"; };
 		FA9AEBFF2D5CACB3006A3A31 /* UserNodesHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserNodesHelper.swift; sourceTree = "<group>"; };
 		FA9F381B2DB2FF3E00D7AABF /* ShadowOverlayRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShadowOverlayRenderer.swift; sourceTree = "<group>"; };
 		FA9F381F2DC5584D00D7AABF /* QuestUndoManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuestUndoManager.swift; sourceTree = "<group>"; };
@@ -614,6 +617,7 @@
 		FAFFC97E2DE0FDA800072B11 /* WorkspaceAPIProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkspaceAPIProtocol.swift; sourceTree = "<group>"; };
 		FAFFC9802DE0FEC600072B11 /* TDEIAPIProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TDEIAPIProtocol.swift; sourceTree = "<group>"; };
 		FAFFC9822DE104C300072B11 /* KartaviewAPIProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KartaviewAPIProtocol.swift; sourceTree = "<group>"; };
+		FAFFC9842DE4AD6F00072B11 /* RouteHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RouteHandler.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -1567,6 +1571,8 @@
 				FA1992EC2BB1A78C003B4719 /* KeychainManager.swift */,
 				FAFFC9762DE0598000072B11 /* AuthSessionManager.swift */,
 				FAFDA1F92C6B861A00ECEAE9 /* FileStorageManager.swift */,
+				FAFFC9842DE4AD6F00072B11 /* RouteHandler.swift */,
+				FA93879B2DE4F13900F7A460 /* ViewModelState.swift */,
 				05CB71DD2B0FAEC200DED821 /* UI */,
 				05CB71DE2B0FAFAA00DED821 /* Bridges */,
 				058EADD92B10E02E0017E259 /* DataBase */,
@@ -2199,6 +2205,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FAFFC9852DE4AD7600072B11 /* RouteHandler.swift in Sources */,
 				FA9F38202DC5585600D7AABF /* QuestUndoManager.swift in Sources */,
 				FA8C74D42C5A443700D28220 /* QuestOptions.swift in Sources */,
 				A4AD130C2B5E80F20041A881 /* StoredElement.swift in Sources */,
@@ -2265,6 +2272,7 @@
 				FA50718E2D54E1D200CE9798 /* BingTileOverlay.swift in Sources */,
 				973FC0352B592C0F00878269 /* StairNumberForm.swift in Sources */,
 				FA8C74C22C4E89C800D28220 /* LongForm.swift in Sources */,
+				FA93879C2DE4F14200F7A460 /* ViewModelState.swift in Sources */,
 				FA9F38222DC93F5300D7AABF /* UndoSidebarView.swift in Sources */,
 				FAC9E60F2B04F9C800E2C608 /* OverpassRequestManager.swift in Sources */,
 				18EC425E2B849FE000DE05D7 /* TactilePavingCrosswalk.swift in Sources */,
