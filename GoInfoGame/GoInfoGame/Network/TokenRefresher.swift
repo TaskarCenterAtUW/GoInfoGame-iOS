@@ -28,9 +28,10 @@ class TokenRefresher {
         }
         let refreshToken = KeychainManager.load(key: "refreshToken")
         DispatchQueue.main.async {
-            if let appDelegate = UIApplication.shared.delegate as? AppDelegate {
-                appDelegate.invalidateRefreshTokenTimer()
-            }
+            AuthSessionManager.shared.validateAccessToken()
+//            if let appDelegate = UIApplication.shared.delegate as? AppDelegate {
+//                appDelegate.invalidateRefreshTokenTimer()
+//            }
         }
         
         TDEIAPIManager.shared.refreshToken(refreshToken: refreshToken ?? "") { [weak self] result in
@@ -48,9 +49,10 @@ class TokenRefresher {
                 UserDefaults.standard.setValue(resp.expiresIn, forKey: "accessToken_expire_in")
                 UserDefaults.standard.setValue(Date().timeIntervalSince1970, forKey: "accessToken_Generate")
                 DispatchQueue.main.async {
-                    if let appDelegate = UIApplication.shared.delegate as? AppDelegate {
-                        appDelegate.validateAccessToken()
-                    }
+                    AuthSessionManager.shared.validateAccessToken()
+//                    if let appDelegate = UIApplication.shared.delegate as? AppDelegate {
+//                        appDelegate.validateAccessToken()
+//                    }
                 }
                 success = true
                 break

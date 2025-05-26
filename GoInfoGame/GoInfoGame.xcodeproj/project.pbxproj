@@ -238,9 +238,6 @@
 		FABF3CFD2B8607860080EAC9 /* MeasureWidthContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = FABF3CFC2B8607860080EAC9 /* MeasureWidthContainer.swift */; };
 		FABF3D002B8607D80080EAC9 /* MeasureSidewalkView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FABF3CFF2B8607D80080EAC9 /* MeasureSidewalkView.swift */; };
 		FAC9E60F2B04F9C800E2C608 /* OverpassRequestManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC9E60E2B04F9C800E2C608 /* OverpassRequestManager.swift */; };
-		FAD5C4F32AFCBE700040C61A /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAD5C4F22AFCBE700040C61A /* AppDelegate.swift */; };
-		FAD5C4F52AFCBE700040C61A /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAD5C4F42AFCBE700040C61A /* SceneDelegate.swift */; };
-		FAD5C4FA2AFCBE700040C61A /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FAD5C4F82AFCBE700040C61A /* Main.storyboard */; };
 		FAD5C4FC2AFCBE720040C61A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = FAD5C4FB2AFCBE720040C61A /* Assets.xcassets */; };
 		FAD5C4FF2AFCBE720040C61A /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FAD5C4FD2AFCBE720040C61A /* LaunchScreen.storyboard */; };
 		FAD5C50A2AFCBE720040C61A /* GoInfoGameTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAD5C5092AFCBE720040C61A /* GoInfoGameTests.swift */; };
@@ -587,9 +584,6 @@
 		FABF3CFF2B8607D80080EAC9 /* MeasureSidewalkView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeasureSidewalkView.swift; sourceTree = "<group>"; };
 		FAC9E60E2B04F9C800E2C608 /* OverpassRequestManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OverpassRequestManager.swift; sourceTree = "<group>"; };
 		FAD5C4EF2AFCBE700040C61A /* GoInfoGame.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GoInfoGame.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		FAD5C4F22AFCBE700040C61A /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		FAD5C4F42AFCBE700040C61A /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
-		FAD5C4F92AFCBE700040C61A /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		FAD5C4FB2AFCBE720040C61A /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		FAD5C4FE2AFCBE720040C61A /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		FAD5C5002AFCBE720040C61A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -1566,8 +1560,6 @@
 				A4E7119C2B57A22300C9DE08 /* quests */,
 				A4E7119A2B57A17600C9DE08 /* data */,
 				973FC00C2B4D2A6D00878269 /* Localizable.strings */,
-				FAD5C4F22AFCBE700040C61A /* AppDelegate.swift */,
-				FAD5C4F42AFCBE700040C61A /* SceneDelegate.swift */,
 				FA93879D2DE4F9BC00F7A460 /* GoInfoGameApp.swift */,
 				FAC9E60E2B04F9C800E2C608 /* OverpassRequestManager.swift */,
 				FABF3CF32B7419BB0080EAC9 /* LocationManagerDelegate.swift */,
@@ -1582,7 +1574,6 @@
 				058EADDA2B10E09C0017E259 /* Repository */,
 				0536DD952B0BD91F00B04C4B /* Network */,
 				0536DD8A2B0BD2A900B04C4B /* Helpers */,
-				FAD5C4F82AFCBE700040C61A /* Main.storyboard */,
 				FAD5C4FB2AFCBE720040C61A /* Assets.xcassets */,
 				0513BE762B2B464800FB61CF /* samplepoint.gpx */,
 				FAD5C4FD2AFCBE720040C61A /* LaunchScreen.storyboard */,
@@ -1956,7 +1947,6 @@
 				0513BE772B2B464800FB61CF /* samplepoint.gpx in Resources */,
 				FAD5C4FF2AFCBE720040C61A /* LaunchScreen.storyboard in Resources */,
 				FAD5C4FC2AFCBE720040C61A /* Assets.xcassets in Resources */,
-				FAD5C4FA2AFCBE700040C61A /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2266,7 +2256,6 @@
 				FAFFC9812DE0FECC00072B11 /* TDEIAPIProtocol.swift in Sources */,
 				971F9FE42B84CDBF005397CC /* CrossingType.swift in Sources */,
 				97AC1C062B6A45B0004F0BF4 /* SideWalkValidation.swift in Sources */,
-				FAD5C4F32AFCBE700040C61A /* AppDelegate.swift in Sources */,
 				18EC425C2B84987200DE05D7 /* TactilePavingCrosswalkForm.swift in Sources */,
 				05DBBB622B164D9A00B6F110 /* RealOPElement.swift in Sources */,
 				973FC0422B59467A00878269 /* BusStopLit.swift in Sources */,
@@ -2346,7 +2335,6 @@
 				FABF3CFD2B8607860080EAC9 /* MeasureWidthContainer.swift in Sources */,
 				FA8C74C72C4FE2E900D28220 /* LongFormWidthView.swift in Sources */,
 				97AC1C082B6A45C9004F0BF4 /* SideWalkValidationForm.swift in Sources */,
-				FAD5C4F52AFCBE700040C61A /* SceneDelegate.swift in Sources */,
 				97AC1C232B726ADC004F0BF4 /* TactilePavingKerbForm.swift in Sources */,
 				97412A942BBADAED00DF7983 /* StairFlightsForm.swift in Sources */,
 				FAF44FBF2B3084FB004FE664 /* OnboardingView2.swift in Sources */,
@@ -2456,14 +2444,6 @@
 				973FC00D2B4D2A7900878269 /* fr */,
 			);
 			name = Localizable.strings;
-			sourceTree = "<group>";
-		};
-		FAD5C4F82AFCBE700040C61A /* Main.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				FAD5C4F92AFCBE700040C61A /* Base */,
-			);
-			name = Main.storyboard;
 			sourceTree = "<group>";
 		};
 		FAD5C4FD2AFCBE720040C61A /* LaunchScreen.storyboard */ = {
@@ -2861,7 +2841,6 @@
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "We need your location";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
-				INFOPLIST_KEY_UIMainStoryboardFile = Main;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UIUserInterfaceStyle = Light;
@@ -2899,7 +2878,6 @@
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "We need your location";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
-				INFOPLIST_KEY_UIMainStoryboardFile = Main;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UIUserInterfaceStyle = Light;
