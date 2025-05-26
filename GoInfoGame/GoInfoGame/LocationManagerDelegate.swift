@@ -111,3 +111,5 @@ class LocationManagerDelegate: NSObject, ObservableObject, CLLocationManagerDele
         }
     }
 }
+
+extension LocationManagerDelegate: LocationServiceProtocol {}

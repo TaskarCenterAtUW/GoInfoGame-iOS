@@ -212,6 +212,7 @@
 		FA8C74D82C60E95100D28220 /* PosmLogin.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA8C74D72C60E95100D28220 /* PosmLogin.swift */; };
 		FA93879C2DE4F14200F7A460 /* ViewModelState.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA93879B2DE4F13900F7A460 /* ViewModelState.swift */; };
 		FA93879E2DE4F9C900F7A460 /* GoInfoGameApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA93879D2DE4F9BC00F7A460 /* GoInfoGameApp.swift */; };
+		FA9387A02DE50B4900F7A460 /* LocationServiceProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA93879F2DE50B4100F7A460 /* LocationServiceProtocol.swift */; };
 		FA9AEC002D5CACB6006A3A31 /* UserNodesHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA9AEBFF2D5CACB3006A3A31 /* UserNodesHelper.swift */; };
 		FA9F381C2DB2FF4B00D7AABF /* ShadowOverlayRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA9F381B2DB2FF3E00D7AABF /* ShadowOverlayRenderer.swift */; };
 		FA9F38202DC5585600D7AABF /* QuestUndoManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA9F381F2DC5584D00D7AABF /* QuestUndoManager.swift */; };
@@ -557,6 +558,7 @@
 		FA8C74D72C60E95100D28220 /* PosmLogin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PosmLogin.swift; sourceTree = "<group>"; };
 		FA93879B2DE4F13900F7A460 /* ViewModelState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewModelState.swift; sourceTree = "<group>"; };
 		FA93879D2DE4F9BC00F7A460 /* GoInfoGameApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoInfoGameApp.swift; sourceTree = "<group>"; };
+		FA93879F2DE50B4100F7A460 /* LocationServiceProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationServiceProtocol.swift; sourceTree = "<group>"; };
 		FA9AEBFF2D5CACB3006A3A31 /* UserNodesHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserNodesHelper.swift; sourceTree = "<group>"; };
 		FA9F381B2DB2FF3E00D7AABF /* ShadowOverlayRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShadowOverlayRenderer.swift; sourceTree = "<group>"; };
 		FA9F381F2DC5584D00D7AABF /* QuestUndoManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuestUndoManager.swift; sourceTree = "<group>"; };
@@ -1563,6 +1565,7 @@
 				FA93879D2DE4F9BC00F7A460 /* GoInfoGameApp.swift */,
 				FAC9E60E2B04F9C800E2C608 /* OverpassRequestManager.swift */,
 				FABF3CF32B7419BB0080EAC9 /* LocationManagerDelegate.swift */,
+				FA93879F2DE50B4100F7A460 /* LocationServiceProtocol.swift */,
 				FA1992EC2BB1A78C003B4719 /* KeychainManager.swift */,
 				FAFFC9762DE0598000072B11 /* AuthSessionManager.swift */,
 				FAFDA1F92C6B861A00ECEAE9 /* FileStorageManager.swift */,
@@ -2281,6 +2284,7 @@
 				973FC03D2B59417D00878269 /* WayLitForm.swift in Sources */,
 				0536DD922B0BD58800B04C4B /* OAuthService.swift in Sources */,
 				FAA01DCD2DDFB52900E4255A /* APIRequest.swift in Sources */,
+				FA9387A02DE50B4900F7A460 /* LocationServiceProtocol.swift in Sources */,
 				97AC1C0F2B70CEF5004F0BF4 /* SidewalkSurface.swift in Sources */,
 				FAA01DA22DDDCB3C00E4255A /* APIRequestConfig.swift in Sources */,
 				973FC0112B4D2D1C00878269 /* QuestAndDescriptionView.swift in Sources */,
