@@ -40,7 +40,7 @@ struct Utilities {
         @AppStorage("loggedIn") var loggedIn: Bool = false
         _ = KeychainManager.delete(key: "accessToken")
         _ = KeychainManager.delete(key: "refreshToken")
-        _ = KeychainManager.delete(key: "username")
+       // _ = KeychainManager.delete(key: "username")
         loggedIn = false
         UserProfileCache.shared.clearUserProfile()
         UserDefaults.standard.removeObject(forKey: "accessToken_Generate")

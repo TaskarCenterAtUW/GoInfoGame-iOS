@@ -36,10 +36,12 @@ class UserProfileViewModel: ObservableObject {
     
     func fetchUserProfile() {
         
-        let username = KeychainManager.load(key: "username")
+        let env = APIConfiguration.shared.environment
+        
+        guard let username = KeychainManager.load(.username, for: env) else { return }
         
         if let accessToken = KeychainManager.load(key: "accessToken") {
-            ApiManager.shared.performRequest(to: .fetchuserProfile(username!, accessToken), setupType: .userProfile, modelType: TdeiUserProfile.self) { result in
+            ApiManager.shared.performRequest(to: .fetchuserProfile(username, accessToken), setupType: .userProfile, modelType: TdeiUserProfile.self) { result in
                 switch result {
                 case .success(let userprofile):
                     DispatchQueue.main.async {

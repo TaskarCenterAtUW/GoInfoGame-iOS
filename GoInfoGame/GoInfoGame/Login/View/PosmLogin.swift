@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import LocalAuthentication
 
 struct PosmLoginView: View {
     
@@ -18,6 +19,7 @@ struct PosmLoginView: View {
     
     @State private var selectedEnvironment: APIEnvironment = .staging
     @State private var showAlert = false
+            
     var body: some View {
         NavigationStack {
             ZStack {
@@ -62,7 +64,8 @@ struct PosmLoginView: View {
                     .padding(.horizontal, 40)
             
                     Button(action: {
-                        viewModel.performLogin()
+                        APIConfiguration.shared.environment = selectedEnvironment
+                        viewModel.performLogin(for: selectedEnvironment)
                     }) {
                         Text("Login")
                             .font(.custom("Lato-Bold", size: 20))
@@ -72,6 +75,36 @@ struct PosmLoginView: View {
                             .cornerRadius(25)
                     }
                     .padding(.top, 20)
+                    
+                    if SessionManager.shared.canUseBiometricLogin(for: selectedEnvironment) {
+                        Button(action: {
+                            APIConfiguration.shared.environment = selectedEnvironment
+                            BiometricAuthManager.authenticate(reason: "Login using Face ID") { result in
+                                switch result {
+                                case .success:
+                                    if let username = KeychainManager.load(.username, for: selectedEnvironment),
+                                       let password = KeychainManager.load(.password, for: selectedEnvironment) {
+
+                                        viewModel.username = username
+                                        viewModel.password = password
+                                        
+                                        viewModel.performLogin(for: selectedEnvironment)
+                                    } else {
+                                        print("Missing credentials in Keychain")
+                                        viewModel.hasLoginFailed = true
+                                    }
+
+                                case .failure(let message), .unavailable(let message):
+                                    print("Biometric login failed: \(message)")
+                                    viewModel.hasLoginFailed = true
+                                }
+                            }
+                        }) {
+                            Label(BiometricAuthManager.biometricLabelText(), systemImage: BiometricAuthManager.biometricIcon())
+                                .font(.custom("Lato-Bold", size: 18))
+                                .foregroundColor(.blue)
+                        }
+                    }
                     
                     if viewModel.hasLoginFailed {
                         Text("Invalid Credentials")
@@ -94,9 +127,6 @@ struct PosmLoginView: View {
         }
         .alert("Invalid Credentials", isPresented: $viewModel.shouldShowValidationAlert) {
             Button("OK", role: .cancel) { }
-        }
-        .onAppear {
-            selectedEnvironment = APIConfiguration.shared.environment
         }
         .onReceive(NotificationCenter.default.publisher(for: Notification.Name("SessionExpired"))) { notification in
                     showAlert = true
