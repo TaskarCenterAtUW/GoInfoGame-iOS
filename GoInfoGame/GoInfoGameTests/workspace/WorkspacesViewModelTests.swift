@@ -104,5 +104,33 @@ final class WorkspacesViewModelTests: XCTestCase {
         
         XCTAssertEqual(viewModel.state, .loading)
     }
+    
+    func test_stateSetToLoaded_AfterSuccessfulFetch() throws {
+        
+        // Arrange
+        let sampleWorkspace = Workspace(
+            id: 1,
+            title: "Test Workspace",
+            externalAppAccess: 1
+        )
+        
+        mockAPI.returnedWorkspaces = [sampleWorkspace]
+    
+        let expectation = XCTestExpectation(description: "Wait for API completion")
+        
+        //Act
+        viewModel.fetchWorkspacesList()
+        
+        DispatchQueue.main.async {
+            XCTAssertEqual(self.viewModel.state, .loaded, "Expected state to be .loaded after successful API call")
+            XCTAssertEqual(self.viewModel.workspaces.count, 3)
+                  expectation.fulfill()
+        }
+        
+        wait(for: [expectation], timeout: 1.0)
+    }
+        
+        
+
 }
     
