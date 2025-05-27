@@ -213,6 +213,10 @@
 		FA93879C2DE4F14200F7A460 /* ViewModelState.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA93879B2DE4F13900F7A460 /* ViewModelState.swift */; };
 		FA93879E2DE4F9C900F7A460 /* GoInfoGameApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA93879D2DE4F9BC00F7A460 /* GoInfoGameApp.swift */; };
 		FA9387A02DE50B4900F7A460 /* LocationServiceProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA93879F2DE50B4100F7A460 /* LocationServiceProtocol.swift */; };
+		FA9387A32DE58BBA00F7A460 /* POSMLoginViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA9387A22DE58BA800F7A460 /* POSMLoginViewModelTests.swift */; };
+		FA9387A82DE5D5E500F7A460 /* WorkspacesViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA9387A72DE5D5D600F7A460 /* WorkspacesViewModelTests.swift */; };
+		FA9387AB2DE5D91200F7A460 /* MockLocationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA9387AA2DE5D90D00F7A460 /* MockLocationService.swift */; };
+		FA9387AD2DE5DDD700F7A460 /* MockWorkspaceAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA9387AC2DE5DDD100F7A460 /* MockWorkspaceAPI.swift */; };
 		FA9AEC002D5CACB6006A3A31 /* UserNodesHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA9AEBFF2D5CACB3006A3A31 /* UserNodesHelper.swift */; };
 		FA9F381C2DB2FF4B00D7AABF /* ShadowOverlayRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA9F381B2DB2FF3E00D7AABF /* ShadowOverlayRenderer.swift */; };
 		FA9F38202DC5585600D7AABF /* QuestUndoManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA9F381F2DC5584D00D7AABF /* QuestUndoManager.swift */; };
@@ -559,6 +563,10 @@
 		FA93879B2DE4F13900F7A460 /* ViewModelState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewModelState.swift; sourceTree = "<group>"; };
 		FA93879D2DE4F9BC00F7A460 /* GoInfoGameApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoInfoGameApp.swift; sourceTree = "<group>"; };
 		FA93879F2DE50B4100F7A460 /* LocationServiceProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationServiceProtocol.swift; sourceTree = "<group>"; };
+		FA9387A22DE58BA800F7A460 /* POSMLoginViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POSMLoginViewModelTests.swift; sourceTree = "<group>"; };
+		FA9387A72DE5D5D600F7A460 /* WorkspacesViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkspacesViewModelTests.swift; sourceTree = "<group>"; };
+		FA9387AA2DE5D90D00F7A460 /* MockLocationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockLocationService.swift; sourceTree = "<group>"; };
+		FA9387AC2DE5DDD100F7A460 /* MockWorkspaceAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockWorkspaceAPI.swift; sourceTree = "<group>"; };
 		FA9AEBFF2D5CACB3006A3A31 /* UserNodesHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserNodesHelper.swift; sourceTree = "<group>"; };
 		FA9F381B2DB2FF3E00D7AABF /* ShadowOverlayRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShadowOverlayRenderer.swift; sourceTree = "<group>"; };
 		FA9F381F2DC5584D00D7AABF /* QuestUndoManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuestUndoManager.swift; sourceTree = "<group>"; };
@@ -1437,6 +1445,32 @@
 			path = Classes;
 			sourceTree = "<group>";
 		};
+		FA9387A12DE58B8900F7A460 /* login */ = {
+			isa = PBXGroup;
+			children = (
+				FA9387A22DE58BA800F7A460 /* POSMLoginViewModelTests.swift */,
+			);
+			path = login;
+			sourceTree = "<group>";
+		};
+		FA9387A42DE5D5CD00F7A460 /* workspace */ = {
+			isa = PBXGroup;
+			children = (
+				FA9387A92DE5D8FE00F7A460 /* Mocks */,
+				FA9387A72DE5D5D600F7A460 /* WorkspacesViewModelTests.swift */,
+			);
+			path = workspace;
+			sourceTree = "<group>";
+		};
+		FA9387A92DE5D8FE00F7A460 /* Mocks */ = {
+			isa = PBXGroup;
+			children = (
+				FA9387AA2DE5D90D00F7A460 /* MockLocationService.swift */,
+				FA9387AC2DE5DDD100F7A460 /* MockWorkspaceAPI.swift */,
+			);
+			path = Mocks;
+			sourceTree = "<group>";
+		};
 		FA9AEBFE2D5CAC98006A3A31 /* UserNodes */ = {
 			isa = PBXGroup;
 			children = (
@@ -1589,6 +1623,8 @@
 		FAD5C5082AFCBE720040C61A /* GoInfoGameTests */ = {
 			isa = PBXGroup;
 			children = (
+				FA9387A42DE5D5CD00F7A460 /* workspace */,
+				FA9387A12DE58B8900F7A460 /* login */,
 				A4834A422B679CD400D4F0AA /* data */,
 				188843AB2B5FA2BC0008DCF8 /* quests */,
 				A444AC8D2B5E943E006C74F7 /* utils */,
@@ -2373,16 +2409,20 @@
 				FA87A8132B6AC019000A6BEA /* StepsRampTests.swift in Sources */,
 				188843AF2B5FB32D0008DCF8 /* WayLitTests.swift in Sources */,
 				A495DF2B2B68D6EC00478E44 /* TestQuestUtils.swift in Sources */,
+				FA9387AD2DE5DDD700F7A460 /* MockWorkspaceAPI.swift in Sources */,
 				FA87A8192B6B01A4000A6BEA /* HandRailTests.swift in Sources */,
 				FA87A8172B6AC885000A6BEA /* StepsInclineTests.swift in Sources */,
 				188843AD2B5FA2DF0008DCF8 /* TactilePavingStepsTests.swift in Sources */,
 				A4834A442B679CE000D4F0AA /* DatasyncManagerTests.swift in Sources */,
 				A40E72642B5CD65000328848 /* OverpassRequestManagerTests.swift in Sources */,
 				A444AC8C2B5E934B006C74F7 /* UserFlowTests.swift in Sources */,
+				FA9387A82DE5D5E500F7A460 /* WorkspacesViewModelTests.swift in Sources */,
 				FA87A8152B6AC4E2000A6BEA /* BusStopLitTests.swift in Sources */,
 				FAD5C50A2AFCBE720040C61A /* GoInfoGameTests.swift in Sources */,
+				FA9387A32DE58BBA00F7A460 /* POSMLoginViewModelTests.swift in Sources */,
 				A48037332BBA8D00007EE7E4 /* WorkspacesApiManagerTests.swift in Sources */,
 				FA87A81B2B6B042E000A6BEA /* SideWalkWidthTests.swift in Sources */,
+				FA9387AB2DE5D91200F7A460 /* MockLocationService.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2469,7 +2509,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEFINES_MODULE = YES;
-				DEVELOPMENT_TEAM = NPCMG529DV;
+				DEVELOPMENT_TEAM = G8MQVE5WWW;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
@@ -2594,7 +2634,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEFINES_MODULE = YES;
-				DEVELOPMENT_TEAM = NPCMG529DV;
+				DEVELOPMENT_TEAM = G8MQVE5WWW;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";

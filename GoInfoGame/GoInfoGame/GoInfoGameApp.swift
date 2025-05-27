@@ -20,7 +20,7 @@ struct GoInfoGameApp: App {
         WindowGroup {
             Group {
                 if loggedIn {
-                    WorkspaceView()
+                    WorkspaceSelectionView()
                 } else {
                     PosmLoginView()
                 }
