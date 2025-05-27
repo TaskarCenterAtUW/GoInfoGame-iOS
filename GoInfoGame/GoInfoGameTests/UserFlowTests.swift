@@ -361,10 +361,8 @@ final class UserFlowTests: XCTestCase {
         // 7. validating is test tag exists
         // 8. updating tag with test tags (Hardcoded tags)
         // 9. get the node tags and compare
-        
         // 10. undo the node tags
-        // 11. get the node tags and copare
-        // 12. logout
+        // 11. get the node tags and compare
         
         var cancellables: Set<AnyCancellable> = []
         
@@ -467,6 +465,7 @@ final class UserFlowTests: XCTestCase {
                                         })
                                         
                                         group.notify(queue: .main) {
+                                            // 10. undo the node tags
                                             let undogroup = DispatchGroup()
                                             
                                             let undoItem1 = MapUndoManager.shared.getUndoItems().first { item in
@@ -476,7 +475,7 @@ final class UserFlowTests: XCTestCase {
                                                 undogroup.enter()
                                                 MapUndoManager.shared.undo(for: undoItem.id)
                                                 DispatchQueue.main.asyncAfter(deadline: .now() + 5) { [weak self] in
-                                                    // 11. get the node tags and copare
+                                                    // 11. get the node tags and compare
                                                     self?.getNodeTags(id: nodeIDs.first ?? 0, workspaceId: workspaceID, completion: { result in
                                                         switch result {
                                                         case .failure(let error):
@@ -498,7 +497,7 @@ final class UserFlowTests: XCTestCase {
                                                 undogroup.enter()
                                                 MapUndoManager.shared.undo(for: undoItem.id)
                                                 DispatchQueue.main.asyncAfter(deadline: .now() + 5) { [weak self] in
-                                                    // 11. get the node tags and copare
+                                                    // 11. get the node tags and compare
                                                     self?.getNodeTags(id: nodeIDs.last ?? 0, workspaceId: workspaceID, completion: { result in
                                                         switch result {
                                                         case .failure(let error):
