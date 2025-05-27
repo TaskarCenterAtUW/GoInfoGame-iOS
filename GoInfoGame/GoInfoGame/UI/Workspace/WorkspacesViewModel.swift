@@ -15,19 +15,28 @@ class WorkspacesViewModel: ObservableObject {
     
     @Published var workspaces: [Workspace] = []
     @Published var longQuests: [LongFormModel] = []
-    @Published var isLoading: Bool = false
     
     private let api: WorkspaceAPIProtocol
     
-    init(api: WorkspaceAPIProtocol = WorkspaceAPIManager.shared, locationService: LocationServiceProtocol = LocationManagerDelegate()) {
+    @Published var state: ViewModelState = .idle
+    
+    var isPreview: Bool = false
+    
+    init(api: WorkspaceAPIProtocol = WorkspaceAPIManager.shared, locationService: LocationServiceProtocol = LocationManagerDelegate(), state: ViewModelState = .idle) {
         self.api = api
         self.locationService = locationService
+        self.state = state
     }
     
     func enableLocationTracking() {
+        guard !isPreview else {
+            print("Skipping location tracking in preview")
+            return
+        }
         locationService.requestLocationAuthorization()
         locationService.startUpdatingLocation()
         locationService.locationUpdateHandler = { [weak self] coordinate in
+            print("Location updated: \(coordinate)")
             self?.fetchWorkspacesList()
         }
     }
@@ -38,10 +47,12 @@ class WorkspacesViewModel: ObservableObject {
     
     // fetch workspaces list
     func fetchWorkspacesList() {
-            isLoading = true
+        print("STARTING TO FETCH WORKSPACES")
+            state = .loading
+    
             api.fetchWorkspaces { [weak self] result in
                 DispatchQueue.main.async {
-                    self?.isLoading = false
+                    self?.state = .loaded
                     switch result {
                     case .success(let workspacesResponse):
                         self?.workspaces = workspacesResponse
@@ -65,7 +76,7 @@ class WorkspacesViewModel: ObservableObject {
     
     func fetchLongQuestsFor(workspaceId: String,completion: @escaping (Bool, String?) -> Void) {
         
-        isLoading = true
+        state = .loading
         
         api.fetchLongQuestsFor(workspaceId: workspaceId) { [weak self] result in
             DispatchQueue.main.async {
@@ -79,7 +90,7 @@ class WorkspacesViewModel: ObservableObject {
                         }
                     } catch {
                         print("Invalid quest filter: \(error)")
-                        self.isLoading = false
+                        self.state = .error("Invalid quest filter expression.")
                         completion(false, "Invalid quest query.")
                         return
                     }
@@ -100,12 +111,12 @@ class WorkspacesViewModel: ObservableObject {
                         QuestsRepository.shared.allQuests.append(applicableQuest)
                     }
 
-                    self.isLoading = false
+                    self.state = .loaded
                     completion(true, nil)
 
                 case .failure(let error):
                     print("ERROR FOR LONG FORM JSON IS ----?>>>>>>\(error.localizedDescription)")
-                    self.isLoading = false
+                    self.state = .error(error.localizedDescription)
                     if error.localizedDescription.contains("empty") {
                         completion(false, "Please configure longform.")
                     } else {

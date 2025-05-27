@@ -8,17 +8,17 @@
 import SwiftUI
 // WorkspaceView - Main view for displaying available workspaces and navigating to MapView
 struct WorkspaceSelectionView: View {
-    
-    @ObservedObject var viewModel: WorkspacesViewModel
+    @StateObject private var viewModel: WorkspacesViewModel
+    @Environment(\.scenePhase) private var scenePhase
     
     init(viewModel: WorkspacesViewModel = WorkspacesViewModel()) {
-        self.viewModel = viewModel
+        _viewModel = StateObject(wrappedValue: viewModel)
     }
     
     var body: some View {
         NavigationStack {
             ZStack {
-                VStack {
+                VStack(alignment: .center, spacing: 0) {
                     HStack {
                         NavigationLink(destination: UserProfileView()) {
                             Image(systemName: "person.crop.circle.fill")
@@ -29,9 +29,8 @@ struct WorkspaceSelectionView: View {
                         }
                         Spacer()
                     }
-
-                    Spacer()
-
+                    .padding(.top, 10)
+                    // Logo and Title pinned to top
                     VStack(spacing: 30) {
                         Image("osmlogo")
                             .resizable()
@@ -39,41 +38,124 @@ struct WorkspaceSelectionView: View {
                         Text("GoInfoGame")
                             .font(.system(size: 30, design: .rounded))
                     }
-
-                    Spacer()
-
-                    // Future list or content
-                }
-
-                switch viewModel.state {
-                case .idle:
-                    EmptyView()
-
-                case .loading:
-                    ActivityView(activityText: "Fetching workspaces...")
-                        .frame(maxWidth: .infinity, maxHeight: .infinity)
-                        .background(Color.black.opacity(0.2))
-
-                case .loaded:
-
-                case .error(_):
-                    VStack {
-                        Text("Failed to fetch workspaces")
-                            .foregroundColor(.red)
-                        Text("hjkh")
-                            .font(.caption)
-                            .foregroundColor(.gray)
+                    .padding(.top, 20)
+                    // State-based UI below logo/title
+                    Group {
+                        if case let .error(errorMessage) = viewModel.state {
+                            Text("TO DO: DISPLAY ERROR")
+                                .font(.custom("Lato-Bold", size: 20))
+                                .foregroundColor(.red)
+                                .font(.caption)
+                                .padding(.top, 8)
+                        }
+                        switch viewModel.state {
+                        case .loading:
+                            ActivityView(activityText: "Loading workspaces...")
+                                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                              
+                        case .loaded:
+                           
+                            if viewModel.workspaces.count == 0 {
+                                Text("No workspaces available for you to work on.")
+                                    .font(.custom("Lato-Bold", size: 20))
+                                    .foregroundColor((Color(red: 135/255, green: 62/255, blue: 242/255)))
+                                    .multilineTextAlignment(.center)
+                            } else {
+                                ScrollView {
+                                    VStack(spacing: 20) {
+                                        ForEach(viewModel.workspaces.filter({$0.type == "osw" && $0.externalAppAccess == 1}), id: \.id) { workspace in
+                                            Button {
+                                                viewModel.checkAndDeleteWorkspaceDB(workspaceId: "\(workspace.id)")
+                                                viewModel.fetchLongQuestsFor(workspaceId: "\(workspace.id)", completion: { success, errorMessage in
+                                                    
+                                                })
+                                            } label: {
+                                                Text(workspace.title)
+                                                    .font(.system(size: 17))
+                                                    .frame(maxWidth: .infinity, maxHeight: 40)
+                                                    .padding()
+                                                    .background(Color(red: 242/255, green: 242/255, blue: 242/255))
+                                                    .cornerRadius(10)
+                                            }
+                                        }
+                                    }
+                                }
+                                
+                                
+                                
+                                
+                                
+                                
+                                
+                                
+//                                ScrollView {
+//                                            VStack(spacing: 20) {
+//                                                ForEach(viewModel.workspaces.filter({$0.type == "osw" && $0.externalAppAccess == 1}), id: \.id) { workspace in
+//                                                    Button {
+//                                                        viewModel.checkAndDeleteWorkspaceDB(workspaceId: "\(workspace.id)")
+//                                                        viewModel.fetchLongQuestsFor(workspaceId: "\(workspace.id)", completion: { success, errorMessage in
+//                                                            if success {
+//                                                                self.shouldNavigateToMapView = true
+//                                                                self.selectedWorkspace = workspace
+//                                                                
+//                                                                let workspaceId = "\(workspace.id)"
+//                                                                AuthSessionManager.shared.setWorkspaceId(workspaceId)
+//                                                            } else {
+//                                                                DispatchQueue.main.async {
+//                                                                    alertMessage = errorMessage ?? "Something went wrong."
+//                                                                    
+//                                                                    showAlert = true
+//                                                                
+//                                                                    self.shouldNavigateToMapView = false
+//                                                                }
+//                                                            }
+//                                                        })
+//                                                    }  label: {
+//                                                        Text(workspace.title)
+//                                                            .font(.system(size: 17))
+//                                                            .frame(maxWidth: .infinity, maxHeight: 40)
+//                                                    }
+//                                                    .font(.custom("Lato-Bold", size: 25))
+//                                                    .foregroundColor(Color.white)
+//                                                    .padding()
+//                                                    .background(Color(red: 135/255, green: 62/255, blue: 242/255))
+//                                                    .buttonBorderShape(.roundedRectangle(radius: 10))
+//                                                }
+//                                            }
+//                                        }
+//                                .onAppear {
+//                                    
+//                                }
+//                                .padding()
+                            }
+                                    
+                        case .error(_):
+                            EmptyView()
+                        case .idle:
+                            EmptyView()
+                        }
                     }
-                    .padding()
-                    .background(Color.white)
-                    .cornerRadius(10)
-                    .shadow(radius: 4)
+                    .padding(.top, 30)
+                    Spacer()
                 }
+                .padding(.horizontal)
             }
         }
+        .onAppear {
+            viewModel.enableLocationTracking()
+        }
+        .onChange(of: scenePhase) { phase in
+            switch phase {
+            case .active:
+                viewModel.enableLocationTracking()
+            case .background:
+                viewModel.disableLocationTracking()
+            default:
+                break
+            }
+        }
+        .toolbar(.hidden)
     }
-
-    
 }
 
 struct WorkspaceView: View {
@@ -218,45 +300,45 @@ struct WorkspacesListView: View {
                     .font(.system(size: 16, design: .rounded))
                     .foregroundStyle(.gray)
                 
-                ScrollView {
-                            VStack(spacing: 20) {
-                                ForEach(workspaces.filter({$0.type == "osw" && $0.externalAppAccess == 1}), id: \.id) { workspace in
-                                    Button {
-                                        viewModel.checkAndDeleteWorkspaceDB(workspaceId: "\(workspace.id)")
-                                        viewModel.fetchLongQuestsFor(workspaceId: "\(workspace.id)", completion: { success, errorMessage in
-                                            if success {
-                                                self.shouldNavigateToMapView = true
-                                                self.selectedWorkspace = workspace
-                                                
-                                                let workspaceId = "\(workspace.id)"
-                                                AuthSessionManager.shared.setWorkspaceId(workspaceId)
-                                            } else {
-                                                DispatchQueue.main.async {
-                                                    alertMessage = errorMessage ?? "Something went wrong."
-                                                    
-                                                    showAlert = true
-                                                
-                                                    self.shouldNavigateToMapView = false
-                                                }
-                                            }
-                                        })
-                                    }  label: {
-                                        Text(workspace.title)
-                                            .font(.system(size: 17))
-                                            .frame(maxWidth: .infinity, maxHeight: 40)
-                                    }
-                                    .font(.custom("Lato-Bold", size: 25))
-                                    .foregroundColor(Color.white)
-                                    .padding()
-                                    .background(Color(red: 135/255, green: 62/255, blue: 242/255))
-                                    .buttonBorderShape(.roundedRectangle(radius: 10))
-                                }
-                            }
-                        }
-                .onAppear {
-                    
-                }
-                .padding()
+//                ScrollView {
+//                            VStack(spacing: 20) {
+//                                ForEach(workspaces.filter({$0.type == "osw" && $0.externalAppAccess == 1}), id: \.id) { workspace in
+//                                    Button {
+//                                        viewModel.checkAndDeleteWorkspaceDB(workspaceId: "\(workspace.id)")
+//                                        viewModel.fetchLongQuestsFor(workspaceId: "\(workspace.id)", completion: { success, errorMessage in
+//                                            if success {
+//                                                self.shouldNavigateToMapView = true
+//                                                self.selectedWorkspace = workspace
+//                                                
+//                                                let workspaceId = "\(workspace.id)"
+//                                                AuthSessionManager.shared.setWorkspaceId(workspaceId)
+//                                            } else {
+//                                                DispatchQueue.main.async {
+//                                                    alertMessage = errorMessage ?? "Something went wrong."
+//                                                    
+//                                                    showAlert = true
+//                                                
+//                                                    self.shouldNavigateToMapView = false
+//                                                }
+//                                            }
+//                                        })
+//                                    }  label: {
+//                                        Text(workspace.title)
+//                                            .font(.system(size: 17))
+//                                            .frame(maxWidth: .infinity, maxHeight: 40)
+//                                    }
+//                                    .font(.custom("Lato-Bold", size: 25))
+//                                    .foregroundColor(Color.white)
+//                                    .padding()
+//                                    .background(Color(red: 135/255, green: 62/255, blue: 242/255))
+//                                    .buttonBorderShape(.roundedRectangle(radius: 10))
+//                                }
+//                            }
+//                        }
+//                .onAppear {
+//                    
+//                }
+//                .padding()
             }
             .alert(alertMessage, isPresented: $showAlert) {
                 Button("OK", role: .cancel) { }
@@ -306,8 +388,26 @@ struct LocationDisabledView: View {
 }
 
 
-
-#Preview("WORKSPACE SELECTION VIEW") {
-    WorkspaceSelectionView(viewModel: WorkspacesViewModel(state: .loading))
+#Preview("Loading") {
+    let vm = WorkspacesViewModel()
+    vm.state = .loading
+    vm.isPreview = true
+    return WorkspaceSelectionView(viewModel: vm)
 }
 
+#Preview("Error") {
+    let vm = WorkspacesViewModel()
+    vm.state = .error("Something went wrong")
+    vm.isPreview = true
+    return WorkspaceSelectionView(viewModel: vm)
+}
+
+#Preview("LOADED - ZERO WORKSPACE") {
+    let vm = WorkspacesViewModel()
+    vm.state = .loaded
+    vm.workspaces = []
+    vm.isPreview = true
+    return WorkspaceSelectionView(viewModel: vm)
+}
+
+    

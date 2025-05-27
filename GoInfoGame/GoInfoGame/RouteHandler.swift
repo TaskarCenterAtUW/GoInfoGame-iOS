@@ -32,7 +32,7 @@ struct NavigationCoordinator: View {
     private func destinationView() -> some View {
         switch route {
         case .workspace:
-            WorkspaceView()
+            WorkspaceSelectionView()
         case .profile:
             UserProfileView()
         case .map(let workspace):
