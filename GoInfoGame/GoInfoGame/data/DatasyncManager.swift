@@ -65,7 +65,7 @@ class DatasyncManager {
 
         // Filter changesets that have valid edited versions
         let validChangesets = changesets.filter {
-            let intId = Int($0.elementId) ?? -1
+            let intId = Int($0.elementId)
             switch $0.elementType {
             case .way:
                 let exists = self.dbInstance.getWay(id: intId) != nil
@@ -90,12 +90,10 @@ class DatasyncManager {
         var waysToSync: [String: StoredChangeset] = [:]
 
         for cs in validChangesets {
-            let intId = Int(cs.elementId) ?? -1
-            if cs.elementType == .node,
-               let node = dbInstance.getNode(id: intId) {
+            let intId = Int(cs.elementId)
+            if cs.elementType == .node {
                 nodesToSync[cs.id] = cs
-            } else if cs.elementType == .way,
-                      let way = dbInstance.getWay(id: intId) {
+            } else if cs.elementType == .way {
                 waysToSync[cs.id] = cs
             }
         }
