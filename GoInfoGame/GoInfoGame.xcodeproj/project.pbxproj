@@ -30,7 +30,7 @@
 		970D5BD12B62B61300C20BE7 /* MapViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 970D5BD02B62B61300C20BE7 /* MapViewController.swift */; };
 		970D5BD32B67638500C20BE7 /* MapViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 970D5BD22B67638400C20BE7 /* MapViewModel.swift */; };
 		970D5BD52B677CC500C20BE7 /* OSMUserData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 970D5BD42B677CC500C20BE7 /* OSMUserData.swift */; };
-		971342732BBD242400174EBF /* WorkspaceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 971342722BBD242400174EBF /* WorkspaceView.swift */; };
+		971342732BBD242400174EBF /* WorkspaceSelectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 971342722BBD242400174EBF /* WorkspaceSelectionView.swift */; };
 		971342752BBD254200174EBF /* WorkspacesViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 971342742BBD254200174EBF /* WorkspacesViewModel.swift */; };
 		971342772BBD415600174EBF /* WorkspacesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 971342762BBD415600174EBF /* WorkspacesViewController.swift */; };
 		971342792BBD691500174EBF /* MapViewControllerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 971342782BBD691500174EBF /* MapViewControllerView.swift */; };
@@ -371,7 +371,7 @@
 		970D5BD02B62B61300C20BE7 /* MapViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapViewController.swift; sourceTree = "<group>"; };
 		970D5BD22B67638400C20BE7 /* MapViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapViewModel.swift; sourceTree = "<group>"; };
 		970D5BD42B677CC500C20BE7 /* OSMUserData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OSMUserData.swift; sourceTree = "<group>"; };
-		971342722BBD242400174EBF /* WorkspaceView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkspaceView.swift; sourceTree = "<group>"; };
+		971342722BBD242400174EBF /* WorkspaceSelectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkspaceSelectionView.swift; sourceTree = "<group>"; };
 		971342742BBD254200174EBF /* WorkspacesViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkspacesViewModel.swift; sourceTree = "<group>"; };
 		971342762BBD415600174EBF /* WorkspacesViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkspacesViewController.swift; sourceTree = "<group>"; };
 		971342782BBD691500174EBF /* MapViewControllerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapViewControllerView.swift; sourceTree = "<group>"; };
@@ -846,7 +846,7 @@
 		971342712BBD240500174EBF /* Workspace */ = {
 			isa = PBXGroup;
 			children = (
-				971342722BBD242400174EBF /* WorkspaceView.swift */,
+				971342722BBD242400174EBF /* WorkspaceSelectionView.swift */,
 				971342742BBD254200174EBF /* WorkspacesViewModel.swift */,
 				971342762BBD415600174EBF /* WorkspacesViewController.swift */,
 			);
@@ -2342,7 +2342,7 @@
 				97AC1C232B726ADC004F0BF4 /* TactilePavingKerbForm.swift in Sources */,
 				97412A942BBADAED00DF7983 /* StairFlightsForm.swift in Sources */,
 				FAF44FBF2B3084FB004FE664 /* OnboardingView2.swift in Sources */,
-				971342732BBD242400174EBF /* WorkspaceView.swift in Sources */,
+				971342732BBD242400174EBF /* WorkspaceSelectionView.swift in Sources */,
 				97AC1C132B70EF0A004F0BF4 /* Surfaces.swift in Sources */,
 				A4E711B02B59011000C9DE08 /* StepsInclineForm.swift in Sources */,
 				FAA01DBC2DDE11B100E4255A /* TDEIServerEnvironment.swift in Sources */,

@@ -6,17 +6,82 @@
 //
 
 import SwiftUI
-// InitialView - Main view for displaying available workspaces and navigating to MapVie
+// WorkspaceView - Main view for displaying available workspaces and navigating to MapView
+struct WorkspaceSelectionView: View {
+    
+    @ObservedObject var viewModel: WorkspacesViewModel
+    
+    init(viewModel: WorkspacesViewModel = WorkspacesViewModel()) {
+        self.viewModel = viewModel
+    }
+    
+    var body: some View {
+        NavigationStack {
+            ZStack {
+                VStack {
+                    HStack {
+                        NavigationLink(destination: UserProfileView()) {
+                            Image(systemName: "person.crop.circle.fill")
+                                .resizable()
+                                .frame(width: 27, height: 27)
+                                .padding(.leading, 18)
+                                .foregroundStyle(Color(red: 135/255, green: 62/255, blue: 242/255))
+                        }
+                        Spacer()
+                    }
+
+                    Spacer()
+
+                    VStack(spacing: 30) {
+                        Image("osmlogo")
+                            .resizable()
+                            .frame(width: 100, height: 100)
+                        Text("GoInfoGame")
+                            .font(.system(size: 30, design: .rounded))
+                    }
+
+                    Spacer()
+
+                    // Future list or content
+                }
+
+                switch viewModel.state {
+                case .idle:
+                    EmptyView()
+
+                case .loading:
+                    ActivityView(activityText: "Fetching workspaces...")
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+                        .background(Color.black.opacity(0.2))
+
+                case .loaded:
+
+                case .error(_):
+                    VStack {
+                        Text("Failed to fetch workspaces")
+                            .foregroundColor(.red)
+                        Text("hjkh")
+                            .font(.caption)
+                            .foregroundColor(.gray)
+                    }
+                    .padding()
+                    .background(Color.white)
+                    .cornerRadius(10)
+                    .shadow(radius: 4)
+                }
+            }
+        }
+    }
+
+    
+}
+
 struct WorkspaceView: View {
     @StateObject private var viewModel = WorkspacesViewModel()
     @Environment(\.scenePhase) private var scenePhase
     
     @State private var shouldNavigateToMapView = false
-    
-    @State private var isLoading: Bool = false
-    
-    @AppStorage("loggedIn") private var loggedIn: Bool = false
-    
+            
     var body: some View {
         NavigationStack {
             ZStack {
@@ -46,26 +111,34 @@ struct WorkspaceView: View {
                        .padding()
                   
                        Spacer()
-                    if viewModel.workspaces.count == 0 {
-                        Text("No workspaces available for you to work on.")
-                            .font(.custom("Lato-Bold", size: 20))
-                            .foregroundColor((Color(red: 135/255, green: 62/255, blue: 242/255)))
-                            .multilineTextAlignment(.center)
-                            .onAppear {
-                                isLoading = false
+                    switch viewModel.state {
+                    case .loading:
+                        ActivityView(activityText: "Loading workspaces...")
+                    case .loaded:
+                        if viewModel.workspaces.count == 0 {
+                            Text("No workspaces available for you to work on.")
+                                .font(.custom("Lato-Bold", size: 20))
+                                .foregroundColor((Color(red: 135/255, green: 62/255, blue: 242/255)))
+                                .multilineTextAlignment(.center)
+                        } else if viewModel.workspaces.count == 1 {
+                            if let selectedWorkspace = viewModel.workspaces.first {
+                                WorkspacesListView(workspaces: viewModel.workspaces, viewModel: viewModel)
+                                    .navigationDestination(isPresented: $shouldNavigateToMapView) {
+                                        MapView(selectedWorkspace: selectedWorkspace)
+                                            .navigationBarBackButtonHidden(true)
+                                    }
                             }
+                        } else {
+                            WorkspacesListView(workspaces: viewModel.workspaces, viewModel: viewModel)
+                        }
+                    case .error(let error):
+                        Text("Error: \(error)")
+                    case .idle:
+                        EmptyView()
                     }
-                       
-      if viewModel.workspaces.count > 1 {
-          WorkspacesListView(workspaces: viewModel.workspaces, viewModel: viewModel, isLoading: $isLoading)
-                       }
                    }
                 .padding()
-                
-                if viewModel.isLoading {
-                    ActivityView(activityText: "Fetching workspaces")
-                       
-                }
+
             }
         }
         .onAppear {
@@ -81,9 +154,6 @@ struct WorkspaceView: View {
                 break
             }
         }
-        .onAppear {
-            isLoading = true
-        }
         .toolbar(.hidden)
        }
 }
@@ -94,8 +164,6 @@ struct WorkspacesListView: View {
     var viewModel: WorkspacesViewModel
     @State private var shouldNavigateToMapView = false
     @State private var selectedWorkspace: Workspace?
-    
-    @Binding var isLoading: Bool
     
     @State private var showAlert = false
     
@@ -139,18 +207,14 @@ struct WorkspacesListView: View {
                     .font(.custom("Lato-Bold", size: 20))
                     .foregroundColor((Color(red: 135/255, green: 62/255, blue: 242/255)))
                     .multilineTextAlignment(.center)
-                    .onAppear {
-                        isLoading = false
-                    }
+
                 Spacer()
             }
            
         } else {
             VStack {
                 Text("Pick the workspace you want to contribute to")
-                    .onAppear {
-                        isLoading = false
-                    }
+
                     .font(.system(size: 16, design: .rounded))
                     .foregroundStyle(.gray)
                 
@@ -241,12 +305,9 @@ struct LocationDisabledView: View {
     }
 }
 
-#Preview {
-    WorkspaceView()
-    
+
+
+#Preview("WORKSPACE SELECTION VIEW") {
+    WorkspaceSelectionView(viewModel: WorkspacesViewModel(state: .loading))
 }
-
-
-
-
 
