@@ -55,8 +55,8 @@ class MapViewModel: ObservableObject {
                }
            }
 
-           locationManagerDelegate.requestLocationAuthorization()
-           locationManagerDelegate.startUpdatingLocation()
+           locationManagerDelegate.startTracking()
+           
        }
     
     func getSelectedQuest() -> DisplayUnit? {

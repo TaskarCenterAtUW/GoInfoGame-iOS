@@ -8,25 +8,25 @@
 import CoreLocation
 @testable import GoInfoGame
 
-class MockLocationService: LocationServiceProtocol {
-    var location: CLLocation?
-    var isLocationDenied: Bool = false
-    var isLocationServicesOff: Bool = false
+final class MockLocationTracker: LocationTrackerProtocol {
+    var location: CLLocation? = nil
+    var isLocationDenied = false
+    var isLocationServicesOff = false
+
     var locationUpdateHandler: ((CLLocationCoordinate2D) -> Void)?
 
-    var didRequestAuthorization = false
-    var didStartUpdatingLocation = false
-    var didStopUpdatingLocation = false
+    var didStartTracking = false
+    var didStopTracking = false
 
-    func requestLocationAuthorization() {
-        didRequestAuthorization = true
+    func startTracking() {
+        didStartTracking = true
     }
 
-    func startUpdatingLocation() {
-        didStartUpdatingLocation = true
+    func stopTracking() {
+        didStopTracking = true
     }
 
-    func stopUpdatingLocation() {
-        didStopUpdatingLocation = true
+    func simulateLocation(_ coordinate: CLLocationCoordinate2D) {
+        locationUpdateHandler?(coordinate)
     }
 }

@@ -7,13 +7,12 @@
 
 import CoreLocation
 
-protocol LocationServiceProtocol {
+protocol LocationTrackerProtocol {
     var location: CLLocation? { get }
     var isLocationDenied: Bool { get }
     var isLocationServicesOff: Bool { get }
 
-    func requestLocationAuthorization()
-    func startUpdatingLocation()
-    func stopUpdatingLocation()
+    func startTracking()
+    func stopTracking()
     var locationUpdateHandler: ((CLLocationCoordinate2D) -> Void)? { get set }
 }

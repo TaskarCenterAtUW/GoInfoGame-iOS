@@ -11,7 +11,8 @@ import MapKit
 import CoreLocation
 // WorkspacesViewModel - ViewModel for managing data related to initial view
 class WorkspacesViewModel: ObservableObject {
-    private var locationService: LocationServiceProtocol
+    
+    private var locationTracker: LocationTrackerProtocol
     
     @Published var workspaces: [Workspace] = []
     @Published var longQuests: [LongFormModel] = []
@@ -22,9 +23,9 @@ class WorkspacesViewModel: ObservableObject {
     
     var isPreview: Bool = false
     
-    init(api: WorkspaceAPIProtocol = WorkspaceAPIManager.shared, locationService: LocationServiceProtocol = LocationManagerDelegate(), state: ViewModelState = .idle) {
+    init(api: WorkspaceAPIProtocol = WorkspaceAPIManager.shared, locationTracker: LocationTrackerProtocol = LocationManagerDelegate(), state: ViewModelState = .idle) {
         self.api = api
-        self.locationService = locationService
+        self.locationTracker = locationTracker
         self.state = state
     }
     
@@ -33,16 +34,16 @@ class WorkspacesViewModel: ObservableObject {
             print("Skipping location tracking in preview")
             return
         }
-        locationService.requestLocationAuthorization()
-        locationService.startUpdatingLocation()
-        locationService.locationUpdateHandler = { [weak self] coordinate in
+        locationTracker.startTracking()
+        
+        locationTracker.locationUpdateHandler = { [weak self] coordinate in
             print("Location updated: \(coordinate)")
-            self?.fetchWorkspacesList()
-        }
+                self?.fetchWorkspacesList()
+            }
     }
     
     func disableLocationTracking() {
-        locationService.stopUpdatingLocation()
+        locationTracker.stopTracking()
     }
     
     // fetch workspaces list
@@ -58,6 +59,7 @@ class WorkspacesViewModel: ObservableObject {
                         self?.workspaces = workspacesResponse
                        
                     case .failure(let error):
+                        self?.state = .error(error.localizedDescription)
                         print("Error fetching workspaces: \(error)")
                       
                     }

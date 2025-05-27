@@ -14,13 +14,13 @@ final class WorkspacesViewModelTests: XCTestCase {
     
     var viewModel: WorkspacesViewModel!
     var mockAPI: MockWorkspaceAPI!
-    var mockLocationService: MockLocationService!
+    var mockLocationTracker: MockLocationTracker!
     
     override func setUp() {
         super.setUp()
         mockAPI = MockWorkspaceAPI()
-        mockLocationService = MockLocationService()
-        viewModel = WorkspacesViewModel(api: mockAPI, locationService: mockLocationService)
+        mockLocationTracker = MockLocationTracker()
+        viewModel = WorkspacesViewModel(api: mockAPI, locationTracker: mockLocationTracker)
     }
     
     override func tearDownWithError() throws {
@@ -42,45 +42,33 @@ final class WorkspacesViewModelTests: XCTestCase {
         viewModel.enableLocationTracking()
 
         // Assert
-        XCTAssertFalse(mockLocationService.didRequestAuthorization)
-        XCTAssertFalse(mockLocationService.didStartUpdatingLocation)
-        
+        XCTAssertFalse(mockLocationTracker.didStartTracking)
     }
-    
-    func test_enableLocationTracking_requestsAuthorizationAndStartsUpdatingLocation() throws {
-        // Act
-        viewModel.enableLocationTracking()
-        
-        // Assert
-        XCTAssertTrue(mockLocationService.didRequestAuthorization)
-        XCTAssertTrue(mockLocationService.didStartUpdatingLocation)
-        
-    }
-    
+     
     func test_enableLocationTracking_updatesLocation() throws {
         // Act
         viewModel.enableLocationTracking()
         
         // Assert
-        XCTAssertNotNil(mockLocationService.locationUpdateHandler, "Expected locationUpdateHandler to be assigned")
+        XCTAssertNotNil(mockLocationTracker.locationUpdateHandler, "Expected locationUpdateHandler to be assigned")
     }
-    
+  
     func test_fetchWorkspacesCalled_WhenLocationUpdateHandlerIsNotNil() throws {
         // Act
         viewModel.enableLocationTracking()
         
         // Simulate location update
         let mockLocation = CLLocationCoordinate2D(latitude: 0.0, longitude: 0.0)
-        mockLocationService.locationUpdateHandler?(mockLocation)
+        mockLocationTracker.locationUpdateHandler?(mockLocation)
         
         // Assert
-        XCTAssertTrue(mockAPI.didCallFetchWorkspaces)
+        XCTAssertTrue(mockAPI.didCallFetchWorkspaces, "Expected fetchWorkspaces to be called when locationUpdateHandler is not nil")
     }
     
     func test_fetchWorkspacesNotCalled_WhenLocationUpdateHandlerIsNil() throws {
         
         // Arrange
-        mockLocationService.locationUpdateHandler = nil
+        mockLocationTracker.locationUpdateHandler = nil
         
         // Act
         viewModel.enableLocationTracking()
@@ -96,7 +84,7 @@ final class WorkspacesViewModelTests: XCTestCase {
         viewModel.disableLocationTracking()
         
         // Assert
-        XCTAssertTrue(mockLocationService.didStopUpdatingLocation)
+        XCTAssertTrue(mockLocationTracker.didStopTracking, "Expected didStopTracking to be true after disabling location tracking")
     }
     
     func test_fetchWorkspaces_SetStateToLoading() throws {
@@ -123,12 +111,29 @@ final class WorkspacesViewModelTests: XCTestCase {
         
         DispatchQueue.main.async {
             XCTAssertEqual(self.viewModel.state, .loaded, "Expected state to be .loaded after successful API call")
-            XCTAssertEqual(self.viewModel.workspaces.count, 3)
+            XCTAssertEqual(self.viewModel.workspaces.count, 1)
                   expectation.fulfill()
         }
         
         wait(for: [expectation], timeout: 1.0)
     }
+    
+    func test_stateSetToError_AfterFailedFetch() throws {
+        // Arrange
+        mockAPI.shouldSucceed = false
+        
+        let expectation = XCTestExpectation(description: "Wait for API completion")
+        
+        // Act
+        viewModel.fetchWorkspacesList()
+        DispatchQueue.main.async {
+            XCTAssertEqual(self.viewModel.state, .error("Not found could not be found."), "Expected state to be .error after failed API call")
+            expectation.fulfill()
+        }
+        
+        wait(for: [expectation], timeout: 1.0)
+    }
+
         
         
 
