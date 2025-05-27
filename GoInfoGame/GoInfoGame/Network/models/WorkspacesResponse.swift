@@ -36,6 +36,13 @@ struct Workspace: Codable,Hashable {
         externalAppAccess = try container.decode(Int.self, forKey: .externalAppAccess)
        }
 
+    init(id: Int, title: String, type: String? = "osw", externalAppAccess: Int) {
+        self.id = id
+        self.title = title
+        self.type = type
+        self.externalAppAccess = externalAppAccess
+    }
+    
        enum CodingKeys: String, CodingKey {
            case id, title, type, externalAppAccess
        }
