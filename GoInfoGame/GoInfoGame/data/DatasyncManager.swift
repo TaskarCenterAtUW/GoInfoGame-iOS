@@ -68,13 +68,13 @@ class DatasyncManager {
             let intId = Int($0.elementId) ?? -1
             switch $0.elementType {
             case .way:
-                let exists = self.dbInstance.getWay(id: intId, version: .original) != nil
+                let exists = self.dbInstance.getWay(id: intId) != nil
                 if !exists {
                     print("⚠️ Edited way not found for ID: \(intId)")
                 }
                 return exists
             case .node:
-                let exists = self.dbInstance.getNode(id: intId, version: .original) != nil
+                let exists = self.dbInstance.getNode(id: intId) != nil
                 if !exists {
                     print("⚠️ Edited node not found for ID: \(intId)")
                 }
@@ -92,10 +92,10 @@ class DatasyncManager {
         for cs in validChangesets {
             let intId = Int(cs.elementId) ?? -1
             if cs.elementType == .node,
-               let node = dbInstance.getNode(id: intId, version: .original) {
+               let node = dbInstance.getNode(id: intId) {
                 nodesToSync[cs.id] = cs
             } else if cs.elementType == .way,
-                      let way = dbInstance.getWay(id: intId, version: .original) {
+                      let way = dbInstance.getWay(id: intId) {
                 waysToSync[cs.id] = cs
             }
         }
@@ -156,7 +156,7 @@ class DatasyncManager {
 
 
     func refreshOriginalWayIfNewer(_ newWay: OSMWay) {
-        guard let existing = DatabaseConnector.shared.getWay(id: newWay.id, version: .original) else {
+        guard let existing = DatabaseConnector.shared.getWay(id: newWay.id) else {
             DatabaseConnector.shared.saveOSMElements([newWay])
             return
         }
@@ -167,7 +167,7 @@ class DatasyncManager {
     }
     
     func refreshOriginalNodeIfNewer(_ newNode: OSMNode) {
-        guard let existing = DatabaseConnector.shared.getNode(id: newNode.id, version: .original) else {
+        guard let existing = DatabaseConnector.shared.getNode(id: newNode.id) else {
             DatabaseConnector.shared.saveOSMElements([newNode])
             return
         }

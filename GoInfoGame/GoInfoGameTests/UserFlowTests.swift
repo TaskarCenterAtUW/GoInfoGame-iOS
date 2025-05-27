@@ -172,7 +172,7 @@ final class UserFlowTests: XCTestCase {
             // Get the element type
             if changeset.elementType == .node {
                 // Get the node
-                if let node  = dbInstance.getNode(id: Int(changeset.elementId) ?? 0, version: .original) {
+                if let node  = dbInstance.getNode(id: Int(changeset.elementId) ?? 0) {
                     XCTAssert(node.tags.keys.contains("width"))
                     // Publish the node here.
                     let osmConnection = OSMConnection()
@@ -283,7 +283,7 @@ final class UserFlowTests: XCTestCase {
                                     if let node = AppQuestManager.shared.fetchQuestsFromDB().first(where: { element in
                                         element.id == nodeID
                                     }),
-                                       let element = DatabaseConnector.shared.getNode(id: nodeID, version: .original) {
+                                       let element = DatabaseConnector.shared.getNode(id: nodeID) {
                                         let tags = element.tags
                                         XCTAssert(tags[testingTagKey] != testingTagValue, "Testing tag is already present")
                                         

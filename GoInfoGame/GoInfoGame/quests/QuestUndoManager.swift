@@ -54,18 +54,18 @@ extension MapUndoManager {
 //        try? realm.write {
 //            switch type {
 //            case .way:
-//                if let original = DatabaseConnector.shared.getWay(id: id, version: .original) {
+//                if let original = DatabaseConnector.shared.getWay(id: id) {
 //                    original.tags["ext:gig_complete"] = "yes"
 //                }
-//                if let edited = DatabaseConnector.shared.getWay(id: id, version: .edited) {
+//                if let edited = DatabaseConnector.shared.getWay(id: id) {
 //                    realm.delete(edited)
 //                }
 //
 //            case .node:
-//                if let original = DatabaseConnector.shared.getNode(id: id, version: .original) {
+//                if let original = DatabaseConnector.shared.getNode(id: id) {
 //                    original.tags["ext:gig_complete"] = "yes"
 //                }
-//                if let edited = DatabaseConnector.shared.getNode(id: id, version: .edited) {
+//                if let edited = DatabaseConnector.shared.getNode(id: id) {
 //                    realm.delete(edited)
 //                }
 //

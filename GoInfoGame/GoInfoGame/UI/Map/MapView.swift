@@ -406,8 +406,8 @@ struct MapView: View {
             print("selected workspace",selectedWorkspace?.title ?? "")
             QuestsRepository.shared.loadLongQuests(from: "longQuestJson")
 //            self.baseUrl = "https://osm.workspaces-stage.sidewalks.washington.edu"
-//            let original = DatabaseConnector.shared.getNode(id: 43, version: .original)
-//            let edited = DatabaseConnector.shared.getNode(id: 43, version: .edited)
+//            let original = DatabaseConnector.shared.getNode(id: 43)
+//            let edited = DatabaseConnector.shared.getNode(id: 43)
 //            print("ORIGINAL --->>>\(original)")
 //            print("EDITED --->>>\(edited)")
         }

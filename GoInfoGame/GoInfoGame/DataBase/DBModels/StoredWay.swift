@@ -12,17 +12,6 @@ import osmparser
 import MapKit
 import osmapi
 
-enum StoredWayVersion: String {
-    case original
-    case edited
-}
-
-enum StoredNodeVersion: String {
-    case original
-    case edited
-}
-
-
 // Represents one stored way
 class StoredWay: Object {
     
