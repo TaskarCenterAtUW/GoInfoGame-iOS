@@ -16,7 +16,6 @@
 		0536DD992B0BDBFE00B04C4B /* OAuthManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0536DD982B0BDBFE00B04C4B /* OAuthManager.swift */; };
 		059D47312B2C81A9000987FA /* Style.swift in Sources */ = {isa = PBXBuildFile; fileRef = 059D47302B2C81A9000987FA /* Style.swift */; };
 		059D47332B2C83BA000987FA /* Highway.swift in Sources */ = {isa = PBXBuildFile; fileRef = 059D47322B2C83BA000987FA /* Highway.swift */; };
-		05CB71E02B0FAFD200DED821 /* GenericUIViewControllerRepresentable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05CB71DF2B0FAFD200DED821 /* GenericUIViewControllerRepresentable.swift */; };
 		05DBBB5D2B1262BA00B6F110 /* OverpassRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05DBBB5C2B1262BA00B6F110 /* OverpassRepository.swift */; };
 		05DBBB5F2B1263FF00B6F110 /* DatabaseConnector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05DBBB5E2B1263FF00B6F110 /* DatabaseConnector.swift */; };
 		05DBBB622B164D9A00B6F110 /* RealOPElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05DBBB612B164D9A00B6F110 /* RealOPElement.swift */; };
@@ -335,7 +334,6 @@
 		0536DD982B0BDBFE00B04C4B /* OAuthManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OAuthManager.swift; sourceTree = "<group>"; };
 		059D47302B2C81A9000987FA /* Style.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Style.swift; sourceTree = "<group>"; };
 		059D47322B2C83BA000987FA /* Highway.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Highway.swift; sourceTree = "<group>"; };
-		05CB71DF2B0FAFD200DED821 /* GenericUIViewControllerRepresentable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GenericUIViewControllerRepresentable.swift; sourceTree = "<group>"; };
 		05DBBB5C2B1262BA00B6F110 /* OverpassRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OverpassRepository.swift; sourceTree = "<group>"; };
 		05DBBB5E2B1263FF00B6F110 /* DatabaseConnector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatabaseConnector.swift; sourceTree = "<group>"; };
 		05DBBB612B164D9A00B6F110 /* RealOPElement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RealOPElement.swift; sourceTree = "<group>"; };
@@ -741,7 +739,6 @@
 		05CB71DE2B0FAFAA00DED821 /* Bridges */ = {
 			isa = PBXGroup;
 			children = (
-				05CB71DF2B0FAFD200DED821 /* GenericUIViewControllerRepresentable.swift */,
 			);
 			path = Bridges;
 			sourceTree = "<group>";
@@ -2151,7 +2148,6 @@
 				97AC1C212B726AC9004F0BF4 /* TactilePavingKerb.swift in Sources */,
 				FA633CB42DD4843B00324404 /* BiometricAuthManager.swift in Sources */,
 				A4E711A22B57A3B400C9DE08 /* SideWalkWidth.swift in Sources */,
-				05CB71E02B0FAFD200DED821 /* GenericUIViewControllerRepresentable.swift in Sources */,
 				971F9FE42B84CDBF005397CC /* CrossingType.swift in Sources */,
 				97AC1C062B6A45B0004F0BF4 /* SideWalkValidation.swift in Sources */,
 				FAD5C4F32AFCBE700040C61A /* AppDelegate.swift in Sources */,
