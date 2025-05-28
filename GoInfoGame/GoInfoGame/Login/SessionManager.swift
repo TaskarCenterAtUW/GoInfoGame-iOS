@@ -68,16 +68,6 @@ final class SessionManager: ObservableObject {
         lastLoginPassword = nil
     }
 
-    func loginWithBiometrics(for environment: APIEnvironment, completion: @escaping (Bool, String) -> Void) {
-        guard let user = KeychainManager.load(.username, for: environment),
-              let pass = KeychainManager.load(.password, for: environment) else {
-            print(" Missing credentials for biometric login")
-            completion(false, "Missing credentials for biometric login")
-            return
-        }
-        performLogin(username: user, password: pass, environment: environment, completion: completion)
-    }
-
     func canUseBiometricLogin(for environment: APIEnvironment) -> Bool {
         return KeychainManager.load(.username, for: environment) != nil &&
                KeychainManager.load(.password, for: environment) != nil &&

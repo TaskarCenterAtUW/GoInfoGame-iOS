@@ -11,12 +11,6 @@ import LocalAuthentication
 struct PosmLoginView: View {
     
     @ObservedObject var viewModel = PosmLoginViewModel()
-    
-    @State private var isShowingAlert = false
-    @State private var shouldLogin = false
-    
-    @State private var shouldShowAlert = false
-    
     @State private var selectedEnvironment: APIEnvironment = .staging
     @State private var showAlert = false
             

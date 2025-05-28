@@ -25,14 +25,3 @@ struct PosmLoginSuccessResponse: Codable {
         case refreshToken = "refresh_token"
     }
 }
-
-struct PosmLoginErrorResponse: Codable {
-    let message: String
-    let errors: [String]
-}
-
-enum LoginResponse {
-    case success(PosmLoginSuccessResponse)
-    case failure(PosmLoginErrorResponse)
-    case error(String)
-}
