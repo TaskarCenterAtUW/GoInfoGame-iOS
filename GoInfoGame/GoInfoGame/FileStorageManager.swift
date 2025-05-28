@@ -35,14 +35,4 @@ class FileStorageManager {
            let questModels = try JSONDecoder().decode([LongFormModel].self, from: data)
            return questModels
        }
-    
-    // delete on logout ?
-    func delete(fileName: String) throws {
-           let fileURL = directoryURL.appendingPathComponent("\(fileName).json")
-           
-           if fileManager.fileExists(atPath: fileURL.path) {
-               try fileManager.removeItem(at: fileURL)
-           }
-       }
-
 }
