@@ -6,7 +6,6 @@
 //
 
 import Foundation
-import osmapi
 
 struct APIEndpoint {
     let path: String
@@ -53,15 +52,6 @@ struct APIEndpoint {
         ]
         
         return APIEndpoint(path: "/changeset/create", method: "PUT", body: body, headers: header, formData: nil) }
-    
-    static let updateWay = { (accessToken: String, wayID: String, body: Data) in
-        
-        let header = [
-            "Authorization" : "Bearer \(accessToken)",
-            "Content-Type" : "application/xml"
-        ]
-        
-        return APIEndpoint(path: "/way/\(wayID)", method: "PUT", body: body, headers: header, formData: nil)}
     
     static let fetchLatestWay = { (workspaceId: String, wayId: String) in
         let header = [

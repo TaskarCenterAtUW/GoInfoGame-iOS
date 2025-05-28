@@ -12,15 +12,6 @@
 
 import Foundation
 
-// MARK: - WorkSpacesResponse
-class WorkSpacesResponse: Codable {
-    let workspaces: [Workspace]
-
-    init(workspaces: [Workspace]) {
-        self.workspaces = workspaces
-    }
-}
-
 // MARK: - Workspace
 struct Workspace: Codable,Hashable {
     let id: Int
@@ -39,11 +30,4 @@ struct Workspace: Codable,Hashable {
        enum CodingKeys: String, CodingKey {
            case id, title, type, externalAppAccess
        }
-}
-
-// MARK: - Polygon
-class Polygon: Codable {
-
-    init() {
-    }
 }
