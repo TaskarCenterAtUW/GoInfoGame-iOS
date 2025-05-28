@@ -46,7 +46,7 @@ class StoredChangeset: Object {
     @Persisted var isUndoCompleted: Bool = false
     @Persisted var undoOn: Date? = nil
     
-    public func asOSMWay(isUndo: Bool = false) -> OSMWay {
+    func asOSMWay(isUndo: Bool = false) -> OSMWay {
         var storage = originalTags.toDictionary()
         if !isUndo {
             for tag in tags {
@@ -65,7 +65,7 @@ class StoredChangeset: Object {
                       tags: storage)
     }
     
-    public func asOSMNode(isUndo: Bool = false) -> OSMNode {
+    func asOSMNode(isUndo: Bool = false) -> OSMNode {
         var storage = originalTags.toDictionary()
         if !isUndo {
             for tag in tags {

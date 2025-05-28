@@ -18,9 +18,6 @@
 		059D47332B2C83BA000987FA /* Highway.swift in Sources */ = {isa = PBXBuildFile; fileRef = 059D47322B2C83BA000987FA /* Highway.swift */; };
 		05DBBB5D2B1262BA00B6F110 /* OverpassRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05DBBB5C2B1262BA00B6F110 /* OverpassRepository.swift */; };
 		05DBBB5F2B1263FF00B6F110 /* DatabaseConnector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05DBBB5E2B1263FF00B6F110 /* DatabaseConnector.swift */; };
-		05DBBB622B164D9A00B6F110 /* RealOPElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05DBBB612B164D9A00B6F110 /* RealOPElement.swift */; };
-		05DBBB642B17204300B6F110 /* RealmOPGeometry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05DBBB632B17204300B6F110 /* RealmOPGeometry.swift */; };
-		05DBBB662B17209600B6F110 /* RealmOPMeta.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05DBBB652B17209600B6F110 /* RealmOPMeta.swift */; };
 		188843AD2B5FA2DF0008DCF8 /* TactilePavingStepsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 188843AC2B5FA2DF0008DCF8 /* TactilePavingStepsTests.swift */; };
 		188843AF2B5FB32D0008DCF8 /* WayLitTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 188843AE2B5FB32D0008DCF8 /* WayLitTests.swift */; };
 		18EC425C2B84987200DE05D7 /* TactilePavingCrosswalkForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18EC425B2B84987200DE05D7 /* TactilePavingCrosswalkForm.swift */; };
@@ -115,7 +112,6 @@
 		A4834A442B679CE000D4F0AA /* DatasyncManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4834A432B679CE000D4F0AA /* DatasyncManagerTests.swift */; };
 		A495DF2B2B68D6EC00478E44 /* TestQuestUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = A495DF2A2B68D6EC00478E44 /* TestQuestUtils.swift */; };
 		A495DF2D2B6A190400478E44 /* CustomMapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A495DF2C2B6A190400478E44 /* CustomMapView.swift */; };
-		A4AD130C2B5E80F20041A881 /* StoredElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4AD130B2B5E80F20041A881 /* StoredElement.swift */; };
 		A4AD13162B5E90BD0041A881 /* osmparser.docc in Sources */ = {isa = PBXBuildFile; fileRef = A4AD13152B5E90BD0041A881 /* osmparser.docc */; };
 		A4AD131C2B5E90BD0041A881 /* osmparser.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A4AD13122B5E90BD0041A881 /* osmparser.framework */; };
 		A4AD13232B5E90BD0041A881 /* osmparserTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4AD13222B5E90BD0041A881 /* osmparserTests.swift */; };
@@ -336,9 +332,6 @@
 		059D47322B2C83BA000987FA /* Highway.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Highway.swift; sourceTree = "<group>"; };
 		05DBBB5C2B1262BA00B6F110 /* OverpassRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OverpassRepository.swift; sourceTree = "<group>"; };
 		05DBBB5E2B1263FF00B6F110 /* DatabaseConnector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatabaseConnector.swift; sourceTree = "<group>"; };
-		05DBBB612B164D9A00B6F110 /* RealOPElement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RealOPElement.swift; sourceTree = "<group>"; };
-		05DBBB632B17204300B6F110 /* RealmOPGeometry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RealmOPGeometry.swift; sourceTree = "<group>"; };
-		05DBBB652B17209600B6F110 /* RealmOPMeta.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RealmOPMeta.swift; sourceTree = "<group>"; };
 		0644279A63026564F68E19C5 /* Pods-osmapi.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-osmapi.release.xcconfig"; path = "Target Support Files/Pods-osmapi/Pods-osmapi.release.xcconfig"; sourceTree = "<group>"; };
 		066F85ADCDCE7357368131F8 /* Pods_GoInfoGameTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_GoInfoGameTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		188843AC2B5FA2DF0008DCF8 /* TactilePavingStepsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TactilePavingStepsTests.swift; sourceTree = "<group>"; };
@@ -438,7 +431,6 @@
 		A4834A432B679CE000D4F0AA /* DatasyncManagerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatasyncManagerTests.swift; sourceTree = "<group>"; };
 		A495DF2A2B68D6EC00478E44 /* TestQuestUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestQuestUtils.swift; sourceTree = "<group>"; };
 		A495DF2C2B6A190400478E44 /* CustomMapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomMapView.swift; sourceTree = "<group>"; };
-		A4AD130B2B5E80F20041A881 /* StoredElement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoredElement.swift; sourceTree = "<group>"; };
 		A4AD13122B5E90BD0041A881 /* osmparser.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = osmparser.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		A4AD13142B5E90BD0041A881 /* osmparser.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = osmparser.h; sourceTree = "<group>"; };
 		A4AD13152B5E90BD0041A881 /* osmparser.docc */ = {isa = PBXFileReference; lastKnownFileType = folder.documentationcatalog; path = osmparser.docc; sourceTree = "<group>"; };
@@ -746,10 +738,6 @@
 		05DBBB602B164D6F00B6F110 /* DBModels */ = {
 			isa = PBXGroup;
 			children = (
-				05DBBB612B164D9A00B6F110 /* RealOPElement.swift */,
-				05DBBB632B17204300B6F110 /* RealmOPGeometry.swift */,
-				05DBBB652B17209600B6F110 /* RealmOPMeta.swift */,
-				A4AD130B2B5E80F20041A881 /* StoredElement.swift */,
 				A4B83AF02B5F92FA006684CA /* StoredNode.swift */,
 				A4B83AF22B5F9385006684CA /* StoredWay.swift */,
 				A4834A3E2B67737500D4F0AA /* StoredChangeset.swift */,
@@ -2103,7 +2091,6 @@
 			files = (
 				FA9F38202DC5585600D7AABF /* QuestUndoManager.swift in Sources */,
 				FA8C74D42C5A443700D28220 /* QuestOptions.swift in Sources */,
-				A4AD130C2B5E80F20041A881 /* StoredElement.swift in Sources */,
 				05DBBB5D2B1262BA00B6F110 /* OverpassRepository.swift in Sources */,
 				FA6DB8B52D96BE510070CCD3 /* HiddenQuestManager.swift in Sources */,
 				A4B83AF12B5F92FA006684CA /* StoredNode.swift in Sources */,
@@ -2152,7 +2139,6 @@
 				97AC1C062B6A45B0004F0BF4 /* SideWalkValidation.swift in Sources */,
 				FAD5C4F32AFCBE700040C61A /* AppDelegate.swift in Sources */,
 				18EC425C2B84987200DE05D7 /* TactilePavingCrosswalkForm.swift in Sources */,
-				05DBBB622B164D9A00B6F110 /* RealOPElement.swift in Sources */,
 				973FC0422B59467A00878269 /* BusStopLit.swift in Sources */,
 				97AC1C0A2B6B7F10004F0BF4 /* CustomVerticalButtonsList.swift in Sources */,
 				FAE258522D3A780F00D2BB12 /* FloatingActionButtonStack.swift in Sources */,
@@ -2168,7 +2154,6 @@
 				FABF3CF82B822F120080EAC9 /* CustomSureAlert.swift in Sources */,
 				973FC0482B5A477E00878269 /* CrossMarking.swift in Sources */,
 				FA18CAEB2CD0F718008247F2 /* CameraView.swift in Sources */,
-				05DBBB642B17204300B6F110 /* RealmOPGeometry.swift in Sources */,
 				FA87A8102B68142F000A6BEA /* LoadingView.swift in Sources */,
 				973FC03D2B59417D00878269 /* WayLitForm.swift in Sources */,
 				0536DD922B0BD58800B04C4B /* OAuthService.swift in Sources */,
@@ -2211,7 +2196,6 @@
 				C7ED070F2D70E2EC001FFFE2 /* TokenRefresher.swift in Sources */,
 				FA50718C2D54E08800CE9798 /* AddFeatureView.swift in Sources */,
 				A495DF2D2B6A190400478E44 /* CustomMapView.swift in Sources */,
-				05DBBB662B17209600B6F110 /* RealmOPMeta.swift in Sources */,
 				B0CCB98E2B8626C600AA73DE /* ProfileViewVM.swift in Sources */,
 				97412A992BBBF3A300DF7983 /* KerbHeight.swift in Sources */,
 				FA8C74C92C57B9AE00D28220 /* LongQuestView.swift in Sources */,

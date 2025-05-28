@@ -9,7 +9,6 @@ import Foundation
 import RealmSwift
 import MapKit
 import osmapi
-import osmparser
 
 class DatabaseConnector {
     static let shared = DatabaseConnector()
@@ -131,47 +130,6 @@ class DatabaseConnector {
         }
     }
     
-   
-
-    func saveElements(_ elements: [OSMWay]) {
-        do {
-            try realm.write {
-                for element in elements {
-                    let realmElement = RealmOPElement()
-                    realmElement.id = element.id
-                    realmElement.isInteresting = element.isInteresting ?? false
-                    realmElement.isSkippable = element.isSkippable ?? false
-                    
-                    let realmTags = element.tags.map { key, value in
-                        let realmTag = RealmOPElementTag()
-                        realmTag.key = key
-                        realmTag.value = value
-                        return realmTag
-                    }
-                    realmElement.tags.append(objectsIn: realmTags)
-                    
-                    let realmMeta = RealmOPMeta()
-                    let dateFormatter = DateFormatter()
-                    dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
-                    let dateString = dateFormatter.string(from: element.timestamp)
-                    realmMeta.version = element.version
-                    realmMeta.timestamp = dateString
-                    realmMeta.changeset = element.changeset
-                    realmMeta.userId = element.uid
-                    realmMeta.username = element.user
-                    realmElement.meta = realmMeta
-                    
-                    if !element.nodes.isEmpty {
-                        realmElement.nodes.append(objectsIn: element.nodes)
-                    }
-                    
-                    realm.add(realmElement, update: .all)
-                }
-            }
-        } catch {
-            print("Error saving elements to Realm: \(error)")
-        }
-    }
     /**
      Fetches all the StoredNodes in the Database
      @returns a Results object containing StoredNodes

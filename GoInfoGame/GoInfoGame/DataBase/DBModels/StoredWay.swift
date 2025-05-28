@@ -10,7 +10,6 @@ import Foundation
 import RealmSwift
 import osmparser
 import MapKit
-import osmapi
 
 enum StoredWayVersion: String {
     case original
@@ -42,7 +41,7 @@ class StoredWay: Object {
     }
     
     
-    public func asWay() -> Way {
+    func asWay() -> Way {
         var theTags: [String:String] = [:]
         for (key,value) in tags{
             theTags[key] = value

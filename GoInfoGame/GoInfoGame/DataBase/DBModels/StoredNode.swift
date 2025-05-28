@@ -9,7 +9,6 @@ import Foundation
 import RealmSwift
 import osmparser
 import MapKit
-import osmapi
 
 // Stores a node instance
 class StoredNode : Object {
@@ -28,7 +27,7 @@ class StoredNode : Object {
     }
     
     // Give another method that gives node
-    public func asNode() -> Node {
+    func asNode() -> Node {
         let position = LatLon(latitude: point.latitude , longitude: point.longitude)
         var theTags: [String:String] = [:]
         for (key,value) in tags{
