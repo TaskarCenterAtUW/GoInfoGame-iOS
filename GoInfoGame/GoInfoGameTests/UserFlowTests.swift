@@ -144,12 +144,12 @@ final class UserFlowTests: XCTestCase {
         }
         let nodeId = oneNode.id
         let addedTags = ["lit":"yes"]
-        let changedNode = dbInstance.addNodeTags(id: String(nodeId), tags: addedTags)
+        let changedNode = dbInstance.addNodeTags(id: nodeId, tags: addedTags, version: -1)
         // Create a changeset
-        let newChangeset = dbInstance.createChangeset(id: String(nodeId), type: .node, tags: addedTags)
+        let newChangeset = dbInstance.createChangeset(id: nodeId, type: .node, originalTags: oneNode.tags.toDictionary(), tags: addedTags, version: -1)
         // Need to figure out the id of the changeset
         XCTAssertEqual(newChangeset?.elementType, .node)
-        XCTAssertEqual(newChangeset?.elementId, String(nodeId))
+        XCTAssertEqual(newChangeset?.elementId, nodeId)
     }
     
     
@@ -181,7 +181,7 @@ final class UserFlowTests: XCTestCase {
                         case .success(let changesetId):
                             DispatchQueue.main.async {
                                 // your code here
-                                self.dbInstance.assignChangesetId(obj: changeset.id, changesetId: changesetId)
+                                self.dbInstance.assignChangesetId(obj: changeset.id, changesetId: changesetId, updatedVersion: -1)
                             }
                             
                             print("opened successfully")
@@ -322,7 +322,7 @@ final class UserFlowTests: XCTestCase {
                 initialViewModel.fetchWorkspacesList()
             }
             .store(in: &cancellables)
-        loginViewModel.performLogin()
+        loginViewModel.performLogin(for: .development)
         
         
         wait(for: [expectation], timeout: 50.0)
