@@ -111,15 +111,15 @@ struct ImageGridItemView: View {
         // Conditionally choose between ScrollView and LazyVGrid based on isScrollable
         if isScrollable {
             ScrollView {
-                gridWithSpacing(spacing, count: gridCount, content: imageData)
+                gridWithSpacing(spacing, count: gridCount)
             }
         } else {
-            gridWithSpacing(spacing, count: gridCount, content: imageData)
+            gridWithSpacing(spacing, count: gridCount)
         }
     }
     
     // Function to create LazyVGrid with custom spacing and content
-    func gridWithSpacing(_ spacing: CGFloat, count: Int, content: [ImageData]) -> some View {
+    func gridWithSpacing(_ spacing: CGFloat, count: Int) -> some View {
         return LazyVGrid(columns: Array(repeating: GridItem(spacing: spacing), count: count), spacing: spacing) {
             ForEach(imageData) { data in
                 VStack {

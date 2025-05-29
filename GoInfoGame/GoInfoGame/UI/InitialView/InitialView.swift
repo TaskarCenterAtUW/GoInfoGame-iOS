@@ -9,12 +9,9 @@ import SwiftUI
 // InitialView - Main view for displaying available workspaces and navigating to MapVie
 struct InitialView: View {
     @StateObject private var viewModel = InitialViewModel()
-    @State private var shouldNavigateToMapView = false
-    @StateObject private var locManagerDelegate = LocationManagerDelegate()
     
     @State private var isLoading: Bool = false
     
-    @AppStorage("loggedIn") private var loggedIn: Bool = false
     @State private var showBiometricPrompt = false
     
     var body: some View {
@@ -198,36 +195,6 @@ struct WorkspacesListView: View {
                         .navigationBarBackButtonHidden(true)
                 }
             }
-    }
-}
-
-struct LocationDisabledView: View {
-    var body: some View {
-        VStack {
-            Text("GoInfoGame")
-                .font(.custom("Lato-Bold", size: 30))
-                .foregroundColor((Color(red: 135/255, green: 62/255, blue: 242/255)))
-                .padding([.bottom], 50)
-
-            Text("Location Services Disabled")
-                .font(.custom("Lato-Bold", size: 25))
-                .padding()
-            Text("Please enable location services on your device settings to use this app.")
-                .font(.custom("Lato-Bold", size: 19))
-                .multilineTextAlignment(.center)
-                .padding()
-            Button(action: {
-                if let url = URL(string: UIApplication.openSettingsURLString) {
-                    UIApplication.shared.open(url)
-                }
-            }) {
-                Text("Open Settings")
-                    .font(.custom("Lato-Bold", size: 20))
-                    .foregroundColor(.blue)
-            }
-            .padding()
-        }
-        .padding()
     }
 }
 

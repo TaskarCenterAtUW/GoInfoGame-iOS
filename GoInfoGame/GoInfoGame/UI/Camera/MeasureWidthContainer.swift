@@ -62,14 +62,6 @@ struct MeasureWidthContainer: UIViewRepresentable {
             self.parent = parent
         }
         
-        @objc func measuringChanged() {
-            if parent.startMeasuring {
-                startMeasuring()
-            } else {
-                stopMeasuring()
-            }
-        }
-        
         func startMeasuring() {
             parent.resetValues()
             parent.startMeasuring = true

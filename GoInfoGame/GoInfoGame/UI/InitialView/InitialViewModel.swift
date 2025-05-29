@@ -19,9 +19,6 @@ class InitialViewModel: ObservableObject {
     @Published var isLoading: Bool = false
     
     @Published var shouldShowBiometricOptInPrompt = false
-    @Published var showBiometricIDError: Bool = false
-    @Published var biometricIDErrorMessage: String?
-
     
     init() {
         locationManagerDelegate.locationManager.delegate = locationManagerDelegate
