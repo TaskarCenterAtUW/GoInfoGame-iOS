@@ -114,7 +114,7 @@ struct OAuthViewController: UIViewControllerRepresentable {
         
     }
     
-    public func query(_ parameters: [String: String]) -> String {
+    func query(_ parameters: [String: String]) -> String {
         var components: [(String, String)] = []
         
         for key in parameters.keys.sorted(by: <) {
@@ -129,7 +129,7 @@ struct OAuthViewController: UIViewControllerRepresentable {
     ///
     /// - Parameter string: un encoded uri query parameter
     /// - Returns: encoded parameter
-    public func escape(_ string: String) -> String {
+    func escape(_ string: String) -> String {
         let generalDelimitersToEncode = ":#[]@" // does not include "?" or "/" due to RFC 3986 - Section 3.4
         let subDelimitersToEncode = "!$&'()*+,;="
 
@@ -175,18 +175,5 @@ struct OAuthViewController: UIViewControllerRepresentable {
         var components = URLComponents(string: oauthUrl.appendingPathComponent(path).absoluteString)!
         components.queryItems = dict.map({ k, v in URLQueryItem(name: k, value: v) })
         return components.url!
-    }
-}
-
-extension URL {
-    var queryParameters: [String: String]? {
-        guard let components = URLComponents(url: self, resolvingAgainstBaseURL: true),
-              let queryItems = components.queryItems else {
-            return nil
-        }
-        
-        var parameters = [String: String]()
-        queryItems.forEach { parameters[$0.name] = $0.value }
-        return parameters
     }
 }

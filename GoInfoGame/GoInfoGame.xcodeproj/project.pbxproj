@@ -10,7 +10,6 @@
 		0513BE772B2B464800FB61CF /* samplepoint.gpx in Resources */ = {isa = PBXBuildFile; fileRef = 0513BE762B2B464800FB61CF /* samplepoint.gpx */; };
 		0536DD852B0BD11A00B04C4B /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0536DD842B0BD11A00B04C4B /* LoginViewController.swift */; };
 		0536DD922B0BD58800B04C4B /* OAuthService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0536DD912B0BD58800B04C4B /* OAuthService.swift */; };
-		0536DD942B0BD59900B04C4B /* OAuthError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0536DD932B0BD59900B04C4B /* OAuthError.swift */; };
 		0536DD992B0BDBFE00B04C4B /* OAuthManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0536DD982B0BDBFE00B04C4B /* OAuthManager.swift */; };
 		059D47312B2C81A9000987FA /* Style.swift in Sources */ = {isa = PBXBuildFile; fileRef = 059D47302B2C81A9000987FA /* Style.swift */; };
 		059D47332B2C83BA000987FA /* Highway.swift in Sources */ = {isa = PBXBuildFile; fileRef = 059D47322B2C83BA000987FA /* Highway.swift */; };
@@ -322,7 +321,6 @@
 		0513BE762B2B464800FB61CF /* samplepoint.gpx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = samplepoint.gpx; sourceTree = "<group>"; };
 		0536DD842B0BD11A00B04C4B /* LoginViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
 		0536DD912B0BD58800B04C4B /* OAuthService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OAuthService.swift; sourceTree = "<group>"; };
-		0536DD932B0BD59900B04C4B /* OAuthError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OAuthError.swift; sourceTree = "<group>"; };
 		0536DD982B0BDBFE00B04C4B /* OAuthManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OAuthManager.swift; sourceTree = "<group>"; };
 		059D47302B2C81A9000987FA /* Style.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Style.swift; sourceTree = "<group>"; };
 		059D47322B2C83BA000987FA /* Highway.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Highway.swift; sourceTree = "<group>"; };
@@ -655,7 +653,6 @@
 			isa = PBXGroup;
 			children = (
 				0536DD912B0BD58800B04C4B /* OAuthService.swift */,
-				0536DD932B0BD59900B04C4B /* OAuthError.swift */,
 				0536DD982B0BDBFE00B04C4B /* OAuthManager.swift */,
 				FA9FE2D72BAC75390036F618 /* OAuthViewController.swift */,
 			);
@@ -2194,7 +2191,6 @@
 				FA8C74C92C57B9AE00D28220 /* LongQuestView.swift in Sources */,
 				FAFDA1FF2C6D337800ECEAE9 /* PosmLoginModel.swift in Sources */,
 				97412A962BBADAFF00DF7983 /* StairFlights.swift in Sources */,
-				0536DD942B0BD59900B04C4B /* OAuthError.swift in Sources */,
 				973FC0172B4D567900878269 /* WidthView.swift in Sources */,
 				FABF3CFD2B8607860080EAC9 /* MeasureWidthContainer.swift in Sources */,
 				FA8C74C72C4FE2E900D28220 /* LongFormWidthView.swift in Sources */,
