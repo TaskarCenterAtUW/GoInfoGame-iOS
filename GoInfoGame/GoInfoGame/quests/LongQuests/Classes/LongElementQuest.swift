@@ -13,15 +13,16 @@ import CoreLocation
 class LongElementQuest: QuestBase, Quest {
     
     var icon: UIImage {
-        let lowercasedFilter = filter.lowercased()
+        let lowercasedElementType = elementType.lowercased()
         
-        if lowercasedFilter.contains("ways with (highway=footway and footway=sidewalk)") {
+        switch lowercasedElementType {
+        case "sidewalks":
             return UIImage(named: "sidewalk_surface.pdf")!
-        } else if lowercasedFilter.contains("ways with (highway=footway and footway=crossing)") {
+        case "crossings":
             return UIImage(named: "pedestrian")!
-        } else if lowercasedFilter.contains("nodes with barrier=kerb") {
+        case "kerb":
             return UIImage(named: "kerb_type")!
-        } else {
+        default:
             return UIImage(named: "other_element")!
         }
     }
