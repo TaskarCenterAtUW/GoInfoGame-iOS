@@ -113,6 +113,7 @@ class InitialViewModel: ObservableObject {
                     self.saveLongQuestsToDefaults(longQuestJson: longQuestsResponse)
                     
                     // Add one generic form for each longquest
+                    QuestsRepository.shared.allQuests.removeAll()
                     for (index, quest) in self.longQuests.enumerated() {
                         let applicableQuest = ApplicableQuest(
                             quest: LongElementQuest(
