@@ -53,7 +53,7 @@ class DatabaseConnector {
             try realm.write {
                 for node in nodes {
                     let storedElement = StoredNode()
-                    storedElement.id = node.id
+                    storedElement.id = Int64(node.id)
                     storedElement.tags.removeAll()
                     node.tags.forEach { key, value in
                         storedElement.tags[key] = value
@@ -62,7 +62,6 @@ class DatabaseConnector {
                         let timestampString = dateFormatter.string(from: node.timestamp)
                         storedElement.version = node.version
                         storedElement.timestamp = timestampString
-                        storedElement.isOriginal = true
 //                    }
                     if let asNode = node as? OSMNode{
                         // coordinate from lat long
@@ -74,13 +73,12 @@ class DatabaseConnector {
 //                            continue
 //                        }
                     }
-                    storedElement.generateCompoundId()
                     realm.add(storedElement, update: .all)
                 }
                 // Store the ways
                 for way in ways {
                     let storedWay = StoredWay()
-                    storedWay.id = way.id
+                    storedWay.id = Int64(way.id)
                     let timestampString = dateFormatter.string(from: way.timestamp)
                     storedWay.tags.removeAll()
                     way.tags.forEach { key, value in
@@ -90,7 +88,6 @@ class DatabaseConnector {
                     }
                     storedWay.version = way.version
                     storedWay.timestamp = timestampString
-                    storedWay.isOriginal = true
                     if let asWay = way as? OSMWay {
                         storedWay.nodes.append(objectsIn: asWay.nodes.map({Int64($0)}))
                         // Get all the points for the p
@@ -112,7 +109,6 @@ class DatabaseConnector {
 //                            print("Ignoring geometry")
 //                        }
                     }
-                    storedWay.generateCompoundId()
                     realm.add(storedWay, update: .all)
                 }
             }
@@ -191,18 +187,16 @@ class DatabaseConnector {
      @param id String value of the way ID
      @returns CLLocationCoordinate2D the center location
      */
-    func getCenterForWay(id: String) -> CLLocationCoordinate2D? {
+    func getCenterForWay(id: Int64) -> CLLocationCoordinate2D? {
         // Get all the objects for the way
-        let compoundId = "\(id)-original" //
-           guard let way = realm.object(ofType: StoredWay.self, forPrimaryKey: compoundId) else {
-               return nil
-           }
+       guard let way = realm.object(ofType: StoredWay.self, forPrimaryKey: id) else {
+           return nil
+       }
         let nodeIds = way.nodes
         // Get the nodes for each
         var nodeCoords: [CLLocationCoordinate2D] = []
         for nodeId in nodeIds {
-            let compoundNodeId = "\(nodeId)-original"
-            if let node = realm.object(ofType: StoredNode.self , forPrimaryKey: compoundNodeId){
+            if let node = realm.object(ofType: StoredNode.self , forPrimaryKey: nodeId){
                 nodeCoords.append(node.point)
             }
         }
@@ -280,7 +274,7 @@ class DatabaseConnector {
         print("🟣 addNodeTags called for id: \(id) with tags: \(tags)")
 
         if let editable = getNode(id: id) {
-            print("✏️ Editable node exists: \(editable.compoundId)")
+            print("✏️ Editable node exists: \(editable.id)")
             do {
                 try realm.write {
                     editable.tags.removeAll()

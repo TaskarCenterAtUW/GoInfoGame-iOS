@@ -30,8 +30,8 @@ class AppQuestManager {
             n.tags.count != 0
         }
         let waysFromStorage = dbInstance.getWays().filter{w in w.tags.count != 0 }
-        let theWay = waysFromStorage.first(where: {$0.id == Int(elementId)})
-        let theNode = nodesFromStorage.first(where: {$0.id == Int(elementId)})
+        let theWay = waysFromStorage.first(where: {$0.id == Int64(elementId)})
+        let theNode = nodesFromStorage.first(where: {$0.id == Int64(elementId)})
         let allQuests = QuestsRepository.shared.applicableQuests
         // theElement if not equal to nil
         if (theNode != nil) {
@@ -56,7 +56,7 @@ class AppQuestManager {
                         // Create a duplicate of the quest
                         // Need to add another here.
                         let duplicateQuest = quest.quest.copyWithElement(element: wayElement!)
-                        let position  = dbInstance.getCenterForWay(id: String(wayElement!.id)) ?? CLLocationCoordinate2D()
+                        let position  = dbInstance.getCenterForWay(id: wayElement!.id) ?? CLLocationCoordinate2D()
                         let unit = DisplayUnitWithCoordinate(displayUnit: duplicateQuest.displayUnit, coordinateInfo: position, id: wayElement!.id, isHidden: false)
                     return unit
                     }
@@ -69,7 +69,7 @@ class AppQuestManager {
     // Fetches all the available quests from Database
     func fetchQuestsFromDB() ->  [DisplayUnitWithCoordinate] {
             
-        let allOriginalNodes = dbInstance.getNodes().filter { $0.isOriginal && $0.tags.count != 0 }
+        let allOriginalNodes = dbInstance.getNodes().filter {$0.tags.count != 0 }
         
     
         let nodesFromStorage: [StoredNode] = allOriginalNodes.compactMap { original in
@@ -77,7 +77,7 @@ class AppQuestManager {
         }
              
         let allOriginalWays = dbInstance.getWays().filter {
-            $0.isOriginal && $0.tags.count != 0
+            $0.tags.count != 0
         }
 
         let waysFromStorage: [StoredWay] = allOriginalWays.compactMap { original in
@@ -119,7 +119,7 @@ class AppQuestManager {
                         // Create a duplicate of the quest
                         // Need to add another here.
                         let duplicateQuest = quest.quest.copyWithElement(element: way)
-                        let position  = dbInstance.getCenterForWay(id: String(way.id)) ?? CLLocationCoordinate2D()
+                        let position  = dbInstance.getCenterForWay(id: way.id) ?? CLLocationCoordinate2D()
                         let unit = DisplayUnitWithCoordinate(displayUnit: duplicateQuest.displayUnit, coordinateInfo: position, id: way.id, isHidden: false)
                         displayUnits.append(unit)
                         wayQuests.append(duplicateQuest)
@@ -171,7 +171,7 @@ class AppQuestManager {
                           
                         }
                         else if parserElement.type == .way {
-                            let position  = dbInstance.getCenterForWay(id: String(parserElement.id)) ?? CLLocationCoordinate2D()
+                            let position  = dbInstance.getCenterForWay(id: parserElement.id) ?? CLLocationCoordinate2D()
                             let unit = DisplayUnitWithCoordinate(displayUnit: duplicateQuest.displayUnit, coordinateInfo: position, id: parserElement.id, isHidden: false)
                             return unit
                         }

@@ -14,19 +14,12 @@ import osmapi
 // Stores a node instance
 class StoredNode : Object {
     
-    @Persisted(primaryKey: true) var compoundId: String
-    @Persisted var id: Int
+    @Persisted(primaryKey: true) var id: Int64
     @Persisted var tags = Map<String,String>()
     @Persisted var version: Int = 0
     @Persisted var timestamp : String = ""
     @Persisted var point: CLLocationCoordinate2D = CLLocationCoordinate2D(latitude: 0.0, longitude: 0.0)
-    
-    @Persisted var isOriginal: Bool = false
-    
-    func generateCompoundId() {
-        self.compoundId = "\(id)-\(isOriginal ? "original" : "edited")"
-    }
-    
+        
     // Give another method that gives node
     public func asNode() -> Node {
         let position = LatLon(latitude: point.latitude , longitude: point.longitude)
@@ -34,7 +27,7 @@ class StoredNode : Object {
         for (key,value) in tags{
             theTags[key] = value
         }
-        let n = Node(id: Int64(id), version: version, tags: theTags, timestampEdited: 0, position: position)
+        let n = Node(id: id, version: version, tags: theTags, timestampEdited: 0, position: position)
         return n
     }
 }
