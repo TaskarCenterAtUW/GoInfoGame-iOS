@@ -10,6 +10,7 @@ import SwiftUI
 struct InitialView: View {
     @StateObject private var viewModel = InitialViewModel()
     @State private var shouldNavigateToMapView = false
+    @State private var selectedWorkspace: Workspace? = nil
     @StateObject private var locManagerDelegate = LocationManagerDelegate()
     
     @State private var isLoading: Bool = false
@@ -48,7 +49,7 @@ struct InitialView: View {
                        Spacer()
                        
       if viewModel.workspaces.count > 1 {
-          WorkspacesListView(workspaces: viewModel.workspaces, viewModel: viewModel, isLoading: $isLoading)
+          WorkspacesListView(workspaces: viewModel.workspaces, viewModel: viewModel, shouldNavigateToMapView: $shouldNavigateToMapView, selectedWorkspace: $selectedWorkspace, isLoading: $isLoading)
                        }
                    }
                 .padding()
@@ -56,6 +57,12 @@ struct InitialView: View {
                 if isLoading {
                     ActivityView(activityText: "Fetching workspaces")
                        
+                }
+            }
+            .navigationDestination(isPresented: $shouldNavigateToMapView) {
+                if let workspace = selectedWorkspace {
+                    MapView(selectedWorkspace: workspace)
+                        .navigationBarBackButtonHidden(true)
                 }
             }
         }
@@ -82,8 +89,8 @@ struct InitialView: View {
 struct WorkspacesListView: View {
     let workspaces: [Workspace]
     var viewModel: InitialViewModel
-    @State private var shouldNavigateToMapView = false
-    @State private var selectedWorkspace: Workspace?
+    @Binding var shouldNavigateToMapView: Bool
+    @Binding var selectedWorkspace: Workspace?
     
     @Binding var isLoading: Bool
     
@@ -104,23 +111,20 @@ struct WorkspacesListView: View {
                 .onAppear {
                     viewModel.fetchLongQuestsFor(workspaceId: "\(selectedWorkspace.id)") { success, errorMessage  in
                         if success {
+                            self.selectedWorkspace = selectedWorkspace
                             let workspaceId = "\(selectedWorkspace.id)"
                             _ = KeychainManager.save(key: "workspaceID", data: workspaceId)
                             DispatchQueue.main.async {
-                                self.shouldNavigateToMapView = true
+                                shouldNavigateToMapView = true
                             }
                         } else {
                             DispatchQueue.main.async {
                                 alertMessage = errorMessage ?? "Something went wrong. Please pick another workspace."
                                 showAlert = true
-                                self.shouldNavigateToMapView = false
+                                shouldNavigateToMapView = false
                             }
                         }
                     }
-                }
-                .navigationDestination(isPresented: $shouldNavigateToMapView) {
-                    MapView(selectedWorkspace: selectedWorkspace)
-                        .navigationBarBackButtonHidden(true)
                 }
             }
         } else if viewModel.workspaces.count == 0 {
@@ -151,8 +155,8 @@ struct WorkspacesListView: View {
                                         viewModel.checkAndDeleteWorkspaceDB(workspaceId: "\(workspace.id)")
                                         viewModel.fetchLongQuestsFor(workspaceId: "\(workspace.id)", completion: { success, errorMessage in
                                             if success {
-                                                self.shouldNavigateToMapView = true
-                                                self.selectedWorkspace = workspace
+                                                shouldNavigateToMapView = true
+                                                selectedWorkspace = workspace
                                                 
                                                 let workspaceId = "\(workspace.id)"
                                                 _ = KeychainManager.save(key: "workspaceID", data: workspaceId)
@@ -162,7 +166,7 @@ struct WorkspacesListView: View {
                                                     
                                                     showAlert = true
                                                 
-                                                    self.shouldNavigateToMapView = false
+                                                    shouldNavigateToMapView = false
                                                 }
                                             }
                                         })
@@ -188,16 +192,6 @@ struct WorkspacesListView: View {
                 Button("OK", role: .cancel) { }
             }
         }
-
-            if shouldNavigateToMapView, let selectedWorkspace = selectedWorkspace {
-                NavigationLink(value: selectedWorkspace) {
-                    EmptyView()
-                }
-                .navigationDestination(isPresented: $shouldNavigateToMapView) {
-                    MapView(selectedWorkspace: selectedWorkspace)
-                        .navigationBarBackButtonHidden(true)
-                }
-            }
     }
 }
 
