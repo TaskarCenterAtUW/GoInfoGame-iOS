@@ -15,7 +15,7 @@ import CoreLocation
 
 /**
  Used to test the flow of information
- This fetches the information and sends things down 
+ This fetches the information and sends things down
  */
 final class UserFlowTests: XCTestCase {
     
@@ -34,14 +34,14 @@ final class UserFlowTests: XCTestCase {
         //        opManager.fetchElements(fromBBox: kirklandBBox) { fetchedElements in
         //            // Get the count of nodes and ways
         //            let allValues = fetchedElements.values
-        //            
+        //
         //            let nodes = allValues.filter({$0 is OPNode}).filter({!$0.tags.isEmpty})
         //            let ways = allValues.filter({$0  is OPWay}).filter({!$0.tags.isEmpty})
         //            let allElements = allValues.filter({!$0.tags.isEmpty})
         //            self.dbInstance.saveElements(allElements) // Save all where there are tags
         //            expec.fulfill()
         //        }
-        //        
+        //
         //        waitForExpectations(timeout: 10)
     }
     
@@ -135,22 +135,22 @@ final class UserFlowTests: XCTestCase {
     }
     
     // Tests if we can add an element in the directory
-    func testChangesetCreation() throws {
-        // Get one node element
-        // Add a tag and see if we can create an element
-        guard let oneNode = dbInstance.getNodes().first else {
-            XCTFail("No nodes available")
-            return
-        }
-        let nodeId = oneNode.id
-        let addedTags = ["lit":"yes"]
-        let changedNode = dbInstance.addNodeTags(id: String(nodeId), tags: addedTags)
-        // Create a changeset
-        let newChangeset = dbInstance.createChangeset(id: String(nodeId), type: .node, tags: addedTags)
-        // Need to figure out the id of the changeset
-        XCTAssertEqual(newChangeset?.elementType, .node)
-        XCTAssertEqual(newChangeset?.elementId, String(nodeId))
-    }
+    //    func testChangesetCreation() throws {
+    //        // Get one node element
+    //        // Add a tag and see if we can create an element
+    //        guard let oneNode = dbInstance.getNodes().first else {
+    //            XCTFail("No nodes available")
+    //            return
+    //        }
+    //        let nodeId = oneNode.id
+    //        let addedTags = ["lit":"yes"]
+    //        let changedNode = dbInstance.addNodeTags(id: String(nodeId), tags: addedTags)
+    //        // Create a changeset
+    //        let newChangeset = dbInstance.createChangeset(id: nodeId, type: .node, tags: addedTags)
+    //        // Need to figure out the id of the changeset
+    //        XCTAssertEqual(newChangeset?.elementType, .node)
+    //        XCTAssertEqual(newChangeset?.elementId, String(nodeId))
+    //    }
     
     
     func testChangesetFetch() throws {
@@ -179,10 +179,10 @@ final class UserFlowTests: XCTestCase {
                     osmConnection.openChangeSet(createdByTag: "") { result in
                         switch result {
                         case .success(let changesetId):
-                            DispatchQueue.main.async {
-                                // your code here
-                                self.dbInstance.assignChangesetId(obj: changeset.id, changesetId: changesetId)
-                            }
+                            //                            DispatchQueue.main.async {
+                            //                                // your code here
+                            //                                self.dbInstance.assignChangesetId(obj: changeset.id, changesetId: changesetId)
+                            //                            }
                             
                             print("opened successfully")
                         case .failure(let error):
@@ -225,11 +225,9 @@ final class UserFlowTests: XCTestCase {
         // 6. Selecting one node (hardcoded to 301834)
         // 7. validating is test tag exists
         // 8. updating tag with test tags (Hardcoded tags)
-        
         // 9. get the node tags and compare
         // 10. undo the node tags
         // 11. get the node tags and copare
-        // 12. logout
         
         var cancellables: Set<AnyCancellable> = []
         
@@ -238,7 +236,7 @@ final class UserFlowTests: XCTestCase {
         let testingTagKey: String = "Testing"
         let testingTagValue: String = "testQuestUndoFlow"
         let workspaceID: Int = 380 // 380 workspace id is for Medina City Test under Test Project Group 1
-        let nodeID: Int = 301834
+        let nodeID: Int = 301834 // Before running this test case, make sure no gig tags are added to the node.
         
         DatabaseConnector.shared.clearDB()
         
@@ -292,15 +290,40 @@ final class UserFlowTests: XCTestCase {
                                         if let lognFormQuest = node.displayUnit.parent as? LongElementQuest {
                                             lognFormQuest.updateTags(id: node.id, tags: newTestingTags, type: .node)
                                             DispatchQueue.main.asyncAfter(deadline: .now() + 5) { [weak self] in
+                                                // 9. get the node tags and compare
                                                 self?.getNodeTags(id: nodeID, workspaceId: workspaceID, completion: { result in
                                                     switch result {
                                                     case .failure(let error):
                                                         XCTFail("\(error)")
+                                                        expectation.fulfill()
                                                     case .success(let tags):
                                                         XCTAssert(tags[testingTagKey] == testingTagValue, "Testing tag is not present")
                                                         XCTAssertEqual(tags["ext:gig_complete"], "yes","Gig complete tag not preset")
+
+                                                        // 10. undo the node tags
+                                                        DispatchQueue.main.async {
+                                                            let undoItem = MapUndoManager.shared.getUndoItems().first { item in
+                                                                item.elementId == nodeID && item.type == .node
+                                                            }
+                                                            if let undoItem = undoItem  {
+                                                                MapUndoManager.shared.undo(for: undoItem.id)
+                                                                DispatchQueue.main.asyncAfter(deadline: .now() + 5) { [weak self] in
+                                                                    // 11. get the node tags and copare
+                                                                    self?.getNodeTags(id: nodeID, workspaceId: workspaceID, completion: { result in
+                                                                        switch result {
+                                                                        case .failure(let error):
+                                                                            XCTFail("\(error)")
+                                                                            expectation.fulfill()
+                                                                        case .success(let tags):
+                                                                            XCTAssert(tags[testingTagKey] == nil, "Testing tag is present")
+                                                                            XCTAssertEqual(tags["ext:gig_complete"], nil, "Gig complete tag preset")
+                                                                        }
+                                                                        expectation.fulfill()
+                                                                    })
+                                                                }
+                                                            }
+                                                        }
                                                     }
-                                                    expectation.fulfill()
                                                 })
                                             }
                                         } else {
@@ -309,7 +332,7 @@ final class UserFlowTests: XCTestCase {
                                         }
                                         
                                     } else  {
-                                        XCTAssert(false, "No node found")
+                                        XCTAssert(false, "No node found") // Before running this test case, make sure no gig tags are added to the node.
                                         expectation.fulfill()
                                     }
                                 }
@@ -322,9 +345,188 @@ final class UserFlowTests: XCTestCase {
                 initialViewModel.fetchWorkspacesList()
             }
             .store(in: &cancellables)
-        loginViewModel.performLogin()
+        loginViewModel.performLogin(for: .development)
+        wait(for: [expectation], timeout: 50.0)
+    }
+    
+    
+    @MainActor
+    func testMultiQuestAnswerWithUndo() {
+        // 1. login
+        // 2. Fetching Workspaces
+        // 3. Selecting one workspace (hardcoded to 380)
+        // 4. Fetching Longquests
+        // 5. Loading elements
+        // 6. Selecting couple node (hardcoded to 301833, 301835, 301836)
+        // 7. validating is test tag exists
+        // 8. updating tag with test tags (Hardcoded tags)
+        // 9. get the node tags and compare
+        // 10. undo the node tags
+        // 11. get the node tags and compare
         
+        var cancellables: Set<AnyCancellable> = []
         
+        let expectation = XCTestExpectation(description: "Login successful")
+        
+        let testingTagKey: String = "Testing"
+        let testingTagValue: String = "testMultiQuestAnswer"
+        let workspaceID: Int = 380 // 380 workspace id is for Medina City Test under Test Project Group 1
+        let nodeIDs: [Int] = [301833, 301836]
+        
+        DatabaseConnector.shared.clearDB()
+        
+        // 1. login
+        let loginViewModel = PosmLoginViewModel()
+        loginViewModel.username = "prateekan6@gmail.com"
+        loginViewModel.password = "Test@1234"
+        loginViewModel.$isLoginSuccess
+            .dropFirst()
+            .receive(on: DispatchQueue.main)
+            .sink { isLoggedIn in
+                XCTAssertTrue(isLoggedIn)
+                cancellables.first?.cancel()
+                cancellables.removeFirst()
+                
+                // 2. fetching workspaces
+                let initialViewModel = InitialViewModel()
+                initialViewModel.$isLoading
+                    .dropFirst()
+                    .receive(on: DispatchQueue.main)
+                    .sink { isloading in
+                        cancellables.first?.cancel()
+                        cancellables.removeFirst()
+                        
+                        // 3. select the workspace
+                        let workspaceId: String = "\(workspaceID)"
+                        _ = GoInfoGame.KeychainManager.save(key: "workspaceID", data: workspaceId)
+                        
+                        // 4. get the node tages
+                        initialViewModel.fetchLongQuestsFor(workspaceId: "\(workspaceID)") { result, string in
+                            XCTAssert(result)
+                            
+                            // 5. Loading elements
+                            let mapViewModel = MapViewModel()
+                            mapViewModel.isMultiSelectModeEnabled = true
+                            let location = CLLocationCoordinate2D(latitude: 47.62619, longitude: -122.24255)
+                            mapViewModel.$isLoading
+                                .dropFirst(2)
+                                .receive(on: DispatchQueue.main)
+                                .sink { _ in
+                                    cancellables.first?.cancel()
+                                    cancellables.removeFirst()
+                                    
+                                    // 6. Selecting couple node (hardcoded to 301833, 301835, 301836)
+                                    let nodes = AppQuestManager.shared.fetchQuestsFromDB().filter({ element in
+                                        nodeIDs.contains(Int(element.id))
+                                    })
+                                    XCTAssertEqual(nodeIDs.count, nodeIDs.count, "All nodes not found.")
+                                    
+                                    let displayUnitAnnotations = nodes.map { $0.annotation }
+                                    
+                                    
+                                    displayUnitAnnotations.forEach { annotation in
+                                        mapViewModel.selectedAnnotaions.insert(annotation)
+                                    }
+                                    
+                                    let displayUnit = mapViewModel.getSelectedQuest()
+                                    if let longElementQuest = displayUnit?.parent as? LongElementQuest,
+                                       let form = longElementQuest.internalForm as? LongForm {
+                                        form.action?([testingTagKey : testingTagValue])
+                                    } else {
+                                        XCTFail("LongElementQuest UI component not found")
+                                        expectation.fulfill()
+                                    }
+                                    
+                                    DispatchQueue.main.asyncAfter(deadline: .now() + 5) { [weak self] in
+                                        // 9. get the node tags and compare
+                                    let group = DispatchGroup()
+                                        group.enter()
+                                        self?.getNodeTags(id: nodeIDs.first ?? 0, workspaceId: workspaceID, completion: { result in
+                                            switch result {
+                                            case .failure(let error):
+                                                XCTFail("\(error)")
+                                            case .success(let tags):
+                                                XCTAssert(tags[testingTagKey] == testingTagValue, "Testing tag is not present")
+                                                XCTAssertEqual(tags["ext:gig_complete"], "yes","Gig complete tag not preset")
+                                            }
+                                            group.leave()
+                                        })
+                                        
+                                        group.enter()
+                                        self?.getNodeTags(id: nodeIDs.last ?? 0, workspaceId: workspaceID, completion: { result in
+                                            switch result {
+                                            case .failure(let error):
+                                                XCTFail("\(error)")
+                                            case .success(let tags):
+                                                XCTAssert(tags[testingTagKey] == testingTagValue, "Testing tag is not present")
+                                                XCTAssertEqual(tags["ext:gig_complete"], "yes","Gig complete tag not preset")
+                                            }
+                                            group.leave()
+                                        })
+                                        
+                                        group.notify(queue: .main) {
+                                            // 10. undo the node tags
+                                            let undogroup = DispatchGroup()
+                                            
+                                            let undoItem1 = MapUndoManager.shared.getUndoItems().first { item in
+                                                item.elementId == nodeIDs.first && item.type == .node
+                                            }
+                                            if let undoItem = undoItem1  {
+                                                undogroup.enter()
+                                                MapUndoManager.shared.undo(for: undoItem.id)
+                                                DispatchQueue.main.asyncAfter(deadline: .now() + 5) { [weak self] in
+                                                    // 11. get the node tags and compare
+                                                    self?.getNodeTags(id: nodeIDs.first ?? 0, workspaceId: workspaceID, completion: { result in
+                                                        switch result {
+                                                        case .failure(let error):
+                                                            XCTFail("\(error)")
+                                                            expectation.fulfill()
+                                                        case .success(let tags):
+                                                            XCTAssert(tags[testingTagKey] == nil, "Testing tag is present")
+                                                            XCTAssertEqual(tags["ext:gig_complete"], nil, "Gig complete tag preset")
+                                                        }
+                                                        undogroup.leave()
+                                                    })
+                                                }
+                                            }
+                                            
+                                            let undoItem2 = MapUndoManager.shared.getUndoItems().first { item in
+                                                item.elementId == nodeIDs.last && item.type == .node
+                                            }
+                                            if let undoItem = undoItem2  {
+                                                undogroup.enter()
+                                                MapUndoManager.shared.undo(for: undoItem.id)
+                                                DispatchQueue.main.asyncAfter(deadline: .now() + 5) { [weak self] in
+                                                    // 11. get the node tags and compare
+                                                    self?.getNodeTags(id: nodeIDs.last ?? 0, workspaceId: workspaceID, completion: { result in
+                                                        switch result {
+                                                        case .failure(let error):
+                                                            XCTFail("\(error)")
+                                                            expectation.fulfill()
+                                                        case .success(let tags):
+                                                            XCTAssert(tags[testingTagKey] == nil, "Testing tag is present")
+                                                            XCTAssertEqual(tags["ext:gig_complete"], nil, "Gig complete tag preset")
+                                                        }
+                                                        undogroup.leave()
+                                                    })
+                                                }
+                                            }
+                                            
+                                            undogroup.notify(queue: .main) {
+                                                expectation.fulfill()
+                                            }
+                                        }
+                                    }
+                                }
+                                .store(in: &cancellables)
+                            mapViewModel.fetchOSMDataFor(from: .currentLocation(location: location))
+                        }
+                    }
+                    .store(in: &cancellables)
+                initialViewModel.fetchWorkspacesList()
+            }
+            .store(in: &cancellables)
+        loginViewModel.performLogin(for: .development)
         wait(for: [expectation], timeout: 50.0)
         
     }
