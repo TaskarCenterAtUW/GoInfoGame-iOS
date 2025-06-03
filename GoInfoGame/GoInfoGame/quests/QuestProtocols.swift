@@ -87,13 +87,13 @@ class QuestBase {
        case .way:
            elementSubmittingToPOSM = .way
 //          _ = DatabaseConnector.shared.addWayTags(id: storedId, tags: tags)
-           let way =  DatabaseConnector.shared.getWay(id: Int(id), version: .original)!
+           let way =  DatabaseConnector.shared.getWay(id: Int(id))!
            // Create a changeset
            _ = DatabaseConnector.shared.createChangeset(id: Int(id), type: storedElementType, originalTags: way.tags.toDictionary(), tags: tags, version: way.version, nodes: way.nodes)
        case .node:
            elementSubmittingToPOSM = .node
 //          _ = DatabaseConnector.shared.addNodeTags(id: storedId, tags: tags)
-           let node =  DatabaseConnector.shared.getNode(id: Int(id), version: .original)!
+           let node =  DatabaseConnector.shared.getNode(id: Int(id))!
            // Create a changeset
            _ = DatabaseConnector.shared.createChangeset(id: Int(id), type: storedElementType, originalTags: node.tags.toDictionary(), tags: tags, version: node.version, point: node.point)
        case .unknown:

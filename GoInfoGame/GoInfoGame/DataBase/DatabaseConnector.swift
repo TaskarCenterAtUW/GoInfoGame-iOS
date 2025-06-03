@@ -220,8 +220,8 @@ class DatabaseConnector {
      @param id: String value of the node ID
      @return StoredNode
      */
-    func getNode(id:Int, version: StoredNodeVersion) -> StoredNode? {
-        let compoundId = "\(id)-\(version.rawValue)"
+    func getNode(id:Int) -> StoredNode? {
+        let compoundId = "\(id)"
         return realm.object(ofType: StoredNode.self, forPrimaryKey: compoundId)
     }
     /**
@@ -233,8 +233,8 @@ class DatabaseConnector {
 //        return realm.object(ofType: StoredWay.self, forPrimaryKey: Int(id))
 //    }
     
-    func getWay(id: Int, version: StoredWayVersion) -> StoredWay? {
-        let compoundId = "\(id)-\(version.rawValue)"
+    func getWay(id: Int) -> StoredWay? {
+        let compoundId = "\(id)"
         return realm.object(ofType: StoredWay.self, forPrimaryKey: compoundId)
     }
 
@@ -253,7 +253,7 @@ class DatabaseConnector {
     func addWayTags(id: Int, tags: [String: String], version: Int) -> StoredWay? {
 
         // Step 1: Try to get the editable copy first
-        if let editable = getWay(id: id, version: .original) {
+        if let editable = getWay(id: id) {
             // Step 2: Update the existing editable copy
             do {
                 try realm.write {
@@ -279,7 +279,7 @@ class DatabaseConnector {
     func addNodeTags(id: Int, tags: [String: String], version: Int) -> StoredNode? {
         print("🟣 addNodeTags called for id: \(id) with tags: \(tags)")
 
-        if let editable = getNode(id: id, version: .original) {
+        if let editable = getNode(id: id) {
             print("✏️ Editable node exists: \(editable.compoundId)")
             do {
                 try realm.write {
@@ -393,7 +393,7 @@ class DatabaseConnector {
     
     func updateNodeVersion(nodeId: String, version:Int) -> StoredNode?{
         let intId = Int(nodeId) ?? -1
-        guard let theNode = getNode(id: intId, version: .original) else { return nil }
+        guard let theNode = getNode(id: intId) else { return nil }
         do {
             try realm.write {
                 theNode.version = version
@@ -408,7 +408,7 @@ class DatabaseConnector {
     
     func updateWayVersion(wayId: String, version: Int) -> StoredWay? {
         let intId = Int(wayId) ?? -1
-        guard let theWay = getWay(id: intId, version: .original) else { return nil }
+        guard let theWay = getWay(id: intId) else { return nil }
         
         do {
             try realm.write {

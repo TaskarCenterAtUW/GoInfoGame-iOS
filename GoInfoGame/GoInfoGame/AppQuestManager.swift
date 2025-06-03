@@ -147,11 +147,11 @@ class AppQuestManager {
             let storedElementType = changeset.elementType
             var parserElement: osmparser.Element? = nil
             if (storedElementType == .node) {
-               let storedElement = dbInstance.getNode(id: storedElementId, version: .original)
+               let storedElement = dbInstance.getNode(id: storedElementId)
                 parserElement = storedElement?.asNode()
             }
             else if (storedElementType == .way){
-               let storedElement = dbInstance.getWay(id: storedElementId, version: .original)
+               let storedElement = dbInstance.getWay(id: storedElementId)
                 parserElement = storedElement?.asWay()
             }
             if let parserElement = parserElement {
