@@ -179,6 +179,7 @@
 		A4E711B02B59011000C9DE08 /* StepsInclineForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4E711AF2B59011000C9DE08 /* StepsInclineForm.swift */; };
 		B0CCB98C2B8626AE00AA73DE /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0CCB98B2B8626AE00AA73DE /* ProfileView.swift */; };
 		B0CCB98E2B8626C600AA73DE /* ProfileViewVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0CCB98D2B8626C600AA73DE /* ProfileViewVM.swift */; };
+		C76DA1A12DF0679F00451E63 /* LongFormModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA8C74C32C4FDE1000D28220 /* LongFormModel.swift */; };
 		C77EEBCF2DE59D3200494CB4 /* UndoMerge.swift in Sources */ = {isa = PBXBuildFile; fileRef = C77EEBCE2DE59D3200494CB4 /* UndoMerge.swift */; };
 		C7ED070F2D70E2EC001FFFE2 /* TokenRefresher.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7ED070E2D70E2EC001FFFE2 /* TokenRefresher.swift */; };
 		CFECB318461BB876B1621890 /* Pods_osmapi.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C4F37DA661B22FA87DF8282F /* Pods_osmapi.framework */; };
@@ -207,7 +208,6 @@
 		FA87A8192B6B01A4000A6BEA /* HandRailTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA87A8182B6B01A4000A6BEA /* HandRailTests.swift */; };
 		FA87A81B2B6B042E000A6BEA /* SideWalkWidthTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA87A81A2B6B042E000A6BEA /* SideWalkWidthTests.swift */; };
 		FA8C74C22C4E89C800D28220 /* LongForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA8C74C12C4E89C800D28220 /* LongForm.swift */; };
-		FA8C74C42C4FDE1000D28220 /* LongFormModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA8C74C32C4FDE1000D28220 /* LongFormModel.swift */; };
 		FA8C74C72C4FE2E900D28220 /* LongFormWidthView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA8C74C62C4FE2E900D28220 /* LongFormWidthView.swift */; };
 		FA8C74C92C57B9AE00D28220 /* LongQuestView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA8C74C82C57B9AE00D28220 /* LongQuestView.swift */; };
 		FA8C74D42C5A443700D28220 /* QuestOptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA8C74D32C5A443700D28220 /* QuestOptions.swift */; };
@@ -2126,6 +2126,7 @@
 				973FC0192B4FB17000878269 /* LocalizedStrings.swift in Sources */,
 				A48037312BBA8C25007EE7E4 /* ApiManager.swift in Sources */,
 				FABF3D002B8607D80080EAC9 /* MeasureSidewalkView.swift in Sources */,
+				C76DA1A12DF0679F00451E63 /* LongFormModel.swift in Sources */,
 				FA18CAE72CC80A34008247F2 /* UploadPhotoModel.swift in Sources */,
 				97439F782B87444200DA43E1 /* CrossingKerbHeightForm.swift in Sources */,
 				FAFDA1FA2C6B861A00ECEAE9 /* FileStorageManager.swift in Sources */,
@@ -2189,7 +2190,6 @@
 				971575172B5FFD6F0044797C /* MapView.swift in Sources */,
 				FAFDA2102C6F592700ECEAE9 /* UserProfileViewModel.swift in Sources */,
 				97412A9B2BBBF3B400DF7983 /* KerbHeightForm.swift in Sources */,
-				FA8C74C42C4FDE1000D28220 /* LongFormModel.swift in Sources */,
 				973FC04A2B5A478C00878269 /* CrossMarkingForm.swift in Sources */,
 				FAE2584F2D39819300D2BB12 /* ManageQuestsView.swift in Sources */,
 				973FC03F2B59418B00878269 /* WayLit.swift in Sources */,

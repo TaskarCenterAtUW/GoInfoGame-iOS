@@ -1,0 +1,12 @@
+{
+  "images" : [
+    {
+      "filename" : "guidepost_ele.pdf",
+      "idiom" : "universal"
+    }
+  ],
+  "info" : {
+    "author" : "xcode",
+    "version" : 1
+  }
+}

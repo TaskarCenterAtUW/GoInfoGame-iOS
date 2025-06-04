@@ -13,17 +13,22 @@ import CoreLocation
 class LongElementQuest: QuestBase, Quest {
     
     var icon: UIImage {
-        let lowercasedElementType = elementType.lowercased()
-        
-        switch lowercasedElementType {
-        case "sidewalks":
-            return UIImage(named: "sidewalk_surface.pdf")!
-        case "crossings":
-            return UIImage(named: "pedestrian")!
-        case "kerb":
-            return UIImage(named: "kerb_type")!
-        default:
-            return UIImage(named: "other_element")!
+        if let iconName = elementTypeIcon,
+           let image = UIImage(named: iconName) {
+            return image
+        } else {
+            let lowercasedElementType = elementType.lowercased()
+            
+            switch lowercasedElementType {
+            case "sidewalks":
+                return UIImage(named: "sidewalk_surface.pdf")!
+            case "crossings":
+                return UIImage(named: "pedestrian")!
+            case "kerb":
+                return UIImage(named: "kerb_type")!
+            default:
+                return UIImage(named: "other_element")!
+            }
         }
     }
 
@@ -36,7 +41,10 @@ class LongElementQuest: QuestBase, Quest {
         
     var wikiLink: String = ""
     
-    var elementType: String = ""
+    private(set) var elementType: String = ""
+    
+    private(set) var elementTypeIcon: String?
+    
     
     var changesetComment: String = ""
     
@@ -91,10 +99,11 @@ class LongElementQuest: QuestBase, Quest {
           )
       }
     
-    init(questId: String, questQuery:String, elementType: String) {
+    init(questId: String, questQuery:String, elementType: String, elementTypeIcon: String?) {
         super.init()
         self._internalQueryString = questQuery
         self.elementType = elementType
+        self.elementTypeIcon = elementTypeIcon
         self.internalForm = LongForm(elementName: elementType, questID: questId,query: questQuery, action: { [self] tags in
 //            self.onAnswer(answer: tags)
             self.questAnswersSelected?(tags)
@@ -124,7 +133,7 @@ class LongElementQuest: QuestBase, Quest {
     
     func copyWithElement(element: Element) -> any Quest {
         let questId = String(element.id)
-        let quest = LongElementQuest(questId: questId, questQuery: _internalQueryString!, elementType: elementType)
+        let quest = LongElementQuest(questId: questId, questQuery: _internalQueryString!, elementType: elementType, elementTypeIcon: elementTypeIcon)
         quest.relationData = element
         return quest
     }

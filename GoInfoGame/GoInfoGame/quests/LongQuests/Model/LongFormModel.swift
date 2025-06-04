@@ -20,17 +20,46 @@ import Foundation
 
 import Foundation
 
-struct LongFormModel: Codable {
+// MARK: - LongFormResponse
+struct LongFormResponse<T: Decodable>: Decodable {
+    let version: String?
+    let elements: [T]
+    
+    init(from decoder: Decoder) throws {
+        // Try top-level array first
+        if let topArray = try? [T](from: decoder) {
+            self.elements = topArray
+            self.version = nil
+            return
+        }
+
+        // Try decoding from "elements" key in dictionary
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        self.elements = try container.decode([T].self, forKey: .elements)
+        self.version = try container.decodeIfPresent(String.self, forKey: .version)
+    }
+
+    enum CodingKeys: String, CodingKey {
+        case elements
+        case version
+    }
+}
+
+// MARK: - Element
+struct LongFormElement: Codable {
     let elementType, questQuery: String
+    let elementTypeIcon: String?
     let quests: [LongQuest]
 
     enum CodingKeys: String, CodingKey {
         case elementType = "element_type"
+        case elementTypeIcon = "element_type_icon"
         case questQuery = "quest_query"
         case quests
     }
 }
 
+// MARK: - Quest
 struct LongQuest: Codable, Identifiable {
     let id =  UUID()
     var questID: Int
@@ -72,6 +101,7 @@ struct LongQuest: Codable, Identifiable {
     }
 }
 
+// MARK: - QuestAnswerChoice
 struct QuestAnswerChoice: Codable, Identifiable {
     let id = UUID()
     let value, choiceText: String
@@ -86,10 +116,12 @@ struct QuestAnswerChoice: Codable, Identifiable {
     }
 }
 
+// MARK: - QuestAnswerValidation
 struct QuestAnswerValidation: Codable {
     let min: Int
 }
 
+// MARK: - QuestAnswerDependency
 struct QuestAnswerDependency: Codable {
     var questionID: Int
     var requiredValue: RequiredValue
@@ -132,7 +164,6 @@ enum RequiredValue: Codable {
         }
     }
 }
-
 
 
 

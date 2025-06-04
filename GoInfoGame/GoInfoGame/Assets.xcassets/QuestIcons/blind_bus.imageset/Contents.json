@@ -1,0 +1,12 @@
+{
+  "images" : [
+    {
+      "filename" : "blind_bus.pdf",
+      "idiom" : "universal"
+    }
+  ],
+  "info" : {
+    "author" : "xcode",
+    "version" : 1
+  }
+}

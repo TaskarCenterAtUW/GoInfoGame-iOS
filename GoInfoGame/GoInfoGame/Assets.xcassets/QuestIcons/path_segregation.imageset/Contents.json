@@ -1,0 +1,12 @@
+{
+  "images" : [
+    {
+      "filename" : "path_segregation.pdf",
+      "idiom" : "universal"
+    }
+  ],
+  "info" : {
+    "author" : "xcode",
+    "version" : 1
+  }
+}
