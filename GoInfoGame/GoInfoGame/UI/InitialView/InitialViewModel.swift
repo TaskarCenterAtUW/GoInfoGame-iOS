@@ -92,7 +92,7 @@ class InitialViewModel: ObservableObject {
         
         isLoading = true
         
-        ApiManager.shared.performRequest(to: .fetchLongQuests(workspaceId), setupType: .workspace, modelType: LongFormResponse<LongFormElement>.self) { result in
+        ApiManager.shared.performRequest(to: .fetchLongQuests(workspaceId), setupType: .workspace, modelType: LongFormResponse.self) { result in
             DispatchQueue.main.async {
                 switch result {
                 case .success(let longQuestsResponse):

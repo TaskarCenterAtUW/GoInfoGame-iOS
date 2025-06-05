@@ -21,13 +21,13 @@ import Foundation
 import Foundation
 
 // MARK: - LongFormResponse
-struct LongFormResponse<T: Decodable>: Decodable {
+struct LongFormResponse: Decodable {
     let version: String?
-    let elements: [T]
+    let elements: [LongFormElement]
     
     init(from decoder: Decoder) throws {
         // Try top-level array first
-        if let topArray = try? [T](from: decoder) {
+        if let topArray = try? [LongFormElement](from: decoder) {
             self.elements = topArray
             self.version = nil
             return
@@ -35,7 +35,7 @@ struct LongFormResponse<T: Decodable>: Decodable {
 
         // Try decoding from "elements" key in dictionary
         let container = try decoder.container(keyedBy: CodingKeys.self)
-        self.elements = try container.decode([T].self, forKey: .elements)
+        self.elements = try container.decode([LongFormElement].self, forKey: .elements)
         self.version = try container.decodeIfPresent(String.self, forKey: .version)
     }
 
