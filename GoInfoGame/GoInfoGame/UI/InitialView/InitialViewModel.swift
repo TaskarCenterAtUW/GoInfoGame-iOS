@@ -15,7 +15,7 @@ import LocalAuthentication
 class InitialViewModel: ObservableObject {
     let locationManagerDelegate = LocationManagerDelegate()
     @Published var workspaces: [Workspace] = [] 
-    @Published var longQuests: [LongFormModel] = []
+    @Published var longQuests: [LongFormElement] = []
     @Published var isLoading: Bool = false
     
     @Published var shouldShowBiometricOptInPrompt = false
@@ -92,14 +92,14 @@ class InitialViewModel: ObservableObject {
         
         isLoading = true
         
-        ApiManager.shared.performRequest(to: .fetchLongQuests(workspaceId), setupType: .workspace, modelType: [LongFormModel].self) { result in
+        ApiManager.shared.performRequest(to: .fetchLongQuests(workspaceId), setupType: .workspace, modelType: LongFormResponse.self) { result in
             DispatchQueue.main.async {
                 switch result {
                 case .success(let longQuestsResponse):
                     
                     // Validate quest query
                     do {
-                            for item in longQuestsResponse {
+                        for item in longQuestsResponse.elements {
                                 _ = try item.questQuery.toElementFilterExpression()
                             }
                         } catch {
@@ -109,8 +109,8 @@ class InitialViewModel: ObservableObject {
                             return
                         }
 
-                    self.longQuests = longQuestsResponse
-                    self.saveLongQuestsToDefaults(longQuestJson: longQuestsResponse)
+                    self.longQuests = longQuestsResponse.elements
+                    self.saveLongQuestsToDefaults(longQuestJson: longQuestsResponse.elements)
                     
                     // Add one generic form for each longquest
                     QuestsRepository.shared.allQuests.removeAll()
@@ -119,7 +119,8 @@ class InitialViewModel: ObservableObject {
                             quest: LongElementQuest(
                                 questId: "\(index + 1)",
                                 questQuery: quest.questQuery,
-                                elementType: quest.elementType
+                                elementType: quest.elementType,
+                                elementTypeIcon: quest.elementTypeIcon
                             ),
                             questId: "\(index + 1)"
                         )
@@ -144,7 +145,7 @@ class InitialViewModel: ObservableObject {
     }
     
     
-    func saveLongQuestsToDefaults(longQuestJson: [LongFormModel]) {
+    func saveLongQuestsToDefaults(longQuestJson: [LongFormElement]) {
         do {
            try FileStorageManager.shared.save(questModels: longQuestJson, to: "longQuestJson")
         } catch {

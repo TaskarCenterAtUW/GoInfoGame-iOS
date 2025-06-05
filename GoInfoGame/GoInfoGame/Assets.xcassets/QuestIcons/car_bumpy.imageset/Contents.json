@@ -1,0 +1,12 @@
+{
+  "images" : [
+    {
+      "filename" : "car_bumpy.pdf",
+      "idiom" : "universal"
+    }
+  ],
+  "info" : {
+    "author" : "xcode",
+    "version" : 1
+  }
+}

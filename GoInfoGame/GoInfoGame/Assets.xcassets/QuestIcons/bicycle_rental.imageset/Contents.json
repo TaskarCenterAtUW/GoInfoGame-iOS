@@ -1,0 +1,12 @@
+{
+  "images" : [
+    {
+      "filename" : "bicycle_rental.pdf",
+      "idiom" : "universal"
+    }
+  ],
+  "info" : {
+    "author" : "xcode",
+    "version" : 1
+  }
+}

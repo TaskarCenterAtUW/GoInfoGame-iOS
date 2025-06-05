@@ -1,0 +1,12 @@
+{
+  "images" : [
+    {
+      "filename" : "bench_public_transport.pdf",
+      "idiom" : "universal"
+    }
+  ],
+  "info" : {
+    "author" : "xcode",
+    "version" : 1
+  }
+}

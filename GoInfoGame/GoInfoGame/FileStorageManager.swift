@@ -18,13 +18,13 @@ class FileStorageManager {
         self.directoryURL = fileManager.temporaryDirectory
     }
 
-    func save(questModels: [LongFormModel], to fileName: String) throws {
+    func save(questModels: [LongFormElement], to fileName: String) throws {
            let fileURL = directoryURL.appendingPathComponent("\(fileName).json")
            let data = try JSONEncoder().encode(questModels)
            try data.write(to: fileURL)
        }
 
-       func load(from fileName: String) throws -> [LongFormModel]? {
+       func load(from fileName: String) throws -> [LongFormElement]? {
            let fileURL = directoryURL.appendingPathComponent("\(fileName).json")
            
            guard fileManager.fileExists(atPath: fileURL.path) else {
@@ -32,7 +32,7 @@ class FileStorageManager {
            }
 
            let data = try Data(contentsOf: fileURL)
-           let questModels = try JSONDecoder().decode([LongFormModel].self, from: data)
+           let questModels = try JSONDecoder().decode([LongFormElement].self, from: data)
            return questModels
        }
     

@@ -1,0 +1,12 @@
+{
+  "images" : [
+    {
+      "filename" : "bicycle_repair_amenity.pdf",
+      "idiom" : "universal"
+    }
+  ],
+  "info" : {
+    "author" : "xcode",
+    "version" : 1
+  }
+}

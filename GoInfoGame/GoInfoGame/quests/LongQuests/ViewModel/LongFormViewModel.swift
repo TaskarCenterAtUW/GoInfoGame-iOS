@@ -8,7 +8,7 @@
 import Foundation
 
 class LongFormViewModel: ObservableObject {
-    @Published var longForm: LongFormModel?
+    @Published var longForm: LongFormElement?
     @Published var answers: [Int: String] = [:]
     @Published var answersToBeSubmitted: [String: String] = [:]
 

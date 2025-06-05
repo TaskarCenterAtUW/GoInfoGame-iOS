@@ -50,7 +50,7 @@ class QuestsRepository: ObservableObject {
            allQuests.filter { $0.isDefault }
        }
     
-    @Published var longQuestModels: [LongFormModel] = []
+    @Published var longQuestModels: [LongFormElement] = []
     
     var displayQuests: [DisplayUnit] {
         self.applicableQuests.map { q in
