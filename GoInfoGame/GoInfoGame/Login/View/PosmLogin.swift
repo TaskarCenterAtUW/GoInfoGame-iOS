@@ -76,7 +76,9 @@ struct PosmLoginView: View {
                     }
                     .padding(.top, 20)
                     
-                    if SessionManager.shared.canUseBiometricLogin(for: selectedEnvironment) {
+                    appVersionText
+                    
+                    if SessionManager.shared.canUseBiometricLogin(for: selectedEnvironment) || true {
                         Button(action: {
                             APIConfiguration.shared.environment = selectedEnvironment
                             BiometricAuthManager.authenticate(reason: "Login using Face ID") { result in
@@ -106,7 +108,7 @@ struct PosmLoginView: View {
                         }
                     }
                     
-                    if viewModel.hasLoginFailed {
+                    if viewModel.hasLoginFailed || true {
                         Text("Invalid Credentials")
                             .foregroundColor(.red)
                             .padding(.top, 10)
@@ -136,6 +138,12 @@ struct PosmLoginView: View {
                 } message: {
                     Text("Your session has expired. Please login again")
                 }
+    }
+    
+    var appVersionText: Text {
+        let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "N/A"
+        let build = Bundle.main.infoDictionary?["CFBundleVersion"] as? String ?? "N/A"
+        return Text("Version \(version) (\(build))")
     }
 }
 
