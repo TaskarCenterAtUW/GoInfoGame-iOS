@@ -8,7 +8,7 @@
 import Foundation
 
 class UserProfileViewModel: ObservableObject {
-
+    
     @Published var user: TdeiUserProfile?
     
     init() {

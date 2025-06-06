@@ -12,7 +12,7 @@ import Combine
 
 import Foundation
 
-import Foundation
+import ClusterMap
 
 struct ApplicableQuest {
     var quest: any Quest
@@ -90,9 +90,13 @@ class QuestsRepository: ObservableObject {
     
 }
 // Probably move somewhere else
-class DisplayUnitAnnotation: NSObject, MKAnnotation {
+class DisplayUnitAnnotation: NSObject, MKAnnotation, CoordinateIdentifiable, Identifiable {
     let displayUnit: DisplayUnit
     var coordinate: CLLocationCoordinate2D
+
+    var id: String { 
+        displayUnit.id
+    }
 
     var title: String? {
         return displayUnit.title
@@ -106,21 +110,17 @@ class DisplayUnitAnnotation: NSObject, MKAnnotation {
         self.displayUnit = displayUnit
         self.coordinate = coordinate
     }
-    
-    
+
     override func isEqual(_ object: Any?) -> Bool {
-        guard let object = object as? DisplayUnitAnnotation else  {return false}
+        guard let object = object as? DisplayUnitAnnotation else  { return false }
         return self.displayUnit.id == object.displayUnit.id
-//        guard let quest = self.displayUnit.parent as? (any Quest) else {return false}
-//        guard let rData = quest.relationData, let oDat = object.displayUnit.parent?.relationData as? Element else {return false}
-//        
-//        return self.coordinate == object.coordinate && self.title == object.title && rData.id == oDat.id
     }
-    
+
     override var hash: Int {
-           return displayUnit.id.hashValue
-       }
+        return displayUnit.id.hashValue
+    }
 }
+
 
 struct DisplayUnitWithCoordinate: Identifiable {
     let displayUnit: DisplayUnit

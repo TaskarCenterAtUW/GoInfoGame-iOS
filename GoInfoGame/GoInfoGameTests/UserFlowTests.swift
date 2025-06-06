@@ -253,7 +253,7 @@ final class UserFlowTests: XCTestCase {
                 cancellables.removeFirst()
                 
                 // 2. fetching workspaces
-                let initialViewModel = InitialViewModel()
+                let initialViewModel = WorkspacesViewModel()
                 initialViewModel.$isLoading
                     .dropFirst()
                     .receive(on: DispatchQueue.main)

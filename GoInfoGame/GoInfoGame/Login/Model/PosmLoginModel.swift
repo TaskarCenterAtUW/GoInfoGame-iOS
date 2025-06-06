@@ -26,13 +26,3 @@ struct PosmLoginSuccessResponse: Codable {
     }
 }
 
-struct PosmLoginErrorResponse: Codable {
-    let message: String
-    let errors: [String]
-}
-
-enum LoginResponse {
-    case success(PosmLoginSuccessResponse)
-    case failure(PosmLoginErrorResponse)
-    case error(String)
-}

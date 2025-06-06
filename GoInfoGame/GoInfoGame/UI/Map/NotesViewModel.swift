@@ -12,7 +12,11 @@ class NotesViewModel: ObservableObject {
     
     @Published var isLoading = false
     
-    init() {}
+    private let api: POSMAPIProtocol
+    
+    init(api: POSMAPIProtocol = POSMAPIManager.shared) {
+        self.api = api
+    }
     
     func createNote(note: String, lat: Double, long: Double) async throws -> Bool {
         
@@ -20,16 +24,8 @@ class NotesViewModel: ObservableObject {
             self.isLoading = true
         }
         
-        guard let workspaceId = KeychainManager.load(key: "workspaceID") else {
-            throw NSError(domain: "NoAccessToken", code: 0, userInfo: [NSLocalizedDescriptionKey: "Workspace Error"])
-        }
-        
-        guard let accessToken = KeychainManager.load(key: "accessToken") else {
-            throw NSError(domain: "NoAccessToken", code: 0, userInfo: [NSLocalizedDescriptionKey: "No Access Token found"])
-        }
-        
         return try await withCheckedThrowingContinuation { [weak self] continuation in
-            ApiManager.shared.performRequest(to: .submitNote(note, accessToken, lat, long, workspaceId), setupType: .osm, modelType: String.self, useJSON: false) { result in
+            self?.api.submitNote(note: note, lat: lat, long: long) { result in
                 Task { @MainActor in
                     self?.isLoading = false
                 }

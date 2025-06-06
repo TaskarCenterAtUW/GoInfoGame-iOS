@@ -12,7 +12,6 @@
 		0536DD8C2B0BD2C200B04C4B /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0536DD8B2B0BD2C200B04C4B /* Constants.swift */; };
 		0536DD922B0BD58800B04C4B /* OAuthService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0536DD912B0BD58800B04C4B /* OAuthService.swift */; };
 		0536DD942B0BD59900B04C4B /* OAuthError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0536DD932B0BD59900B04C4B /* OAuthError.swift */; };
-		0536DD972B0BD95100B04C4B /* URLSession+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0536DD962B0BD95100B04C4B /* URLSession+Extension.swift */; };
 		0536DD992B0BDBFE00B04C4B /* OAuthManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0536DD982B0BDBFE00B04C4B /* OAuthManager.swift */; };
 		059D47312B2C81A9000987FA /* Style.swift in Sources */ = {isa = PBXBuildFile; fileRef = 059D47302B2C81A9000987FA /* Style.swift */; };
 		059D47332B2C83BA000987FA /* Highway.swift in Sources */ = {isa = PBXBuildFile; fileRef = 059D47322B2C83BA000987FA /* Highway.swift */; };
@@ -31,9 +30,9 @@
 		970D5BD12B62B61300C20BE7 /* MapViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 970D5BD02B62B61300C20BE7 /* MapViewController.swift */; };
 		970D5BD32B67638500C20BE7 /* MapViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 970D5BD22B67638400C20BE7 /* MapViewModel.swift */; };
 		970D5BD52B677CC500C20BE7 /* OSMUserData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 970D5BD42B677CC500C20BE7 /* OSMUserData.swift */; };
-		971342732BBD242400174EBF /* InitialView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 971342722BBD242400174EBF /* InitialView.swift */; };
-		971342752BBD254200174EBF /* InitialViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 971342742BBD254200174EBF /* InitialViewModel.swift */; };
-		971342772BBD415600174EBF /* InitialViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 971342762BBD415600174EBF /* InitialViewController.swift */; };
+		971342732BBD242400174EBF /* WorkspaceSelectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 971342722BBD242400174EBF /* WorkspaceSelectionView.swift */; };
+		971342752BBD254200174EBF /* WorkspacesViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 971342742BBD254200174EBF /* WorkspacesViewModel.swift */; };
+		971342772BBD415600174EBF /* WorkspacesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 971342762BBD415600174EBF /* WorkspacesViewController.swift */; };
 		971342792BBD691500174EBF /* MapViewControllerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 971342782BBD691500174EBF /* MapViewControllerView.swift */; };
 		971575172B5FFD6F0044797C /* MapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 971575162B5FFD6F0044797C /* MapView.swift */; };
 		971575192B5FFE910044797C /* LocationManagerCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 971575182B5FFE910044797C /* LocationManagerCoordinator.swift */; };
@@ -200,6 +199,8 @@
 		FA5853C12B21F17F00301CDA /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA5853C02B21F17F00301CDA /* OnboardingView.swift */; };
 		FA633CB42DD4843B00324404 /* BiometricAuthManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA633CB32DD4842D00324404 /* BiometricAuthManager.swift */; };
 		FA633CB62DD48C4400324404 /* SessionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA633CB52DD48C3F00324404 /* SessionManager.swift */; };
+		FA666B152DF1FA5100EDEDAF /* ClusterMap in Frameworks */ = {isa = PBXBuildFile; productRef = FA666B142DF1FA5100EDEDAF /* ClusterMap */; };
+		FA666B172DF1FA5100EDEDAF /* ClusterMapSwiftUI in Frameworks */ = {isa = PBXBuildFile; productRef = FA666B162DF1FA5100EDEDAF /* ClusterMapSwiftUI */; };
 		FA6DB8B32D8853DD0070CCD3 /* UserSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA6DB8B22D8853D00070CCD3 /* UserSettingsView.swift */; };
 		FA6DB8B52D96BE510070CCD3 /* HiddenQuestManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA6DB8B42D96BE510070CCD3 /* HiddenQuestManager.swift */; };
 		FA87A8102B68142F000A6BEA /* LoadingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA87A80F2B68142F000A6BEA /* LoadingView.swift */; };
@@ -214,19 +215,39 @@
 		FA8C74D42C5A443700D28220 /* QuestOptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA8C74D32C5A443700D28220 /* QuestOptions.swift */; };
 		FA8C74D62C5C0DBA00D28220 /* LongFormViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA8C74D52C5C0DBA00D28220 /* LongFormViewModel.swift */; };
 		FA8C74D82C60E95100D28220 /* PosmLogin.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA8C74D72C60E95100D28220 /* PosmLogin.swift */; };
+		FA93879C2DE4F14200F7A460 /* ViewModelState.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA93879B2DE4F13900F7A460 /* ViewModelState.swift */; };
+		FA93879E2DE4F9C900F7A460 /* GoInfoGameApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA93879D2DE4F9BC00F7A460 /* GoInfoGameApp.swift */; };
+		FA9387A02DE50B4900F7A460 /* LocationTrackerProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA93879F2DE50B4100F7A460 /* LocationTrackerProtocol.swift */; };
+		FA9387A32DE58BBA00F7A460 /* POSMLoginViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA9387A22DE58BA800F7A460 /* POSMLoginViewModelTests.swift */; };
+		FA9387A82DE5D5E500F7A460 /* WorkspacesViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA9387A72DE5D5D600F7A460 /* WorkspacesViewModelTests.swift */; };
+		FA9387AB2DE5D91200F7A460 /* MockLocationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA9387AA2DE5D90D00F7A460 /* MockLocationService.swift */; };
+		FA9387AD2DE5DDD700F7A460 /* MockWorkspaceAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA9387AC2DE5DDD100F7A460 /* MockWorkspaceAPI.swift */; };
 		FA9AEC002D5CACB6006A3A31 /* UserNodesHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA9AEBFF2D5CACB3006A3A31 /* UserNodesHelper.swift */; };
 		FA9F381C2DB2FF4B00D7AABF /* ShadowOverlayRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA9F381B2DB2FF3E00D7AABF /* ShadowOverlayRenderer.swift */; };
 		FA9F38202DC5585600D7AABF /* QuestUndoManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA9F381F2DC5584D00D7AABF /* QuestUndoManager.swift */; };
 		FA9F38222DC93F5300D7AABF /* UndoSidebarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA9F38212DC93F3D00D7AABF /* UndoSidebarView.swift */; };
 		FA9FE2D82BAC75390036F618 /* OAuthViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA9FE2D72BAC75390036F618 /* OAuthViewController.swift */; };
+		FAA01DA02DDDCB2600E4255A /* ServerEnvironment.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAA01D9F2DDDCB1F00E4255A /* ServerEnvironment.swift */; };
+		FAA01DA22DDDCB3C00E4255A /* APIRequestConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAA01DA12DDDCB3200E4255A /* APIRequestConfig.swift */; };
+		FAA01DA82DDDCB7200E4255A /* POSMAPIManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAA01DA72DDDCB6C00E4255A /* POSMAPIManager.swift */; };
+		FAA01DAA2DDDCB8800E4255A /* POSMServerEnvironment.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAA01DA92DDDCB8400E4255A /* POSMServerEnvironment.swift */; };
+		FAA01DAC2DDDCBA500E4255A /* POSMRequestConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAA01DAB2DDDCB9200E4255A /* POSMRequestConfig.swift */; };
+		FAA01DB32DDDCC3500E4255A /* WorkspaceRequestConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAA01DB22DDDCC2100E4255A /* WorkspaceRequestConfig.swift */; };
+		FAA01DB52DDDCC4100E4255A /* WorksapceServerEnvironment.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAA01DB42DDDCC3700E4255A /* WorksapceServerEnvironment.swift */; };
+		FAA01DB72DDDCC4E00E4255A /* WorkspaceAPIManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAA01DB62DDDCC4800E4255A /* WorkspaceAPIManager.swift */; };
+		FAA01DBA2DDE11A000E4255A /* TDEIAPIManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAA01DB92DDE117200E4255A /* TDEIAPIManager.swift */; };
+		FAA01DBC2DDE11B100E4255A /* TDEIServerEnvironment.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAA01DBB2DDE11A900E4255A /* TDEIServerEnvironment.swift */; };
+		FAA01DBE2DDE11C000E4255A /* TDEIRequestConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAA01DBD2DDE11B700E4255A /* TDEIRequestConfig.swift */; };
+		FAA01DC32DDE12C800E4255A /* KartaviewAPIManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAA01DC22DDE12C100E4255A /* KartaviewAPIManager.swift */; };
+		FAA01DC72DDE12E600E4255A /* KartaviewRequestConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAA01DC62DDE12D400E4255A /* KartaviewRequestConfig.swift */; };
+		FAA01DC92DDE12F800E4255A /* KartaViewServerEnvironment.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAA01DC82DDE12EF00E4255A /* KartaViewServerEnvironment.swift */; };
+		FAA01DCB2DDE15EC00E4255A /* APIRequestPerformer.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAA01DCA2DDE15E200E4255A /* APIRequestPerformer.swift */; };
+		FAA01DCD2DDFB52900E4255A /* APIRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAA01DCC2DDFB52500E4255A /* APIRequest.swift */; };
 		FABF3CF42B7419BB0080EAC9 /* LocationManagerDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = FABF3CF32B7419BB0080EAC9 /* LocationManagerDelegate.swift */; };
 		FABF3CF82B822F120080EAC9 /* CustomSureAlert.swift in Sources */ = {isa = PBXBuildFile; fileRef = FABF3CF72B822F120080EAC9 /* CustomSureAlert.swift */; };
 		FABF3CFD2B8607860080EAC9 /* MeasureWidthContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = FABF3CFC2B8607860080EAC9 /* MeasureWidthContainer.swift */; };
 		FABF3D002B8607D80080EAC9 /* MeasureSidewalkView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FABF3CFF2B8607D80080EAC9 /* MeasureSidewalkView.swift */; };
 		FAC9E60F2B04F9C800E2C608 /* OverpassRequestManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC9E60E2B04F9C800E2C608 /* OverpassRequestManager.swift */; };
-		FAD5C4F32AFCBE700040C61A /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAD5C4F22AFCBE700040C61A /* AppDelegate.swift */; };
-		FAD5C4F52AFCBE700040C61A /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAD5C4F42AFCBE700040C61A /* SceneDelegate.swift */; };
-		FAD5C4FA2AFCBE700040C61A /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FAD5C4F82AFCBE700040C61A /* Main.storyboard */; };
 		FAD5C4FC2AFCBE720040C61A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = FAD5C4FB2AFCBE720040C61A /* Assets.xcassets */; };
 		FAD5C4FF2AFCBE720040C61A /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FAD5C4FD2AFCBE720040C61A /* LaunchScreen.storyboard */; };
 		FAD5C50A2AFCBE720040C61A /* GoInfoGameTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAD5C5092AFCBE720040C61A /* GoInfoGameTests.swift */; };
@@ -244,13 +265,19 @@
 		FAFDA1FA2C6B861A00ECEAE9 /* FileStorageManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAFDA1F92C6B861A00ECEAE9 /* FileStorageManager.swift */; };
 		FAFDA1FF2C6D337800ECEAE9 /* PosmLoginModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAFDA1FE2C6D337800ECEAE9 /* PosmLoginModel.swift */; };
 		FAFDA2022C6D33C300ECEAE9 /* PosmLoginViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAFDA2012C6D33C300ECEAE9 /* PosmLoginViewModel.swift */; };
-		FAFDA2042C6E8BEA00ECEAE9 /* APIEnvironment.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAFDA2032C6E8BEA00ECEAE9 /* APIEnvironment.swift */; };
 		FAFDA2062C6E8D7A00ECEAE9 /* APIEndPoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAFDA2052C6E8D7A00ECEAE9 /* APIEndPoint.swift */; };
-		FAFDA2082C6E8F2500ECEAE9 /* APIConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAFDA2072C6E8F2500ECEAE9 /* APIConfiguration.swift */; };
 		FAFDA20E2C6F58D600ECEAE9 /* UserProfile.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAFDA20D2C6F58D600ECEAE9 /* UserProfile.swift */; };
 		FAFDA2102C6F592700ECEAE9 /* UserProfileViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAFDA20F2C6F592700ECEAE9 /* UserProfileViewModel.swift */; };
 		FAFDA2122C6F64E800ECEAE9 /* UserProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAFDA2112C6F64E800ECEAE9 /* UserProfileView.swift */; };
 		FAFDA2142C7351CB00ECEAE9 /* APIError.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAFDA2132C7351CB00ECEAE9 /* APIError.swift */; };
+		FAFFC9732DDFBDC700072B11 /* AppEnvManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAFFC9722DDFBDC100072B11 /* AppEnvManager.swift */; };
+		FAFFC9772DE0598500072B11 /* AuthSessionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAFFC9762DE0598000072B11 /* AuthSessionManager.swift */; };
+		FAFFC9792DE07D0B00072B11 /* APIRequestAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAFFC9782DE07D0400072B11 /* APIRequestAdapter.swift */; };
+		FAFFC97D2DE0FCD100072B11 /* POSMAPIProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAFFC97C2DE0FCCA00072B11 /* POSMAPIProtocol.swift */; };
+		FAFFC97F2DE0FDB100072B11 /* WorkspaceAPIProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAFFC97E2DE0FDA800072B11 /* WorkspaceAPIProtocol.swift */; };
+		FAFFC9812DE0FECC00072B11 /* TDEIAPIProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAFFC9802DE0FEC600072B11 /* TDEIAPIProtocol.swift */; };
+		FAFFC9832DE104CB00072B11 /* KartaviewAPIProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAFFC9822DE104C300072B11 /* KartaviewAPIProtocol.swift */; };
+		FAFFC9852DE4AD7600072B11 /* RouteHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAFFC9842DE4AD6F00072B11 /* RouteHandler.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -333,7 +360,6 @@
 		0536DD8B2B0BD2C200B04C4B /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		0536DD912B0BD58800B04C4B /* OAuthService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OAuthService.swift; sourceTree = "<group>"; };
 		0536DD932B0BD59900B04C4B /* OAuthError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OAuthError.swift; sourceTree = "<group>"; };
-		0536DD962B0BD95100B04C4B /* URLSession+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "URLSession+Extension.swift"; sourceTree = "<group>"; };
 		0536DD982B0BDBFE00B04C4B /* OAuthManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OAuthManager.swift; sourceTree = "<group>"; };
 		059D47302B2C81A9000987FA /* Style.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Style.swift; sourceTree = "<group>"; };
 		059D47322B2C83BA000987FA /* Highway.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Highway.swift; sourceTree = "<group>"; };
@@ -357,9 +383,9 @@
 		970D5BD02B62B61300C20BE7 /* MapViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapViewController.swift; sourceTree = "<group>"; };
 		970D5BD22B67638400C20BE7 /* MapViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapViewModel.swift; sourceTree = "<group>"; };
 		970D5BD42B677CC500C20BE7 /* OSMUserData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OSMUserData.swift; sourceTree = "<group>"; };
-		971342722BBD242400174EBF /* InitialView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InitialView.swift; sourceTree = "<group>"; };
-		971342742BBD254200174EBF /* InitialViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InitialViewModel.swift; sourceTree = "<group>"; };
-		971342762BBD415600174EBF /* InitialViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InitialViewController.swift; sourceTree = "<group>"; };
+		971342722BBD242400174EBF /* WorkspaceSelectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkspaceSelectionView.swift; sourceTree = "<group>"; };
+		971342742BBD254200174EBF /* WorkspacesViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkspacesViewModel.swift; sourceTree = "<group>"; };
+		971342762BBD415600174EBF /* WorkspacesViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkspacesViewController.swift; sourceTree = "<group>"; };
 		971342782BBD691500174EBF /* MapViewControllerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapViewControllerView.swift; sourceTree = "<group>"; };
 		971575162B5FFD6F0044797C /* MapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapView.swift; sourceTree = "<group>"; };
 		971575182B5FFE910044797C /* LocationManagerCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationManagerCoordinator.swift; sourceTree = "<group>"; };
@@ -546,20 +572,40 @@
 		FA8C74D32C5A443700D28220 /* QuestOptions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuestOptions.swift; sourceTree = "<group>"; };
 		FA8C74D52C5C0DBA00D28220 /* LongFormViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LongFormViewModel.swift; sourceTree = "<group>"; };
 		FA8C74D72C60E95100D28220 /* PosmLogin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PosmLogin.swift; sourceTree = "<group>"; };
+		FA93879B2DE4F13900F7A460 /* ViewModelState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewModelState.swift; sourceTree = "<group>"; };
+		FA93879D2DE4F9BC00F7A460 /* GoInfoGameApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoInfoGameApp.swift; sourceTree = "<group>"; };
+		FA93879F2DE50B4100F7A460 /* LocationTrackerProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationTrackerProtocol.swift; sourceTree = "<group>"; };
+		FA9387A22DE58BA800F7A460 /* POSMLoginViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POSMLoginViewModelTests.swift; sourceTree = "<group>"; };
+		FA9387A72DE5D5D600F7A460 /* WorkspacesViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkspacesViewModelTests.swift; sourceTree = "<group>"; };
+		FA9387AA2DE5D90D00F7A460 /* MockLocationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockLocationService.swift; sourceTree = "<group>"; };
+		FA9387AC2DE5DDD100F7A460 /* MockWorkspaceAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockWorkspaceAPI.swift; sourceTree = "<group>"; };
 		FA9AEBFF2D5CACB3006A3A31 /* UserNodesHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserNodesHelper.swift; sourceTree = "<group>"; };
 		FA9F381B2DB2FF3E00D7AABF /* ShadowOverlayRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShadowOverlayRenderer.swift; sourceTree = "<group>"; };
 		FA9F381F2DC5584D00D7AABF /* QuestUndoManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuestUndoManager.swift; sourceTree = "<group>"; };
 		FA9F38212DC93F3D00D7AABF /* UndoSidebarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UndoSidebarView.swift; sourceTree = "<group>"; };
 		FA9FE2D72BAC75390036F618 /* OAuthViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OAuthViewController.swift; sourceTree = "<group>"; };
+		FAA01D9F2DDDCB1F00E4255A /* ServerEnvironment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServerEnvironment.swift; sourceTree = "<group>"; };
+		FAA01DA12DDDCB3200E4255A /* APIRequestConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIRequestConfig.swift; sourceTree = "<group>"; };
+		FAA01DA72DDDCB6C00E4255A /* POSMAPIManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POSMAPIManager.swift; sourceTree = "<group>"; };
+		FAA01DA92DDDCB8400E4255A /* POSMServerEnvironment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POSMServerEnvironment.swift; sourceTree = "<group>"; };
+		FAA01DAB2DDDCB9200E4255A /* POSMRequestConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POSMRequestConfig.swift; sourceTree = "<group>"; };
+		FAA01DB22DDDCC2100E4255A /* WorkspaceRequestConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkspaceRequestConfig.swift; sourceTree = "<group>"; };
+		FAA01DB42DDDCC3700E4255A /* WorksapceServerEnvironment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorksapceServerEnvironment.swift; sourceTree = "<group>"; };
+		FAA01DB62DDDCC4800E4255A /* WorkspaceAPIManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkspaceAPIManager.swift; sourceTree = "<group>"; };
+		FAA01DB92DDE117200E4255A /* TDEIAPIManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TDEIAPIManager.swift; sourceTree = "<group>"; };
+		FAA01DBB2DDE11A900E4255A /* TDEIServerEnvironment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TDEIServerEnvironment.swift; sourceTree = "<group>"; };
+		FAA01DBD2DDE11B700E4255A /* TDEIRequestConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TDEIRequestConfig.swift; sourceTree = "<group>"; };
+		FAA01DC22DDE12C100E4255A /* KartaviewAPIManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KartaviewAPIManager.swift; sourceTree = "<group>"; };
+		FAA01DC62DDE12D400E4255A /* KartaviewRequestConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KartaviewRequestConfig.swift; sourceTree = "<group>"; };
+		FAA01DC82DDE12EF00E4255A /* KartaViewServerEnvironment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KartaViewServerEnvironment.swift; sourceTree = "<group>"; };
+		FAA01DCA2DDE15E200E4255A /* APIRequestPerformer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIRequestPerformer.swift; sourceTree = "<group>"; };
+		FAA01DCC2DDFB52500E4255A /* APIRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIRequest.swift; sourceTree = "<group>"; };
 		FABF3CF32B7419BB0080EAC9 /* LocationManagerDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationManagerDelegate.swift; sourceTree = "<group>"; };
 		FABF3CF72B822F120080EAC9 /* CustomSureAlert.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomSureAlert.swift; sourceTree = "<group>"; };
 		FABF3CFC2B8607860080EAC9 /* MeasureWidthContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeasureWidthContainer.swift; sourceTree = "<group>"; };
 		FABF3CFF2B8607D80080EAC9 /* MeasureSidewalkView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeasureSidewalkView.swift; sourceTree = "<group>"; };
 		FAC9E60E2B04F9C800E2C608 /* OverpassRequestManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OverpassRequestManager.swift; sourceTree = "<group>"; };
 		FAD5C4EF2AFCBE700040C61A /* GoInfoGame.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GoInfoGame.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		FAD5C4F22AFCBE700040C61A /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		FAD5C4F42AFCBE700040C61A /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
-		FAD5C4F92AFCBE700040C61A /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		FAD5C4FB2AFCBE720040C61A /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		FAD5C4FE2AFCBE720040C61A /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		FAD5C5002AFCBE720040C61A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -580,13 +626,19 @@
 		FAFDA1F92C6B861A00ECEAE9 /* FileStorageManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileStorageManager.swift; sourceTree = "<group>"; };
 		FAFDA1FE2C6D337800ECEAE9 /* PosmLoginModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PosmLoginModel.swift; sourceTree = "<group>"; };
 		FAFDA2012C6D33C300ECEAE9 /* PosmLoginViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PosmLoginViewModel.swift; sourceTree = "<group>"; };
-		FAFDA2032C6E8BEA00ECEAE9 /* APIEnvironment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIEnvironment.swift; sourceTree = "<group>"; };
 		FAFDA2052C6E8D7A00ECEAE9 /* APIEndPoint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIEndPoint.swift; sourceTree = "<group>"; };
-		FAFDA2072C6E8F2500ECEAE9 /* APIConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIConfiguration.swift; sourceTree = "<group>"; };
 		FAFDA20D2C6F58D600ECEAE9 /* UserProfile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfile.swift; sourceTree = "<group>"; };
 		FAFDA20F2C6F592700ECEAE9 /* UserProfileViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfileViewModel.swift; sourceTree = "<group>"; };
 		FAFDA2112C6F64E800ECEAE9 /* UserProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfileView.swift; sourceTree = "<group>"; };
 		FAFDA2132C7351CB00ECEAE9 /* APIError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIError.swift; sourceTree = "<group>"; };
+		FAFFC9722DDFBDC100072B11 /* AppEnvManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppEnvManager.swift; sourceTree = "<group>"; };
+		FAFFC9762DE0598000072B11 /* AuthSessionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthSessionManager.swift; sourceTree = "<group>"; };
+		FAFFC9782DE07D0400072B11 /* APIRequestAdapter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIRequestAdapter.swift; sourceTree = "<group>"; };
+		FAFFC97C2DE0FCCA00072B11 /* POSMAPIProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POSMAPIProtocol.swift; sourceTree = "<group>"; };
+		FAFFC97E2DE0FDA800072B11 /* WorkspaceAPIProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkspaceAPIProtocol.swift; sourceTree = "<group>"; };
+		FAFFC9802DE0FEC600072B11 /* TDEIAPIProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TDEIAPIProtocol.swift; sourceTree = "<group>"; };
+		FAFFC9822DE104C300072B11 /* KartaviewAPIProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KartaviewAPIProtocol.swift; sourceTree = "<group>"; };
+		FAFFC9842DE4AD6F00072B11 /* RouteHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RouteHandler.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -626,7 +678,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				97F2FA8A2B0630A3000B9726 /* Pods_GoInfoGame.framework in Frameworks */,
+				FA666B172DF1FA5100EDEDAF /* ClusterMapSwiftUI in Frameworks */,
 				A4AD13272B5E90BD0041A881 /* osmparser.framework in Frameworks */,
+				FA666B152DF1FA5100EDEDAF /* ClusterMap in Frameworks */,
 				A40E727F2B5D462A00328848 /* osmapi.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -684,13 +738,12 @@
 		0536DD952B0BD91F00B04C4B /* Network */ = {
 			isa = PBXGroup;
 			children = (
+				FAA01DA52DDDCB5200E4255A /* Modules */,
+				FAA01DA62DDDCB5E00E4255A /* POSM */,
+				FAA01D9E2DDDCAE200E4255A /* Core */,
 				A48037342BBA8DCB007EE7E4 /* models */,
-				0536DD962B0BD95100B04C4B /* URLSession+Extension.swift */,
 				A48037302BBA8C25007EE7E4 /* ApiManager.swift */,
-				FAFDA2032C6E8BEA00ECEAE9 /* APIEnvironment.swift */,
 				FAFDA2052C6E8D7A00ECEAE9 /* APIEndPoint.swift */,
-				FAFDA2072C6E8F2500ECEAE9 /* APIConfiguration.swift */,
-				FAFDA2132C7351CB00ECEAE9 /* APIError.swift */,
 				C7ED070E2D70E2EC001FFFE2 /* TokenRefresher.swift */,
 			);
 			path = Network;
@@ -726,7 +779,7 @@
 			isa = PBXGroup;
 			children = (
 				FA6DB8B22D8853D00070CCD3 /* UserSettingsView.swift */,
-				971342712BBD240500174EBF /* InitialView */,
+				971342712BBD240500174EBF /* Workspace */,
 				FABF3CF92B86062E0080EAC9 /* Camera */,
 				FA87A80E2B681416000A6BEA /* Utils */,
 				970D5BD02B62B61300C20BE7 /* MapViewController.swift */,
@@ -815,14 +868,14 @@
 			path = Pods;
 			sourceTree = "<group>";
 		};
-		971342712BBD240500174EBF /* InitialView */ = {
+		971342712BBD240500174EBF /* Workspace */ = {
 			isa = PBXGroup;
 			children = (
-				971342722BBD242400174EBF /* InitialView.swift */,
-				971342742BBD254200174EBF /* InitialViewModel.swift */,
-				971342762BBD415600174EBF /* InitialViewController.swift */,
+				971342722BBD242400174EBF /* WorkspaceSelectionView.swift */,
+				971342742BBD254200174EBF /* WorkspacesViewModel.swift */,
+				971342762BBD415600174EBF /* WorkspacesViewController.swift */,
 			);
-			path = InitialView;
+			path = Workspace;
 			sourceTree = "<group>";
 		};
 		971575152B5FFD5F0044797C /* Map */ = {
@@ -1409,12 +1462,106 @@
 			path = Classes;
 			sourceTree = "<group>";
 		};
+		FA9387A12DE58B8900F7A460 /* login */ = {
+			isa = PBXGroup;
+			children = (
+				FA9387A22DE58BA800F7A460 /* POSMLoginViewModelTests.swift */,
+			);
+			path = login;
+			sourceTree = "<group>";
+		};
+		FA9387A42DE5D5CD00F7A460 /* workspace */ = {
+			isa = PBXGroup;
+			children = (
+				FA9387A92DE5D8FE00F7A460 /* Mocks */,
+				FA9387A72DE5D5D600F7A460 /* WorkspacesViewModelTests.swift */,
+			);
+			path = workspace;
+			sourceTree = "<group>";
+		};
+		FA9387A92DE5D8FE00F7A460 /* Mocks */ = {
+			isa = PBXGroup;
+			children = (
+				FA9387AA2DE5D90D00F7A460 /* MockLocationService.swift */,
+				FA9387AC2DE5DDD100F7A460 /* MockWorkspaceAPI.swift */,
+			);
+			path = Mocks;
+			sourceTree = "<group>";
+		};
 		FA9AEBFE2D5CAC98006A3A31 /* UserNodes */ = {
 			isa = PBXGroup;
 			children = (
 				FA9AEBFF2D5CACB3006A3A31 /* UserNodesHelper.swift */,
 			);
 			path = UserNodes;
+			sourceTree = "<group>";
+		};
+		FAA01D9E2DDDCAE200E4255A /* Core */ = {
+			isa = PBXGroup;
+			children = (
+				FAA01DCC2DDFB52500E4255A /* APIRequest.swift */,
+				FAA01DCA2DDE15E200E4255A /* APIRequestPerformer.swift */,
+				FAFFC9722DDFBDC100072B11 /* AppEnvManager.swift */,
+				FAA01DA12DDDCB3200E4255A /* APIRequestConfig.swift */,
+				FAA01D9F2DDDCB1F00E4255A /* ServerEnvironment.swift */,
+				FAFFC9782DE07D0400072B11 /* APIRequestAdapter.swift */,
+				FAFDA2132C7351CB00ECEAE9 /* APIError.swift */,
+			);
+			path = Core;
+			sourceTree = "<group>";
+		};
+		FAA01DA52DDDCB5200E4255A /* Modules */ = {
+			isa = PBXGroup;
+			children = (
+				FAA01DC12DDE125300E4255A /* Kartaview */,
+				FAA01DB82DDE112400E4255A /* TDEI */,
+				FAA01DAF2DDDCBFC00E4255A /* Workspace */,
+			);
+			path = Modules;
+			sourceTree = "<group>";
+		};
+		FAA01DA62DDDCB5E00E4255A /* POSM */ = {
+			isa = PBXGroup;
+			children = (
+				FAA01DAB2DDDCB9200E4255A /* POSMRequestConfig.swift */,
+				FAA01DA92DDDCB8400E4255A /* POSMServerEnvironment.swift */,
+				FAA01DA72DDDCB6C00E4255A /* POSMAPIManager.swift */,
+				FAFFC97C2DE0FCCA00072B11 /* POSMAPIProtocol.swift */,
+			);
+			path = POSM;
+			sourceTree = "<group>";
+		};
+		FAA01DAF2DDDCBFC00E4255A /* Workspace */ = {
+			isa = PBXGroup;
+			children = (
+				FAA01DB62DDDCC4800E4255A /* WorkspaceAPIManager.swift */,
+				FAFFC97E2DE0FDA800072B11 /* WorkspaceAPIProtocol.swift */,
+				FAA01DB42DDDCC3700E4255A /* WorksapceServerEnvironment.swift */,
+				FAA01DB22DDDCC2100E4255A /* WorkspaceRequestConfig.swift */,
+			);
+			path = Workspace;
+			sourceTree = "<group>";
+		};
+		FAA01DB82DDE112400E4255A /* TDEI */ = {
+			isa = PBXGroup;
+			children = (
+				FAA01DB92DDE117200E4255A /* TDEIAPIManager.swift */,
+				FAFFC9802DE0FEC600072B11 /* TDEIAPIProtocol.swift */,
+				FAA01DBD2DDE11B700E4255A /* TDEIRequestConfig.swift */,
+				FAA01DBB2DDE11A900E4255A /* TDEIServerEnvironment.swift */,
+			);
+			path = TDEI;
+			sourceTree = "<group>";
+		};
+		FAA01DC12DDE125300E4255A /* Kartaview */ = {
+			isa = PBXGroup;
+			children = (
+				FAA01DC82DDE12EF00E4255A /* KartaViewServerEnvironment.swift */,
+				FAFFC9822DE104C300072B11 /* KartaviewAPIProtocol.swift */,
+				FAA01DC62DDE12D400E4255A /* KartaviewRequestConfig.swift */,
+				FAA01DC22DDE12C100E4255A /* KartaviewAPIManager.swift */,
+			);
+			path = Kartaview;
 			sourceTree = "<group>";
 		};
 		FABF3CF92B86062E0080EAC9 /* Camera */ = {
@@ -1466,19 +1613,21 @@
 				A4E7119C2B57A22300C9DE08 /* quests */,
 				A4E7119A2B57A17600C9DE08 /* data */,
 				973FC00C2B4D2A6D00878269 /* Localizable.strings */,
-				FAD5C4F22AFCBE700040C61A /* AppDelegate.swift */,
-				FAD5C4F42AFCBE700040C61A /* SceneDelegate.swift */,
+				FA93879D2DE4F9BC00F7A460 /* GoInfoGameApp.swift */,
 				FAC9E60E2B04F9C800E2C608 /* OverpassRequestManager.swift */,
 				FABF3CF32B7419BB0080EAC9 /* LocationManagerDelegate.swift */,
+				FA93879F2DE50B4100F7A460 /* LocationTrackerProtocol.swift */,
 				FA1992EC2BB1A78C003B4719 /* KeychainManager.swift */,
+				FAFFC9762DE0598000072B11 /* AuthSessionManager.swift */,
 				FAFDA1F92C6B861A00ECEAE9 /* FileStorageManager.swift */,
+				FAFFC9842DE4AD6F00072B11 /* RouteHandler.swift */,
+				FA93879B2DE4F13900F7A460 /* ViewModelState.swift */,
 				05CB71DD2B0FAEC200DED821 /* UI */,
 				05CB71DE2B0FAFAA00DED821 /* Bridges */,
 				058EADD92B10E02E0017E259 /* DataBase */,
 				058EADDA2B10E09C0017E259 /* Repository */,
 				0536DD952B0BD91F00B04C4B /* Network */,
 				0536DD8A2B0BD2A900B04C4B /* Helpers */,
-				FAD5C4F82AFCBE700040C61A /* Main.storyboard */,
 				FAD5C4FB2AFCBE720040C61A /* Assets.xcassets */,
 				0513BE762B2B464800FB61CF /* samplepoint.gpx */,
 				FAD5C4FD2AFCBE720040C61A /* LaunchScreen.storyboard */,
@@ -1491,6 +1640,8 @@
 		FAD5C5082AFCBE720040C61A /* GoInfoGameTests */ = {
 			isa = PBXGroup;
 			children = (
+				FA9387A42DE5D5CD00F7A460 /* workspace */,
+				FA9387A12DE58B8900F7A460 /* login */,
 				A4834A422B679CD400D4F0AA /* data */,
 				188843AB2B5FA2BC0008DCF8 /* quests */,
 				A444AC8D2B5E943E006C74F7 /* utils */,
@@ -1807,6 +1958,9 @@
 				fr,
 			);
 			mainGroup = FAD5C4E62AFCBE700040C61A;
+			packageReferences = (
+				FA666B132DF1FA5100EDEDAF /* XCRemoteSwiftPackageReference "ClusterMap" */,
+			);
 			productRefGroup = FAD5C4F02AFCBE700040C61A /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -1859,7 +2013,6 @@
 				0513BE772B2B464800FB61CF /* samplepoint.gpx in Resources */,
 				FAD5C4FF2AFCBE720040C61A /* LaunchScreen.storyboard in Resources */,
 				FAD5C4FC2AFCBE720040C61A /* Assets.xcassets in Resources */,
-				FAD5C4FA2AFCBE700040C61A /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2110,11 +2263,15 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FAFFC9852DE4AD7600072B11 /* RouteHandler.swift in Sources */,
 				FA9F38202DC5585600D7AABF /* QuestUndoManager.swift in Sources */,
 				FA8C74D42C5A443700D28220 /* QuestOptions.swift in Sources */,
 				A4AD130C2B5E80F20041A881 /* StoredElement.swift in Sources */,
+				FAA01DBA2DDE11A000E4255A /* TDEIAPIManager.swift in Sources */,
+				FAA01DBE2DDE11C000E4255A /* TDEIRequestConfig.swift in Sources */,
 				05DBBB5D2B1262BA00B6F110 /* OverpassRepository.swift in Sources */,
 				FA6DB8B52D96BE510070CCD3 /* HiddenQuestManager.swift in Sources */,
+				FAFFC97D2DE0FCD100072B11 /* POSMAPIProtocol.swift in Sources */,
 				A4B83AF12B5F92FA006684CA /* StoredNode.swift in Sources */,
 				97AC1C0C2B6B843C004F0BF4 /* CustomAlert.swift in Sources */,
 				FA9AEC002D5CACB6006A3A31 /* UserNodesHelper.swift in Sources */,
@@ -2125,21 +2282,25 @@
 				973FC0442B59468800878269 /* BusStopLitForm.swift in Sources */,
 				971575192B5FFE910044797C /* LocationManagerCoordinator.swift in Sources */,
 				FABF3CF42B7419BB0080EAC9 /* LocationManagerDelegate.swift in Sources */,
+				FAA01DB32DDDCC3500E4255A /* WorkspaceRequestConfig.swift in Sources */,
 				973FC0382B59363C00878269 /* TactilePavingSteps.swift in Sources */,
 				973FC0192B4FB17000878269 /* LocalizedStrings.swift in Sources */,
+				FAA01DAA2DDDCB8800E4255A /* POSMServerEnvironment.swift in Sources */,
 				A48037312BBA8C25007EE7E4 /* ApiManager.swift in Sources */,
 				FABF3D002B8607D80080EAC9 /* MeasureSidewalkView.swift in Sources */,
 				C76DA1A12DF0679F00451E63 /* LongFormModel.swift in Sources */,
 				FA18CAE72CC80A34008247F2 /* UploadPhotoModel.swift in Sources */,
+				FAFFC9772DE0598500072B11 /* AuthSessionManager.swift in Sources */,
+				FAA01DA02DDDCB2600E4255A /* ServerEnvironment.swift in Sources */,
 				97439F782B87444200DA43E1 /* CrossingKerbHeightForm.swift in Sources */,
 				FAFDA1FA2C6B861A00ECEAE9 /* FileStorageManager.swift in Sources */,
 				FAEE21DB2DCA1963002F9BEC /* UndoButton.swift in Sources */,
 				A4834A3F2B67737500D4F0AA /* StoredChangeset.swift in Sources */,
 				973FC02F2B58F81F00878269 /* StepsRamp.swift in Sources */,
-				FAFDA2082C6E8F2500ECEAE9 /* APIConfiguration.swift in Sources */,
 				971F9FE62B84CDCE005397CC /* CrossingTypeForm.swift in Sources */,
-				971342752BBD254200174EBF /* InitialViewModel.swift in Sources */,
+				971342752BBD254200174EBF /* WorkspacesViewModel.swift in Sources */,
 				A4E711AA2B58F6FB00C9DE08 /* HandRail.swift in Sources */,
+				FAA01DC32DDE12C800E4255A /* KartaviewAPIManager.swift in Sources */,
 				973FC02D2B58F79B00878269 /* StepsRampForm.swift in Sources */,
 				FA5071902D5B31CC00CE9798 /* CreateNoteView.swift in Sources */,
 				FA6DB8B32D8853DD0070CCD3 /* UserSettingsView.swift in Sources */,
@@ -2147,6 +2308,7 @@
 				059D47312B2C81A9000987FA /* Style.swift in Sources */,
 				A4E711A82B57CA4300C9DE08 /* QuestsRepository.swift in Sources */,
 				97AC1C112B70CF03004F0BF4 /* SidewalkSurfaceForm.swift in Sources */,
+				FAFFC9732DDFBDC700072B11 /* AppEnvManager.swift in Sources */,
 				FAFDA2022C6D33C300ECEAE9 /* PosmLoginViewModel.swift in Sources */,
 				973FC03A2B59364F00878269 /* TactilePavingStepsForm.swift in Sources */,
 				FAFDA2142C7351CB00ECEAE9 /* APIError.swift in Sources */,
@@ -2159,9 +2321,9 @@
 				FA633CB42DD4843B00324404 /* BiometricAuthManager.swift in Sources */,
 				A4E711A22B57A3B400C9DE08 /* SideWalkWidth.swift in Sources */,
 				05CB71E02B0FAFD200DED821 /* GenericUIViewControllerRepresentable.swift in Sources */,
+				FAFFC9812DE0FECC00072B11 /* TDEIAPIProtocol.swift in Sources */,
 				971F9FE42B84CDBF005397CC /* CrossingType.swift in Sources */,
 				97AC1C062B6A45B0004F0BF4 /* SideWalkValidation.swift in Sources */,
-				FAD5C4F32AFCBE700040C61A /* AppDelegate.swift in Sources */,
 				18EC425C2B84987200DE05D7 /* TactilePavingCrosswalkForm.swift in Sources */,
 				05DBBB622B164D9A00B6F110 /* RealOPElement.swift in Sources */,
 				973FC0422B59467A00878269 /* BusStopLit.swift in Sources */,
@@ -2170,23 +2332,29 @@
 				FA50718E2D54E1D200CE9798 /* BingTileOverlay.swift in Sources */,
 				973FC0352B592C0F00878269 /* StairNumberForm.swift in Sources */,
 				FA8C74C22C4E89C800D28220 /* LongForm.swift in Sources */,
+				FA93879C2DE4F14200F7A460 /* ViewModelState.swift in Sources */,
 				FA9F38222DC93F5300D7AABF /* UndoSidebarView.swift in Sources */,
 				FAC9E60F2B04F9C800E2C608 /* OverpassRequestManager.swift in Sources */,
 				18EC425E2B849FE000DE05D7 /* TactilePavingCrosswalk.swift in Sources */,
 				FA8C74D82C60E95100D28220 /* PosmLogin.swift in Sources */,
 				FA5071962D6DD31A00CE9798 /* LongElementQuest.swift in Sources */,
 				FAFDA20E2C6F58D600ECEAE9 /* UserProfile.swift in Sources */,
+				FAA01DB72DDDCC4E00E4255A /* WorkspaceAPIManager.swift in Sources */,
 				FABF3CF82B822F120080EAC9 /* CustomSureAlert.swift in Sources */,
 				973FC0482B5A477E00878269 /* CrossMarking.swift in Sources */,
 				FA18CAEB2CD0F718008247F2 /* CameraView.swift in Sources */,
 				05DBBB642B17204300B6F110 /* RealmOPGeometry.swift in Sources */,
 				FA87A8102B68142F000A6BEA /* LoadingView.swift in Sources */,
+				FAA01DA82DDDCB7200E4255A /* POSMAPIManager.swift in Sources */,
 				973FC03D2B59417D00878269 /* WayLitForm.swift in Sources */,
 				0536DD922B0BD58800B04C4B /* OAuthService.swift in Sources */,
+				FAA01DCD2DDFB52900E4255A /* APIRequest.swift in Sources */,
+				FA9387A02DE50B4900F7A460 /* LocationTrackerProtocol.swift in Sources */,
 				97AC1C0F2B70CEF5004F0BF4 /* SidewalkSurface.swift in Sources */,
+				FAA01DA22DDDCB3C00E4255A /* APIRequestConfig.swift in Sources */,
 				973FC0112B4D2D1C00878269 /* QuestAndDescriptionView.swift in Sources */,
-				FAFDA2042C6E8BEA00ECEAE9 /* APIEnvironment.swift in Sources */,
 				973FC0032B47DE0700878269 /* QuestsVM.swift in Sources */,
+				FAFFC9832DE104CB00072B11 /* KartaviewAPIProtocol.swift in Sources */,
 				A4E711AE2B59004700C9DE08 /* StepsIncline.swift in Sources */,
 				FA18CAE22CC7CD89008247F2 /* KartaviewViewModel.swift in Sources */,
 				973FC0142B4D353800878269 /* SideWalkWidthForm.swift in Sources */,
@@ -2198,11 +2366,12 @@
 				C77A4A262DF2AF3100DED8B0 /* SecureInputView.swift in Sources */,
 				973FC03F2B59418B00878269 /* WayLit.swift in Sources */,
 				FAE481A42DD5F97800149A48 /* PasswordAuthenticationViewModel.swift in Sources */,
-				971342772BBD415600174EBF /* InitialViewController.swift in Sources */,
+				971342772BBD415600174EBF /* WorkspacesViewController.swift in Sources */,
 				A40004EC2B62338400AF21FB /* AppQuestManager.swift in Sources */,
 				FA51484E2D76ED6C00C0D35B /* NotesViewModel.swift in Sources */,
 				FAFDA2062C6E8D7A00ECEAE9 /* APIEndPoint.swift in Sources */,
 				FA5853C12B21F17F00301CDA /* OnboardingView.swift in Sources */,
+				FAFFC97F2DE0FDB100072B11 /* WorkspaceAPIProtocol.swift in Sources */,
 				A4B83AF32B5F9385006684CA /* StoredWay.swift in Sources */,
 				FA18CAE52CC7D0DD008247F2 /* SequenceModel.swift in Sources */,
 				971F9FDF2B847349005397CC /* CrossingIslandForm.swift in Sources */,
@@ -2212,11 +2381,14 @@
 				97439F7A2B87447400DA43E1 /* CrossingKerbHeight.swift in Sources */,
 				971F9FE12B847358005397CC /* CrossingIsland.swift in Sources */,
 				970D5BD12B62B61300C20BE7 /* MapViewController.swift in Sources */,
+				FAA01DAC2DDDCBA500E4255A /* POSMRequestConfig.swift in Sources */,
 				FA9FE2D82BAC75390036F618 /* OAuthViewController.swift in Sources */,
 				FA50719A2D7263F800CE9798 /* LongFormImageView.swift in Sources */,
+				FAA01DB52DDDCC4100E4255A /* WorksapceServerEnvironment.swift in Sources */,
 				971342792BBD691500174EBF /* MapViewControllerView.swift in Sources */,
+				FAFFC9792DE07D0B00072B11 /* APIRequestAdapter.swift in Sources */,
+				FAA01DCB2DDE15EC00E4255A /* APIRequestPerformer.swift in Sources */,
 				FA1992ED2BB1A78C003B4719 /* KeychainManager.swift in Sources */,
-				0536DD972B0BD95100B04C4B /* URLSession+Extension.swift in Sources */,
 				973FC04C2B5A5F5F00878269 /* RadioItem.swift in Sources */,
 				FA18CAE92CCFD212008247F2 /* FinishUploadingModel.swift in Sources */,
 				C7ED070F2D70E2EC001FFFE2 /* TokenRefresher.swift in Sources */,
@@ -2230,17 +2402,19 @@
 				97412A962BBADAFF00DF7983 /* StairFlights.swift in Sources */,
 				0536DD942B0BD59900B04C4B /* OAuthError.swift in Sources */,
 				973FC0172B4D567900878269 /* WidthView.swift in Sources */,
+				FAA01DC72DDE12E600E4255A /* KartaviewRequestConfig.swift in Sources */,
 				FABF3CFD2B8607860080EAC9 /* MeasureWidthContainer.swift in Sources */,
 				FA8C74C72C4FE2E900D28220 /* LongFormWidthView.swift in Sources */,
 				97AC1C082B6A45C9004F0BF4 /* SideWalkValidationForm.swift in Sources */,
-				FAD5C4F52AFCBE700040C61A /* SceneDelegate.swift in Sources */,
 				97AC1C232B726ADC004F0BF4 /* TactilePavingKerbForm.swift in Sources */,
 				97412A942BBADAED00DF7983 /* StairFlightsForm.swift in Sources */,
 				FAF44FBF2B3084FB004FE664 /* OnboardingView2.swift in Sources */,
-				971342732BBD242400174EBF /* InitialView.swift in Sources */,
+				971342732BBD242400174EBF /* WorkspaceSelectionView.swift in Sources */,
 				97AC1C132B70EF0A004F0BF4 /* Surfaces.swift in Sources */,
 				A4E711B02B59011000C9DE08 /* StepsInclineForm.swift in Sources */,
+				FAA01DBC2DDE11B100E4255A /* TDEIServerEnvironment.swift in Sources */,
 				972454152B14A49A0036B91A /* Extensions.swift in Sources */,
+				FA93879E2DE4F9C900F7A460 /* GoInfoGameApp.swift in Sources */,
 				0536DD8C2B0BD2C200B04C4B /* Constants.swift in Sources */,
 				970D5BD32B67638500C20BE7 /* MapViewModel.swift in Sources */,
 				971902112B983EFC009B3270 /* CustomMap.swift in Sources */,
@@ -2249,6 +2423,7 @@
 				0536DD992B0BDBFE00B04C4B /* OAuthManager.swift in Sources */,
 				A4E711AC2B58F7C000C9DE08 /* HandRailForm.swift in Sources */,
 				A4E711A62B57BBCA00C9DE08 /* QuestProtocols.swift in Sources */,
+				FAA01DC92DDE12F800E4255A /* KartaViewServerEnvironment.swift in Sources */,
 				FAFDA2122C6F64E800ECEAE9 /* UserProfileView.swift in Sources */,
 				973FBFFE2B46BB3800878269 /* Utils.swift in Sources */,
 				B0CCB98C2B8626AE00AA73DE /* ProfileView.swift in Sources */,
@@ -2266,6 +2441,7 @@
 				FA87A8132B6AC019000A6BEA /* StepsRampTests.swift in Sources */,
 				188843AF2B5FB32D0008DCF8 /* WayLitTests.swift in Sources */,
 				A495DF2B2B68D6EC00478E44 /* TestQuestUtils.swift in Sources */,
+				FA9387AD2DE5DDD700F7A460 /* MockWorkspaceAPI.swift in Sources */,
 				FA87A8192B6B01A4000A6BEA /* HandRailTests.swift in Sources */,
 				FA87A8172B6AC885000A6BEA /* StepsInclineTests.swift in Sources */,
 				188843AD2B5FA2DF0008DCF8 /* TactilePavingStepsTests.swift in Sources */,
@@ -2273,10 +2449,13 @@
 				A4834A442B679CE000D4F0AA /* DatasyncManagerTests.swift in Sources */,
 				A40E72642B5CD65000328848 /* OverpassRequestManagerTests.swift in Sources */,
 				A444AC8C2B5E934B006C74F7 /* UserFlowTests.swift in Sources */,
+				FA9387A82DE5D5E500F7A460 /* WorkspacesViewModelTests.swift in Sources */,
 				FA87A8152B6AC4E2000A6BEA /* BusStopLitTests.swift in Sources */,
 				FAD5C50A2AFCBE720040C61A /* GoInfoGameTests.swift in Sources */,
+				FA9387A32DE58BBA00F7A460 /* POSMLoginViewModelTests.swift in Sources */,
 				A48037332BBA8D00007EE7E4 /* WorkspacesApiManagerTests.swift in Sources */,
 				FA87A81B2B6B042E000A6BEA /* SideWalkWidthTests.swift in Sources */,
+				FA9387AB2DE5D91200F7A460 /* MockLocationService.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2342,14 +2521,6 @@
 				973FC00D2B4D2A7900878269 /* fr */,
 			);
 			name = Localizable.strings;
-			sourceTree = "<group>";
-		};
-		FAD5C4F82AFCBE700040C61A /* Main.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				FAD5C4F92AFCBE700040C61A /* Base */,
-			);
-			name = Main.storyboard;
 			sourceTree = "<group>";
 		};
 		FAD5C4FD2AFCBE720040C61A /* LaunchScreen.storyboard */ = {
@@ -2747,7 +2918,6 @@
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "We need your location";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
-				INFOPLIST_KEY_UIMainStoryboardFile = Main;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UIUserInterfaceStyle = Light;
@@ -2785,7 +2955,6 @@
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "We need your location";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
-				INFOPLIST_KEY_UIMainStoryboardFile = Main;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UIUserInterfaceStyle = Light;
@@ -2960,6 +3129,30 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		FA666B132DF1FA5100EDEDAF /* XCRemoteSwiftPackageReference "ClusterMap" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/vospennikov/ClusterMap.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.1.1;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		FA666B142DF1FA5100EDEDAF /* ClusterMap */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = FA666B132DF1FA5100EDEDAF /* XCRemoteSwiftPackageReference "ClusterMap" */;
+			productName = ClusterMap;
+		};
+		FA666B162DF1FA5100EDEDAF /* ClusterMapSwiftUI */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = FA666B132DF1FA5100EDEDAF /* XCRemoteSwiftPackageReference "ClusterMap" */;
+			productName = ClusterMapSwiftUI;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = FAD5C4E72AFCBE700040C61A /* Project object */;
 }

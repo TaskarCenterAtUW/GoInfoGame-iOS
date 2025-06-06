@@ -8,32 +8,28 @@
 import CoreLocation
 import Foundation
 
-class LocationManagerDelegate: NSObject, ObservableObject, CLLocationManagerDelegate {
+final class LocationManagerDelegate: NSObject, ObservableObject, CLLocationManagerDelegate, LocationTrackerProtocol {
+
     var locationManager = CLLocationManager()
     @Published var location: CLLocation?
     @Published var isLocationDenied: Bool = false
     @Published var isLocationServicesOff: Bool = false
+
     var locationUpdateHandler: ((CLLocationCoordinate2D) -> Void)?
-    var headingUpdateHandler: ((Double) -> Void)?
     
+    var headingUpdateHandler: ((Double) -> Void)?
+
     var coordinate: CLLocationCoordinate2D? {
         location?.coordinate
     }
-    
+
     override init() {
         super.init()
         locationManager.delegate = self
         checkInitialLocationStatus()
     }
-    
-    func requestLocationAuthorization() {
-        DispatchQueue.main.async {
-            self.locationManager.requestWhenInUseAuthorization()
-        }
-    }
-    
-    func startUpdatingLocation() {
-        // Perform location services check on a background thread
+
+    func startTracking() {
         DispatchQueue.global(qos: .background).async {
             let locationServicesEnabled = CLLocationManager.locationServicesEnabled()
             DispatchQueue.main.async {
@@ -41,7 +37,8 @@ class LocationManagerDelegate: NSObject, ObservableObject, CLLocationManagerDele
                     self.isLocationServicesOff = true
                     return
                 }
-                
+
+                self.locationManager.requestWhenInUseAuthorization()
                 self.locationManager.desiredAccuracy = kCLLocationAccuracyNearestTenMeters
                 self.locationManager.distanceFilter = 150
                 self.locationManager.startUpdatingLocation()
@@ -50,64 +47,61 @@ class LocationManagerDelegate: NSObject, ObservableObject, CLLocationManagerDele
         }
     }
 
-    
-    func stopUpdatingLocation() {
+    func stopTracking() {
         DispatchQueue.main.async {
             self.locationManager.stopUpdatingLocation()
         }
     }
-    
+
     func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
-        // Check the authorization status and location services in background
         DispatchQueue.global(qos: .background).async {
-            let isLocationServicesEnabled = CLLocationManager.locationServicesEnabled()
-            let authorizationStatus = manager.authorizationStatus
-            
+            let isEnabled = CLLocationManager.locationServicesEnabled()
+            let authStatus = manager.authorizationStatus
+
             DispatchQueue.main.async {
-                switch authorizationStatus {
+                switch authStatus {
                 case .authorizedWhenInUse, .authorizedAlways:
                     self.isLocationDenied = false
-                    self.isLocationServicesOff = !isLocationServicesEnabled
-                    self.startUpdatingLocation()
+                    self.isLocationServicesOff = !isEnabled
+                    self.startTracking()
                 case .denied, .restricted:
                     self.isLocationDenied = true
                     self.isLocationServicesOff = false
-                    self.stopUpdatingLocation()
+                    self.stopTracking()
                 default:
                     self.isLocationDenied = false
-                    self.isLocationServicesOff = !isLocationServicesEnabled
-                    self.requestLocationAuthorization()
+                    self.isLocationServicesOff = !isEnabled
+                    self.locationManager.requestWhenInUseAuthorization()
                 }
             }
         }
     }
 
-    
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-        guard let mostRecentLocation = locations.last else { return }
+        guard let latest = locations.last else { return }
         DispatchQueue.main.async {
-            self.location = mostRecentLocation
-            self.locationUpdateHandler?(mostRecentLocation.coordinate)
+            self.location = latest
+            self.locationUpdateHandler?(latest.coordinate)
         }
     }
-    
+
     func locationManager(_ manager: CLLocationManager, didUpdateHeading newHeading: CLHeading) {
         DispatchQueue.main.async {
             self.headingUpdateHandler?(newHeading.trueHeading)
         }
     }
-    
+
     func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
-        print("Error with location manager is ----\(error.localizedDescription)")
+        print("Location manager error: \(error.localizedDescription)")
     }
-    
+
     private func checkInitialLocationStatus() {
-        // Perform initial status check asynchronously
         DispatchQueue.global(qos: .background).async {
-            let servicesEnabled = CLLocationManager.locationServicesEnabled()
+            let enabled = CLLocationManager.locationServicesEnabled()
             DispatchQueue.main.async {
-                self.isLocationServicesOff = !servicesEnabled
+                self.isLocationServicesOff = !enabled
             }
         }
     }
 }
+
