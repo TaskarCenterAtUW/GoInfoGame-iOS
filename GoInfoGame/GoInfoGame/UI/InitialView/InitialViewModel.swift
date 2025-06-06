@@ -63,14 +63,14 @@ class InitialViewModel: ObservableObject {
         if let accessToken = KeychainManager.load(key: "accessToken") {
             ApiManager.shared.performRequest(to: .fetchWorkspaceList(accessToken), setupType: .workspace, modelType: [Workspace].self) { result in
             
-            DispatchQueue.main.async {
+            DispatchQueue.main.async { [weak self] in
+                self?.isLoading = false
                 switch result {
                 case .success(let workspacesResponse):
-                    self.workspaces = workspacesResponse
-                    self.isLoading = false
+                    self?.workspaces = workspacesResponse
                 case .failure(let error):
+                    self?.workspaces = []
                     print("Error fetching workspaces: \(error)")
-                    self.isLoading = false
                 }
             }
         }

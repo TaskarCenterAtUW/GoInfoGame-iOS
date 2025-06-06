@@ -12,9 +12,6 @@ struct InitialView: View {
     @State private var shouldNavigateToMapView = false
     @State private var selectedWorkspace: Workspace? = nil
     @StateObject private var locManagerDelegate = LocationManagerDelegate()
-    
-    @State private var isLoading: Bool = false
-    
     @AppStorage("loggedIn") private var loggedIn: Bool = false
     @State private var showBiometricPrompt = false
     
@@ -22,41 +19,38 @@ struct InitialView: View {
         NavigationStack {
             ZStack {
                 VStack {
-                       HStack {
-                           NavigationLink(destination: UserProfileView()) {
-                               Image(systemName: "person.crop.circle.fill")
-                                   .resizable()
-                                   .frame(width: 27, height: 27)
-                                   .padding([.leading], 18)
-                                   .foregroundStyle(Color(red: 135/255, green: 62/255, blue: 242/255))
-                                
-                           }
-                           Spacer()
-                       }
-                       .frame(maxWidth: .infinity, alignment: .leading)
-                       
-                       Spacer()
-                       
-                       VStack(spacing: 30) {
-                           Image("osmlogo")
-                               .resizable()
-                               .frame(width: 100, height: 100)
-                           Text("GoInfoGame")
-                               .font(.system(size: 30, design: .rounded))
-                       }
-                       .padding()
-                  
-                       Spacer()
-                       
-      if viewModel.workspaces.count > 1 {
-          WorkspacesListView(workspaces: viewModel.workspaces, viewModel: viewModel, shouldNavigateToMapView: $shouldNavigateToMapView, selectedWorkspace: $selectedWorkspace, isLoading: $isLoading)
-                       }
-                   }
+                    HStack {
+                        NavigationLink(destination: UserProfileView()) {
+                            Image(systemName: "person.crop.circle.fill")
+                                .resizable()
+                                .frame(width: 27, height: 27)
+                                .padding([.leading], 18)
+                                .foregroundStyle(Color(red: 135/255, green: 62/255, blue: 242/255))
+                            
+                        }
+                        Spacer()
+                    }
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    
+                    Spacer()
+                    
+                    VStack(spacing: 30) {
+                        Image("osmlogo")
+                            .resizable()
+                            .frame(width: 100, height: 100)
+                        Text("GoInfoGame")
+                            .font(.system(size: 30, design: .rounded))
+                    }
+                    .padding()
+                    
+                    Spacer()
+                    
+                    WorkspacesListView(workspaces: viewModel.workspaces, viewModel: viewModel, shouldNavigateToMapView: $shouldNavigateToMapView, selectedWorkspace: $selectedWorkspace, isLoading: $viewModel.isLoading)
+                }
                 .padding()
                 
-                if isLoading {
+                if viewModel.isLoading {
                     ActivityView(activityText: "Fetching workspaces")
-                       
                 }
             }
             .navigationDestination(isPresented: $shouldNavigateToMapView) {
@@ -67,7 +61,7 @@ struct InitialView: View {
             }
         }
         .onAppear {
-            isLoading = true
+            viewModel.isLoading = true
             viewModel.checkBiometricOptInCondition(for: APIConfiguration.shared.environment)
             showBiometricPrompt = viewModel.shouldShowBiometricOptInPrompt
         }
@@ -82,7 +76,7 @@ struct InitialView: View {
             Text("Would you like to use Face ID or Touch ID for faster logins?")
         }
         .toolbar(.hidden)
-       }
+    }
 }
 
 // WorkspacesListView - View for displaying a list of workspaces
@@ -97,7 +91,7 @@ struct WorkspacesListView: View {
     @State private var showAlert = false
     
     @State private var alertMessage = ""
-
+    
     var body: some View {
         
         if viewModel.workspaces.count == 1 {
@@ -133,58 +127,49 @@ struct WorkspacesListView: View {
                     .font(.custom("Lato-Bold", size: 20))
                     .foregroundColor((Color(red: 135/255, green: 62/255, blue: 242/255)))
                     .multilineTextAlignment(.center)
-                    .onAppear {
-                        isLoading = false
-                    }
                 Spacer()
             }
-           
+            
         } else {
             VStack {
                 Text("Pick the workspace you want to contribute to")
-                    .onAppear {
-                        isLoading = false
-                    }
                     .font(.system(size: 16, design: .rounded))
                     .foregroundStyle(.gray)
                 
                 ScrollView {
-                            VStack(spacing: 20) {
-                                ForEach(workspaces.filter({$0.type == "osw" && $0.externalAppAccess == 1}), id: \.id) { workspace in
-                                    Button {
-                                        viewModel.checkAndDeleteWorkspaceDB(workspaceId: "\(workspace.id)")
-                                        viewModel.fetchLongQuestsFor(workspaceId: "\(workspace.id)", completion: { success, errorMessage in
-                                            if success {
-                                                shouldNavigateToMapView = true
-                                                selectedWorkspace = workspace
-                                                
-                                                let workspaceId = "\(workspace.id)"
-                                                _ = KeychainManager.save(key: "workspaceID", data: workspaceId)
-                                            } else {
-                                                DispatchQueue.main.async {
-                                                    alertMessage = errorMessage ?? "Something went wrong."
-                                                    
-                                                    showAlert = true
-                                                
-                                                    shouldNavigateToMapView = false
-                                                }
-                                            }
-                                        })
-                                    }  label: {
-                                        Text(workspace.title)
-                                            .font(.system(size: 17))
-                                            .frame(maxWidth: .infinity, maxHeight: 40)
+                    VStack(spacing: 20) {
+                        ForEach(workspaces.filter({$0.type == "osw" && $0.externalAppAccess == 1}), id: \.id) { workspace in
+                            Button {
+                                viewModel.checkAndDeleteWorkspaceDB(workspaceId: "\(workspace.id)")
+                                viewModel.fetchLongQuestsFor(workspaceId: "\(workspace.id)", completion: { success, errorMessage in
+                                    if success {
+                                        shouldNavigateToMapView = true
+                                        selectedWorkspace = workspace
+                                        
+                                        let workspaceId = "\(workspace.id)"
+                                        _ = KeychainManager.save(key: "workspaceID", data: workspaceId)
+                                    } else {
+                                        DispatchQueue.main.async {
+                                            alertMessage = errorMessage ?? "Something went wrong."
+                                            
+                                            showAlert = true
+                                            
+                                            shouldNavigateToMapView = false
+                                        }
                                     }
-                                    .font(.custom("Lato-Bold", size: 25))
-                                    .foregroundColor(Color.white)
-                                    .padding()
-                                    .background(Color(red: 135/255, green: 62/255, blue: 242/255))
-                                    .buttonBorderShape(.roundedRectangle(radius: 10))
-                                }
+                                })
+                            }  label: {
+                                Text(workspace.title)
+                                    .font(.system(size: 17))
+                                    .frame(maxWidth: .infinity, maxHeight: 40)
                             }
+                            .font(.custom("Lato-Bold", size: 25))
+                            .foregroundColor(Color.white)
+                            .padding()
+                            .background(Color(red: 135/255, green: 62/255, blue: 242/255))
+                            .buttonBorderShape(.roundedRectangle(radius: 10))
                         }
-                .onAppear {
-                    
+                    }
                 }
                 .padding()
             }
@@ -202,7 +187,7 @@ struct LocationDisabledView: View {
                 .font(.custom("Lato-Bold", size: 30))
                 .foregroundColor((Color(red: 135/255, green: 62/255, blue: 242/255)))
                 .padding([.bottom], 50)
-
+            
             Text("Location Services Disabled")
                 .font(.custom("Lato-Bold", size: 25))
                 .padding()
@@ -227,7 +212,6 @@ struct LocationDisabledView: View {
 
 #Preview {
     InitialView()
-    
 }
 
 
