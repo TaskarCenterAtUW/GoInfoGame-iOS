@@ -17,7 +17,7 @@ struct PosmLoginView: View {
     
     @State private var shouldShowAlert = false
     
-    @State private var selectedEnvironment: APIEnvironment = .staging
+    @State private var selectedEnvironment: APIEnvironment = .production
     @State private var showAlert = false
             
     var body: some View {
@@ -36,7 +36,7 @@ struct PosmLoginView: View {
                         .padding(.horizontal, 40)
                         .textInputAutocapitalization(.never)
                     
-                    SecureField("Password", text: $viewModel.password)
+                    SecureInputView("Password", text: $viewModel.password)
                         .padding()
                         .background(Color(.systemGray6))
                         .cornerRadius(10)
@@ -75,6 +75,8 @@ struct PosmLoginView: View {
                             .cornerRadius(25)
                     }
                     .padding(.top, 20)
+                    
+                    appVersionText
                     
                     if SessionManager.shared.canUseBiometricLogin(for: selectedEnvironment) {
                         Button(action: {
@@ -136,6 +138,12 @@ struct PosmLoginView: View {
                 } message: {
                     Text("Your session has expired. Please login again")
                 }
+    }
+    
+    var appVersionText: Text {
+        let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "N/A"
+        let build = Bundle.main.infoDictionary?["CFBundleVersion"] as? String ?? "N/A"
+        return Text("Version \(version) (\(build))")
     }
 }
 
