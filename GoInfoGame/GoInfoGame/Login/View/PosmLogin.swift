@@ -17,7 +17,7 @@ struct PosmLoginView: View {
     
     @State private var shouldShowAlert = false
     
-    @State private var selectedEnvironment: APIEnvironment = .staging
+    @State private var selectedEnvironment: APIEnvironment = .production
     @State private var showAlert = false
             
     var body: some View {
