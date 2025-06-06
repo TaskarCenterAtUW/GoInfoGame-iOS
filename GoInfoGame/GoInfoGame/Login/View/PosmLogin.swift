@@ -78,7 +78,7 @@ struct PosmLoginView: View {
                     
                     appVersionText
                     
-                    if SessionManager.shared.canUseBiometricLogin(for: selectedEnvironment) || true {
+                    if SessionManager.shared.canUseBiometricLogin(for: selectedEnvironment) {
                         Button(action: {
                             APIConfiguration.shared.environment = selectedEnvironment
                             BiometricAuthManager.authenticate(reason: "Login using Face ID") { result in
@@ -108,7 +108,7 @@ struct PosmLoginView: View {
                         }
                     }
                     
-                    if viewModel.hasLoginFailed || true {
+                    if viewModel.hasLoginFailed {
                         Text("Invalid Credentials")
                             .foregroundColor(.red)
                             .padding(.top, 10)
