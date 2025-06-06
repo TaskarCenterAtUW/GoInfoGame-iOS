@@ -61,7 +61,6 @@ struct InitialView: View {
             }
         }
         .onAppear {
-            viewModel.isLoading = true
             viewModel.checkBiometricOptInCondition(for: APIConfiguration.shared.environment)
             showBiometricPrompt = viewModel.shouldShowBiometricOptInPrompt
         }
