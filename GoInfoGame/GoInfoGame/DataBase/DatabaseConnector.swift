@@ -215,8 +215,7 @@ class DatabaseConnector {
      @return StoredNode
      */
     func getNode(id:Int) -> StoredNode? {
-        let compoundId = "\(id)"
-        return realm.object(ofType: StoredNode.self, forPrimaryKey: compoundId)
+        return realm.object(ofType: StoredNode.self, forPrimaryKey: id)
     }
     /**
      Fetches single Way from the database
@@ -228,8 +227,7 @@ class DatabaseConnector {
 //    }
     
     func getWay(id: Int) -> StoredWay? {
-        let compoundId = "\(id)"
-        return realm.object(ofType: StoredWay.self, forPrimaryKey: compoundId)
+        return realm.object(ofType: StoredWay.self, forPrimaryKey: id)
     }
 
     
