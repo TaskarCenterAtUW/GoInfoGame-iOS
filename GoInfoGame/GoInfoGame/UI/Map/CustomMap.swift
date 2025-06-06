@@ -10,6 +10,8 @@ import SwiftUI
 import MapKit
 import osmparser
 
+import ClusterMap
+
 
 // Custom Map for managing map interactions between SwiftUI and UIKit components
 struct CustomMap: UIViewRepresentable {
@@ -82,7 +84,15 @@ struct CustomMap: UIViewRepresentable {
         }
         context.coordinator.updateUserRegion(mapView)
         context.coordinator.updateVisibleAnnotations(in: mapView)
-        manageAnnotations(mapView, context: context)
+       
+        let visibleAnnotations = items
+            .filter { !$0.isHidden && CLLocationCoordinate2DIsValid($0.annotation.coordinate) }
+            .map { $0.annotation }
+
+        print("Total annotations passed to cluster manager: \(visibleAnnotations.count)")
+        context.coordinator.clusterWrapper.updateClusters(mapView: mapView, items: visibleAnnotations)
+
+       // manageAnnotations(mapView, context: context)
         
         // Remove existing overlays
         mapView.overlays.forEach { mapView.removeOverlay($0) }
@@ -127,6 +137,20 @@ struct CustomMap: UIViewRepresentable {
         Coordinator(self, shadowOverlay: shadowOverlay)
     }
     
+    func generateDummyAnnotations(center: CLLocationCoordinate2D, count: Int = 15000, spread: Double = 0.1) -> [TestAnnotation] {
+        return (0..<count).map { _ in
+            let latOffset = Double.random(in: -spread...spread)
+            let lonOffset = Double.random(in: -spread...spread)
+            let coordinate = CLLocationCoordinate2D(
+                latitude: center.latitude + latOffset,
+                longitude: center.longitude + lonOffset
+            )
+            return TestAnnotation(coordinate: coordinate)
+        }
+    }
+
+
+    
     // Coordinator class for managing delegate methods
     class Coordinator: NSObject, MKMapViewDelegate {
         var parent: CustomMap
@@ -144,12 +168,18 @@ struct CustomMap: UIViewRepresentable {
         private let maxZoomAltitude: CLLocationDistance = 120
         private var zoomReachedLimit: Bool = false
         
+        let clusterWrapper = ClusterWrapper()
+        
         init(_ parent: CustomMap, shadowOverlay: ShadowOverlay) {
             self.parent = parent
             self.contextualInfo = parent.contextualInfo
             self.shadowOverlay = shadowOverlay
         }
         
+        func updateClusters(mapView: MKMapView, annotations: [DisplayUnitAnnotation]) {
+            clusterWrapper.updateClusters(mapView: mapView, items: annotations)
+        }
+
         @objc func handleMapTap(_ gestureRecognizer: UITapGestureRecognizer) {
             let mapView = gestureRecognizer.view as! MKMapView
             let touchPoint = gestureRecognizer.location(in: mapView)
@@ -226,64 +256,124 @@ struct CustomMap: UIViewRepresentable {
             return MKOverlayRenderer(overlay: overlay)
         }
         
-        func mapView(_ mapView: MKMapView, clusterAnnotationForMemberAnnotations memberAnnotations: [MKAnnotation]) -> MKClusterAnnotation {
-            
-            let clusterAnnotations = MKClusterAnnotation(memberAnnotations: memberAnnotations)
-            return clusterAnnotations
-        }
+//        func mapView(_ mapView: MKMapView, clusterAnnotationForMemberAnnotations memberAnnotations: [MKAnnotation]) -> MKClusterAnnotation {
+//            
+//            let clusterAnnotations = MKClusterAnnotation(memberAnnotations: memberAnnotations)
+//            return clusterAnnotations
+//        }
         
         // Customizes the view for each annotation
         func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
             self.mapView = mapView
+
+            // 🔹 Skip user location
             if annotation is MKUserLocation {
-                   return nil
-               }
-            if let clusterAnnotation = annotation as? MKClusterAnnotation {
-                let identifier = "cluster"
-                var clusterView = mapView.dequeueReusableAnnotationView(withIdentifier: identifier) as? MKMarkerAnnotationView
-                if clusterView == nil {
-                    clusterView = MKMarkerAnnotationView(annotation: clusterAnnotation, reuseIdentifier: identifier)
-                } else {
-                    clusterView?.annotation = annotation
-                }
-                
-                clusterView?.markerTintColor = UIColor(red: 135/255, green: 62/255, blue: 242/255, alpha: 1.0)
-                clusterView?.glyphText = "\(clusterAnnotation.memberAnnotations.count)"
-                
-                return clusterView
+                return nil
             }
-              
-                    
+
+            // 📦 Handle clusters
+            if let clusterAnnotation = annotation as? DisplayClusterAnnotation {
+                let identifier = "displayCluster"
+                let view = mapView.dequeueReusableAnnotationView(withIdentifier: identifier) as? MKMarkerAnnotationView
+                    ?? MKMarkerAnnotationView(annotation: annotation, reuseIdentifier: identifier)
+
+                view.markerTintColor = UIColor(red: 135/255, green: 62/255, blue: 242/255, alpha: 1.0)
+                view.glyphText = "\(clusterAnnotation.count)"
+                view.annotation = clusterAnnotation
+                return view
+            }
+
+            // 🧷 Handle individual DisplayUnitAnnotations
             guard let displayUnitAnnotation = annotation as? DisplayUnitAnnotation else {
                 return nil
             }
+
             let annotationView: CustomAnnotationView
-            if var dequeuedView = mapView.dequeueReusableAnnotationView(withIdentifier: CustomAnnotationView.reuseIdentifier) as? CustomAnnotationView {
-                annotationView = dequeuedView
-                
+            if let reused = mapView.dequeueReusableAnnotationView(withIdentifier: CustomAnnotationView.reuseIdentifier) as? CustomAnnotationView {
+                annotationView = reused
             } else {
                 annotationView = CustomAnnotationView(annotation: annotation, reuseIdentifier: CustomAnnotationView.reuseIdentifier)
             }
-            annotationView.clusteringIdentifier = "cluster"
-            
-            if let ann = annotation as? DisplayUnitAnnotation {
-                if let annotationType = (ann.displayUnit.parent as? LongElementQuest)?.elementType {
-                    let isSelectable = (parent.selectedAnnotationType == nil || parent.selectedAnnotationType == annotationType)
-                    // Dim other annotation types
-                    annotationView.alpha = isSelectable ? 1.0 : 0.5
-                    annotationView.isUserInteractionEnabled = isSelectable
-                }
-                annotationView.updateSelectionState(isSelected: parent.selectedAnnotations.contains(ann))
+
+            annotationView.clusteringIdentifier = nil // ✅ Not needed when using ClusterMap
+            annotationView.annotation = displayUnitAnnotation
+
+            // Dim if not selected type
+            if let ann = annotation as? DisplayUnitAnnotation,
+               let annotationType = (ann.displayUnit.parent as? LongElementQuest)?.elementType {
+                let isSelectable = (parent.selectedAnnotationType == nil || parent.selectedAnnotationType == annotationType)
+                annotationView.alpha = isSelectable ? 1.0 : 0.5
+                annotationView.isUserInteractionEnabled = isSelectable
             }
 
-            // Customize annotation view
-            customizeAnnotationView(annotationView, with: displayUnitAnnotation)
-            // Add a touch handler
+            // Update selection state
+            annotationView.updateSelectionState(isSelected: parent.selectedAnnotations.contains(displayUnitAnnotation))
+
+            // Touch handling
             annotationView.isDraggable = false
             annotationView.isUserInteractionEnabled = true
             annotationView.addGestureRecognizer(CustomTouchGestureRecognizer(target: self, action: #selector(handleAnnotationTouch(_:))))
+
+            customizeAnnotationView(annotationView, with: displayUnitAnnotation)
             return annotationView
         }
+
+
+
+
+
+
+//        func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
+//            self.mapView = mapView
+//            if annotation is MKUserLocation {
+//                   return nil
+//               }
+//            if let clusterAnnotation = annotation as? MKClusterAnnotation {
+//                let identifier = "cluster"
+//                var clusterView = mapView.dequeueReusableAnnotationView(withIdentifier: identifier) as? MKMarkerAnnotationView
+//                if clusterView == nil {
+//                    clusterView = MKMarkerAnnotationView(annotation: clusterAnnotation, reuseIdentifier: identifier)
+//                } else {
+//                    clusterView?.annotation = annotation
+//                }
+//                
+//                clusterView?.markerTintColor = UIColor(red: 135/255, green: 62/255, blue: 242/255, alpha: 1.0)
+//                clusterView?.glyphText = "\(clusterAnnotation.memberAnnotations.count)"
+//                
+//                return clusterView
+//            }
+//              
+//                    
+//            guard let displayUnitAnnotation = annotation as? DisplayUnitAnnotation else {
+//                return nil
+//            }
+//            let annotationView: CustomAnnotationView
+//            if var dequeuedView = mapView.dequeueReusableAnnotationView(withIdentifier: CustomAnnotationView.reuseIdentifier) as? CustomAnnotationView {
+//                annotationView = dequeuedView
+//                
+//            } else {
+//                annotationView = CustomAnnotationView(annotation: annotation, reuseIdentifier: CustomAnnotationView.reuseIdentifier)
+//            }
+//            annotationView.clusteringIdentifier = "cluster"
+//            
+//            if let ann = annotation as? DisplayUnitAnnotation {
+//                if let annotationType = (ann.displayUnit.parent as? LongElementQuest)?.elementType {
+//                    let isSelectable = (parent.selectedAnnotationType == nil || parent.selectedAnnotationType == annotationType)
+//                    // Dim other annotation types
+//                    annotationView.alpha = isSelectable ? 1.0 : 0.5
+//                    annotationView.isUserInteractionEnabled = isSelectable
+//                }
+//                annotationView.updateSelectionState(isSelected: parent.selectedAnnotations.contains(ann))
+//            }
+//
+//            // Customize annotation view
+//            customizeAnnotationView(annotationView, with: displayUnitAnnotation)
+//            // Add a touch handler
+//            annotationView.isDraggable = false
+//            annotationView.isUserInteractionEnabled = true
+//            annotationView.addGestureRecognizer(CustomTouchGestureRecognizer(target: self, action: #selector(handleAnnotationTouch(_:))))
+//            return annotationView
+//        }
         
         // Handles selection of annotations
         func mapView(_ mapView: MKMapView, didSelect annotation: MKAnnotation) {
@@ -689,3 +779,124 @@ class CustomTouchGestureRecognizer: UIGestureRecognizer {
     }
 }
 
+
+import ClusterMap
+
+
+final class ClusterAnnotation: NSObject, MKAnnotation {
+    let coordinate: CLLocationCoordinate2D
+    let count: Int
+
+    init(coordinate: CLLocationCoordinate2D, count: Int) {
+        self.coordinate = coordinate
+        self.count = count
+    }
+}
+
+final class TestAnnotation: NSObject, MKAnnotation, Identifiable, CoordinateIdentifiable {
+    let id: UUID = UUID()
+    var coordinate: CLLocationCoordinate2D
+    let title: String?
+    let subtitle: String?
+
+    init(coordinate: CLLocationCoordinate2D, title: String? = nil, subtitle: String? = nil) {
+        self.coordinate = coordinate
+        self.title = title
+        self.subtitle = subtitle
+    }
+}
+
+
+final class ClusterWrapper {
+    private var clusterManager: ClusterManager<DisplayUnitAnnotation>?
+
+    func updateClusters(mapView: MKMapView, items: [DisplayUnitAnnotation]) {
+        guard mapView.window != nil else { return }
+
+        let safeItems = items.filter {
+            CLLocationCoordinate2DIsValid($0.coordinate) &&
+            $0.coordinate.latitude.isFinite &&
+            $0.coordinate.longitude.isFinite
+        }
+
+        let mapSize = mapView.bounds.size
+        let region = mapView.region
+
+        guard mapSize.width > 0, mapSize.height > 0,
+              region.center.latitude.isFinite, region.center.longitude.isFinite else {
+            print("❌ Invalid map region or size — skipping clustering")
+            return
+        }
+
+
+        // 🚨 Important: Cancel previous clusters and recreate for fresh reload
+        Task.detached(priority: .background) {
+            let clusterManager = ClusterManager<DisplayUnitAnnotation>(
+                configuration: .init(
+                    cellSizeForZoomLevel: { _ in CGSize(width: 64, height: 64) }
+                )
+            )
+
+            await clusterManager.add(safeItems)
+            
+            guard mapSize.width > 0, mapSize.height > 0,
+                  region.center.latitude.isFinite, region.center.longitude.isFinite else {
+                print("❌ Skipping reload due to invalid map size or region")
+                return
+            }
+
+            do {
+                let diff = await clusterManager.reload(
+                    mapViewSize: mapSize,
+                    coordinateRegion: region
+                )
+
+                await MainActor.run {
+                    // Clean old annotations
+                    mapView.removeAnnotations(mapView.annotations)
+
+                    for insertion in diff.insertions {
+                        switch insertion {
+                        case .annotation(let ann):
+                            mapView.addAnnotation(ann)
+
+                        case .cluster(let cluster):
+                            if cluster.coordinate.latitude.isFinite,
+                               cluster.coordinate.longitude.isFinite {
+                                let clusterAnn = DisplayClusterAnnotation(
+                                    coordinate: cluster.coordinate,
+                                    count: cluster.memberAnnotations.count
+                                )
+                                mapView.addAnnotation(clusterAnn)
+                            } else {
+                                print("⚠️ Skipped invalid cluster coordinate")
+                            }
+                        }
+                    }
+
+                }
+            } catch {
+                print("❌ ClusterMap reload failed: \(error)")
+            }
+
+            // Keep reference alive
+            self.clusterManager = clusterManager
+        }
+    }
+}
+
+
+
+final class DisplayClusterAnnotation: NSObject, MKAnnotation {
+    let coordinate: CLLocationCoordinate2D
+    let count: Int
+
+    init(coordinate: CLLocationCoordinate2D, count: Int) {
+        self.coordinate = coordinate
+        self.count = count
+    }
+
+    var title: String? {
+        return "\(count)"
+    }
+}

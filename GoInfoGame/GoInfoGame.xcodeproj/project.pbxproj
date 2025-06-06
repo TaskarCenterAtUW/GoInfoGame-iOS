@@ -195,6 +195,10 @@
 		FA50719A2D7263F800CE9798 /* LongFormImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA5071992D7263F800CE9798 /* LongFormImageView.swift */; };
 		FA51484E2D76ED6C00C0D35B /* NotesViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA51484D2D76ED6300C0D35B /* NotesViewModel.swift */; };
 		FA5853C12B21F17F00301CDA /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA5853C02B21F17F00301CDA /* OnboardingView.swift */; };
+		FA633CB42DD4843B00324404 /* BiometricAuthManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA633CB32DD4842D00324404 /* BiometricAuthManager.swift */; };
+		FA633CB62DD48C4400324404 /* SessionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA633CB52DD48C3F00324404 /* SessionManager.swift */; };
+		FA666B152DF1FA5100EDEDAF /* ClusterMap in Frameworks */ = {isa = PBXBuildFile; productRef = FA666B142DF1FA5100EDEDAF /* ClusterMap */; };
+		FA666B172DF1FA5100EDEDAF /* ClusterMapSwiftUI in Frameworks */ = {isa = PBXBuildFile; productRef = FA666B162DF1FA5100EDEDAF /* ClusterMapSwiftUI */; };
 		FA6DB8B32D8853DD0070CCD3 /* UserSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA6DB8B22D8853D00070CCD3 /* UserSettingsView.swift */; };
 		FA6DB8B52D96BE510070CCD3 /* HiddenQuestManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA6DB8B42D96BE510070CCD3 /* HiddenQuestManager.swift */; };
 		FA87A8102B68142F000A6BEA /* LoadingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA87A80F2B68142F000A6BEA /* LoadingView.swift */; };
@@ -663,7 +667,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				97F2FA8A2B0630A3000B9726 /* Pods_GoInfoGame.framework in Frameworks */,
+				FA666B172DF1FA5100EDEDAF /* ClusterMapSwiftUI in Frameworks */,
 				A4AD13272B5E90BD0041A881 /* osmparser.framework in Frameworks */,
+				FA666B152DF1FA5100EDEDAF /* ClusterMap in Frameworks */,
 				A40E727F2B5D462A00328848 /* osmapi.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1934,6 +1940,9 @@
 				fr,
 			);
 			mainGroup = FAD5C4E62AFCBE700040C61A;
+			packageReferences = (
+				FA666B132DF1FA5100EDEDAF /* XCRemoteSwiftPackageReference "ClusterMap" */,
+			);
 			productRefGroup = FAD5C4F02AFCBE700040C61A /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -3096,6 +3105,30 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		FA666B132DF1FA5100EDEDAF /* XCRemoteSwiftPackageReference "ClusterMap" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/vospennikov/ClusterMap.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.1.1;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		FA666B142DF1FA5100EDEDAF /* ClusterMap */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = FA666B132DF1FA5100EDEDAF /* XCRemoteSwiftPackageReference "ClusterMap" */;
+			productName = ClusterMap;
+		};
+		FA666B162DF1FA5100EDEDAF /* ClusterMapSwiftUI */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = FA666B132DF1FA5100EDEDAF /* XCRemoteSwiftPackageReference "ClusterMap" */;
+			productName = ClusterMapSwiftUI;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = FAD5C4E72AFCBE700040C61A /* Project object */;
 }
