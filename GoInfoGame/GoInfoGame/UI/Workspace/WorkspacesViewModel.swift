@@ -9,6 +9,20 @@ import Foundation
 import SwiftUI
 import MapKit
 import CoreLocation
+
+enum WorkspaceContent: Equatable {
+    case workspaces
+
+
+    var loadingMessage: String {
+        switch self {
+        case .workspaces: "Fetching Workspaces..."
+        }
+    }
+}
+
+typealias WorkspaceState = ViewModelState<WorkspaceContent>
+
 // WorkspacesViewModel - ViewModel for managing data related to initial view
 class WorkspacesViewModel: ObservableObject {
     
@@ -19,11 +33,14 @@ class WorkspacesViewModel: ObservableObject {
     
     private let api: WorkspaceAPIProtocol
     
-    @Published var state: ViewModelState = .idle
+    @Published var state: WorkspaceState = .idle
     
     var isPreview: Bool = false
     
-    init(api: WorkspaceAPIProtocol = WorkspaceAPIManager.shared, locationTracker: LocationTrackerProtocol = LocationManagerDelegate(), state: ViewModelState = .idle) {
+    @Published var route: NavigationRoute?
+    @Published var isLoadingQuests: Bool = false
+    
+    init(api: WorkspaceAPIProtocol = WorkspaceAPIManager.shared, locationTracker: LocationTrackerProtocol = LocationManagerDelegate(), state: WorkspaceState = .idle) {
         self.api = api
         self.locationTracker = locationTracker
         self.state = state
@@ -49,11 +66,11 @@ class WorkspacesViewModel: ObservableObject {
     // fetch workspaces list
     func fetchWorkspacesList() {
         print("STARTING TO FETCH WORKSPACES")
-            state = .loading
+        state = .loading(.workspaces)
     
             api.fetchWorkspaces { [weak self] result in
                 DispatchQueue.main.async {
-                    self?.state = .loaded
+                    self?.state = .loaded(.workspaces)
                     switch result {
                     case .success(let workspacesResponse):
                         self?.workspaces = workspacesResponse
@@ -76,59 +93,22 @@ class WorkspacesViewModel: ObservableObject {
         }
     }
     
-    func fetchLongQuestsFor(workspaceId: String,completion: @escaping (Bool, String?) -> Void) {
-        
-        state = .loading
-        
-        api.fetchLongQuestsFor(workspaceId: workspaceId) { [weak self] result in
+    func fetchLongQuestsFor(workspace: Workspace, completion: @escaping (Bool, String?) -> Void) {
+        isLoadingQuests = true
+        api.fetchLongQuestsFor(workspaceId: "\(workspace.id)") { [weak self] result in
             DispatchQueue.main.async {
-                guard let self = self else { return }
-
+                self?.isLoadingQuests = false
                 switch result {
-                case .success(let longQuestsResponse):
-                    do {
-                        for item in longQuestsResponse {
-                            _ = try item.questQuery.toElementFilterExpression()
-                        }
-                    } catch {
-                        print("Invalid quest filter: \(error)")
-                        self.state = .error("Invalid quest filter expression.")
-                        completion(false, "Invalid quest query.")
-                        return
-                    }
-
-                    self.longQuests = longQuestsResponse
-                    self.saveLongQuestsToDefaults(longQuestJson: longQuestsResponse)
-
-                    for (index, quest) in self.longQuests.enumerated() {
-                        let applicableQuest = ApplicableQuest(
-                            quest: LongElementQuest(
-                                questId: "\(index + 1)",
-                                questQuery: quest.questQuery,
-                                elementType: quest.elementType, elementTypeIcon: quest.elementTypeIcon
-                            ),
-                            questId: "\(index + 1)"
-                        )
-
-                        QuestsRepository.shared.allQuests.append(applicableQuest)
-                    }
-
-                    self.state = .loaded
+                case .success(let quests):
+                    self?.longQuests = quests
+                    self?.route = .map(workspace: workspace)
                     completion(true, nil)
-
                 case .failure(let error):
-                    print("ERROR FOR LONG FORM JSON IS ----?>>>>>>\(error.localizedDescription)")
-                    self.state = .error(error.localizedDescription)
-                    if error.localizedDescription.contains("empty") {
-                        completion(false, "Please configure longform.")
-                    } else {
-                        completion(false, "Unable to load quests.(invalid JSON)")
-                    }
+                    completion(false, error.localizedDescription)
                 }
             }
         }
     }
-    
     
     func saveLongQuestsToDefaults(longQuestJson: [LongFormElement]) {
         do {

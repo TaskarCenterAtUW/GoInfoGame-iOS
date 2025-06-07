@@ -8,6 +8,18 @@
 import Foundation
 import SwiftUI
 
+enum LoginContent: Equatable {
+    case login
+    
+    var loadingMessage: String {
+        switch self {
+        case .login: "Logging in..."
+        }
+    }
+}
+
+typealias LoginState = ViewModelState<LoginContent>
+
 final class PosmLoginViewModel: ObservableObject {
     @Published var username: String = ""
     @Published var password: String = ""
@@ -16,51 +28,34 @@ final class PosmLoginViewModel: ObservableObject {
     
     @AppStorage("loggedIn") private var loggedIn: Bool = false
         
-    @Published var state: ViewModelState = .idle
+    @Published var state: LoginState = .idle
     
     private let api: TDEIAPIProtocol
+    private let sessionManager: SessionManager
     
     @Published var route: NavigationRoute?
     
-    init(api: TDEIAPIProtocol = TDEIAPIManager.shared, state: ViewModelState = .idle) {
+    init(api: TDEIAPIProtocol = TDEIAPIManager.shared, sessionManager: SessionManager = .shared, state: LoginState = .idle) {
         self.api = api
+        self.sessionManager = sessionManager
         self.state = state
     }
 
-    func performLogin() {
-        
-            guard !username.isEmpty, !password.isEmpty else {
-                state = .error("Username and Password cannot be empty.")
-                return
+    // Removed completion handler from performLogin for now
+    func performLogin(with environment: AppEnv) {
+        guard !username.isEmpty, !password.isEmpty else {
+            state = .error("Username and Password cannot be empty.")
+            return
+        }
+        state = .loading(.login)
+        sessionManager.performLogin(username: username, password: password, environment: environment) { [weak self] success, error in
+            if success {
+                self?.state = .loaded(.login)
+                self?.route = .workspace
+                self?.loggedIn = true
+            } else {
+                self?.state = .error(error)
             }
-            state = .loading
-                        
-            _ = KeychainManager.save(key: "username", data: username)
-                        
-            api.login(username: username, password: password) { [weak self] result in
-                switch result {
-                case .success(let posmLoginSuccessResponse):
-                    let accessToken = posmLoginSuccessResponse.accessToken
-                    let refreshToken = posmLoginSuccessResponse.refreshToken
-                    DispatchQueue.main.async {
-                        _ = KeychainManager.save(key: "accessToken", data: accessToken)
-                        _ = KeychainManager.save(key: "refreshToken", data: refreshToken)
-                        UserDefaults.standard.setValue(posmLoginSuccessResponse.expiresIn, forKey: "accessToken_expire_in")
-                        UserDefaults.standard.setValue(Date().timeIntervalSince1970, forKey: "accessToken_Generate")
-//                        if let appDelegate = UIApplication.shared.delegate as? AppDelegate {
-//                            appDelegate.validateAccessToken()
-//                        }
-                        AuthSessionManager.shared.validateAccessToken()
-                        self?.state = .loaded
-                        self?.route = .workspace
-                        self?.loggedIn = true
-                    }
-                case .failure(let error):
-                    DispatchQueue.main.async {
-                        self?.state = .error(error.localizedDescription)
-                    }
-                }
-            }
+        }
     }
 }
-
