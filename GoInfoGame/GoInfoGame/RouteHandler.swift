@@ -37,6 +37,7 @@ struct NavigationCoordinator: View {
             UserProfileView()
         case .map(let workspace):
             MapView(selectedWorkspace: workspace)
+                .navigationBarBackButtonHidden(true)
         case .none:
             EmptyView()
         }
