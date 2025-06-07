@@ -5,9 +5,9 @@
 //  Created by Achyut Kumar M on 27/05/25.
 //
 
-enum ViewModelState: Equatable {
+enum ViewModelState<Context: Equatable>: Equatable {
     case idle
-    case loading
-    case loaded
+    case loading(Context)
+    case loaded(Context)
     case error(String)
 }
