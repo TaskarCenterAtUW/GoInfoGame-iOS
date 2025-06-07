@@ -71,7 +71,7 @@ struct PosmLoginView: View {
                     .padding(.horizontal, 40)
                     
                     Button(action: {
-                        viewModel.performLogin()
+                        viewModel.performLogin(with: selectedEnvironment)
                     }) {
                         Text("Login")
                             .font(.custom("Lato-Bold", size: 20))
@@ -86,7 +86,7 @@ struct PosmLoginView: View {
                     
                     if SessionManager.shared.canUseBiometricLogin(for: selectedEnvironment) {
                         Button(action: {
-                            AppEnv.shared.current = selectedEnvironment
+                            AppEnvManager.shared.current = selectedEnvironment
                             BiometricAuthManager.authenticate(reason: "Login using Face ID") { result in
                                 switch result {
                                 case .success:
@@ -96,15 +96,15 @@ struct PosmLoginView: View {
                                         viewModel.username = username
                                         viewModel.password = password
                                         
-                                        viewModel.performLogin(for: selectedEnvironment)
+                                        viewModel.performLogin(with: selectedEnvironment)
                                     } else {
                                         print("Missing credentials in Keychain")
-                                        viewModel.hasLoginFailed = true
+                                        viewModel.state = .error("Missing credentials in Keychain")
                                     }
                                     
                                 case .failure(let message), .unavailable(let message):
                                     print("Biometric login failed: \(message)")
-                                    viewModel.hasLoginFailed = true
+                                    viewModel.state = .error(message)
                                 }
                             }
                         }) {
@@ -128,23 +128,18 @@ struct PosmLoginView: View {
                             }
                     }
                     
-                    
-                    switch viewModel.state {
-                    case .idle:
-                        EmptyView()
-                    case .loading:
-                        ActivityView(activityText: "Loggin In...")
-                            .frame(maxWidth: .infinity, maxHeight: .infinity)
-                            .background(Color.black.opacity(0.4))
-                            .edgesIgnoringSafeArea(.all)
-                    case .loaded:
-                        EmptyView()
-                    case .error(_):
-                        EmptyView()
-                    }
-                    
                     NavigationCoordinator(route: $viewModel.route)
                 }
+                if case let .loading(message) = viewModel.state {
+                    Color.black.opacity(0.2)
+                        .edgesIgnoringSafeArea(.all)
+                    VStack {
+                        ActivityView(activityText: message.loadingMessage)
+                    }
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    .background(Color.clear)
+                }
+
             }
             .onAppear {
                 selectedEnvironment = AppEnvManager.shared.current
@@ -172,12 +167,12 @@ struct PosmLoginView: View {
 }
 
 #Preview("Loading") {
-    PosmLoginView(viewModel: PosmLoginViewModel(state: .loading))
+    PosmLoginView(viewModel: PosmLoginViewModel(state: .loading(.login)))
 }
 
 #Preview("Error") {
     PosmLoginView(viewModel: PosmLoginViewModel(state: .error("Login Failed")))
 }
-#Preview("Loaded") {
-    PosmLoginView(viewModel: PosmLoginViewModel(state: .loaded))
+#Preview("Loaded Workspaces") {
+    PosmLoginView(viewModel: PosmLoginViewModel(state: .loaded(.login)))
 }
