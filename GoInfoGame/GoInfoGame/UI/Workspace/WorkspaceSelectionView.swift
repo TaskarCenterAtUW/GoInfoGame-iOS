@@ -19,116 +19,24 @@ struct WorkspaceSelectionView: View {
         NavigationStack {
             ZStack {
                 VStack(alignment: .center, spacing: 0) {
-                    HStack {
-                        NavigationLink(destination: UserProfileView()) {
-                            Image(systemName: "person.crop.circle.fill")
-                                .resizable()
-                                .frame(width: 27, height: 27)
-                                .padding(.leading, 18)
-                                .foregroundStyle(Color(red: 135/255, green: 62/255, blue: 242/255))
-                        }
-                        Spacer()
-                    }
-                    .padding(.top, 10)
-                    // Logo and Title pinned to top
-                    VStack(spacing: 30) {
-                        Image("osmlogo")
-                            .resizable()
-                            .frame(width: 100, height: 100)
-                        Text("GoInfoGame")
-                            .font(.system(size: 30, design: .rounded))
-                    }
-                    .padding(.top, 20)
-                    // State-based UI below logo/title
+                    WorkspaceHeaderView()
                     Group {
                         if case let .error(errorMessage) = viewModel.state {
-                            Text("TO DO: DISPLAY ERROR")
-                                .font(.custom("Lato-Bold", size: 20))
-                                .foregroundColor(.red)
-                                .font(.caption)
-                                .padding(.top, 8)
+                            WorkspaceErrorView(errorMessage: errorMessage)
                         }
                         switch viewModel.state {
-                        case .loading:
-                            ActivityView(activityText: "Loading workspaces...")
+                        case .loading(let context):
+                            ActivityView(activityText: context.loadingMessage)
                                 .frame(maxWidth: .infinity, maxHeight: .infinity)
-                              
-                        case .loaded:
-                           
-                            if viewModel.workspaces.count == 0 {
-                                Text("No workspaces available for you to work on.")
-                                    .font(.custom("Lato-Bold", size: 20))
-                                    .foregroundColor((Color(red: 135/255, green: 62/255, blue: 242/255)))
-                                    .multilineTextAlignment(.center)
-                            } else {
-                                ScrollView {
-                                    VStack(spacing: 20) {
-                                        ForEach(viewModel.workspaces.filter({$0.type == "osw" && $0.externalAppAccess == 1}), id: \.id) { workspace in
-                                            Button {
-                                                viewModel.checkAndDeleteWorkspaceDB(workspaceId: "\(workspace.id)")
-                                                viewModel.fetchLongQuestsFor(workspaceId: "\(workspace.id)", completion: { success, errorMessage in
-                                                    
-                                                })
-                                            } label: {
-                                                Text(workspace.title)
-                                                    .font(.system(size: 17))
-                                                    .frame(maxWidth: .infinity, maxHeight: 40)
-                                                    .padding()
-                                                    .background(Color(red: 242/255, green: 242/255, blue: 242/255))
-                                                    .cornerRadius(10)
-                                            }
-                                        }
-                                    }
+                        case .loaded(let context):
+                            switch context {
+                            case .workspaces:
+                                if viewModel.workspaces.count == 0 {
+                                    NoWorkspacesView()
+                                } else {
+                                    WorkspaceListView(workspaces: viewModel.workspaces.filter { $0.type == "osw" && $0.externalAppAccess == 1 }, viewModel: viewModel)
                                 }
-                                
-                                
-                                
-                                
-                                
-                                
-                                
-                                
-//                                ScrollView {
-//                                            VStack(spacing: 20) {
-//                                                ForEach(viewModel.workspaces.filter({$0.type == "osw" && $0.externalAppAccess == 1}), id: \.id) { workspace in
-//                                                    Button {
-//                                                        viewModel.checkAndDeleteWorkspaceDB(workspaceId: "\(workspace.id)")
-//                                                        viewModel.fetchLongQuestsFor(workspaceId: "\(workspace.id)", completion: { success, errorMessage in
-//                                                            if success {
-//                                                                self.shouldNavigateToMapView = true
-//                                                                self.selectedWorkspace = workspace
-//                                                                
-//                                                                let workspaceId = "\(workspace.id)"
-//                                                                AuthSessionManager.shared.setWorkspaceId(workspaceId)
-//                                                            } else {
-//                                                                DispatchQueue.main.async {
-//                                                                    alertMessage = errorMessage ?? "Something went wrong."
-//                                                                    
-//                                                                    showAlert = true
-//                                                                
-//                                                                    self.shouldNavigateToMapView = false
-//                                                                }
-//                                                            }
-//                                                        })
-//                                                    }  label: {
-//                                                        Text(workspace.title)
-//                                                            .font(.system(size: 17))
-//                                                            .frame(maxWidth: .infinity, maxHeight: 40)
-//                                                    }
-//                                                    .font(.custom("Lato-Bold", size: 25))
-//                                                    .foregroundColor(Color.white)
-//                                                    .padding()
-//                                                    .background(Color(red: 135/255, green: 62/255, blue: 242/255))
-//                                                    .buttonBorderShape(.roundedRectangle(radius: 10))
-//                                                }
-//                                            }
-//                                        }
-//                                .onAppear {
-//                                    
-//                                }
-//                                .padding()
                             }
-                                    
                         case .error(_):
                             EmptyView()
                         case .idle:
@@ -139,6 +47,12 @@ struct WorkspaceSelectionView: View {
                     Spacer()
                 }
                 .padding(.horizontal)
+                
+                NavigationCoordinator(route: $viewModel.route)
+                
+                if viewModel.isLoadingQuests {
+                    LoadingOverlayView()
+                }
             }
         }
         .onAppear {
@@ -158,204 +72,107 @@ struct WorkspaceSelectionView: View {
     }
 }
 
-struct WorkspaceView: View {
-    @StateObject private var viewModel = WorkspacesViewModel()
-    @Environment(\.scenePhase) private var scenePhase
+struct WorkspaceListView: View {
+    let workspaces: [Workspace]
+    @ObservedObject var viewModel: WorkspacesViewModel
     
-    @State private var shouldNavigateToMapView = false
-            
     var body: some View {
-        NavigationStack {
-            ZStack {
-                VStack {
-                       HStack {
-                           NavigationLink(destination: UserProfileView()) {
-                               Image(systemName: "person.crop.circle.fill")
-                                   .resizable()
-                                   .frame(width: 27, height: 27)
-                                   .padding([.leading], 18)
-                                   .foregroundStyle(Color(red: 135/255, green: 62/255, blue: 242/255))
-                                
-                           }
-                           Spacer()
-                       }
-                       .frame(maxWidth: .infinity, alignment: .leading)
-                       
-                       Spacer()
-                       
-                       VStack(spacing: 30) {
-                           Image("osmlogo")
-                               .resizable()
-                               .frame(width: 100, height: 100)
-                           Text("GoInfoGame")
-                               .font(.system(size: 30, design: .rounded))
-                       }
-                       .padding()
-                  
-                       Spacer()
-                    switch viewModel.state {
-                    case .loading:
-                        ActivityView(activityText: "Loading workspaces...")
-                    case .loaded:
-                        if viewModel.workspaces.count == 0 {
-                            Text("No workspaces available for you to work on.")
-                                .font(.custom("Lato-Bold", size: 20))
-                                .foregroundColor((Color(red: 135/255, green: 62/255, blue: 242/255)))
-                                .multilineTextAlignment(.center)
-                        } else if viewModel.workspaces.count == 1 {
-                            if let selectedWorkspace = viewModel.workspaces.first {
-                                WorkspacesListView(workspaces: viewModel.workspaces, viewModel: viewModel)
-                                    .navigationDestination(isPresented: $shouldNavigateToMapView) {
-                                        MapView(selectedWorkspace: selectedWorkspace)
-                                            .navigationBarBackButtonHidden(true)
-                                    }
+        ScrollView {
+            VStack(spacing: 20) {
+                ForEach(workspaces, id: \.id) { workspace in
+                    Button {
+                        viewModel.checkAndDeleteWorkspaceDB(workspaceId: "\(workspace.id)")
+                        viewModel.isLoadingQuests = true
+                        viewModel.fetchLongQuestsFor(workspace: workspace, completion: { success, errorMessage in
+                            print("Fetched long quests for workspace \(workspace.id): success = \(success), error = \(String(describing: errorMessage))")
+                            if success {
+                                let workspaceId = "\(workspace.id)"
+                                AuthSessionManager.shared.setWorkspaceId(workspaceId)
+                                // TODO: Navigate to next screen here
+                            } else {
+                                print("Error fetching long quests: \(errorMessage ?? "Unknown error")")
                             }
-                        } else {
-                            WorkspacesListView(workspaces: viewModel.workspaces, viewModel: viewModel)
-                        }
-                    case .error(let error):
-                        Text("Error: \(error)")
-                    case .idle:
-                        EmptyView()
+                        })
+                    } label: {
+                        Text(workspace.title)
+                            .font(.system(size: 17))
+                            .frame(maxWidth: .infinity, maxHeight: 40)
                     }
-                   }
-                .padding()
-
+                    .font(.custom("Lato-Bold", size: 25))
+                    .foregroundColor(Color.white)
+                    .padding()
+                    .background(Color(red: 135/255, green: 62/255, blue: 242/255))
+                    .buttonBorderShape(.roundedRectangle(radius: 10))
+                }
             }
+            .padding()
         }
-        .onAppear {
-            viewModel.enableLocationTracking()
-        }
-        .onChange(of: scenePhase) { phase in
-            switch phase {
-            case .active:
-                viewModel.enableLocationTracking()
-            case .background:
-                viewModel.disableLocationTracking()
-            default:
-                break
-            }
-        }
-        .toolbar(.hidden)
-       }
+    }
 }
 
-// WorkspacesListView - View for displaying a list of workspaces
-struct WorkspacesListView: View {
-    let workspaces: [Workspace]
-    var viewModel: WorkspacesViewModel
-    @State private var shouldNavigateToMapView = false
-    @State private var selectedWorkspace: Workspace?
-    
-    @State private var showAlert = false
-    
-    @State private var alertMessage = ""
-
+struct WorkspaceErrorView: View {
+    let errorMessage: String
     var body: some View {
-        
-        if viewModel.workspaces.count == 1 {
-            if let selectedWorkspace = viewModel.workspaces.first {
-                VStack {
-                    if !shouldNavigateToMapView {
-                        ActivityView(activityText: "Fetching workspace data...")
-                        Spacer()
-                    }
-                }
-                .onAppear {
-                    viewModel.fetchLongQuestsFor(workspaceId: "\(selectedWorkspace.id)") { success, errorMessage  in
-                        if success {
-                            let workspaceId = "\(selectedWorkspace.id)"
-                            AuthSessionManager.shared.setWorkspaceId(workspaceId)
-                            DispatchQueue.main.async {
-                                self.shouldNavigateToMapView = true
-                            }
-                        } else {
-                            DispatchQueue.main.async {
-                                alertMessage = errorMessage ?? "Something went wrong. Please pick another workspace."
-                                showAlert = true
-                                self.shouldNavigateToMapView = false
-                            }
-                        }
-                    }
-                }
-                .navigationDestination(isPresented: $shouldNavigateToMapView) {
-                    MapView(selectedWorkspace: selectedWorkspace)
-                        .navigationBarBackButtonHidden(true)
-                }
-            }
-        } else if viewModel.workspaces.count == 0 {
-            VStack {
-                Text("No workspaces available for you to work on.")
-                    .font(.custom("Lato-Bold", size: 20))
-                    .foregroundColor((Color(red: 135/255, green: 62/255, blue: 242/255)))
-                    .multilineTextAlignment(.center)
+        Text(errorMessage)
+            .font(.custom("Lato-Bold", size: 20))
+            .foregroundColor(.red)
+            .font(.caption)
+            .padding(.top, 8)
+    }
+}
 
+struct NoWorkspacesView: View {
+    var body: some View {
+        Text("No workspaces available for you to work on.")
+            .font(.custom("Lato-Bold", size: 20))
+            .foregroundColor((Color(red: 135/255, green: 62/255, blue: 242/255)))
+            .multilineTextAlignment(.center)
+    }
+}
+
+struct LoadingOverlayView: View {
+    var body: some View {
+        Color.black.opacity(0.3)
+            .ignoresSafeArea()
+        VStack {
+            Spacer()
+            ActivityView(activityText: "Loading quests...")
+                .frame(maxWidth: .infinity)
+            Spacer()
+        }
+    }
+}
+
+struct WorkspaceHeaderView: View {
+    var body: some View {
+        VStack(spacing: 0) {
+            HStack {
+                NavigationLink(destination: UserProfileView()) {
+                    Image(systemName: "person.crop.circle.fill")
+                        .resizable()
+                        .frame(width: 27, height: 27)
+                        .foregroundStyle(Color(red: 135/255, green: 62/255, blue: 242/255))
+                }
                 Spacer()
             }
-           
-        } else {
-            VStack {
-                Text("Pick the workspace you want to contribute to")
-
-                    .font(.system(size: 16, design: .rounded))
-                    .foregroundStyle(.gray)
-                
-//                ScrollView {
-//                            VStack(spacing: 20) {
-//                                ForEach(workspaces.filter({$0.type == "osw" && $0.externalAppAccess == 1}), id: \.id) { workspace in
-//                                    Button {
-//                                        viewModel.checkAndDeleteWorkspaceDB(workspaceId: "\(workspace.id)")
-//                                        viewModel.fetchLongQuestsFor(workspaceId: "\(workspace.id)", completion: { success, errorMessage in
-//                                            if success {
-//                                                self.shouldNavigateToMapView = true
-//                                                self.selectedWorkspace = workspace
-//                                                
-//                                                let workspaceId = "\(workspace.id)"
-//                                                AuthSessionManager.shared.setWorkspaceId(workspaceId)
-//                                            } else {
-//                                                DispatchQueue.main.async {
-//                                                    alertMessage = errorMessage ?? "Something went wrong."
-//                                                    
-//                                                    showAlert = true
-//                                                
-//                                                    self.shouldNavigateToMapView = false
-//                                                }
-//                                            }
-//                                        })
-//                                    }  label: {
-//                                        Text(workspace.title)
-//                                            .font(.system(size: 17))
-//                                            .frame(maxWidth: .infinity, maxHeight: 40)
-//                                    }
-//                                    .font(.custom("Lato-Bold", size: 25))
-//                                    .foregroundColor(Color.white)
-//                                    .padding()
-//                                    .background(Color(red: 135/255, green: 62/255, blue: 242/255))
-//                                    .buttonBorderShape(.roundedRectangle(radius: 10))
-//                                }
-//                            }
-//                        }
-//                .onAppear {
-//                    
-//                }
-//                .padding()
+            .padding(.top, 10)
+            .padding(.horizontal, 18)
+            HStack {
+                Spacer()
+                VStack(spacing: 30) {
+                    Image("osmlogo")
+                        .resizable()
+                        .frame(width: 100, height: 100)
+                    Text("GoInfoGame")
+                        .font(.system(size: 30, design: .rounded))
+                }
+                Spacer()
             }
-            .alert(alertMessage, isPresented: $showAlert) {
-                Button("OK", role: .cancel) { }
-            }
+            .padding(.top, 20)
         }
-
-            if shouldNavigateToMapView, let selectedWorkspace = selectedWorkspace {
-                NavigationLink(value: selectedWorkspace) {
-                    EmptyView()
-                }
-                .navigationDestination(isPresented: $shouldNavigateToMapView) {
-                    MapView(selectedWorkspace: selectedWorkspace)
-                        .navigationBarBackButtonHidden(true)
-                }
-            }
     }
 }
+
 
 struct LocationDisabledView: View {
     var body: some View {
@@ -387,10 +204,9 @@ struct LocationDisabledView: View {
     }
 }
 
-
 #Preview("Loading") {
     let vm = WorkspacesViewModel()
-    vm.state = .loading
+    vm.state = .loading(.workspaces)
     vm.isPreview = true
     return WorkspaceSelectionView(viewModel: vm)
 }
@@ -404,10 +220,15 @@ struct LocationDisabledView: View {
 
 #Preview("LOADED - ZERO WORKSPACE") {
     let vm = WorkspacesViewModel()
-    vm.state = .loaded
+    vm.state = .loaded(.workspaces)
     vm.workspaces = []
     vm.isPreview = true
     return WorkspaceSelectionView(viewModel: vm)
 }
-
-    
+#Preview("LOADED - WORKSPACE") {
+    let vm = WorkspacesViewModel()
+    vm.state = .loaded(.workspaces)
+    vm.workspaces = [Workspace(id: 1, title: "Sample Workspace", type: "osw", externalAppAccess: 1)]
+    vm.isPreview = true
+    return WorkspaceSelectionView(viewModel: vm)
+}
