@@ -70,7 +70,7 @@ struct UserProfileView: View {
             }
         }
         .onAppear {
-            useBiometricID = SessionManager.shared.isBiometricEnabled(for: APIConfiguration.shared.environment)
+            useBiometricID = SessionManager.shared.isBiometricEnabled(for: AppEnvManager.shared.current)
             viewModel.fetchUserProfile()
         }
     }
@@ -96,7 +96,7 @@ struct UserProfileView: View {
             Utilities.clearAllData()
             
             if useBiometricID == false {
-                SessionManager.shared.logout(environment: APIConfiguration.shared.environment, clearBiometricCreds: true)
+                SessionManager.shared.logout(environment: AppEnvManager.shared.current, clearBiometricCreds: true)
             }
             
             if let window = UIApplication.window() {

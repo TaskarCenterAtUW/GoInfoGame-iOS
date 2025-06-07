@@ -62,7 +62,7 @@ struct PasswordAuthenticationPopupView: View {
     }
 
     private func handleContinue() {
-        let environment = APIConfiguration.shared.environment
+        let environment = AppEnvManager.shared.current
         let username = KeychainManager.load(.username, for: environment) ?? ""
 
         viewModel.performBiometricEnrollment(

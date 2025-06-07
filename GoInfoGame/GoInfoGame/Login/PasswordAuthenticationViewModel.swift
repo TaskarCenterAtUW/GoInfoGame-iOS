@@ -14,7 +14,7 @@ class PasswordAuthenticationViewModel: ObservableObject {
     
     func performBiometricEnrollment(
         username: String,
-        environment: APIEnvironment,
+        environment: AppEnv,
         onSuccess: @escaping () -> Void,
         onFailure: @escaping (String) -> Void
     ) {

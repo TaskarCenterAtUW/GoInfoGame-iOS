@@ -35,23 +35,17 @@ class UserProfileViewModel: ObservableObject {
     }
     
     func fetchUserProfile() {
-        
-        let env = APIConfiguration.shared.environment
-        
-        guard let username = KeychainManager.load(.username, for: env) else { return }
-        
-        if let accessToken = KeychainManager.load(key: "accessToken") {
-            ApiManager.shared.performRequest(to: .fetchuserProfile(username, accessToken), setupType: .userProfile, modelType: TdeiUserProfile.self) { result in
-                switch result {
-                case .success(let userprofile):
-                    DispatchQueue.main.async {
-                        self.user = userprofile
-                        UserProfileCache.shared.cacheUserProfile(userprofile)
-                    }
-                case .failure(let error):
-                    print(error)
-                }
-            }
-        }
-    }
+                          
+          TDEIAPIManager.shared.fetchUserProfile { [weak self] result in
+              switch result {
+              case .success(let userprofile):
+                  DispatchQueue.main.async {
+                      self?.user = userprofile
+                      UserProfileCache.shared.cacheUserProfile(userprofile)
+                  }
+              case .failure(let error):
+                  print(error)
+              }
+          }
+      }
 }

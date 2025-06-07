@@ -15,7 +15,7 @@ class WorkspacesViewModel: ObservableObject {
     private var locationTracker: LocationTrackerProtocol
     
     @Published var workspaces: [Workspace] = []
-    @Published var longQuests: [LongFormModel] = []
+    @Published var longQuests: [LongFormElement] = []
     
     private let api: WorkspaceAPIProtocol
     
@@ -105,7 +105,7 @@ class WorkspacesViewModel: ObservableObject {
                             quest: LongElementQuest(
                                 questId: "\(index + 1)",
                                 questQuery: quest.questQuery,
-                                elementType: quest.elementType
+                                elementType: quest.elementType, elementTypeIcon: quest.elementTypeIcon
                             ),
                             questId: "\(index + 1)"
                         )
@@ -130,7 +130,7 @@ class WorkspacesViewModel: ObservableObject {
     }
     
     
-    func saveLongQuestsToDefaults(longQuestJson: [LongFormModel]) {
+    func saveLongQuestsToDefaults(longQuestJson: [LongFormElement]) {
         do {
            try FileStorageManager.shared.save(questModels: longQuestJson, to: "longQuestJson")
         } catch {

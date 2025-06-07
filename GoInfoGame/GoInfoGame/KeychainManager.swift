@@ -62,22 +62,22 @@ extension KeychainManager {
         case username
         case password
 
-        func namespaced(for environment: APIEnvironment) -> String {
+        func namespaced(for environment: AppEnv) -> String {
             return "\(rawValue)_\(environment.rawValue)"
         }
     }
 
-    static func save(_ key: Key, value: String, for environment: APIEnvironment) -> Bool {
+    static func save(_ key: Key, value: String, for environment: AppEnv) -> Bool {
         let namespacedKey = key.namespaced(for: environment)
         return save(key: namespacedKey, data: value)
     }
 
-    static func load(_ key: Key, for environment: APIEnvironment) -> String? {
+    static func load(_ key: Key, for environment: AppEnv) -> String? {
         let namespacedKey = key.namespaced(for: environment)
         return load(key: namespacedKey)
     }
 
-    static func delete(_ key: Key, for environment: APIEnvironment) -> Bool {
+    static func delete(_ key: Key, for environment: AppEnv) -> Bool {
         let namespacedKey = key.namespaced(for: environment)
         return delete(key: namespacedKey)
     }
