@@ -185,6 +185,10 @@
 		CFECB318461BB876B1621890 /* Pods_osmapi.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C4F37DA661B22FA87DF8282F /* Pods_osmapi.framework */; };
 		FA0F02702DF57170000CB52B /* LoadingOverlay.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA0F026F2DF57163000CB52B /* LoadingOverlay.swift */; };
 		FA0F02722DF578F0000CB52B /* ErrorAlert.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA0F02712DF578EC000CB52B /* ErrorAlert.swift */; };
+		FA0F02742DF5AE29000CB52B /* QuestSheetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA0F02732DF5AE24000CB52B /* QuestSheetView.swift */; };
+		FA0F02762DF5AEA2000CB52B /* CustomSheetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA0F02752DF5AE9B000CB52B /* CustomSheetView.swift */; };
+		FA0F02792DF5AEE4000CB52B /* MultiQuestSelectionBottomSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA0F02782DF5AEE4000CB52B /* MultiQuestSelectionBottomSheet.swift */; };
+		FA0F027D2DF5AF7A000CB52B /* Publishers.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA0F027C2DF5AF76000CB52B /* Publishers.swift */; };
 		FA18CAE22CC7CD89008247F2 /* KartaviewViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA18CAE12CC7CD89008247F2 /* KartaviewViewModel.swift */; };
 		FA18CAE52CC7D0DD008247F2 /* SequenceModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA18CAE42CC7D0DD008247F2 /* SequenceModel.swift */; };
 		FA18CAE72CC80A34008247F2 /* UploadPhotoModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA18CAE62CC80A34008247F2 /* UploadPhotoModel.swift */; };
@@ -542,6 +546,10 @@
 		F008D431593E568E75C48C84 /* Pods-GoInfoGame.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-GoInfoGame.debug.xcconfig"; path = "Target Support Files/Pods-GoInfoGame/Pods-GoInfoGame.debug.xcconfig"; sourceTree = "<group>"; };
 		FA0F026F2DF57163000CB52B /* LoadingOverlay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingOverlay.swift; sourceTree = "<group>"; };
 		FA0F02712DF578EC000CB52B /* ErrorAlert.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorAlert.swift; sourceTree = "<group>"; };
+		FA0F02732DF5AE24000CB52B /* QuestSheetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuestSheetView.swift; sourceTree = "<group>"; };
+		FA0F02752DF5AE9B000CB52B /* CustomSheetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomSheetView.swift; sourceTree = "<group>"; };
+		FA0F02782DF5AEE4000CB52B /* MultiQuestSelectionBottomSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MultiQuestSelectionBottomSheet.swift; sourceTree = "<group>"; };
+		FA0F027C2DF5AF76000CB52B /* Publishers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Publishers.swift; sourceTree = "<group>"; };
 		FA18CAE12CC7CD89008247F2 /* KartaviewViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KartaviewViewModel.swift; sourceTree = "<group>"; };
 		FA18CAE42CC7D0DD008247F2 /* SequenceModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SequenceModel.swift; sourceTree = "<group>"; };
 		FA18CAE62CC80A34008247F2 /* UploadPhotoModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadPhotoModel.swift; sourceTree = "<group>"; };
@@ -888,6 +896,9 @@
 				971575182B5FFE910044797C /* LocationManagerCoordinator.swift */,
 				FA50718D2D54E1D200CE9798 /* BingTileOverlay.swift */,
 				971575162B5FFD6F0044797C /* MapView.swift */,
+				FA0F02732DF5AE24000CB52B /* QuestSheetView.swift */,
+				FA0F02782DF5AEE4000CB52B /* MultiQuestSelectionBottomSheet.swift */,
+				FA0F02752DF5AE9B000CB52B /* CustomSheetView.swift */,
 				970D5BD22B67638400C20BE7 /* MapViewModel.swift */,
 				A495DF2C2B6A190400478E44 /* CustomMapView.swift */,
 				971902102B983EFC009B3270 /* CustomMap.swift */,
@@ -1344,6 +1355,14 @@
 			path = Profile;
 			sourceTree = "<group>";
 		};
+		FA0F027B2DF5AF6B000CB52B /* Shared */ = {
+			isa = PBXGroup;
+			children = (
+				FA0F027C2DF5AF76000CB52B /* Publishers.swift */,
+			);
+			path = Shared;
+			sourceTree = "<group>";
+		};
 		FA18CADE2CC7CD46008247F2 /* Kartaview */ = {
 			isa = PBXGroup;
 			children = (
@@ -1612,6 +1631,7 @@
 		FAD5C4F12AFCBE700040C61A /* GoInfoGame */ = {
 			isa = PBXGroup;
 			children = (
+				FA0F027B2DF5AF6B000CB52B /* Shared */,
 				FA18CADE2CC7CD46008247F2 /* Kartaview */,
 				FAFDA2092C6F589900ECEAE9 /* UserProfile */,
 				FAFDA1FB2C6D321500ECEAE9 /* Login */,
@@ -2329,6 +2349,7 @@
 				05CB71E02B0FAFD200DED821 /* GenericUIViewControllerRepresentable.swift in Sources */,
 				FAFFC9812DE0FECC00072B11 /* TDEIAPIProtocol.swift in Sources */,
 				971F9FE42B84CDBF005397CC /* CrossingType.swift in Sources */,
+				FA0F02762DF5AEA2000CB52B /* CustomSheetView.swift in Sources */,
 				97AC1C062B6A45B0004F0BF4 /* SideWalkValidation.swift in Sources */,
 				18EC425C2B84987200DE05D7 /* TactilePavingCrosswalkForm.swift in Sources */,
 				05DBBB622B164D9A00B6F110 /* RealOPElement.swift in Sources */,
@@ -2384,6 +2405,8 @@
 				FA18CAE52CC7D0DD008247F2 /* SequenceModel.swift in Sources */,
 				971F9FDF2B847349005397CC /* CrossingIslandForm.swift in Sources */,
 				FAE481A22DD5EF3800149A48 /* PasswordAuthenticationPopupView.swift in Sources */,
+				FA0F02792DF5AEE4000CB52B /* MultiQuestSelectionBottomSheet.swift in Sources */,
+				FA0F02742DF5AE29000CB52B /* QuestSheetView.swift in Sources */,
 				05DBBB5F2B1263FF00B6F110 /* DatabaseConnector.swift in Sources */,
 				FAF44FC12B30850A004FE664 /* OnboardingView3.swift in Sources */,
 				97439F7A2B87447400DA43E1 /* CrossingKerbHeight.swift in Sources */,
@@ -2417,6 +2440,7 @@
 				97AC1C232B726ADC004F0BF4 /* TactilePavingKerbForm.swift in Sources */,
 				97412A942BBADAED00DF7983 /* StairFlightsForm.swift in Sources */,
 				FAF44FBF2B3084FB004FE664 /* OnboardingView2.swift in Sources */,
+				FA0F027D2DF5AF7A000CB52B /* Publishers.swift in Sources */,
 				971342732BBD242400174EBF /* WorkspaceSelectionView.swift in Sources */,
 				97AC1C132B70EF0A004F0BF4 /* Surfaces.swift in Sources */,
 				A4E711B02B59011000C9DE08 /* StepsInclineForm.swift in Sources */,
