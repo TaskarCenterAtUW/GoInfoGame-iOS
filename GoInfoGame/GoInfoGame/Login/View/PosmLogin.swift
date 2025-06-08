@@ -131,13 +131,7 @@ struct PosmLoginView: View {
                     NavigationCoordinator(route: $viewModel.route)
                 }
                 if case let .loading(message) = viewModel.state {
-                    Color.black.opacity(0.2)
-                        .edgesIgnoringSafeArea(.all)
-                    VStack {
-                        ActivityView(activityText: message.loadingMessage)
-                    }
-                    .frame(maxWidth: .infinity, maxHeight: .infinity)
-                    .background(Color.clear)
+                    LoadingOverlayView(activityText: message.loadingMessage)
                 }
 
             }
