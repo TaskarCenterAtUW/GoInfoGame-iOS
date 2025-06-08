@@ -11,6 +11,7 @@ import XCTest
 final class POSMLoginViewModelTests: XCTestCase {
     
     var viewModel: PosmLoginViewModel!
+    let mockEnv: AppEnv = .staging
     
     override func setUpWithError() throws {
         viewModel = PosmLoginViewModel()
@@ -27,7 +28,7 @@ final class POSMLoginViewModelTests: XCTestCase {
     }
     
     func testPerformLoginWithEmptyCredentials() throws {
-        viewModel.performLogin()
+        viewModel.performLogin(with: mockEnv)
         XCTAssertEqual(viewModel.state, .error("Username and Password cannot be empty."))
     }
     
@@ -37,10 +38,10 @@ final class POSMLoginViewModelTests: XCTestCase {
         
         let expectation = self.expectation(description: "Login Success")
         
-        viewModel.performLogin()
+        viewModel.performLogin(with: mockEnv)
         
         DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-            XCTAssertEqual(self.viewModel.state, .loaded)
+            XCTAssertEqual(self.viewModel.state, .loaded(.login))
             expectation.fulfill()
         }
         
