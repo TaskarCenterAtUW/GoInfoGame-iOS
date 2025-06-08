@@ -24,7 +24,7 @@ final class WorkspaceAPIManager: WorkspaceAPIProtocol {
         APIRequestPerformer.perform(request: request, config: config, adapters: [authAdapter], completion: completion)
     }
     
-    func fetchLongQuestsFor(workspaceId: String, completion: @escaping (Result<[LongFormElement], APIError>) -> Void) {
+    func fetchLongQuestsFor(workspaceId: String, completion: @escaping (Result<LongFormResponse, APIError>) -> Void) {
         
         let request = APIRequest(
             path: "/workspaces/\(workspaceId)/quests/long",

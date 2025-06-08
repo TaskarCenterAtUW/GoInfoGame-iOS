@@ -183,6 +183,8 @@
 		C77EEBCF2DE59D3200494CB4 /* UndoMerge.swift in Sources */ = {isa = PBXBuildFile; fileRef = C77EEBCE2DE59D3200494CB4 /* UndoMerge.swift */; };
 		C7ED070F2D70E2EC001FFFE2 /* TokenRefresher.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7ED070E2D70E2EC001FFFE2 /* TokenRefresher.swift */; };
 		CFECB318461BB876B1621890 /* Pods_osmapi.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C4F37DA661B22FA87DF8282F /* Pods_osmapi.framework */; };
+		FA0F02702DF57170000CB52B /* LoadingOverlay.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA0F026F2DF57163000CB52B /* LoadingOverlay.swift */; };
+		FA0F02722DF578F0000CB52B /* ErrorAlert.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA0F02712DF578EC000CB52B /* ErrorAlert.swift */; };
 		FA18CAE22CC7CD89008247F2 /* KartaviewViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA18CAE12CC7CD89008247F2 /* KartaviewViewModel.swift */; };
 		FA18CAE52CC7D0DD008247F2 /* SequenceModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA18CAE42CC7D0DD008247F2 /* SequenceModel.swift */; };
 		FA18CAE72CC80A34008247F2 /* UploadPhotoModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA18CAE62CC80A34008247F2 /* UploadPhotoModel.swift */; };
@@ -538,6 +540,8 @@
 		C96303080D26026265099E0E /* Pods-GoInfoGame.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-GoInfoGame.release.xcconfig"; path = "Target Support Files/Pods-GoInfoGame/Pods-GoInfoGame.release.xcconfig"; sourceTree = "<group>"; };
 		D76D8E22AC705A38AFEA78B1 /* Pods-GoInfoGame-GoInfoGameUITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-GoInfoGame-GoInfoGameUITests.debug.xcconfig"; path = "Target Support Files/Pods-GoInfoGame-GoInfoGameUITests/Pods-GoInfoGame-GoInfoGameUITests.debug.xcconfig"; sourceTree = "<group>"; };
 		F008D431593E568E75C48C84 /* Pods-GoInfoGame.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-GoInfoGame.debug.xcconfig"; path = "Target Support Files/Pods-GoInfoGame/Pods-GoInfoGame.debug.xcconfig"; sourceTree = "<group>"; };
+		FA0F026F2DF57163000CB52B /* LoadingOverlay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingOverlay.swift; sourceTree = "<group>"; };
+		FA0F02712DF578EC000CB52B /* ErrorAlert.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorAlert.swift; sourceTree = "<group>"; };
 		FA18CAE12CC7CD89008247F2 /* KartaviewViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KartaviewViewModel.swift; sourceTree = "<group>"; };
 		FA18CAE42CC7D0DD008247F2 /* SequenceModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SequenceModel.swift; sourceTree = "<group>"; };
 		FA18CAE62CC80A34008247F2 /* UploadPhotoModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadPhotoModel.swift; sourceTree = "<group>"; };
@@ -933,7 +937,9 @@
 				973FC04B2B5A5F5F00878269 /* RadioItem.swift */,
 				97AC1C092B6B7F10004F0BF4 /* CustomVerticalButtonsList.swift */,
 				97AC1C0B2B6B843C004F0BF4 /* CustomAlert.swift */,
+				FA0F02712DF578EC000CB52B /* ErrorAlert.swift */,
 				FABF3CF72B822F120080EAC9 /* CustomSureAlert.swift */,
+				FA0F026F2DF57163000CB52B /* LoadingOverlay.swift */,
 			);
 			path = CustomComponents;
 			sourceTree = "<group>";
@@ -2331,6 +2337,7 @@
 				FAE258522D3A780F00D2BB12 /* FloatingActionButtonStack.swift in Sources */,
 				FA50718E2D54E1D200CE9798 /* BingTileOverlay.swift in Sources */,
 				973FC0352B592C0F00878269 /* StairNumberForm.swift in Sources */,
+				FA0F02722DF578F0000CB52B /* ErrorAlert.swift in Sources */,
 				FA8C74C22C4E89C800D28220 /* LongForm.swift in Sources */,
 				FA93879C2DE4F14200F7A460 /* ViewModelState.swift in Sources */,
 				FA9F38222DC93F5300D7AABF /* UndoSidebarView.swift in Sources */,
@@ -2358,6 +2365,7 @@
 				A4E711AE2B59004700C9DE08 /* StepsIncline.swift in Sources */,
 				FA18CAE22CC7CD89008247F2 /* KartaviewViewModel.swift in Sources */,
 				973FC0142B4D353800878269 /* SideWalkWidthForm.swift in Sources */,
+				FA0F02702DF57170000CB52B /* LoadingOverlay.swift in Sources */,
 				971575172B5FFD6F0044797C /* MapView.swift in Sources */,
 				FAFDA2102C6F592700ECEAE9 /* UserProfileViewModel.swift in Sources */,
 				97412A9B2BBBF3B400DF7983 /* KerbHeightForm.swift in Sources */,

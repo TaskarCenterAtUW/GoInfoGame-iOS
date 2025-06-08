@@ -8,5 +8,5 @@
 
 protocol WorkspaceAPIProtocol {
     func fetchWorkspaces(completion: @escaping (Result<[Workspace], APIError>) -> Void)
-    func fetchLongQuestsFor(workspaceId: String, completion: @escaping (Result<[LongFormElement], APIError>) -> Void)
+    func fetchLongQuestsFor(workspaceId: String, completion: @escaping (Result<LongFormResponse, APIError>) -> Void)
 }
