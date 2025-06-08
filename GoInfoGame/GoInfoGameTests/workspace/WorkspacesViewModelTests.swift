@@ -93,7 +93,7 @@ final class WorkspacesViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.state, .loading(.workspaces), "Expected state to be .loading when fetching workspaces")
     }
     
-    func test_stateSetToLoaded_AfterSuccessfulFetch() throws {
+    func test_stateSetToLoaded_AfterSuccessfulFetchOfWorkspaces() throws {
         
         // Arrange
         let sampleWorkspace = Workspace(
@@ -118,7 +118,7 @@ final class WorkspacesViewModelTests: XCTestCase {
         wait(for: [expectation], timeout: 1.0)
     }
     
-    func test_stateSetToError_AfterFailedFetch() throws {
+    func test_stateSetToError_AfterFailedToFetchWorkspaces() throws {
         // Arrange
         mockAPI.shouldSucceed = false
         
@@ -133,9 +133,13 @@ final class WorkspacesViewModelTests: XCTestCase {
         
         wait(for: [expectation], timeout: 1.0)
     }
-
+    
+    func test_FetchQuests_setIsLoadingQuestsToTrue() throws {
         
+        let mockWorkspace = Workspace(id: 1, title: "Test Workspace", externalAppAccess: 1)
+        viewModel.fetchLongQuestsFor(workspace: mockWorkspace)
         
-
+        XCTAssertTrue(viewModel.isLoadingQuests, "Expected isLoadingQuests to be true when fetching quests")
+    }
 }
     
