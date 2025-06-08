@@ -38,6 +38,11 @@ struct LongFormResponse: Decodable {
         self.elements = try container.decode([LongFormElement].self, forKey: .elements)
         self.version = try container.decodeIfPresent(String.self, forKey: .version)
     }
+    
+    init(version: String?, elements: [LongFormElement]) {
+        self.version = version
+        self.elements = elements
+    }
 
     enum CodingKeys: String, CodingKey {
         case elements
