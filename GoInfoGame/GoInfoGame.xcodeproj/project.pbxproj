@@ -189,6 +189,11 @@
 		FA0F02762DF5AEA2000CB52B /* CustomSheetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA0F02752DF5AE9B000CB52B /* CustomSheetView.swift */; };
 		FA0F02792DF5AEE4000CB52B /* MultiQuestSelectionBottomSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA0F02782DF5AEE4000CB52B /* MultiQuestSelectionBottomSheet.swift */; };
 		FA0F027D2DF5AF7A000CB52B /* Publishers.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA0F027C2DF5AF76000CB52B /* Publishers.swift */; };
+		FA0F02842DF5B4CA000CB52B /* DisplayClusterAnnotation.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA0F02832DF5B4CA000CB52B /* DisplayClusterAnnotation.swift */; };
+		FA0F02872DF5B50C000CB52B /* ClusterWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA0F02862DF5B50C000CB52B /* ClusterWrapper.swift */; };
+		FA0F02892DF5B588000CB52B /* CustomTouchGestureRecognizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA0F02882DF5B588000CB52B /* CustomTouchGestureRecognizer.swift */; };
+		FA0F028B2DF5B5F5000CB52B /* CustomAnnotationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA0F028A2DF5B5F5000CB52B /* CustomAnnotationView.swift */; };
+		FA0F028F2DF5B62E000CB52B /* MapUserTrackingMode.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA0F028E2DF5B628000CB52B /* MapUserTrackingMode.swift */; };
 		FA18CAE22CC7CD89008247F2 /* KartaviewViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA18CAE12CC7CD89008247F2 /* KartaviewViewModel.swift */; };
 		FA18CAE52CC7D0DD008247F2 /* SequenceModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA18CAE42CC7D0DD008247F2 /* SequenceModel.swift */; };
 		FA18CAE72CC80A34008247F2 /* UploadPhotoModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA18CAE62CC80A34008247F2 /* UploadPhotoModel.swift */; };
@@ -550,6 +555,11 @@
 		FA0F02752DF5AE9B000CB52B /* CustomSheetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomSheetView.swift; sourceTree = "<group>"; };
 		FA0F02782DF5AEE4000CB52B /* MultiQuestSelectionBottomSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MultiQuestSelectionBottomSheet.swift; sourceTree = "<group>"; };
 		FA0F027C2DF5AF76000CB52B /* Publishers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Publishers.swift; sourceTree = "<group>"; };
+		FA0F02832DF5B4CA000CB52B /* DisplayClusterAnnotation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DisplayClusterAnnotation.swift; sourceTree = "<group>"; };
+		FA0F02862DF5B50C000CB52B /* ClusterWrapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClusterWrapper.swift; sourceTree = "<group>"; };
+		FA0F02882DF5B588000CB52B /* CustomTouchGestureRecognizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomTouchGestureRecognizer.swift; sourceTree = "<group>"; };
+		FA0F028A2DF5B5F5000CB52B /* CustomAnnotationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomAnnotationView.swift; sourceTree = "<group>"; };
+		FA0F028E2DF5B628000CB52B /* MapUserTrackingMode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapUserTrackingMode.swift; sourceTree = "<group>"; };
 		FA18CAE12CC7CD89008247F2 /* KartaviewViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KartaviewViewModel.swift; sourceTree = "<group>"; };
 		FA18CAE42CC7D0DD008247F2 /* SequenceModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SequenceModel.swift; sourceTree = "<group>"; };
 		FA18CAE62CC80A34008247F2 /* UploadPhotoModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadPhotoModel.swift; sourceTree = "<group>"; };
@@ -895,13 +905,10 @@
 			children = (
 				971575182B5FFE910044797C /* LocationManagerCoordinator.swift */,
 				FA50718D2D54E1D200CE9798 /* BingTileOverlay.swift */,
-				971575162B5FFD6F0044797C /* MapView.swift */,
 				FA0F02732DF5AE24000CB52B /* QuestSheetView.swift */,
 				FA0F02782DF5AEE4000CB52B /* MultiQuestSelectionBottomSheet.swift */,
 				FA0F02752DF5AE9B000CB52B /* CustomSheetView.swift */,
-				970D5BD22B67638400C20BE7 /* MapViewModel.swift */,
 				A495DF2C2B6A190400478E44 /* CustomMapView.swift */,
-				971902102B983EFC009B3270 /* CustomMap.swift */,
 				FA9F381B2DB2FF3E00D7AABF /* ShadowOverlayRenderer.swift */,
 				FA50718B2D54E08800CE9798 /* AddFeatureView.swift */,
 				FA50718F2D5B31CC00CE9798 /* CreateNoteView.swift */,
@@ -1363,6 +1370,53 @@
 			path = Shared;
 			sourceTree = "<group>";
 		};
+		FA0F027E2DF5B28B000CB52B /* Map */ = {
+			isa = PBXGroup;
+			children = (
+				FA0F02852DF5B4F0000CB52B /* Helpers */,
+				FA0F02822DF5B418000CB52B /* Annotations */,
+				FA0F02812DF5B3DA000CB52B /* ViewModel */,
+				FA0F027F2DF5B299000CB52B /* View */,
+			);
+			path = Map;
+			sourceTree = "<group>";
+		};
+		FA0F027F2DF5B299000CB52B /* View */ = {
+			isa = PBXGroup;
+			children = (
+				971902102B983EFC009B3270 /* CustomMap.swift */,
+				971575162B5FFD6F0044797C /* MapView.swift */,
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
+		FA0F02812DF5B3DA000CB52B /* ViewModel */ = {
+			isa = PBXGroup;
+			children = (
+				970D5BD22B67638400C20BE7 /* MapViewModel.swift */,
+			);
+			path = ViewModel;
+			sourceTree = "<group>";
+		};
+		FA0F02822DF5B418000CB52B /* Annotations */ = {
+			isa = PBXGroup;
+			children = (
+				FA0F028A2DF5B5F5000CB52B /* CustomAnnotationView.swift */,
+				FA0F02832DF5B4CA000CB52B /* DisplayClusterAnnotation.swift */,
+			);
+			path = Annotations;
+			sourceTree = "<group>";
+		};
+		FA0F02852DF5B4F0000CB52B /* Helpers */ = {
+			isa = PBXGroup;
+			children = (
+				FA0F028E2DF5B628000CB52B /* MapUserTrackingMode.swift */,
+				FA0F02882DF5B588000CB52B /* CustomTouchGestureRecognizer.swift */,
+				FA0F02862DF5B50C000CB52B /* ClusterWrapper.swift */,
+			);
+			path = Helpers;
+			sourceTree = "<group>";
+		};
 		FA18CADE2CC7CD46008247F2 /* Kartaview */ = {
 			isa = PBXGroup;
 			children = (
@@ -1631,6 +1685,7 @@
 		FAD5C4F12AFCBE700040C61A /* GoInfoGame */ = {
 			isa = PBXGroup;
 			children = (
+				FA0F027E2DF5B28B000CB52B /* Map */,
 				FA0F027B2DF5AF6B000CB52B /* Shared */,
 				FA18CADE2CC7CD46008247F2 /* Kartaview */,
 				FAFDA2092C6F589900ECEAE9 /* UserProfile */,
@@ -2342,6 +2397,7 @@
 				FA9F381C2DB2FF4B00D7AABF /* ShadowOverlayRenderer.swift in Sources */,
 				059D47332B2C83BA000987FA /* Highway.swift in Sources */,
 				973FC0012B46CD5D00878269 /* QuestsListUIView.swift in Sources */,
+				FA0F028F2DF5B62E000CB52B /* MapUserTrackingMode.swift in Sources */,
 				973FC01F2B50DE7E00878269 /* ImageGridItemView.swift in Sources */,
 				97AC1C212B726AC9004F0BF4 /* TactilePavingKerb.swift in Sources */,
 				FA633CB42DD4843B00324404 /* BiometricAuthManager.swift in Sources */,
@@ -2353,6 +2409,7 @@
 				97AC1C062B6A45B0004F0BF4 /* SideWalkValidation.swift in Sources */,
 				18EC425C2B84987200DE05D7 /* TactilePavingCrosswalkForm.swift in Sources */,
 				05DBBB622B164D9A00B6F110 /* RealOPElement.swift in Sources */,
+				FA0F028B2DF5B5F5000CB52B /* CustomAnnotationView.swift in Sources */,
 				973FC0422B59467A00878269 /* BusStopLit.swift in Sources */,
 				97AC1C0A2B6B7F10004F0BF4 /* CustomVerticalButtonsList.swift in Sources */,
 				FAE258522D3A780F00D2BB12 /* FloatingActionButtonStack.swift in Sources */,
@@ -2401,6 +2458,7 @@
 				FAFDA2062C6E8D7A00ECEAE9 /* APIEndPoint.swift in Sources */,
 				FA5853C12B21F17F00301CDA /* OnboardingView.swift in Sources */,
 				FAFFC97F2DE0FDB100072B11 /* WorkspaceAPIProtocol.swift in Sources */,
+				FA0F02842DF5B4CA000CB52B /* DisplayClusterAnnotation.swift in Sources */,
 				A4B83AF32B5F9385006684CA /* StoredWay.swift in Sources */,
 				FA18CAE52CC7D0DD008247F2 /* SequenceModel.swift in Sources */,
 				971F9FDF2B847349005397CC /* CrossingIslandForm.swift in Sources */,
@@ -2418,6 +2476,7 @@
 				FAA01DB52DDDCC4100E4255A /* WorksapceServerEnvironment.swift in Sources */,
 				971342792BBD691500174EBF /* MapViewControllerView.swift in Sources */,
 				FAFFC9792DE07D0B00072B11 /* APIRequestAdapter.swift in Sources */,
+				FA0F02872DF5B50C000CB52B /* ClusterWrapper.swift in Sources */,
 				FAA01DCB2DDE15EC00E4255A /* APIRequestPerformer.swift in Sources */,
 				FA1992ED2BB1A78C003B4719 /* KeychainManager.swift in Sources */,
 				973FC04C2B5A5F5F00878269 /* RadioItem.swift in Sources */,
@@ -2441,6 +2500,7 @@
 				97412A942BBADAED00DF7983 /* StairFlightsForm.swift in Sources */,
 				FAF44FBF2B3084FB004FE664 /* OnboardingView2.swift in Sources */,
 				FA0F027D2DF5AF7A000CB52B /* Publishers.swift in Sources */,
+				FA0F02892DF5B588000CB52B /* CustomTouchGestureRecognizer.swift in Sources */,
 				971342732BBD242400174EBF /* WorkspaceSelectionView.swift in Sources */,
 				97AC1C132B70EF0A004F0BF4 /* Surfaces.swift in Sources */,
 				A4E711B02B59011000C9DE08 /* StepsInclineForm.swift in Sources */,

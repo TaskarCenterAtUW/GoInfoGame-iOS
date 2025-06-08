@@ -137,17 +137,17 @@ struct CustomMap: UIViewRepresentable {
         Coordinator(self, shadowOverlay: shadowOverlay)
     }
     
-    func generateDummyAnnotations(center: CLLocationCoordinate2D, count: Int = 15000, spread: Double = 0.1) -> [TestAnnotation] {
-        return (0..<count).map { _ in
-            let latOffset = Double.random(in: -spread...spread)
-            let lonOffset = Double.random(in: -spread...spread)
-            let coordinate = CLLocationCoordinate2D(
-                latitude: center.latitude + latOffset,
-                longitude: center.longitude + lonOffset
-            )
-            return TestAnnotation(coordinate: coordinate)
-        }
-    }
+//    func generateDummyAnnotations(center: CLLocationCoordinate2D, count: Int = 15000, spread: Double = 0.1) -> [TestAnnotation] {
+//        return (0..<count).map { _ in
+//            let latOffset = Double.random(in: -spread...spread)
+//            let lonOffset = Double.random(in: -spread...spread)
+//            let coordinate = CLLocationCoordinate2D(
+//                latitude: center.latitude + latOffset,
+//                longitude: center.longitude + lonOffset
+//            )
+//            return TestAnnotation(coordinate: coordinate)
+//        }
+//    }
 
 
     
@@ -698,205 +698,11 @@ struct CustomMap: UIViewRepresentable {
     }
 }
 
-// Extension to convert MapUserTrackingMode to MKUserTrackingMode
-extension MapUserTrackingMode {
-    var mkUserTrackingMode: MKUserTrackingMode {
-        switch self {
-        case .none:
-            return .none
-        case .follow:
-            return .follow
-        case .followWithHeading:
-            return .followWithHeading
-        @unknown default:
-            fatalError()
-        }
-    }
-}
-
-
-class CustomAnnotationView: MKAnnotationView {
-    static let reuseIdentifier = "CustomAnnotationView"
-    
-    private var checkmarkImageView: UIImageView?
-
-    override func prepareForReuse() {
-        super.prepareForReuse()
-        removeCheckmark()
-    }
-
-    // Show or remove the checkmark based on selection
-    func updateSelectionState(isSelected: Bool) {
-        if isSelected {
-            addCheckmark()
-        } else {
-            removeCheckmark()
-        }
-    }
-
-    private func addCheckmark() {
-        if checkmarkImageView == nil {
-            let checkmarkImage = UIImage(systemName: "checkmark.circle.fill")?.withTintColor(.purple, renderingMode: .alwaysOriginal)
-            let imageView = UIImageView(image: checkmarkImage)
-            imageView.backgroundColor = .white
-            imageView.layer.cornerRadius = (checkmarkImage?.size.width ?? 0.0) / 2.0
-            imageView.translatesAutoresizingMaskIntoConstraints = false
-            addSubview(imageView)
-
-            NSLayoutConstraint.activate([
-                imageView.topAnchor.constraint(equalTo: topAnchor, constant:0),
-                imageView.centerXAnchor.constraint(equalTo: centerXAnchor, constant: 10),
-                imageView.widthAnchor.constraint(equalToConstant: 24),
-                imageView.heightAnchor.constraint(equalToConstant: 24)
-            ])
-
-            checkmarkImageView = imageView
-        }
-    }
-
-    private func removeCheckmark() {
-        checkmarkImageView?.removeFromSuperview()
-        checkmarkImageView = nil
-    }
-}
-
-class CustomTouchGestureRecognizer: UIGestureRecognizer {
-    weak var annotation: DisplayUnitAnnotation?
-
-    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent) {
-        state = .began
-        if let view = view as? CustomAnnotationView, let annotation = view.annotation as? DisplayUnitAnnotation {
-            self.annotation = annotation
-        }
-    }
-
-    override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent) {
-        state = .ended
-    }
-
-    override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent) {
-        state = .cancelled
-    }
-}
-
-
-import ClusterMap
-
-
-final class ClusterAnnotation: NSObject, MKAnnotation {
-    let coordinate: CLLocationCoordinate2D
-    let count: Int
-
-    init(coordinate: CLLocationCoordinate2D, count: Int) {
-        self.coordinate = coordinate
-        self.count = count
-    }
-}
-
-final class TestAnnotation: NSObject, MKAnnotation, Identifiable, CoordinateIdentifiable {
-    let id: UUID = UUID()
-    var coordinate: CLLocationCoordinate2D
-    let title: String?
-    let subtitle: String?
-
-    init(coordinate: CLLocationCoordinate2D, title: String? = nil, subtitle: String? = nil) {
-        self.coordinate = coordinate
-        self.title = title
-        self.subtitle = subtitle
-    }
-}
-
-
-final class ClusterWrapper {
-    private var clusterManager: ClusterManager<DisplayUnitAnnotation>?
-
-    func updateClusters(mapView: MKMapView, items: [DisplayUnitAnnotation]) {
-        guard mapView.window != nil else { return }
-
-        let safeItems = items.filter {
-            CLLocationCoordinate2DIsValid($0.coordinate) &&
-            $0.coordinate.latitude.isFinite &&
-            $0.coordinate.longitude.isFinite
-        }
-
-        let mapSize = mapView.bounds.size
-        let region = mapView.region
-
-        guard mapSize.width > 0, mapSize.height > 0,
-              region.center.latitude.isFinite, region.center.longitude.isFinite else {
-            print("❌ Invalid map region or size — skipping clustering")
-            return
-        }
-
-
-        // 🚨 Important: Cancel previous clusters and recreate for fresh reload
-        Task.detached(priority: .background) {
-            let clusterManager = ClusterManager<DisplayUnitAnnotation>(
-                configuration: .init(
-                    cellSizeForZoomLevel: { _ in CGSize(width: 64, height: 64) }
-                )
-            )
-
-            await clusterManager.add(safeItems)
-            
-            guard mapSize.width > 0, mapSize.height > 0,
-                  region.center.latitude.isFinite, region.center.longitude.isFinite else {
-                print("❌ Skipping reload due to invalid map size or region")
-                return
-            }
-
-            do {
-                let diff = await clusterManager.reload(
-                    mapViewSize: mapSize,
-                    coordinateRegion: region
-                )
-
-                await MainActor.run {
-                    // Clean old annotations
-                    mapView.removeAnnotations(mapView.annotations)
-
-                    for insertion in diff.insertions {
-                        switch insertion {
-                        case .annotation(let ann):
-                            mapView.addAnnotation(ann)
-
-                        case .cluster(let cluster):
-                            if cluster.coordinate.latitude.isFinite,
-                               cluster.coordinate.longitude.isFinite {
-                                let clusterAnn = DisplayClusterAnnotation(
-                                    coordinate: cluster.coordinate,
-                                    count: cluster.memberAnnotations.count
-                                )
-                                mapView.addAnnotation(clusterAnn)
-                            } else {
-                                print("⚠️ Skipped invalid cluster coordinate")
-                            }
-                        }
-                    }
-
-                }
-            } catch {
-                print("❌ ClusterMap reload failed: \(error)")
-            }
-
-            // Keep reference alive
-            self.clusterManager = clusterManager
-        }
-    }
-}
 
 
 
-final class DisplayClusterAnnotation: NSObject, MKAnnotation {
-    let coordinate: CLLocationCoordinate2D
-    let count: Int
 
-    init(coordinate: CLLocationCoordinate2D, count: Int) {
-        self.coordinate = coordinate
-        self.count = count
-    }
 
-    var title: String? {
-        return "\(count)"
-    }
-}
+
+
+
