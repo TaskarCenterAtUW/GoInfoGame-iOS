@@ -620,51 +620,27 @@ struct CustomMap: UIViewRepresentable {
     
     // Helper method to manage annotations
     private func manageAnnotations(_ mapView: MKMapView, context: Context) {
-        
-        let existingCoordinates = mapView.annotations.compactMap {
-             ($0 as? DisplayUnitAnnotation)?.coordinate
-         }
-        
-         // Check for modals or settings before changing map
-         if isPresented  {
-             return
-         }
+        if isPresented { return }
 
-         // ✅ Only if no annotations and safe state
-//        if existingCoordinates.count == 0 {
-//             mapView.setCenter(userLocation, animated: true)
-//         }
+        let newAnnotations = Set(
+            items
+                .filter { !$0.isHidden && CLLocationCoordinate2DIsValid($0.annotation.coordinate) }
+                .map { $0.annotation }
+        )
 
-        context.coordinator.isRegionSet = true
-        
-        
-        let visibleAnnotations = items
-               .filter { !$0.isHidden }
-               .map { $0.annotation }
-        
-        if (existingCoordinates.isEmpty) {
-           // print("Adding annotations completely")
-            
-//            for (index, annotation) in annotations.enumerated() {
-//                annotation.coordinate = adjustCoordinateForOverlap(annotation.coordinate, with: index)
-//            }
-            mapView.addAnnotations(visibleAnnotations)
-        }
-        
         let currentAnnotations = Set(mapView.annotations.compactMap { $0 as? DisplayUnitAnnotation })
-        
-        let currentVisibleAnnotations = items
-               .filter { !$0.isHidden }
-               .map { $0.annotation }
-        
-        let newAnnotations = Set(currentVisibleAnnotations)
-        
-        let annotationsToRemove = currentAnnotations.subtracting(newAnnotations)
-        let annotationsToAdd = newAnnotations.subtracting(currentAnnotations)
-        
-        mapView.removeAnnotations(Array(annotationsToRemove))
-        mapView.addAnnotations(Array(annotationsToAdd))
+
+        let toAdd = newAnnotations.subtracting(currentAnnotations)
+        let toRemove = currentAnnotations.subtracting(newAnnotations)
+
+        if !toRemove.isEmpty {
+            mapView.removeAnnotations(Array(toRemove))
+        }
+        if !toAdd.isEmpty {
+            mapView.addAnnotations(Array(toAdd))
+        }
     }
+
     
     func adjustCoordinateForOverlap(_ coordinate: CLLocationCoordinate2D, with index: Int) -> CLLocationCoordinate2D {
              let offset = 0.00002 * Double(index)
