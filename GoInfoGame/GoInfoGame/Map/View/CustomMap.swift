@@ -12,6 +12,11 @@ import osmparser
 
 import ClusterMap
 
+enum ClusterMode {
+    case plain
+    case clusterMap
+}
+
 
 // Custom Map for managing map interactions between SwiftUI and UIKit components
 struct CustomMap: UIViewRepresentable {
@@ -43,6 +48,8 @@ struct CustomMap: UIViewRepresentable {
     @Binding var annotationCoordinate: CLLocationCoordinate2D?
     
     var shadowOverlay: ShadowOverlay
+    
+    var clusterMode: ClusterMode = .plain
         
     // Creates and configures the UIView
     func makeUIView(context: Context) -> MKMapView {
@@ -90,7 +97,19 @@ struct CustomMap: UIViewRepresentable {
             .map { $0.annotation }
 
         print("Total annotations passed to cluster manager: \(visibleAnnotations.count)")
-        context.coordinator.clusterWrapper.updateClusters(mapView: mapView, items: visibleAnnotations)
+        
+        switch clusterMode {
+        case .plain:
+            manageAnnotations(mapView, context: context)
+
+        case .clusterMap:
+            let visibleAnnotations = items
+                .filter { !$0.isHidden && CLLocationCoordinate2DIsValid($0.annotation.coordinate) }
+                .map { $0.annotation }
+
+            context.coordinator.clusterWrapper.updateClusters(mapView: mapView, items: visibleAnnotations)
+        }
+
 
        // manageAnnotations(mapView, context: context)
         
@@ -266,57 +285,70 @@ struct CustomMap: UIViewRepresentable {
         func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
             self.mapView = mapView
 
-            // 🔹 Skip user location
             if annotation is MKUserLocation {
                 return nil
             }
 
-            // 📦 Handle clusters
-            if let clusterAnnotation = annotation as? DisplayClusterAnnotation {
-                let identifier = "displayCluster"
-                let view = mapView.dequeueReusableAnnotationView(withIdentifier: identifier) as? MKMarkerAnnotationView
-                    ?? MKMarkerAnnotationView(annotation: annotation, reuseIdentifier: identifier)
+            switch parent.clusterMode {
+            case .plain:
+                if let clusterAnnotation = annotation as? MKClusterAnnotation {
+                    let identifier = "cluster"
+                    let clusterView = mapView.dequeueReusableAnnotationView(withIdentifier: identifier) as? MKMarkerAnnotationView
+                        ?? MKMarkerAnnotationView(annotation: annotation, reuseIdentifier: identifier)
+                    clusterView.markerTintColor = UIColor(red: 135/255, green: 62/255, blue: 242/255, alpha: 1.0)
+                    clusterView.glyphText = "\(clusterAnnotation.memberAnnotations.count)"
+                    
+                    clusterView.canShowCallout = false
+                    clusterView.detailCalloutAccessoryView = nil
+                    (clusterAnnotation as NSObject).setValue(nil, forKey: "title")
+                    (clusterAnnotation as NSObject).setValue(nil, forKey: "subtitle")
+                    
+                    return clusterView
+                }
 
-                view.markerTintColor = UIColor(red: 135/255, green: 62/255, blue: 242/255, alpha: 1.0)
-                view.glyphText = "\(clusterAnnotation.count)"
-                view.annotation = clusterAnnotation
-                return view
+            case .clusterMap:
+                if let clusterAnnotation = annotation as? DisplayClusterAnnotation {
+                    let identifier = "displayCluster"
+                    let view = mapView.dequeueReusableAnnotationView(withIdentifier: identifier) as? MKMarkerAnnotationView
+                        ?? MKMarkerAnnotationView(annotation: annotation, reuseIdentifier: identifier)
+                    view.markerTintColor = UIColor(red: 135/255, green: 62/255, blue: 242/255, alpha: 1.0)
+                    view.glyphText = "\(clusterAnnotation.count)"
+                    view.canShowCallout = false
+                    view.annotation = clusterAnnotation
+                    return view
+                }
             }
 
-            // 🧷 Handle individual DisplayUnitAnnotations
+            // 🧷 Handle DisplayUnitAnnotation (common to both)
             guard let displayUnitAnnotation = annotation as? DisplayUnitAnnotation else {
                 return nil
             }
 
             let annotationView: CustomAnnotationView
-            if let reused = mapView.dequeueReusableAnnotationView(withIdentifier: CustomAnnotationView.reuseIdentifier) as? CustomAnnotationView {
-                annotationView = reused
+            if let dequeuedView = mapView.dequeueReusableAnnotationView(withIdentifier: CustomAnnotationView.reuseIdentifier) as? CustomAnnotationView {
+                annotationView = dequeuedView
             } else {
                 annotationView = CustomAnnotationView(annotation: annotation, reuseIdentifier: CustomAnnotationView.reuseIdentifier)
             }
 
-            annotationView.clusteringIdentifier = nil // ✅ Not needed when using ClusterMap
-            annotationView.annotation = displayUnitAnnotation
+            annotationView.clusteringIdentifier = parent.clusterMode == .plain ? "cluster" : nil
+            customizeAnnotationView(annotationView, with: displayUnitAnnotation)
 
-            // Dim if not selected type
-            if let ann = annotation as? DisplayUnitAnnotation,
-               let annotationType = (ann.displayUnit.parent as? LongElementQuest)?.elementType {
-                let isSelectable = (parent.selectedAnnotationType == nil || parent.selectedAnnotationType == annotationType)
-                annotationView.alpha = isSelectable ? 1.0 : 0.5
-                annotationView.isUserInteractionEnabled = isSelectable
+            if let ann = annotation as? DisplayUnitAnnotation {
+                if let annotationType = (ann.displayUnit.parent as? LongElementQuest)?.elementType {
+                    let isSelectable = (parent.selectedAnnotationType == nil || parent.selectedAnnotationType == annotationType)
+                    annotationView.alpha = isSelectable ? 1.0 : 0.5
+                    annotationView.isUserInteractionEnabled = isSelectable
+                }
+                annotationView.updateSelectionState(isSelected: parent.selectedAnnotations.contains(ann))
             }
 
-            // Update selection state
-            annotationView.updateSelectionState(isSelected: parent.selectedAnnotations.contains(displayUnitAnnotation))
-
-            // Touch handling
             annotationView.isDraggable = false
             annotationView.isUserInteractionEnabled = true
             annotationView.addGestureRecognizer(CustomTouchGestureRecognizer(target: self, action: #selector(handleAnnotationTouch(_:))))
-
-            customizeAnnotationView(annotationView, with: displayUnitAnnotation)
             return annotationView
         }
+
 
 
 
@@ -377,23 +409,32 @@ struct CustomMap: UIViewRepresentable {
         
         // Handles selection of annotations
         func mapView(_ mapView: MKMapView, didSelect annotation: MKAnnotation) {
-            print("did select ")
-            if let annotation = annotation as? MKClusterAnnotation {
-                mapView.showAnnotations(annotation.memberAnnotations, animated: true)
-                
-                if zoomReachedLimit && annotation.memberAnnotations.count <= 3 {
-                    let firstAnnotation = annotation.memberAnnotations.first as! DisplayUnitAnnotation
-                    let secondAnnotation = annotation.memberAnnotations.last as! DisplayUnitAnnotation
-                    
-                    if let annotation = annotation.memberAnnotations.first as? DisplayUnitAnnotation {
-                        selectedAnAnnotation(selectedQuest: annotation)
+            switch parent.clusterMode {
+            case .plain:
+                if let annotation = annotation as? MKClusterAnnotation {
+                    mapView.showAnnotations(annotation.memberAnnotations, animated: true)
+                    if zoomReachedLimit && annotation.memberAnnotations.count <= 3 {
+                        if let first = annotation.memberAnnotations.first as? DisplayUnitAnnotation {
+                            selectedAnAnnotation(selectedQuest: first)
+                        }
                     }
                 }
-                
+
+            case .clusterMap:
+                if let annotation = annotation as? DisplayClusterAnnotation {
+                    mapView.showAnnotations(annotation.memberAnnotations, animated: true)
+                    if zoomReachedLimit && annotation.memberAnnotations.count <= 3 {
+                        if let first = annotation.memberAnnotations.first {
+                            selectedAnAnnotation(selectedQuest: first)
+                        }
+                    }
+                }
             }
-            // Deselect the annotation to prevent re-adding on selection
+
             mapView.deselectAnnotation(annotation, animated: false)
         }
+
+
         
         func handleSelected(annotation: MKAnnotation) {
             mapView?.selectAnnotation(annotation, animated: true)
