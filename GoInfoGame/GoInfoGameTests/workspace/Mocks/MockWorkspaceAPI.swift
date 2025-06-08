@@ -13,15 +13,17 @@ final class MockWorkspaceAPI: WorkspaceAPIProtocol {
     var shouldSucceed: Bool
     var shouldDeferCompletion = false
     var returnedWorkspaces: [Workspace]
-    var returnedLongQuests: [LongFormModel]
+    var returnedLongQuests: [LongFormElement]
     
     var didCallFetchWorkspaces = false
     var didCallFetchLongQuests = false
     
+    var isLoadingQuests = false
+    
     init(
         shouldSucceed: Bool = true,
         returnedWorkspaces: [Workspace] = [],
-        returnedLongQuests: [LongFormModel] = []
+        returnedLongQuests: [LongFormElement] = []
     ) {
         self.shouldSucceed = shouldSucceed
         self.returnedWorkspaces = returnedWorkspaces
@@ -40,15 +42,19 @@ final class MockWorkspaceAPI: WorkspaceAPIProtocol {
         }
     }
     
-    func fetchLongQuestsFor(workspaceId: String, completion: @escaping (Result<[LongFormModel], APIError>) -> Void) {
+    func fetchLongQuestsFor(workspaceId: String, completion: @escaping (Result<LongFormResponse, APIError>) -> Void) {
         didCallFetchLongQuests = true
+        isLoadingQuests = true
         if shouldDeferCompletion {
             return
         }
+
         if shouldSucceed {
-            completion(.success(returnedLongQuests))
+            let response = LongFormResponse(version: "0.6", elements: returnedLongQuests)
+            completion(.success(response))
         } else {
-            completion(.failure(.notFound("Not found")))
+            completion(.failure(.custom("Mocked failure: Invalid JSON or other error")))
         }
     }
+
 }
