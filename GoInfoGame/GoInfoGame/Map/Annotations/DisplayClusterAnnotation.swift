@@ -12,13 +12,13 @@ import CoreLocation
 final class DisplayClusterAnnotation: NSObject, MKAnnotation {
     let coordinate: CLLocationCoordinate2D
     let count: Int
+    let memberAnnotations: [DisplayUnitAnnotation]
 
-    init(coordinate: CLLocationCoordinate2D, count: Int) {
+    init(coordinate: CLLocationCoordinate2D, members: [DisplayUnitAnnotation]) {
         self.coordinate = coordinate
-        self.count = count
+        self.count = members.count
+        self.memberAnnotations = members
     }
 
-    var title: String? {
-        return "\(count)"
-    }
+    var title: String? { nil }
 }

@@ -66,8 +66,7 @@ final class ClusterWrapper {
                             if cluster.coordinate.latitude.isFinite,
                                cluster.coordinate.longitude.isFinite {
                                 let clusterAnn = DisplayClusterAnnotation(
-                                    coordinate: cluster.coordinate,
-                                    count: cluster.memberAnnotations.count
+                                    coordinate: cluster.coordinate, members: cluster.memberAnnotations
                                 )
                                 mapView.addAnnotation(clusterAnn)
                             } else {
