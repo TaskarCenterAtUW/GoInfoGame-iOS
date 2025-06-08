@@ -90,7 +90,7 @@ final class WorkspacesViewModelTests: XCTestCase {
     func test_fetchWorkspaces_SetStateToLoading() throws {
         viewModel.fetchWorkspacesList()
         
-        XCTAssertEqual(viewModel.state, .loading)
+        XCTAssertEqual(viewModel.state, .loading(.workspaces), "Expected state to be .loading when fetching workspaces")
     }
     
     func test_stateSetToLoaded_AfterSuccessfulFetch() throws {
@@ -110,7 +110,7 @@ final class WorkspacesViewModelTests: XCTestCase {
         viewModel.fetchWorkspacesList()
         
         DispatchQueue.main.async {
-            XCTAssertEqual(self.viewModel.state, .loaded, "Expected state to be .loaded after successful API call")
+            XCTAssertEqual(self.viewModel.state, .loaded(.workspaces), "Expected state to be .loaded after successful API call")
             XCTAssertEqual(self.viewModel.workspaces.count, 1)
                   expectation.fulfill()
         }
