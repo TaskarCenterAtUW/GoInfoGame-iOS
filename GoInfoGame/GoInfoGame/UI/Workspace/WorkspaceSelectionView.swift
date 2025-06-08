@@ -10,6 +10,8 @@ import SwiftUI
 struct WorkspaceSelectionView: View {
     @StateObject private var viewModel: WorkspacesViewModel
     @Environment(\.scenePhase) private var scenePhase
+    @State private var showErrorAlert = false
+    @State private var errorMessage = ""
     
     init(viewModel: WorkspacesViewModel = WorkspacesViewModel()) {
         _viewModel = StateObject(wrappedValue: viewModel)
@@ -21,24 +23,24 @@ struct WorkspaceSelectionView: View {
                 VStack(alignment: .center, spacing: 0) {
                     WorkspaceHeaderView()
                     Group {
-                        if case let .error(errorMessage) = viewModel.state {
-                            WorkspaceErrorView(errorMessage: errorMessage)
-                        }
                         switch viewModel.state {
                         case .loading(let context):
-                            ActivityView(activityText: context.loadingMessage)
-                                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                            Spacer() // Prevents layout shift when overlay is shown
                         case .loaded(let context):
                             switch context {
                             case .workspaces:
                                 if viewModel.workspaces.count == 0 {
                                     NoWorkspacesView()
                                 } else {
-                                    WorkspaceListView(workspaces: viewModel.workspaces.filter { $0.type == "osw" && $0.externalAppAccess == 1 }, viewModel: viewModel)
+                                    WorkspaceListView(workspaces: viewModel.workspaces.filter { $0.type == "osw" && $0.externalAppAccess == 1 }, viewModel: viewModel, showErrorAlert: $showErrorAlert, errorMessage: $errorMessage)
                                 }
                             }
-                        case .error(_):
-                            EmptyView()
+                        case .error:
+                            if viewModel.workspaces.count == 0 {
+                                NoWorkspacesView()
+                            } else {
+                                WorkspaceListView(workspaces: viewModel.workspaces.filter { $0.type == "osw" && $0.externalAppAccess == 1 }, viewModel: viewModel, showErrorAlert: $showErrorAlert, errorMessage: $errorMessage)
+                            }
                         case .idle:
                             EmptyView()
                         }
@@ -50,8 +52,26 @@ struct WorkspaceSelectionView: View {
                 
                 NavigationCoordinator(route: $viewModel.route)
                 
+                // Move overlays to the top of the ZStack so they cover everything
+                if case .loading(let context) = viewModel.state {
+                    LoadingOverlayView(activityText: context.loadingMessage)
+                        .edgesIgnoringSafeArea(.all)
+                }
                 if viewModel.isLoadingQuests {
-                    LoadingOverlayView()
+                    LoadingOverlayView(activityText: "Loading Quests...")
+                        .edgesIgnoringSafeArea(.all)
+                }
+                
+                if let errorMessage = viewModel.popupError {
+                    Color.black.opacity(0.4)
+                        .edgesIgnoringSafeArea(.all)
+
+                    ErrorAlertView(
+                        message: errorMessage,
+                        onDismiss: {
+                            viewModel.popupError = nil
+                        }
+                    )
                 }
             }
         }
@@ -69,12 +89,21 @@ struct WorkspaceSelectionView: View {
             }
         }
         .toolbar(.hidden)
+        .alert(isPresented: $showErrorAlert) {
+            Alert(
+                title: Text("Error"),
+                message: Text(errorMessage),
+                dismissButton: .default(Text("OK"))
+            )
+        }
     }
 }
 
 struct WorkspaceListView: View {
     let workspaces: [Workspace]
     @ObservedObject var viewModel: WorkspacesViewModel
+    @Binding var showErrorAlert: Bool
+    @Binding var errorMessage: String
     
     var body: some View {
         ScrollView {
@@ -82,17 +111,8 @@ struct WorkspaceListView: View {
                 ForEach(workspaces, id: \.id) { workspace in
                     Button {
                         viewModel.checkAndDeleteWorkspaceDB(workspaceId: "\(workspace.id)")
-                        viewModel.isLoadingQuests = true
-                        viewModel.fetchLongQuestsFor(workspace: workspace, completion: { success, errorMessage in
-                            print("Fetched long quests for workspace \(workspace.id): success = \(success), error = \(String(describing: errorMessage))")
-                            if success {
-                                let workspaceId = "\(workspace.id)"
-                                AuthSessionManager.shared.setWorkspaceId(workspaceId)
-                                // TODO: Navigate to next screen here
-                            } else {
-                                print("Error fetching long quests: \(errorMessage ?? "Unknown error")")
-                            }
-                        })
+                        viewModel.fetchLongQuestsFor(workspace: workspace)
+                        AuthSessionManager.shared.setWorkspaceId("\(workspace.id)")
                     } label: {
                         Text(workspace.title)
                             .font(.system(size: 17))
@@ -110,36 +130,12 @@ struct WorkspaceListView: View {
     }
 }
 
-struct WorkspaceErrorView: View {
-    let errorMessage: String
-    var body: some View {
-        Text(errorMessage)
-            .font(.custom("Lato-Bold", size: 20))
-            .foregroundColor(.red)
-            .font(.caption)
-            .padding(.top, 8)
-    }
-}
-
 struct NoWorkspacesView: View {
     var body: some View {
         Text("No workspaces available for you to work on.")
             .font(.custom("Lato-Bold", size: 20))
             .foregroundColor((Color(red: 135/255, green: 62/255, blue: 242/255)))
             .multilineTextAlignment(.center)
-    }
-}
-
-struct LoadingOverlayView: View {
-    var body: some View {
-        Color.black.opacity(0.3)
-            .ignoresSafeArea()
-        VStack {
-            Spacer()
-            ActivityView(activityText: "Loading quests...")
-                .frame(maxWidth: .infinity)
-            Spacer()
-        }
     }
 }
 
@@ -229,6 +225,15 @@ struct LocationDisabledView: View {
     let vm = WorkspacesViewModel()
     vm.state = .loaded(.workspaces)
     vm.workspaces = [Workspace(id: 1, title: "Sample Workspace", type: "osw", externalAppAccess: 1)]
+    vm.isPreview = true
+    return WorkspaceSelectionView(viewModel: vm)
+}
+
+#Preview("Selected a Corupted Workspace") {
+    let vm = WorkspacesViewModel()
+    vm.state = .loaded(.workspaces)
+    vm.workspaces = [Workspace(id: 1, title: "Sample Workspace", type: "osw", externalAppAccess: 1)]
+    vm.popupError = "Invalid quest query"
     vm.isPreview = true
     return WorkspaceSelectionView(viewModel: vm)
 }

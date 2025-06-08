@@ -37,6 +37,8 @@ class WorkspacesViewModel: ObservableObject {
     
     var isPreview: Bool = false
     
+    @Published var popupError: String?
+    
     @Published var route: NavigationRoute?
     @Published var isLoadingQuests: Bool = false
     
@@ -93,18 +95,49 @@ class WorkspacesViewModel: ObservableObject {
         }
     }
     
-    func fetchLongQuestsFor(workspace: Workspace, completion: @escaping (Bool, String?) -> Void) {
+    func fetchLongQuestsFor(workspace: Workspace) {
         isLoadingQuests = true
         api.fetchLongQuestsFor(workspaceId: "\(workspace.id)") { [weak self] result in
             DispatchQueue.main.async {
-                self?.isLoadingQuests = false
                 switch result {
-                case .success(let quests):
-                    self?.longQuests = quests
+                case .success(let longQuestsResponse):
+                    // Validate quest query
+                    do {
+                        for item in longQuestsResponse.elements {
+                            _ = try item.questQuery.toElementFilterExpression()
+                        }
+                    } catch {
+                        print("Invalid quest filter: \(error)")
+                        self?.isLoadingQuests = false
+                       self?.popupError = "Invalid quest filter"
+                        return
+                    }
+                    self?.longQuests = longQuestsResponse.elements
+                    self?.saveLongQuestsToDefaults(longQuestJson: longQuestsResponse.elements)
+                    // Add one generic form for each longquest
+                    QuestsRepository.shared.allQuests.removeAll()
+                    for (index, quest) in longQuestsResponse.elements.enumerated() {
+                        let applicableQuest = ApplicableQuest(
+                            quest: LongElementQuest(
+                                questId: "\(index + 1)",
+                                questQuery: quest.questQuery,
+                                elementType: quest.elementType,
+                                elementTypeIcon: quest.elementTypeIcon
+                            ),
+                            questId: "\(index + 1)"
+                        )
+                        QuestsRepository.shared.allQuests.append(applicableQuest)
+                    }
+                    self?.isLoadingQuests = false
                     self?.route = .map(workspace: workspace)
-                    completion(true, nil)
                 case .failure(let error):
-                    completion(false, error.localizedDescription)
+                    print("ERROR FOR LONG FORM JSON IS ----?>>>>>>\(error.localizedDescription)")
+                    self?.isLoadingQuests = false
+                    if error.localizedDescription.contains("empty") {
+                        self?.popupError = "No longform quests configured for this workspace."
+                    } else {
+                        self?.popupError = "Unable to load quests. (invalid JSON)"
+                    }
                 }
             }
         }
