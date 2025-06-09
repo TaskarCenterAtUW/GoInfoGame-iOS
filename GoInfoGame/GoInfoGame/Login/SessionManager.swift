@@ -18,8 +18,7 @@ final class SessionManager: ObservableObject {
     var lastLoginPassword: String?
 
     func performLogin(username: String, password: String, environment: APIEnvironment, completion: @escaping (Bool, String) -> Void) {
-        let userName = KeychainManager.load(.username, for: environment) ?? username
-        let postParams = ["username": userName, "password": password]
+        let postParams = ["username": username, "password": password]
         guard let postBody = try? JSONSerialization.data(withJSONObject: postParams) else {
             completion(false, "Failed to serialize JSON")
             return

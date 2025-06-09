@@ -48,8 +48,6 @@ class ApiManager {
         var request = URLRequest(url: url, timeoutInterval: Double.infinity)
         request.httpMethod = endpoint.method
         
-       
-        
         if let formData = endpoint.formData {
             let boundary = "Boundary-\(UUID().uuidString)"
             request.setValue("multipart/form-data; boundary=\(boundary)", forHTTPHeaderField: "Content-Type")
@@ -75,7 +73,7 @@ class ApiManager {
                     do {
                         let filename = param["filename"] as? String ?? "image.jpeg"
                         let contentType = param["contentType"] as? String ?? "application/octet-stream" // Default content type
-
+                        
                         // Append headers for file data
                         body.append("Content-Disposition: form-data; name=\"\(paramName)\"; filename=\"\(filename)\"\r\n".data(using: .utf8)!)
                         body.append("Content-Type: \(contentType)\r\n\r\n".data(using: .utf8)!)
@@ -95,14 +93,14 @@ class ApiManager {
             // Set the HTTP body
             request.httpBody = body
         } else if let httpBody = endpoint.body {
-                   request.httpBody = httpBody
-               }
+            request.httpBody = httpBody
+        }
         
         if let headers = endpoint.headers {
-               for (key, value) in headers {
-                   request.setValue(value, forHTTPHeaderField: key)
-               }
-           }
+            for (key, value) in headers {
+                request.setValue(value, forHTTPHeaderField: key)
+            }
+        }
         
         let task = URLSession.shared.dataTask(with: request) { [weak self] data, response, error in
             guard let self = self else {
@@ -116,8 +114,9 @@ class ApiManager {
             }
             
             if let httpResponse = response as? HTTPURLResponse,
-                httpResponse.statusCode == 401,
-                request.url!.lastPathComponent.contains("refresh-token") == false {
+               httpResponse.statusCode == 401,
+               request.url!.lastPathComponent.contains("refresh-token") == false,
+               request.url!.lastPathComponent.contains("authenticate") == false {
                 print("Failed requests: \(String(describing: request.url))")
                 TokenRefresher.shared.refreshToken { [weak self] status in
                     if status {
@@ -172,35 +171,35 @@ class ApiManager {
                     } else {
                         completion(.failure(APIError.custom("Empty JSON")))
                     }
-
+                    
                     return
                 }
             }
             else {
-                    if let response = response as? HTTPURLResponse {
-                        switch response.statusCode {
-                        case 409:
-                            let conflictError = NSError(domain: "goinfogame", code: 409, userInfo: [NSLocalizedDescriptionKey: "version mismatch"])
-                            completion(.failure(APIError.conflict))
-
-                        case 200:
-                            do {
-                                if let decodedString = String(data: data, encoding: .utf8) {
-                                    completion(.success(decodedString as! T))
-                                } else {
-                                    completion(.failure(APIError.custom("Failed to decode string")))
-                                }
-                            } catch {
-                                print("Failed to decode the non JSON: \(error.localizedDescription)")
-                                completion(.failure(APIError.custom("Failed to decode non JSON")))
+                if let response = response as? HTTPURLResponse {
+                    switch response.statusCode {
+                    case 409:
+                        let conflictError = NSError(domain: "goinfogame", code: 409, userInfo: [NSLocalizedDescriptionKey: "version mismatch"])
+                        completion(.failure(APIError.conflict))
+                        
+                    case 200:
+                        do {
+                            if let decodedString = String(data: data, encoding: .utf8) {
+                                completion(.success(decodedString as! T))
+                            } else {
+                                completion(.failure(APIError.custom("Failed to decode string")))
                             }
-
-                        default:
-                            completion(.failure(APIError(statusCode: response.statusCode)))
+                        } catch {
+                            print("Failed to decode the non JSON: \(error.localizedDescription)")
+                            completion(.failure(APIError.custom("Failed to decode non JSON")))
                         }
-                    } else {
-                        completion(.failure(APIError.custom("No valid HTTP response received")))
+                        
+                    default:
+                        completion(.failure(APIError(statusCode: response.statusCode)))
                     }
+                } else {
+                    completion(.failure(APIError.custom("No valid HTTP response received")))
+                }
             }
         }
         task.resume()
