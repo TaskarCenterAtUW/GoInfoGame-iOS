@@ -27,7 +27,7 @@ class LongElementQuest: QuestBase, Quest {
             case "kerb":
                 return UIImage(named: "kerb_type")!
             default:
-                return UIImage(named: "other_element")!
+                return UIImage(named: "notes")!
             }
         }
     }
