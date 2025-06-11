@@ -38,9 +38,9 @@ struct QuestOptions: View {
         switch questType {
         case .exclusiveChoice:
             let columns = [
-                GridItem(.flexible(), spacing: 30),
-                GridItem(.flexible(), spacing: 30),
-                GridItem(.flexible(), spacing: 30),
+                GridItem(.flexible(minimum: 10.0, maximum: 100.0), spacing: 30),
+                GridItem(.flexible(minimum: 10.0, maximum: 100.0), spacing: 30),
+                GridItem(.flexible(minimum: 10.0, maximum: 100.0), spacing: 30),
             ]
             ZStack {
                 ScrollView {
@@ -142,12 +142,18 @@ struct QuestOptions: View {
                                                             .font(.system(size: 15, weight: .bold))
                                                             .foregroundColor(.black)
                                                             .offset(x: offset.0, y: offset.1)
+                                                            .frame(width: 100, height: 100)
+                                                            .minimumScaleFactor(0.67) // min font size is 10
+                                                            .lineLimit(10)
                                                     }
                                                     
                                                     Text(option.choiceText)
                                                         .font(.system(size: 15, weight: .bold))
                                                         .foregroundColor(.white)
                                                         .shadow(color: Color.black.opacity(0.7), radius: 4, x: 0, y: 2)
+                                                        .frame(width: 100, height: 100)
+                                                        .minimumScaleFactor(0.67) // min font size is 10
+                                                        .lineLimit(10)
                                                 }
                                             }
                                         }
@@ -217,6 +223,11 @@ struct QuestOptions: View {
        }
 }
 
-//#Preview {
-//    QuestOptions(options: ["Ashpalt", "Concrete", "Brick", "Others"], selectedOption: "")
-//}
+#Preview {
+    QuestOptions(options: [QuestAnswerChoice(value: "yes", choiceText: "Yes, this roadway can be crossed safely.", imageURL: nil, choiceFollowUp: nil),
+                           QuestAnswerChoice(value: "no", choiceText: "No, this roadway is too wide to cross safely.", imageURL: nil, choiceFollowUp: nil)], selectedAnswerId: .constant(UUID()), onChoiceSelected: { qa in
+        
+    }, questType: GoInfoGame.QuestType.exclusiveChoice, currentAnswer: .constant("Binding<String?>")) { s in
+        
+    }
+}
