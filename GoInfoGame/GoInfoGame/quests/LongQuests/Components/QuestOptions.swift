@@ -144,7 +144,6 @@ struct QuestOptions: View {
                                                             .offset(x: offset.0, y: offset.1)
                                                             .frame(width: 100, height: 100)
                                                             .minimumScaleFactor(0.67) // min font size is 10
-                                                            .lineLimit(10)
                                                     }
                                                     
                                                     Text(option.choiceText)
@@ -153,7 +152,6 @@ struct QuestOptions: View {
                                                         .shadow(color: Color.black.opacity(0.7), radius: 4, x: 0, y: 2)
                                                         .frame(width: 100, height: 100)
                                                         .minimumScaleFactor(0.67) // min font size is 10
-                                                        .lineLimit(10)
                                                 }
                                             }
                                         }
