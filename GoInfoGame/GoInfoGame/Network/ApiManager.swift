@@ -113,8 +113,12 @@ class ApiManager {
                 return
             }
             
-            if let httpResponse = response as? HTTPURLResponse,
-               httpResponse.statusCode == 401,
+            guard let httpResponse = response as? HTTPURLResponse else {
+                completion(.failure(APIError.custom("Invalid response, Please try again later.")))
+                return
+            }
+            
+            if httpResponse.statusCode == 401,
                request.url!.lastPathComponent.contains("refresh-token") == false,
                request.url!.lastPathComponent.contains("authenticate") == false {
                 print("Failed requests: \(String(describing: request.url))")
@@ -142,6 +146,17 @@ class ApiManager {
                 return
             }
             
+            switch httpResponse.statusCode {
+            case 400...499:
+                completion(.failure(APIError.custom("Client Error. Please try again later.")))
+                return
+            case 500...599:
+                completion(.failure(APIError.custom("Internal server error. Please try again later.")))
+                return
+            default:
+                print("Request processed successfully.")
+            }
+            
             guard let data = data else {
                 completion(.failure(APIError.custom("No data returned")))
                 return
@@ -167,11 +182,15 @@ class ApiManager {
                 } catch {
                     print("Failed to decode data: \(error.localizedDescription)")
                     if let dataString = String(data: data, encoding: .utf8), !dataString.isEmpty {
-                        completion(.failure(APIError.custom("Not a valid JSON \(dataString)")))
+                        if APIConfiguration.shared.environment == .development ||
+                            APIConfiguration.shared.environment == .staging {
+                            completion(.failure(APIError.custom("Not a valid JSON \(dataString)")))
+                        } else {
+                            completion(.failure(APIError.custom("Not able to process the response at this moment. Please try again later.")))
+                        }
                     } else {
                         completion(.failure(APIError.custom("Empty JSON")))
                     }
-                    
                     return
                 }
             }
