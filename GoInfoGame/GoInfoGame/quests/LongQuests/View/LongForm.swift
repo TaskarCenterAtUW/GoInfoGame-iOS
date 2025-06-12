@@ -325,5 +325,14 @@ struct LongForm: View, QuestForm {
 }
 
 #Preview {
-    LongForm()
+    let quest = LongFormElement(elementType: "Sidewalks", questQuery: "ways with (highway=footway and footway=sidewalk)", elementTypeIcon: "icon", quests: [LongQuest(questID: 14,
+                                                                                                                           questTitle: "Does the length of this crossing allow for safe navigation?",
+                                                                                                                           questDescription: "Determine whether this crossing is short enough to cross safely.",
+                                                                                                                           questType: .exclusiveChoice,
+                                                                                                                           questTag: "ext:crossing_adequate_length",
+                                                                                                                           questAnswerChoices: [QuestAnswerChoice(value: "yes", choiceText: "Yes, this roadway can be crossed safely. this is to test the line limit functionlity. want to see the max capability of this feature. the max lines should be 10. this is for our obervations only. till now it is able to render 10 lines with out any issue.", imageURL: nil, choiceFollowUp: nil),
+                                                                                                                                                QuestAnswerChoice(value: "no", choiceText: "No, this roadway is too wide to cross safely.", imageURL: nil, choiceFollowUp: nil)], questImageURL: nil, questAnswerValidation: nil, questAnswerDependency: nil, questUserAnswer: nil)])
+    QuestsRepository.shared.longQuestModels.append(quest)
+    return LongForm(elementName: quest.elementType, questID: "questId",query: quest.questQuery, action: { tags in
+                })
 }

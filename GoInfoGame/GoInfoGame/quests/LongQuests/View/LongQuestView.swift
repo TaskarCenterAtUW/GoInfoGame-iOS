@@ -58,3 +58,21 @@ struct LongQuestView: View {
     }
     
 }
+
+#Preview {
+    let longQeust = LongQuest(questID: 14,
+                              questTitle: "Does the length of this crossing allow for safe navigation?",
+                              questDescription: "Determine whether this crossing is short enough to cross safely.",
+                              questType: .exclusiveChoice,
+                              questTag: "ext:crossing_adequate_length",
+                              questAnswerChoices: [QuestAnswerChoice(value: "yes", choiceText: "Yes, this roadway can be crossed safely.", imageURL: nil, choiceFollowUp: nil),
+                                                   QuestAnswerChoice(value: "no", choiceText: "No, this roadway is too wide to cross safely.", imageURL: nil, choiceFollowUp: nil)], questImageURL: nil, questAnswerValidation: nil, questAnswerDependency: nil, questUserAnswer: nil)
+    
+    
+    
+    LongQuestView(selectedAnswers: .constant([UUID(): UUID()]), quest: longQeust, onChoiceSelected: { qa in
+        
+    }, uploadPhoto: { s in
+        
+    }, currentAnswer: .constant(nil))
+}
