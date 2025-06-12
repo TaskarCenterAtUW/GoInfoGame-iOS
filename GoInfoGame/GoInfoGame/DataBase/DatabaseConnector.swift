@@ -14,7 +14,7 @@ import osmparser
 class DatabaseConnector {
     static let shared = DatabaseConnector()
     
-    private let realm: Realm
+    let realm: Realm
     
     private init() {
         // Initialize Realm instance
