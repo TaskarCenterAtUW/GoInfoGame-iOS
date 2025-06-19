@@ -9,6 +9,7 @@ import Foundation
 import SwiftUI
 import MapKit
 import osmparser
+import ClusterMap
 
 
 // Custom Map for managing map interactions between SwiftUI and UIKit components
@@ -48,10 +49,10 @@ struct CustomMap: UIViewRepresentable {
         mapView.mapType = .standard
         mapView.delegate = context.coordinator
         mapView.showsUserLocation = true
+        mapView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         // Set user tracking mode
         mapView.userTrackingMode = trackingMode.mkUserTrackingMode
         // Hide points of interest except street names
-        mapView.pointOfInterestFilter = .excludingAll
         mapView.register(CustomAnnotationView.self, forAnnotationViewWithReuseIdentifier: CustomAnnotationView.reuseIdentifier)
                 
         if useBingMaps {
@@ -66,6 +67,7 @@ struct CustomMap: UIViewRepresentable {
         let tapGesture = UILongPressGestureRecognizer(target: context.coordinator, action: #selector(Coordinator.handleMapTap(_:)))
         mapView.addGestureRecognizer(tapGesture)
         
+        context.coordinator.mapView = mapView
         DispatchQueue.main.async {
             onMapViewCreated?(mapView)
         }
@@ -78,11 +80,17 @@ struct CustomMap: UIViewRepresentable {
         //  mapView.setCenter(userLocation, animated: true)
         if isMultiSelectModeEnabled,
            selectedAnnotations.isEmpty {
-            mapView.removeAnnotations(mapView.annotations)
+            Task { await manageAnnotations(mapView, context: context) }
         }
         context.coordinator.updateUserRegion(mapView)
         context.coordinator.updateVisibleAnnotations(in: mapView)
-        manageAnnotations(mapView, context: context)
+        if context.coordinator.previousAnnotations != items {
+            context.coordinator.previousAnnotations = items
+            Task {
+                await manageAnnotations(mapView, context: context)
+            }
+        }
+        
         
         // Remove existing overlays
         mapView.overlays.forEach { mapView.removeOverlay($0) }
@@ -144,10 +152,49 @@ struct CustomMap: UIViewRepresentable {
         private let maxZoomAltitude: CLLocationDistance = 120
         private var zoomReachedLimit: Bool = false
         
+        var previousAnnotations: [DisplayUnitWithCoordinate] = []
+        private var annotations: [DisplayUnitAnnotation] = []
+        private(set) var clusterManager: ClusterManager = ClusterManager<DisplayUnitAnnotation>(configuration: .init(maxZoomLevel: 17, minCountForClustering: 2, clusterPosition: .nearCenter))
+        
         init(_ parent: CustomMap, shadowOverlay: ShadowOverlay) {
             self.parent = parent
             self.contextualInfo = parent.contextualInfo
             self.shadowOverlay = shadowOverlay
+        }
+        
+        func reloadMap() async {
+            guard let mapView = mapView else { return }
+            async let changes = clusterManager.reload(mapViewSize: mapView.bounds.size, coordinateRegion: mapView.region)
+            await applyChanges(changes)
+        }
+                
+        @MainActor
+        func applyChanges(_ difference: ClusterManager<DisplayUnitAnnotation>.Difference) {
+            for annotationType in difference.removals {
+                switch annotationType {
+                case .annotation(let annotation):
+                    annotations.removeAll(where: { $0 == annotation })
+                    mapView?.removeAnnotation(annotation)
+                case .cluster(let clusterAnnotation):
+                    if let result = annotations.enumerated().first(where: { $0.element.id == clusterAnnotation.id.uuidString }) {
+                        annotations.remove(at: result.offset)
+                        mapView?.removeAnnotation(result.element)
+                    }
+                }
+            }
+            for annotationType in difference.insertions {
+                switch annotationType {
+                case .annotation(let annotation):
+                    annotations.append(annotation)
+                    mapView?.addAnnotation(annotation)
+                case .cluster(let clusterAnnotation):
+                    let cluster = CluserableDisplayUnitAnnotation(id: clusterAnnotation.id.uuidString,
+                                                                  coordinate:  clusterAnnotation.coordinate)
+                    cluster.memberAnnotations = clusterAnnotation.memberAnnotations
+                    annotations.append(cluster)
+                    mapView?.addAnnotation(cluster)
+                }
+            }
         }
         
         @objc func handleMapTap(_ gestureRecognizer: UITapGestureRecognizer) {
@@ -234,82 +281,75 @@ struct CustomMap: UIViewRepresentable {
         
         // Customizes the view for each annotation
         func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
-            self.mapView = mapView
             if annotation is MKUserLocation {
                    return nil
                }
-            if let clusterAnnotation = annotation as? MKClusterAnnotation {
-                let identifier = "cluster"
-                var clusterView = mapView.dequeueReusableAnnotationView(withIdentifier: identifier) as? MKMarkerAnnotationView
-                if clusterView == nil {
-                    clusterView = MKMarkerAnnotationView(annotation: clusterAnnotation, reuseIdentifier: identifier)
-                } else {
-                    clusterView?.annotation = annotation
+            
+            switch annotation {
+            case is CluserableDisplayUnitAnnotation:
+                let identifier = "Cluster"
+                let annotationView = mapView.annotationView(
+                    of: MKMarkerAnnotationView.self,
+                    annotation: annotation,
+                    reuseIdentifier: identifier
+                )
+                annotationView.markerTintColor = UIColor(red: 135/255, green: 62/255, blue: 242/255, alpha: 1.0)
+                annotationView.glyphText = "\((annotation as? CluserableDisplayUnitAnnotation)?.memberAnnotations.count ?? 0)"
+                annotationView.displayPriority = .required
+                annotationView.zPriority = .max
+                return annotationView
+                
+            case is DisplayUnitAnnotation:
+                let identifier = CustomAnnotationView.reuseIdentifier
+                let annotationView = mapView.annotationView(
+                    of: CustomAnnotationView.self,
+                    annotation: annotation,
+                    reuseIdentifier: identifier
+                )
+                if let ann = annotation as? DisplayUnitAnnotation {
+                    if let annotationType = (ann.displayUnit?.parent as? LongElementQuest)?.elementType {
+                        let isSelectable = (parent.selectedAnnotationType == nil || parent.selectedAnnotationType == annotationType)
+                        // Dim other annotation types
+                        annotationView.alpha = isSelectable ? 1.0 : 0.5
+                        annotationView.isUserInteractionEnabled = isSelectable
+                    }
+                    annotationView.updateSelectionState(isSelected: parent.selectedAnnotations.contains(ann))
                 }
-                
-                clusterView?.markerTintColor = UIColor(red: 135/255, green: 62/255, blue: 242/255, alpha: 1.0)
-                clusterView?.glyphText = "\(clusterAnnotation.memberAnnotations.count)"
-                
-                return clusterView
-            }
-              
-                    
-            guard let displayUnitAnnotation = annotation as? DisplayUnitAnnotation else {
+                customizeAnnotationView(annotationView, with: annotation as! DisplayUnitAnnotation)
+                annotationView.isDraggable = false
+                annotationView.isUserInteractionEnabled = true
+                annotationView.addGestureRecognizer(CustomTouchGestureRecognizer(target: self, action: #selector(handleAnnotationTouch(_:))))
+                annotationView.displayPriority = .required
+                annotationView.zPriority = .max
+                return annotationView
+            default:
                 return nil
             }
-            let annotationView: CustomAnnotationView
-            if var dequeuedView = mapView.dequeueReusableAnnotationView(withIdentifier: CustomAnnotationView.reuseIdentifier) as? CustomAnnotationView {
-                annotationView = dequeuedView
-                
-            } else {
-                annotationView = CustomAnnotationView(annotation: annotation, reuseIdentifier: CustomAnnotationView.reuseIdentifier)
-            }
-            annotationView.clusteringIdentifier = "cluster"
-            
-            if let ann = annotation as? DisplayUnitAnnotation {
-                if let annotationType = (ann.displayUnit.parent as? LongElementQuest)?.elementType {
-                    let isSelectable = (parent.selectedAnnotationType == nil || parent.selectedAnnotationType == annotationType)
-                    // Dim other annotation types
-                    annotationView.alpha = isSelectable ? 1.0 : 0.5
-                    annotationView.isUserInteractionEnabled = isSelectable
-                }
-                annotationView.updateSelectionState(isSelected: parent.selectedAnnotations.contains(ann))
-            }
-
-            // Customize annotation view
-            customizeAnnotationView(annotationView, with: displayUnitAnnotation)
-            // Add a touch handler
-            annotationView.isDraggable = false
-            annotationView.isUserInteractionEnabled = true
-            annotationView.addGestureRecognizer(CustomTouchGestureRecognizer(target: self, action: #selector(handleAnnotationTouch(_:))))
-            return annotationView
         }
         
-        // Handles selection of annotations
-        func mapView(_ mapView: MKMapView, didSelect annotation: MKAnnotation) {
-            print("did select ")
-            if let annotation = annotation as? MKClusterAnnotation {
-                mapView.showAnnotations(annotation.memberAnnotations, animated: true)
-                
-                if zoomReachedLimit && annotation.memberAnnotations.count <= 3 {
-                    let firstAnnotation = annotation.memberAnnotations.first as! DisplayUnitAnnotation
-                    let secondAnnotation = annotation.memberAnnotations.last as! DisplayUnitAnnotation
-                    
-                    if let annotation = annotation.memberAnnotations.first as? DisplayUnitAnnotation {
-                        selectedAnAnnotation(selectedQuest: annotation)
+        func mapView(_ mapView: MKMapView, didSelect view: MKAnnotationView) {
+            guard let annotation = view.annotation else { return }
+
+            if let cluster = annotation as? CluserableDisplayUnitAnnotation {
+                var zoomRect = MKMapRect.null
+                for annotation in cluster.memberAnnotations {
+                    let annotationPoint = MKMapPoint(annotation.coordinate)
+                    let pointRect = MKMapRect(x: annotationPoint.x, y: annotationPoint.y, width: 0, height: 0)
+                    if zoomRect.isNull {
+                        zoomRect = pointRect
+                    } else {
+                        zoomRect = zoomRect.union(pointRect)
                     }
                 }
-                
+                mapView.setVisibleMapRect(zoomRect, animated: true)
             }
-            // Deselect the annotation to prevent re-adding on selection
-            mapView.deselectAnnotation(annotation, animated: false)
         }
         
         func handleSelected(annotation: MKAnnotation) {
             mapView?.selectAnnotation(annotation, animated: true)
             if let annotation = annotation as? DisplayUnitAnnotation {
                 if self.parent.isMultiSelectModeEnabled {
-                    guard let annotationType = (annotation.displayUnit.parent as? LongElementQuest)?.elementType else {
+                    guard let annotationType = (annotation.displayUnit?.parent as? LongElementQuest)?.elementType else {
                         return
                     }
                     
@@ -346,7 +386,7 @@ struct CustomMap: UIViewRepresentable {
                         for ann in self.mapView?.annotations ?? [] {
                             if let view = self.mapView?.view(for: ann) as? CustomAnnotationView {
                                 if let annotation = ann as? DisplayUnitAnnotation,
-                                   let annType = (annotation.displayUnit.parent as? LongElementQuest)?.elementType {
+                                   let annType = (annotation.displayUnit?.parent as? LongElementQuest)?.elementType {
                                     view.alpha = (self.parent.selectedAnnotationType == nil || self.parent.selectedAnnotationType == annType) ? 1.0 : 0.5
                                     view.isUserInteractionEnabled = (self.parent.selectedAnnotationType == nil || self.parent.selectedAnnotationType == annType)
                                     view.updateSelectionState(isSelected: self.parent.selectedAnnotations.contains(annotation))
@@ -371,7 +411,7 @@ struct CustomMap: UIViewRepresentable {
         }
         
         func mapView(_ mapView: MKMapView, regionDidChangeAnimated animated: Bool) {
-            zoomReachedLimit = mapView.isZoomedIn()
+            Task { await reloadMap() }
         }
         
         private func selectedAnAnnotation(selectedQuest: DisplayUnitAnnotation) {
@@ -384,21 +424,18 @@ struct CustomMap: UIViewRepresentable {
             
             let annotationLocation = CLLocation(latitude: selectedQuest.coordinate.latitude, longitude: selectedQuest.coordinate.longitude)
             
-            var polylineCoords: [CLLocationCoordinate2D] = []
-            if let wayElement = selectedQuest.displayUnit.parent?.relationData as? Way {
-                for eachWay in wayElement.polyline {
-                    let eachCoord = CLLocationCoordinate2D(latitude: eachWay.latitude, longitude: eachWay.longitude)
-                    polylineCoords.append(eachCoord)
-                }
+            if let polyline = selectedQuest.displayUnit?.parent?.polylines {
+                self.parent.lineCoordinates = polyline
+            } else {
+                self.parent.lineCoordinates = []
             }
-            self.parent.lineCoordinates = polylineCoords
             
             parent.inferStreetName(location: annotationLocation) { streetName in
                 if let streetName = streetName {
                     if let sidewalk =  self.parent.selectedQuest?.parent as? SideWalkWidth {
                         contextualString = "The Sidewalk is along \(streetName == "" ? "the street" : streetName) at \(distance) meters"
                     } else {
-                        contextualString = "The \(selectedQuest.title!) is on \(streetName == "" ? "the street" : streetName) at \(distance) meters"
+                        contextualString = "The \(selectedQuest.title ?? "") is on \(streetName == "" ? "the street" : streetName) at \(distance) meters"
                     }
                     self.contextualInfo?(contextualString)
                 }
@@ -409,7 +446,7 @@ struct CustomMap: UIViewRepresentable {
         private func customizeAnnotationView(_ annotationView: MKAnnotationView?, with displayUnitAnnotation: DisplayUnitAnnotation) {
             guard let annotationView = annotationView else { return }
             
-            let pinImage = displayUnitAnnotation.displayUnit.parent?.icon
+            let pinImage = UIImage(named: displayUnitAnnotation.displayUnit?.parent?.iconName ?? "notes")
             let size = CGSize(width: 40, height: 40)
             
             UIGraphicsBeginImageContextWithOptions(size, false, 0.0)
@@ -488,8 +525,10 @@ struct CustomMap: UIViewRepresentable {
     }
     
     // Helper method to manage annotations
-    private func manageAnnotations(_ mapView: MKMapView, context: Context) {
+    private func manageAnnotations(_ mapView: MKMapView, context: Context) async {
         
+        await context.coordinator.clusterManager.removeAll()
+        await context.coordinator.reloadMap()
         let existingCoordinates = mapView.annotations.compactMap {
              ($0 as? DisplayUnitAnnotation)?.coordinate
          }
@@ -510,29 +549,8 @@ struct CustomMap: UIViewRepresentable {
         let visibleAnnotations = items
                .filter { !$0.isHidden }
                .map { $0.annotation }
-        
-        if (existingCoordinates.isEmpty) {
-           // print("Adding annotations completely")
-            
-//            for (index, annotation) in annotations.enumerated() {
-//                annotation.coordinate = adjustCoordinateForOverlap(annotation.coordinate, with: index)
-//            }
-            mapView.addAnnotations(visibleAnnotations)
-        }
-        
-        let currentAnnotations = Set(mapView.annotations.compactMap { $0 as? DisplayUnitAnnotation })
-        
-        let currentVisibleAnnotations = items
-               .filter { !$0.isHidden }
-               .map { $0.annotation }
-        
-        let newAnnotations = Set(currentVisibleAnnotations)
-        
-        let annotationsToRemove = currentAnnotations.subtracting(newAnnotations)
-        let annotationsToAdd = newAnnotations.subtracting(currentAnnotations)
-        
-        mapView.removeAnnotations(Array(annotationsToRemove))
-        mapView.addAnnotations(Array(annotationsToAdd))
+        await context.coordinator.clusterManager.add(visibleAnnotations)
+        await context.coordinator.reloadMap()
     }
     
     func adjustCoordinateForOverlap(_ coordinate: CLLocationCoordinate2D, with index: Int) -> CLLocationCoordinate2D {
@@ -689,3 +707,12 @@ class CustomTouchGestureRecognizer: UIGestureRecognizer {
     }
 }
 
+extension MKMapView {
+    func annotationView<T: MKAnnotationView>(of type: T.Type, annotation: MKAnnotation?, reuseIdentifier: String) -> T {
+        guard let annotationView = dequeueReusableAnnotationView(withIdentifier: reuseIdentifier) as? T else {
+            return type.init(annotation: annotation, reuseIdentifier: reuseIdentifier)
+        }
+        annotationView.annotation = annotation
+        return annotationView
+    }
+}

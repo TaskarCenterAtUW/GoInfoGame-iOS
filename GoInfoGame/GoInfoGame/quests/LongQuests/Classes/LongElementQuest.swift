@@ -10,24 +10,45 @@ import osmparser
 import SwiftUI
 import CoreLocation
 
-class LongElementQuest: QuestBase, Quest {
+struct LazyView<Content: View>: View, QuestForm {
+    var action: (([String : String]) -> Void)?
     
-    var icon: UIImage {
-        if let iconName = elementTypeIcon,
-           let image = UIImage(named: iconName) {
-            return image
+    typealias AnswerClass = [String: String]
+    
+    let build: () -> Content
+
+    init(_ build: @autoclosure @escaping () -> Content) {
+        self.build = build
+    }
+
+    var body: Content {
+        build()
+    }
+}
+
+class LongElementQuest: QuestBase, Quest {
+    var polylines: [CLLocationCoordinate2D]?
+    
+    var id: Int64
+    
+    var type: osmparser.ElementType
+    
+    
+    var iconName: String {
+        if let iconName = elementTypeIcon {
+            return iconName
         } else {
             let lowercasedElementType = elementType.lowercased()
             
             switch lowercasedElementType {
             case "sidewalks":
-                return UIImage(named: "sidewalk_surface.pdf")!
+                return "sidewalk_surface"
             case "crossings":
-                return UIImage(named: "pedestrian")!
+                return "pedestrian"
             case "kerb":
-                return UIImage(named: "kerb_type")!
+                return "kerb_type"
             default:
-                return UIImage(named: "notes")!
+                return "notes"
             }
         }
     }
@@ -79,7 +100,7 @@ class LongElementQuest: QuestBase, Quest {
     }
     
     var displayUnit: DisplayUnit {
-        let uid = String(self.relationData?.id ?? 0)
+        let uid = String(self.id)
         return DisplayUnit(title: self.title, description: "", id: "\(uid)-\(questId)",parent: self,sheetSize: .LONGFORM)
     }
     
@@ -100,17 +121,21 @@ class LongElementQuest: QuestBase, Quest {
       }
     
     init(questId: String, questQuery:String, elementType: String, elementTypeIcon: String?) {
+        id = -1
+        type = .node
         super.init()
         self._internalQueryString = questQuery
         self.elementType = elementType
         self.elementTypeIcon = elementTypeIcon
-        self.internalForm = LongForm(elementName: elementType, questID: questId,query: questQuery, action: { [self] tags in
+        self.internalForm = LazyView(LongForm(elementName: elementType, questID: questId,query: questQuery, action: { [self] tags in
 //            self.onAnswer(answer: tags)
             self.questAnswersSelected?(tags)
-        })
+        }))
     }
     
     override init() {
+        id = -1
+        type = .node
         super.init()
         
         self.internalForm = LongForm(elementName: elementType, action: { [self] tags in
@@ -119,22 +144,24 @@ class LongElementQuest: QuestBase, Quest {
         })
     }
     
-    var relationData: Element? = nil
     
     func onAnswer(answer: [String : String]) {
-        if let rData = self.relationData  {
-            self.updateTags(id: rData.id, tags: answer, type: rData.type)
-        }
+        self.updateTags(id: id, tags: answer, type: type)
     }
         
     var questId: String {
-        return String(self.relationData?.id ?? 0)
+        return String(self.id)
     }
     
     func copyWithElement(element: Element) -> any Quest {
         let questId = String(element.id)
         let quest = LongElementQuest(questId: questId, questQuery: _internalQueryString!, elementType: elementType, elementTypeIcon: elementTypeIcon)
-        quest.relationData = element
+        if let way = element as? Way {
+            quest.polylines = way.polyline.compactMap { CLLocationCoordinate2D(latitude: $0.latitude, longitude: $0.longitude)
+            }
+        }
+        quest.id = element.id
+        quest.type = element.type
         return quest
     }
 }

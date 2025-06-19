@@ -69,24 +69,44 @@ class AppQuestManager {
     // Fetches all the available quests from Database
     func fetchQuestsFromDB() ->  [DisplayUnitWithCoordinate] {
             
-        let allOriginalNodes = dbInstance.getNodes().filter {$0.tags.count != 0 }
+        let allOriginalNodes = dbInstance.getNodes().filter {$0.tags.count != 0 && ($0.point.latitude != 0.0 || $0.point.longitude != 0.0)}
         
     
-        let nodesFromStorage: [StoredNode] = allOriginalNodes.compactMap { original in
-            original.tags["ext:gig_complete"] == "yes" ? nil : original
+        var nodesFromStorage: [StoredNode] = []
+        for node in allOriginalNodes {
+            autoreleasepool {
+                if node.tags["ext:gig_complete"] != "yes" {
+                    nodesFromStorage.append(node)
+                }
+            }
         }
              
         let allOriginalWays = dbInstance.getWays().filter {
-            $0.tags.count != 0
+            $0.tags.count != 0 && !$0.polyline.isEmpty
         }
 
-        let waysFromStorage: [StoredWay] = allOriginalWays.compactMap { original in
-            original.tags["ext:gig_complete"] == "yes" ? nil : original
+        var waysFromStorage: [StoredWay] = []
+        
+        for way in allOriginalWays {
+            autoreleasepool {
+                if way.tags["ext:gig_complete"] != "yes" {
+                    waysFromStorage.append(way)
+                }
+            }
         }
     
         
-        let nodeElements = nodesFromStorage.map({$0.asNode()})
-        let wayElements = waysFromStorage.map({$0.asWay()})
+        let nodeElements = nodesFromStorage.map({ node in
+            autoreleasepool {
+                node.asNode()
+            }
+        })
+        let wayElements = waysFromStorage.map({ way in
+            autoreleasepool {
+                way.asWay()
+            }
+            
+        })
                 
         // Get the quests for nodes
         var nodeQuests: [any Quest] = []

@@ -12,7 +12,7 @@ import Combine
 
 import Foundation
 
-import Foundation
+import ClusterMap
 
 struct ApplicableQuest {
     var quest: any Quest
@@ -90,27 +90,27 @@ class QuestsRepository: ObservableObject {
     
 }
 // Probably move somewhere else
-class DisplayUnitAnnotation: NSObject, MKAnnotation {
-    let displayUnit: DisplayUnit
+class DisplayUnitAnnotation: NSObject, MKAnnotation, CoordinateIdentifiable, Identifiable {
+    var displayUnit: DisplayUnit?
     var coordinate: CLLocationCoordinate2D
-
+    let id: String
     var title: String? {
-        return displayUnit.title
+        return displayUnit?.title
     }
 
     var subtitle: String? {
-        return displayUnit.description
+        return displayUnit?.description
     }
 
-    init(displayUnit: DisplayUnit, coordinate: CLLocationCoordinate2D) {
-        self.displayUnit = displayUnit
+    init(id: String, coordinate: CLLocationCoordinate2D)  {
+        self.id = id
         self.coordinate = coordinate
     }
     
     
     override func isEqual(_ object: Any?) -> Bool {
         guard let object = object as? DisplayUnitAnnotation else  {return false}
-        return self.displayUnit.id == object.displayUnit.id
+        return self.id == object.id
 //        guard let quest = self.displayUnit.parent as? (any Quest) else {return false}
 //        guard let rData = quest.relationData, let oDat = object.displayUnit.parent?.relationData as? Element else {return false}
 //        
@@ -118,19 +118,29 @@ class DisplayUnitAnnotation: NSObject, MKAnnotation {
     }
     
     override var hash: Int {
-           return displayUnit.id.hashValue
+           return id.hashValue
        }
 }
 
-struct DisplayUnitWithCoordinate: Identifiable {
+struct DisplayUnitWithCoordinate: Identifiable, Equatable {
     let displayUnit: DisplayUnit
     let coordinateInfo: CLLocationCoordinate2D
     let id: Int64
     var isHidden: Bool
 
     var annotation: DisplayUnitAnnotation {
-        return DisplayUnitAnnotation(displayUnit: displayUnit, coordinate: coordinateInfo)
+        let annotation = DisplayUnitAnnotation(id: displayUnit.id, coordinate: coordinateInfo)
+        annotation.displayUnit = displayUnit
+        return annotation
     }
+    
+    static func == (lhs: Self, rhs: Self) -> Bool {
+            lhs.id == rhs.id &&
+            lhs.isHidden == rhs.isHidden &&
+            lhs.coordinateInfo.latitude == rhs.coordinateInfo.latitude &&
+            lhs.coordinateInfo.longitude == rhs.coordinateInfo.longitude
+        }
+    
 }
 
 extension QuestsRepository {
@@ -141,4 +151,27 @@ extension QuestsRepository {
     func questsForQuery(_ query: String) -> [LongQuest]? {
         return longQuestModels.first(where: {$0.questQuery == query})?.quests
     }
+}
+
+class CluserableDisplayUnitAnnotation: DisplayUnitAnnotation  {
+    var memberAnnotations = [MKAnnotation]()
+    
+    override func isEqual(_ object: Any?) -> Bool {
+        guard let object = object as? CluserableDisplayUnitAnnotation else { return false }
+
+        if self === object {
+            return true
+        }
+
+        if coordinate != object.coordinate {
+            return false
+        }
+
+        if memberAnnotations.count != object.memberAnnotations.count {
+            return false
+        }
+
+        return memberAnnotations.map(\.coordinate) == object.memberAnnotations.map(\.coordinate)
+    }
+    
 }

@@ -65,8 +65,3 @@ enum CrossingAnswer: String {
     case no = "No"
     case none = "none"
 }
-
-struct TextItem<T> {
-    let value: T
-    let titleId: String
-}

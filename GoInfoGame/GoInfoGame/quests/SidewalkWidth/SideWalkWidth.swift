@@ -9,8 +9,19 @@ import Foundation
 import UIKit
 import SwiftUI
 import osmparser
+import CoreLocation
 
 class SideWalkWidth : QuestBase, Quest {
+    var iconName: String = "notes"
+    
+    var id: Int64 = 0
+    
+    var type: osmparser.ElementType = .way
+    
+    var elementType: String = ""
+    
+    var polylines: [CLLocationCoordinate2D]?
+    
     var questId: String = "3"
     
     typealias AnswerClass = WidthAnswer
@@ -23,7 +34,7 @@ class SideWalkWidth : QuestBase, Quest {
                         or foot = yes)
                         and !width
                         """
-    var icon: UIImage = #imageLiteral(resourceName: "sidewalk-width-img")
+//    var icon: UIImage = #imageLiteral(resourceName: "sidewalk-width-img")
     var wikiLink: String = ""
     var changesetComment: String = ""
     var displayUnit: DisplayUnit {

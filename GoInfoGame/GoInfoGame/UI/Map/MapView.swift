@@ -77,10 +77,10 @@ struct MapView: View {
                           selectedQuest: $viewModel.selectedQuest,
                           shouldShowPolyline: $shouldShowPolyline,
                       
-                          isPresented: $isPresented, isUserSettingsPresented: $showUserSettingsSheet, selectedAnnotations: $viewModel.selectedAnnotaions, isMultiSelectModeEnabled: $viewModel.isMultiSelectModeEnabled, selectedAnnotationType: $viewModel.selectedAnnotationType, showMultiSelectionBottomSheet: $showMultiSelectionBottomSheet,
+                          isPresented: $isPresented, isUserSettingsPresented: $showUserSettingsSheet, selectedAnnotations: $viewModel.selectedAnnotaions, isMultiSelectModeEnabled: $viewModel.isMultiSelectModeEnabled, selectedAnnotationType: $viewModel.selectedAnnotationType, showMultiSelectionBottomSheet: $showMultiSelectionBottomSheet ,
                       onMapViewCreated: { map in
                 self.mapViewRef = map
-            },
+            } ,
                       contextualInfo: { contextualInfo in
                 print(contextualInfo)
                 selectedDetent = .fraction(0.8)
@@ -162,7 +162,7 @@ struct MapView: View {
                             
             if !viewModel.selectedAnnotaions.isEmpty,
                let selectedAnnotationType = viewModel.selectedAnnotationType,
-               let image = viewModel.selectedAnnotaions.first?.displayUnit.parent?.icon {
+               let image = UIImage(named: viewModel.selectedAnnotaions.first?.displayUnit?.parent?.iconName ?? "notes") {
                 
                 MultiQuestSelectionBottomSheet(
                     selectedAnnotationType: selectedAnnotationType,
@@ -427,9 +427,34 @@ struct MapView: View {
     }
     
     func isBBoxValid(_ bbox: BBox) -> Bool {
-        let latDelta = bbox.maxLat - bbox.minLat
-        let lonDelta = bbox.maxLon - bbox.minLon
-        return latDelta * lonDelta <= 1.0
+        return isBBoxValid(minLat: bbox.minLat, minLon: bbox.minLon, maxLat: bbox.maxLat, maxLon: bbox.maxLon)
+    }
+    
+    private func isBBoxValid(minLat: Double, minLon: Double, maxLat: Double, maxLon: Double) -> Bool {
+        let latDistanceKm = haversineDistance(lat1: minLat, lon1: minLon, lat2: maxLat, lon2: minLon)
+        let lonDistanceKm = haversineDistance(lat1: minLat, lon1: minLon, lat2: minLat, lon2: maxLon)
+
+        let areaKm2 = latDistanceKm * lonDistanceKm
+        print("Area: \(areaKm2) km²")
+
+        return areaKm2 < 12.0 // allow small tolerance
+    }
+
+    private func haversineDistance(lat1: Double, lon1: Double, lat2: Double, lon2: Double) -> Double {
+        let earthRadiusKm = 6371.0
+        let dLat = degreesToRadians(lat2 - lat1)
+        let dLon = degreesToRadians(lon2 - lon1)
+
+        let a = sin(dLat / 2) * sin(dLat / 2) +
+                cos(degreesToRadians(lat1)) * cos(degreesToRadians(lat2)) *
+                sin(dLon / 2) * sin(dLon / 2)
+        let c = 2 * atan2(sqrt(a), sqrt(1 - a))
+
+        return earthRadiusKm * c
+    }
+
+    private func degreesToRadians(_ degrees: Double) -> Double {
+        return degrees * .pi / 180.0
     }
 }
 

@@ -65,8 +65,8 @@ class MapViewModel: ObservableObject {
                     }
                     
                     for quest in self.selectedAnnotaions {
-                        print("Quest ID: \(quest.displayUnit.id) Tags: \(tags)")
-                        if let longElementQuest = quest.displayUnit.parent as? LongElementQuest {
+                        print("Quest ID: \(quest.id) Tags: \(tags)")
+                        if let longElementQuest = quest.displayUnit?.parent as? LongElementQuest {
                             longElementQuest.onAnswer(answer: tags)
                         }
                     }
@@ -99,6 +99,9 @@ class MapViewModel: ObservableObject {
     }
     
     func fetchOSMDataFor(from bboxSource: BBoxSource) {
+        if isLoading {
+            return
+        }
         isLoading = true
         let bBox: BBox
            switch bboxSource {
@@ -115,7 +118,7 @@ class MapViewModel: ObservableObject {
 
         if let workspaceID = KeychainManager.load(key: "workspaceID") {
             
-            ApiManager.shared.performRequest(to: .fetchOSMElements(bBox.minLon, bBox.minLat, bBox.maxLon, bBox.maxLat, workspaceID), setupType: .osm, modelType: OSMMapDataResponse.self) { result in
+            ApiManager.shared.performRequest(to: .fetchOSMElements(bBox.minLon, bBox.minLat, bBox.maxLon, bBox.maxLat, workspaceID), setupType: .osm, modelType: OSMMapDataResponse.self) { [unowned self] result in
                 switch result {
                 case .success(let success):
                    let osmElements = success.getOSMElements()
@@ -124,9 +127,11 @@ class MapViewModel: ObservableObject {
                     let response = Array(osmElements.values)
                     let allValues = response
                     
-                    DispatchQueue.main.async {
+                    DispatchQueue.main.async { [unowned self, allValues] in
                         self.dbInstance.saveOSMElements(allValues) // Save all where there are tags
-                        self.items = AppQuestManager.shared.fetchQuestsFromDB()
+                        autoreleasepool { [unowned self] in
+                            self.items = AppQuestManager.shared.fetchQuestsFromDB()
+                        }
                         self.isLoading = false
                         if self.items.count == 0 {self.refreshMap = UUID()}
                     }
