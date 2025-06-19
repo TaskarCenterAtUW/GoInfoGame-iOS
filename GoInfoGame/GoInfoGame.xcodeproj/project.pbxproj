@@ -183,6 +183,7 @@
 		C77EEBCF2DE59D3200494CB4 /* UndoMerge.swift in Sources */ = {isa = PBXBuildFile; fileRef = C77EEBCE2DE59D3200494CB4 /* UndoMerge.swift */; };
 		C7ED070F2D70E2EC001FFFE2 /* TokenRefresher.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7ED070E2D70E2EC001FFFE2 /* TokenRefresher.swift */; };
 		CFECB318461BB876B1621890 /* Pods_osmapi.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C4F37DA661B22FA87DF8282F /* Pods_osmapi.framework */; };
+		FA0E25792DF8C805005ED922 /* MockTDEIAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA0E25782DF8C7FD005ED922 /* MockTDEIAPI.swift */; };
 		FA0F02702DF57170000CB52B /* LoadingOverlay.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA0F026F2DF57163000CB52B /* LoadingOverlay.swift */; };
 		FA0F02722DF578F0000CB52B /* ErrorAlert.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA0F02712DF578EC000CB52B /* ErrorAlert.swift */; };
 		FA0F02742DF5AE29000CB52B /* QuestSheetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA0F02732DF5AE24000CB52B /* QuestSheetView.swift */; };
@@ -194,6 +195,7 @@
 		FA0F02892DF5B588000CB52B /* CustomTouchGestureRecognizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA0F02882DF5B588000CB52B /* CustomTouchGestureRecognizer.swift */; };
 		FA0F028B2DF5B5F5000CB52B /* CustomAnnotationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA0F028A2DF5B5F5000CB52B /* CustomAnnotationView.swift */; };
 		FA0F028F2DF5B62E000CB52B /* MapUserTrackingMode.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA0F028E2DF5B628000CB52B /* MapUserTrackingMode.swift */; };
+		FA0F02912DF6CB64000CB52B /* ContextualInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA0F02902DF6CB5E000CB52B /* ContextualInfo.swift */; };
 		FA18CAE22CC7CD89008247F2 /* KartaviewViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA18CAE12CC7CD89008247F2 /* KartaviewViewModel.swift */; };
 		FA18CAE52CC7D0DD008247F2 /* SequenceModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA18CAE42CC7D0DD008247F2 /* SequenceModel.swift */; };
 		FA18CAE72CC80A34008247F2 /* UploadPhotoModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA18CAE62CC80A34008247F2 /* UploadPhotoModel.swift */; };
@@ -549,6 +551,7 @@
 		C96303080D26026265099E0E /* Pods-GoInfoGame.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-GoInfoGame.release.xcconfig"; path = "Target Support Files/Pods-GoInfoGame/Pods-GoInfoGame.release.xcconfig"; sourceTree = "<group>"; };
 		D76D8E22AC705A38AFEA78B1 /* Pods-GoInfoGame-GoInfoGameUITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-GoInfoGame-GoInfoGameUITests.debug.xcconfig"; path = "Target Support Files/Pods-GoInfoGame-GoInfoGameUITests/Pods-GoInfoGame-GoInfoGameUITests.debug.xcconfig"; sourceTree = "<group>"; };
 		F008D431593E568E75C48C84 /* Pods-GoInfoGame.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-GoInfoGame.debug.xcconfig"; path = "Target Support Files/Pods-GoInfoGame/Pods-GoInfoGame.debug.xcconfig"; sourceTree = "<group>"; };
+		FA0E25782DF8C7FD005ED922 /* MockTDEIAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockTDEIAPI.swift; sourceTree = "<group>"; };
 		FA0F026F2DF57163000CB52B /* LoadingOverlay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingOverlay.swift; sourceTree = "<group>"; };
 		FA0F02712DF578EC000CB52B /* ErrorAlert.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorAlert.swift; sourceTree = "<group>"; };
 		FA0F02732DF5AE24000CB52B /* QuestSheetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuestSheetView.swift; sourceTree = "<group>"; };
@@ -560,6 +563,7 @@
 		FA0F02882DF5B588000CB52B /* CustomTouchGestureRecognizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomTouchGestureRecognizer.swift; sourceTree = "<group>"; };
 		FA0F028A2DF5B5F5000CB52B /* CustomAnnotationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomAnnotationView.swift; sourceTree = "<group>"; };
 		FA0F028E2DF5B628000CB52B /* MapUserTrackingMode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapUserTrackingMode.swift; sourceTree = "<group>"; };
+		FA0F02902DF6CB5E000CB52B /* ContextualInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContextualInfo.swift; sourceTree = "<group>"; };
 		FA18CAE12CC7CD89008247F2 /* KartaviewViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KartaviewViewModel.swift; sourceTree = "<group>"; };
 		FA18CAE42CC7D0DD008247F2 /* SequenceModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SequenceModel.swift; sourceTree = "<group>"; };
 		FA18CAE62CC80A34008247F2 /* UploadPhotoModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadPhotoModel.swift; sourceTree = "<group>"; };
@@ -1362,6 +1366,14 @@
 			path = Profile;
 			sourceTree = "<group>";
 		};
+		FA0E25772DF8C7F2005ED922 /* Mocks */ = {
+			isa = PBXGroup;
+			children = (
+				FA0E25782DF8C7FD005ED922 /* MockTDEIAPI.swift */,
+			);
+			path = Mocks;
+			sourceTree = "<group>";
+		};
 		FA0F027B2DF5AF6B000CB52B /* Shared */ = {
 			isa = PBXGroup;
 			children = (
@@ -1410,6 +1422,7 @@
 		FA0F02852DF5B4F0000CB52B /* Helpers */ = {
 			isa = PBXGroup;
 			children = (
+				FA0F02902DF6CB5E000CB52B /* ContextualInfo.swift */,
 				FA0F028E2DF5B628000CB52B /* MapUserTrackingMode.swift */,
 				FA0F02882DF5B588000CB52B /* CustomTouchGestureRecognizer.swift */,
 				FA0F02862DF5B50C000CB52B /* ClusterWrapper.swift */,
@@ -1544,6 +1557,7 @@
 		FA9387A12DE58B8900F7A460 /* login */ = {
 			isa = PBXGroup;
 			children = (
+				FA0E25772DF8C7F2005ED922 /* Mocks */,
 				FA9387A22DE58BA800F7A460 /* POSMLoginViewModelTests.swift */,
 			);
 			path = login;
@@ -2404,6 +2418,7 @@
 				A4E711A22B57A3B400C9DE08 /* SideWalkWidth.swift in Sources */,
 				05CB71E02B0FAFD200DED821 /* GenericUIViewControllerRepresentable.swift in Sources */,
 				FAFFC9812DE0FECC00072B11 /* TDEIAPIProtocol.swift in Sources */,
+				FA0F02912DF6CB64000CB52B /* ContextualInfo.swift in Sources */,
 				971F9FE42B84CDBF005397CC /* CrossingType.swift in Sources */,
 				FA0F02762DF5AEA2000CB52B /* CustomSheetView.swift in Sources */,
 				97AC1C062B6A45B0004F0BF4 /* SideWalkValidation.swift in Sources */,
@@ -2531,6 +2546,7 @@
 			files = (
 				A444AC8F2B5E944E006C74F7 /* TestQuest.swift in Sources */,
 				FA87A8132B6AC019000A6BEA /* StepsRampTests.swift in Sources */,
+				FA0E25792DF8C805005ED922 /* MockTDEIAPI.swift in Sources */,
 				188843AF2B5FB32D0008DCF8 /* WayLitTests.swift in Sources */,
 				A495DF2B2B68D6EC00478E44 /* TestQuestUtils.swift in Sources */,
 				FA9387AD2DE5DDD700F7A460 /* MockWorkspaceAPI.swift in Sources */,
