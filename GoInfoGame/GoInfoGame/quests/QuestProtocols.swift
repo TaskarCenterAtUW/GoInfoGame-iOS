@@ -19,15 +19,18 @@ protocol Quest {
     associatedtype AnswerClass // The class that represents answer
     var title:String {get}
     var filter: String {get}
-    var icon: UIImage {get}
+    var iconName: String {get}
     var wikiLink: String {get}
     var changesetComment: String {get}
+    var id: Int64 {get}
+    var type: ElementType {get}
+    var elementType: String {get}
     var form : AnyView {get}
-    var relationData : Element? {get set}
     func onAnswer(answer:AnswerClass)
     var displayUnit: DisplayUnit { get}
     var filterExpression : ElementFilterExpression? { get  }
     var questId: String { get }
+    var polylines: [CLLocationCoordinate2D]? { get }
     
     func copyWithElement(element: Element) -> any Quest // Not sure.
 }

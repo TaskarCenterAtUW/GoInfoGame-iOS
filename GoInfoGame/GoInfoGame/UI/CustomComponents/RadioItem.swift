@@ -7,6 +7,11 @@
 
 import SwiftUI
 
+struct TextItem<T> {
+    let value: T
+    let titleId: String
+}
+
 struct RadioItem<T>: View {
     let textItem: TextItem<T>
     let isSelected: Bool
