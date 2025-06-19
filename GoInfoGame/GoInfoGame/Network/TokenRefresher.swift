@@ -13,7 +13,6 @@ class TokenRefresher {
     private var isRefreshing = false
     private var refreshCompletionHandlers: [(Bool) -> Void] = []
     private let refreshQueue = DispatchQueue(label: "TokenRefreshQueue", attributes: .concurrent)
-    
 
     func refreshToken(completion: @escaping (Bool) -> Void) {
         refreshQueue.async(flags: .barrier) { [weak self] in
@@ -25,45 +24,54 @@ class TokenRefresher {
             }
 
             self.isRefreshing = true
-        }
-        let refreshToken = KeychainManager.load(key: "refreshToken")
-        DispatchQueue.main.async {
-            AuthSessionManager.shared.validateAccessToken()
-//            if let appDelegate = UIApplication.shared.delegate as? AppDelegate {
-//                appDelegate.invalidateRefreshTokenTimer()
-//            }
-        }
-        
-        TDEIAPIManager.shared.refreshToken(refreshToken: refreshToken ?? "") { [weak self] result in
-            guard let self = self else { return }
-            
-            var success = false
-            switch result {
-            case .failure(let error):
-                print(error)
-                success = false
-                break
-            case .success(let resp):
-                _ = KeychainManager.save(key: "refreshToken", data: resp.refreshToken)
-                _ = KeychainManager.save(key: "accessToken", data: resp.accessToken)
-                UserDefaults.standard.setValue(resp.expiresIn, forKey: "accessToken_expire_in")
-                UserDefaults.standard.setValue(Date().timeIntervalSince1970, forKey: "accessToken_Generate")
-                DispatchQueue.main.async {
-                    AuthSessionManager.shared.validateAccessToken()
-//                    if let appDelegate = UIApplication.shared.delegate as? AppDelegate {
-//                        appDelegate.validateAccessToken()
-//                    }
+            self.refreshCompletionHandlers.append(completion)
+
+            let refreshToken = KeychainManager.load(key: "refreshToken") ?? ""
+            TDEIAPIManager.shared.refreshToken(refreshToken: refreshToken) { [weak self] result in
+                guard let self = self else { return }
+
+                var success = false
+                switch result {
+                case .failure(let error):
+                    print("Token refresh failed: \(error)")
+                    success = false
+                case .success(let resp):
+                    _ = KeychainManager.save(key: "refreshToken", data: resp.refreshToken)
+                    _ = KeychainManager.save(key: "accessToken", data: resp.accessToken)
+                    UserDefaults.standard.set(resp.expiresIn, forKey: "accessToken_expire_in")
+                    UserDefaults.standard.set(Date().timeIntervalSince1970, forKey: "accessToken_Generate")
+                    AuthSessionManager.shared.updateToken(resp.accessToken)
+                    success = true
                 }
-                success = true
-                break
-                
+
+                self.refreshQueue.async(flags: .barrier) {
+                    self.isRefreshing = false
+                    self.refreshCompletionHandlers.forEach { $0(success) }
+                    self.refreshCompletionHandlers.removeAll()
+                }
             }
-            self.refreshQueue.async(flags: .barrier) {
-                self.isRefreshing = false
-                self.refreshCompletionHandlers.forEach { $0(success) }
-                self.refreshCompletionHandlers.removeAll()
+        }
+    }
+
+    func scheduleRefresh() {
+        DispatchQueue.main.async {
+            AuthSessionManager.shared.invalidateRefreshTokenTimer()
+
+            let tokenGeneratedAt = UserDefaults.standard.double(forKey: "accessToken_Generate")
+            guard tokenGeneratedAt > 0 else { return }
+
+            let expireIn = UserDefaults.standard.integer(forKey: "accessToken_expire_in")
+            let fireTime = Double(expireIn) * 0.8
+            let interval = Date().timeIntervalSince1970 - tokenGeneratedAt
+
+            if interval >= fireTime {
+                self.refreshToken { _ in }
+            } else {
+                AuthSessionManager.shared.refreshTokenTimer = Timer.scheduledTimer(withTimeInterval: fireTime - interval, repeats: false) { _ in
+                    self.refreshToken { _ in }
+                }
             }
-            completion(success)
         }
     }
 }
+
