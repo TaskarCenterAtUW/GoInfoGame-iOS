@@ -162,3 +162,13 @@ extension UIApplication {
         return UIApplication.shared.connectedScenes.flatMap { ($0 as? UIWindowScene)?.windows ?? [] }.first { $0.isKeyWindow }
     }
 }
+
+extension UIImage {
+    func resized(to size: CGSize) -> UIImage? {
+        let format = UIGraphicsImageRendererFormat()
+        format.scale = 1
+        return UIGraphicsImageRenderer(size: size, format: format).image { _ in
+            self.draw(in: CGRect(origin: .zero, size: size))
+        }
+    }
+}
