@@ -94,11 +94,13 @@ struct PosmLoginView: View {
                                     } else {
                                         print("Missing credentials in Keychain")
                                         viewModel.hasLoginFailed = true
+                                        viewModel.loginFailedMessage = "Invalid Credentials"
                                     }
 
                                 case .failure(let message), .unavailable(let message):
                                     print("Biometric login failed: \(message)")
                                     viewModel.hasLoginFailed = true
+                                    viewModel.loginFailedMessage = message
                                 }
                             }
                         }) {
@@ -109,7 +111,7 @@ struct PosmLoginView: View {
                     }
                     
                     if viewModel.hasLoginFailed {
-                        Text("Invalid Credentials")
+                        Text(viewModel.loginFailedMessage ??  "Invalid Credentials")
                             .foregroundColor(.red)
                             .padding(.top, 10)
                     }
@@ -127,7 +129,7 @@ struct PosmLoginView: View {
                 InitialView()
             }
         }
-        .alert("Invalid Credentials", isPresented: $viewModel.shouldShowValidationAlert) {
+        .alert(viewModel.errorMessage ?? "Invalid Credentials", isPresented: $viewModel.shouldShowValidationAlert) {
             Button("OK", role: .cancel) { }
         }
         .onReceive(NotificationCenter.default.publisher(for: Notification.Name("SessionExpired"))) { notification in

@@ -13,6 +13,7 @@ class PosmLoginViewModel: ObservableObject {
     @Published var username: String = ""
     @Published var password: String = ""
     @Published var hasLoginFailed: Bool = false
+    @Published var loginFailedMessage: String? = nil
     @Published var isLoginSuccess: Bool = false
     @Published var errorMessage: String?
     @Published var isLoading = false
@@ -28,6 +29,7 @@ class PosmLoginViewModel: ObservableObject {
         } else if password.isEmpty {
             errorMessage = "Password is required."
         } else {
+            errorMessage = nil
             return true
         }
 
