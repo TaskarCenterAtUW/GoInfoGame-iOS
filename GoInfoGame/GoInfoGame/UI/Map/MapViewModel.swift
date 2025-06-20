@@ -72,10 +72,8 @@ class MapViewModel: ObservableObject {
                     }
                     self.selectedAnnotaions.removeAll()
                     self.selectedAnnotationType = nil
-                    DispatchQueue.main.async {
-                        self.isMultiSelectModeEnabled = false
-                        self.selectedAnnotaions = Set<DisplayUnitAnnotation>()
-                    }
+                    self.isMultiSelectModeEnabled = false
+                    self.selectedAnnotaions = Set<DisplayUnitAnnotation>()
                 }
             }
             return displayUnit
