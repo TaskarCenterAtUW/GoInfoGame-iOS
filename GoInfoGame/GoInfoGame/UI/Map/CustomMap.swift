@@ -78,18 +78,22 @@ struct CustomMap: UIViewRepresentable {
     // Updates the UIView with new data
     func updateUIView(_ mapView: MKMapView, context: Context) {
         //  mapView.setCenter(userLocation, animated: true)
-        if isMultiSelectModeEnabled,
-           selectedAnnotations.isEmpty {
-            Task { await manageAnnotations(mapView, context: context) }
-        }
-        context.coordinator.updateUserRegion(mapView)
-        context.coordinator.updateVisibleAnnotations(in: mapView)
-        if context.coordinator.previousAnnotations != items {
-            context.coordinator.previousAnnotations = items
-            Task {
-                await manageAnnotations(mapView, context: context)
+        Task {
+            
+            if context.coordinator.previosMultiSelectionMode != isMultiSelectModeEnabled {
+                context.coordinator.previosMultiSelectionMode = isMultiSelectModeEnabled
+                /*Task {*/ await manageAnnotations(mapView, context: context) /*}*/
+            }
+            context.coordinator.updateUserRegion(mapView)
+            context.coordinator.updateVisibleAnnotations(in: mapView)
+            if context.coordinator.previousAnnotations != items {
+                context.coordinator.previousAnnotations = items
+//                Task {
+                    await manageAnnotations(mapView, context: context)
+//                }
             }
         }
+        
         
         
         // Remove existing overlays
@@ -153,6 +157,7 @@ struct CustomMap: UIViewRepresentable {
         private var zoomReachedLimit: Bool = false
         
         var previousAnnotations: [DisplayUnitWithCoordinate] = []
+        var previosMultiSelectionMode: Bool = false
         private var annotations: [DisplayUnitAnnotation] = []
         private(set) var clusterManager: ClusterManager = ClusterManager<DisplayUnitAnnotation>(configuration: .init(maxZoomLevel: 17, minCountForClustering: 2, clusterPosition: .nearCenter))
         
@@ -529,9 +534,9 @@ struct CustomMap: UIViewRepresentable {
         
         await context.coordinator.clusterManager.removeAll()
         await context.coordinator.reloadMap()
-        let existingCoordinates = mapView.annotations.compactMap {
-             ($0 as? DisplayUnitAnnotation)?.coordinate
-         }
+//        let existingCoordinates = mapView.annotations.compactMap {
+//             ($0 as? DisplayUnitAnnotation)?.coordinate
+//         }
         
          // Check for modals or settings before changing map
          if isPresented  {
