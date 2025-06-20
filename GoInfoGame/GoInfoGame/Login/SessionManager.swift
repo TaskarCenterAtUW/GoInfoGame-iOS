@@ -10,7 +10,9 @@ import Foundation
 //@MainActor
 final class SessionManager: ObservableObject {
     static let shared = SessionManager()
-    private init() {}
+    private init() {
+        username = KeychainManager.load(.username, for: APIConfiguration.shared.environment)
+    }
 
     @Published var isLoginSuccessful: Bool = false
     @Published var hasLoginFailed: Bool = false
