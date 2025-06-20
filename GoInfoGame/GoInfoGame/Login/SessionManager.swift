@@ -7,13 +7,14 @@
 
 import Foundation
 
-@MainActor
+//@MainActor
 final class SessionManager: ObservableObject {
     static let shared = SessionManager()
     private init() {}
 
     @Published var isLoginSuccessful: Bool = false
     @Published var hasLoginFailed: Bool = false
+    private(set) var username: String? = nil
 
     var lastLoginPassword: String?
 
@@ -29,21 +30,22 @@ final class SessionManager: ObservableObject {
             setupType: .login,
             modelType: PosmLoginSuccessResponse.self
         ) { result in
-            DispatchQueue.main.async {
+            DispatchQueue.main.async { [weak self] in
                 switch result {
                 case .success(let response):
-                    _ = KeychainManager.save(.username, value: username, for: environment)
+                    self?.username = username
                     _ = KeychainManager.save(key: "accessToken", data: response.accessToken)
-                    self.lastLoginPassword = password
+                    self?.lastLoginPassword = password
 
-                    self.isLoginSuccessful = true
-                    self.hasLoginFailed = false
+                    self?.isLoginSuccessful = true
+                    self?.hasLoginFailed = false
                     completion(true, "")
 
                 case .failure(let error):
                     print("Login failed:", error)
-                    self.isLoginSuccessful = false
-                    self.hasLoginFailed = true
+                    self?.username = nil
+                    self?.isLoginSuccessful = false
+                    self?.hasLoginFailed = true
                     completion(false, "Invalid credentials")
                 }
             }
