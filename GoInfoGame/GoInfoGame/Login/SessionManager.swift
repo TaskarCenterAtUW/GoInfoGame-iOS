@@ -45,7 +45,6 @@ final class SessionManager: ObservableObject {
 
                 case .failure(let error):
                     print("Login failed:", error)
-                    self?.username = nil
                     self?.isLoginSuccessful = false
                     self?.hasLoginFailed = true
                     completion(false, "Invalid credentials")
@@ -67,7 +66,6 @@ final class SessionManager: ObservableObject {
 
     func logout(environment: APIEnvironment, clearBiometricCreds: Bool = false) {
         if clearBiometricCreds {
-            _ = KeychainManager.delete(.username, for: environment)
             _ = KeychainManager.delete(.password, for: environment)
             setBiometricEnabled(false, for: environment)
         }

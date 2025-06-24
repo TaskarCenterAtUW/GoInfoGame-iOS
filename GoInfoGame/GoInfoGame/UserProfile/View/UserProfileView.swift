@@ -39,8 +39,12 @@ struct UserProfileView: View {
                     }
                     .padding([.bottom], 200)
                     
-                    BiometricToggleView(isEnabled: $useBiometricID) {
-                        showPasswordAuthenticationView = true
+                    BiometricToggleView(isEnabled: $useBiometricID) {status in
+                        if status {
+                            showPasswordAuthenticationView = true
+                        } else {
+                            SessionManager.shared.logout(environment: APIConfiguration.shared.environment, clearBiometricCreds: true)
+                        }
                     }
                     .padding([.bottom], 30)
                     
@@ -94,10 +98,6 @@ struct UserProfileView: View {
     private var logOutButton: some View {
         Button {
             Utilities.clearAllData()
-            
-            if useBiometricID == false {
-                SessionManager.shared.logout(environment: APIConfiguration.shared.environment, clearBiometricCreds: true)
-            }
             
             if let window = UIApplication.window() {
                    window.rootViewController = UIHostingController(rootView: PosmLoginView())

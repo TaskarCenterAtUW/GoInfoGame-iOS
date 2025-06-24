@@ -10,7 +10,7 @@ import LocalAuthentication
 
 struct BiometricToggleView: View {
     @Binding var isEnabled: Bool
-    let onToggleOn: () -> Void
+    let onToggleOn: (_ status: Bool) -> Void
 
     private var biometricToggleText: String {
         let context = LAContext()
@@ -24,12 +24,8 @@ struct BiometricToggleView: View {
         Toggle(isOn: Binding(
             get: { isEnabled },
             set: { newValue in
-                let wasOff = !isEnabled
                 isEnabled = newValue
-                if newValue && wasOff {
-                    // User turned it on manually
-                    onToggleOn()
-                }
+                onToggleOn(newValue)
             }
         )) {
             Text(biometricToggleText)
