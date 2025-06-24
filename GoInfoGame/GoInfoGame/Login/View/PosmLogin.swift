@@ -132,6 +132,16 @@ struct PosmLoginView: View {
         .alert(viewModel.errorMessage ?? "Invalid Credentials", isPresented: $viewModel.shouldShowValidationAlert) {
             Button("OK", role: .cancel) { }
         }
+        .alert("Enable Biometric Login?", isPresented: $viewModel.showBiometricPrompt) {
+            Button("Enable") {
+                viewModel.enableBiometrics(enable: true)
+            }
+            Button("Not Now", role: .cancel) {
+                viewModel.enableBiometrics(enable: false)
+            }
+        } message: {
+            Text("Would you like to use Face ID or Touch ID for faster logins?")
+        }
         .onReceive(NotificationCenter.default.publisher(for: Notification.Name("SessionExpired"))) { notification in
                     showAlert = true
                 }

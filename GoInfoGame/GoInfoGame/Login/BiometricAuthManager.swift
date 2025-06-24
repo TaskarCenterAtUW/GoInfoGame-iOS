@@ -15,6 +15,10 @@ struct BiometricAuthManager {
         case failure(String)
         case unavailable(String)
     }
+    
+    static func canEvaluateBiometrics() -> Bool {
+        return LAContext().canEvaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, error: nil)
+    }
 
     static func authenticate(reason: String = "Authenticate to proceed", completion: @escaping (BiometricAuthResult) -> Void) {
         let context = LAContext()
@@ -33,9 +37,7 @@ struct BiometricAuthManager {
             }
         } else {
             let message = error?.localizedDescription ?? "Biometric authentication not available."
-            DispatchQueue.main.async {
-                completion(.unavailable(message))
-            }
+            completion(.unavailable(message))
         }
     }
 

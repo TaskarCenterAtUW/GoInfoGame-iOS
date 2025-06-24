@@ -55,10 +55,14 @@ final class SessionManager: ObservableObject {
     }
 
     func savePasswordForBiometric(for environment: APIEnvironment) {
-        if let password = lastLoginPassword {
+        if let password = lastLoginPassword,
+         let username = username {
             _ = KeychainManager.save(.password, value: password, for: environment)
+            _ = KeychainManager.save(.username, value: username, for: environment)
+            setBiometricEnabled(true, for: environment)
+        } else {
+            print("❌ not able to save the biometric credentials.")
         }
-        setBiometricEnabled(true, for: environment)
     }
 
     func logout(environment: APIEnvironment, clearBiometricCreds: Bool = false) {
