@@ -32,6 +32,8 @@ struct MapView: View {
     
     @State private var useBingMaps = false
     
+    @State private var showSattiliteSelectionSheet: Bool = false
+    
     @State private var tappedCoordinate: CLLocationCoordinate2D? = nil
     
     @State private var annotationCoordinate: CLLocationCoordinate2D? = nil
@@ -155,7 +157,8 @@ struct MapView: View {
                         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottomLeading)
                         Spacer()
                         FloatingActionButtonStack(mapButtonAction: {
-                            useBingMaps.toggle()
+                            viewModel.updateOptions(for: mapViewRef?.region.center ?? CLLocationCoordinate2D(latitude: 0.0, longitude: 0.0))
+                            viewModel.showSatellitePicker = true
                         }, useBingMaps: useBingMaps)
                     }
                 }
@@ -232,7 +235,31 @@ struct MapView: View {
                     .interactiveDismissDisabled()
                     .presentationDragIndicator(.hidden)
             }
-        
+            .sheet(isPresented: $viewModel.showSatellitePicker) {
+                SatellitePickerSheet(
+                    options: $viewModel.availableOptions,
+                    selected: $viewModel.selectedOption,
+                    onSelect: { selected in
+                        viewModel.selectedOption = selected
+                        viewModel.showSatellitePicker = false
+                        // Remove old tile overlays (keep polygons, etc. if needed)
+                        let oldTileOverlays = mapViewRef?.overlays.filter { $0 is WMTSSeever }
+                        mapViewRef?.removeOverlays(oldTileOverlays ?? [])
+                        switch selected {
+                        case .none:
+                            mapViewRef?.mapType = .standard
+                        case .apple:
+                            mapViewRef?.mapType = .satellite
+                        case .wmts(let server):
+                            let layer = WMTSSeever(satelliteServer: server)
+                            mapViewRef?.addOverlay(layer, level: .aboveLabels)
+                        }
+                    }
+                )
+                .background(Color(red: 248/255, green: 248/255, blue: 248/255))
+                .presentationDetents([.fraction(0.36)])
+                .presentationDragIndicator(.visible)
+            }
             .sheet(isPresented: $showUserSettingsSheet) {
                 UserSettingsView(selectedWorkspace: selectedWorkspace?.title ?? "", options: OptionModel.options, onNavigate: { navigate in
                     showUserSettingsSheet = false

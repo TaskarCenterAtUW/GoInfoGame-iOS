@@ -97,9 +97,9 @@ struct CustomMap: UIViewRepresentable {
         
         
         // Remove existing overlays
-        mapView.overlays.forEach { mapView.removeOverlay($0) }
+//        mapView.overlays.forEach { mapView.removeOverlay($0) }
         
-        mapView.addOverlay(shadowOverlay)
+//        mapView.addOverlay(shadowOverlay)
 
         
            // Re-add overlays based on selection
