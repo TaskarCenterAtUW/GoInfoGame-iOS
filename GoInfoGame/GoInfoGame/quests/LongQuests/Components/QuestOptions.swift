@@ -112,10 +112,6 @@ struct QuestOptions: View {
                                                 label: option.choiceText,
                                                 isSelected: currentAnswer == option.value
                                             )
-                                            .onLongPressGesture {
-                                                selectedImageURL = imageUrl
-                                                selectedImageText = option.choiceText
-                                            }
                                         } else {
                                             ZStack {
                                                 Image("no_image")
@@ -161,7 +157,12 @@ struct QuestOptions: View {
                                     RoundedRectangle(cornerRadius: 8)
                                         .stroke(currentAnswer == option.value ? Color.blue : Color.clear, lineWidth: 3)
                                 )
-
+                                .onLongPressGesture {
+                                    if let imageUrl = option.imageURL, !imageUrl.isEmpty {
+                                        selectedImageURL = imageUrl
+                                        selectedImageText = option.choiceText
+                                    }
+                                }
                             }
                         }
 
@@ -222,7 +223,7 @@ struct QuestOptions: View {
 }
 
 #Preview {
-    QuestOptions(options: [QuestAnswerChoice(value: "yes", choiceText: "Yes, this roadway can be crossed safely.", imageURL: nil, choiceFollowUp: nil),
+    QuestOptions(options: [QuestAnswerChoice(value: "asphalt", choiceText: "Asphalt", imageURL: "https://raw.githubusercontent.com/TaskarCenterAtUW/tdei-tools/refs/heads/main/images/sidewalk/surface/asphalt_landscape.png", choiceFollowUp: nil),
                            QuestAnswerChoice(value: "no", choiceText: "No, this roadway is too wide to cross safely.", imageURL: nil, choiceFollowUp: nil)], selectedAnswerId: .constant(UUID()), onChoiceSelected: { qa in
         
     }, questType: GoInfoGame.QuestType.exclusiveChoice, currentAnswer: .constant("Binding<String?>")) { s in
