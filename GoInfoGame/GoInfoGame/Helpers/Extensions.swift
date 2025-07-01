@@ -10,6 +10,7 @@ import MapKit
 import RealmSwift
 import ARKit
 import SwiftUI
+import Combine
 
 
 // Extension to check if a polyline intersects with a coordinate
@@ -160,5 +161,28 @@ extension SCNGeometry {
 extension UIApplication {
     static func window() -> UIWindow? {
         return UIApplication.shared.connectedScenes.flatMap { ($0 as? UIWindowScene)?.windows ?? [] }.first { $0.isKeyWindow }
+    }
+    
+    var safeAreaBottomInset: CGFloat {
+        guard let windowScene = connectedScenes.first as? UIWindowScene,
+              let window = windowScene.windows.first(where: \.isKeyWindow) else {
+            return 0
+        }
+        return window.safeAreaInsets.bottom
+    }
+}
+
+extension Publishers {
+    static var keyboardHeight: AnyPublisher<CGFloat, Never> {
+        let willShow = NotificationCenter.default
+            .publisher(for: UIResponder.keyboardWillShowNotification)
+            .map { ($0.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? CGRect)?.height ?? 0 }
+
+        let willHide = NotificationCenter.default
+            .publisher(for: UIResponder.keyboardWillHideNotification)
+            .map { _ in CGFloat(0) }
+
+        return MergeMany(willShow, willHide)
+            .eraseToAnyPublisher()
     }
 }
