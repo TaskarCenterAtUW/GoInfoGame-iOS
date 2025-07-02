@@ -18,7 +18,7 @@ class StoredWay: Object {
     @Persisted(primaryKey: true) var id: Int64
     @Persisted var tags = Map<String,String>()
     @Persisted var version: Int = 0
-    @Persisted var timestamp : String = ""
+    @Persisted var timestamp : Date
     @Persisted var nodes: List<Int64> = List<Int64>()
     // Need to persist the points
     @Persisted var polyline: List<CLLocationCoordinate2D> = List<CLLocationCoordinate2D>()

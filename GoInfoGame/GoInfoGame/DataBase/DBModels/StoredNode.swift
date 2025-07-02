@@ -17,7 +17,7 @@ class StoredNode : Object {
     @Persisted(primaryKey: true) var id: Int64
     @Persisted var tags = Map<String,String>()
     @Persisted var version: Int = 0
-    @Persisted var timestamp : String = ""
+    @Persisted var timestamp : Date
     @Persisted var point: CLLocationCoordinate2D = CLLocationCoordinate2D(latitude: 0.0, longitude: 0.0)
         
     // Give another method that gives node

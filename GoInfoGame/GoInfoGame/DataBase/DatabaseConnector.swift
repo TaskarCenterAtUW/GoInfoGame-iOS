@@ -18,7 +18,23 @@ class DatabaseConnector {
     
     private init() {
         // Initialize Realm instance
-        realm = try! Realm()
+        let config = Realm.Configuration(schemaVersion: 1) { migration, oldSchemaVersion in
+            if oldSchemaVersion < 1 {
+                let formatter = DateFormatter()
+                formatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+                migration.enumerateObjects(ofType: StoredNode.className()) { oldObject, newObject in
+                    if let oldTimestamp = oldObject?["timestamp"] as? String {
+                        if let date = formatter.date(from: oldTimestamp) {
+                            newObject?["timestamp"] = date
+                        } else {
+                            newObject?["timestamp"] = Date()
+                        }
+                    }
+                }
+            }
+        }
+        
+        realm = try! Realm(configuration: config)
         if let realmURL = realm.configuration.fileURL {
             print("Realm Database Path: \(realmURL.path)")
         }
@@ -47,8 +63,6 @@ class DatabaseConnector {
             return !way.tags.isEmpty && !(way.tags["ext:link"] == "true")
         }
         
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
         do {
             try realm.write {
                 for node in nodes {
@@ -59,9 +73,8 @@ class DatabaseConnector {
                         storedElement.tags[key] = value
                     }
 //                    if let meta = node {
-                        let timestampString = dateFormatter.string(from: node.timestamp)
                         storedElement.version = node.version
-                        storedElement.timestamp = timestampString
+                        storedElement.timestamp = node.timestamp
 //                    }
                     if let asNode = node as? OSMNode{
                         // coordinate from lat long
@@ -79,7 +92,6 @@ class DatabaseConnector {
                 for way in ways {
                     let storedWay = StoredWay()
                     storedWay.id = Int64(way.id)
-                    let timestampString = dateFormatter.string(from: way.timestamp)
                     storedWay.tags.removeAll()
                     way.tags.forEach { key, value in
                         if !key.contains(".") {
@@ -87,11 +99,11 @@ class DatabaseConnector {
                         }
                     }
                     storedWay.version = way.version
-                    storedWay.timestamp = timestampString
+                    storedWay.timestamp = way.timestamp
                     if let asWay = way as? OSMWay {
                         storedWay.nodes.append(objectsIn: asWay.nodes.map({Int64($0)}))
                         // Get all the points for the p
-                        var nodesInWay = List<CLLocationCoordinate2D>()
+                        let nodesInWay = List<CLLocationCoordinate2D>()
                         asWay.nodes.forEach { nodeId in
                             if let actualNode = nodesDict[String(nodeId)] {
                                 nodesInWay.append(CLLocationCoordinate2D(latitude: actualNode.lat, longitude: actualNode.lon))
@@ -174,6 +186,9 @@ class DatabaseConnector {
      */
     func getNodes() -> Results<StoredNode> {
         return realm.objects(StoredNode.self)
+    
+    func getNodes(_ predicate: NSPredicate) -> Results<StoredNode> {
+        return realm.objects(StoredNode.self).filter(predicate)
     }
     /**
     Fetches all the storedWays in the Database
@@ -181,6 +196,9 @@ class DatabaseConnector {
      */
     func getWays() -> Results<StoredWay> {
         return realm.objects(StoredWay.self)
+    
+    func getWays(_ predicate: NSPredicate) -> Results<StoredWay> {
+        return realm.objects(StoredWay.self).filter(predicate)
     }
     /**
      Fetches the center of a given StoredWay
