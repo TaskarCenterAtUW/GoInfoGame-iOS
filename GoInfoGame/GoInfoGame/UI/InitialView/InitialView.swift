@@ -13,7 +13,6 @@ struct InitialView: View {
     @State private var selectedWorkspace: Workspace? = nil
     @StateObject private var locManagerDelegate = LocationManagerDelegate()
     @AppStorage("loggedIn") private var loggedIn: Bool = false
-    @State private var showBiometricPrompt = false
     
     var body: some View {
         NavigationStack {
@@ -59,20 +58,6 @@ struct InitialView: View {
                         .navigationBarBackButtonHidden(true)
                 }
             }
-        }
-        .onAppear {
-            viewModel.checkBiometricOptInCondition(for: APIConfiguration.shared.environment)
-            showBiometricPrompt = viewModel.shouldShowBiometricOptInPrompt
-        }
-        .alert("Enable Biometric Login?", isPresented: $showBiometricPrompt) {
-            Button("Enable") {
-                viewModel.userAcceptedBiometricOptIn(for: APIConfiguration.shared.environment)
-            }
-            Button("Not Now", role: .cancel) {
-                viewModel.userDeclinedBiometricOptIn(for: APIConfiguration.shared.environment)
-            }
-        } message: {
-            Text("Would you like to use Face ID or Touch ID for faster logins?")
         }
         .toolbar(.hidden)
     }

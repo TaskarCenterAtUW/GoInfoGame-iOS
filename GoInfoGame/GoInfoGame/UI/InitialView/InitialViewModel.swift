@@ -14,11 +14,10 @@ import LocalAuthentication
 @MainActor
 class InitialViewModel: ObservableObject {
     let locationManagerDelegate = LocationManagerDelegate()
-    @Published var workspaces: [Workspace] = [] 
+    @Published var workspaces: [Workspace] = []
     @Published var longQuests: [LongFormElement] = []
     @Published var isLoading: Bool = false
     
-    @Published var shouldShowBiometricOptInPrompt = false
     @Published var showBiometricIDError: Bool = false
     @Published var biometricIDErrorMessage: String?
 
@@ -32,30 +31,7 @@ class InitialViewModel: ObservableObject {
             guard let self = self else { return }
             fetchWorkspacesList()
         }
-        
-        checkBiometricOptInCondition(for: APIConfiguration.shared.environment)
     }
-    
-    func checkBiometricOptInCondition(for env: APIEnvironment) {
-           if !SessionManager.shared.isBiometricEnabled(for: env) &&
-              !SessionManager.shared.hasDeclinedBiometric(for: env) &&
-              KeychainManager.load(.username, for: env) != nil &&
-              SessionManager.shared.lastLoginPassword != nil {
-               shouldShowBiometricOptInPrompt = true
-           } else {
-               shouldShowBiometricOptInPrompt = false
-           }
-       }
-
-       func userAcceptedBiometricOptIn(for env: APIEnvironment) {
-           SessionManager.shared.setBiometricEnabled(true, for: env)
-           SessionManager.shared.setDeclinedBiometric(false, for: env)
-           SessionManager.shared.savePasswordForBiometric(for: env)
-       }
-
-       func userDeclinedBiometricOptIn(for env: APIEnvironment) {
-           SessionManager.shared.setDeclinedBiometric(true, for: env)
-       }
 
     // fetch workspaces list
     func fetchWorkspacesList() {

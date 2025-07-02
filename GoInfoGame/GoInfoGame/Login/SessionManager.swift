@@ -7,13 +7,16 @@
 
 import Foundation
 
-@MainActor
+//@MainActor
 final class SessionManager: ObservableObject {
     static let shared = SessionManager()
-    private init() {}
+    private init() {
+        username = KeychainManager.load(.username, for: APIConfiguration.shared.environment)
+    }
 
     @Published var isLoginSuccessful: Bool = false
     @Published var hasLoginFailed: Bool = false
+    private(set) var username: String? = nil
 
     var lastLoginPassword: String?
 
@@ -29,21 +32,21 @@ final class SessionManager: ObservableObject {
             setupType: .login,
             modelType: PosmLoginSuccessResponse.self
         ) { result in
-            DispatchQueue.main.async {
+            DispatchQueue.main.async { [weak self] in
                 switch result {
                 case .success(let response):
-                    _ = KeychainManager.save(.username, value: username, for: environment)
+                    self?.username = username
                     _ = KeychainManager.save(key: "accessToken", data: response.accessToken)
-                    self.lastLoginPassword = password
+                    self?.lastLoginPassword = password
 
-                    self.isLoginSuccessful = true
-                    self.hasLoginFailed = false
+                    self?.isLoginSuccessful = true
+                    self?.hasLoginFailed = false
                     completion(true, "")
 
                 case .failure(let error):
                     print("Login failed:", error)
-                    self.isLoginSuccessful = false
-                    self.hasLoginFailed = true
+                    self?.isLoginSuccessful = false
+                    self?.hasLoginFailed = true
                     completion(false, "Invalid credentials")
                 }
             }
@@ -51,15 +54,18 @@ final class SessionManager: ObservableObject {
     }
 
     func savePasswordForBiometric(for environment: APIEnvironment) {
-        if let password = lastLoginPassword {
+        if let password = lastLoginPassword,
+         let username = username {
             _ = KeychainManager.save(.password, value: password, for: environment)
+            _ = KeychainManager.save(.username, value: username, for: environment)
+            setBiometricEnabled(true, for: environment)
+        } else {
+            print("❌ not able to save the biometric credentials.")
         }
-        setBiometricEnabled(true, for: environment)
     }
 
     func logout(environment: APIEnvironment, clearBiometricCreds: Bool = false) {
         if clearBiometricCreds {
-            _ = KeychainManager.delete(.username, for: environment)
             _ = KeychainManager.delete(.password, for: environment)
             setBiometricEnabled(false, for: environment)
         }
