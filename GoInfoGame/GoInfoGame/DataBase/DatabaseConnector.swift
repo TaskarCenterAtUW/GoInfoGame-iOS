@@ -184,8 +184,6 @@ class DatabaseConnector {
      Fetches all the StoredNodes in the Database
      @returns a Results object containing StoredNodes
      */
-    func getNodes() -> Results<StoredNode> {
-        return realm.objects(StoredNode.self)
     
     func getNodes(_ predicate: NSPredicate) -> Results<StoredNode> {
         return realm.objects(StoredNode.self).filter(predicate)
@@ -194,8 +192,6 @@ class DatabaseConnector {
     Fetches all the storedWays in the Database
      @returns a Results object containing StoredWay
      */
-    func getWays() -> Results<StoredWay> {
-        return realm.objects(StoredWay.self)
     
     func getWays(_ predicate: NSPredicate) -> Results<StoredWay> {
         return realm.objects(StoredWay.self).filter(predicate)
