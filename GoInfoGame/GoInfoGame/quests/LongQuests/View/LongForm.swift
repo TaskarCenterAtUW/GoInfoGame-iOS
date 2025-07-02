@@ -7,7 +7,7 @@
 
 import SwiftUI
 import CoreLocation
-
+import Combine
 
 struct LongForm: View, QuestForm {
     
@@ -58,6 +58,8 @@ struct LongForm: View, QuestForm {
     
     @StateObject private var noteViewModel = NotesViewModel()
 
+    @State private var keyboardHeight: CGFloat = 0
+    
     var body: some View {
         ZStack {
             VStack(alignment: .leading) {
@@ -190,6 +192,13 @@ struct LongForm: View, QuestForm {
                             .frame(maxWidth: .infinity)
                         } else {
                             Text("No Quests available")
+                        }
+                    }
+                    .padding(.bottom, keyboardHeight)
+                    .onReceive(Publishers.keyboardHeight) { height in
+                        let safeAreaBottom = UIApplication.shared.safeAreaBottomInset
+                        withAnimation {
+                            keyboardHeight = max(0, height - safeAreaBottom)
                         }
                     }
                 }
