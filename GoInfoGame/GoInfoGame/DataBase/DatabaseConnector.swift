@@ -13,31 +13,9 @@ import osmparser
 
 class DatabaseConnector {
     static let shared = DatabaseConnector()
-    
-    let realm: Realm
-    
-    private init() {
-        // Initialize Realm instance
-        let config = Realm.Configuration(schemaVersion: 1) { migration, oldSchemaVersion in
-            if oldSchemaVersion < 1 {
-                let formatter = DateFormatter()
-                formatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
-                migration.enumerateObjects(ofType: StoredNode.className()) { oldObject, newObject in
-                    if let oldTimestamp = oldObject?["timestamp"] as? String {
-                        if let date = formatter.date(from: oldTimestamp) {
-                            newObject?["timestamp"] = date
-                        } else {
-                            newObject?["timestamp"] = Date()
-                        }
-                    }
-                }
-            }
-        }
         
-        realm = try! Realm(configuration: config)
-        if let realmURL = realm.configuration.fileURL {
-            print("Realm Database Path: \(realmURL.path)")
-        }
+    private init() {
+        
     }
     
     /**
@@ -48,6 +26,7 @@ class DatabaseConnector {
     func saveOSMElements(_ elements: [OSMElement]) {
         // Save the elements appropriately
         // Get the ways and nodes out
+        let realm = try! Realm(configuration: RealmConfig.configuration)
         let nodes = elements.filter({$0 is OSMNode})
         let nodesOnly = elements.filter({$0 is OSMNode})
         // Create a dictionary out of this like [id : osmnode]
@@ -131,6 +110,7 @@ class DatabaseConnector {
     
     func clearDB() {
         do {
+            let realm = try Realm(configuration: RealmConfig.configuration)
             try realm.write {
                 realm.deleteAll()
             }
@@ -143,6 +123,7 @@ class DatabaseConnector {
 
     func saveElements(_ elements: [OSMWay]) {
         do {
+            let realm = try Realm(configuration: RealmConfig.configuration)
             try realm.write {
                 for element in elements {
                     let realmElement = RealmOPElement()
@@ -186,6 +167,7 @@ class DatabaseConnector {
      */
     
     func getNodes(_ predicate: NSPredicate) -> Results<StoredNode> {
+        let realm = try! Realm(configuration: RealmConfig.configuration)
         return realm.objects(StoredNode.self).filter(predicate)
     }
     /**
@@ -194,6 +176,7 @@ class DatabaseConnector {
      */
     
     func getWays(_ predicate: NSPredicate) -> Results<StoredWay> {
+        let realm = try! Realm(configuration: RealmConfig.configuration)
         return realm.objects(StoredWay.self).filter(predicate)
     }
     /**
@@ -203,6 +186,7 @@ class DatabaseConnector {
      */
     func getCenterForWay(id: Int64) -> CLLocationCoordinate2D? {
         // Get all the objects for the way
+        let realm = try! Realm(configuration: RealmConfig.configuration)
        guard let way = realm.object(ofType: StoredWay.self, forPrimaryKey: id) else {
            return nil
        }
@@ -229,6 +213,7 @@ class DatabaseConnector {
      @return StoredNode
      */
     func getNode(id:Int) -> StoredNode? {
+        let realm = try! Realm(configuration: RealmConfig.configuration)
         return realm.object(ofType: StoredNode.self, forPrimaryKey: id)
     }
     /**
@@ -241,6 +226,7 @@ class DatabaseConnector {
 //    }
     
     func getWay(id: Int) -> StoredWay? {
+        let realm = try! Realm(configuration: RealmConfig.configuration)
         return realm.object(ofType: StoredWay.self, forPrimaryKey: id)
     }
 
@@ -257,7 +243,7 @@ class DatabaseConnector {
      @return `StoredWay`
      */    
     func addWayTags(id: Int, tags: [String: String], version: Int) -> StoredWay? {
-
+        let realm = try! Realm(configuration: RealmConfig.configuration)
         // Step 1: Try to get the editable copy first
         if let editable = getWay(id: id) {
             // Step 2: Update the existing editable copy
@@ -284,7 +270,7 @@ class DatabaseConnector {
      */
     func addNodeTags(id: Int, tags: [String: String], version: Int) -> StoredNode? {
         print("🟣 addNodeTags called for id: \(id) with tags: \(tags)")
-
+        let realm = try! Realm(configuration: RealmConfig.configuration)
         if let editable = getNode(id: id) {
             print("✏️ Editable node exists: \(editable.id)")
             do {
@@ -315,6 +301,7 @@ class DatabaseConnector {
      - Returns: An instance of `StoredChangeset`
         */
     func createChangeset(id:Int, type: StoredElementEnum, originalTags:[String:String], tags:[String:String], version: Int, point: CLLocationCoordinate2D? = nil, nodes: List<Int64>? = nil) -> StoredChangeset? {
+        let realm = try! Realm(configuration: RealmConfig.configuration)
         let storedChangeset = StoredChangeset()
         storedChangeset.elementId = id
         storedChangeset.elementType = type
@@ -350,6 +337,7 @@ class DatabaseConnector {
     /// - Returns: an instance of `Results<StoredChangeset>`
     func getChangesets(synced: Bool = false) -> Results<StoredChangeset> {
         let results: Results<StoredChangeset>
+        let realm = try! Realm(configuration: RealmConfig.configuration)
         if synced {
             results = realm.objects(StoredChangeset.self).where { $0.changesetId != -1 }
         } else {
@@ -360,6 +348,7 @@ class DatabaseConnector {
     }
     
     func getChangeset(for id: String) -> StoredChangeset? {
+        let realm = try! Realm(configuration: RealmConfig.configuration)
         return realm.object(ofType: StoredChangeset.self, forPrimaryKey: id)
     }
 
@@ -368,6 +357,7 @@ class DatabaseConnector {
     /// - parameter changesetId: Assigned changeset ID from the server
     /// - Returns updated `StoredChangeset`
     func assignChangesetId(obj:String, changesetId: Int, updatedVersion: Int) -> StoredChangeset? {
+        let realm = try! Realm(configuration: RealmConfig.configuration)
         guard let changeset = realm.object(ofType: StoredChangeset.self, forPrimaryKey: obj) else {
             return nil
         }
@@ -383,6 +373,7 @@ class DatabaseConnector {
     }
     
     func updateChangesetWithUndoResultSuccess(obj:String) -> StoredChangeset? {
+        let realm = try! Realm(configuration: RealmConfig.configuration)
         guard let changeset = realm.object(ofType: StoredChangeset.self, forPrimaryKey: obj) else {
             return nil
         }
@@ -398,6 +389,7 @@ class DatabaseConnector {
     }
     
     func updateNodeVersion(nodeId: String, version:Int) -> StoredNode?{
+        let realm = try! Realm(configuration: RealmConfig.configuration)
         let intId = Int(nodeId) ?? -1
         guard let theNode = getNode(id: intId) else { return nil }
         do {
@@ -413,6 +405,7 @@ class DatabaseConnector {
     }
     
     func updateWayVersion(wayId: String, version: Int) -> StoredWay? {
+        let realm = try! Realm(configuration: RealmConfig.configuration)
         let intId = Int(wayId) ?? -1
         guard let theWay = getWay(id: intId) else { return nil }
         
@@ -428,4 +421,22 @@ class DatabaseConnector {
         return theWay
     }
 
+}
+
+struct RealmConfig {
+    static let configuration = Realm.Configuration(schemaVersion: 1) { migration, oldSchemaVersion in
+        if oldSchemaVersion < 1 {
+            let formatter = DateFormatter()
+            formatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+            migration.enumerateObjects(ofType: StoredNode.className()) { oldObject, newObject in
+                if let oldTimestamp = oldObject?["timestamp"] as? String {
+                    if let date = formatter.date(from: oldTimestamp) {
+                        newObject?["timestamp"] = date
+                    } else {
+                        newObject?["timestamp"] = Date()
+                    }
+                }
+            }
+        }
+    }
 }
