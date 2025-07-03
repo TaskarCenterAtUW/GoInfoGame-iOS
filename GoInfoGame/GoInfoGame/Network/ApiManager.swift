@@ -8,6 +8,10 @@
 import Foundation
 import osmapi
 import SwiftUI
+#if DEBUG && false
+import OHHTTPStubs
+import OHHTTPStubsSwift
+#endif
 
 enum SetupType {
     case workspace
@@ -21,7 +25,25 @@ enum SetupType {
 class ApiManager {
     
     static let shared = ApiManager()
-    private init() {}
+    private init() {
+        #if DEBUG && false
+        // this data is from prod env
+        stub(condition: isPath("/api/v1/workspaces/mine")) { _ in
+          let stubPath = OHPathForFile("Workspaces response.json", type(of: self))
+          return fixture(filePath: stubPath!, headers: ["Content-Type":"application/json"])
+        }
+        
+        stub(condition: isPath("/prod/api/0.6/map.json")) { _ in
+          let stubPath = OHPathForFile("SCLIO Seattle pins response.json", type(of: self))
+          return fixture(filePath: stubPath!, headers: ["Content-Type":"application/json"])
+        }
+        
+        stub(condition: isPath("/api/v1/workspaces/72/quests/long")) { _ in
+          let stubPath = OHPathForFile("LongQuestsResponse.json", type(of: self))
+          return fixture(filePath: stubPath!, headers: ["Content-Type":"application/json"])
+        }
+        #endif
+    }
     
     func performRequest<T: Decodable>(to endpoint: APIEndpoint, setupType: SetupType, modelType: T.Type, useJSON:Bool = true, completion: @escaping (Result<T, APIError>) -> Void) {
         

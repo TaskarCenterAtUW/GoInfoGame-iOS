@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		0513BE772B2B464800FB61CF /* samplepoint.gpx in Resources */ = {isa = PBXBuildFile; fileRef = 0513BE762B2B464800FB61CF /* samplepoint.gpx */; };
 		0536DD852B0BD11A00B04C4B /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0536DD842B0BD11A00B04C4B /* LoginViewController.swift */; };
 		0536DD8C2B0BD2C200B04C4B /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0536DD8B2B0BD2C200B04C4B /* Constants.swift */; };
 		0536DD922B0BD58800B04C4B /* OAuthService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0536DD912B0BD58800B04C4B /* OAuthService.swift */; };
@@ -143,6 +142,11 @@
 		A4E711A82B57CA4300C9DE08 /* QuestsRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4E711A72B57CA4300C9DE08 /* QuestsRepository.swift */; };
 		B0CCB98C2B8626AE00AA73DE /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0CCB98B2B8626AE00AA73DE /* ProfileView.swift */; };
 		B0CCB98E2B8626C600AA73DE /* ProfileViewVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0CCB98D2B8626C600AA73DE /* ProfileViewVM.swift */; };
+		C75666D02E0D068900D36C41 /* OHHTTPStubs in Frameworks */ = {isa = PBXBuildFile; productRef = C75666CF2E0D068900D36C41 /* OHHTTPStubs */; };
+		C75666D22E0D068900D36C41 /* OHHTTPStubsSwift in Frameworks */ = {isa = PBXBuildFile; productRef = C75666D12E0D068900D36C41 /* OHHTTPStubsSwift */; };
+		C75CC5D92E0D22F4008A94A0 /* LongQuestsResponse.json in Resources */ = {isa = PBXBuildFile; fileRef = C75CC5D82E0D22F4008A94A0 /* LongQuestsResponse.json */; };
+		C75CC5DA2E0D22F4008A94A0 /* Workspaces response.json in Resources */ = {isa = PBXBuildFile; fileRef = C75CC5D62E0D22F4008A94A0 /* Workspaces response.json */; };
+		C75CC5DB2E0D22F4008A94A0 /* SCLIO Seattle pins response.json in Resources */ = {isa = PBXBuildFile; fileRef = C75CC5D72E0D22F4008A94A0 /* SCLIO Seattle pins response.json */; };
 		C75EAD362E042D4500F75969 /* SideWalkWidth.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4E711A12B57A3B400C9DE08 /* SideWalkWidth.swift */; };
 		C75EAD372E042D4500F75969 /* SideWalkWidthForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = 973FC0132B4D353800878269 /* SideWalkWidthForm.swift */; };
 		C76187DC2E0153D800150201 /* ClusterMap in Frameworks */ = {isa = PBXBuildFile; productRef = C76187DB2E0153D800150201 /* ClusterMap */; };
@@ -473,6 +477,10 @@
 		B0CCB98B2B8626AE00AA73DE /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
 		B0CCB98D2B8626C600AA73DE /* ProfileViewVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewVM.swift; sourceTree = "<group>"; };
 		C4F37DA661B22FA87DF8282F /* Pods_osmapi.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_osmapi.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		C75CC5D62E0D22F4008A94A0 /* Workspaces response.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "Workspaces response.json"; sourceTree = "<group>"; };
+		C75CC5D72E0D22F4008A94A0 /* SCLIO Seattle pins response.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "SCLIO Seattle pins response.json"; sourceTree = "<group>"; };
+		C75CC5D82E0D22F4008A94A0 /* LongQuestsResponse.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = LongQuestsResponse.json; sourceTree = "<group>"; };
+		C75E47732E151058006D903A /* Kondapur.gpx */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = Kondapur.gpx; sourceTree = "<group>"; };
 		C77A4A252DF2AF3100DED8B0 /* SecureInputView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecureInputView.swift; sourceTree = "<group>"; };
 		C77EEBCE2DE59D3200494CB4 /* UndoMerge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UndoMerge.swift; sourceTree = "<group>"; };
 		C7ED070E2D70E2EC001FFFE2 /* TokenRefresher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenRefresher.swift; sourceTree = "<group>"; };
@@ -592,6 +600,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C75666D02E0D068900D36C41 /* OHHTTPStubs in Frameworks */,
+				C75666D22E0D068900D36C41 /* OHHTTPStubsSwift in Frameworks */,
 				97F2FA8A2B0630A3000B9726 /* Pods_GoInfoGame.framework in Frameworks */,
 				A4AD13272B5E90BD0041A881 /* osmparser.framework in Frameworks */,
 				C76187DC2E0153D800150201 /* ClusterMap in Frameworks */,
@@ -630,6 +640,7 @@
 		0536DD8A2B0BD2A900B04C4B /* Helpers */ = {
 			isa = PBXGroup;
 			children = (
+				C75CC5D52E0D22E0008A94A0 /* SampleResponses */,
 				0536DD8B2B0BD2C200B04C4B /* Constants.swift */,
 				972454142B14A49A0036B91A /* Extensions.swift */,
 				973FBFFD2B46BB3800878269 /* Utils.swift */,
@@ -1253,6 +1264,16 @@
 			path = Profile;
 			sourceTree = "<group>";
 		};
+		C75CC5D52E0D22E0008A94A0 /* SampleResponses */ = {
+			isa = PBXGroup;
+			children = (
+				C75CC5D62E0D22F4008A94A0 /* Workspaces response.json */,
+				C75CC5D72E0D22F4008A94A0 /* SCLIO Seattle pins response.json */,
+				C75CC5D82E0D22F4008A94A0 /* LongQuestsResponse.json */,
+			);
+			path = SampleResponses;
+			sourceTree = "<group>";
+		};
 		FA18CADE2CC7CD46008247F2 /* Kartaview */ = {
 			isa = PBXGroup;
 			children = (
@@ -1449,6 +1470,7 @@
 				FAD5C4F82AFCBE700040C61A /* Main.storyboard */,
 				FAD5C4FB2AFCBE720040C61A /* Assets.xcassets */,
 				0513BE762B2B464800FB61CF /* samplepoint.gpx */,
+				C75E47732E151058006D903A /* Kondapur.gpx */,
 				FAD5C4FD2AFCBE720040C61A /* LaunchScreen.storyboard */,
 				FAD5C5002AFCBE720040C61A /* Info.plist */,
 				A40004EB2B62338400AF21FB /* AppQuestManager.swift */,
@@ -1777,6 +1799,7 @@
 			mainGroup = FAD5C4E62AFCBE700040C61A;
 			packageReferences = (
 				C76187DA2E0153D800150201 /* XCRemoteSwiftPackageReference "ClusterMap" */,
+				C75666CE2E0D068900D36C41 /* XCRemoteSwiftPackageReference "OHHTTPStubs" */,
 			);
 			productRefGroup = FAD5C4F02AFCBE700040C61A /* Products */;
 			projectDirPath = "";
@@ -1827,10 +1850,12 @@
 			buildActionMask = 2147483647;
 			files = (
 				973FC00A2B4D2A6D00878269 /* Localizable.strings in Resources */,
-				0513BE772B2B464800FB61CF /* samplepoint.gpx in Resources */,
 				FAD5C4FF2AFCBE720040C61A /* LaunchScreen.storyboard in Resources */,
 				FAD5C4FC2AFCBE720040C61A /* Assets.xcassets in Resources */,
 				FAD5C4FA2AFCBE700040C61A /* Main.storyboard in Resources */,
+				C75CC5D92E0D22F4008A94A0 /* LongQuestsResponse.json in Resources */,
+				C75CC5DA2E0D22F4008A94A0 /* Workspaces response.json in Resources */,
+				C75CC5DB2E0D22F4008A94A0 /* SCLIO Seattle pins response.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2899,6 +2924,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		C75666CE2E0D068900D36C41 /* XCRemoteSwiftPackageReference "OHHTTPStubs" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/AliSoftware/OHHTTPStubs";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 9.1.0;
+			};
+		};
 		C76187DA2E0153D800150201 /* XCRemoteSwiftPackageReference "ClusterMap" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/vospennikov/ClusterMap.git";
@@ -2910,6 +2943,16 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		C75666CF2E0D068900D36C41 /* OHHTTPStubs */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = C75666CE2E0D068900D36C41 /* XCRemoteSwiftPackageReference "OHHTTPStubs" */;
+			productName = OHHTTPStubs;
+		};
+		C75666D12E0D068900D36C41 /* OHHTTPStubsSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = C75666CE2E0D068900D36C41 /* XCRemoteSwiftPackageReference "OHHTTPStubs" */;
+			productName = OHHTTPStubsSwift;
+		};
 		C76187DB2E0153D800150201 /* ClusterMap */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = C76187DA2E0153D800150201 /* XCRemoteSwiftPackageReference "ClusterMap" */;
