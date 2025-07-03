@@ -24,89 +24,78 @@ class DatabaseConnector {
         @param elements  List of OPElement
      */
     func saveOSMElements(_ elements: [OSMElement]) {
-        // Save the elements appropriately
-        // Get the ways and nodes out
         let realm = try! Realm(configuration: RealmConfig.configuration)
-        let nodes = elements.filter({$0 is OSMNode})
-        let nodesOnly = elements.filter({$0 is OSMNode})
-        // Create a dictionary out of this like [id : osmnode]
-        var nodesDict: [String:OSMNode] = [:]
-        nodesOnly.forEach { element in
-            nodesDict[String(element.id)] = element as? OSMNode
+        print("Realm path: \(realm.configuration.fileURL?.path ?? "No file URL")")
+
+        // Build lookup and filter nodes
+        var nodesDict: [Int: OSMNode] = [:]
+        let nodes = elements.compactMap { element -> OSMNode? in
+            guard let node = element as? OSMNode else { return nil }
+            nodesDict[node.id] = node
+            return node
         }
-        
-        let ways = elements.filter { element in
-            guard let way = element as? OSMWay else {
-                return false
+
+        let ways = elements.compactMap { element -> OSMWay? in
+            guard let way = element as? OSMWay,
+                  !way.tags.isEmpty,
+                  way.tags["ext:link"] != "true" else {
+                return nil
             }
-            return !way.tags.isEmpty && !(way.tags["ext:link"] == "true")
+            return way
         }
-        
+
+        // Prepare Realm objects outside write block
+        let storedNodes: [StoredNode] = nodes.map { node in
+            let stored = StoredNode()
+            stored.id = Int64(node.id)
+            let map = Map<String, String>()
+            node.tags.forEach { key, value in
+                map[key] = value
+            }
+            stored.tags = map
+            stored.version = node.version
+            stored.timestamp = node.timestamp
+            stored.point = CLLocationCoordinate2D(latitude: node.lat, longitude: node.lon)
+            return stored
+        }
+
+        let storedWays: [StoredWay] = ways.map { way in
+            let stored = StoredWay()
+            stored.id = Int64(way.id)
+            let map = Map<String, String>()
+            way.tags.forEach { key, value in
+                if !key.contains(".") {
+                    map[key] = value
+                }
+            }
+            stored.tags = map
+            stored.version = way.version
+            stored.timestamp = way.timestamp
+            stored.nodes.append(objectsIn: way.nodes.map(Int64.init))
+
+            let polyline = List<CLLocationCoordinate2D>()
+            for nodeId in way.nodes {
+                if let node = nodesDict[nodeId] {
+                    polyline.append(CLLocationCoordinate2D(latitude: node.lat, longitude: node.lon))
+                }
+            }
+            stored.polyline = polyline
+            return stored
+        }
+
+        // Persist to Realm
         do {
+            realm.autorefresh = false
             try realm.write {
-                for node in nodes {
-                    let storedElement = StoredNode()
-                    storedElement.id = Int64(node.id)
-                    storedElement.tags.removeAll()
-                    node.tags.forEach { key, value in
-                        storedElement.tags[key] = value
-                    }
-//                    if let meta = node {
-                        storedElement.version = node.version
-                        storedElement.timestamp = node.timestamp
-//                    }
-                    if let asNode = node as? OSMNode{
-                        // coordinate from lat long
-                        storedElement.point = CLLocationCoordinate2D(latitude: asNode.lat, longitude: asNode.lon)
-//                        switch asNode.geometry {
-//                        case .center(let coordinate):
-//                            storedElement.point = coordinate
-//                        default:
-//                            continue
-//                        }
-                    }
-                    realm.add(storedElement, update: .all)
-                }
-                // Store the ways
-                for way in ways {
-                    let storedWay = StoredWay()
-                    storedWay.id = Int64(way.id)
-                    storedWay.tags.removeAll()
-                    way.tags.forEach { key, value in
-                        if !key.contains(".") {
-                            storedWay.tags[key] = value
-                        }
-                    }
-                    storedWay.version = way.version
-                    storedWay.timestamp = way.timestamp
-                    if let asWay = way as? OSMWay {
-                        storedWay.nodes.append(objectsIn: asWay.nodes.map({Int64($0)}))
-                        // Get all the points for the p
-                        let nodesInWay = List<CLLocationCoordinate2D>()
-                        asWay.nodes.forEach { nodeId in
-                            if let actualNode = nodesDict[String(nodeId)] {
-                                nodesInWay.append(CLLocationCoordinate2D(latitude: actualNode.lat, longitude: actualNode.lon))
-                            }
-                            
-                        }
-                        storedWay.polyline = nodesInWay
-//                        print("STORED POLYLINES --->>>\(storedWay.polyline)")
-                        // Store the coordinates
-//MARK: TBD polylines
-//                        switch asWay.geometry {
-//                        case .polygon(let coordinates):
-//                            storedWay.polyline.append(objectsIn: coordinates)
-//                        default:
-//                            print("Ignoring geometry")
-//                        }
-                    }
-                    realm.add(storedWay, update: .all)
-                }
+                realm.add(storedNodes, update: .all)
+                realm.add(storedWays, update: .all)
             }
+            realm.autorefresh = true
         } catch {
-            print("Elements to be skipped or something happened")
+            print("❌ Realm write failed: \(error)")
         }
     }
+
     
     func clearDB() {
         do {
