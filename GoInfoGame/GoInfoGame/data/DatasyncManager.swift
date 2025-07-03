@@ -32,20 +32,14 @@ class DatasyncManager {
                     print("Sync finished")
                     if isSynced {
                         print("Sync successful")
-                        DispatchQueue.main.async {
-                            completionHandler(.success(true)) // Success
-                        }
+                        completionHandler(.success(true)) // Success
                     } else {
                         print("Sync failed")
-                        DispatchQueue.main.async {
-                            completionHandler(.failure(APIError.custom("Sync failed. Please try again."))) // Failure
-                        }
+                        completionHandler(.failure(APIError.custom("Sync failed. Please try again."))) // Failure
                     }
                 } catch {
                     print("Sync failed: \(error)")
-                    DispatchQueue.main.async {
-                        completionHandler(.failure(error as! APIError)) // Failure
-                    }
+                    completionHandler(.failure(error as! APIError)) // Failure
                 }
                 semaphore.signal()
             }
@@ -56,7 +50,6 @@ class DatasyncManager {
     
     /// *** Terminating app due     to uncaught exception 'RLMException', reason: 'Realm accessed from incorrect thread.'
     ///  To fix the above error added @mainActor
-    @MainActor
     func syncData(exclude_gig_tags: Bool = false) async throws -> Bool {
         print("🔄 Starting sync...")
 
