@@ -60,7 +60,7 @@ class ApiManager {
         case .kartaview:
             finalUrl = APIConfiguration.shared.kartaViewUrl(for: endpoint)
         }
-        
+        debugPrint("URL prepared \(Date())")
         guard let url = finalUrl else {
             print("Invalid URL")
             completion(.failure(APIError.invalidURL))
@@ -69,7 +69,7 @@ class ApiManager {
         
         var request = URLRequest(url: url, timeoutInterval: Double.infinity)
         request.httpMethod = endpoint.method
-        
+        debugPrint("URLRequest prepared \(Date())")
         if let formData = endpoint.formData {
             let boundary = "Boundary-\(UUID().uuidString)"
             request.setValue("multipart/form-data; boundary=\(boundary)", forHTTPHeaderField: "Content-Type")
@@ -117,14 +117,16 @@ class ApiManager {
         } else if let httpBody = endpoint.body {
             request.httpBody = httpBody
         }
+        debugPrint("set body prepared \(Date())")
         
         if let headers = endpoint.headers {
             for (key, value) in headers {
                 request.setValue(value, forHTTPHeaderField: key)
             }
         }
-        
+        debugPrint("set headders prepared \(url.path()) \(Date())")
         let task = URLSession.shared.dataTask(with: request) { [weak self] data, response, error in
+            debugPrint("API raw response \(Date())")
             guard let self = self else {
                 completion(.failure(APIError.custom("No data returned")))
                 return

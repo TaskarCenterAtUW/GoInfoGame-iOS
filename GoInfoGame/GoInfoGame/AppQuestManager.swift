@@ -77,26 +77,29 @@ class AppQuestManager {
                                                             polyline.@count > 0 AND
                                                             tags['ext:gig_complete'] != 'yes' 
                                                             """ ))
-        
+        debugPrint("converting to nods: start \(Date())")
         let nodeElements = nodesFromStorage.map({ node in
             autoreleasepool {
                 node.asNode()
             }
         })
+        debugPrint("converting to nods: end \(Date())")
+        debugPrint("converting to way: start \(Date())")
         let wayElements = waysFromStorage.map({ way in
             autoreleasepool {
                 way.asWay()
             }
             
         })
-                
+            
+        debugPrint("converting to way: end \(Date())")
         // Get the quests for nodes
         var nodeQuests: [any Quest] = []
         var wayQuests: [any Quest] = []
         let allQuests = QuestsRepository.shared.applicableQuests
         var displayUnits : [DisplayUnitWithCoordinate] = []
         
-        
+        debugPrint("process nodes: start: \(Date())")
         // Get the quests for ways
         for node in nodeElements {
             // Get the quests and try to iterate
@@ -114,6 +117,8 @@ class AppQuestManager {
                 
             }
         }
+        debugPrint("process nodes: end: \(Date())")
+        debugPrint("process ways: start: \(Date())")
         for way in wayElements{
             for quest in allQuests {
                     if quest.quest.filter.isEmpty {continue} // Ignore quest
@@ -129,6 +134,7 @@ class AppQuestManager {
                     }
             }
         }
+        debugPrint("process ways: end: \(Date())")
         print("Sending back items")
         print(allQuests)
                 
