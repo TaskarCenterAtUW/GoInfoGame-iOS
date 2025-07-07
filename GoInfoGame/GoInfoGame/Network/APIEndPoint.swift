@@ -42,7 +42,7 @@ struct APIEndpoint {
           let header = [
             "X-Workspace": workspaceID
         ]
-        return APIEndpoint(path: "/map.json?bbox=\(left),\(bottom),\(right),\(top)", method: "GET", body: nil, headers: header, formData: nil) }
+        return APIEndpoint(path: "/map.json?bbox=\(left.roundedTo7Digits()),\(bottom.roundedTo7Digits()),\(right.roundedTo7Digits()),\(top.roundedTo7Digits())", method: "GET", body: nil, headers: header, formData: nil) }
     
     static let openChangesets = { (accessToken: String, workspaceId:String ,body: Data)  in
         

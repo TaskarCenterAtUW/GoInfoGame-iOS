@@ -186,3 +186,9 @@ extension Publishers {
             .eraseToAnyPublisher()
     }
 }
+
+extension Double {
+    func roundedTo7Digits() -> Double {
+        (self * 1_000_0000).rounded() / 1_000_0000
+    }
+}
