@@ -96,7 +96,7 @@ class QuestBase {
 //          _ = DatabaseConnector.shared.addNodeTags(id: storedId, tags: tags)
            let node =  DatabaseConnector.shared.getNode(id: Int(id))!
            // Create a changeset
-           _ = DatabaseConnector.shared.createChangeset(id: Int(id), type: storedElementType, originalTags: node.tags.toDictionary(), tags: tags, version: node.version, point: node.point)
+           _ = DatabaseConnector.shared.createChangeset(id: Int(id), type: storedElementType, originalTags: node.tags.toDictionary(), tags: tags, version: node.version, point: CLLocationCoordinate2D(latitude: node.latitude, longitude: node.longitude))
        case .unknown:
            print("Unknown Stored element type received")
        }

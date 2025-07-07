@@ -55,7 +55,8 @@ class DatabaseConnector {
             stored.tags = map
             stored.version = node.version
             stored.timestamp = node.timestamp
-            stored.point = CLLocationCoordinate2D(latitude: node.lat, longitude: node.lon)
+            stored.latitude = node.lat
+            stored.longitude = node.lon
             return stored
         }
 
@@ -184,7 +185,7 @@ class DatabaseConnector {
         var nodeCoords: [CLLocationCoordinate2D] = []
         for nodeId in nodeIds {
             if let node = realm.object(ofType: StoredNode.self , forPrimaryKey: nodeId){
-                nodeCoords.append(node.point)
+                nodeCoords.append(CLLocationCoordinate2D(latitude: node.latitude, longitude: node.longitude))
             }
         }
         if (!nodeCoords.isEmpty) {
@@ -425,7 +426,19 @@ struct RealmConfig {
                         newObject?["timestamp"] = Date()
                     }
                 }
+                
+                if let oldPoint = oldObject!["point"] as? MigrationObject {
+                    // Access latitude and longitude from the old 'point' MigrationObject
+                    // Realm automatically stores CLLocationCoordinate2D with 'latitude' and 'longitude' properties
+                    let latitude = oldPoint["latitude"] as? Double ?? 0.0
+                    let longitude = oldPoint["longitude"] as? Double ?? 0.0
+
+                    // Assign these values to the new 'latitude' and 'longitude' properties
+                    newObject!["latitude"] = latitude
+                    newObject!["longitude"] = longitude
+                }
             }
         }
     }
 }
+
