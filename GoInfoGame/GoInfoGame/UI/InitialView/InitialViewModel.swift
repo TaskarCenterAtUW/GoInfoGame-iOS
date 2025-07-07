@@ -54,13 +54,14 @@ class InitialViewModel: ObservableObject {
     }
     
     func checkAndDeleteWorkspaceDB(workspaceId: String) {
+        isLoading = true
         if let existingWorkspaceId = KeychainManager.load(key: "workspaceID") {
             if existingWorkspaceId != workspaceId {
                 print("User is changing the workpace. Delete all existing data from DB")
                 DatabaseConnector.shared.clearDB()
             }
         }
-        
+        isLoading = false
         
     }
     
