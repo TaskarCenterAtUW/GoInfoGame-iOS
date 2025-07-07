@@ -65,9 +65,7 @@ class QuestBase {
                     print("❌ Undo failed: Element type not found")
                 }
                 print("undo result \(result)")
-                DispatchQueue.main.async {
-                    _ = DatabaseConnector.shared.updateChangesetWithUndoResultSuccess(obj: changesetId)
-                }
+                _ = DatabaseConnector.shared.updateChangesetWithUndoResultSuccess(obj: changesetId)
                 MapViewPublisher.shared.dismissSheet.send(.synced)
 //                MapViewPublisher.shared.dismissSheet.send(.submitted(""))
                 MapViewPublisher.shared.dismissSheet.send(.undoDone(changesetId))
