@@ -114,7 +114,10 @@ class MapViewModel: ObservableObject {
 
         if let workspaceID = KeychainManager.load(key: "workspaceID") {
             debugPrint("requested: start \(Date())")
-            ApiManager.shared.performRequest(to: .fetchOSMElements(bBox.minLon, bBox.minLat, bBox.maxLon, bBox.maxLat, workspaceID), setupType: .osm, modelType: OSMMapDataResponse.self) { [unowned self] result in
+            ApiManager.shared.performRequest(to: .fetchOSMElements(bBox.minLon, bBox.minLat, bBox.maxLon, bBox.maxLat, workspaceID), setupType: .osm, modelType: OSMMapDataResponse.self) { [weak self] result in
+                guard let self = self else {
+                    return
+                }
                 switch result {
                 case .success(let success):
                     debugPrint("response sucess: start \(Date())")
@@ -127,10 +130,10 @@ class MapViewModel: ObservableObject {
                     debugPrint("fetchQuestsFromDB: start \(Date())")
                     let items = AppQuestManager.shared.fetchQuestsFromDB()
                     debugPrint("fetchQuestsFromDB: end \(Date())")
-                    DispatchQueue.main.async { [unowned self, items] in
-                        self.items = items
-                        self.isLoading = false
-                        if self.items.count == 0 {self.refreshMap = UUID()}
+                    DispatchQueue.main.async { [weak self, items] in
+                        self?.items = items
+                        self?.isLoading = false
+                        if self?.items.count == 0 {self?.refreshMap = UUID()}
                     }
                     debugPrint("response sucess: end \(Date())")
                 case .failure(let failure):

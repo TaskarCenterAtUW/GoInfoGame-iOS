@@ -69,7 +69,8 @@ class InitialViewModel: ObservableObject {
         
         isLoading = true
         
-        ApiManager.shared.performRequest(to: .fetchLongQuests(workspaceId), setupType: .workspace, modelType: LongFormResponse.self) { [unowned self] result in
+        ApiManager.shared.performRequest(to: .fetchLongQuests(workspaceId), setupType: .workspace, modelType: LongFormResponse.self) { [weak self] result in
+            guard let self = self else { return completion(false, "Object memory released.") }
             DispatchQueue.main.async { [unowned self] in
                 switch result {
                 case .success(let longQuestsResponse):
