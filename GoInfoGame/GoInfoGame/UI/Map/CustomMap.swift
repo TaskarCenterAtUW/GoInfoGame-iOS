@@ -28,6 +28,7 @@ struct CustomMap: UIViewRepresentable {
     @Binding var isMultiSelectModeEnabled: Bool
     @Binding var selectedAnnotationType: String?
     @Binding var showMultiSelectionBottomSheet: Bool
+    @Binding var selectedSattiliteOption: SatelliteOption
     
     @State var lineCoordinates: [CLLocationCoordinate2D] = []
     
@@ -64,6 +65,10 @@ struct CustomMap: UIViewRepresentable {
             }
         }
         
+        if case .wmts(let satelliteServer) = selectedSattiliteOption {
+            mapView.addOverlay(WMTSSeever(satelliteServer: satelliteServer), level: .aboveLabels)
+        }
+        
         let tapGesture = UILongPressGestureRecognizer(target: context.coordinator, action: #selector(Coordinator.handleMapTap(_:)))
         mapView.addGestureRecognizer(tapGesture)
         
@@ -97,9 +102,9 @@ struct CustomMap: UIViewRepresentable {
         
         
         // Remove existing overlays
-//        mapView.overlays.forEach { mapView.removeOverlay($0) }
+        mapView.overlays.forEach { mapView.removeOverlay($0) }
         
-//        mapView.addOverlay(shadowOverlay)
+        mapView.addOverlay(shadowOverlay)
 
         
            // Re-add overlays based on selection
@@ -109,6 +114,10 @@ struct CustomMap: UIViewRepresentable {
                tileOverlay.maximumZ = 19
                mapView.addOverlay(tileOverlay, level: .aboveLabels)
            }
+        
+        if case .wmts(let satelliteServer) = selectedSattiliteOption {
+            mapView.addOverlay(WMTSSeever(satelliteServer: satelliteServer), level: .aboveLabels)
+        }
         
 //        if useBingMaps {
 //            let tileOverlay = BingTileOverlay()

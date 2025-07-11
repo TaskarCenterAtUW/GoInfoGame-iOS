@@ -79,15 +79,25 @@ struct MapView: View {
                           selectedQuest: $viewModel.selectedQuest,
                           shouldShowPolyline: $shouldShowPolyline,
                       
-                          isPresented: $isPresented, isUserSettingsPresented: $showUserSettingsSheet, selectedAnnotations: $viewModel.selectedAnnotaions, isMultiSelectModeEnabled: $viewModel.isMultiSelectModeEnabled, selectedAnnotationType: $viewModel.selectedAnnotationType, showMultiSelectionBottomSheet: $showMultiSelectionBottomSheet ,
-                      onMapViewCreated: { map in
-                self.mapViewRef = map
-            } ,
-                      contextualInfo: { contextualInfo in
-                print(contextualInfo)
-                selectedDetent = .fraction(0.8)
-                self.setContextualInfo(contextualinfo: contextualInfo)
-                }, useBingMaps: $useBingMaps, tappedCoordinate: $tappedCoordinate, annotationCoordinate: $annotationCoordinate, shadowOverlay: shadowOverlay)
+                          isPresented: $isPresented,
+                          isUserSettingsPresented: $showUserSettingsSheet,
+                          selectedAnnotations: $viewModel.selectedAnnotaions,
+                          isMultiSelectModeEnabled: $viewModel.isMultiSelectModeEnabled,
+                          selectedAnnotationType: $viewModel.selectedAnnotationType,
+                          showMultiSelectionBottomSheet: $showMultiSelectionBottomSheet ,
+                          selectedSattiliteOption: $viewModel.selectedOption,
+                          onMapViewCreated: { map in
+                    self.mapViewRef = map
+                } ,
+                          contextualInfo: { contextualInfo in
+                    print(contextualInfo)
+                    selectedDetent = .fraction(0.8)
+                    self.setContextualInfo(contextualinfo: contextualInfo)
+                },
+                          useBingMaps: $useBingMaps,
+                          tappedCoordinate: $tappedCoordinate,
+                          annotationCoordinate: $annotationCoordinate,
+                          shadowOverlay: shadowOverlay)
             .onChange(of: tappedCoordinate) { _ in
                 showMapLongPressedSheet = tappedCoordinate != nil
             }
@@ -242,18 +252,7 @@ struct MapView: View {
                     onSelect: { selected in
                         viewModel.selectedOption = selected
                         viewModel.showSatellitePicker = false
-                        // Remove old tile overlays (keep polygons, etc. if needed)
-                        let oldTileOverlays = mapViewRef?.overlays.filter { $0 is WMTSSeever }
-                        mapViewRef?.removeOverlays(oldTileOverlays ?? [])
-                        switch selected {
-                        case .none:
-                            mapViewRef?.mapType = .standard
-                        case .apple:
-                            mapViewRef?.mapType = .satellite
-                        case .wmts(let server):
-                            let layer = WMTSSeever(satelliteServer: server)
-                            mapViewRef?.addOverlay(layer, level: .aboveLabels)
-                        }
+                        addOverlay(selectedSatilliteOption: selected)
                     }
                 )
                 .background(Color(red: 248/255, green: 248/255, blue: 248/255))
@@ -437,6 +436,21 @@ struct MapView: View {
 //            let edited = DatabaseConnector.shared.getNode(id: 43)
 //            print("ORIGINAL --->>>\(original)")
 //            print("EDITED --->>>\(edited)")
+        }
+    }
+    
+    func addOverlay(selectedSatilliteOption: SatelliteOption) {
+        // Remove old tile overlays (keep polygons, etc. if needed)
+        let oldTileOverlays = mapViewRef?.overlays.filter { $0 is WMTSSeever }
+        mapViewRef?.removeOverlays(oldTileOverlays ?? [])
+        switch selectedSatilliteOption {
+        case .none:
+            mapViewRef?.mapType = .standard
+        case .apple:
+            mapViewRef?.mapType = .satellite
+        case .wmts(let server):
+            let layer = WMTSSeever(satelliteServer: server)
+            mapViewRef?.addOverlay(layer, level: .aboveLabels)
         }
     }
     
