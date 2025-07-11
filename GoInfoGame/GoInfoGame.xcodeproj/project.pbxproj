@@ -150,6 +150,7 @@
 		C71EB5B72E2100E30009E610 /* NetworkManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C71EB5B22E2100E30009E610 /* NetworkManager.swift */; };
 		C71EB5B82E2100E30009E610 /* NetworkMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = C71EB5B32E2100E30009E610 /* NetworkMonitor.swift */; };
 		C71EB5B92E2100E30009E610 /* APIManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C71EB5B12E2100E30009E610 /* APIManager.swift */; };
+		C71EB5BD2E2113500009E610 /* WMTSLayers.json in Resources */ = {isa = PBXBuildFile; fileRef = C71EB5BC2E2113500009E610 /* WMTSLayers.json */; };
 		C75666D02E0D068900D36C41 /* OHHTTPStubs in Frameworks */ = {isa = PBXBuildFile; productRef = C75666CF2E0D068900D36C41 /* OHHTTPStubs */; };
 		C75666D22E0D068900D36C41 /* OHHTTPStubsSwift in Frameworks */ = {isa = PBXBuildFile; productRef = C75666D12E0D068900D36C41 /* OHHTTPStubsSwift */; };
 		C75CC5D92E0D22F4008A94A0 /* LongQuestsResponse.json in Resources */ = {isa = PBXBuildFile; fileRef = C75CC5D82E0D22F4008A94A0 /* LongQuestsResponse.json */; };
@@ -493,6 +494,7 @@
 		C71EB5B22E2100E30009E610 /* NetworkManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkManager.swift; sourceTree = "<group>"; };
 		C71EB5B32E2100E30009E610 /* NetworkMonitor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkMonitor.swift; sourceTree = "<group>"; };
 		C71EB5B42E2100E30009E610 /* ResponseHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResponseHandler.swift; sourceTree = "<group>"; };
+		C71EB5BC2E2113500009E610 /* WMTSLayers.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = WMTSLayers.json; sourceTree = "<group>"; };
 		C75CC5D62E0D22F4008A94A0 /* Workspaces response.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "Workspaces response.json"; sourceTree = "<group>"; };
 		C75CC5D72E0D22F4008A94A0 /* SCLIO Seattle pins response.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "SCLIO Seattle pins response.json"; sourceTree = "<group>"; };
 		C75CC5D82E0D22F4008A94A0 /* LongQuestsResponse.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = LongQuestsResponse.json; sourceTree = "<group>"; };
@@ -1307,6 +1309,7 @@
 		C75CC5D52E0D22E0008A94A0 /* SampleResponses */ = {
 			isa = PBXGroup;
 			children = (
+				C71EB5BC2E2113500009E610 /* WMTSLayers.json */,
 				C75CC5D62E0D22F4008A94A0 /* Workspaces response.json */,
 				C75CC5D72E0D22F4008A94A0 /* SCLIO Seattle pins response.json */,
 				C75CC5D82E0D22F4008A94A0 /* LongQuestsResponse.json */,
@@ -1891,6 +1894,7 @@
 			files = (
 				973FC00A2B4D2A6D00878269 /* Localizable.strings in Resources */,
 				FAD5C4FF2AFCBE720040C61A /* LaunchScreen.storyboard in Resources */,
+				C71EB5BD2E2113500009E610 /* WMTSLayers.json in Resources */,
 				FAD5C4FC2AFCBE720040C61A /* Assets.xcassets in Resources */,
 				FAD5C4FA2AFCBE700040C61A /* Main.storyboard in Resources */,
 				C75CC5D92E0D22F4008A94A0 /* LongQuestsResponse.json in Resources */,

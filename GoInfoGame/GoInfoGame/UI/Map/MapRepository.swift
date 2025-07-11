@@ -55,7 +55,7 @@ class MapRepository: MapRepositoryProtocol {
 
 struct GetWMTSLayersReqeust: APIRequest {
     var urlRequest: URLRequest? {
-        guard let url = URL(string: "https://mocki.io/v1/b6b2fc6b-5d13-42f7-a5a6-40c33bf6df1e") else {
+        guard let url = Bundle.main.url(forResource: "WMTSLayers", withExtension: "json") else {
             return nil
         }
         
