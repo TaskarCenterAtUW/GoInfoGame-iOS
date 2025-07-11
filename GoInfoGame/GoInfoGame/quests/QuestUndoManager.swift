@@ -15,7 +15,7 @@ class MapUndoManager {
     private let realm: Realm
     
     private init() {
-        realm = DatabaseConnector.shared.realm
+        realm = try! Realm(configuration: RealmConfig.configuration)
     }
 
     var updateTagsHandler: ((_ changeset: StoredChangeset?) -> Void)?

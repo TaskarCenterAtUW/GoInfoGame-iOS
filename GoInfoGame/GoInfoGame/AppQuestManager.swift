@@ -26,10 +26,8 @@ class AppQuestManager {
     private let seedBox = BBox(minLat: 47.70312160869372, maxLat: 47.718964653825054, minLon: -122.20866792353317, maxLon: -122.18570621653987)
     
     func getUpdatedQuest(elementId: String) -> DisplayUnitWithCoordinate? {
-        let nodesFromStorage = dbInstance.getNodes().filter { n in
-            n.tags.count != 0
-        }
-        let waysFromStorage = dbInstance.getWays().filter{w in w.tags.count != 0 }
+        let nodesFromStorage = dbInstance.getNodes(NSPredicate(format: "tags.@count != 0"))
+        let waysFromStorage = dbInstance.getWays(NSPredicate(format: "tags.@count != 0"))
         let theWay = waysFromStorage.first(where: {$0.id == Int64(elementId)})
         let theNode = nodesFromStorage.first(where: {$0.id == Int64(elementId)})
         let allQuests = QuestsRepository.shared.applicableQuests
@@ -68,53 +66,40 @@ class AppQuestManager {
 
     // Fetches all the available quests from Database
     func fetchQuestsFromDB() ->  [DisplayUnitWithCoordinate] {
-            
-        let allOriginalNodes = dbInstance.getNodes().filter {$0.tags.count != 0 && ($0.point.latitude != 0.0 || $0.point.longitude != 0.0)}
         
-    
-        var nodesFromStorage: [StoredNode] = []
-        for node in allOriginalNodes {
-            autoreleasepool {
-                if node.tags["ext:gig_complete"] != "yes" {
-                    nodesFromStorage.append(node)
-                }
-            }
-        }
-             
-        let allOriginalWays = dbInstance.getWays().filter {
-            $0.tags.count != 0 && !$0.polyline.isEmpty
-        }
-
-        var waysFromStorage: [StoredWay] = []
+        let nodesFromStorage = dbInstance.getNodes(NSPredicate(format: """
+                                                            tags.@count != 0 AND 
+                                                            tags['ext:gig_complete'] != 'yes'
+                                                            """))
         
-        for way in allOriginalWays {
-            autoreleasepool {
-                if way.tags["ext:gig_complete"] != "yes" {
-                    waysFromStorage.append(way)
-                }
-            }
-        }
-    
-        
+        let waysFromStorage = dbInstance.getWays(NSPredicate(format: """
+                                                            tags.@count != 0 AND
+                                                            polyline.@count > 0 AND
+                                                            tags['ext:gig_complete'] != 'yes' 
+                                                            """ ))
+        debugPrint("converting to nods: start \(Date())")
         let nodeElements = nodesFromStorage.map({ node in
             autoreleasepool {
                 node.asNode()
             }
         })
+        debugPrint("converting to nods: end \(Date())")
+        debugPrint("converting to way: start \(Date())")
         let wayElements = waysFromStorage.map({ way in
             autoreleasepool {
                 way.asWay()
             }
             
         })
-                
+            
+        debugPrint("converting to way: end \(Date())")
         // Get the quests for nodes
         var nodeQuests: [any Quest] = []
         var wayQuests: [any Quest] = []
         let allQuests = QuestsRepository.shared.applicableQuests
         var displayUnits : [DisplayUnitWithCoordinate] = []
         
-        
+        debugPrint("process nodes: start: \(Date())")
         // Get the quests for ways
         for node in nodeElements {
             // Get the quests and try to iterate
@@ -132,6 +117,8 @@ class AppQuestManager {
                 
             }
         }
+        debugPrint("process nodes: end: \(Date())")
+        debugPrint("process ways: start: \(Date())")
         for way in wayElements{
             for quest in allQuests {
                     if quest.quest.filter.isEmpty {continue} // Ignore quest
@@ -147,6 +134,7 @@ class AppQuestManager {
                     }
             }
         }
+        debugPrint("process ways: end: \(Date())")
         print("Sending back items")
         print(allQuests)
                 

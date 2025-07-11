@@ -17,12 +17,14 @@ class StoredNode : Object {
     @Persisted(primaryKey: true) var id: Int64
     @Persisted var tags = Map<String,String>()
     @Persisted var version: Int = 0
-    @Persisted var timestamp : String = ""
-    @Persisted var point: CLLocationCoordinate2D = CLLocationCoordinate2D(latitude: 0.0, longitude: 0.0)
+    @Persisted var timestamp : Date
+    @Persisted var latitude: Double = 0.0 // Store as separate properties
+    @Persisted var longitude: Double = 0.0
+//    @Persisted var point: CLLocationCoordinate2D = CLLocationCoordinate2D(latitude: 0.0, longitude: 0.0)
         
     // Give another method that gives node
     public func asNode() -> Node {
-        let position = LatLon(latitude: point.latitude , longitude: point.longitude)
+        let position = LatLon(latitude: latitude , longitude: longitude)
         var theTags: [String:String] = [:]
         for (key,value) in tags{
             theTags[key] = value

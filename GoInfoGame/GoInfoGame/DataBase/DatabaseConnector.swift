@@ -13,15 +13,9 @@ import osmparser
 
 class DatabaseConnector {
     static let shared = DatabaseConnector()
-    
-    let realm: Realm
-    
+        
     private init() {
-        // Initialize Realm instance
-        realm = try! Realm()
-        if let realmURL = realm.configuration.fileURL {
-            print("Realm Database Path: \(realmURL.path)")
-        }
+        
     }
     
     /**
@@ -30,95 +24,83 @@ class DatabaseConnector {
         @param elements  List of OPElement
      */
     func saveOSMElements(_ elements: [OSMElement]) {
-        // Save the elements appropriately
-        // Get the ways and nodes out
-        let nodes = elements.filter({$0 is OSMNode})
-        let nodesOnly = elements.filter({$0 is OSMNode})
-        // Create a dictionary out of this like [id : osmnode]
-        var nodesDict: [String:OSMNode] = [:]
-        nodesOnly.forEach { element in
-            nodesDict[String(element.id)] = element as? OSMNode
+        let realm = try! Realm(configuration: RealmConfig.configuration)
+        print("Realm path: \(realm.configuration.fileURL?.path ?? "No file URL")")
+
+        // Build lookup and filter nodes
+        var nodesDict: [Int: OSMNode] = [:]
+        let nodes = elements.compactMap { element -> OSMNode? in
+            guard let node = element as? OSMNode else { return nil }
+            nodesDict[node.id] = node
+            return node
         }
-        
-        let ways = elements.filter { element in
-            guard let way = element as? OSMWay else {
-                return false
+
+        let ways = elements.compactMap { element -> OSMWay? in
+            guard let way = element as? OSMWay,
+                  !way.tags.isEmpty,
+                  way.tags["ext:link"] != "true" else {
+                return nil
             }
-            return !way.tags.isEmpty && !(way.tags["ext:link"] == "true")
+            return way
         }
-        
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+
+        // Prepare Realm objects outside write block
+        let storedNodes: [StoredNode] = nodes.map { node in
+            let stored = StoredNode()
+            stored.id = Int64(node.id)
+            let map = Map<String, String>()
+            node.tags.forEach { key, value in
+                map[key] = value
+            }
+            stored.tags = map
+            stored.version = node.version
+            stored.timestamp = node.timestamp
+            stored.latitude = node.lat
+            stored.longitude = node.lon
+            return stored
+        }
+
+        let storedWays: [StoredWay] = ways.map { way in
+            let stored = StoredWay()
+            stored.id = Int64(way.id)
+            let map = Map<String, String>()
+            way.tags.forEach { key, value in
+                if !key.contains(".") {
+                    map[key] = value
+                }
+            }
+            stored.tags = map
+            stored.version = way.version
+            stored.timestamp = way.timestamp
+            stored.nodes.append(objectsIn: way.nodes.map(Int64.init))
+
+            let polyline = List<CLLocationCoordinate2D>()
+            for nodeId in way.nodes {
+                if let node = nodesDict[nodeId] {
+                    polyline.append(CLLocationCoordinate2D(latitude: node.lat, longitude: node.lon))
+                }
+            }
+            stored.polyline = polyline
+            return stored
+        }
+
+        // Persist to Realm
         do {
+            realm.autorefresh = false
             try realm.write {
-                for node in nodes {
-                    let storedElement = StoredNode()
-                    storedElement.id = Int64(node.id)
-                    storedElement.tags.removeAll()
-                    node.tags.forEach { key, value in
-                        storedElement.tags[key] = value
-                    }
-//                    if let meta = node {
-                        let timestampString = dateFormatter.string(from: node.timestamp)
-                        storedElement.version = node.version
-                        storedElement.timestamp = timestampString
-//                    }
-                    if let asNode = node as? OSMNode{
-                        // coordinate from lat long
-                        storedElement.point = CLLocationCoordinate2D(latitude: asNode.lat, longitude: asNode.lon)
-//                        switch asNode.geometry {
-//                        case .center(let coordinate):
-//                            storedElement.point = coordinate
-//                        default:
-//                            continue
-//                        }
-                    }
-                    realm.add(storedElement, update: .all)
-                }
-                // Store the ways
-                for way in ways {
-                    let storedWay = StoredWay()
-                    storedWay.id = Int64(way.id)
-                    let timestampString = dateFormatter.string(from: way.timestamp)
-                    storedWay.tags.removeAll()
-                    way.tags.forEach { key, value in
-                        if !key.contains(".") {
-                            storedWay.tags[key] = value
-                        }
-                    }
-                    storedWay.version = way.version
-                    storedWay.timestamp = timestampString
-                    if let asWay = way as? OSMWay {
-                        storedWay.nodes.append(objectsIn: asWay.nodes.map({Int64($0)}))
-                        // Get all the points for the p
-                        var nodesInWay = List<CLLocationCoordinate2D>()
-                        asWay.nodes.forEach { nodeId in
-                            if let actualNode = nodesDict[String(nodeId)] {
-                                nodesInWay.append(CLLocationCoordinate2D(latitude: actualNode.lat, longitude: actualNode.lon))
-                            }
-                            
-                        }
-                        storedWay.polyline = nodesInWay
-//                        print("STORED POLYLINES --->>>\(storedWay.polyline)")
-                        // Store the coordinates
-//MARK: TBD polylines
-//                        switch asWay.geometry {
-//                        case .polygon(let coordinates):
-//                            storedWay.polyline.append(objectsIn: coordinates)
-//                        default:
-//                            print("Ignoring geometry")
-//                        }
-                    }
-                    realm.add(storedWay, update: .all)
-                }
+                realm.add(storedNodes, update: .all)
+                realm.add(storedWays, update: .all)
             }
+            realm.autorefresh = true
         } catch {
-            print("Elements to be skipped or something happened")
+            print("❌ Realm write failed: \(error)")
         }
     }
+
     
     func clearDB() {
         do {
+            let realm = try Realm(configuration: RealmConfig.configuration)
             try realm.write {
                 realm.deleteAll()
             }
@@ -131,6 +113,7 @@ class DatabaseConnector {
 
     func saveElements(_ elements: [OSMWay]) {
         do {
+            let realm = try Realm(configuration: RealmConfig.configuration)
             try realm.write {
                 for element in elements {
                     let realmElement = RealmOPElement()
@@ -172,15 +155,19 @@ class DatabaseConnector {
      Fetches all the StoredNodes in the Database
      @returns a Results object containing StoredNodes
      */
-    func getNodes() -> Results<StoredNode> {
-        return realm.objects(StoredNode.self)
+    
+    func getNodes(_ predicate: NSPredicate) -> Results<StoredNode> {
+        let realm = try! Realm(configuration: RealmConfig.configuration)
+        return realm.objects(StoredNode.self).filter(predicate)
     }
     /**
     Fetches all the storedWays in the Database
      @returns a Results object containing StoredWay
      */
-    func getWays() -> Results<StoredWay> {
-        return realm.objects(StoredWay.self)
+    
+    func getWays(_ predicate: NSPredicate) -> Results<StoredWay> {
+        let realm = try! Realm(configuration: RealmConfig.configuration)
+        return realm.objects(StoredWay.self).filter(predicate)
     }
     /**
      Fetches the center of a given StoredWay
@@ -189,6 +176,7 @@ class DatabaseConnector {
      */
     func getCenterForWay(id: Int64) -> CLLocationCoordinate2D? {
         // Get all the objects for the way
+        let realm = try! Realm(configuration: RealmConfig.configuration)
        guard let way = realm.object(ofType: StoredWay.self, forPrimaryKey: id) else {
            return nil
        }
@@ -197,7 +185,7 @@ class DatabaseConnector {
         var nodeCoords: [CLLocationCoordinate2D] = []
         for nodeId in nodeIds {
             if let node = realm.object(ofType: StoredNode.self , forPrimaryKey: nodeId){
-                nodeCoords.append(node.point)
+                nodeCoords.append(CLLocationCoordinate2D(latitude: node.latitude, longitude: node.longitude))
             }
         }
         if (!nodeCoords.isEmpty) {
@@ -215,6 +203,7 @@ class DatabaseConnector {
      @return StoredNode
      */
     func getNode(id:Int) -> StoredNode? {
+        let realm = try! Realm(configuration: RealmConfig.configuration)
         return realm.object(ofType: StoredNode.self, forPrimaryKey: id)
     }
     /**
@@ -227,6 +216,7 @@ class DatabaseConnector {
 //    }
     
     func getWay(id: Int) -> StoredWay? {
+        let realm = try! Realm(configuration: RealmConfig.configuration)
         return realm.object(ofType: StoredWay.self, forPrimaryKey: id)
     }
 
@@ -243,7 +233,7 @@ class DatabaseConnector {
      @return `StoredWay`
      */    
     func addWayTags(id: Int, tags: [String: String], version: Int) -> StoredWay? {
-
+        let realm = try! Realm(configuration: RealmConfig.configuration)
         // Step 1: Try to get the editable copy first
         if let editable = getWay(id: id) {
             // Step 2: Update the existing editable copy
@@ -270,7 +260,7 @@ class DatabaseConnector {
      */
     func addNodeTags(id: Int, tags: [String: String], version: Int) -> StoredNode? {
         print("🟣 addNodeTags called for id: \(id) with tags: \(tags)")
-
+        let realm = try! Realm(configuration: RealmConfig.configuration)
         if let editable = getNode(id: id) {
             print("✏️ Editable node exists: \(editable.id)")
             do {
@@ -301,6 +291,7 @@ class DatabaseConnector {
      - Returns: An instance of `StoredChangeset`
         */
     func createChangeset(id:Int, type: StoredElementEnum, originalTags:[String:String], tags:[String:String], version: Int, point: CLLocationCoordinate2D? = nil, nodes: List<Int64>? = nil) -> StoredChangeset? {
+        let realm = try! Realm(configuration: RealmConfig.configuration)
         let storedChangeset = StoredChangeset()
         storedChangeset.elementId = id
         storedChangeset.elementType = type
@@ -336,6 +327,7 @@ class DatabaseConnector {
     /// - Returns: an instance of `Results<StoredChangeset>`
     func getChangesets(synced: Bool = false) -> Results<StoredChangeset> {
         let results: Results<StoredChangeset>
+        let realm = try! Realm(configuration: RealmConfig.configuration)
         if synced {
             results = realm.objects(StoredChangeset.self).where { $0.changesetId != -1 }
         } else {
@@ -346,6 +338,7 @@ class DatabaseConnector {
     }
     
     func getChangeset(for id: String) -> StoredChangeset? {
+        let realm = try! Realm(configuration: RealmConfig.configuration)
         return realm.object(ofType: StoredChangeset.self, forPrimaryKey: id)
     }
 
@@ -354,6 +347,7 @@ class DatabaseConnector {
     /// - parameter changesetId: Assigned changeset ID from the server
     /// - Returns updated `StoredChangeset`
     func assignChangesetId(obj:String, changesetId: Int, updatedVersion: Int) -> StoredChangeset? {
+        let realm = try! Realm(configuration: RealmConfig.configuration)
         guard let changeset = realm.object(ofType: StoredChangeset.self, forPrimaryKey: obj) else {
             return nil
         }
@@ -369,6 +363,7 @@ class DatabaseConnector {
     }
     
     func updateChangesetWithUndoResultSuccess(obj:String) -> StoredChangeset? {
+        let realm = try! Realm(configuration: RealmConfig.configuration)
         guard let changeset = realm.object(ofType: StoredChangeset.self, forPrimaryKey: obj) else {
             return nil
         }
@@ -384,6 +379,7 @@ class DatabaseConnector {
     }
     
     func updateNodeVersion(nodeId: String, version:Int) -> StoredNode?{
+        let realm = try! Realm(configuration: RealmConfig.configuration)
         let intId = Int(nodeId) ?? -1
         guard let theNode = getNode(id: intId) else { return nil }
         do {
@@ -399,6 +395,7 @@ class DatabaseConnector {
     }
     
     func updateWayVersion(wayId: String, version: Int) -> StoredWay? {
+        let realm = try! Realm(configuration: RealmConfig.configuration)
         let intId = Int(wayId) ?? -1
         guard let theWay = getWay(id: intId) else { return nil }
         
@@ -415,3 +412,33 @@ class DatabaseConnector {
     }
 
 }
+
+struct RealmConfig {
+    static let configuration = Realm.Configuration(schemaVersion: 1) { migration, oldSchemaVersion in
+        if oldSchemaVersion < 1 {
+            let formatter = DateFormatter()
+            formatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+            migration.enumerateObjects(ofType: StoredNode.className()) { oldObject, newObject in
+                if let oldTimestamp = oldObject?["timestamp"] as? String {
+                    if let date = formatter.date(from: oldTimestamp) {
+                        newObject?["timestamp"] = date
+                    } else {
+                        newObject?["timestamp"] = Date()
+                    }
+                }
+                
+                if let oldPoint = oldObject!["point"] as? MigrationObject {
+                    // Access latitude and longitude from the old 'point' MigrationObject
+                    // Realm automatically stores CLLocationCoordinate2D with 'latitude' and 'longitude' properties
+                    let latitude = oldPoint["latitude"] as? Double ?? 0.0
+                    let longitude = oldPoint["longitude"] as? Double ?? 0.0
+
+                    // Assign these values to the new 'latitude' and 'longitude' properties
+                    newObject!["latitude"] = latitude
+                    newObject!["longitude"] = longitude
+                }
+            }
+        }
+    }
+}
+

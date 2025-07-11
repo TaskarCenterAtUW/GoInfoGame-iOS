@@ -65,9 +65,7 @@ class QuestBase {
                     print("❌ Undo failed: Element type not found")
                 }
                 print("undo result \(result)")
-                DispatchQueue.main.async {
-                    _ = DatabaseConnector.shared.updateChangesetWithUndoResultSuccess(obj: changesetId)
-                }
+                _ = DatabaseConnector.shared.updateChangesetWithUndoResultSuccess(obj: changesetId)
                 MapViewPublisher.shared.dismissSheet.send(.synced)
 //                MapViewPublisher.shared.dismissSheet.send(.submitted(""))
                 MapViewPublisher.shared.dismissSheet.send(.undoDone(changesetId))
@@ -98,7 +96,7 @@ class QuestBase {
 //          _ = DatabaseConnector.shared.addNodeTags(id: storedId, tags: tags)
            let node =  DatabaseConnector.shared.getNode(id: Int(id))!
            // Create a changeset
-           _ = DatabaseConnector.shared.createChangeset(id: Int(id), type: storedElementType, originalTags: node.tags.toDictionary(), tags: tags, version: node.version, point: node.point)
+           _ = DatabaseConnector.shared.createChangeset(id: Int(id), type: storedElementType, originalTags: node.tags.toDictionary(), tags: tags, version: node.version, point: CLLocationCoordinate2D(latitude: node.latitude, longitude: node.longitude))
        case .unknown:
            print("Unknown Stored element type received")
        }

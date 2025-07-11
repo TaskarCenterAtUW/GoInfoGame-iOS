@@ -25,7 +25,6 @@ class MapViewModel: ObservableObject {
     @Published var region = MKCoordinateRegion()
     let viewSpanDelta = 0.005 // Delta lat/lng to show to the user
    // var userlocation =  CLLocationCoordinate2D(latitude: 17.4700, longitude: 78.3534)
-    @Published var userlocation: CLLocationCoordinate2D? = nil
     @Published var refreshMap = UUID()
     @Published var items: [DisplayUnitWithCoordinate] = []
     @Published var selectedQuest: DisplayUnit?
@@ -41,14 +40,13 @@ class MapViewModel: ObservableObject {
            locationManagerDelegate.locationUpdateHandler = { [weak self] location in
                guard let self = self else { return }
 
-               DispatchQueue.main.async {
-                   self.userlocation = location
+               DispatchQueue.main.async { [unowned self] in
                    self.region = MKCoordinateRegion(
                        center: location,
                        span: MKCoordinateSpan(latitudeDelta: self.viewSpanDelta, longitudeDelta: self.viewSpanDelta)
                    )
-                   self.fetchOSMDataFor(from: .currentLocation(location: location))
                }
+               self.fetchOSMDataFor(from: .currentLocation(location: location))
            }
 
            locationManagerDelegate.requestLocationAuthorization()
@@ -115,24 +113,29 @@ class MapViewModel: ObservableObject {
            }
 
         if let workspaceID = KeychainManager.load(key: "workspaceID") {
-            
-            ApiManager.shared.performRequest(to: .fetchOSMElements(bBox.minLon, bBox.minLat, bBox.maxLon, bBox.maxLat, workspaceID), setupType: .osm, modelType: OSMMapDataResponse.self) { [unowned self] result in
+            debugPrint("requested: start \(Date())")
+            ApiManager.shared.performRequest(to: .fetchOSMElements(bBox.minLon, bBox.minLat, bBox.maxLon, bBox.maxLat, workspaceID), setupType: .osm, modelType: OSMMapDataResponse.self) { [weak self] result in
+                guard let self = self else {
+                    return
+                }
                 switch result {
                 case .success(let success):
+                    debugPrint("response sucess: start \(Date())")
                    let osmElements = success.getOSMElements()
                   //  print("OSM ELEMENTS ??? \(osmElements)")
-                    
+                    debugPrint("saveOSMElements: start \(Date())")
                     let response = Array(osmElements.values)
-                    let allValues = response
-                    
-                    DispatchQueue.main.async { [unowned self, allValues] in
-                        self.dbInstance.saveOSMElements(allValues) // Save all where there are tags
-                        autoreleasepool { [unowned self] in
-                            self.items = AppQuestManager.shared.fetchQuestsFromDB()
-                        }
-                        self.isLoading = false
-                        if self.items.count == 0 {self.refreshMap = UUID()}
+                    self.dbInstance.saveOSMElements(response) // Save all where there are tags
+                    debugPrint("saveOSMElements: end \(Date())")
+                    debugPrint("fetchQuestsFromDB: start \(Date())")
+                    let items = AppQuestManager.shared.fetchQuestsFromDB()
+                    debugPrint("fetchQuestsFromDB: end \(Date())")
+                    DispatchQueue.main.async { [weak self, items] in
+                        self?.items = items
+                        self?.isLoading = false
+                        if self?.items.count == 0 {self?.refreshMap = UUID()}
                     }
+                    debugPrint("response sucess: end \(Date())")
                 case .failure(let failure):
                     print(failure)
                 }
