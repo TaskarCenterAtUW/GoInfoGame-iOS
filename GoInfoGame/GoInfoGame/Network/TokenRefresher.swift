@@ -68,3 +68,14 @@ class TokenRefresher {
         }
     }
 }
+
+
+extension TokenRefresher {
+    func refreshTokenAsync() async -> Bool {
+        await withCheckedContinuation { continuation in
+            self.refreshToken { success in
+                continuation.resume(returning: success)
+            }
+        }
+    }
+}

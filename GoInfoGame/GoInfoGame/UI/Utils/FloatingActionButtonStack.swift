@@ -10,7 +10,6 @@ import SwiftUI
 struct FloatingActionButtonStack: View {
     
     var mapButtonAction: () -> ()
-    var useBingMaps: Bool
     @State private var showBottomSheet = false
     
     var body: some View {
@@ -19,7 +18,7 @@ struct FloatingActionButtonStack: View {
             HStack {
                 Spacer()
                 VStack {
-                    MapSwitcherButton(action: mapButtonAction, useBingMaps: useBingMaps)
+                    MapSwitcherButton(action: mapButtonAction)
                     
                     Button(action: {
                         showBottomSheet.toggle()
@@ -48,13 +47,12 @@ struct FloatingActionButtonStack: View {
     }
 }
 #Preview {
-    FloatingActionButtonStack(mapButtonAction: {}, useBingMaps: false)
+    FloatingActionButtonStack(mapButtonAction: {})
 }
 
 struct MapSwitcherButton: View {
     
     var action: () -> ()
-    var useBingMaps: Bool
     
     var body: some View {
         Button(action:
@@ -66,7 +64,7 @@ struct MapSwitcherButton: View {
                     .frame(width: 40, height: 40)
                     .shadow(radius: 5)
                 
-                Image(systemName: useBingMaps ? "square.3.layers.3d" : "map")
+                Image(systemName: "map")
                     .font(.system(size: 28))
                     .foregroundColor(.white)
             }

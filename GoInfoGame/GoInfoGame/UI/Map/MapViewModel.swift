@@ -35,8 +35,15 @@ class MapViewModel: ObservableObject {
     var isMultiSelectModeEnabled = false
     
    private let dbInstance = DatabaseConnector.shared
+    let mapRepo: MapRepositoryProtocol
+    private var allSattileLayers: [SatelliteServer] = []
     
-    init() {
+    @Published var availableOptions: [SatelliteOption] = []
+    @Published var selectedOption: SatelliteOption = .none
+    @Published var showSatellitePicker: Bool = false
+    
+    init(mapRepo: MapRepositoryProtocol = MapRepository()) {
+        self.mapRepo = mapRepo
            locationManagerDelegate.locationUpdateHandler = { [weak self] location in
                guard let self = self else { return }
 
@@ -51,7 +58,22 @@ class MapViewModel: ObservableObject {
 
            locationManagerDelegate.requestLocationAuthorization()
            locationManagerDelegate.startUpdatingLocation()
+        Task {
+            self.allSattileLayers = try await self.mapRepo.fetchAvailableServers()
+        }
        }
+    
+    func sattiliteServersFor(point: CLLocationCoordinate2D) -> [SatelliteServer] {
+        return allSattileLayers.filter{ $0.extent.isPointInsideBoundary(point)}
+    }
+    
+    func updateOptions(for center: CLLocationCoordinate2D) {
+        let supportedLayers = sattiliteServersFor(point: center)
+
+        let wmtsOptions = supportedLayers.map { SatelliteOption.wmts($0) }
+        self.availableOptions = [.none, .apple] + wmtsOptions
+    }
+
     
     func getSelectedQuest() -> DisplayUnit? {
         if isMultiSelectModeEnabled {

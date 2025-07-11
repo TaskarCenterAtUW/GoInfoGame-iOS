@@ -142,6 +142,15 @@
 		A4E711A82B57CA4300C9DE08 /* QuestsRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4E711A72B57CA4300C9DE08 /* QuestsRepository.swift */; };
 		B0CCB98C2B8626AE00AA73DE /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0CCB98B2B8626AE00AA73DE /* ProfileView.swift */; };
 		B0CCB98E2B8626C600AA73DE /* ProfileViewVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0CCB98D2B8626C600AA73DE /* ProfileViewVM.swift */; };
+		C71EB5AC2E2100510009E610 /* WMTSServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = C71EB5AA2E2100510009E610 /* WMTSServer.swift */; };
+		C71EB5AD2E2100510009E610 /* SatellitePickerSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = C71EB5A82E2100510009E610 /* SatellitePickerSheet.swift */; };
+		C71EB5AE2E2100510009E610 /* SatelliteServerResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = C71EB5A92E2100510009E610 /* SatelliteServerResponse.swift */; };
+		C71EB5B02E2100B80009E610 /* MapRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = C71EB5AF2E2100B80009E610 /* MapRepository.swift */; };
+		C71EB5B62E2100E30009E610 /* ResponseHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = C71EB5B42E2100E30009E610 /* ResponseHandler.swift */; };
+		C71EB5B72E2100E30009E610 /* NetworkManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C71EB5B22E2100E30009E610 /* NetworkManager.swift */; };
+		C71EB5B82E2100E30009E610 /* NetworkMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = C71EB5B32E2100E30009E610 /* NetworkMonitor.swift */; };
+		C71EB5B92E2100E30009E610 /* APIManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C71EB5B12E2100E30009E610 /* APIManager.swift */; };
+		C71EB5BD2E2113500009E610 /* WMTSLayers.json in Resources */ = {isa = PBXBuildFile; fileRef = C71EB5BC2E2113500009E610 /* WMTSLayers.json */; };
 		C75666D02E0D068900D36C41 /* OHHTTPStubs in Frameworks */ = {isa = PBXBuildFile; productRef = C75666CF2E0D068900D36C41 /* OHHTTPStubs */; };
 		C75666D22E0D068900D36C41 /* OHHTTPStubsSwift in Frameworks */ = {isa = PBXBuildFile; productRef = C75666D12E0D068900D36C41 /* OHHTTPStubsSwift */; };
 		C75CC5D92E0D22F4008A94A0 /* LongQuestsResponse.json in Resources */ = {isa = PBXBuildFile; fileRef = C75CC5D82E0D22F4008A94A0 /* LongQuestsResponse.json */; };
@@ -162,7 +171,6 @@
 		FA18CAEB2CD0F718008247F2 /* CameraView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA18CAEA2CD0F718008247F2 /* CameraView.swift */; };
 		FA1992ED2BB1A78C003B4719 /* KeychainManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA1992EC2BB1A78C003B4719 /* KeychainManager.swift */; };
 		FA50718C2D54E08800CE9798 /* AddFeatureView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA50718B2D54E08800CE9798 /* AddFeatureView.swift */; };
-		FA50718E2D54E1D200CE9798 /* BingTileOverlay.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA50718D2D54E1D200CE9798 /* BingTileOverlay.swift */; };
 		FA5071902D5B31CC00CE9798 /* CreateNoteView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA50718F2D5B31CC00CE9798 /* CreateNoteView.swift */; };
 		FA5071962D6DD31A00CE9798 /* LongElementQuest.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA5071952D6DD31A00CE9798 /* LongElementQuest.swift */; };
 		FA5071982D71F1B000CE9798 /* SyncLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA5071972D71F1B000CE9798 /* SyncLogger.swift */; };
@@ -477,6 +485,15 @@
 		B0CCB98B2B8626AE00AA73DE /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
 		B0CCB98D2B8626C600AA73DE /* ProfileViewVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewVM.swift; sourceTree = "<group>"; };
 		C4F37DA661B22FA87DF8282F /* Pods_osmapi.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_osmapi.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		C71EB5A82E2100510009E610 /* SatellitePickerSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SatellitePickerSheet.swift; sourceTree = "<group>"; };
+		C71EB5A92E2100510009E610 /* SatelliteServerResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SatelliteServerResponse.swift; sourceTree = "<group>"; };
+		C71EB5AA2E2100510009E610 /* WMTSServer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WMTSServer.swift; sourceTree = "<group>"; };
+		C71EB5AF2E2100B80009E610 /* MapRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapRepository.swift; sourceTree = "<group>"; };
+		C71EB5B12E2100E30009E610 /* APIManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIManager.swift; sourceTree = "<group>"; };
+		C71EB5B22E2100E30009E610 /* NetworkManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkManager.swift; sourceTree = "<group>"; };
+		C71EB5B32E2100E30009E610 /* NetworkMonitor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkMonitor.swift; sourceTree = "<group>"; };
+		C71EB5B42E2100E30009E610 /* ResponseHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResponseHandler.swift; sourceTree = "<group>"; };
+		C71EB5BC2E2113500009E610 /* WMTSLayers.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = WMTSLayers.json; sourceTree = "<group>"; };
 		C75CC5D62E0D22F4008A94A0 /* Workspaces response.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "Workspaces response.json"; sourceTree = "<group>"; };
 		C75CC5D72E0D22F4008A94A0 /* SCLIO Seattle pins response.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "SCLIO Seattle pins response.json"; sourceTree = "<group>"; };
 		C75CC5D82E0D22F4008A94A0 /* LongQuestsResponse.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = LongQuestsResponse.json; sourceTree = "<group>"; };
@@ -494,7 +511,6 @@
 		FA18CAEA2CD0F718008247F2 /* CameraView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraView.swift; sourceTree = "<group>"; };
 		FA1992EC2BB1A78C003B4719 /* KeychainManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeychainManager.swift; sourceTree = "<group>"; };
 		FA50718B2D54E08800CE9798 /* AddFeatureView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddFeatureView.swift; sourceTree = "<group>"; };
-		FA50718D2D54E1D200CE9798 /* BingTileOverlay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BingTileOverlay.swift; sourceTree = "<group>"; };
 		FA50718F2D5B31CC00CE9798 /* CreateNoteView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateNoteView.swift; sourceTree = "<group>"; };
 		FA5071952D6DD31A00CE9798 /* LongElementQuest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LongElementQuest.swift; sourceTree = "<group>"; };
 		FA5071972D71F1B000CE9798 /* SyncLogger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncLogger.swift; sourceTree = "<group>"; };
@@ -663,6 +679,7 @@
 		0536DD952B0BD91F00B04C4B /* Network */ = {
 			isa = PBXGroup;
 			children = (
+				C71EB5B52E2100E30009E610 /* APIHandler */,
 				A48037342BBA8DCB007EE7E4 /* models */,
 				0536DD962B0BD95100B04C4B /* URLSession+Extension.swift */,
 				A48037302BBA8C25007EE7E4 /* ApiManager.swift */,
@@ -807,8 +824,9 @@
 		971575152B5FFD5F0044797C /* Map */ = {
 			isa = PBXGroup;
 			children = (
+				C71EB5AF2E2100B80009E610 /* MapRepository.swift */,
+				C71EB5AB2E2100510009E610 /* Satellite Server */,
 				971575182B5FFE910044797C /* LocationManagerCoordinator.swift */,
-				FA50718D2D54E1D200CE9798 /* BingTileOverlay.swift */,
 				971575162B5FFD6F0044797C /* MapView.swift */,
 				970D5BD22B67638400C20BE7 /* MapViewModel.swift */,
 				A495DF2C2B6A190400478E44 /* CustomMapView.swift */,
@@ -1264,9 +1282,31 @@
 			path = Profile;
 			sourceTree = "<group>";
 		};
+		C71EB5AB2E2100510009E610 /* Satellite Server */ = {
+			isa = PBXGroup;
+			children = (
+				C71EB5A82E2100510009E610 /* SatellitePickerSheet.swift */,
+				C71EB5A92E2100510009E610 /* SatelliteServerResponse.swift */,
+				C71EB5AA2E2100510009E610 /* WMTSServer.swift */,
+			);
+			path = "Satellite Server";
+			sourceTree = "<group>";
+		};
+		C71EB5B52E2100E30009E610 /* APIHandler */ = {
+			isa = PBXGroup;
+			children = (
+				C71EB5B12E2100E30009E610 /* APIManager.swift */,
+				C71EB5B22E2100E30009E610 /* NetworkManager.swift */,
+				C71EB5B32E2100E30009E610 /* NetworkMonitor.swift */,
+				C71EB5B42E2100E30009E610 /* ResponseHandler.swift */,
+			);
+			path = APIHandler;
+			sourceTree = "<group>";
+		};
 		C75CC5D52E0D22E0008A94A0 /* SampleResponses */ = {
 			isa = PBXGroup;
 			children = (
+				C71EB5BC2E2113500009E610 /* WMTSLayers.json */,
 				C75CC5D62E0D22F4008A94A0 /* Workspaces response.json */,
 				C75CC5D72E0D22F4008A94A0 /* SCLIO Seattle pins response.json */,
 				C75CC5D82E0D22F4008A94A0 /* LongQuestsResponse.json */,
@@ -1851,6 +1891,7 @@
 			files = (
 				973FC00A2B4D2A6D00878269 /* Localizable.strings in Resources */,
 				FAD5C4FF2AFCBE720040C61A /* LaunchScreen.storyboard in Resources */,
+				C71EB5BD2E2113500009E610 /* WMTSLayers.json in Resources */,
 				FAD5C4FC2AFCBE720040C61A /* Assets.xcassets in Resources */,
 				FAD5C4FA2AFCBE700040C61A /* Main.storyboard in Resources */,
 				C75CC5D92E0D22F4008A94A0 /* LongQuestsResponse.json in Resources */,
@@ -2147,7 +2188,6 @@
 				05DBBB622B164D9A00B6F110 /* RealOPElement.swift in Sources */,
 				97AC1C0A2B6B7F10004F0BF4 /* CustomVerticalButtonsList.swift in Sources */,
 				FAE258522D3A780F00D2BB12 /* FloatingActionButtonStack.swift in Sources */,
-				FA50718E2D54E1D200CE9798 /* BingTileOverlay.swift in Sources */,
 				FA8C74C22C4E89C800D28220 /* LongForm.swift in Sources */,
 				FA9F38222DC93F5300D7AABF /* UndoSidebarView.swift in Sources */,
 				FAC9E60F2B04F9C800E2C608 /* OverpassRequestManager.swift in Sources */,
@@ -2175,6 +2215,9 @@
 				FA5853C12B21F17F00301CDA /* OnboardingView.swift in Sources */,
 				A4B83AF32B5F9385006684CA /* StoredWay.swift in Sources */,
 				FA18CAE52CC7D0DD008247F2 /* SequenceModel.swift in Sources */,
+				C71EB5AC2E2100510009E610 /* WMTSServer.swift in Sources */,
+				C71EB5AD2E2100510009E610 /* SatellitePickerSheet.swift in Sources */,
+				C71EB5AE2E2100510009E610 /* SatelliteServerResponse.swift in Sources */,
 				FAE481A22DD5EF3800149A48 /* PasswordAuthenticationPopupView.swift in Sources */,
 				05DBBB5F2B1263FF00B6F110 /* DatabaseConnector.swift in Sources */,
 				FAF44FC12B30850A004FE664 /* OnboardingView3.swift in Sources */,
@@ -2189,7 +2232,12 @@
 				973FC04C2B5A5F5F00878269 /* RadioItem.swift in Sources */,
 				FA18CAE92CCFD212008247F2 /* FinishUploadingModel.swift in Sources */,
 				C7ED070F2D70E2EC001FFFE2 /* TokenRefresher.swift in Sources */,
+				C71EB5B62E2100E30009E610 /* ResponseHandler.swift in Sources */,
+				C71EB5B72E2100E30009E610 /* NetworkManager.swift in Sources */,
+				C71EB5B82E2100E30009E610 /* NetworkMonitor.swift in Sources */,
+				C71EB5B92E2100E30009E610 /* APIManager.swift in Sources */,
 				FA50718C2D54E08800CE9798 /* AddFeatureView.swift in Sources */,
+				C71EB5B02E2100B80009E610 /* MapRepository.swift in Sources */,
 				A495DF2D2B6A190400478E44 /* CustomMapView.swift in Sources */,
 				05DBBB662B17209600B6F110 /* RealmOPMeta.swift in Sources */,
 				B0CCB98E2B8626C600AA73DE /* ProfileViewVM.swift in Sources */,

@@ -28,15 +28,14 @@ struct CustomMap: UIViewRepresentable {
     @Binding var isMultiSelectModeEnabled: Bool
     @Binding var selectedAnnotationType: String?
     @Binding var showMultiSelectionBottomSheet: Bool
+    @Binding var selectedSattiliteOption: SatelliteOption
     
     @State var lineCoordinates: [CLLocationCoordinate2D] = []
     
     var onMapViewCreated: ((MKMapView) -> Void)?
     
     var contextualInfo: ((String) -> Void)?
-    
-    @Binding var useBingMaps: Bool 
-    
+        
     @Binding var tappedCoordinate: CLLocationCoordinate2D?
     
     @Binding var annotationCoordinate: CLLocationCoordinate2D?
@@ -54,14 +53,9 @@ struct CustomMap: UIViewRepresentable {
         mapView.userTrackingMode = trackingMode.mkUserTrackingMode
         // Hide points of interest except street names
         mapView.register(CustomAnnotationView.self, forAnnotationViewWithReuseIdentifier: CustomAnnotationView.reuseIdentifier)
-                
-        if useBingMaps {
-            let tileOverlay = BingTileOverlay()
-                  tileOverlay.minimumZ = 3  // Set minimum zoom level
-                  tileOverlay.maximumZ = 150 // Set maximum zoom level for better performance
-            DispatchQueue.main.async {
-                mapView.addOverlay(tileOverlay, level: .aboveLabels)
-            }
+        
+        if case .wmts(let satelliteServer) = selectedSattiliteOption {
+            mapView.addOverlay(WMTSSeever(satelliteServer: satelliteServer), level: .aboveLabels)
         }
         
         let tapGesture = UILongPressGestureRecognizer(target: context.coordinator, action: #selector(Coordinator.handleMapTap(_:)))
@@ -100,15 +94,10 @@ struct CustomMap: UIViewRepresentable {
         mapView.overlays.forEach { mapView.removeOverlay($0) }
         
         mapView.addOverlay(shadowOverlay)
-
         
-           // Re-add overlays based on selection
-           if useBingMaps {
-               let tileOverlay = BingTileOverlay()
-               tileOverlay.minimumZ = 3
-               tileOverlay.maximumZ = 19
-               mapView.addOverlay(tileOverlay, level: .aboveLabels)
-           }
+        if case .wmts(let satelliteServer) = selectedSattiliteOption {
+            mapView.addOverlay(WMTSSeever(satelliteServer: satelliteServer), level: .aboveLabels)
+        }
         
 //        if useBingMaps {
 //            let tileOverlay = BingTileOverlay()

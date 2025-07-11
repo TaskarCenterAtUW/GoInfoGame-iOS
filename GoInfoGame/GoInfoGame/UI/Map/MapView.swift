@@ -30,7 +30,7 @@ struct MapView: View {
     
     @AppStorage("baseUrl") var baseUrl = ""
     
-    @State private var useBingMaps = false
+    @State private var showSattiliteSelectionSheet: Bool = false
     
     @State private var tappedCoordinate: CLLocationCoordinate2D? = nil
     
@@ -57,6 +57,7 @@ struct MapView: View {
     @State private var shadowOverlay = ShadowOverlay()
     
     @State private var showUndoSidebar = false
+    @State private var shatilliteSelected: String? = nil
     
                 
     var body: some View {
@@ -77,15 +78,24 @@ struct MapView: View {
                           selectedQuest: $viewModel.selectedQuest,
                           shouldShowPolyline: $shouldShowPolyline,
                       
-                          isPresented: $isPresented, isUserSettingsPresented: $showUserSettingsSheet, selectedAnnotations: $viewModel.selectedAnnotaions, isMultiSelectModeEnabled: $viewModel.isMultiSelectModeEnabled, selectedAnnotationType: $viewModel.selectedAnnotationType, showMultiSelectionBottomSheet: $showMultiSelectionBottomSheet ,
-                      onMapViewCreated: { map in
-                self.mapViewRef = map
-            } ,
-                      contextualInfo: { contextualInfo in
-                print(contextualInfo)
-                selectedDetent = .fraction(0.8)
-                self.setContextualInfo(contextualinfo: contextualInfo)
-                }, useBingMaps: $useBingMaps, tappedCoordinate: $tappedCoordinate, annotationCoordinate: $annotationCoordinate, shadowOverlay: shadowOverlay)
+                          isPresented: $isPresented,
+                          isUserSettingsPresented: $showUserSettingsSheet,
+                          selectedAnnotations: $viewModel.selectedAnnotaions,
+                          isMultiSelectModeEnabled: $viewModel.isMultiSelectModeEnabled,
+                          selectedAnnotationType: $viewModel.selectedAnnotationType,
+                          showMultiSelectionBottomSheet: $showMultiSelectionBottomSheet ,
+                          selectedSattiliteOption: $viewModel.selectedOption,
+                          onMapViewCreated: { map in
+                    self.mapViewRef = map
+                } ,
+                          contextualInfo: { contextualInfo in
+                    print(contextualInfo)
+                    selectedDetent = .fraction(0.8)
+                    self.setContextualInfo(contextualinfo: contextualInfo)
+                },
+                          tappedCoordinate: $tappedCoordinate,
+                          annotationCoordinate: $annotationCoordinate,
+                          shadowOverlay: shadowOverlay)
             .onChange(of: tappedCoordinate) { _ in
                 showMapLongPressedSheet = tappedCoordinate != nil
             }
@@ -134,29 +144,46 @@ struct MapView: View {
                 VStack {
                     Spacer()
                     HStack {
-                        UndoButton(
-                            onPreview: { id, type in
-                                
-                                
+                        VStack(alignment: .leading) {
+                            UndoButton(
+                                onPreview: { id, type in
 //                                if let element = DatabaseConnector.shared.getElement(withId: id, type: type) {
 //                                    let annotation = DisplayUnitAnnotation(element: element)
 //                                    mapViewRef?.addAnnotation(annotation)
 //                                    mapViewRef?.setCenter(annotation.coordinate, animated: true)
 //                                }
-                            },
-                            onRemovePreview: {
-                            },
-                            onRevert: { id in
-                                MapUndoManager.shared.undo(for: id)
+                                },
+                                onRemovePreview: {
+                                },
+                                onRevert: { id in
+                                    MapUndoManager.shared.undo(for: id)
+                                }
+                            )
+                            if case .wmts(let server) = viewModel.selectedOption,
+                                server.attribution.attributionRequired,
+                                let url = URL(string: server.attribution.url),
+                                UIApplication.shared.canOpenURL(url) {
+                                Button(action: {
+                                    UIApplication.shared.open(url)
+                                }) {
+                                    Text(server.attribution.text)
+                                        .background(.white.opacity(0.6))
+                                        .foregroundColor(.black)
+                                        .padding()
+                                        .font(.system(size: 8, weight: .light))
+                                        .cornerRadius(8)
+                                }
                             }
-                        )
+                            
+                        }
                         .padding(.bottom, 24)
                         .padding(.leading, 16)
                         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottomLeading)
                         Spacer()
                         FloatingActionButtonStack(mapButtonAction: {
-                            useBingMaps.toggle()
-                        }, useBingMaps: useBingMaps)
+                            viewModel.updateOptions(for: mapViewRef?.region.center ?? CLLocationCoordinate2D(latitude: 0.0, longitude: 0.0))
+                            viewModel.showSatellitePicker = true
+                        })
                     }
                 }
                             
@@ -232,7 +259,20 @@ struct MapView: View {
                     .interactiveDismissDisabled()
                     .presentationDragIndicator(.hidden)
             }
-        
+            .sheet(isPresented: $viewModel.showSatellitePicker) {
+                SatellitePickerSheet(
+                    options: $viewModel.availableOptions,
+                    selected: $viewModel.selectedOption,
+                    onSelect: { selected in
+                        viewModel.selectedOption = selected
+                        viewModel.showSatellitePicker = false
+                        addOverlay(selectedSatilliteOption: selected)
+                    }
+                )
+                .background(Color(red: 248/255, green: 248/255, blue: 248/255))
+                .presentationDetents([.fraction(0.36)])
+                .presentationDragIndicator(.visible)
+            }
             .sheet(isPresented: $showUserSettingsSheet) {
                 UserSettingsView(selectedWorkspace: selectedWorkspace?.title ?? "", options: OptionModel.options, onNavigate: { navigate in
                     showUserSettingsSheet = false
@@ -410,6 +450,21 @@ struct MapView: View {
 //            let edited = DatabaseConnector.shared.getNode(id: 43)
 //            print("ORIGINAL --->>>\(original)")
 //            print("EDITED --->>>\(edited)")
+        }
+    }
+    
+    func addOverlay(selectedSatilliteOption: SatelliteOption) {
+        // Remove old tile overlays (keep polygons, etc. if needed)
+        let oldTileOverlays = mapViewRef?.overlays.filter { $0 is WMTSSeever }
+        mapViewRef?.removeOverlays(oldTileOverlays ?? [])
+        switch selectedSatilliteOption {
+        case .none:
+            mapViewRef?.mapType = .standard
+        case .apple:
+            mapViewRef?.mapType = .satellite
+        case .wmts(let server):
+            let layer = WMTSSeever(satelliteServer: server)
+            mapViewRef?.addOverlay(layer, level: .aboveLabels)
         }
     }
     

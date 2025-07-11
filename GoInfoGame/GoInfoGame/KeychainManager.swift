@@ -11,6 +11,10 @@ import Security
 
 struct KeychainManager {
     
+    enum Keys: String {
+        case accessToken = "accessToken"
+    }
+    
     static func save(key: String, data: String) -> Bool {
         guard let data = data.data(using: .utf8) else { return false }
         
