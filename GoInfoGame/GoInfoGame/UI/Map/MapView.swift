@@ -30,8 +30,6 @@ struct MapView: View {
     
     @AppStorage("baseUrl") var baseUrl = ""
     
-    @State private var useBingMaps = false
-    
     @State private var showSattiliteSelectionSheet: Bool = false
     
     @State private var tappedCoordinate: CLLocationCoordinate2D? = nil
@@ -94,7 +92,6 @@ struct MapView: View {
                     selectedDetent = .fraction(0.8)
                     self.setContextualInfo(contextualinfo: contextualInfo)
                 },
-                          useBingMaps: $useBingMaps,
                           tappedCoordinate: $tappedCoordinate,
                           annotationCoordinate: $annotationCoordinate,
                           shadowOverlay: shadowOverlay)
@@ -169,7 +166,7 @@ struct MapView: View {
                         FloatingActionButtonStack(mapButtonAction: {
                             viewModel.updateOptions(for: mapViewRef?.region.center ?? CLLocationCoordinate2D(latitude: 0.0, longitude: 0.0))
                             viewModel.showSatellitePicker = true
-                        }, useBingMaps: useBingMaps)
+                        })
                     }
                 }
                             

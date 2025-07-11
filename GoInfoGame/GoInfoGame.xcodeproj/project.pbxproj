@@ -171,7 +171,6 @@
 		FA18CAEB2CD0F718008247F2 /* CameraView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA18CAEA2CD0F718008247F2 /* CameraView.swift */; };
 		FA1992ED2BB1A78C003B4719 /* KeychainManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA1992EC2BB1A78C003B4719 /* KeychainManager.swift */; };
 		FA50718C2D54E08800CE9798 /* AddFeatureView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA50718B2D54E08800CE9798 /* AddFeatureView.swift */; };
-		FA50718E2D54E1D200CE9798 /* BingTileOverlay.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA50718D2D54E1D200CE9798 /* BingTileOverlay.swift */; };
 		FA5071902D5B31CC00CE9798 /* CreateNoteView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA50718F2D5B31CC00CE9798 /* CreateNoteView.swift */; };
 		FA5071962D6DD31A00CE9798 /* LongElementQuest.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA5071952D6DD31A00CE9798 /* LongElementQuest.swift */; };
 		FA5071982D71F1B000CE9798 /* SyncLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA5071972D71F1B000CE9798 /* SyncLogger.swift */; };
@@ -512,7 +511,6 @@
 		FA18CAEA2CD0F718008247F2 /* CameraView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraView.swift; sourceTree = "<group>"; };
 		FA1992EC2BB1A78C003B4719 /* KeychainManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeychainManager.swift; sourceTree = "<group>"; };
 		FA50718B2D54E08800CE9798 /* AddFeatureView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddFeatureView.swift; sourceTree = "<group>"; };
-		FA50718D2D54E1D200CE9798 /* BingTileOverlay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BingTileOverlay.swift; sourceTree = "<group>"; };
 		FA50718F2D5B31CC00CE9798 /* CreateNoteView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateNoteView.swift; sourceTree = "<group>"; };
 		FA5071952D6DD31A00CE9798 /* LongElementQuest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LongElementQuest.swift; sourceTree = "<group>"; };
 		FA5071972D71F1B000CE9798 /* SyncLogger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncLogger.swift; sourceTree = "<group>"; };
@@ -829,7 +827,6 @@
 				C71EB5AF2E2100B80009E610 /* MapRepository.swift */,
 				C71EB5AB2E2100510009E610 /* Satellite Server */,
 				971575182B5FFE910044797C /* LocationManagerCoordinator.swift */,
-				FA50718D2D54E1D200CE9798 /* BingTileOverlay.swift */,
 				971575162B5FFD6F0044797C /* MapView.swift */,
 				970D5BD22B67638400C20BE7 /* MapViewModel.swift */,
 				A495DF2C2B6A190400478E44 /* CustomMapView.swift */,
@@ -2191,7 +2188,6 @@
 				05DBBB622B164D9A00B6F110 /* RealOPElement.swift in Sources */,
 				97AC1C0A2B6B7F10004F0BF4 /* CustomVerticalButtonsList.swift in Sources */,
 				FAE258522D3A780F00D2BB12 /* FloatingActionButtonStack.swift in Sources */,
-				FA50718E2D54E1D200CE9798 /* BingTileOverlay.swift in Sources */,
 				FA8C74C22C4E89C800D28220 /* LongForm.swift in Sources */,
 				FA9F38222DC93F5300D7AABF /* UndoSidebarView.swift in Sources */,
 				FAC9E60F2B04F9C800E2C608 /* OverpassRequestManager.swift in Sources */,
