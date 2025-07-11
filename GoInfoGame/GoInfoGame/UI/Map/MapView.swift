@@ -57,6 +57,7 @@ struct MapView: View {
     @State private var shadowOverlay = ShadowOverlay()
     
     @State private var showUndoSidebar = false
+    @State private var shatilliteSelected: String? = nil
     
                 
     var body: some View {
@@ -143,22 +144,38 @@ struct MapView: View {
                 VStack {
                     Spacer()
                     HStack {
-                        UndoButton(
-                            onPreview: { id, type in
-                                
-                                
+                        VStack(alignment: .leading) {
+                            UndoButton(
+                                onPreview: { id, type in
 //                                if let element = DatabaseConnector.shared.getElement(withId: id, type: type) {
 //                                    let annotation = DisplayUnitAnnotation(element: element)
 //                                    mapViewRef?.addAnnotation(annotation)
 //                                    mapViewRef?.setCenter(annotation.coordinate, animated: true)
 //                                }
-                            },
-                            onRemovePreview: {
-                            },
-                            onRevert: { id in
-                                MapUndoManager.shared.undo(for: id)
+                                },
+                                onRemovePreview: {
+                                },
+                                onRevert: { id in
+                                    MapUndoManager.shared.undo(for: id)
+                                }
+                            )
+                            if case .wmts(let server) = viewModel.selectedOption,
+                                server.attribution.attributionRequired,
+                                let url = URL(string: server.attribution.url),
+                                UIApplication.shared.canOpenURL(url) {
+                                Button(action: {
+                                    UIApplication.shared.open(url)
+                                }) {
+                                    Text(server.attribution.text)
+                                        .background(.white.opacity(0.6))
+                                        .foregroundColor(.black)
+                                        .padding()
+                                        .font(.system(size: 8, weight: .light))
+                                        .cornerRadius(8)
+                                }
                             }
-                        )
+                            
+                        }
                         .padding(.bottom, 24)
                         .padding(.leading, 16)
                         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottomLeading)
