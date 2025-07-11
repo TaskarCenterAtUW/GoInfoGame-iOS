@@ -35,7 +35,7 @@ extension Extent {
         return coordinates
     }
     
-    func isCoordinate(_ point: CLLocationCoordinate2D) -> Bool {
+    func isPointInsideBoundary(_ point: CLLocationCoordinate2D) -> Bool {
         let polygon = createPolygon(from: self)
         guard polygon.count > 2 else { return false }
         var inside = false

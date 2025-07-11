@@ -64,7 +64,7 @@ class MapViewModel: ObservableObject {
        }
     
     func sattiliteServersFor(point: CLLocationCoordinate2D) -> [SatelliteServer] {
-        return allSattileLayers.filter{ $0.extent.isCoordinate(point)}
+        return allSattileLayers.filter{ $0.extent.isPointInsideBoundary(point)}
     }
     
     func updateOptions(for center: CLLocationCoordinate2D) {
