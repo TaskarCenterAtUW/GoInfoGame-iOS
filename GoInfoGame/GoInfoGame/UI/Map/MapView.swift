@@ -265,6 +265,11 @@ struct MapView: View {
                     selected: $viewModel.selectedOption,
                     onSelect: { selected in
                         viewModel.selectedOption = selected
+                        if case .wmts(let wmts) = selected {
+                            mapViewRef?.setCameraZoomRange(MKMapView.CameraZoomRange(minCenterCoordinateDistance: mapViewRef?.distanceForZoom(zoomLevel: wmts.extent.maxZoom) ?? 0.0), animated: true)
+                        } else {
+                            mapViewRef?.setCameraZoomRange(nil, animated: true)
+                        }
                         viewModel.showSatellitePicker = false
                         addOverlay(selectedSatilliteOption: selected)
                     }
