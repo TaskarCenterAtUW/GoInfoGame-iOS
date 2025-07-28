@@ -91,13 +91,13 @@ struct CustomMap: UIViewRepresentable {
         
         
         // Remove existing overlays
-        mapView.overlays.forEach { mapView.removeOverlay($0) }
+        mapView.overlays.forEach {
+            if !($0 is WMTSSeever) {
+                mapView.removeOverlay($0)
+            }
+        }
         
         mapView.addOverlay(shadowOverlay)
-        
-        if case .wmts(let satelliteServer) = selectedSattiliteOption {
-            mapView.addOverlay(WMTSSeever(satelliteServer: satelliteServer), level: .aboveLabels)
-        }
         
 //        if useBingMaps {
 //            let tileOverlay = BingTileOverlay()
