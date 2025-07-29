@@ -110,12 +110,6 @@ class MapViewModel: ObservableObject {
         }
     }
     
-    @objc private func locationDidChange() {
-        guard let userLocation = locationManagerDelegate.location else { return }
-       // fetchOSMDataFor(currentLocation: userLocation.coordinate)
-        fetchOSMDataFor(from: .currentLocation(location: userLocation.coordinate))
-    }
-    
     func fetchOSMDataFor(from bboxSource: BBoxSource) {
         if isLoading {
             return

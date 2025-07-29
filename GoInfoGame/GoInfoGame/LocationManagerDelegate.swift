@@ -8,9 +8,9 @@
 import CoreLocation
 import Foundation
 
-class LocationManagerDelegate: NSObject, ObservableObject, CLLocationManagerDelegate {
+class LocationManagerDelegate: NSObject, CLLocationManagerDelegate {
     private var locationManager = CLLocationManager()
-    @Published var location: CLLocation?
+    private(set) var location: CLLocation?
     var locationUpdateHandler: ((CLLocationCoordinate2D) -> Void)?
     var headingUpdateHandler: ((Double) -> Void)?
     

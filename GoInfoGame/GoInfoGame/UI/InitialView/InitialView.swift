@@ -11,7 +11,6 @@ struct InitialView: View {
     @StateObject private var viewModel = InitialViewModel()
     @State private var shouldNavigateToMapView = false
     @State private var selectedWorkspace: Workspace? = nil
-    @StateObject private var locManagerDelegate = LocationManagerDelegate()
     @AppStorage("loggedIn") private var loggedIn: Bool = false
     
     var body: some View {

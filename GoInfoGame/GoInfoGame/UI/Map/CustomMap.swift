@@ -22,7 +22,7 @@ struct CustomMap: UIViewRepresentable {
     @Binding var shouldShowPolyline: Bool
     @Binding var isPresented: Bool
     @Binding var isUserSettingsPresented: Bool
-    @StateObject var locationManagerDelegate = LocationManagerDelegate()
+    var locationManagerDelegate = LocationManagerDelegate()
     
     @Binding var selectedAnnotations: Set<DisplayUnitAnnotation>
     @Binding var isMultiSelectModeEnabled: Bool
@@ -554,7 +554,7 @@ struct CustomMap: UIViewRepresentable {
 
     
     // calculate distance between user current location and selected annotation
-        func calculateDistance(selectedAnnotation: CLLocationCoordinate2D) -> CLLocationDistance {
+    private func calculateDistance(selectedAnnotation: CLLocationCoordinate2D) -> CLLocationDistance {
             guard let userCurrentLocation = locationManagerDelegate.location?.coordinate else { return CLLocationDistance(0) }
         
             let fromLocation = CLLocation(latitude: userCurrentLocation.latitude, longitude: userCurrentLocation.longitude)
@@ -563,7 +563,7 @@ struct CustomMap: UIViewRepresentable {
         }
     
     // infer direction
-    func inferDirection(selectedAnnotation: CLLocationCoordinate2D) -> String {
+    private func inferDirection(selectedAnnotation: CLLocationCoordinate2D) -> String {
         guard let userCurrentLocation = locationManagerDelegate.location?.coordinate else { return "undetermined" }
         let userLocationPoint = MKMapPoint(userCurrentLocation)
         let destinationPoint = MKMapPoint(selectedAnnotation)
