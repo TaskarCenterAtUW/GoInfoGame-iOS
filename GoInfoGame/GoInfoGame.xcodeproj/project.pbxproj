@@ -33,7 +33,6 @@
 		971342772BBD415600174EBF /* InitialViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 971342762BBD415600174EBF /* InitialViewController.swift */; };
 		971342792BBD691500174EBF /* MapViewControllerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 971342782BBD691500174EBF /* MapViewControllerView.swift */; };
 		971575172B5FFD6F0044797C /* MapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 971575162B5FFD6F0044797C /* MapView.swift */; };
-		971575192B5FFE910044797C /* LocationManagerCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 971575182B5FFE910044797C /* LocationManagerCoordinator.swift */; };
 		971902112B983EFC009B3270 /* CustomMap.swift in Sources */ = {isa = PBXBuildFile; fileRef = 971902102B983EFC009B3270 /* CustomMap.swift */; };
 		972454152B14A49A0036B91A /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 972454142B14A49A0036B91A /* Extensions.swift */; };
 		973FBFFE2B46BB3800878269 /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 973FBFFD2B46BB3800878269 /* Utils.swift */; };
@@ -2159,7 +2158,6 @@
 				FA8C74D62C5C0DBA00D28220 /* LongFormViewModel.swift in Sources */,
 				0536DD852B0BD11A00B04C4B /* LoginViewController.swift in Sources */,
 				A4E711A42B57B13100C9DE08 /* QuestionHeader.swift in Sources */,
-				971575192B5FFE910044797C /* LocationManagerCoordinator.swift in Sources */,
 				FABF3CF42B7419BB0080EAC9 /* LocationManagerDelegate.swift in Sources */,
 				973FC0192B4FB17000878269 /* LocalizedStrings.swift in Sources */,
 				A48037312BBA8C25007EE7E4 /* ApiManager.swift in Sources */,
