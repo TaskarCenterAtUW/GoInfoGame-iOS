@@ -555,7 +555,7 @@ struct CustomMap: UIViewRepresentable {
     
     // calculate distance between user current location and selected annotation
         func calculateDistance(selectedAnnotation: CLLocationCoordinate2D) -> CLLocationDistance {
-            guard let userCurrentLocation = locationManagerDelegate.locationManager.location?.coordinate else { return CLLocationDistance(0) }
+            guard let userCurrentLocation = locationManagerDelegate.location?.coordinate else { return CLLocationDistance(0) }
         
             let fromLocation = CLLocation(latitude: userCurrentLocation.latitude, longitude: userCurrentLocation.longitude)
             let toLocation = CLLocation(latitude: selectedAnnotation.latitude, longitude: selectedAnnotation.longitude)
@@ -564,7 +564,7 @@ struct CustomMap: UIViewRepresentable {
     
     // infer direction
     func inferDirection(selectedAnnotation: CLLocationCoordinate2D) -> String {
-        guard let userCurrentLocation = locationManagerDelegate.locationManager.location?.coordinate else { return "undetermined" }
+        guard let userCurrentLocation = locationManagerDelegate.location?.coordinate else { return "undetermined" }
         let userLocationPoint = MKMapPoint(userCurrentLocation)
         let destinationPoint = MKMapPoint(selectedAnnotation)
         let angleRadians = atan2(destinationPoint.y - userLocationPoint.y, destinationPoint.x - userLocationPoint.x)
