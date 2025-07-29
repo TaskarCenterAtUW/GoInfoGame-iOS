@@ -26,6 +26,7 @@ class InitialViewModel: ObservableObject {
         locationManagerDelegate.locationUpdateHandler = { [weak self] location in
             guard let self = self else { return }
             fetchWorkspacesList()
+            locationManagerDelegate.stopUpdatingLocation()
         }
         
         locationManagerDelegate.requestLocationAuthorization()
