@@ -15,7 +15,7 @@ import ClusterMap
 // Custom Map for managing map interactions between SwiftUI and UIKit components
 struct CustomMap: UIViewRepresentable {
     
-    var region: MKCoordinateRegion
+    @Binding var region: MKCoordinateRegion
     @Binding var trackingMode: MapUserTrackingMode
    @Binding var items: [DisplayUnitWithCoordinate]
     @Binding var selectedQuest: DisplayUnit?

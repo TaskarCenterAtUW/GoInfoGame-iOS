@@ -23,7 +23,7 @@ class MapViewModel: ObservableObject {
     @Published var isLoading: Bool = false
 //    var region = MKCoordinateRegion(center: CLLocationCoordinate2D(latitude: 37.3318, longitude: -122.0312), span: MKCoordinateSpan(latitudeDelta: 0.0009 , longitudeDelta: 0.0009))
     @Published var region = MKCoordinateRegion()
-    let viewSpanDelta = 0.005 // Delta lat/lng to show to the user
+    private let viewSpanDelta = 0.005 // Delta lat/lng to show to the user
    // var userlocation =  CLLocationCoordinate2D(latitude: 17.4700, longitude: 78.3534)
     @Published var refreshMap = UUID()
     @Published var items: [DisplayUnitWithCoordinate] = []
@@ -47,12 +47,6 @@ class MapViewModel: ObservableObject {
            locationManagerDelegate.locationUpdateHandler = { [weak self] location in
                guard let self = self else { return }
 
-               DispatchQueue.main.async { [unowned self] in
-                   self.region = MKCoordinateRegion(
-                       center: location,
-                       span: MKCoordinateSpan(latitudeDelta: self.viewSpanDelta, longitudeDelta: self.viewSpanDelta)
-                   )
-               }
                self.fetchOSMDataFor(from: .currentLocation(location: location))
            }
 
