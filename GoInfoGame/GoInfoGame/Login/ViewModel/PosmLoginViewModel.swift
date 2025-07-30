@@ -54,11 +54,13 @@ class PosmLoginViewModel: ObservableObject {
                     if !SessionManager.shared.hasDeclinedBiometric(for: env) {
                         if !SessionManager.shared.isBiometricEnabled(for: env) ||
                             (SessionManager.shared.isBiometricEnabled(for: env) && self.username != KeychainManager.load(.username, for: env)){
+                            _ = KeychainManager.save(.username, value: username, for: env)
                             self.showBiometricPrompt = true
                             return
                         }
                     }
                 }
+                _ = KeychainManager.save(.username, value: username, for: env)
                 self.isLoginSuccess = success
             } else {
                 self.hasLoginFailed = !success
