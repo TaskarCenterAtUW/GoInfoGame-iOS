@@ -220,6 +220,14 @@ struct MapView: View {
             .toolbar {
 
                 ToolbarItem(placement: .navigationBarTrailing) {
+                    QuestSyncButton(badgeCount: 0, isSyncing: isSyncing, action: {
+                        debugPrint("Sync taped")
+                    })
+                    .frame(width: 20, height: 20)
+                    .foregroundStyle(Color("theme"))
+                }
+                
+                ToolbarItem(placement: .navigationBarTrailing) {
                     Button(action: {
                         debugPrint("satellite icon tapped")
                         viewModel.updateOptions(for: mapViewRef?.region.center ?? CLLocationCoordinate2D(latitude: 0.0, longitude: 0.0))
@@ -238,14 +246,6 @@ struct MapView: View {
                         Image(systemName: "gear")
                             .frame(width: 20, height: 20)
                             .foregroundStyle(Color(red: 135/255, green: 62/255, blue: 242/255))
-                    }
-                }
-                    
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    if isSyncing {
-                        ProgressView()
-                    }else{
-                        EmptyView()
                     }
                 }
             }

@@ -161,6 +161,7 @@
 		C76DA1A12DF0679F00451E63 /* LongFormModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA8C74C32C4FDE1000D28220 /* LongFormModel.swift */; };
 		C77A4A262DF2AF3100DED8B0 /* SecureInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C77A4A252DF2AF3100DED8B0 /* SecureInputView.swift */; };
 		C77EEBCF2DE59D3200494CB4 /* UndoMerge.swift in Sources */ = {isa = PBXBuildFile; fileRef = C77EEBCE2DE59D3200494CB4 /* UndoMerge.swift */; };
+		C7BA83542E3C9C3600755BA7 /* QuestSyncButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7BA83532E3C9C3600755BA7 /* QuestSyncButton.swift */; };
 		C7ED070F2D70E2EC001FFFE2 /* TokenRefresher.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7ED070E2D70E2EC001FFFE2 /* TokenRefresher.swift */; };
 		CFECB318461BB876B1621890 /* Pods_osmapi.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C4F37DA661B22FA87DF8282F /* Pods_osmapi.framework */; };
 		FA18CAE22CC7CD89008247F2 /* KartaviewViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA18CAE12CC7CD89008247F2 /* KartaviewViewModel.swift */; };
@@ -499,6 +500,7 @@
 		C75E47732E151058006D903A /* Kondapur.gpx */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = Kondapur.gpx; sourceTree = "<group>"; };
 		C77A4A252DF2AF3100DED8B0 /* SecureInputView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecureInputView.swift; sourceTree = "<group>"; };
 		C77EEBCE2DE59D3200494CB4 /* UndoMerge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UndoMerge.swift; sourceTree = "<group>"; };
+		C7BA83532E3C9C3600755BA7 /* QuestSyncButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = QuestSyncButton.swift; path = GoInfoGame/UI/Map/QuestSyncButton.swift; sourceTree = SOURCE_ROOT; };
 		C7ED070E2D70E2EC001FFFE2 /* TokenRefresher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenRefresher.swift; sourceTree = "<group>"; };
 		C96303080D26026265099E0E /* Pods-GoInfoGame.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-GoInfoGame.release.xcconfig"; path = "Target Support Files/Pods-GoInfoGame/Pods-GoInfoGame.release.xcconfig"; sourceTree = "<group>"; };
 		D76D8E22AC705A38AFEA78B1 /* Pods-GoInfoGame-GoInfoGameUITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-GoInfoGame-GoInfoGameUITests.debug.xcconfig"; path = "Target Support Files/Pods-GoInfoGame-GoInfoGameUITests/Pods-GoInfoGame-GoInfoGameUITests.debug.xcconfig"; sourceTree = "<group>"; };
@@ -1287,6 +1289,7 @@
 				C71EB5A82E2100510009E610 /* SatellitePickerSheet.swift */,
 				C71EB5A92E2100510009E610 /* SatelliteServerResponse.swift */,
 				C71EB5AA2E2100510009E610 /* WMTSServer.swift */,
+				C7BA83532E3C9C3600755BA7 /* QuestSyncButton.swift */,
 			);
 			path = "Satellite Server";
 			sourceTree = "<group>";
@@ -2181,6 +2184,7 @@
 				973FC0012B46CD5D00878269 /* QuestsListUIView.swift in Sources */,
 				973FC01F2B50DE7E00878269 /* ImageGridItemView.swift in Sources */,
 				FA633CB42DD4843B00324404 /* BiometricAuthManager.swift in Sources */,
+				C7BA83542E3C9C3600755BA7 /* QuestSyncButton.swift in Sources */,
 				05CB71E02B0FAFD200DED821 /* GenericUIViewControllerRepresentable.swift in Sources */,
 				FAD5C4F32AFCBE700040C61A /* AppDelegate.swift in Sources */,
 				05DBBB622B164D9A00B6F110 /* RealOPElement.swift in Sources */,
