@@ -180,10 +180,7 @@ struct MapView: View {
                         .padding(.leading, 16)
                         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottomLeading)
                         Spacer()
-                        FloatingActionButtonStack(mapButtonAction: {
-                            viewModel.updateOptions(for: mapViewRef?.region.center ?? CLLocationCoordinate2D(latitude: 0.0, longitude: 0.0))
-                            viewModel.showSatellitePicker = true
-                        })
+                        FloatingActionButtonStack()
                     }
                 }
                             
@@ -222,6 +219,17 @@ struct MapView: View {
             .navigationBarItems(leading: EmptyView())
             .toolbar {
 
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button(action: {
+                        debugPrint("satellite icon tapped")
+                        viewModel.updateOptions(for: mapViewRef?.region.center ?? CLLocationCoordinate2D(latitude: 0.0, longitude: 0.0))
+                        viewModel.showSatellitePicker = true
+                    }) {
+                        Image(systemName: "square.2.layers.3d.bottom.filled")
+                            .frame(width: 20, height: 20)
+                            .foregroundStyle(Color(red: 135/255, green: 62/255, blue: 242/255))
+                    }
+                }
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button(action: {
                         print("Settings icon tapped")
