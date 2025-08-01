@@ -171,7 +171,7 @@ class ApiManager {
             }
             
             switch httpResponse.statusCode {
-            case 400...499:
+            case 400...499 where httpResponse.statusCode != 409:
                 completion(.failure(APIError.custom("Client Error. Please try again later.")))
                 return
             case 500...599:
