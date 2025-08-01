@@ -65,7 +65,7 @@ class MapViewModel: ObservableObject {
         let supportedLayers = sattiliteServersFor(point: center)
 
         let wmtsOptions = supportedLayers.map { SatelliteOption.wmts($0) }
-        self.availableOptions = [.none, .apple] + wmtsOptions
+        self.availableOptions = [.none] + wmtsOptions
     }
 
     

@@ -10,13 +10,11 @@ import Foundation
 
 enum SatelliteOption: Identifiable, Hashable {
     case none
-    case apple
     case wmts(SatelliteServer)
 
     var id: String {
         switch self {
         case .none: return "none"
-        case .apple: return "apple"
         case .wmts(let layer): return layer.id
         }
     }
@@ -24,7 +22,6 @@ enum SatelliteOption: Identifiable, Hashable {
     var name: String {
         switch self {
         case .none: return "None"
-        case .apple: return "Apple Satellite"
         case .wmts(let layer): return layer.name
         }
     }

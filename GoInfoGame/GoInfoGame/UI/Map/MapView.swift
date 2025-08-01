@@ -465,8 +465,6 @@ struct MapView: View {
         switch selectedSatilliteOption {
         case .none:
             mapViewRef?.mapType = .standard
-        case .apple:
-            mapViewRef?.mapType = .satellite
         case .wmts(let server):
             let layer = WMTSSeever(satelliteServer: server)
             mapViewRef?.addOverlay(layer, level: .aboveLabels)
