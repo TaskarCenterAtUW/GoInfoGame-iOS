@@ -326,15 +326,9 @@ class DatabaseConnector {
     /// - parameter synced: Optional variable of whether synced or non synced
     /// - Returns: an instance of `Results<StoredChangeset>`
     func getChangesets(synced: Bool = false) -> Results<StoredChangeset> {
-        let results: Results<StoredChangeset>
         let realm = try! Realm(configuration: RealmConfig.configuration)
-        if synced {
-            results = realm.objects(StoredChangeset.self).where { $0.changesetId != -1 }
-        } else {
-            results = realm.objects(StoredChangeset.self).where { $0.changesetId == -1 }
-        }
-        print("Found \(results.count) changesets for synced=\(synced)")
-        return results
+        let predicateString = synced ? "updatedVersion != -1" : "updatedVersion == -1"
+        return realm.objects(StoredChangeset.self).filter(NSPredicate(format: predicateString))
     }
     
     func getChangeset(for id: String) -> StoredChangeset? {

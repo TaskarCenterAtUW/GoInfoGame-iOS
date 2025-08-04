@@ -104,6 +104,7 @@ class QuestBase {
        
        // Dismiss sheet after syncing to db
        MapViewPublisher.shared.dismissSheet.send(.syncing)
+       MapViewPublisher.shared.dismissSheet.send(.syncBackground(Int(id)))
        
        DatasyncManager.shared.syncDataToOSM(exclude_gig_tags: exclude_gig_tags) { success in
            DispatchQueue.main.async {
@@ -111,11 +112,7 @@ class QuestBase {
                
                switch success {
                case .success(let success):
-                   if success {
-
-                       MapViewPublisher.shared.dismissSheet.send(.submitted("\(id)"))
-                   }
- else {
+                   if !success {
                        print("Sync failed. Handle accordingly.")
                        MapViewPublisher.shared.dismissSheet.send(.failed("Submission failed. Please try again."))
                    }

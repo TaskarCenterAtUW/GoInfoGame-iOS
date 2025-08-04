@@ -41,6 +41,7 @@ class MapViewModel: ObservableObject {
     @Published var availableOptions: [SatelliteOption] = []
     @Published var selectedOption: SatelliteOption = .none
     @Published var showSatellitePicker: Bool = false
+    @Published private(set) var syncFailedElementsCount: Int = 0
     
     init(mapRepo: MapRepositoryProtocol = MapRepository()) {
         self.mapRepo = mapRepo
@@ -55,7 +56,12 @@ class MapViewModel: ObservableObject {
         Task {
             self.allSattileLayers = try await self.mapRepo.fetchAvailableServers()
         }
+        checkSyncStatus()
        }
+    
+    func checkSyncStatus() {
+        self.syncFailedElementsCount = dbInstance.getChangesets(synced: false).count
+    }
     
     func sattiliteServersFor(point: CLLocationCoordinate2D) -> [SatelliteServer] {
         return allSattileLayers.filter{ $0.extent.isPointInsideBoundary(point)}
@@ -157,21 +163,10 @@ class MapViewModel: ObservableObject {
         self.items = AppQuestManager.shared.fetchQuestsFromDB()
     }
     
-    func refreshMapAfterSubmission(elementId: String) {
-            
-//        if let newItem = AppQuestManager.shared.getUpdatedQuest(elementId: elementId) {
-//            let toReplace = self.items.first(where: {$0.id == Int(elementId)!})
-//            let index = self.items.firstIndex(where: {$0.id == Int(elementId)!})
-//            
-//            self.items.remove(at: index!)
-//            self.items.insert(newItem, at: index!)
-//        }
-//        else{
-            if let toReplace = self.items.first(where: {$0.id == Int(elementId)!}) {
-                let index = self.items.firstIndex(where: {$0.id == Int(elementId)!})
-                self.items.remove(at: index!)
-            }
-      //  }
+    func refreshMapAfterSubmission(elementId: Int) {
+        if let index = self.items.firstIndex(where: {$0.id == elementId}) {
+            self.items.remove(at: index)
+        }
     }
     
     // The item may have been already resolved or changed.

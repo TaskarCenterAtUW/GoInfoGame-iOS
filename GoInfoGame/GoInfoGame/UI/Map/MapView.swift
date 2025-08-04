@@ -220,8 +220,13 @@ struct MapView: View {
             .toolbar {
 
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    QuestSyncButton(badgeCount: 0, isSyncing: isSyncing, action: {
+                    QuestSyncButton(badgeCount: viewModel.syncFailedElementsCount, isSyncing: isSyncing, action: {
                         debugPrint("Sync taped")
+                        isSyncing = true
+                        DatasyncManager.shared.syncDataToOSM(exclude_gig_tags: false) { _ in
+                            isSyncing = false
+                            viewModel.checkSyncStatus()
+                        }
                     })
                     .frame(width: 20, height: 20)
                     .foregroundStyle(Color("theme"))
@@ -424,23 +429,15 @@ struct MapView: View {
             switch scenario {
             case .dismissed:
                 shouldShowPolyline = false
-            case .submitted(let elementId):
-                shouldShowPolyline = false
-                showAlert = true
-                alertMessage = "Quest Submitted"
-                viewModel.refreshMapAfterSubmission(elementId: elementId)
             case .syncing:
                 isSyncing = true
                 print("syncing")
             case .synced:
                 isSyncing = false
                 print("synced")
-                alertIcon = "checkmark.circle.fill"
             case .failed(let message):
                 isSyncing = false
-                alertIcon = "exclamationmark.triangle.fill"
-                alertMessage = message
-                showAlert = true
+                viewModel.checkSyncStatus()
             case .hideElement(let elementId, let elementName):
                 shouldShowPolyline = false
                 viewModel.hideQuest(elementId: elementId, elementName: elementName)
@@ -449,6 +446,9 @@ struct MapView: View {
                 showAlert = true
                 alertMessage = "Changes reverted"
                 viewModel.refreshMapAfterUndoSumbit(storedChangesetId: changesetId)
+            case .syncBackground(let elementID):
+                shouldShowPolyline = false
+                viewModel.refreshMapAfterSubmission(elementId: elementID)
             }
         }
         .onReceive(QuestsPublisher.shared.refreshQuest, perform: { _ in
@@ -565,12 +565,12 @@ public class QuestsPublisher: ObservableObject {
 
 public enum SheetDismissalScenario {
     case dismissed
-    case submitted(String)
     case syncing
     case synced
     case failed(String)
     case hideElement(String, String)
     case undoDone(String)
+    case syncBackground(Int)
 }
 
 //TODO: Move to a new file

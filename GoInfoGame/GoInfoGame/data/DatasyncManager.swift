@@ -21,6 +21,8 @@ class DatasyncManager {
     private let barrierQueue: DispatchQueue = DispatchQueue(label: "com.goinfogame.DatasyncManager.barrierQueue", attributes: .concurrent)
     
     func syncDataToOSM(exclude_gig_tags: Bool, completionHandler: @escaping (Result<Bool, APIError>)  -> Void) {
+        let currentQueue = OperationQueue.current?.underlyingQueue ?? .main
+        
         barrierQueue.async(flags: .barrier) { [weak self] in
             guard let self = self else { return }
             let semaphore = DispatchSemaphore(value: 0)
@@ -30,16 +32,20 @@ class DatasyncManager {
                     let isSynced = try await self.syncData(exclude_gig_tags: exclude_gig_tags)
                     
                     print("Sync finished")
-                    if isSynced {
-                        print("Sync successful")
-                        completionHandler(.success(true)) // Success
-                    } else {
-                        print("Sync failed")
-                        completionHandler(.failure(APIError.custom("Sync failed. Please try again."))) // Failure
+                    currentQueue.async {
+                        if isSynced {
+                            print("Sync successful")
+                            completionHandler(.success(true)) // Success
+                        } else {
+                            print("Sync failed")
+                            completionHandler(.failure(APIError.custom("Sync failed. Please try again."))) // Failure
+                        }
                     }
                 } catch {
-                    print("Sync failed: \(error)")
-                    completionHandler(.failure(error as! APIError)) // Failure
+                    currentQueue.async {
+                        print("Sync failed: \(error)")
+                        completionHandler(.failure(error as! APIError)) // Failure
+                    }
                 }
                 semaphore.signal()
             }
@@ -79,14 +85,14 @@ class DatasyncManager {
 
         print("📦 Found \(validChangesets.count) unsynced changesets with valid edits")
 
-        var nodesToSync: [String: StoredChangeset] = [:]
-        var waysToSync: [String: StoredChangeset] = [:]
+        var nodesToSync: [String: OSMNode] = [:]
+        var waysToSync: [String: OSMWay] = [:]
 
         for cs in validChangesets {
             if cs.elementType == .node {
-                nodesToSync[cs.id] = cs
+                nodesToSync[cs.id] = cs.asOSMNode()
             } else if cs.elementType == .way {
-                waysToSync[cs.id] = cs
+                waysToSync[cs.id] = cs.asOSMWay()
             }
         }
 
@@ -98,10 +104,10 @@ class DatasyncManager {
         }
 
         for (key, node) in nodesToSync {
-            print("📤 Syncing node ID: \(node.id)")
-            let payload = node.asOSMNode()
+//            print("📤 Syncing node ID: \(node.id)")
+            let payload = node
             do {
-                let status = try await syncNode(node: payload, exclude_gig_tags: exclude_gig_tags, editedTags: node.tags.toDictionary())
+                let status = try await syncNode(node: payload, exclude_gig_tags: exclude_gig_tags, editedTags: node.tags)
                 if status.result {
                     _ = self.dbInstance.assignChangesetId(obj: key, changesetId: 0, updatedVersion: status.version)
                     print("✅ Node sync finished: \(payload.id)")
@@ -117,10 +123,10 @@ class DatasyncManager {
         }
 
         for (key, way) in waysToSync {
-            print("📤 Syncing way ID: \(way.id)")
-            let payload = way.asOSMWay()
+//            print("📤 Syncing way ID: \(way.id)")
+            let payload = way
             do {
-                let status = try await syncWay(way: payload, exclude_gig_tags: exclude_gig_tags, editedTags: way.tags.toDictionary())
+                let status = try await syncWay(way: payload, exclude_gig_tags: exclude_gig_tags, editedTags: way.tags)
                 if status.result {
                     _ = self.dbInstance.assignChangesetId(obj: key, changesetId: 0, updatedVersion: status.version)
                     print("✅ Way sync finished: \(payload.id)")
