@@ -435,8 +435,10 @@ struct MapView: View {
             case .synced:
                 isSyncing = false
                 print("synced")
+                viewModel.checkSyncStatus()
             case .failed(let message):
                 isSyncing = false
+                shouldShowPolyline = false
                 viewModel.checkSyncStatus()
             case .hideElement(let elementId, let elementName):
                 shouldShowPolyline = false

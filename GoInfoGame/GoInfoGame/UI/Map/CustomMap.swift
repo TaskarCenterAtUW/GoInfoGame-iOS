@@ -159,6 +159,7 @@ struct CustomMap: UIViewRepresentable {
         func reloadMap() async {
             guard let mapView = mapView else { return }
             async let changes = clusterManager.reload(mapViewSize: mapView.bounds.size, coordinateRegion: mapView.region)
+            debugPrint("Annotation Changes: insertions: \(await changes.insertions.count) removals:\(await changes.removals.count)")
             await applyChanges(changes)
         }
                 
