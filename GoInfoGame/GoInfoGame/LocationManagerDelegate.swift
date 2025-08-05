@@ -62,7 +62,6 @@ class LocationManagerDelegate: NSObject, CLLocationManagerDelegate {
 
     
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-        print("didUpdateLocations \(locations.count), \(String(describing: locations.last)), \(String(describing: locationUpdateHandler)) \(Thread.current)")
         guard let mostRecentLocation = locations.last else { return }
         self.location = mostRecentLocation
         self.locationUpdateHandler?(mostRecentLocation.coordinate)
