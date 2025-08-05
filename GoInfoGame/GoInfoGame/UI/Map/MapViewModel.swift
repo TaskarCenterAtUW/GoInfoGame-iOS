@@ -23,7 +23,7 @@ class MapViewModel: ObservableObject {
     @Published var isLoading: Bool = false
 //    var region = MKCoordinateRegion(center: CLLocationCoordinate2D(latitude: 37.3318, longitude: -122.0312), span: MKCoordinateSpan(latitudeDelta: 0.0009 , longitudeDelta: 0.0009))
     @Published var region = MKCoordinateRegion()
-    let viewSpanDelta = 0.005 // Delta lat/lng to show to the user
+    private let viewSpanDelta = 0.005 // Delta lat/lng to show to the user
    // var userlocation =  CLLocationCoordinate2D(latitude: 17.4700, longitude: 78.3534)
     @Published var refreshMap = UUID()
     @Published var items: [DisplayUnitWithCoordinate] = []
@@ -41,18 +41,13 @@ class MapViewModel: ObservableObject {
     @Published var availableOptions: [SatelliteOption] = []
     @Published var selectedOption: SatelliteOption = .none
     @Published var showSatellitePicker: Bool = false
+    @Published private(set) var syncFailedElementsCount: Int = 0
     
     init(mapRepo: MapRepositoryProtocol = MapRepository()) {
         self.mapRepo = mapRepo
            locationManagerDelegate.locationUpdateHandler = { [weak self] location in
                guard let self = self else { return }
 
-               DispatchQueue.main.async { [unowned self] in
-                   self.region = MKCoordinateRegion(
-                       center: location,
-                       span: MKCoordinateSpan(latitudeDelta: self.viewSpanDelta, longitudeDelta: self.viewSpanDelta)
-                   )
-               }
                self.fetchOSMDataFor(from: .currentLocation(location: location))
            }
 
@@ -61,7 +56,12 @@ class MapViewModel: ObservableObject {
         Task {
             self.allSattileLayers = try await self.mapRepo.fetchAvailableServers()
         }
+        checkSyncStatus()
        }
+    
+    func checkSyncStatus() {
+        self.syncFailedElementsCount = dbInstance.getChangesets(synced: false).count
+    }
     
     func sattiliteServersFor(point: CLLocationCoordinate2D) -> [SatelliteServer] {
         return allSattileLayers.filter{ $0.extent.isPointInsideBoundary(point)}
@@ -71,7 +71,7 @@ class MapViewModel: ObservableObject {
         let supportedLayers = sattiliteServersFor(point: center)
 
         let wmtsOptions = supportedLayers.map { SatelliteOption.wmts($0) }
-        self.availableOptions = [.none, .apple] + wmtsOptions
+        self.availableOptions = [.none] + wmtsOptions
     }
 
     
@@ -108,12 +108,6 @@ class MapViewModel: ObservableObject {
             }
             return selectedQuest
         }
-    }
-    
-    @objc private func locationDidChange() {
-        guard let userLocation = locationManagerDelegate.location else { return }
-       // fetchOSMDataFor(currentLocation: userLocation.coordinate)
-        fetchOSMDataFor(from: .currentLocation(location: userLocation.coordinate))
     }
     
     func fetchOSMDataFor(from bboxSource: BBoxSource) {
@@ -169,21 +163,10 @@ class MapViewModel: ObservableObject {
         self.items = AppQuestManager.shared.fetchQuestsFromDB()
     }
     
-    func refreshMapAfterSubmission(elementId: String) {
-            
-//        if let newItem = AppQuestManager.shared.getUpdatedQuest(elementId: elementId) {
-//            let toReplace = self.items.first(where: {$0.id == Int(elementId)!})
-//            let index = self.items.firstIndex(where: {$0.id == Int(elementId)!})
-//            
-//            self.items.remove(at: index!)
-//            self.items.insert(newItem, at: index!)
-//        }
-//        else{
-            if let toReplace = self.items.first(where: {$0.id == Int(elementId)!}) {
-                let index = self.items.firstIndex(where: {$0.id == Int(elementId)!})
-                self.items.remove(at: index!)
-            }
-      //  }
+    func refreshMapAfterSubmission(elementId: Int) {
+        if let index = self.items.firstIndex(where: {$0.id == elementId}) {
+            self.items.remove(at: index)
+        }
     }
     
     // The item may have been already resolved or changed.

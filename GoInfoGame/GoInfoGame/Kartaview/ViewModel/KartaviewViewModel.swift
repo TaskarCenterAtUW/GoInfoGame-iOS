@@ -24,11 +24,6 @@ class KartaviewViewModel: ObservableObject {
     init(capturedImage: UIImage) {
         self.capturedImage = capturedImage
         
-        locationManagerDelegate.locationManager.delegate = locationManagerDelegate
-        locationManagerDelegate.locationManager.requestWhenInUseAuthorization()
-        locationManagerDelegate.locationManager.startUpdatingLocation()
-        locationManagerDelegate.locationManager.startUpdatingHeading()
-        
         locationManagerDelegate.locationUpdateHandler = { [weak self] location in
             guard let self = self else { return }
             self.location = location
@@ -37,8 +32,12 @@ class KartaviewViewModel: ObservableObject {
         locationManagerDelegate.headingUpdateHandler = { [weak self] heading in
             guard let self = self else { return }
             self.heading = "\(heading)"
-            locationManagerDelegate.locationManager.stopUpdatingHeading()
+            locationManagerDelegate.stopUpdatingHeading()
         }
+        
+        locationManagerDelegate.requestLocationAuthorization()
+        locationManagerDelegate.startUpdatingLocation()
+        locationManagerDelegate.startUpdatingHeading()
     }
     
     // Step 1: Create Sequence

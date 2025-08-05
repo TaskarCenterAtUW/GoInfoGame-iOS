@@ -9,7 +9,6 @@ import SwiftUI
 
 struct FloatingActionButtonStack: View {
     
-    var mapButtonAction: () -> ()
     @State private var showBottomSheet = false
     
     var body: some View {
@@ -18,8 +17,6 @@ struct FloatingActionButtonStack: View {
             HStack {
                 Spacer()
                 VStack {
-                    MapSwitcherButton(action: mapButtonAction)
-                    
                     Button(action: {
                         showBottomSheet.toggle()
                     }) {
@@ -47,28 +44,5 @@ struct FloatingActionButtonStack: View {
     }
 }
 #Preview {
-    FloatingActionButtonStack(mapButtonAction: {})
-}
-
-struct MapSwitcherButton: View {
-    
-    var action: () -> ()
-    
-    var body: some View {
-        Button(action:
-                action
-        ) {
-            ZStack {
-                Circle()
-                    .fill(Color(red: 135/255, green: 62/255, blue: 242/255))
-                    .frame(width: 40, height: 40)
-                    .shadow(radius: 5)
-                
-                Image(systemName: "map")
-                    .font(.system(size: 28))
-                    .foregroundColor(.white)
-            }
-        }
-        .padding([.bottom], 15)
-    }
+    FloatingActionButtonStack()
 }

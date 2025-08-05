@@ -11,7 +11,6 @@ struct InitialView: View {
     @StateObject private var viewModel = InitialViewModel()
     @State private var shouldNavigateToMapView = false
     @State private var selectedWorkspace: Workspace? = nil
-    @StateObject private var locManagerDelegate = LocationManagerDelegate()
     @AppStorage("loggedIn") private var loggedIn: Bool = false
     
     var body: some View {
@@ -44,7 +43,7 @@ struct InitialView: View {
                     
                     Spacer()
                     
-                    WorkspacesListView(workspaces: viewModel.workspaces, viewModel: viewModel, shouldNavigateToMapView: $shouldNavigateToMapView, selectedWorkspace: $selectedWorkspace, isLoading: $viewModel.isLoading)
+                    WorkspacesListView(viewModel: viewModel, shouldNavigateToMapView: $shouldNavigateToMapView, selectedWorkspace: $selectedWorkspace, isLoading: $viewModel.isLoading)
                 }
                 .padding()
                 
@@ -65,7 +64,6 @@ struct InitialView: View {
 
 // WorkspacesListView - View for displaying a list of workspaces
 struct WorkspacesListView: View {
-    let workspaces: [Workspace]
     var viewModel: InitialViewModel
     @Binding var shouldNavigateToMapView: Bool
     @Binding var selectedWorkspace: Workspace?
@@ -78,8 +76,8 @@ struct WorkspacesListView: View {
     
     var body: some View {
         
-        if viewModel.workspaces.count == 1 {
-            if let selectedWorkspace = viewModel.workspaces.first {
+        if viewModel.workspaces?.count == 1 {
+            if let selectedWorkspace = viewModel.workspaces?.first {
                 VStack {
                     if !shouldNavigateToMapView {
                         ActivityView(activityText: "Fetching workspace data...")
@@ -105,7 +103,15 @@ struct WorkspacesListView: View {
                     }
                 }
             }
-        } else if viewModel.workspaces.count == 0 {
+        } else if viewModel.workspaces == nil {
+            VStack {
+                Text("Loading workspaces available for you... Please make sure you have location service enabled.")
+                    .font(.custom("Lato-Bold", size: 20))
+                    .foregroundColor((Color(red: 135/255, green: 62/255, blue: 242/255)))
+                    .multilineTextAlignment(.center)
+                Spacer()
+            }
+        } else if viewModel.workspaces?.count == 0 {
             VStack {
                 Text("No workspaces available for you to work on.")
                     .font(.custom("Lato-Bold", size: 20))
@@ -122,7 +128,7 @@ struct WorkspacesListView: View {
                 
                 ScrollView {
                     VStack(spacing: 20) {
-                        ForEach(workspaces.filter({$0.type == "osw" && $0.externalAppAccess == 1}), id: \.id) { workspace in
+                        ForEach(viewModel.workspaces?.filter({$0.type == "osw" && $0.externalAppAccess == 1}) ?? [], id: \.id) { workspace in
                             Button {
                                 viewModel.checkAndDeleteWorkspaceDB(workspaceId: "\(workspace.id)")
                                 viewModel.fetchLongQuestsFor(workspaceId: "\(workspace.id)", completion: { success, errorMessage in

@@ -72,7 +72,7 @@ struct MapView: View {
                        }
                 
                 
-                CustomMap(region: viewModel.region,
+                CustomMap(region: $viewModel.region,
                           trackingMode: $trackingMode,
                           items: $viewModel.items,
                           selectedQuest: $viewModel.selectedQuest,
@@ -180,10 +180,7 @@ struct MapView: View {
                         .padding(.leading, 16)
                         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottomLeading)
                         Spacer()
-                        FloatingActionButtonStack(mapButtonAction: {
-                            viewModel.updateOptions(for: mapViewRef?.region.center ?? CLLocationCoordinate2D(latitude: 0.0, longitude: 0.0))
-                            viewModel.showSatellitePicker = true
-                        })
+                        FloatingActionButtonStack()
                     }
                 }
                             
@@ -223,6 +220,30 @@ struct MapView: View {
             .toolbar {
 
                 ToolbarItem(placement: .navigationBarTrailing) {
+                    QuestSyncButton(badgeCount: viewModel.syncFailedElementsCount, isSyncing: isSyncing, action: {
+                        debugPrint("Sync taped")
+                        isSyncing = true
+                        DatasyncManager.shared.syncDataToOSM(exclude_gig_tags: false) { _ in
+                            isSyncing = false
+                            viewModel.checkSyncStatus()
+                        }
+                    })
+                    .frame(width: 20, height: 20)
+                    .foregroundStyle(Color("theme"))
+                }
+                
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button(action: {
+                        debugPrint("satellite icon tapped")
+                        viewModel.updateOptions(for: mapViewRef?.region.center ?? CLLocationCoordinate2D(latitude: 0.0, longitude: 0.0))
+                        viewModel.showSatellitePicker = true
+                    }) {
+                        Image(systemName: "square.2.layers.3d.bottom.filled")
+                            .frame(width: 20, height: 20)
+                            .foregroundStyle(Color(red: 135/255, green: 62/255, blue: 242/255))
+                    }
+                }
+                ToolbarItem(placement: .navigationBarTrailing) {
                     Button(action: {
                         print("Settings icon tapped")
                         showUserSettingsSheet = true
@@ -230,14 +251,6 @@ struct MapView: View {
                         Image(systemName: "gear")
                             .frame(width: 20, height: 20)
                             .foregroundStyle(Color(red: 135/255, green: 62/255, blue: 242/255))
-                    }
-                }
-                    
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    if isSyncing {
-                        ProgressView()
-                    }else{
-                        EmptyView()
                     }
                 }
             }
@@ -265,6 +278,11 @@ struct MapView: View {
                     selected: $viewModel.selectedOption,
                     onSelect: { selected in
                         viewModel.selectedOption = selected
+                        if case .wmts(let wmts) = selected {
+                            mapViewRef?.setCameraZoomRange(MKMapView.CameraZoomRange(minCenterCoordinateDistance: mapViewRef?.distanceForZoom(zoomLevel: wmts.extent.maxZoom) ?? 0.0), animated: true)
+                        } else {
+                            mapViewRef?.setCameraZoomRange(nil, animated: true)
+                        }
                         viewModel.showSatellitePicker = false
                         addOverlay(selectedSatilliteOption: selected)
                     }
@@ -411,23 +429,17 @@ struct MapView: View {
             switch scenario {
             case .dismissed:
                 shouldShowPolyline = false
-            case .submitted(let elementId):
-                shouldShowPolyline = false
-                showAlert = true
-                alertMessage = "Quest Submitted"
-                viewModel.refreshMapAfterSubmission(elementId: elementId)
             case .syncing:
                 isSyncing = true
                 print("syncing")
             case .synced:
                 isSyncing = false
                 print("synced")
-                alertIcon = "checkmark.circle.fill"
+                viewModel.checkSyncStatus()
             case .failed(let message):
                 isSyncing = false
-                alertIcon = "exclamationmark.triangle.fill"
-                alertMessage = message
-                showAlert = true
+                shouldShowPolyline = false
+                viewModel.checkSyncStatus()
             case .hideElement(let elementId, let elementName):
                 shouldShowPolyline = false
                 viewModel.hideQuest(elementId: elementId, elementName: elementName)
@@ -436,6 +448,9 @@ struct MapView: View {
                 showAlert = true
                 alertMessage = "Changes reverted"
                 viewModel.refreshMapAfterUndoSumbit(storedChangesetId: changesetId)
+            case .syncBackground(let elementID):
+                shouldShowPolyline = false
+                viewModel.refreshMapAfterSubmission(elementId: elementID)
             }
         }
         .onReceive(QuestsPublisher.shared.refreshQuest, perform: { _ in
@@ -460,8 +475,6 @@ struct MapView: View {
         switch selectedSatilliteOption {
         case .none:
             mapViewRef?.mapType = .standard
-        case .apple:
-            mapViewRef?.mapType = .satellite
         case .wmts(let server):
             let layer = WMTSSeever(satelliteServer: server)
             mapViewRef?.addOverlay(layer, level: .aboveLabels)
@@ -492,7 +505,7 @@ struct MapView: View {
         let areaKm2 = latDistanceKm * lonDistanceKm
         print("Area: \(areaKm2) km²")
 
-        return areaKm2 < 12.0 // allow small tolerance
+        return areaKm2 < 3.0 // allow small tolerance
     }
 
     private func haversineDistance(lat1: Double, lon1: Double, lat2: Double, lon2: Double) -> Double {
@@ -554,12 +567,12 @@ public class QuestsPublisher: ObservableObject {
 
 public enum SheetDismissalScenario {
     case dismissed
-    case submitted(String)
     case syncing
     case synced
     case failed(String)
     case hideElement(String, String)
     case undoDone(String)
+    case syncBackground(Int)
 }
 
 //TODO: Move to a new file

@@ -62,6 +62,21 @@ extension MKMapView {
     func isZoomedIn(maxLatitudeDelta: CLLocationDegrees = 0.005) -> Bool {
         return self.region.span.latitudeDelta <= maxLatitudeDelta
     }
+    
+    func distanceForZoom(zoomLevel: Int) -> CLLocationDistance {
+        // Earth's circumference in meters
+        let earthCircumference: Double = 40075016.686
+        // Standard tile size (pixels)
+        let tileSize: Double = 256
+        // Get the width of the map in points and scale by screen
+        let scale = UIScreen.main.scale
+        let mapWidthInPixels = Double(self.frame.size.width) * scale
+        // Calculate meters per pixel at equator for the given zoom
+        let metersPerPixel = earthCircumference / (tileSize * pow(2.0, Double(zoomLevel)))
+        // The distance (in meters) visible in the current map width
+        return metersPerPixel * mapWidthInPixels
+    }
+
 }
 
 extension CLLocationCoordinate2D: CustomPersistable {
