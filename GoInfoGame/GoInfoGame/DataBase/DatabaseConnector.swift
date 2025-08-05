@@ -331,6 +331,13 @@ class DatabaseConnector {
         return realm.objects(StoredChangeset.self).filter(NSPredicate(format: predicateString))
     }
     
+    func getChangesets(synced: Bool, element: ElementType) -> Results<StoredChangeset> {
+        let realm = try! Realm(configuration: RealmConfig.configuration)
+        let syncString = synced ? "updatedVersion != -1" : "updatedVersion == -1"
+        let predicateString = "\(syncString) AND elementType == \"\(element)\""
+        return realm.objects(StoredChangeset.self).filter(NSPredicate(format: predicateString))
+    }
+    
     func getChangeset(for id: String) -> StoredChangeset? {
         let realm = try! Realm(configuration: RealmConfig.configuration)
         return realm.object(ofType: StoredChangeset.self, forPrimaryKey: id)

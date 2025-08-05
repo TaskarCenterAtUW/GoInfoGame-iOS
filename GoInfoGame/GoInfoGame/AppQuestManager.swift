@@ -71,26 +71,31 @@ class AppQuestManager {
                                                             tags.@count != 0 AND 
                                                             tags['ext:gig_complete'] != 'yes'
                                                             """))
+        let yetToSyncNodeIDs = Set(dbInstance.getChangesets(synced: false, element: .node).compactMap{ Int64($0.elementId) })
         
         let waysFromStorage = dbInstance.getWays(NSPredicate(format: """
                                                             tags.@count != 0 AND
                                                             polyline.@count > 0 AND
                                                             tags['ext:gig_complete'] != 'yes' 
                                                             """ ))
+        let yetToSyncWayIDs = Set(dbInstance.getChangesets(synced: false, element: .way).compactMap{ Int64($0.elementId) })
+        
         debugPrint("converting to nods: start \(Date())")
-        let nodeElements = nodesFromStorage.map({ node in
-            autoreleasepool {
-                node.asNode()
+        let nodeElements: [Node] = nodesFromStorage.compactMap { node in
+            if yetToSyncNodeIDs.contains(node.id) {
+                return nil
             }
-        })
+            return node.asNode()
+        }
+        
         debugPrint("converting to nods: end \(Date())")
         debugPrint("converting to way: start \(Date())")
-        let wayElements = waysFromStorage.map({ way in
-            autoreleasepool {
-                way.asWay()
+        let wayElements: [Way] = waysFromStorage.compactMap{ way in
+            if yetToSyncWayIDs.contains(way.id) {
+                return nil
             }
-            
-        })
+            return way.asWay()
+        }
             
         debugPrint("converting to way: end \(Date())")
         // Get the quests for nodes
