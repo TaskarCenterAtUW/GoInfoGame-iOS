@@ -505,7 +505,7 @@ struct MapView: View {
         let areaKm2 = latDistanceKm * lonDistanceKm
         print("Area: \(areaKm2) km²")
 
-        return areaKm2 < 12.0 // allow small tolerance
+        return areaKm2 < 3.0 // allow small tolerance
     }
 
     private func haversineDistance(lat1: Double, lon1: Double, lat2: Double, lon2: Double) -> Double {
