@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import UIKit
 
 //@MainActor
 final class SessionManager: ObservableObject {
@@ -38,6 +39,11 @@ final class SessionManager: ObservableObject {
                     self?.username = username
                     _ = KeychainManager.save(key: "accessToken", data: response.accessToken)
                     self?.lastLoginPassword = password
+                    UserDefaults.standard.setValue(response.expiresIn, forKey: "accessToken_expire_in")
+                    UserDefaults.standard.setValue(Date().timeIntervalSince1970, forKey: "accessToken_Generate")
+                    if let appDelegate = UIApplication.shared.delegate as? AppDelegate {
+                        appDelegate.validateAccessToken()
+                    }
 
                     self?.isLoginSuccessful = true
                     self?.hasLoginFailed = false
