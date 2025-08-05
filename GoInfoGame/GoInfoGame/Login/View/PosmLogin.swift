@@ -41,7 +41,7 @@ struct PosmLoginView: View {
                         .background(Color(.systemGray6))
                         .cornerRadius(10)
                         .padding(.horizontal, 40)
-                    
+                    #if DEBUG
                     Menu {
                         ForEach(APIEnvironment.allCases, id: \.self) { environment in
                             Button(action: {
@@ -62,7 +62,8 @@ struct PosmLoginView: View {
                         .cornerRadius(10)
                     }
                     .padding(.horizontal, 40)
-            
+                    
+                    #endif
                     Button(action: {
                         APIConfiguration.shared.environment = selectedEnvironment
                         viewModel.performLogin(for: selectedEnvironment)
