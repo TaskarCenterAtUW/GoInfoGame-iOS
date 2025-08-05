@@ -24,7 +24,7 @@ struct FloatingActionButtonStack: View {
                             .font(.system(size: 25))
                             .foregroundColor(.white)
                             .frame(width: 40, height: 40)
-                            .background(Color(red: 135/255, green: 62/255, blue: 242/255))
+                            .background(Asset.Colors.huskyPurple.swiftUIColor)
                             .cornerRadius(30)
                             .shadow(radius: 10)
                           

@@ -94,7 +94,7 @@ struct ManageQuestsView: View {
                             .foregroundColor(.white)
                             .padding(.vertical, 10) // vertical padding
                             .padding(.horizontal, 20) // horizontal padding
-                            .background(Color(red: 135/255, green: 62/255, blue: 242/255))
+                            .background(Asset.Colors.huskyPurple.swiftUIColor)
                             .cornerRadius(10)
                     }
                     .padding(.trailing, 15)

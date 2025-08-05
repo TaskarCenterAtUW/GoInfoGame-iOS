@@ -96,7 +96,7 @@ struct AddFeatureView: View {
                                 .foregroundColor(.white)
                                 .padding()
                                 .frame(width: 200, height: 40)
-                                .background(selectedFeature?.name != nil ? Color(red: 135/255, green: 62/255, blue: 242/255) : Color.gray)
+                                .background(selectedFeature?.name != nil ? Asset.Colors.huskyPurple.swiftUIColor : Color.gray)
                                 .cornerRadius(20)
                         }
                     }

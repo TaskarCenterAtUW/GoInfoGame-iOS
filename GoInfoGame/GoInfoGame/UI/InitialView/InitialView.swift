@@ -23,7 +23,7 @@ struct InitialView: View {
                                 .resizable()
                                 .frame(width: 27, height: 27)
                                 .padding([.leading], 18)
-                                .foregroundStyle(Color(red: 135/255, green: 62/255, blue: 242/255))
+                                .foregroundStyle(Asset.Colors.huskyPurple.swiftUIColor)
                             
                         }
                         Spacer()
@@ -107,7 +107,7 @@ struct WorkspacesListView: View {
             VStack {
                 Text("Loading workspaces available for you... Please make sure you have location service enabled.")
                     .font(.custom("Lato-Bold", size: 20))
-                    .foregroundColor((Color(red: 135/255, green: 62/255, blue: 242/255)))
+                    .foregroundColor((Asset.Colors.huskyPurple.swiftUIColor))
                     .multilineTextAlignment(.center)
                 Spacer()
             }
@@ -115,7 +115,7 @@ struct WorkspacesListView: View {
             VStack {
                 Text("No workspaces available for you to work on.")
                     .font(.custom("Lato-Bold", size: 20))
-                    .foregroundColor((Color(red: 135/255, green: 62/255, blue: 242/255)))
+                    .foregroundColor((Asset.Colors.huskyPurple.swiftUIColor))
                     .multilineTextAlignment(.center)
                 Spacer()
             }
@@ -156,7 +156,7 @@ struct WorkspacesListView: View {
                             .font(.custom("Lato-Bold", size: 25))
                             .foregroundColor(Color.white)
                             .padding()
-                            .background(Color(red: 135/255, green: 62/255, blue: 242/255))
+                            .background(Asset.Colors.huskyPurple.swiftUIColor)
                             .buttonBorderShape(.roundedRectangle(radius: 10))
                         }
                     }
@@ -175,7 +175,7 @@ struct LocationDisabledView: View {
         VStack {
             Text("GoInfoGame")
                 .font(.custom("Lato-Bold", size: 30))
-                .foregroundColor((Color(red: 135/255, green: 62/255, blue: 242/255)))
+                .foregroundColor((Asset.Colors.huskyPurple.swiftUIColor))
                 .padding([.bottom], 50)
             
             Text("Location Services Disabled")

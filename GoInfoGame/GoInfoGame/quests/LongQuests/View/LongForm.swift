@@ -116,7 +116,7 @@ struct LongForm: View, QuestForm {
                         TextEditor(text: $noteText)
                             .textFieldStyle(RoundedBorderTextFieldStyle())
                             .padding(.horizontal, 20)
-                            .border(Color(red: 135/255, green: 62/255, blue: 242/255))
+                            .border(Asset.Colors.huskyPurple.swiftUIColor)
                         
                         HStack {
                             Button(action: {
@@ -138,7 +138,7 @@ struct LongForm: View, QuestForm {
                                         .foregroundColor(.white)
                                         .padding()
                                         .frame(maxWidth: .infinity)
-                                        .background(noteText != "" ? Color(red: 135/255, green: 62/255, blue: 242/255) : Color.gray)
+                                        .background(noteText != "" ? Asset.Colors.huskyPurple.swiftUIColor : Color.gray)
                                         .cornerRadius(9)
                                 }
                             }
@@ -224,7 +224,7 @@ struct LongForm: View, QuestForm {
                         .foregroundColor(.white)
                         .padding()
                         .frame(width: 200, height: 40)
-                        .background(Color(red: 135/255, green: 62/255, blue: 242/255))
+                        .background(Asset.Colors.huskyPurple.swiftUIColor)
                         .cornerRadius(20)
                 }
                 .frame(maxWidth: .infinity)
