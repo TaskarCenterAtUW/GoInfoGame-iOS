@@ -25,7 +25,7 @@ struct ManageQuestsView: View {
                 Button(action: {
                     presentationMode.wrappedValue.dismiss()
                 }, label: {
-                    Image("long-form-dismiss")
+                    Image(systemName: "xmark.circle")
                         .resizable()
                         .frame(width: 25, height: 25)
                 })
