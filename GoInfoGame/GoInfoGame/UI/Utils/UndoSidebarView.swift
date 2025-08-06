@@ -26,7 +26,7 @@ struct UndoSidebarView: View {
                     .font(.headline)
                 Spacer()
                 Button(action: onClose) {
-                    Image(systemName: "xmark.circle.fill")
+                    Image(systemName: "xmark.circle")
                         .foregroundStyle(Asset.Colors.accentPink.swiftUIColor)
                 }
             }
