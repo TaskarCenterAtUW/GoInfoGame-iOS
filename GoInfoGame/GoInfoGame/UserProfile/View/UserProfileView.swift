@@ -25,6 +25,7 @@ struct UserProfileView: View {
                     Text("My Profile")
                         .font(.custom("Lato-Bold", size: 25))
                         .padding(.bottom, 50)
+                        .foregroundStyle(Asset.Colors.huskyPurple.swiftUIColor)
                     HStack(alignment: .center, spacing: 16) {
                         profileImage
                         
@@ -88,7 +89,7 @@ struct UserProfileView: View {
     }
     
     private var profileImage: some View {
-        Image(systemName: "person.circle.fill")
+        Image(systemName: "person.fill")
             .resizable()
             .frame(width: 50, height: 50)
             .clipShape(Circle())

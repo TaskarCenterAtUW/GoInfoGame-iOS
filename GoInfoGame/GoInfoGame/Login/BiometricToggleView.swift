@@ -30,6 +30,13 @@ struct BiometricToggleView: View {
         )) {
             Text(biometricToggleText)
         }
+        .tint(Asset.Colors.accentPink.swiftUIColor)
+    }
+}
+
+#Preview {
+    BiometricToggleView(isEnabled: .constant(true)) { _ in
+        
     }
 }
 
