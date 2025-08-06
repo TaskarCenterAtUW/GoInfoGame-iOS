@@ -17,7 +17,7 @@ struct ManageQuestsView: View {
             HStack(alignment: .firstTextBaseline) {
                 Text("Choose which features to survey")
                     .font(.custom("Lato-Bold", size: 20))
-                    .foregroundColor(Color(red: 69/255, green: 81/255, blue: 108/255))
+                    .foregroundColor(Asset.Colors.huskyPurple.swiftUIColor)
                     .padding(.top, 30)
 
                 Spacer()
@@ -28,6 +28,7 @@ struct ManageQuestsView: View {
                     Image(systemName: "xmark.circle")
                         .resizable()
                         .frame(width: 25, height: 25)
+                        .foregroundStyle(Asset.Colors.accentPink.swiftUIColor)
                 })
             }
             .padding(.horizontal, 16)
@@ -57,7 +58,7 @@ struct ManageQuestsView: View {
                                 .font(.custom("Lato-Bold", size: 16))
                                 .foregroundColor(Color(red: 69/255, green: 81/255, blue: 108/255))
                         }
-                        .toggleStyle(SwitchToggleStyle(tint: .purple))
+                        .toggleStyle(SwitchToggleStyle(tint: Asset.Colors.accentPink.swiftUIColor))
                         .padding(.horizontal, 10)
                         .padding(.vertical, 6)
 
