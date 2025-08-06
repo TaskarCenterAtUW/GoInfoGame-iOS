@@ -38,8 +38,6 @@ Note: Please make sure you have switched to the 'dev' branch before cloning the 
 2. run "brew install swiftgen"
 
 If we face any issue please go through https://github.com/SwiftGen/SwiftGen
-
-Note: 
  
 ## Building and Running the App
 
