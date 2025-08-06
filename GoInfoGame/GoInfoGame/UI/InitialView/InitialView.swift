@@ -33,10 +33,11 @@ struct InitialView: View {
                     Spacer()
                     
                     VStack(spacing: 30) {
-                        Image("osmlogo")
+                        Asset.workspacesLogo.swiftUIImage
                             .resizable()
                             .frame(width: 100, height: 100)
-                        Text("GoInfoGame")
+                            .foregroundStyle(Asset.Colors.huskyPurple.swiftUIColor)
+                        Text(L10n.Localizable.appName)
                             .font(.system(size: 30, design: .rounded))
                     }
                     .padding()

@@ -61,3 +61,10 @@ xcassets:
       params:
         forceProvidesNamespaces: true
       output: GoInfoGame/Helpers/Generated/XCAssets+Generated.swift
+
+strings:
+  inputs:
+    - GoInfoGame/en.lproj
+  outputs:
+    - templateName: structured-swift5
+      output: GoInfoGame/Helpers/Generated/Strings+Generated.swift

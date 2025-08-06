@@ -158,6 +158,7 @@
 		C75EAD362E042D4500F75969 /* SideWalkWidth.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4E711A12B57A3B400C9DE08 /* SideWalkWidth.swift */; };
 		C75EAD372E042D4500F75969 /* SideWalkWidthForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = 973FC0132B4D353800878269 /* SideWalkWidthForm.swift */; };
 		C76187DC2E0153D800150201 /* ClusterMap in Frameworks */ = {isa = PBXBuildFile; productRef = C76187DB2E0153D800150201 /* ClusterMap */; };
+		C769AB552E431EFE00FA810A /* Strings+Generated.swift in Sources */ = {isa = PBXBuildFile; fileRef = C769AB542E431EFE00FA810A /* Strings+Generated.swift */; };
 		C76DA1A12DF0679F00451E63 /* LongFormModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA8C74C32C4FDE1000D28220 /* LongFormModel.swift */; };
 		C77A4A262DF2AF3100DED8B0 /* SecureInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C77A4A252DF2AF3100DED8B0 /* SecureInputView.swift */; };
 		C77EEBCF2DE59D3200494CB4 /* UndoMerge.swift in Sources */ = {isa = PBXBuildFile; fileRef = C77EEBCE2DE59D3200494CB4 /* UndoMerge.swift */; };
@@ -499,6 +500,7 @@
 		C75CC5D72E0D22F4008A94A0 /* SCLIO Seattle pins response.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "SCLIO Seattle pins response.json"; sourceTree = "<group>"; };
 		C75CC5D82E0D22F4008A94A0 /* LongQuestsResponse.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = LongQuestsResponse.json; sourceTree = "<group>"; };
 		C75E47732E151058006D903A /* Kondapur.gpx */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = Kondapur.gpx; sourceTree = "<group>"; };
+		C769AB542E431EFE00FA810A /* Strings+Generated.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Strings+Generated.swift"; sourceTree = "<group>"; };
 		C77A4A252DF2AF3100DED8B0 /* SecureInputView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecureInputView.swift; sourceTree = "<group>"; };
 		C77EEBCE2DE59D3200494CB4 /* UndoMerge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UndoMerge.swift; sourceTree = "<group>"; };
 		C7927B532E42363000A7A34E /* XCAssets+Generated.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "XCAssets+Generated.swift"; sourceTree = "<group>"; };
@@ -1322,6 +1324,7 @@
 		C7927B542E42363000A7A34E /* Generated */ = {
 			isa = PBXGroup;
 			children = (
+				C769AB542E431EFE00FA810A /* Strings+Generated.swift */,
 				C7927B532E42363000A7A34E /* XCAssets+Generated.swift */,
 			);
 			path = Generated;
@@ -2289,6 +2292,7 @@
 				971902112B983EFC009B3270 /* CustomMap.swift in Sources */,
 				FA5071982D71F1B000CE9798 /* SyncLogger.swift in Sources */,
 				A48037362BBA8DDC007EE7E4 /* WorkspacesResponse.swift in Sources */,
+				C769AB552E431EFE00FA810A /* Strings+Generated.swift in Sources */,
 				0536DD992B0BDBFE00B04C4B /* OAuthManager.swift in Sources */,
 				A4E711A62B57BBCA00C9DE08 /* QuestProtocols.swift in Sources */,
 				FAFDA2122C6F64E800ECEAE9 /* UserProfileView.swift in Sources */,
