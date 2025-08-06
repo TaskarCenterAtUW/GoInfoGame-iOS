@@ -151,14 +151,12 @@ struct WorkspacesListView: View {
                                 })
                             }  label: {
                                 Text(workspace.title)
-                                    .font(.system(size: 17))
-                                    .frame(maxWidth: .infinity, maxHeight: 40)
+                                    .font(.custom("Lato-Bold", size: 17))
+                                    .frame(maxWidth: .infinity, minHeight: 50)
+                                    .foregroundColor(Color.white)
+                                    .background(Asset.Colors.huskyPurple.swiftUIColor)
+                                    .cornerRadius(9)
                             }
-                            .font(.custom("Lato-Bold", size: 25))
-                            .foregroundColor(Color.white)
-                            .padding()
-                            .background(Asset.Colors.huskyPurple.swiftUIColor)
-                            .buttonBorderShape(.roundedRectangle(radius: 10))
                         }
                     }
                 }
