@@ -17,6 +17,7 @@ class InitialViewModel: ObservableObject {
     @Published var workspaces: [Workspace]? = nil
     @Published var longQuests: [LongFormElement] = []
     @Published var isLoading: Bool = false
+    @Published var errorMessage: String? = nil
     
     @Published var showBiometricIDError: Bool = false
     @Published var biometricIDErrorMessage: String?
@@ -44,8 +45,10 @@ class InitialViewModel: ObservableObject {
                 switch result {
                 case .success(let workspacesResponse):
                     self?.workspaces = workspacesResponse
+                    self?.errorMessage = nil
                 case .failure(let error):
-                    self?.workspaces = []
+                    self?.workspaces = nil
+                    self?.errorMessage = error.localizedDescription
                     print("Error fetching workspaces: \(error)")
                 }
             }

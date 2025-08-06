@@ -14,6 +14,7 @@ enum APIError: LocalizedError {
     case noData
     case decodingFailed(String)
     case custom(String)
+    case noNetworkConnection
 
     // HTTP/Server-side errors
     case badRequest
@@ -62,6 +63,8 @@ enum APIError: LocalizedError {
             return "Unexpected error: \(description)"
         case .custom(let message):
             return message
+        case .noNetworkConnection:
+            return "No network connection."
         }
     }
 }

@@ -131,7 +131,11 @@ class ApiManager {
                 completion(.failure(APIError.custom("No data returned")))
                 return
             }
-            if let error = error {
+            if let error = error as? NSError {
+                if error.code == -1009 {
+                    completion(.failure(.noNetworkConnection))
+                    return
+                }
                 print("Request failed with error: \(error.localizedDescription)")
                 completion(.failure(APIError.custom("Request failed with error: \(error.localizedDescription)")))
                 return

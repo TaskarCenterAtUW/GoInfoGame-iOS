@@ -105,12 +105,40 @@ struct WorkspacesListView: View {
                 }
             }
         } else if viewModel.workspaces == nil {
-            VStack {
-                Text("Loading workspaces available for you... Please make sure you have location service enabled.")
-                    .font(.custom("Lato-Bold", size: 20))
-                    .foregroundColor((Asset.Colors.huskyPurple.swiftUIColor))
-                    .multilineTextAlignment(.center)
-                Spacer()
+            if viewModel.errorMessage == nil {
+                VStack {
+                    Text("Loading workspaces available for you... Please make sure you have location service enabled.")
+                        .font(.custom("Lato-Bold", size: 20))
+                        .foregroundColor((Asset.Colors.huskyPurple.swiftUIColor))
+                        .multilineTextAlignment(.center)
+                    Spacer()
+                }
+            } else {
+                VStack {
+                    Text(viewModel.errorMessage ?? "Something went wrong. Please try again later.")
+                        .font(.custom("Lato-Bold", size: 20))
+                        .foregroundColor((Asset.Colors.huskyPurple.swiftUIColor))
+                        .multilineTextAlignment(.center)
+                        .padding(.top, 20)
+                    Spacer()
+                    Button {
+                        viewModel.fetchWorkspacesList()
+                    } label: {
+                        Group {
+                            VStack {
+                                Image(systemName: "arrow.clockwise")
+                                    .resizable()
+                                    .frame(width: 50, height: 50)
+                                Text("Try again")
+                                    .font(.custom("Lato-Bold", size: 20))
+                            }
+                        }
+                        .foregroundStyle(Asset.Colors.accentPink.swiftUIColor)
+                        
+                        
+                    }
+                    Spacer()
+                }
             }
         } else if viewModel.workspaces?.count == 0 {
             VStack {
