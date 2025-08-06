@@ -16,7 +16,6 @@ struct LongFormImageView: View {
     @State private var uiImage: UIImage?
     
     var label: String? = nil
-    var isSelected: Bool = false
     
     var body: some View {
         Group {
