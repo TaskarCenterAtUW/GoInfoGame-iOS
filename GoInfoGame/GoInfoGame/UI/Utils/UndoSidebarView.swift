@@ -19,14 +19,17 @@ struct UndoSidebarView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
             HStack {
-                Text("🔄 Undo Edits")
+                Image(systemName: "arrow.uturn.backward.circle.fill")
+                    .font(.title)
+                    
+                Text("Undo Edits")
                     .font(.headline)
                 Spacer()
                 Button(action: onClose) {
                     Image(systemName: "xmark.circle.fill")
-                        .foregroundColor(.gray)
                 }
             }
+            .foregroundColor(Asset.Colors.huskyPurple.swiftUIColor)
 
             ScrollView {
                 ForEach(undoItems) { item in
