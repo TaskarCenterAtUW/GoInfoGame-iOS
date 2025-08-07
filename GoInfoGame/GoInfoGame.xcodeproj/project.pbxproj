@@ -2875,7 +2875,7 @@
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = GoInfoGame/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = "AVIV ScoutRoute";
+				INFOPLIST_KEY_CFBundleDisplayName = GoInfoGame;
 				INFOPLIST_KEY_NSCameraUsageDescription = "This app requires access to your camera to upload images to Kartaview";
 				INFOPLIST_KEY_NSFaceIDUsageDescription = "Used to securely log in using Face ID";
 				INFOPLIST_KEY_NSFileProviderDomainUsageDescription = "";
