@@ -97,6 +97,6 @@
     "id": "HX_IMG",
     "name": "Hexagon Imagery",
     "type": "wmts",
-    "url": "https://waprovisoimg.centralindia.cloudapp.azure.com/streaming/wmts?/1.0.0/HxGN_Imagery/default/WebMercator/{z}/{y}/{x}.png"
+    "url": "https://wa-imagery.tdei.us/streaming/wmts?/1.0.0/HxGN_Imagery/default/WebMercator/{z}/{y}/{x}.png"
   }
 ]
