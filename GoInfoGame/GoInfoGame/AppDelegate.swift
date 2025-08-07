@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import FirebaseCore
 
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -18,6 +19,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         //clear DB to avoid overlap of data after workspace selection
        // DatabaseConnector.shared.clearDB()
         validateAccessToken()
+        FirebaseApp.configure()
         return true
     }
 
