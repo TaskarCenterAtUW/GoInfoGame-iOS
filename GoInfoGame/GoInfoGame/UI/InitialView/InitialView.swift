@@ -23,7 +23,7 @@ struct InitialView: View {
                                 .resizable()
                                 .frame(width: 27, height: 27)
                                 .padding([.leading], 18)
-                                .foregroundStyle(Color(red: 135/255, green: 62/255, blue: 242/255))
+                                .foregroundStyle(Asset.Colors.huskyPurple.swiftUIColor)
                             
                         }
                         Spacer()
@@ -33,11 +33,12 @@ struct InitialView: View {
                     Spacer()
                     
                     VStack(spacing: 30) {
-                        Image("osmlogo")
+                        Asset.workspacesLogo.swiftUIImage
                             .resizable()
                             .frame(width: 100, height: 100)
-                        Text("GoInfoGame")
+                        Text(L10n.Localizable.appName)
                             .font(.system(size: 30, design: .rounded))
+                            .foregroundStyle(Asset.Colors.huskyPurple.swiftUIColor)
                     }
                     .padding()
                     
@@ -104,18 +105,46 @@ struct WorkspacesListView: View {
                 }
             }
         } else if viewModel.workspaces == nil {
-            VStack {
-                Text("Loading workspaces available for you... Please make sure you have location service enabled.")
-                    .font(.custom("Lato-Bold", size: 20))
-                    .foregroundColor((Color(red: 135/255, green: 62/255, blue: 242/255)))
-                    .multilineTextAlignment(.center)
-                Spacer()
+            if viewModel.errorMessage == nil {
+                VStack {
+                    Text("Loading workspaces available for you... Please make sure you have location service enabled.")
+                        .font(.custom("Lato-Bold", size: 20))
+                        .foregroundColor((Asset.Colors.huskyPurple.swiftUIColor))
+                        .multilineTextAlignment(.center)
+                    Spacer()
+                }
+            } else {
+                VStack {
+                    Text(viewModel.errorMessage ?? "Something went wrong. Please try again later.")
+                        .font(.custom("Lato-Bold", size: 20))
+                        .foregroundColor((Asset.Colors.huskyPurple.swiftUIColor))
+                        .multilineTextAlignment(.center)
+                        .padding(.top, 20)
+                    Spacer()
+                    Button {
+                        viewModel.fetchWorkspacesList()
+                    } label: {
+                        Group {
+                            VStack {
+                                Image(systemName: "arrow.clockwise")
+                                    .resizable()
+                                    .frame(width: 50, height: 50)
+                                Text("Try again")
+                                    .font(.custom("Lato-Bold", size: 20))
+                            }
+                        }
+                        .foregroundStyle(Asset.Colors.accentPink.swiftUIColor)
+                        
+                        
+                    }
+                    Spacer()
+                }
             }
         } else if viewModel.workspaces?.count == 0 {
             VStack {
                 Text("No workspaces available for you to work on.")
                     .font(.custom("Lato-Bold", size: 20))
-                    .foregroundColor((Color(red: 135/255, green: 62/255, blue: 242/255)))
+                    .foregroundColor((Asset.Colors.huskyPurple.swiftUIColor))
                     .multilineTextAlignment(.center)
                 Spacer()
             }
@@ -150,14 +179,12 @@ struct WorkspacesListView: View {
                                 })
                             }  label: {
                                 Text(workspace.title)
-                                    .font(.system(size: 17))
-                                    .frame(maxWidth: .infinity, maxHeight: 40)
+                                    .font(.custom("Lato-Bold", size: 17))
+                                    .frame(maxWidth: .infinity, minHeight: 50)
+                                    .foregroundColor(Color.white)
+                                    .background(Asset.Colors.huskyPurple.swiftUIColor)
+                                    .cornerRadius(9)
                             }
-                            .font(.custom("Lato-Bold", size: 25))
-                            .foregroundColor(Color.white)
-                            .padding()
-                            .background(Color(red: 135/255, green: 62/255, blue: 242/255))
-                            .buttonBorderShape(.roundedRectangle(radius: 10))
                         }
                     }
                 }
@@ -175,7 +202,7 @@ struct LocationDisabledView: View {
         VStack {
             Text("GoInfoGame")
                 .font(.custom("Lato-Bold", size: 30))
-                .foregroundColor((Color(red: 135/255, green: 62/255, blue: 242/255)))
+                .foregroundColor((Asset.Colors.huskyPurple.swiftUIColor))
                 .padding([.bottom], 50)
             
             Text("Location Services Disabled")

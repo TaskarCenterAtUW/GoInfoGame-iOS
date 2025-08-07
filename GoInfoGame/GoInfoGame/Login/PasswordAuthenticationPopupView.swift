@@ -21,6 +21,7 @@ struct PasswordAuthenticationPopupView: View {
             VStack(spacing: 16) {
                 Text("Enable Biometric Login")
                     .font(.headline)
+                    .foregroundStyle(Asset.Colors.huskyPurple.swiftUIColor)
 
                 SecureField("Enter your password", text: $viewModel.password)
                     .textContentType(.password)
@@ -39,7 +40,7 @@ struct PasswordAuthenticationPopupView: View {
                 }
                 .padding()
                 .frame(maxWidth: .infinity)
-                .background(Color.blue)
+                .background(Asset.Colors.huskyPurple.swiftUIColor)
                 .foregroundColor(.white)
                 .cornerRadius(8)
 
@@ -47,6 +48,7 @@ struct PasswordAuthenticationPopupView: View {
                     onCancel()
                 }
                 .padding(.top, 4)
+                .foregroundStyle(Asset.Colors.accentPink.swiftUIColor)
             }
             .padding()
             .background(Color.white)
@@ -82,13 +84,13 @@ struct PasswordAuthenticationPopupView: View {
 
 
 
-//#Preview {
-//    PasswordAuthenticationPopupView(
-//        viewModel: <#PasswordAuthenticationViewModel#>, onSuccess: {
-//            print("Biometric setup successful")
-//        },
-//        onCancel: {
-//            print("Biometric setup cancelled")
-//        }
-//    )
-//}
+#Preview {
+    PasswordAuthenticationPopupView(viewModel: PasswordAuthenticationViewModel()) {
+            
+    } onCancel: {
+    
+    } onFailure: { _ in
+        
+    }
+
+}

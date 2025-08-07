@@ -66,21 +66,19 @@ struct LongForm: View, QuestForm {
                     HStack {
                         Text(elementName ?? "")
                             .font(.custom("Lato-Bold", size: 16))
+                            .foregroundStyle(Asset.Colors.huskyPurple.swiftUIColor)
                         Spacer()
-                        Button("Hide this") {
+                        LongFormDismissButtonView {
                             withAnimation {
-                                MapViewPublisher.shared.dismissSheet.send(.hideElement(questID ?? "0", elementName ?? ""))
                                 presentationMode.wrappedValue.dismiss()
                             }
-                            
                         }
-                    }
-                
-                    .padding(EdgeInsets(top: 20, leading: 20, bottom: 10, trailing: 20))
+                    }.padding(EdgeInsets(top: 20, leading: 20, bottom: 10, trailing: 20))
                 
                 Text("ID: \(questID ?? "0")")
                     .font(.custom("Lato-Regular", size: 13))
                     .padding([.leading], 20)
+                    .foregroundStyle(Asset.Colors.huskyPurple.swiftUIColor)
                 
                 HStack {
                     Button {
@@ -88,16 +86,18 @@ struct LongForm: View, QuestForm {
                     } label: {
                         Text(" Compose Note")
                             .font(.custom("Lato-Bold", size: 15))
+                            .foregroundStyle(Asset.Colors.accentPink.swiftUIColor)
                     }
                     .padding(EdgeInsets(top: 0, leading: 14, bottom: 0, trailing: 20))
-                    
-                    
-                    LongFormDismissButtonView {
+                    Spacer()
+                    Button("Hide this") {
                         withAnimation {
+                            MapViewPublisher.shared.dismissSheet.send(.hideElement(questID ?? "0", elementName ?? ""))
                             presentationMode.wrappedValue.dismiss()
                         }
                     }
-                    .padding([.trailing], 20)
+                    .padding(.trailing, 20)
+                    .foregroundStyle(Asset.Colors.accentPink.swiftUIColor)
                 }
                 
                 if showCreateNoteMessage {
@@ -116,7 +116,7 @@ struct LongForm: View, QuestForm {
                         TextEditor(text: $noteText)
                             .textFieldStyle(RoundedBorderTextFieldStyle())
                             .padding(.horizontal, 20)
-                            .border(Color(red: 135/255, green: 62/255, blue: 242/255))
+                            .border(Asset.Colors.huskyPurple.swiftUIColor)
                         
                         HStack {
                             Button(action: {
@@ -138,7 +138,7 @@ struct LongForm: View, QuestForm {
                                         .foregroundColor(.white)
                                         .padding()
                                         .frame(maxWidth: .infinity)
-                                        .background(noteText != "" ? Color(red: 135/255, green: 62/255, blue: 242/255) : Color.gray)
+                                        .background(noteText != "" ? Asset.Colors.huskyPurple.swiftUIColor : Color.gray)
                                         .cornerRadius(9)
                                 }
                             }
@@ -152,7 +152,7 @@ struct LongForm: View, QuestForm {
                                     .foregroundColor(.white)
                                     .padding()
                                     .frame(maxWidth: .infinity)
-                                    .background(Color.red)
+                                    .background(Asset.Colors.accentPink.swiftUIColor)
                                     .cornerRadius(9)
                             }
                         }
@@ -224,7 +224,7 @@ struct LongForm: View, QuestForm {
                         .foregroundColor(.white)
                         .padding()
                         .frame(width: 200, height: 40)
-                        .background(Color(red: 135/255, green: 62/255, blue: 242/255))
+                        .background(Asset.Colors.huskyPurple.swiftUIColor)
                         .cornerRadius(20)
                 }
                 .frame(maxWidth: .infinity)

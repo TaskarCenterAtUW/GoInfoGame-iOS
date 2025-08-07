@@ -181,6 +181,10 @@ struct MapView: View {
                         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottomLeading)
                         Spacer()
                         FloatingActionButtonStack()
+                            .padding(.bottom, 24)
+                            .padding(.trailing, 16)
+                            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottomLeading)
+                        
                     }
                 }
                             
@@ -229,7 +233,7 @@ struct MapView: View {
                         }
                     })
                     .frame(width: 20, height: 20)
-                    .foregroundStyle(Color("theme"))
+                    .foregroundStyle(Asset.Colors.huskyPurple.swiftUIColor)
                 }
                 
                 ToolbarItem(placement: .navigationBarTrailing) {
@@ -240,7 +244,7 @@ struct MapView: View {
                     }) {
                         Image(systemName: "square.2.layers.3d.bottom.filled")
                             .frame(width: 20, height: 20)
-                            .foregroundStyle(Color(red: 135/255, green: 62/255, blue: 242/255))
+                            .foregroundStyle(Asset.Colors.huskyPurple.swiftUIColor)
                     }
                 }
                 ToolbarItem(placement: .navigationBarTrailing) {
@@ -250,7 +254,7 @@ struct MapView: View {
                     }) {
                         Image(systemName: "gear")
                             .frame(width: 20, height: 20)
-                            .foregroundStyle(Color(red: 135/255, green: 62/255, blue: 242/255))
+                            .foregroundStyle(Asset.Colors.huskyPurple.swiftUIColor)
                     }
                 }
             }

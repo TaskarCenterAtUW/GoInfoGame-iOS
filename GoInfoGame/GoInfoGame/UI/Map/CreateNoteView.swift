@@ -45,7 +45,7 @@ struct CreateNoteView: View {
                                 .foregroundColor(.white)
                                 .padding()
                                 .frame(maxWidth: .infinity)
-                                .background(noteText != "" ? Color(red: 135/255, green: 62/255, blue: 242/255) : Color.gray)
+                                .background(noteText != "" ? Asset.Colors.huskyPurple.swiftUIColor : Color.gray)
                                 .cornerRadius(9)
                         }
                     }
@@ -59,7 +59,7 @@ struct CreateNoteView: View {
                             .foregroundColor(.white)
                             .padding()
                             .frame(maxWidth: .infinity)
-                            .background(Color.red)
+                            .background(Asset.Colors.accentPink.swiftUIColor)
                             .cornerRadius(9)
                     }
                 }

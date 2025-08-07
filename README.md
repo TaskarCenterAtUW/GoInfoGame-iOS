@@ -30,6 +30,14 @@ Note: Please make sure you have switched to the 'dev' branch before cloning the 
 
 2. Navigate to the project folder and open 'GoInfoGame.xcworkspace' in Xcode.
    
+## Install Required tools
+
+### SwiftGen
+
+1. Open Terminal
+2. run "brew install swiftgen"
+
+If we face any issue please go through https://github.com/SwiftGen/SwiftGen
  
 ## Building and Running the App
 

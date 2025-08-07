@@ -15,8 +15,6 @@
 			</array>
 		</dict>
 	</array>
-    <key>NSFaceIDUsageDescription</key>
-    <string>Used to securely log in using Face ID</string>
 	<key>UIApplicationSceneManifest</key>
 	<dict>
 		<key>UIApplicationSupportsMultipleScenes</key>

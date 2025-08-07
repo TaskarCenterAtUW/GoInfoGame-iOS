@@ -60,7 +60,7 @@ struct ImageData: Identifiable {
 //                                .clipped()
 //                                .aspectRatio(1, contentMode: .fit)
 //                                .rotationEffect(.degrees(isImageRotated ? 30: 0))
-//                                .border(selectedImageName == imageOption.choiceText ? Color(red: 135/255, green: 62/255, blue: 242/255) : Color.clear, width: selectedImageName == imageOption.choiceText  ? 3 : 0)
+//                                .border(selectedImageName == imageOption.choiceText ? Asset.Colors.huskyPurple.swiftUIColor : Color.clear, width: selectedImageName == imageOption.choiceText  ? 3 : 0)
 //                        }
 //                    }
 //                    if isLabelBelow {
@@ -140,7 +140,7 @@ struct ImageGridItemView: View {
                                 .clipped()
                                 .aspectRatio(1, contentMode: .fit)
                                 .rotationEffect(.degrees(isImageRotated ? 30: 0))
-                                .border(selectedImages.contains(data.tag) ? Color(red: 135/255, green: 62/255, blue: 242/255) : Color.clear, width: selectedImages.contains(data.tag) ? 3 : 0)
+                                .border(selectedImages.contains(data.tag) ? Asset.Colors.huskyPurple.swiftUIColor : Color.clear, width: selectedImages.contains(data.tag) ? 3 : 0)
                             if !isLabelBelow {
                                 Text(data.optionName)
                                     .font(.caption)

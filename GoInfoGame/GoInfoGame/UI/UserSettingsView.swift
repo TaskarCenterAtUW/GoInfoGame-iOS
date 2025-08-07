@@ -41,6 +41,7 @@ struct UserSettingsView: View {
         VStack(alignment: .leading, spacing: 12) {
             HStack(alignment: .firstTextBaseline) {
                 Text(selectedWorkspace)
+                    .foregroundStyle(Asset.Colors.huskyPurple.swiftUIColor)
 
 
                 Spacer()
@@ -48,9 +49,10 @@ struct UserSettingsView: View {
                 Button(action: {
                     presentationMode.wrappedValue.dismiss()
                 }, label: {
-                    Image("long-form-dismiss")
+                    Image(systemName: "xmark.circle")
                         .resizable()
                         .frame(width: 25, height: 25)
+                        .foregroundStyle(Asset.Colors.accentPink.swiftUIColor)
                 })
             }
             .padding(.horizontal, 16)
@@ -65,7 +67,7 @@ struct UserSettingsView: View {
                                 .resizable()
                                 .scaledToFit()
                                 .frame(width: 20, height: 20)
-                                .foregroundColor(Color(red: 69/255, green: 81/255, blue: 108/255))
+                                .foregroundColor(Asset.Colors.huskyPurple.swiftUIColor)
 
                             Text(option.title)
                                 .font(.custom("Lato-Bold", size: 16))
@@ -98,5 +100,11 @@ struct UserSettingsView: View {
         .padding(.bottom, 16)
         .background(Color(red: 248/255, green: 248/255, blue: 248/255))
         .clipShape(RoundedRectangle(cornerRadius: 16))
+    }
+}
+
+#Preview {
+    UserSettingsView( selectedWorkspace: "Title", options: OptionModel.options) { _ in
+        
     }
 }

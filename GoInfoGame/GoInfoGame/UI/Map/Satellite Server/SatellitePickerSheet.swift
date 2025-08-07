@@ -21,7 +21,7 @@ struct SatellitePickerSheet: View {
                         Spacer()
                         if option == selected {
                             Image(systemName: "checkmark")
-                                .foregroundColor(.blue)
+                                .foregroundColor(Asset.Colors.accentPink.swiftUIColor)
                         }
                     }
                     .contentShape(Rectangle())
@@ -32,6 +32,12 @@ struct SatellitePickerSheet: View {
             }
             .navigationTitle("Select Satellite Layer")
             .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .principal) {
+                    Text("Select Satellite Layer")
+                        .foregroundColor(Asset.Colors.huskyPurple.swiftUIColor)
+                }
+            }
         }
     }
 }

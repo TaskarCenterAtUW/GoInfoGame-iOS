@@ -61,12 +61,19 @@ struct LongFormDismissButtonView: View {
                 MapViewPublisher.shared.dismissSheet.send(.dismissed)
                 
             }, label: {
-                Image("long-form-dismiss")
+                Image(systemName: "xmark.circle")
                     .resizable()
                     .aspectRatio(contentMode: .fit)
                     .frame(width: 25, height: 25)
+                    .foregroundStyle(Asset.Colors.accentPink.swiftUIColor)
             })
             
         }
     }
 }
+
+#Preview(body: {
+    LongFormDismissButtonView {
+        
+    }
+})

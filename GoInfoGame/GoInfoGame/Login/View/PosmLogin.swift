@@ -24,10 +24,25 @@ struct PosmLoginView: View {
         NavigationStack {
             ZStack {
                 VStack(spacing: 20) {
-                    Text("GoInfoGame")
-                        .font(.custom("Lato-Bold", size: 30))
-                        .foregroundColor((Color(red: 135/255, green: 62/255, blue: 242/255)))
-                        .padding([.bottom], 50)
+                    HStack {
+                        Asset.logo.swiftUIImage
+                            .resizable()
+                            .aspectRatio(contentMode: .fill)
+                            .frame(width: 100, height: 100)
+                            .padding(-10)
+                            .clipShape(Circle())
+                            
+                        Group {
+                            VStack(alignment: .leading) {
+                                Text("AVIV")
+                                    .font(.custom("Lato-Bold", size: 50))
+                                Text("ScoutRoute")
+                                    .font(.custom("Lato-Bold", size: 20))
+                            }
+                        }
+                        .foregroundColor(Asset.Colors.huskyPurple.swiftUIColor)
+                    }
+                    .padding([.bottom], 50)
                                     
                     TextField("Username", text: $viewModel.username)
                         .padding()
@@ -72,7 +87,7 @@ struct PosmLoginView: View {
                             .font(.custom("Lato-Bold", size: 20))
                             .foregroundColor(Color.white)
                             .padding()
-                            .background(Color(red: 135/255, green: 62/255, blue: 242/255))
+                            .background(Asset.Colors.huskyPurple.swiftUIColor)
                             .cornerRadius(25)
                     }
                     .padding(.top, 20)

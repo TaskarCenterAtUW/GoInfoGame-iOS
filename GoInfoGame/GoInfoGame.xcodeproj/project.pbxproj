@@ -158,9 +158,11 @@
 		C75EAD362E042D4500F75969 /* SideWalkWidth.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4E711A12B57A3B400C9DE08 /* SideWalkWidth.swift */; };
 		C75EAD372E042D4500F75969 /* SideWalkWidthForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = 973FC0132B4D353800878269 /* SideWalkWidthForm.swift */; };
 		C76187DC2E0153D800150201 /* ClusterMap in Frameworks */ = {isa = PBXBuildFile; productRef = C76187DB2E0153D800150201 /* ClusterMap */; };
+		C769AB552E431EFE00FA810A /* Strings+Generated.swift in Sources */ = {isa = PBXBuildFile; fileRef = C769AB542E431EFE00FA810A /* Strings+Generated.swift */; };
 		C76DA1A12DF0679F00451E63 /* LongFormModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA8C74C32C4FDE1000D28220 /* LongFormModel.swift */; };
 		C77A4A262DF2AF3100DED8B0 /* SecureInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C77A4A252DF2AF3100DED8B0 /* SecureInputView.swift */; };
 		C77EEBCF2DE59D3200494CB4 /* UndoMerge.swift in Sources */ = {isa = PBXBuildFile; fileRef = C77EEBCE2DE59D3200494CB4 /* UndoMerge.swift */; };
+		C7927B552E42363000A7A34E /* XCAssets+Generated.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7927B532E42363000A7A34E /* XCAssets+Generated.swift */; };
 		C7BA83542E3C9C3600755BA7 /* QuestSyncButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7BA83532E3C9C3600755BA7 /* QuestSyncButton.swift */; };
 		C7ED070F2D70E2EC001FFFE2 /* TokenRefresher.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7ED070E2D70E2EC001FFFE2 /* TokenRefresher.swift */; };
 		CFECB318461BB876B1621890 /* Pods_osmapi.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C4F37DA661B22FA87DF8282F /* Pods_osmapi.framework */; };
@@ -498,8 +500,10 @@
 		C75CC5D72E0D22F4008A94A0 /* SCLIO Seattle pins response.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "SCLIO Seattle pins response.json"; sourceTree = "<group>"; };
 		C75CC5D82E0D22F4008A94A0 /* LongQuestsResponse.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = LongQuestsResponse.json; sourceTree = "<group>"; };
 		C75E47732E151058006D903A /* Kondapur.gpx */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = Kondapur.gpx; sourceTree = "<group>"; };
+		C769AB542E431EFE00FA810A /* Strings+Generated.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Strings+Generated.swift"; sourceTree = "<group>"; };
 		C77A4A252DF2AF3100DED8B0 /* SecureInputView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecureInputView.swift; sourceTree = "<group>"; };
 		C77EEBCE2DE59D3200494CB4 /* UndoMerge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UndoMerge.swift; sourceTree = "<group>"; };
+		C7927B532E42363000A7A34E /* XCAssets+Generated.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "XCAssets+Generated.swift"; sourceTree = "<group>"; };
 		C7BA83532E3C9C3600755BA7 /* QuestSyncButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = QuestSyncButton.swift; path = GoInfoGame/UI/Map/QuestSyncButton.swift; sourceTree = SOURCE_ROOT; };
 		C7ED070E2D70E2EC001FFFE2 /* TokenRefresher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenRefresher.swift; sourceTree = "<group>"; };
 		C96303080D26026265099E0E /* Pods-GoInfoGame.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-GoInfoGame.release.xcconfig"; path = "Target Support Files/Pods-GoInfoGame/Pods-GoInfoGame.release.xcconfig"; sourceTree = "<group>"; };
@@ -657,6 +661,7 @@
 		0536DD8A2B0BD2A900B04C4B /* Helpers */ = {
 			isa = PBXGroup;
 			children = (
+				C7927B542E42363000A7A34E /* Generated */,
 				C75CC5D52E0D22E0008A94A0 /* SampleResponses */,
 				0536DD8B2B0BD2C200B04C4B /* Constants.swift */,
 				972454142B14A49A0036B91A /* Extensions.swift */,
@@ -1316,6 +1321,15 @@
 			path = SampleResponses;
 			sourceTree = "<group>";
 		};
+		C7927B542E42363000A7A34E /* Generated */ = {
+			isa = PBXGroup;
+			children = (
+				C769AB542E431EFE00FA810A /* Strings+Generated.swift */,
+				C7927B532E42363000A7A34E /* XCAssets+Generated.swift */,
+			);
+			path = Generated;
+			sourceTree = "<group>";
+		};
 		FA18CADE2CC7CD46008247F2 /* Kartaview */ = {
 			isa = PBXGroup;
 			children = (
@@ -1735,6 +1749,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = FAD5C5192AFCBE720040C61A /* Build configuration list for PBXNativeTarget "GoInfoGame" */;
 			buildPhases = (
+				C7927B562E42364100A7A34E /* SwiftGen */,
 				3A8B389D639C310AE1E29BEB /* [CP] Check Pods Manifest.lock */,
 				FAD5C4EB2AFCBE700040C61A /* Sources */,
 				FAD5C4EC2AFCBE700040C61A /* Frameworks */,
@@ -2027,6 +2042,24 @@
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-GoInfoGame-GoInfoGameUITests/Pods-GoInfoGame-GoInfoGameUITests-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
+		C7927B562E42364100A7A34E /* SwiftGen */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = SwiftGen;
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "if [[ \"$(uname -m)\" == arm64 ]]\nthen\n    export PATH=\"/opt/homebrew/bin:$PATH\"\nfi\n\nif command -v swiftgen >/dev/null 2>&1\nthen\n    swiftgen\nelse\n    echo \"warning: `swiftgen` command not found\"\nfi\n\n";
+		};
 		FF862D6335761A29040D8975 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -2259,6 +2292,7 @@
 				971902112B983EFC009B3270 /* CustomMap.swift in Sources */,
 				FA5071982D71F1B000CE9798 /* SyncLogger.swift in Sources */,
 				A48037362BBA8DDC007EE7E4 /* WorkspacesResponse.swift in Sources */,
+				C769AB552E431EFE00FA810A /* Strings+Generated.swift in Sources */,
 				0536DD992B0BDBFE00B04C4B /* OAuthManager.swift in Sources */,
 				A4E711A62B57BBCA00C9DE08 /* QuestProtocols.swift in Sources */,
 				FAFDA2122C6F64E800ECEAE9 /* UserProfileView.swift in Sources */,
@@ -2266,6 +2300,7 @@
 				B0CCB98C2B8626AE00AA73DE /* ProfileView.swift in Sources */,
 				FAF44FBD2B3084EC004FE664 /* OnboardingView1.swift in Sources */,
 				973FC01D2B4FEE1B00878269 /* YesNoView.swift in Sources */,
+				C7927B552E42363000A7A34E /* XCAssets+Generated.swift in Sources */,
 				FAE481A62DDB22DB00149A48 /* BiometricToggleView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -2749,11 +2784,13 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 39;
+				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = G8MQVE5WWW;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = GoInfoGame/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "AVIV ScoutRoute";
 				INFOPLIST_KEY_NSCameraUsageDescription = "This app requires access to your camera to upload images to Kartaview";
+				INFOPLIST_KEY_NSFaceIDUsageDescription = "Used to securely log in using Face ID";
 				INFOPLIST_KEY_NSFileProviderDomainUsageDescription = "";
 				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "We need your location";
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "We need your location";
@@ -2787,11 +2824,13 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 39;
+				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = G8MQVE5WWW;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = GoInfoGame/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "AVIV ScoutRoute";
 				INFOPLIST_KEY_NSCameraUsageDescription = "This app requires access to your camera to upload images to Kartaview";
+				INFOPLIST_KEY_NSFaceIDUsageDescription = "Used to securely log in using Face ID";
 				INFOPLIST_KEY_NSFileProviderDomainUsageDescription = "";
 				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "We need your location";
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "We need your location";
@@ -2807,7 +2846,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.uwtcat.gig;
+				PRODUCT_BUNDLE_IDENTIFIER = tech.opentoall.aviv.scoutroute;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_EMIT_LOC_STRINGS = YES;

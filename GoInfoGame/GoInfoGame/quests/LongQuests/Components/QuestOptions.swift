@@ -109,8 +109,7 @@ struct QuestOptions: View {
                                                 urlString: imageUrl,
                                                 width: 100,
                                                 height: 100,
-                                                label: option.choiceText,
-                                                isSelected: currentAnswer == option.value
+                                                label: option.choiceText
                                             )
                                         } else {
                                             ZStack {
@@ -155,7 +154,7 @@ struct QuestOptions: View {
                                 }
                                 .overlay(
                                     RoundedRectangle(cornerRadius: 8)
-                                        .stroke(currentAnswer == option.value ? Color.blue : Color.clear, lineWidth: 3)
+                                        .stroke(currentAnswer == option.value ? Asset.Colors.accentPink.swiftUIColor : Color.clear, lineWidth: 3)
                                 )
                                 .onLongPressGesture {
                                     if let imageUrl = option.imageURL, !imageUrl.isEmpty {
@@ -187,9 +186,10 @@ struct QuestOptions: View {
                                 .padding(.horizontal, 12)
                                 .padding(.vertical, 6)
                                 .background(
-                                    LinearGradient(gradient: Gradient(colors: [Color.blue, Color.purple]), startPoint: .leading, endPoint: .trailing)
+                                    LinearGradient(gradient: Gradient(colors: [Asset.Colors.huskyPurple.swiftUIColor, Asset.Colors.accentPink.swiftUIColor]), startPoint: .leading, endPoint: .trailing)
                                 )
                                 .shadow(color: Color.gray.opacity(0.5), radius: 4, x: 2, y: 2)
+                                .cornerRadius(9)
                             }
                         }
                     }
