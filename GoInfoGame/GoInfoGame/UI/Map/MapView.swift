@@ -455,8 +455,6 @@ struct MapView: View {
                 viewModel.hideQuest(elementId: elementId, elementName: elementName)
             case .undoDone(let changesetId):
                 shouldShowPolyline = false
-                showAlert = true
-                alertMessage = "Changes reverted"
                 viewModel.refreshMapAfterUndoSumbit(storedChangesetId: changesetId)
             case .syncBackground(let elementID):
                 shouldShowPolyline = false
