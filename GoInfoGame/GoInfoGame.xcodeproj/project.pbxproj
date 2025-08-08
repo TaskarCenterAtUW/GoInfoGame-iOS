@@ -161,6 +161,8 @@
 		C769AB552E431EFE00FA810A /* Strings+Generated.swift in Sources */ = {isa = PBXBuildFile; fileRef = C769AB542E431EFE00FA810A /* Strings+Generated.swift */; };
 		C76DA1A12DF0679F00451E63 /* LongFormModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA8C74C32C4FDE1000D28220 /* LongFormModel.swift */; };
 		C77A4A262DF2AF3100DED8B0 /* SecureInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C77A4A252DF2AF3100DED8B0 /* SecureInputView.swift */; };
+		C77AAC9D2E4463ED006713B2 /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = C77AAC9C2E4463ED006713B2 /* FirebaseAnalytics */; };
+		C77AAC9F2E4463ED006713B2 /* FirebaseCrashlytics in Frameworks */ = {isa = PBXBuildFile; productRef = C77AAC9E2E4463ED006713B2 /* FirebaseCrashlytics */; };
 		C77EEBCF2DE59D3200494CB4 /* UndoMerge.swift in Sources */ = {isa = PBXBuildFile; fileRef = C77EEBCE2DE59D3200494CB4 /* UndoMerge.swift */; };
 		C7927B552E42363000A7A34E /* XCAssets+Generated.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7927B532E42363000A7A34E /* XCAssets+Generated.swift */; };
 		C7BA83542E3C9C3600755BA7 /* QuestSyncButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7BA83532E3C9C3600755BA7 /* QuestSyncButton.swift */; };
@@ -502,6 +504,8 @@
 		C75E47732E151058006D903A /* Kondapur.gpx */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = Kondapur.gpx; sourceTree = "<group>"; };
 		C769AB542E431EFE00FA810A /* Strings+Generated.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Strings+Generated.swift"; sourceTree = "<group>"; };
 		C77A4A252DF2AF3100DED8B0 /* SecureInputView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecureInputView.swift; sourceTree = "<group>"; };
+		C77AAC992E446376006713B2 /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		C77AACA52E447364006713B2 /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		C77EEBCE2DE59D3200494CB4 /* UndoMerge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UndoMerge.swift; sourceTree = "<group>"; };
 		C7927B532E42363000A7A34E /* XCAssets+Generated.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "XCAssets+Generated.swift"; sourceTree = "<group>"; };
 		C7BA83532E3C9C3600755BA7 /* QuestSyncButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = QuestSyncButton.swift; path = GoInfoGame/UI/Map/QuestSyncButton.swift; sourceTree = SOURCE_ROOT; };
@@ -621,10 +625,12 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C77AAC9D2E4463ED006713B2 /* FirebaseAnalytics in Frameworks */,
 				C75666D02E0D068900D36C41 /* OHHTTPStubs in Frameworks */,
 				C75666D22E0D068900D36C41 /* OHHTTPStubsSwift in Frameworks */,
 				97F2FA8A2B0630A3000B9726 /* Pods_GoInfoGame.framework in Frameworks */,
 				A4AD13272B5E90BD0041A881 /* osmparser.framework in Frameworks */,
+				C77AAC9F2E4463ED006713B2 /* FirebaseCrashlytics in Frameworks */,
 				C76187DC2E0153D800150201 /* ClusterMap in Frameworks */,
 				A40E727F2B5D462A00328848 /* osmapi.framework in Frameworks */,
 			);
@@ -1321,6 +1327,39 @@
 			path = SampleResponses;
 			sourceTree = "<group>";
 		};
+		C77AAC972E44634A006713B2 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				C77AAC982E446356006713B2 /* Firebase */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		C77AAC982E446356006713B2 /* Firebase */ = {
+			isa = PBXGroup;
+			children = (
+				C77AACA42E4472F3006713B2 /* Release */,
+				C77AACA32E4472EB006713B2 /* Debug */,
+			);
+			path = Firebase;
+			sourceTree = "<group>";
+		};
+		C77AACA32E4472EB006713B2 /* Debug */ = {
+			isa = PBXGroup;
+			children = (
+				C77AAC992E446376006713B2 /* GoogleService-Info.plist */,
+			);
+			path = Debug;
+			sourceTree = "<group>";
+		};
+		C77AACA42E4472F3006713B2 /* Release */ = {
+			isa = PBXGroup;
+			children = (
+				C77AACA52E447364006713B2 /* GoogleService-Info.plist */,
+			);
+			path = Release;
+			sourceTree = "<group>";
+		};
 		C7927B542E42363000A7A34E /* Generated */ = {
 			isa = PBXGroup;
 			children = (
@@ -1525,6 +1564,7 @@
 				0536DD8A2B0BD2A900B04C4B /* Helpers */,
 				FAD5C4F82AFCBE700040C61A /* Main.storyboard */,
 				FAD5C4FB2AFCBE720040C61A /* Assets.xcassets */,
+				C77AAC972E44634A006713B2 /* Resources */,
 				0513BE762B2B464800FB61CF /* samplepoint.gpx */,
 				C75E47732E151058006D903A /* Kondapur.gpx */,
 				FAD5C4FD2AFCBE720040C61A /* LaunchScreen.storyboard */,
@@ -1750,12 +1790,14 @@
 			buildConfigurationList = FAD5C5192AFCBE720040C61A /* Build configuration list for PBXNativeTarget "GoInfoGame" */;
 			buildPhases = (
 				C7927B562E42364100A7A34E /* SwiftGen */,
+				C77AACA72E44738A006713B2 /* Copy GoogleService-Info.plist */,
 				3A8B389D639C310AE1E29BEB /* [CP] Check Pods Manifest.lock */,
 				FAD5C4EB2AFCBE700040C61A /* Sources */,
 				FAD5C4EC2AFCBE700040C61A /* Frameworks */,
 				FAD5C4ED2AFCBE700040C61A /* Resources */,
 				04D7AD88F31E8154FD869DC0 /* [CP] Embed Pods Frameworks */,
 				A40E72842B5D462A00328848 /* Embed Frameworks */,
+				C77AACA22E4468BD006713B2 /* Crashlytics-dSYM upload */,
 			);
 			buildRules = (
 			);
@@ -1857,6 +1899,7 @@
 			packageReferences = (
 				C76187DA2E0153D800150201 /* XCRemoteSwiftPackageReference "ClusterMap" */,
 				C75666CE2E0D068900D36C41 /* XCRemoteSwiftPackageReference "OHHTTPStubs" */,
+				C77AAC9B2E4463ED006713B2 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
 			);
 			productRefGroup = FAD5C4F02AFCBE700040C61A /* Products */;
 			projectDirPath = "";
@@ -2041,6 +2084,48 @@
 			shellPath = /bin/sh;
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-GoInfoGame-GoInfoGameUITests/Pods-GoInfoGame-GoInfoGameUITests-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
+		};
+		C77AACA22E4468BD006713B2 /* Crashlytics-dSYM upload */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${DWARF_DSYM_FOLDER_PATH}/${DWARF_DSYM_FILE_NAME}",
+				"${DWARF_DSYM_FOLDER_PATH}/${DWARF_DSYM_FILE_NAME}/Contents/Resources/DWARF/${PRODUCT_NAME}",
+				"${DWARF_DSYM_FOLDER_PATH}/${DWARF_DSYM_FILE_NAME}/Contents/Info.plist",
+				"$(TARGET_BUILD_DIR)/$(UNLOCALIZED_RESOURCES_FOLDER_PATH)/GoogleService-Info.plist",
+				"$(TARGET_BUILD_DIR)/$(EXECUTABLE_PATH)",
+				"${DWARF_DSYM_FOLDER_PATH}/${DWARF_DSYM_FILE_NAME}/Contents/Resources/DWARF/${PRODUCT_NAME}.debug.dylib",
+			);
+			name = "Crashlytics-dSYM upload";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${BUILD_DIR%/Build/*}/SourcePackages/checkouts/firebase-ios-sdk/Crashlytics/run\"\n";
+		};
+		C77AACA72E44738A006713B2 /* Copy GoogleService-Info.plist */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Copy GoogleService-Info.plist";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# Get the current configuration\nCONFIGURATION=\"${CONFIGURATION}\"\n\n# Define the source and destination paths\nPLIST_FILE_NAME=\"GoogleService-Info.plist\"\nDESTINATION_PATH=\"${BUILT_PRODUCTS_DIR}/${PRODUCT_NAME}.app/${PLIST_FILE_NAME}\"\n\n# Define source directories for each configuration\nDEBUG_SOURCE_PATH=\"${SRCROOT}/GoInfoGame/Resources/Firebase/Debug/${PLIST_FILE_NAME}\"\nRELEASE_SOURCE_PATH=\"${SRCROOT}/GoInfoGame/Resources/Firebase/Release/${PLIST_FILE_NAME}\"\n\n# Copy the appropriate plist file based on the configuration\nif [ \"${CONFIGURATION}\" == \"Debug\" ]; then\n    echo \"Copying Debug GoogleService-Info.plist\"\n    cp \"${DEBUG_SOURCE_PATH}\" \"${DESTINATION_PATH}\"\nelif [ \"${CONFIGURATION}\" == \"Release\" ]; then\n    echo \"Copying Release GoogleService-Info.plist\"\n    cp \"${RELEASE_SOURCE_PATH}\" \"${DESTINATION_PATH}\"\nelse\n    # Handle any other configurations (e.g., Staging)\n    echo \"Warning: No GoogleService-Info.plist configured for '${CONFIGURATION}'\"\nfi\n";
 		};
 		C7927B562E42364100A7A34E /* SwiftGen */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -2785,10 +2870,12 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = G8MQVE5WWW;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = GoInfoGame/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = "AVIV ScoutRoute";
+				INFOPLIST_KEY_CFBundleDisplayName = GoInfoGame;
 				INFOPLIST_KEY_NSCameraUsageDescription = "This app requires access to your camera to upload images to Kartaview";
 				INFOPLIST_KEY_NSFaceIDUsageDescription = "Used to securely log in using Face ID";
 				INFOPLIST_KEY_NSFileProviderDomainUsageDescription = "";
@@ -2797,8 +2884,8 @@
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				INFOPLIST_KEY_UIUserInterfaceStyle = Light;
 				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -2809,6 +2896,10 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.vindago.goinfogame;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -2826,6 +2917,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = G8MQVE5WWW;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = GoInfoGame/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "AVIV ScoutRoute";
@@ -2837,8 +2929,8 @@
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				INFOPLIST_KEY_UIUserInterfaceStyle = Light;
 				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -2849,6 +2941,10 @@
 				PRODUCT_BUNDLE_IDENTIFIER = tech.opentoall.aviv.scoutroute;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -3029,6 +3125,14 @@
 				minimumVersion = 2.1.1;
 			};
 		};
+		C77AAC9B2E4463ED006713B2 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/firebase/firebase-ios-sdk";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 12.1.0;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -3046,6 +3150,16 @@
 			isa = XCSwiftPackageProductDependency;
 			package = C76187DA2E0153D800150201 /* XCRemoteSwiftPackageReference "ClusterMap" */;
 			productName = ClusterMap;
+		};
+		C77AAC9C2E4463ED006713B2 /* FirebaseAnalytics */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = C77AAC9B2E4463ED006713B2 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseAnalytics;
+		};
+		C77AAC9E2E4463ED006713B2 /* FirebaseCrashlytics */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = C77AAC9B2E4463ED006713B2 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseCrashlytics;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
