@@ -222,6 +222,11 @@ struct MapView: View {
             .navigationBarHidden(isPresented)
             .navigationBarItems(leading: EmptyView())
             .toolbar {
+                ToolbarItem(placement: .topBarLeading) {
+                    Text(selectedWorkspace?.title ?? "")
+                        .font(.custom("Lato-Bold", size: 16))
+                        .foregroundStyle(Asset.Colors.huskyPurple.swiftUIColor)
+                }
 
                 ToolbarItem(placement: .navigationBarTrailing) {
                     QuestSyncButton(badgeCount: viewModel.syncFailedElementsCount, isSyncing: isSyncing, action: {
