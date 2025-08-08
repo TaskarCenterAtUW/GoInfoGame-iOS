@@ -159,6 +159,11 @@
 		C75EAD372E042D4500F75969 /* SideWalkWidthForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = 973FC0132B4D353800878269 /* SideWalkWidthForm.swift */; };
 		C76187DC2E0153D800150201 /* ClusterMap in Frameworks */ = {isa = PBXBuildFile; productRef = C76187DB2E0153D800150201 /* ClusterMap */; };
 		C769AB552E431EFE00FA810A /* Strings+Generated.swift in Sources */ = {isa = PBXBuildFile; fileRef = C769AB542E431EFE00FA810A /* Strings+Generated.swift */; };
+		C76B63732E46019D0076A540 /* proximanova_bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = C76B636F2E46019D0076A540 /* proximanova_bold.otf */; };
+		C76B63742E46019D0076A540 /* proximanova_regular.otf in Resources */ = {isa = PBXBuildFile; fileRef = C76B63712E46019D0076A540 /* proximanova_regular.otf */; };
+		C76B63752E46019D0076A540 /* proximanova_light.otf in Resources */ = {isa = PBXBuildFile; fileRef = C76B63702E46019D0076A540 /* proximanova_light.otf */; };
+		C76B63762E46019D0076A540 /* proximanova_semibold.otf in Resources */ = {isa = PBXBuildFile; fileRef = C76B63722E46019D0076A540 /* proximanova_semibold.otf */; };
+		C76B63792E4605570076A540 /* Fonts+Generated.swift in Sources */ = {isa = PBXBuildFile; fileRef = C76B63772E4604000076A540 /* Fonts+Generated.swift */; };
 		C76DA1A12DF0679F00451E63 /* LongFormModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA8C74C32C4FDE1000D28220 /* LongFormModel.swift */; };
 		C77A4A262DF2AF3100DED8B0 /* SecureInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C77A4A252DF2AF3100DED8B0 /* SecureInputView.swift */; };
 		C77AAC9D2E4463ED006713B2 /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = C77AAC9C2E4463ED006713B2 /* FirebaseAnalytics */; };
@@ -503,6 +508,11 @@
 		C75CC5D82E0D22F4008A94A0 /* LongQuestsResponse.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = LongQuestsResponse.json; sourceTree = "<group>"; };
 		C75E47732E151058006D903A /* Kondapur.gpx */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = Kondapur.gpx; sourceTree = "<group>"; };
 		C769AB542E431EFE00FA810A /* Strings+Generated.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Strings+Generated.swift"; sourceTree = "<group>"; };
+		C76B636F2E46019D0076A540 /* proximanova_bold.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = proximanova_bold.otf; sourceTree = "<group>"; };
+		C76B63702E46019D0076A540 /* proximanova_light.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = proximanova_light.otf; sourceTree = "<group>"; };
+		C76B63712E46019D0076A540 /* proximanova_regular.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = proximanova_regular.otf; sourceTree = "<group>"; };
+		C76B63722E46019D0076A540 /* proximanova_semibold.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = proximanova_semibold.otf; sourceTree = "<group>"; };
+		C76B63772E4604000076A540 /* Fonts+Generated.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Fonts+Generated.swift"; sourceTree = "<group>"; };
 		C77A4A252DF2AF3100DED8B0 /* SecureInputView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecureInputView.swift; sourceTree = "<group>"; };
 		C77AAC992E446376006713B2 /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		C77AACA52E447364006713B2 /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
@@ -1363,6 +1373,7 @@
 		C7927B542E42363000A7A34E /* Generated */ = {
 			isa = PBXGroup;
 			children = (
+				C76B63772E4604000076A540 /* Fonts+Generated.swift */,
 				C769AB542E431EFE00FA810A /* Strings+Generated.swift */,
 				C7927B532E42363000A7A34E /* XCAssets+Generated.swift */,
 			);
@@ -1446,6 +1457,10 @@
 				FA8C74D22C5998D600D28220 /* Lato-Medium.ttf */,
 				FA8C74D12C598F9D00D28220 /* Lato-Bold.ttf */,
 				FA8C74D02C598F9D00D28220 /* Lato-Regular.ttf */,
+				C76B636F2E46019D0076A540 /* proximanova_bold.otf */,
+				C76B63702E46019D0076A540 /* proximanova_light.otf */,
+				C76B63712E46019D0076A540 /* proximanova_regular.otf */,
+				C76B63722E46019D0076A540 /* proximanova_semibold.otf */,
 			);
 			path = Fonts;
 			sourceTree = "<group>";
@@ -1951,6 +1966,10 @@
 			files = (
 				973FC00A2B4D2A6D00878269 /* Localizable.strings in Resources */,
 				FAD5C4FF2AFCBE720040C61A /* LaunchScreen.storyboard in Resources */,
+				C76B63732E46019D0076A540 /* proximanova_bold.otf in Resources */,
+				C76B63742E46019D0076A540 /* proximanova_regular.otf in Resources */,
+				C76B63752E46019D0076A540 /* proximanova_light.otf in Resources */,
+				C76B63762E46019D0076A540 /* proximanova_semibold.otf in Resources */,
 				C71EB5BD2E2113500009E610 /* WMTSLayers.json in Resources */,
 				FAD5C4FC2AFCBE720040C61A /* Assets.xcassets in Resources */,
 				FAD5C4FA2AFCBE700040C61A /* Main.storyboard in Resources */,
@@ -2347,6 +2366,7 @@
 				971342792BBD691500174EBF /* MapViewControllerView.swift in Sources */,
 				C75EAD362E042D4500F75969 /* SideWalkWidth.swift in Sources */,
 				C75EAD372E042D4500F75969 /* SideWalkWidthForm.swift in Sources */,
+				C76B63792E4605570076A540 /* Fonts+Generated.swift in Sources */,
 				FA1992ED2BB1A78C003B4719 /* KeychainManager.swift in Sources */,
 				0536DD972B0BD95100B04C4B /* URLSession+Extension.swift in Sources */,
 				973FC04C2B5A5F5F00878269 /* RadioItem.swift in Sources */,

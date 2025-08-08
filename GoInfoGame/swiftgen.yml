@@ -68,3 +68,10 @@ strings:
   outputs:
     - templateName: structured-swift5
       output: GoInfoGame/Helpers/Generated/Strings+Generated.swift
+
+fonts:
+  inputs:
+    - GoInfoGame/Fonts
+  outputs:
+    - templateName: swift5
+      output: GoInfoGame/Helpers/Generated/Fonts+Generated.swift

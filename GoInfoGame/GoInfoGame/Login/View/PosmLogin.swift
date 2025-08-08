@@ -35,9 +35,9 @@ struct PosmLoginView: View {
                         Group {
                             VStack(alignment: .leading) {
                                 Text("AVIV")
-                                    .font(.custom("Lato-Bold", size: 50))
+                                    .font(FontFamily.FONTSPRINGDEMOProximaNova.bold.swiftUIFont(size: 30))
                                 Text("ScoutRoute")
-                                    .font(.custom("Lato-Bold", size: 20))
+                                    .font(FontFamily.FONTSPRINGDEMOProximaNova.bold.swiftUIFont(size: 20))
                             }
                         }
                         .foregroundColor(Asset.Colors.huskyPurple.swiftUIColor)
