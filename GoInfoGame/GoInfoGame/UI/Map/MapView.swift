@@ -243,8 +243,8 @@ struct MapView: View {
                             viewModel.checkSyncStatus()
                         }
                     })
-                    .frame(width: 20, height: 20)
                     .foregroundStyle(Asset.Colors.huskyPurple.swiftUIColor)
+                    .frame(width: 30, height: 30)
                 }
                 
                 ToolbarItem(placement: .navigationBarTrailing) {
@@ -254,9 +254,9 @@ struct MapView: View {
                         viewModel.showSatellitePicker = true
                     }) {
                         Image(systemName: "square.2.layers.3d.bottom.filled")
-                            .frame(width: 20, height: 20)
                             .foregroundStyle(Asset.Colors.huskyPurple.swiftUIColor)
                     }
+                    .frame(width: 30, height: 30)
                 }
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button(action: {
@@ -264,9 +264,9 @@ struct MapView: View {
                         showUserSettingsSheet = true
                     }) {
                         Image(systemName: "gear")
-                            .frame(width: 20, height: 20)
                             .foregroundStyle(Asset.Colors.huskyPurple.swiftUIColor)
                     }
+                    .frame(width: 30, height: 30)
                 }
             }
             .toolbarBackground(.visible, for: .navigationBar)
