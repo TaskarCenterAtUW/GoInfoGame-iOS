@@ -28,7 +28,7 @@ struct PosmLoginView: View {
                         Asset.logo.swiftUIImage
                             .resizable()
                             .aspectRatio(contentMode: .fill)
-                            .frame(width: 100, height: 100)
+                            .frame(width: 80, height: 80)
                             .padding(-10)
                             .clipShape(Circle())
                             
