@@ -13,22 +13,24 @@ struct QuestSyncButton: View {
     var action: () -> Void
 
     @State private var rotationAngle: Double = 0
+    @State private var isRotating: Bool = false
 
     var body: some View {
         Button(action: action) {
             ZStack(alignment: .topTrailing) {
-                Image("upload_sync")
-
-                if isSyncing {
-                    rotatingSyncIcon
-                        .offset(x: 5, y: -5)
-                        .onAppear {
-                            startRotating()
-                        }
-                        .onDisappear {
+                Image("sync")
+                    .rotationEffect(.degrees(rotationAngle))
+                    .animation(isRotating ? .linear(duration: 1).repeatForever(autoreverses: false) : .default , value: isRotating)
+                    .onChange(of: isSyncing) { newValue in
+                        if newValue {
+                            rotationAngle = 360
+                            isRotating = true
+                        } else {
                             rotationAngle = 0
+                            isRotating = false
                         }
-                } else if badgeCount > 0 {
+                    }
+                if badgeCount > 0 {
                     Text("\(badgeCount)")
                         .font(.caption2)
                         .padding(5)
@@ -40,22 +42,6 @@ struct QuestSyncButton: View {
             }
         }
         .buttonStyle(.plain)
-        .onChange(of: isSyncing) { newValue in
-            if newValue {
-                startRotating()
-            } else {
-                rotationAngle = 0
-            }
-        }
-    }
-
-    var rotatingSyncIcon: some View {
-        Image("sync")
-            .resizable()
-            .scaledToFit()
-            .frame(width: 12, height: 12)
-            .foregroundStyle(.red)
-            .rotationEffect(.degrees(rotationAngle), anchor: .center)
     }
 
     private func startRotating() {
@@ -67,7 +53,7 @@ struct QuestSyncButton: View {
 }
 
 #Preview {
-    QuestSyncButton(badgeCount: 01, isSyncing: true) {
+    QuestSyncButton(badgeCount: 0 , isSyncing: true) {
 
     }
     .foregroundStyle(Color.green)
