@@ -366,10 +366,10 @@ struct MapView: View {
                             }
                             .frame(maxWidth: .infinity)
                             .padding()
-                            .background(Color.blue.opacity(0.2))
+                            .background(Asset.Colors.huskyPurple.swiftUIColor)
                             .cornerRadius(12)
                         }
-                        .foregroundColor(.blue)
+                        .foregroundColor(.white)
 
                         Button(action: {
                             showMapLongPressedSheet = false
@@ -384,10 +384,10 @@ struct MapView: View {
                             }
                             .frame(maxWidth: .infinity)
                             .padding()
-                            .background(Color.green.opacity(0.2))
+                            .background(Asset.Colors.accentPink.swiftUIColor)
                             .cornerRadius(12)
                         }
-                        .foregroundColor(.green)
+                        .foregroundColor(.white)
                     }
                     .padding()
                     .background(Color(.systemBackground))
