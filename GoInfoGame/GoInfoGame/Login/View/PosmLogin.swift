@@ -15,8 +15,6 @@ struct PosmLoginView: View {
     @State private var isShowingAlert = false
     @State private var shouldLogin = false
     
-    @State private var shouldShowAlert = false
-    
     @State private var selectedEnvironment: APIEnvironment = .production
     @State private var showAlert = false
             
@@ -28,16 +26,16 @@ struct PosmLoginView: View {
                         Asset.logo.swiftUIImage
                             .resizable()
                             .aspectRatio(contentMode: .fill)
-                            .frame(width: 100, height: 100)
+                            .frame(width: 80, height: 80)
                             .padding(-10)
                             .clipShape(Circle())
                             
                         Group {
                             VStack(alignment: .leading) {
                                 Text("AVIV")
-                                    .font(.custom("Lato-Bold", size: 50))
+                                    .font(FontFamily.FONTSPRINGDEMOProximaNova.bold.swiftUIFont(size: 30))
                                 Text("ScoutRoute")
-                                    .font(.custom("Lato-Bold", size: 20))
+                                    .font(FontFamily.FONTSPRINGDEMOProximaNova.bold.swiftUIFont(size: 20))
                             }
                         }
                         .foregroundColor(Asset.Colors.huskyPurple.swiftUIColor)

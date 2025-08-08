@@ -115,7 +115,7 @@ struct MapView: View {
                             .resizable()
                             .scaledToFit()
                             .frame(width: 40, height: 40)
-                            .foregroundColor(.green)
+                            .foregroundColor(Asset.Colors.accentPink.swiftUIColor)
                         
                         Text(alertMessage)
                             .foregroundColor(.white)
@@ -123,7 +123,7 @@ struct MapView: View {
                             .multilineTextAlignment(.center)
                             .padding()
                             .frame(maxWidth: .infinity) // stretch text inside fixed card
-                            .background(Color.orange)
+                            .background(Asset.Colors.huskyPurple.swiftUIColor)
                             .cornerRadius(12)
                     }
                     .padding(24)
@@ -222,18 +222,29 @@ struct MapView: View {
             .navigationBarHidden(isPresented)
             .navigationBarItems(leading: EmptyView())
             .toolbar {
+                ToolbarItem(placement: .topBarLeading) {
+                    Text(selectedWorkspace?.title ?? "")
+                        .font(.custom("Lato-Bold", size: 16))
+                        .foregroundStyle(Asset.Colors.huskyPurple.swiftUIColor)
+                }
 
                 ToolbarItem(placement: .navigationBarTrailing) {
                     QuestSyncButton(badgeCount: viewModel.syncFailedElementsCount, isSyncing: isSyncing, action: {
                         debugPrint("Sync taped")
+                        guard viewModel.syncFailedElementsCount > 0 else {
+                            alertIcon = "info.bubble"
+                            alertMessage = "No elements to sync"
+                            showAlert = true
+                            return
+                        }
                         isSyncing = true
                         DatasyncManager.shared.syncDataToOSM(exclude_gig_tags: false) { _ in
                             isSyncing = false
                             viewModel.checkSyncStatus()
                         }
                     })
-                    .frame(width: 20, height: 20)
                     .foregroundStyle(Asset.Colors.huskyPurple.swiftUIColor)
+                    .frame(width: 30, height: 30)
                 }
                 
                 ToolbarItem(placement: .navigationBarTrailing) {
@@ -243,9 +254,9 @@ struct MapView: View {
                         viewModel.showSatellitePicker = true
                     }) {
                         Image(systemName: "square.2.layers.3d.bottom.filled")
-                            .frame(width: 20, height: 20)
                             .foregroundStyle(Asset.Colors.huskyPurple.swiftUIColor)
                     }
+                    .frame(width: 30, height: 30)
                 }
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button(action: {
@@ -253,9 +264,9 @@ struct MapView: View {
                         showUserSettingsSheet = true
                     }) {
                         Image(systemName: "gear")
-                            .frame(width: 20, height: 20)
                             .foregroundStyle(Asset.Colors.huskyPurple.swiftUIColor)
                     }
+                    .frame(width: 30, height: 30)
                 }
             }
             .toolbarBackground(.visible, for: .navigationBar)
@@ -355,10 +366,10 @@ struct MapView: View {
                             }
                             .frame(maxWidth: .infinity)
                             .padding()
-                            .background(Color.blue.opacity(0.2))
+                            .background(Asset.Colors.huskyPurple.swiftUIColor)
                             .cornerRadius(12)
                         }
-                        .foregroundColor(.blue)
+                        .foregroundColor(.white)
 
                         Button(action: {
                             showMapLongPressedSheet = false
@@ -373,10 +384,10 @@ struct MapView: View {
                             }
                             .frame(maxWidth: .infinity)
                             .padding()
-                            .background(Color.green.opacity(0.2))
+                            .background(Asset.Colors.accentPink.swiftUIColor)
                             .cornerRadius(12)
                         }
-                        .foregroundColor(.green)
+                        .foregroundColor(.white)
                     }
                     .padding()
                     .background(Color(.systemBackground))
@@ -449,8 +460,6 @@ struct MapView: View {
                 viewModel.hideQuest(elementId: elementId, elementName: elementName)
             case .undoDone(let changesetId):
                 shouldShowPolyline = false
-                showAlert = true
-                alertMessage = "Changes reverted"
                 viewModel.refreshMapAfterUndoSumbit(storedChangesetId: changesetId)
             case .syncBackground(let elementID):
                 shouldShowPolyline = false

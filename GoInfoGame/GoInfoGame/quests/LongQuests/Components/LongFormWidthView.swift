@@ -64,7 +64,7 @@ struct LongFormWidthView: View {
                             isConfirmAlert = true
                         } label: {
                             Image(systemName: "checkmark.circle.fill")
-                                .font(Font.system(size: 40))
+                                .font(.custom("Lato-Bold", size: 40))
                                 .foregroundColor(.orange)
                         }
                     }
