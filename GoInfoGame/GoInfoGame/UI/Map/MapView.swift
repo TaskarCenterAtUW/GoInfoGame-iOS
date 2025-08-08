@@ -115,7 +115,7 @@ struct MapView: View {
                             .resizable()
                             .scaledToFit()
                             .frame(width: 40, height: 40)
-                            .foregroundColor(.green)
+                            .foregroundColor(Asset.Colors.accentPink.swiftUIColor)
                         
                         Text(alertMessage)
                             .foregroundColor(.white)
@@ -123,7 +123,7 @@ struct MapView: View {
                             .multilineTextAlignment(.center)
                             .padding()
                             .frame(maxWidth: .infinity) // stretch text inside fixed card
-                            .background(Color.orange)
+                            .background(Asset.Colors.huskyPurple.swiftUIColor)
                             .cornerRadius(12)
                     }
                     .padding(24)
