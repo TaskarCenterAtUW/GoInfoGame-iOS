@@ -226,6 +226,12 @@ struct MapView: View {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     QuestSyncButton(badgeCount: viewModel.syncFailedElementsCount, isSyncing: isSyncing, action: {
                         debugPrint("Sync taped")
+                        guard viewModel.syncFailedElementsCount > 0 else {
+                            alertIcon = "info.bubble"
+                            alertMessage = "No elements to sync"
+                            showAlert = true
+                            return
+                        }
                         isSyncing = true
                         DatasyncManager.shared.syncDataToOSM(exclude_gig_tags: false) { _ in
                             isSyncing = false
