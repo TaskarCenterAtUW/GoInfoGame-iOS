@@ -164,6 +164,7 @@
 		C76B63752E46019D0076A540 /* proximanova_light.otf in Resources */ = {isa = PBXBuildFile; fileRef = C76B63702E46019D0076A540 /* proximanova_light.otf */; };
 		C76B63762E46019D0076A540 /* proximanova_semibold.otf in Resources */ = {isa = PBXBuildFile; fileRef = C76B63722E46019D0076A540 /* proximanova_semibold.otf */; };
 		C76B63792E4605570076A540 /* Fonts+Generated.swift in Sources */ = {isa = PBXBuildFile; fileRef = C76B63772E4604000076A540 /* Fonts+Generated.swift */; };
+		C76B637F2E4625D30076A540 /* FirebasePerformance in Frameworks */ = {isa = PBXBuildFile; productRef = C76B637E2E4625D30076A540 /* FirebasePerformance */; };
 		C76DA1A12DF0679F00451E63 /* LongFormModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA8C74C32C4FDE1000D28220 /* LongFormModel.swift */; };
 		C77A4A262DF2AF3100DED8B0 /* SecureInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C77A4A252DF2AF3100DED8B0 /* SecureInputView.swift */; };
 		C77AAC9D2E4463ED006713B2 /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = C77AAC9C2E4463ED006713B2 /* FirebaseAnalytics */; };
@@ -639,6 +640,7 @@
 			files = (
 				C77AAC9D2E4463ED006713B2 /* FirebaseAnalytics in Frameworks */,
 				C75666D02E0D068900D36C41 /* OHHTTPStubs in Frameworks */,
+				C76B637F2E4625D30076A540 /* FirebasePerformance in Frameworks */,
 				C75666D22E0D068900D36C41 /* OHHTTPStubsSwift in Frameworks */,
 				97F2FA8A2B0630A3000B9726 /* Pods_GoInfoGame.framework in Frameworks */,
 				A4AD13272B5E90BD0041A881 /* osmparser.framework in Frameworks */,
@@ -2917,6 +2919,25 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-l\"c++\"",
+					"-l\"compression\"",
+					"-l\"z\"",
+					"-framework",
+					"\"HTMLEntities\"",
+					"-framework",
+					"\"Realm\"",
+					"-framework",
+					"\"RealmSwift\"",
+					"-framework",
+					"\"Security\"",
+					"-weak_framework",
+					"\"SwiftUI\"",
+					"-weak_framework",
+					"\"UIKit\"",
+					"-ObjC",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.vindago.goinfogame;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -2962,6 +2983,25 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-l\"c++\"",
+					"-l\"compression\"",
+					"-l\"z\"",
+					"-framework",
+					"\"HTMLEntities\"",
+					"-framework",
+					"\"Realm\"",
+					"-framework",
+					"\"RealmSwift\"",
+					"-framework",
+					"\"Security\"",
+					"-weak_framework",
+					"\"SwiftUI\"",
+					"-weak_framework",
+					"\"UIKit\"",
+					"-ObjC",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = tech.opentoall.aviv.scoutroute;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -3174,6 +3214,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = C76187DA2E0153D800150201 /* XCRemoteSwiftPackageReference "ClusterMap" */;
 			productName = ClusterMap;
+		};
+		C76B637E2E4625D30076A540 /* FirebasePerformance */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = C77AAC9B2E4463ED006713B2 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebasePerformance;
 		};
 		C77AAC9C2E4463ED006713B2 /* FirebaseAnalytics */ = {
 			isa = XCSwiftPackageProductDependency;
