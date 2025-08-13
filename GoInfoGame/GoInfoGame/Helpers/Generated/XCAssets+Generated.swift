@@ -26,14 +26,15 @@ internal typealias AssetImageTypeAlias = ImageAsset.Image
 internal enum Asset {
   internal static let accentColor = ColorAsset(name: "AccentColor")
   internal enum Colors {
+    internal static let _42526ETextFieldText = ColorAsset(name: "42526E Text field text")
+    internal static let _83879BTextFiledTitle = ColorAsset(name: "83879B Text filed title")
     internal static let accentLavender = ColorAsset(name: "Accent Lavender")
     internal static let accentPink = ColorAsset(name: "Accent Pink")
-    internal static let borderColorGrayD5DBE6 = ColorAsset(name: "Border Color gray D5DBE6")
+    internal static let d5DBE6BorderColorGray = ColorAsset(name: "D5DBE6 Border Color gray")
+    internal static let e5E5E5GrayBackgroudn = ColorAsset(name: "E5E5E5  Gray backgroudn")
+    internal static let e7E3EELightPurpuleBg = ColorAsset(name: "E7E3EE Light Purpule bg")
     internal static let huskyGold = ColorAsset(name: "Husky Gold")
     internal static let huskyPurple = ColorAsset(name: "Husky Purple")
-    internal static let lightPurpuleBgE7E3EE = ColorAsset(name: "Light Purpule bg E7E3EE")
-    internal static let textFieldText42526E = ColorAsset(name: "Text field text 42526E")
-    internal static let textFiledTitle83879B = ColorAsset(name: "Text filed title 83879B")
     internal static let theme = ColorAsset(name: "theme")
   }
   internal enum QuestIcons {

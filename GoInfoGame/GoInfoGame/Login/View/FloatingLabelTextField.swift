@@ -16,13 +16,13 @@ struct FloatingLabelTextField: View {
         ZStack(alignment: .leading) {
             // Border box
             RoundedRectangle(cornerRadius: 6)
-                .stroke(Asset.Colors.borderColorGrayD5DBE6.swiftUIColor, lineWidth: 1)
+                .stroke(Asset.Colors.d5DBE6BorderColorGray.swiftUIColor, lineWidth: 1)
                 .frame(height: 50)
             
             if !text.isEmpty {
                 // Floating label
                 Text(title)
-                    .foregroundColor(Asset.Colors.textFiledTitle83879B.swiftUIColor)
+                    .foregroundColor(Asset.Colors._83879BTextFiledTitle.swiftUIColor)
                     .background(.white)
                     .font(FontFamily.Lato.regular.swiftUIFont(fixedSize: 16))
                     .padding(.horizontal, 4)
@@ -40,7 +40,7 @@ struct FloatingLabelTextField: View {
                     .padding(.horizontal, 8)
                     .frame(height: 50)
                     .font(FontFamily.Lato.bold.swiftUIFont(fixedSize: 16))
-                    .foregroundStyle(Asset.Colors.textFieldText42526E.swiftUIColor)
+                    .foregroundStyle(Asset.Colors._42526ETextFieldText.swiftUIColor)
             }
         }
     }

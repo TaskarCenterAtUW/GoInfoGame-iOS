@@ -23,7 +23,7 @@ struct PosmLoginView: View {
             ZStack {
                 VStack {
                     ZStack {
-                        Asset.Colors.lightPurpuleBgE7E3EE.swiftUIColor
+                        Asset.Colors.e7E3EELightPurpuleBg.swiftUIColor
                             .ignoresSafeArea(edges: .top)
                         
                         HStack {
@@ -181,7 +181,7 @@ struct PosmLoginView: View {
         let build = Bundle.main.infoDictionary?["CFBundleVersion"] as? String ?? "N/A"
         return Text("Version \(version) (\(build))")
             .font(FontFamily.Lato.medium.swiftUIFont(size: 16))
-            .foregroundColor(Asset.Colors.textFiledTitle83879B.swiftUIColor)
+            .foregroundColor(Asset.Colors._83879BTextFiledTitle.swiftUIColor)
     }
 }
 
