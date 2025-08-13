@@ -21,12 +21,14 @@ class InitialViewModel: ObservableObject {
     
     @Published var showBiometricIDError: Bool = false
     @Published var biometricIDErrorMessage: String?
+    private(set) var currentLocation: CLLocationCoordinate2D?
 
     
     init() {
         locationManagerDelegate.locationUpdateHandler = { [weak self] location in
             guard let self = self else { return }
-            fetchWorkspacesList()
+            self.currentLocation = location
+            fetchWorkspacesList(location: location)
             locationManagerDelegate.stopUpdatingLocation()
         }
         
@@ -35,10 +37,10 @@ class InitialViewModel: ObservableObject {
     }
 
     // fetch workspaces list
-    func fetchWorkspacesList() {
+    func fetchWorkspacesList(location: CLLocationCoordinate2D) {
         self.isLoading = true
         if let accessToken = KeychainManager.load(key: "accessToken") {
-            ApiManager.shared.performRequest(to: .fetchWorkspaceList(accessToken), setupType: .workspace, modelType: [Workspace].self) { result in
+            ApiManager.shared.performRequest(to: .fetchWorkspaceList(location, 20000, true, accessToken), setupType: .workspace, modelType: [Workspace].self) { result in
             
             DispatchQueue.main.async { [weak self] in
                 self?.isLoading = false

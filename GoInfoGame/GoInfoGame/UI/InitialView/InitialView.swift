@@ -122,7 +122,9 @@ struct WorkspacesListView: View {
                         .padding(.top, 20)
                     Spacer()
                     Button {
-                        viewModel.fetchWorkspacesList()
+                        if let location = viewModel.currentLocation {
+                            viewModel.fetchWorkspacesList(location: location)
+                        }
                     } label: {
                         Group {
                             VStack {
