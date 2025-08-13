@@ -21,37 +21,42 @@ struct PosmLoginView: View {
     var body: some View {
         NavigationStack {
             ZStack {
-                VStack(spacing: 20) {
-                    HStack {
-                        Asset.logo.swiftUIImage
-                            .resizable()
-                            .aspectRatio(contentMode: .fill)
-                            .frame(width: 80, height: 80)
-                            .padding(-10)
-                            .clipShape(Circle())
-                            
-                        Group {
-                            VStack(alignment: .leading) {
-                                Text("AVIV")
-                                    .font(FontFamily.FONTSPRINGDEMOProximaNova.bold.swiftUIFont(size: 30))
-                                Text("ScoutRoute")
-                                    .font(FontFamily.FONTSPRINGDEMOProximaNova.bold.swiftUIFont(size: 20))
+                VStack {
+                    ZStack {
+                        Asset.Colors.lightPurpuleBgE7E3EE.swiftUIColor
+                            .ignoresSafeArea(edges: .top)
+                        
+                        HStack {
+                            ZStack {
+                                Asset.logo.swiftUIImage
+                                    .resizable()
+                                    .aspectRatio(contentMode: .fill)
                             }
+                            .clipShape(Circle())
+                            .frame(width: 95, height: 95)
+                            
+                            Group {
+                                VStack(alignment: .leading) {
+                                    Text("AVIV")
+                                        .font(FontFamily.Lato.regular.swiftUIFont(size: 52))
+                                    Text("ScoutRoute")
+                                        .font(FontFamily.Lato.medium.swiftUIFont(size: 24))
+                                }
+                            }
+                            .foregroundColor(Asset.Colors.huskyPurple.swiftUIColor)
                         }
-                        .foregroundColor(Asset.Colors.huskyPurple.swiftUIColor)
+                        .padding([.bottom], 50)
                     }
-                    .padding([.bottom], 50)
+                    .frame(height: 250)
                                     
-                    TextField("Username", text: $viewModel.username)
-                        .padding()
-                        .background(Color(.systemGray6))
+                    FloatingLabelTextField(title: "Username", text: $viewModel.username)
+                        .padding(10)
                         .cornerRadius(10)
                         .padding(.horizontal, 40)
                         .textInputAutocapitalization(.never)
                     
-                    SecureInputView("Password", text: $viewModel.password)
-                        .padding()
-                        .background(Color(.systemGray6))
+                    FloatingLabelTextField(title: "Password", text: $viewModel.password, isSecure:  true)
+                        .padding(10)
                         .cornerRadius(10)
                         .padding(.horizontal, 40)
                     #if DEBUG
@@ -82,15 +87,15 @@ struct PosmLoginView: View {
                         viewModel.performLogin(for: selectedEnvironment)
                     }) {
                         Text("Login")
-                            .font(.custom("Lato-Bold", size: 20))
+                            .font(FontFamily.Lato.bold.swiftUIFont(size: 20))
                             .foregroundColor(Color.white)
+                            .frame(maxWidth: .infinity)
                             .padding()
                             .background(Asset.Colors.huskyPurple.swiftUIColor)
                             .cornerRadius(25)
                     }
                     .padding(.top, 20)
-                    
-                    appVersionText
+                    .padding(.horizontal, 40)
                     
                     if SessionManager.shared.canUseBiometricLogin(for: selectedEnvironment) {
                         Button(action: {
@@ -119,18 +124,23 @@ struct PosmLoginView: View {
                             }
                         }) {
                             Label(BiometricAuthManager.biometricLabelText(), systemImage: BiometricAuthManager.biometricIcon())
-                                .font(.custom("Lato-Bold", size: 18))
+                                .font(FontFamily.Lato.bold.swiftUIFont(fixedSize: 18))
                                 .foregroundColor(.blue)
                         }
+                        .padding(.top, 10)
                     }
                     
                     if viewModel.hasLoginFailed {
                         Text(viewModel.loginFailedMessage ??  "Invalid Credentials")
                             .foregroundColor(.red)
                             .padding(.top, 10)
+                            .font(FontFamily.Lato.medium.swiftUIFont(fixedSize: 18))
                     }
+                    
+                    Spacer()
+                    appVersionText
                 }
-                .padding()
+                .padding([.top], 0)
                 
                 if viewModel.isLoading {
                     ActivityView(activityText: "Loading...")
@@ -170,6 +180,8 @@ struct PosmLoginView: View {
         let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "N/A"
         let build = Bundle.main.infoDictionary?["CFBundleVersion"] as? String ?? "N/A"
         return Text("Version \(version) (\(build))")
+            .font(FontFamily.Lato.medium.swiftUIFont(size: 16))
+            .foregroundColor(Asset.Colors.textFiledTitle83879B.swiftUIColor)
     }
 }
 

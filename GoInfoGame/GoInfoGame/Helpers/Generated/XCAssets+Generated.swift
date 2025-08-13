@@ -28,8 +28,12 @@ internal enum Asset {
   internal enum Colors {
     internal static let accentLavender = ColorAsset(name: "Accent Lavender")
     internal static let accentPink = ColorAsset(name: "Accent Pink")
+    internal static let borderColorGrayD5DBE6 = ColorAsset(name: "Border Color gray D5DBE6")
     internal static let huskyGold = ColorAsset(name: "Husky Gold")
     internal static let huskyPurple = ColorAsset(name: "Husky Purple")
+    internal static let lightPurpuleBgE7E3EE = ColorAsset(name: "Light Purpule bg E7E3EE")
+    internal static let textFieldText42526E = ColorAsset(name: "Text field text 42526E")
+    internal static let textFiledTitle83879B = ColorAsset(name: "Text filed title 83879B")
     internal static let theme = ColorAsset(name: "theme")
   }
   internal enum QuestIcons {
