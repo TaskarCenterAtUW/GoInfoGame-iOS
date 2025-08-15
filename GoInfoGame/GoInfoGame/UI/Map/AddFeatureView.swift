@@ -120,7 +120,7 @@ struct AddFeatureView: View {
                                     .padding()
                                     .frame(width: 155, height: 46)
                                     .background(selectedFeature?.name != nil ? Asset.Colors.huskyPurple.swiftUIColor : Color.gray)
-                                    .cornerRadius(20)
+                                    .cornerRadius(23)
                             }
                         }
                         .disabled(selectedFeature?.name == nil)

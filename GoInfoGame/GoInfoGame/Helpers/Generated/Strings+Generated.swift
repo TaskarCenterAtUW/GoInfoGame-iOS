@@ -15,6 +15,10 @@ internal enum L10n {
     internal static let appName = L10n.tr("Localizable", "App Name", fallback: "AVIV ScoutRoute")
     /// Can't Say
     internal static let cantSay = L10n.tr("Localizable", "cant_say", fallback: "Can't Say")
+    /// Compose a note
+    internal static let composeANote = L10n.tr("Localizable", "Compose a note", fallback: "Compose a note")
+    /// Compose message
+    internal static let composeMessage = L10n.tr("Localizable", "Compose message", fallback: "Compose message")
     /// Don't show again for this session
     internal static let dontShowAgain = L10n.tr("Localizable", "dont_show_again", fallback: "Don't show again for this session")
     /// My Profile
