@@ -22,10 +22,10 @@ struct FloatingActionButtonStack: View {
                     }) {
                         Image(systemName: "slider.horizontal.3")
                             .font(.system(size: 25))
-                            .foregroundColor(.white)
-                            .frame(width: 40, height: 40)
-                            .background(Asset.Colors.huskyPurple.swiftUIColor)
-                            .cornerRadius(30)
+                            .foregroundColor(Asset.Colors.huskyPurple.swiftUIColor)
+                            .frame(width: 54, height: 54)
+                            .background(.white)
+                            .clipShape(Circle())
                             .shadow(radius: 10)
                           
                     }

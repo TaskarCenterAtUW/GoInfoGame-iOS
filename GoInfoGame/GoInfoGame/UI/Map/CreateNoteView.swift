@@ -9,7 +9,7 @@ import SwiftUI
 import CoreLocation
 
 struct CreateNoteView: View {
-    
+    @Environment(\.presentationMode) var presentationMode
     @State var coordinates: CLLocationCoordinate2D
     @State private var noteText = ""
     @Binding var showNotesBox: Bool
@@ -21,13 +21,43 @@ struct CreateNoteView: View {
     var body: some View {
         ZStack {
             VStack(alignment: .leading, spacing: 10) {
-                TextEditor(text: $noteText)
-                    .padding(10)
-                    .background(Color(.systemGray6))
-                    .cornerRadius(8)
-                    .padding(.horizontal, 20)
+                HStack {
+                    Text(L10n.Localizable.composeANote)
+                        .font(FontFamily.Lato.bold.swiftUIFont(fixedSize: 18))
+                        .foregroundStyle(Asset.Colors._42526ETextFieldText.swiftUIColor)
+                        .padding()
+                    
+                    Spacer()
+                    
+                    Button {
+                        presentationMode.wrappedValue.dismiss()
+                    } label: {
+                        Image(systemName: "xmark.circle")
+                            .font(FontFamily.Lato.bold.swiftUIFont(size: 24))
+                            .foregroundStyle(Asset.Colors._83879BTextFiledTitle.swiftUIColor)
+                            .padding()
+                    }
+
+                }
+                
+                ZStack(alignment: .topLeading) {
+                    TextEditor(text: $noteText)
+                        .padding(2)
+                        .background(Asset.Colors.f5F5F5LightGrayBackground.swiftUIColor)
+                        .cornerRadius(8)
+                        .padding()
+                    
+                    if noteText.isEmpty {
+                        Text(L10n.Localizable.composeMessage)
+                            .foregroundColor(Asset.Colors._83879BTextFiledTitle.swiftUIColor)
+                            .padding()
+                            .padding(.top, 10)
+                            .padding(.leading, 5)
+                    }
+                }
                 
                 HStack {
+                    Spacer()
                     Button(action: {
                         Task {
                             do {
@@ -41,27 +71,16 @@ struct CreateNoteView: View {
                             ProgressView()
                         } else {
                             Text("Submit")
-                                .font(.custom("Lato-Bold", size: 16))
+                                .font(FontFamily.Lato.bold.swiftUIFont(size: 20))
                                 .foregroundColor(.white)
                                 .padding()
-                                .frame(maxWidth: .infinity)
+                                .frame(width: 156, height: 46)
                                 .background(noteText != "" ? Asset.Colors.huskyPurple.swiftUIColor : Color.gray)
-                                .cornerRadius(9)
+                                .cornerRadius(23)
                         }
                     }
                     .disabled(noteText == "")
-        
-                    Button (action: {
-                        showNotesBox = false
-                    }) {
-                        Text("Cancel")
-                            .font(.custom("Lato-Bold", size: 16))
-                            .foregroundColor(.white)
-                            .padding()
-                            .frame(maxWidth: .infinity)
-                            .background(Asset.Colors.accentPink.swiftUIColor)
-                            .cornerRadius(9)
-                    }
+                    Spacer()
                 }
                 .padding(.horizontal, 20)
             }

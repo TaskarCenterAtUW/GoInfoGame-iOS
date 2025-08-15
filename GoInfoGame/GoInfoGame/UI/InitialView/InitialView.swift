@@ -19,16 +19,18 @@ struct InitialView: View {
                 VStack {
                     HStack {
                         NavigationLink(destination: UserProfileView()) {
-                            Image(systemName: "person.crop.circle.fill")
+                            Image(systemName: "person.fill")
                                 .resizable()
-                                .frame(width: 27, height: 27)
-                                .padding([.leading], 18)
-                                .foregroundStyle(Asset.Colors.huskyPurple.swiftUIColor)
-                            
+                                .padding(8)
+                                .foregroundStyle(Color.white)
+                                .background {
+                                    LinearGradient(gradient: Gradient(colors: [Asset.Colors._8F57DEProfileIcon.swiftUIColor, Asset.Colors._2D0369ProfileIcon.swiftUIColor,]), startPoint: .top, endPoint: .bottom)
+                                }
+                                .frame(width: 34, height: 34)
+                                .clipShape(Circle())
                         }
                         Spacer()
                     }
-                    .frame(maxWidth: .infinity, alignment: .leading)
                     
                     Spacer()
                     
@@ -122,7 +124,9 @@ struct WorkspacesListView: View {
                         .padding(.top, 20)
                     Spacer()
                     Button {
-                        viewModel.fetchWorkspacesList()
+                        if let location = viewModel.currentLocation {
+                            viewModel.fetchWorkspacesList(location: location)
+                        }
                     } label: {
                         Group {
                             VStack {

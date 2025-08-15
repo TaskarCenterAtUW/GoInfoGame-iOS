@@ -26,6 +26,8 @@ struct SecureInputView: View {
                     TextField(placeholder, text: $text)
                 }
             }.padding(.trailing, 32)
+                .font(FontFamily.Lato.bold.swiftUIFont(size: 16))
+                .foregroundStyle(Asset.Colors._42526ETextFieldText.swiftUIColor)
 
             Button(action: {
                 isSecured.toggle()

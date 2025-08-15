@@ -16,6 +16,7 @@ struct FeatureDetail : Identifiable{
 }
 
 struct AddFeatureView: View {
+    @Environment(\.presentationMode) var presentationMode
     @State var tappedCoordinate: CLLocationCoordinate2D
     @Binding var isPresented: Bool
     @State private var selectedFeature: FeatureDetail? = nil
@@ -38,10 +39,26 @@ struct AddFeatureView: View {
 
     var body: some View {
             ZStack {
-                VStack {
+                VStack(alignment: .leading) {
                     
-                    Text("Select a feature to add")
-                        .padding([.top], 15)
+                    HStack {
+                        Text("Select a feature to add")
+                            .font(FontFamily.Lato.bold.swiftUIFont(fixedSize: 18))
+                            .foregroundStyle(Asset.Colors._42526ETextFieldText.swiftUIColor)
+                            .padding()
+                        
+                        Spacer()
+                        
+                        Button {
+                            presentationMode.wrappedValue.dismiss()
+                        } label: {
+                            Image(systemName: "xmark.circle")
+                                .font(FontFamily.Lato.bold.swiftUIFont(size: 24))
+                                .foregroundStyle(Asset.Colors._83879BTextFiledTitle.swiftUIColor)
+                                .padding()
+                        }
+
+                    }
                     
                     ScrollView {
                         VStack {
@@ -49,59 +66,68 @@ struct AddFeatureView: View {
                                 Button(action: {
                                     selectedFeature = feature
                                 }) {
-                                    HStack {
+                                    HStack(spacing: 5) {
                                         VStack(alignment: .leading) {
                                             Text(feature.name)
                                                 .frame(maxWidth: .infinity, alignment: .leading)
-                                                .foregroundColor(.primary)
-                                                .font(.custom("Lato-Medium", size: 15)) // Adjust size as needed
+                                                .foregroundColor(Asset.Colors._42526ETextFieldText.swiftUIColor)
+                                                .font(FontFamily.Lato.bold.swiftUIFont(size: 16))
                                             
                                             Text(feature.description)
                                                 .frame(maxWidth: .infinity, alignment: .leading)
-                                                .foregroundColor(Color.gray)
-                                                .font(.custom("Lato-Regular", size: 12))
+                                                .foregroundColor(Asset.Colors._83879BTextFiledTitle.swiftUIColor)
+                                                .font(FontFamily.Lato.regular.swiftUIFont(size: 12))
                                                 .multilineTextAlignment(.leading)
                                         }
                                         
                                         if selectedFeature?.name == feature.name {
                                             Image(systemName: "checkmark.circle.fill")
-                                                .foregroundColor(.blue)
+                                                .foregroundColor(Asset.Colors.d74BA827Pink.swiftUIColor)
+                                        } else {
+                                            Image(systemName: "circle")
+                                                .foregroundColor(Asset.Colors._83879BTextFiledTitle.swiftUIColor)
                                         }
                                     }
-                                    .padding([.bottom, .leading, .trailing], 10)
-                                    .padding([.bottom,.top], 4)
-                                    .background(selectedFeature?.name == feature.name ? Color.blue.opacity(0.2) : Color.clear)
-                                    .cornerRadius(10)
+                                    .padding()
+                                    .background(selectedFeature?.name == feature.name ? Asset.Colors.d74BA827Pink.swiftUIColor.opacity(0.1) : Color.clear)
+                                    .border(Asset.Colors.ddddddLine.swiftUIColor, width: 1)
+                                    .cornerRadius(5)
                                 }
                             }
                         }
+                        .padding()
                     }
                     
                     Spacer()
                     
-                    Button(action: {
-                        Task {
-                            do {
-                                await addFeature()
-                            } catch {
-                                print("Error adding feature: \(error)")
+                    HStack {
+                        Spacer()
+                        Button(action: {
+                            Task {
+                                do {
+                                    await addFeature()
+                                } catch {
+                                    print("Error adding feature: \(error)")
+                                }
+                            }
+                        }) {
+                            if isLoading {
+                                ProgressView()
+                            } else {
+                                Text("Add feature")
+                                    .font(FontFamily.Lato.bold.swiftUIFont(size: 20))
+                                    .foregroundColor(.white)
+                                    .padding()
+                                    .frame(width: 155, height: 46)
+                                    .background(selectedFeature?.name != nil ? Asset.Colors.huskyPurple.swiftUIColor : Color.gray)
+                                    .cornerRadius(23)
                             }
                         }
-                    }) {
-                        if isLoading {
-                            ProgressView()
-                        } else {
-                            Text("Add feature")
-                                .font(.custom("Lato-Bold", size: 16))
-                                .foregroundColor(.white)
-                                .padding()
-                                .frame(width: 200, height: 40)
-                                .background(selectedFeature?.name != nil ? Asset.Colors.huskyPurple.swiftUIColor : Color.gray)
-                                .cornerRadius(20)
-                        }
+                        .disabled(selectedFeature?.name == nil)
+                        .padding()
+                        
+                        Spacer()
                     }
-                    .disabled(selectedFeature?.name == nil)
-                    .padding()
                 }
             }
     }

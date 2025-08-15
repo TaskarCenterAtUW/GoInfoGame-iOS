@@ -43,14 +43,15 @@ struct UndoButton: View {
                 }) {
                     ZStack {
                         Circle()
-                            .fill(Asset.Colors.huskyPurple.swiftUIColor)
-                            .frame(width: 40, height: 40)
+                            .fill(.white)
+                            .frame(width: 54, height: 54)
                             .shadow(radius: 5)
 
                         Image(systemName: "arrow.uturn.backward")
                             .font(.system(size: 28))
-                            .foregroundColor(.white)
+                            .foregroundColor(Asset.Colors.huskyPurple.swiftUIColor)
                     }
+                    .shadow(radius: 10)
                 }
                 .padding(.leading, 12)
                 .padding(.top, 20)

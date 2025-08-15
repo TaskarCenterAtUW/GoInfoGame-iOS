@@ -9,6 +9,7 @@ import SwiftUI
 import LocalAuthentication
 
 struct UserProfileView: View {
+    @Environment(\.dismiss) var dismiss
 
     @StateObject private var viewModel = UserProfileViewModel()
     
@@ -21,42 +22,82 @@ struct UserProfileView: View {
     var body: some View {
         Group {
             ZStack {
+                Asset.Colors.f5F5F5LightGrayBackground.swiftUIColor
                 VStack {
-                    Text("My Profile")
-                        .font(.custom("Lato-Bold", size: 25))
-                        .padding(.bottom, 50)
-                        .foregroundStyle(Asset.Colors.huskyPurple.swiftUIColor)
-                    HStack(alignment: .center, spacing: 16) {
-                        profileImage
+                    ZStack {
+                        Asset.Colors.e7E3EELightPurpuleBg.swiftUIColor
+                            .edgesIgnoringSafeArea(.top)
+                            .padding(.top, 0)
                         
-                        VStack(alignment: .leading, spacing: 4) {
-                            Text(userFullName())
-                                .font(.custom("Lato-Bold", size: 20))
-                            Text(viewModel.user?.email ?? "")
-                                .font(.custom("Lato-Regular", size: 18))
-                        }
-                        
-                        Spacer()
-                    }
-                    .padding([.bottom], 200)
-                    
-                    if BiometricAuthManager.canEvaluateBiometrics() {
-                        BiometricToggleView(isEnabled: $useBiometricID) {status in
-                            if status {
-                                showPasswordAuthenticationView = true
-                            } else {
-                                SessionManager.shared.logout(environment: APIConfiguration.shared.environment, clearBiometricCreds: true)
+                        VStack(alignment: .center, spacing: 16) {
+                            profileImage
+                            
+                            VStack(alignment: .center, spacing: 6) {
+                                Text(userFullName())
+                                    .font(FontFamily.Lato.bold.swiftUIFont(fixedSize: 20))
+                                Text(viewModel.user?.email ?? " ")
+                                    .font(FontFamily.Lato.regular.swiftUIFont(fixedSize: 16))
                             }
+                            .foregroundStyle(Asset.Colors._42526ETextFieldText.swiftUIColor)
                         }
-                        .padding([.bottom], 30)
-                    }                    
+                    }
+                    .frame(height: 200)
                     
-                    logOutButton
-                    
-                    Spacer()
+                    ZStack {
+                        Color.white
+                        VStack(alignment: .leading, spacing: 25) {
+                            Text(L10n.Localizable.preferences.uppercased())
+                                .font(FontFamily.Lato.bold.swiftUIFont(size: 14))
+                                .foregroundStyle(Asset.Colors._83879BTextFiledTitle.swiftUIColor)
+                            
+                            if BiometricAuthManager.canEvaluateBiometrics() {
+                                BiometricToggleView(isEnabled: $useBiometricID) {status in
+                                    if status {
+                                        showPasswordAuthenticationView = true
+                                    } else {
+                                        SessionManager.shared.logout(environment: APIConfiguration.shared.environment, clearBiometricCreds: true)
+                                    }
+                                }
+                            }
+                            
+                            Line()
+                                .stroke(style: .init(dash: [4]))
+                                .foregroundStyle(Asset.Colors.ddddddLine.swiftUIColor)
+                                .frame(height: 1)
+                            
+                            HStack {
+                                Spacer()
+                                logOutButton
+                                Spacer()
+                            }
+                            
+                            Spacer()
+                        }
+                        .padding()
+                    }
+                    .padding()
+                    .padding(.bottom, 0)
+                    .cornerRadius(20)
+                    .clipped()
                 }
-                .padding(20)
-                .navigationBarTitleDisplayMode(.inline)
+                .navigationBarBackButtonHidden()
+                .toolbar {
+                    ToolbarItem(placement: .navigationBarLeading) {
+                        Button(action: {
+                            dismiss()
+                        }) {
+                            Image(systemName: "arrow.left")
+                                .resizable()
+                                .foregroundStyle(Asset.Colors.huskyPurple.swiftUIColor)
+                        }
+                    }
+                    
+                    ToolbarItem(placement: .principal) {
+                        Text(L10n.Localizable.myProfile)
+                            .font(FontFamily.Lato.bold.swiftUIFont(size: 16))
+                            .foregroundStyle(Asset.Colors._42526ETextFieldText.swiftUIColor)
+                    }
+                }
             }
             .overlay {
                 if showPasswordAuthenticationView {
@@ -68,10 +109,7 @@ struct UserProfileView: View {
                        showPasswordAuthenticationView = false
                     } onFailure: { error in
                         useBiometricID = false
-                        
-                        
                     }
-
                 }
             }
         }
@@ -85,15 +123,23 @@ struct UserProfileView: View {
         if let userModel = viewModel.user {
             return userModel.getFullName()
         }
-        return ""
+        return " "
         
     }
     
     private var profileImage: some View {
-        Image(systemName: "person.fill")
-            .resizable()
-            .frame(width: 50, height: 50)
-            .clipShape(Circle())
+        ZStack {
+            Image(systemName: "person.fill")
+                .resizable()
+                .frame(width: 50, height: 50)
+                .foregroundStyle(.white)
+                .clipShape(Circle())
+        }
+        .frame(width: 60, height: 60)
+        .background{
+            LinearGradient(gradient: Gradient(colors: [Asset.Colors._8F57DEProfileIcon.swiftUIColor, Asset.Colors._2D0369ProfileIcon.swiftUIColor,]), startPoint: .top, endPoint: .bottom)
+        }
+        .clipShape(Circle())
     }
 
         
@@ -106,13 +152,27 @@ struct UserProfileView: View {
                }
           //  accessToken = nil
         } label: {
-            Text("LOGOUT")
-                .font(.custom("Lato-Bold", size: 15))
-                .foregroundColor(Color.white)
-                .padding()
-                .background(Color(red: 0.79, green: 0.0, blue: 0.0))
-                .cornerRadius(25)
+            HStack(spacing: 10) {
+                Image(systemName: "rectangle.portrait.and.arrow.right")
+                    .foregroundStyle(.white)
+                Text("Logout")
+                    .font(FontFamily.Lato.bold.swiftUIFont(fixedSize: 16))
+                    .foregroundColor(Color.white)
+                    
+            }
+            .padding()
+            .background(Asset.Colors.accentPink.swiftUIColor)
+            .cornerRadius(25)
         }
+    }
+}
+
+struct Line: Shape {
+    func path(in rect: CGRect) -> Path {
+        var path = Path()
+        path.move(to: CGPoint(x: 0, y: 0))
+        path.addLine(to: CGPoint(x: rect.width, y: 0))
+        return path
     }
 }
 

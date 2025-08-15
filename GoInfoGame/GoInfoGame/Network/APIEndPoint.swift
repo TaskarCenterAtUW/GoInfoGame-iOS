@@ -7,6 +7,7 @@
 
 import Foundation
 import osmapi
+import CoreLocation
 
 struct APIEndpoint {
     let path: String
@@ -29,12 +30,12 @@ struct APIEndpoint {
         
     }
     
-    static let fetchWorkspaceList = { (accessToken: String) in
+    static let fetchWorkspaceList = { (location: CLLocationCoordinate2D, radius: Int, gig_only: Bool, accessToken: String) in
            
             let header = [
                 "Authorization" : "Bearer \(accessToken)"
             ]
-        return APIEndpoint(path: "/workspaces/mine", method: "GET", body: nil, headers: header, formData: nil)}
+        return APIEndpoint(path: "/workspaces/mine?lat=\(location.latitude.roundedTo7Digits())&lon=\(location.longitude.roundedTo7Digits())&radius=\(radius)&gig_only=\(gig_only)", method: "GET", body: nil, headers: header, formData: nil)}
     
     static let fetchLongQuests = { (workspaceId: String) in APIEndpoint(path: "/workspaces/\(workspaceId)/quests/long", method: "GET", body: nil, headers: ["Content-Type":"application/json"], formData: nil) }
     

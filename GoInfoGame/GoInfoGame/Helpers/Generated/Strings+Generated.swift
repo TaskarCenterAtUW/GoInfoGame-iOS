@@ -15,10 +15,18 @@ internal enum L10n {
     internal static let appName = L10n.tr("Localizable", "App Name", fallback: "AVIV ScoutRoute")
     /// Can't Say
     internal static let cantSay = L10n.tr("Localizable", "cant_say", fallback: "Can't Say")
+    /// Compose a note
+    internal static let composeANote = L10n.tr("Localizable", "Compose a note", fallback: "Compose a note")
+    /// Compose message
+    internal static let composeMessage = L10n.tr("Localizable", "Compose message", fallback: "Compose message")
     /// Don't show again for this session
     internal static let dontShowAgain = L10n.tr("Localizable", "dont_show_again", fallback: "Don't show again for this session")
+    /// My Profile
+    internal static let myProfile = L10n.tr("Localizable", "My Profile", fallback: "My Profile")
     /// OTHER ANSWERS...
     internal static let otherAnswers = L10n.tr("Localizable", "other_answers", fallback: "OTHER ANSWERS...")
+    /// Preferences
+    internal static let preferences = L10n.tr("Localizable", "Preferences", fallback: "Preferences")
     /// Are there one or more street lamps within 10 feet of this Bus stop?
     internal static let questBusStopLitTitle = L10n.tr("Localizable", "quest_busStopLit_title", fallback: "Are there one or more street lamps within 10 feet of this Bus stop?")
     /// What’s the height of the curbs at this crossing?
@@ -204,6 +212,8 @@ internal enum L10n {
     internal static let undoConfirmNegative = L10n.tr("Localizable", "undo_confirm_negative", fallback: "Cancel")
     /// Usually looks like this?
     internal static let usuallyLooksLikeThis = L10n.tr("Localizable", "usually_looks_like_this", fallback: "Usually looks like this?")
+    /// Workspace
+    internal static let workspace = L10n.tr("Localizable", "Workspace", fallback: "Workspace")
   }
   internal enum Main {
     internal enum _13PWzT0e {

@@ -29,6 +29,8 @@ struct BiometricToggleView: View {
             }
         )) {
             Text(biometricToggleText)
+                .font(FontFamily.Lato.regular.swiftUIFont(size: 16))
+                .foregroundStyle(Asset.Colors._42526ETextFieldText.swiftUIColor)
         }
         .tint(Asset.Colors.accentPink.swiftUIColor)
     }
