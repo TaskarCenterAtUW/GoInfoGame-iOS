@@ -18,8 +18,13 @@ struct QuestSyncButton: View {
     var body: some View {
         Button(action: action) {
             ZStack(alignment: .topTrailing) {
-                Image("sync")
+                Asset.sync.swiftUIImage
                     .rotationEffect(.degrees(rotationAngle))
+                    .padding(8)
+                    .background(Asset.Colors.e7E3EELightPurpuleBg.swiftUIColor)
+                    .foregroundStyle(Asset.Colors.huskyPurple.swiftUIColor)
+                    .frame(width: 34, height: 34)
+                    .clipShape(Circle())
                     .animation(isRotating ? .linear(duration: 1).repeatForever(autoreverses: false) : .default , value: isRotating)
                     .onChange(of: isSyncing) { newValue in
                         if newValue {

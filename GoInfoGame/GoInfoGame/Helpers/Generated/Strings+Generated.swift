@@ -208,6 +208,8 @@ internal enum L10n {
     internal static let undoConfirmNegative = L10n.tr("Localizable", "undo_confirm_negative", fallback: "Cancel")
     /// Usually looks like this?
     internal static let usuallyLooksLikeThis = L10n.tr("Localizable", "usually_looks_like_this", fallback: "Usually looks like this?")
+    /// Workspace
+    internal static let workspace = L10n.tr("Localizable", "Workspace", fallback: "Workspace")
   }
   internal enum Main {
     internal enum _13PWzT0e {

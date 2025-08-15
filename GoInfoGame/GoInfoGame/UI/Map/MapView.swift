@@ -181,7 +181,7 @@ struct MapView: View {
                         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottomLeading)
                         Spacer()
                         FloatingActionButtonStack()
-                            .padding(.bottom, 24)
+                            .padding(.bottom, 30)
                             .padding(.trailing, 16)
                             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottomLeading)
                         
@@ -223,9 +223,40 @@ struct MapView: View {
             .navigationBarItems(leading: EmptyView())
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
-                    Text(selectedWorkspace?.title ?? "")
-                        .font(.custom("Lato-Bold", size: 16))
-                        .foregroundStyle(Asset.Colors.huskyPurple.swiftUIColor)
+                    HStack(spacing: 10)  {
+                        Button(action: {
+                            navigateToProfile = true
+                        }) {
+                            Image(systemName: "person.fill")
+                                .padding(8)
+                                .foregroundStyle(Color.white)
+                                .background {
+                                    LinearGradient(gradient: Gradient(colors: [Asset.Colors._8F57DEProfileIcon.swiftUIColor, Asset.Colors._2D0369ProfileIcon.swiftUIColor,]), startPoint: .top, endPoint: .bottom)
+                                }
+                                .frame(width: 34, height: 34)
+                                .clipShape(Circle())
+                        }
+                        
+                        Rectangle()
+                            .fill(Asset.Colors.ddddddLine.swiftUIColor)
+                            .frame(width: 1, height: 24)
+                            .cornerRadius(0.5)
+                        
+                        VStack(alignment: .leading) {
+                            Text(L10n.Localizable.workspace)
+                                .font(FontFamily.Lato.regular.swiftUIFont(size: 12))
+                                .foregroundStyle(Asset.Colors._83879BTextFiledTitle.swiftUIColor)
+                            
+                            Text(selectedWorkspace?.title ?? "")
+                                .font(FontFamily.Lato.bold.swiftUIFont(size: 14))
+                                .foregroundStyle(Asset.Colors.huskyPurple.swiftUIColor)
+                        }
+                    }
+                    
+                }
+                ToolbarItem(placement: .topBarLeading) {
+                    
+                    
                 }
 
                 ToolbarItem(placement: .navigationBarTrailing) {
@@ -243,8 +274,6 @@ struct MapView: View {
                             viewModel.checkSyncStatus()
                         }
                     })
-                    .foregroundStyle(Asset.Colors.huskyPurple.swiftUIColor)
-                    .frame(width: 30, height: 30)
                 }
                 
                 ToolbarItem(placement: .navigationBarTrailing) {
@@ -254,9 +283,12 @@ struct MapView: View {
                         viewModel.showSatellitePicker = true
                     }) {
                         Image(systemName: "square.2.layers.3d.bottom.filled")
+                            .padding(8)
                             .foregroundStyle(Asset.Colors.huskyPurple.swiftUIColor)
+                            .background(Asset.Colors.e7E3EELightPurpuleBg.swiftUIColor)
+                            .frame(width: 34, height: 34)
+                            .clipShape(Circle())
                     }
-                    .frame(width: 30, height: 30)
                 }
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button(action: {
@@ -264,9 +296,12 @@ struct MapView: View {
                         showUserSettingsSheet = true
                     }) {
                         Image(systemName: "gear")
+                            .padding(8)
                             .foregroundStyle(Asset.Colors.huskyPurple.swiftUIColor)
+                            .background(Asset.Colors.e7E3EELightPurpuleBg.swiftUIColor)
+                            .frame(width: 34, height: 34)
+                            .clipShape(Circle())
                     }
-                    .frame(width: 30, height: 30)
                 }
             }
             .toolbarBackground(.visible, for: .navigationBar)
