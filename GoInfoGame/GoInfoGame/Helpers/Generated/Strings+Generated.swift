@@ -17,8 +17,12 @@ internal enum L10n {
     internal static let cantSay = L10n.tr("Localizable", "cant_say", fallback: "Can't Say")
     /// Don't show again for this session
     internal static let dontShowAgain = L10n.tr("Localizable", "dont_show_again", fallback: "Don't show again for this session")
+    /// My Profile
+    internal static let myProfile = L10n.tr("Localizable", "My Profile", fallback: "My Profile")
     /// OTHER ANSWERS...
     internal static let otherAnswers = L10n.tr("Localizable", "other_answers", fallback: "OTHER ANSWERS...")
+    /// Preferences
+    internal static let preferences = L10n.tr("Localizable", "Preferences", fallback: "Preferences")
     /// Are there one or more street lamps within 10 feet of this Bus stop?
     internal static let questBusStopLitTitle = L10n.tr("Localizable", "quest_busStopLit_title", fallback: "Are there one or more street lamps within 10 feet of this Bus stop?")
     /// What’s the height of the curbs at this crossing?
