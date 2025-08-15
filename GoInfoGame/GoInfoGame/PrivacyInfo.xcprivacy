@@ -6,20 +6,27 @@
 	<array>
 		<dict>
 			<key>NSPrivacyCollectedDataType</key>
-			<string></string>
+			<string>NSPrivacyCollectedDataTypePreciseLocation</string>
 			<key>NSPrivacyCollectedDataTypeLinked</key>
-			<false/>
+			<true/>
 			<key>NSPrivacyCollectedDataTypeTracking</key>
 			<false/>
 			<key>NSPrivacyCollectedDataTypePurposes</key>
 			<array>
-				<string></string>
+				<string>NSPrivacyCollectedDataTypePurposeAppFunctionality</string>
 			</array>
 		</dict>
 	</array>
 	<key>NSPrivacyAccessedAPITypes</key>
 	<array>
-		<dict/>
+		<dict>
+			<key>NSPrivacyAccessedAPIType</key>
+			<string>NSPrivacyAccessedAPICategoryUserDefaults</string>
+			<key>NSPrivacyAccessedAPITypeReasons</key>
+			<array>
+				<string>CA92.1</string>
+			</array>
+		</dict>
 	</array>
 	<key>NSPrivacyTrackingDomains</key>
 	<array/>

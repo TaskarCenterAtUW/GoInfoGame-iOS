@@ -2909,8 +2909,8 @@
 				INFOPLIST_KEY_NSCameraUsageDescription = "This app requires access to your camera to upload images to Kartaview";
 				INFOPLIST_KEY_NSFaceIDUsageDescription = "Used to securely log in using Face ID";
 				INFOPLIST_KEY_NSFileProviderDomainUsageDescription = "";
-				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "We need your location";
-				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "We need your location";
+				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "We use your location to help you find the closest workspaces.";
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "We use your location to help you find the closest workspaces.";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
@@ -2969,12 +2969,12 @@
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = GoInfoGame/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = "AVIV ScoutRoute";
+				INFOPLIST_KEY_CFBundleDisplayName = GoInfoGame;
 				INFOPLIST_KEY_NSCameraUsageDescription = "This app requires access to your camera to upload images to Kartaview";
 				INFOPLIST_KEY_NSFaceIDUsageDescription = "Used to securely log in using Face ID";
 				INFOPLIST_KEY_NSFileProviderDomainUsageDescription = "";
-				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "We need your location";
-				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "We need your location";
+				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "We use your location to help you find the closest workspaces.";
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "We use your location to help you find the closest workspaces.";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
