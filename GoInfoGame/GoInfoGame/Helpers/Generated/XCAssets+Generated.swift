@@ -33,6 +33,7 @@ internal enum Asset {
     internal static let accentLavender = ColorAsset(name: "Accent Lavender")
     internal static let accentPink = ColorAsset(name: "Accent Pink")
     internal static let d5DBE6BorderColorGray = ColorAsset(name: "D5DBE6 Border Color gray")
+    internal static let d74BA827Pink = ColorAsset(name: "D74BA827 Pink")
     internal static let ddddddLine = ColorAsset(name: "DDDDDD line")
     internal static let e5E5E5GrayBackgroudn = ColorAsset(name: "E5E5E5  Gray backgroudn")
     internal static let e7E3EELightPurpuleBg = ColorAsset(name: "E7E3EE Light Purpule bg")
