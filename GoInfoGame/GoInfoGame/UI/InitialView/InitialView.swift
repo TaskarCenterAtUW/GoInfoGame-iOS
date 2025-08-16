@@ -204,7 +204,7 @@ struct WorkspacesListView: View {
 struct LocationDisabledView: View {
     var body: some View {
         VStack {
-            Text("GoInfoGame")
+            Text(L10n.Localizable.appName)
                 .font(.custom("Lato-Bold", size: 30))
                 .foregroundColor((Asset.Colors.huskyPurple.swiftUIColor))
                 .padding([.bottom], 50)
