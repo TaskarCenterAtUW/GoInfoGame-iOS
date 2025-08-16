@@ -20,7 +20,7 @@ struct OnboardingView1: View {
             Text("the free wiki world map")
                 
             
-            Text("GoInfoGame makes it easy to contribute to OpenStreetMap. It automatically looks for missing details in your vicinity: bicycle lanes, house numbers, opening hours and much more...")
+            Text("\(L10n.Localizable.appName) makes it easy to contribute to OpenStreetMap. It automatically looks for missing details in your vicinity: bicycle lanes, house numbers, opening hours and much more...")
                 .padding()
             
         }
