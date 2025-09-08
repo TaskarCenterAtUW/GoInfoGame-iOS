@@ -10,11 +10,11 @@ import MapKit
 import Combine
 
 struct MapView: View {
-    let selectedWorkspace: Workspace?
+    let selectedWorkspace: Workspace
     @State var trackingMode: MapUserTrackingMode = MapUserTrackingMode.follow
     @Environment(\.presentationMode) private var presentationMode
     @AppStorage("isMapFromOnboarding") var isMapFromOnboarding: Bool = false
-    @StateObject private var viewModel = MapViewModel()
+    @StateObject var viewModel: MapViewModel
     @State private var isPresented = false
     
     @State private var shouldShowPolyline = true
@@ -247,7 +247,7 @@ struct MapView: View {
                                 .font(FontFamily.Lato.regular.swiftUIFont(size: 12))
                                 .foregroundStyle(Asset.Colors._83879BTextFiledTitle.swiftUIColor)
                             
-                            Text(selectedWorkspace?.title ?? "")
+                            Text(selectedWorkspace.title)
                                 .font(FontFamily.Lato.bold.swiftUIFont(size: 14))
                                 .foregroundStyle(Asset.Colors.huskyPurple.swiftUIColor)
                         }
@@ -260,47 +260,48 @@ struct MapView: View {
                 }
 
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    QuestSyncButton(badgeCount: viewModel.syncFailedElementsCount, isSyncing: isSyncing, action: {
-                        debugPrint("Sync taped")
-                        guard viewModel.syncFailedElementsCount > 0 else {
-                            alertIcon = "info.bubble"
-                            alertMessage = "No elements to sync"
-                            showAlert = true
-                            return
+                    HStack(spacing: 5.0) {
+                        QuestSyncButton(badgeCount: viewModel.syncFailedElementsCount, isSyncing: isSyncing, action: {
+                            debugPrint("Sync taped")
+                            guard viewModel.syncFailedElementsCount > 0 else {
+                                alertIcon = "info.bubble"
+                                alertMessage = "No elements to sync"
+                                showAlert = true
+                                return
+                            }
+                            isSyncing = true
+                            DatasyncManager.shared.syncDataToOSM(exclude_gig_tags: false) { _ in
+                                isSyncing = false
+                                viewModel.checkSyncStatus()
+                            }
+                        })
+                        
+                        Button(action: {
+                            debugPrint("satellite icon tapped")
+                            viewModel.updateOptions(for: mapViewRef?.region.center ?? CLLocationCoordinate2D(latitude: 0.0, longitude: 0.0))
+                            viewModel.showSatellitePicker = true
+                        }) {
+                            Image(systemName: "square.2.layers.3d.bottom.filled")
+                                .resizable()
+                                .padding(8)
+                                .foregroundStyle(Asset.Colors.huskyPurple.swiftUIColor)
+                                .background(Asset.Colors.e7E3EELightPurpuleBg.swiftUIColor)
+                                .frame(width: 34, height: 34)
+                                .clipShape(Circle())
                         }
-                        isSyncing = true
-                        DatasyncManager.shared.syncDataToOSM(exclude_gig_tags: false) { _ in
-                            isSyncing = false
-                            viewModel.checkSyncStatus()
+                        
+                        Button(action: {
+                            print("Settings icon tapped")
+                            showUserSettingsSheet = true
+                        }) {
+                            Image(systemName: "gear")
+                                .resizable()
+                                .padding(8)
+                                .foregroundStyle(Asset.Colors.huskyPurple.swiftUIColor)
+                                .background(Asset.Colors.e7E3EELightPurpuleBg.swiftUIColor)
+                                .frame(width: 34, height: 34)
+                                .clipShape(Circle())
                         }
-                    })
-                }
-                
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    Button(action: {
-                        debugPrint("satellite icon tapped")
-                        viewModel.updateOptions(for: mapViewRef?.region.center ?? CLLocationCoordinate2D(latitude: 0.0, longitude: 0.0))
-                        viewModel.showSatellitePicker = true
-                    }) {
-                        Image(systemName: "square.2.layers.3d.bottom.filled")
-                            .padding(8)
-                            .foregroundStyle(Asset.Colors.huskyPurple.swiftUIColor)
-                            .background(Asset.Colors.e7E3EELightPurpuleBg.swiftUIColor)
-                            .frame(width: 34, height: 34)
-                            .clipShape(Circle())
-                    }
-                }
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    Button(action: {
-                        print("Settings icon tapped")
-                        showUserSettingsSheet = true
-                    }) {
-                        Image(systemName: "gear")
-                            .padding(8)
-                            .foregroundStyle(Asset.Colors.huskyPurple.swiftUIColor)
-                            .background(Asset.Colors.e7E3EELightPurpuleBg.swiftUIColor)
-                            .frame(width: 34, height: 34)
-                            .clipShape(Circle())
                     }
                 }
             }
@@ -342,7 +343,7 @@ struct MapView: View {
                 .presentationDragIndicator(.visible)
             }
             .sheet(isPresented: $showUserSettingsSheet) {
-                UserSettingsView(selectedWorkspace: selectedWorkspace?.title ?? "", options: OptionModel.options, onNavigate: { navigate in
+                UserSettingsView(selectedWorkspace: selectedWorkspace.title, options: OptionModel.options, onNavigate: { navigate in
                     showUserSettingsSheet = false
                     DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
                         //   navigateToProfileSettings = true
@@ -506,7 +507,7 @@ struct MapView: View {
         })
         .onAppear(){
             HiddenQuestManager.shared.loadHiddenQuests()
-            print("selected workspace",selectedWorkspace?.title ?? "")
+            print("selected workspace",selectedWorkspace.title)
             QuestsRepository.shared.loadLongQuests(from: "longQuestJson")
 //            self.baseUrl = "https://osm.workspaces-stage.sidewalks.washington.edu"
 //            let original = DatabaseConnector.shared.getNode(id: 43)

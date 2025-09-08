@@ -56,7 +56,7 @@ struct InitialView: View {
             }
             .navigationDestination(isPresented: $shouldNavigateToMapView) {
                 if let workspace = selectedWorkspace {
-                    MapView(selectedWorkspace: workspace)
+                    MapView(selectedWorkspace: workspace, viewModel: MapViewModel(workspace: workspace))
                         .navigationBarBackButtonHidden(true)
                 }
             }
