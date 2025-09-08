@@ -260,47 +260,48 @@ struct MapView: View {
                 }
 
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    QuestSyncButton(badgeCount: viewModel.syncFailedElementsCount, isSyncing: isSyncing, action: {
-                        debugPrint("Sync taped")
-                        guard viewModel.syncFailedElementsCount > 0 else {
-                            alertIcon = "info.bubble"
-                            alertMessage = "No elements to sync"
-                            showAlert = true
-                            return
+                    HStack(spacing: 5.0) {
+                        QuestSyncButton(badgeCount: viewModel.syncFailedElementsCount, isSyncing: isSyncing, action: {
+                            debugPrint("Sync taped")
+                            guard viewModel.syncFailedElementsCount > 0 else {
+                                alertIcon = "info.bubble"
+                                alertMessage = "No elements to sync"
+                                showAlert = true
+                                return
+                            }
+                            isSyncing = true
+                            DatasyncManager.shared.syncDataToOSM(exclude_gig_tags: false) { _ in
+                                isSyncing = false
+                                viewModel.checkSyncStatus()
+                            }
+                        })
+                        
+                        Button(action: {
+                            debugPrint("satellite icon tapped")
+                            viewModel.updateOptions(for: mapViewRef?.region.center ?? CLLocationCoordinate2D(latitude: 0.0, longitude: 0.0))
+                            viewModel.showSatellitePicker = true
+                        }) {
+                            Image(systemName: "square.2.layers.3d.bottom.filled")
+                                .resizable()
+                                .padding(8)
+                                .foregroundStyle(Asset.Colors.huskyPurple.swiftUIColor)
+                                .background(Asset.Colors.e7E3EELightPurpuleBg.swiftUIColor)
+                                .frame(width: 34, height: 34)
+                                .clipShape(Circle())
                         }
-                        isSyncing = true
-                        DatasyncManager.shared.syncDataToOSM(exclude_gig_tags: false) { _ in
-                            isSyncing = false
-                            viewModel.checkSyncStatus()
+                        
+                        Button(action: {
+                            print("Settings icon tapped")
+                            showUserSettingsSheet = true
+                        }) {
+                            Image(systemName: "gear")
+                                .resizable()
+                                .padding(8)
+                                .foregroundStyle(Asset.Colors.huskyPurple.swiftUIColor)
+                                .background(Asset.Colors.e7E3EELightPurpuleBg.swiftUIColor)
+                                .frame(width: 34, height: 34)
+                                .clipShape(Circle())
                         }
-                    })
-                }
-                
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    Button(action: {
-                        debugPrint("satellite icon tapped")
-                        viewModel.updateOptions(for: mapViewRef?.region.center ?? CLLocationCoordinate2D(latitude: 0.0, longitude: 0.0))
-                        viewModel.showSatellitePicker = true
-                    }) {
-                        Image(systemName: "square.2.layers.3d.bottom.filled")
-                            .padding(8)
-                            .foregroundStyle(Asset.Colors.huskyPurple.swiftUIColor)
-                            .background(Asset.Colors.e7E3EELightPurpuleBg.swiftUIColor)
-                            .frame(width: 34, height: 34)
-                            .clipShape(Circle())
-                    }
-                }
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    Button(action: {
-                        print("Settings icon tapped")
-                        showUserSettingsSheet = true
-                    }) {
-                        Image(systemName: "gear")
-                            .padding(8)
-                            .foregroundStyle(Asset.Colors.huskyPurple.swiftUIColor)
-                            .background(Asset.Colors.e7E3EELightPurpuleBg.swiftUIColor)
-                            .frame(width: 34, height: 34)
-                            .clipShape(Circle())
                     }
                 }
             }
