@@ -27,18 +27,20 @@ struct Workspace: Codable,Hashable {
     let title: String
     let type: String?
     let externalAppAccess: Int
+    let imageryList: SatelliteServers?
     
     init(from decoder: Decoder) throws {
-           let container = try decoder.container(keyedBy: CodingKeys.self)
-           id = try container.decode(Int.self, forKey: .id)
-           title = try container.decode(String.self, forKey: .title)
-           type = try container.decodeIfPresent(String.self, forKey: .type) ?? "osw"
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        id = try container.decode(Int.self, forKey: .id)
+        title = try container.decode(String.self, forKey: .title)
+        type = try container.decodeIfPresent(String.self, forKey: .type) ?? "osw"
         externalAppAccess = try container.decode(Int.self, forKey: .externalAppAccess)
-       }
+        imageryList = try container.decodeIfPresent(SatelliteServers.self, forKey: .imageryList)
+    }
 
-       enum CodingKeys: String, CodingKey {
-           case id, title, type, externalAppAccess
-       }
+   enum CodingKeys: String, CodingKey {
+       case id, title, type, externalAppAccess, imageryList
+   }
 }
 
 // MARK: - Polygon

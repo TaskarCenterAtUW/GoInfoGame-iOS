@@ -21,7 +21,7 @@ extension APIRequest {
         var request: URLRequest = urlRequest
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         if let jwtAccessToken = KeychainManager.load(key: KeychainManager.Keys.accessToken.rawValue) {
-            request.setValue(jwtAccessToken, forHTTPHeaderField: "Authorization")
+            request.setValue("Bearer \(jwtAccessToken)", forHTTPHeaderField: "Authorization")
         }
         return request
     }

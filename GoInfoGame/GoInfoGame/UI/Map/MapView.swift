@@ -10,11 +10,11 @@ import MapKit
 import Combine
 
 struct MapView: View {
-    let selectedWorkspace: Workspace?
+    let selectedWorkspace: Workspace
     @State var trackingMode: MapUserTrackingMode = MapUserTrackingMode.follow
     @Environment(\.presentationMode) private var presentationMode
     @AppStorage("isMapFromOnboarding") var isMapFromOnboarding: Bool = false
-    @StateObject private var viewModel = MapViewModel()
+    @StateObject var viewModel: MapViewModel
     @State private var isPresented = false
     
     @State private var shouldShowPolyline = true
@@ -247,7 +247,7 @@ struct MapView: View {
                                 .font(FontFamily.Lato.regular.swiftUIFont(size: 12))
                                 .foregroundStyle(Asset.Colors._83879BTextFiledTitle.swiftUIColor)
                             
-                            Text(selectedWorkspace?.title ?? "")
+                            Text(selectedWorkspace.title)
                                 .font(FontFamily.Lato.bold.swiftUIFont(size: 14))
                                 .foregroundStyle(Asset.Colors.huskyPurple.swiftUIColor)
                         }
@@ -342,7 +342,7 @@ struct MapView: View {
                 .presentationDragIndicator(.visible)
             }
             .sheet(isPresented: $showUserSettingsSheet) {
-                UserSettingsView(selectedWorkspace: selectedWorkspace?.title ?? "", options: OptionModel.options, onNavigate: { navigate in
+                UserSettingsView(selectedWorkspace: selectedWorkspace.title, options: OptionModel.options, onNavigate: { navigate in
                     showUserSettingsSheet = false
                     DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
                         //   navigateToProfileSettings = true
@@ -506,7 +506,7 @@ struct MapView: View {
         })
         .onAppear(){
             HiddenQuestManager.shared.loadHiddenQuests()
-            print("selected workspace",selectedWorkspace?.title ?? "")
+            print("selected workspace",selectedWorkspace.title)
             QuestsRepository.shared.loadLongQuests(from: "longQuestJson")
 //            self.baseUrl = "https://osm.workspaces-stage.sidewalks.washington.edu"
 //            let original = DatabaseConnector.shared.getNode(id: 43)

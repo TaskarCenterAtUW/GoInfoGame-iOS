@@ -207,3 +207,11 @@ extension Double {
         (self * 1_000_0000).rounded() / 1_000_0000
     }
 }
+
+extension URLRequest {
+    mutating func addAuthorizationHeader() {
+        if let jwtAccessToken = KeychainManager.load(key: KeychainManager.Keys.accessToken.rawValue) {
+            self.setValue("Bearer \(jwtAccessToken)", forHTTPHeaderField: "Authorization")
+        }
+    }
+}

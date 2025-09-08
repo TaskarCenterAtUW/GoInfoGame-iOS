@@ -34,30 +34,3 @@ enum SatelliteOption: Identifiable, Hashable {
         hasher.combine(id)
     }
 }
-
-protocol MapRepositoryProtocol {
-    func fetchAvailableServers() async throws -> SatelliteServers
-}
-
-class MapRepository: MapRepositoryProtocol {
-    let netowrkClient: NetworkHandler
-    init(netowrkClient: NetworkHandler = NetworkManager()) {
-        self.netowrkClient = netowrkClient
-    }
-    
-    func fetchAvailableServers() async throws -> SatelliteServers {
-        return try await netowrkClient.fetchData(request: GetWMTSLayersReqeust())
-    }
-}
-
-struct GetWMTSLayersReqeust: APIRequest {
-    var urlRequest: URLRequest? {
-        guard let url = Bundle.main.url(forResource: "WMTSLayers", withExtension: "json") else {
-            return nil
-        }
-        
-        var urlRequest = URLRequest(url: url)
-        urlRequest.httpMethod = "GET"
-        return urlRequest
-    }
-}

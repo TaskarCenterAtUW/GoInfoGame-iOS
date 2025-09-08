@@ -8,7 +8,7 @@
 import Foundation
 
 // MARK: - SatelliteServer
-struct SatelliteServer: Codable {
+struct SatelliteServer: Codable, Hashable {
     let attribution: Attribution
     let description: String
     let extent: Extent
@@ -17,7 +17,7 @@ struct SatelliteServer: Codable {
 }
 
 // MARK: - Attribution
-struct Attribution: Codable {
+struct Attribution: Codable, Hashable {
     let attributionRequired: Bool
     let text: String
     let url: String
@@ -29,7 +29,7 @@ struct Attribution: Codable {
 }
 
 // MARK: - Extent
-struct Extent: Codable {
+struct Extent: Codable, Hashable {
     let maxZoom: Int
     let polygon: [[[Double]]]
 

@@ -35,16 +35,15 @@ class MapViewModel: ObservableObject {
     var isMultiSelectModeEnabled = false
     
    private let dbInstance = DatabaseConnector.shared
-    let mapRepo: MapRepositoryProtocol
     private var allSattileLayers: [SatelliteServer] = []
     
     @Published var availableOptions: [SatelliteOption] = []
     @Published var selectedOption: SatelliteOption = .none
     @Published var showSatellitePicker: Bool = false
     @Published private(set) var syncFailedElementsCount: Int = 0
-    
-    init(mapRepo: MapRepositoryProtocol = MapRepository()) {
-        self.mapRepo = mapRepo
+    let workspace: Workspace
+    init(workspace: Workspace) {
+        self.workspace = workspace
            locationManagerDelegate.locationUpdateHandler = { [weak self] location in
                guard let self = self else { return }
 
@@ -53,9 +52,7 @@ class MapViewModel: ObservableObject {
 
            locationManagerDelegate.requestLocationAuthorization()
            locationManagerDelegate.startUpdatingLocation()
-        Task {
-            self.allSattileLayers = try await self.mapRepo.fetchAvailableServers()
-        }
+        self.allSattileLayers = workspace.imageryList ?? []
         checkSyncStatus()
        }
     
@@ -153,6 +150,12 @@ class MapViewModel: ObservableObject {
                     }
                     debugPrint("response sucess: end \(Date())")
                 case .failure(let failure):
+                    DispatchQueue.main.async { [weak self] in
+                        self?.items = []
+                        self?.isLoading = false
+                        if self?.items.count == 0 {self?.refreshMap = UUID()}
+                    }
+                    
                     print(failure)
                 }
             }

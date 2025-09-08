@@ -119,6 +119,7 @@ class ApiManager {
         }
         debugPrint("set body prepared \(Date())")
         
+        request.addAuthorizationHeader()
         if let headers = endpoint.headers {
             for (key, value) in headers {
                 request.setValue(value, forHTTPHeaderField: key)

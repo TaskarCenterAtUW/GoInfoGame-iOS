@@ -22,6 +22,7 @@ class WMTSSeever: MKTileOverlay {
     override func url(forTilePath path: MKTileOverlayPath) -> URL {
         let urlString = satelliteServer.url
                     .replacingOccurrences(of: "{z}", with: "\(path.z)")
+                    .replacingOccurrences(of: "{zoom}", with: "\(path.z)")
                     .replacingOccurrences(of: "{x}", with: "\(path.x)")
                     .replacingOccurrences(of: "{y}", with: "\(path.y)")
                 return URL(string: urlString)!
