@@ -104,6 +104,15 @@ struct WorkspacesListView: View {
                             }
                         }
                     }
+                    
+#if DEBUG
+                    if let windowScene = UIApplication.shared.connectedScenes
+                        .first(where: { $0.activationState == .foregroundActive }) as? UIWindowScene {
+                        if let debug = windowScene.keyWindow?.viewWithTag(100) as? UIView {
+                            windowScene.keyWindow?.bringSubviewToFront(debug)
+                        }
+                    }
+#endif
                 }
             }
         } else if viewModel.workspaces == nil {

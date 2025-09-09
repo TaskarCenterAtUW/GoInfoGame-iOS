@@ -41,7 +41,19 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                 window.makeKeyAndVisible()
             }
         }
-        
+#if DEBUG
+        if let window = self.window {
+            // add the label left bottom of the screen
+            let debugLabel = UILabel(frame: CGRect(x: 0, y: window.safeAreaInsets.top, width: 35, height:  12))
+            debugLabel.text = "Debug"
+            debugLabel.tag = 100
+            debugLabel.textAlignment = .center
+            debugLabel.font = .systemFont(ofSize: 8)
+            debugLabel.textColor = Asset.Colors.huskyPurple.color
+            debugLabel.backgroundColor = Asset.Colors.accentPink.color
+            window.addSubview(debugLabel)
+        }
+#endif
     }
 
     func sceneDidDisconnect(_ scene: UIScene) {
