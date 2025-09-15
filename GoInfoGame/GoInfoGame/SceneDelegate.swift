@@ -44,14 +44,22 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 #if DEBUG
         if let window = self.window {
             // add the label left bottom of the screen
-            let debugLabel = UILabel(frame: CGRect(x: 0, y: window.safeAreaInsets.top, width: 35, height:  12))
-            debugLabel.text = "Debug"
+            let debugLabel = UILabel()
+            debugLabel.text = "DEBUG"
             debugLabel.tag = 100
             debugLabel.textAlignment = .center
-            debugLabel.font = .systemFont(ofSize: 8)
-            debugLabel.textColor = Asset.Colors.huskyPurple.color
+            debugLabel.font = .boldSystemFont(ofSize: 12)
+            debugLabel.textColor = .white
             debugLabel.backgroundColor = Asset.Colors.accentPink.color
+            debugLabel.translatesAutoresizingMaskIntoConstraints = false
+            
             window.addSubview(debugLabel)
+            NSLayoutConstraint.activate([
+                debugLabel.topAnchor.constraint(equalTo: window.safeAreaLayoutGuide.bottomAnchor, constant: 0),
+                debugLabel.widthAnchor.constraint(equalTo: window.safeAreaLayoutGuide.widthAnchor),
+                debugLabel.heightAnchor.constraint(equalToConstant: 14)
+            ])
+           
         }
 #endif
     }
