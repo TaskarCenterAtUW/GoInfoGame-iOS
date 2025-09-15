@@ -13,7 +13,7 @@
 import Foundation
 
 // MARK: - WorkSpacesResponse
-class WorkSpacesResponse: Codable {
+class WorkSpacesResponse: Decodable {
     let workspaces: [Workspace]
 
     init(workspaces: [Workspace]) {
@@ -22,12 +22,13 @@ class WorkSpacesResponse: Codable {
 }
 
 // MARK: - Workspace
-struct Workspace: Codable,Hashable {
+struct Workspace: Decodable {
     let id: Int
     let title: String
     let type: String?
     let externalAppAccess: Int
     let imageryList: SatelliteServers?
+    let longFormQuest: LongFormResponse?
     
     init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
@@ -36,11 +37,26 @@ struct Workspace: Codable,Hashable {
         type = try container.decodeIfPresent(String.self, forKey: .type) ?? "osw"
         externalAppAccess = try container.decode(Int.self, forKey: .externalAppAccess)
         imageryList = try container.decodeIfPresent(SatelliteServers.self, forKey: .imageryList)
+        longFormQuest = try container.decodeIfPresent(LongFormResponse.self, forKey: .longFormQuest)
     }
 
-   enum CodingKeys: String, CodingKey {
-       case id, title, type, externalAppAccess, imageryList
-   }
+    enum CodingKeys: String, CodingKey {
+        case id, title, type, externalAppAccess
+        case imageryList = "imageryListDef"
+        case longFormQuest = "longFormQuestDef"
+    }
+    
+//    static func == (lhs: Workspace, rhs: Workspace) -> Bool {
+//        return lhs.id == rhs.id
+//    }
+    
+//    func hash(into hasher: inout Hasher) {
+//        hasher.combine(id)
+//        hasher.combine(title)
+//        hasher.combine(type)
+//        hasher.combine(externalAppAccess)
+//        hasher.combine(imageryList)
+//    }
 }
 
 // MARK: - Polygon

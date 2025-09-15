@@ -37,7 +37,7 @@ struct APIEndpoint {
             ]
         return APIEndpoint(path: "/workspaces/mine?lat=\(location.latitude.roundedTo7Digits())&lon=\(location.longitude.roundedTo7Digits())&radius=\(radius)&gig_only=\(gig_only)", method: "GET", body: nil, headers: header, formData: nil)}
     
-    static let fetchLongQuests = { (workspaceId: String) in APIEndpoint(path: "/workspaces/\(workspaceId)/quests/long", method: "GET", body: nil, headers: ["Content-Type":"application/json"], formData: nil) }
+    static let fetchWorkspaceDetails = { (workspaceId: String) in APIEndpoint(path: "/workspaces/\(workspaceId)", method: "GET", body: nil, headers: ["Content-Type":"application/json"], formData: nil) }
     
     static let fetchOSMElements = { (left: Double, bottom: Double, right: Double, top: Double, workspaceID: String) in
           let header = [
