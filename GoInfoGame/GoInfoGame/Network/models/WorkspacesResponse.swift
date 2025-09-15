@@ -45,18 +45,6 @@ struct Workspace: Decodable {
         case imageryList = "imageryListDef"
         case longFormQuest = "longFormQuestDef"
     }
-    
-//    static func == (lhs: Workspace, rhs: Workspace) -> Bool {
-//        return lhs.id == rhs.id
-//    }
-    
-//    func hash(into hasher: inout Hasher) {
-//        hasher.combine(id)
-//        hasher.combine(title)
-//        hasher.combine(type)
-//        hasher.combine(externalAppAccess)
-//        hasher.combine(imageryList)
-//    }
 }
 
 // MARK: - Polygon
