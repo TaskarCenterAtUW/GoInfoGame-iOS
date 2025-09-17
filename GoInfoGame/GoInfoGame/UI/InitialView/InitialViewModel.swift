@@ -74,12 +74,17 @@ class InitialViewModel: ObservableObject {
         
         isLoading = true
         
-        ApiManager.shared.performRequest(to: .fetchLongQuests(workspaceId), setupType: .workspace, modelType: LongFormResponse.self) { [weak self] result in
+        ApiManager.shared.performRequest(to: .fetchWorkspaceDetails(workspaceId), setupType: .workspace, modelType: Workspace.self) { [weak self] result in
             guard let self = self else { return completion(false, "Object memory released.") }
             DispatchQueue.main.async { [unowned self] in
                 switch result {
-                case .success(let longQuestsResponse):
+                case .success(let workspaces):
                     
+                    guard let longQuestsResponse = workspaces.longFormQuest else {
+                        self.isLoading = false
+                        completion(false, "Please configure longform." )
+                        return
+                    }
                     // Validate quest query
                     do {
                         for item in longQuestsResponse.elements {
@@ -114,14 +119,9 @@ class InitialViewModel: ObservableObject {
                     self.isLoading = false
                     completion(true, "")
                 case .failure(let error):
-                    print("ERROR FOR LONG FORM JSON IS ----?>>>>>>\(error.localizedDescription)")
+                    print("ERROR from workspace details api ----?>>>>>>\(error.localizedDescription)")
                     self.isLoading = false
-                    if error.localizedDescription.contains("empty") {
-                        completion(false, "Please configure longform." )
-                    } else {
-                        completion(false, "Unable to load quests.(invalid JSON)")
-                    }
-                    
+                    completion(false, "Not able to load the workspace details. Please try again later." )
                 }
             }
         }
