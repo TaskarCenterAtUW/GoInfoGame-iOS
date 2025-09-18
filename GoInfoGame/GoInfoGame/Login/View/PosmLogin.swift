@@ -174,17 +174,6 @@ struct PosmLoginView: View {
                 } message: {
                     Text("Your session has expired. Please login again")
                 }
-        #if DEBUG
-                .onAppear {
-                    if let windowScene = UIApplication.shared.connectedScenes
-                        .first(where: { $0.activationState == .foregroundActive }) as? UIWindowScene {
-                        if let debug = windowScene.keyWindow?.viewWithTag(100) as? UIView {
-                            windowScene.keyWindow?.bringSubviewToFront(debug)
-                        }
-                    }
-                    
-                }
-        #endif
     }
     
     var appVersionText: Text {
