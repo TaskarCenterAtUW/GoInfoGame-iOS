@@ -135,6 +135,7 @@ struct QuestAnswerDependency: Codable {
 enum QuestType: String, Codable {
     case exclusiveChoice = "ExclusiveChoice"
     case numeric = "Numeric"
+    case multipleChoice = "MultipleChoice"
 //    case excWithImg = "ExclusiveChoiceWithImg"
 }
 
@@ -164,9 +165,3 @@ enum RequiredValue: Codable {
         }
     }
 }
-
-
-
-
-
-

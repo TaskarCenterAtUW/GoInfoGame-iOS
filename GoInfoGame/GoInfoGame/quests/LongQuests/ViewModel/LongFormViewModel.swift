@@ -19,12 +19,15 @@ class LongFormViewModel: ObservableObject {
             return true
         }
         if let answeredValue = answers[dependency.questionID] {
+            let answeredValues = answeredValue.components(separatedBy: ", ")
             switch dependency.requiredValue {
             case .string(let reqValue):
-                return reqValue == answeredValue
+                return answeredValues.contains(reqValue)
             case .array(let reqValue):
-                return reqValue.contains(answeredValue)
-           
+                // Check for any intersection between the two sets of values.
+                let answeredSet = Set(answeredValues)
+                let requiredSet = Set(reqValue)
+                return !answeredSet.isDisjoint(with: requiredSet)
             }
             
         }

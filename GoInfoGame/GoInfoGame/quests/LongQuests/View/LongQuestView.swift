@@ -52,7 +52,7 @@ struct LongQuestView: View {
             
             QuestOptions(options: questOptions, selectedAnswerId: $selectedAnswers[quest.id], onChoiceSelected: { selectedChoice in
                 onChoiceSelected(selectedChoice)
-            }, questType: quest.questType,currentAnswer: $currentAnswer, uploadPhoto: uploadPhoto)
+            }, currentAnswer: $currentAnswer, questType: quest.questType, uploadPhoto: uploadPhoto)
         }
           .padding(.vertical, 5)
     }
