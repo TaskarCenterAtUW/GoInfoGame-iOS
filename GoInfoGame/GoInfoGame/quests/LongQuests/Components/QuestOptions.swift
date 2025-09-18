@@ -11,11 +11,7 @@ struct QuestOptions: View {
     
     let options: [QuestAnswerChoice]
     
-    @Binding var selectedAnswerId: UUID?
-    
-    var onChoiceSelected: (QuestAnswerChoice) -> ()
-    
-    @Binding var currentAnswer: String?
+    @Binding var selectedChoice: QuestAnswerChoice?
     
     var questType: QuestType
     
@@ -26,22 +22,18 @@ struct QuestOptions: View {
         case .exclusiveChoice:
             ExclusiveChoiceView(
                 options: options,
-                selectedAnswerId: $selectedAnswerId,
-                currentAnswer: $currentAnswer,
-                onChoiceSelected: onChoiceSelected,
+                selectedChoice: $selectedChoice,
                 uploadPhoto: uploadPhoto
             )
         case .multipleChoice:
             MultipleChoiceView(
                 options: options,
-                currentAnswer: $currentAnswer,
-                onChoiceSelected: onChoiceSelected
+                selectedChoice: $selectedChoice
             )
             
         case .numeric:
             NumericInputView(
-                currentAnswer: $currentAnswer,
-                onChoiceSelected: onChoiceSelected
+                selectedChoice: $selectedChoice
             )
         }
     }
@@ -52,9 +44,7 @@ private extension QuestOptions {
 
     struct ExclusiveChoiceView: View {
         let options: [QuestAnswerChoice]
-        @Binding var selectedAnswerId: UUID?
-        @Binding var currentAnswer: String?
-        var onChoiceSelected: (QuestAnswerChoice) -> ()
+        @Binding var selectedChoice: QuestAnswerChoice?
         var uploadPhoto: (Bool) -> ()
 
         @State private var selectedImageURL: String? = nil
@@ -87,9 +77,7 @@ private extension QuestOptions {
                             ForEach(options, id: \.id) { option in
                                 OptionButton(
                                     option: option,
-                                    selectedAnswerId: $selectedAnswerId,
-                                    currentAnswer: $currentAnswer,
-                                    onChoiceSelected: onChoiceSelected,
+                                    selectedChoice: $selectedChoice,
                                     onLongPress: {
                                         if let imageUrl = option.imageURL, !imageUrl.isEmpty {
                                             selectedImageURL = imageUrl
@@ -102,7 +90,7 @@ private extension QuestOptions {
 
                         FollowUpButton(
                             options: options,
-                            selectedAnswerId: selectedAnswerId,
+                            selectedChoice: $selectedChoice,
                             uploadPhoto: uploadPhoto
                         )
                     }
@@ -114,8 +102,7 @@ private extension QuestOptions {
 
     struct MultipleChoiceView: View {
         let options: [QuestAnswerChoice]
-        @Binding var currentAnswer: String?
-        let onChoiceSelected: (QuestAnswerChoice) -> Void
+        @Binding var selectedChoice: QuestAnswerChoice?
 
         @State private var selectedValues: Set<String> = []
         @State private var selectedImageURL: String? = nil
@@ -167,16 +154,18 @@ private extension QuestOptions {
             }
             .onAppear(perform: initializeSelectedValues)
             .onChange(of: selectedValues) { _ in
-                updateCurrentAnswerAndNotify()
+                updateSelectedChoice()
+            }
+            .onChange(of: selectedChoice) { _ in
+                initializeSelectedValues()
             }
         }
 
         private func initializeSelectedValues() {
-            guard let answer = currentAnswer, !answer.isEmpty else {
-                selectedValues = []
-                return
+            let currentSelectedValues = Set((selectedChoice?.value ?? "").components(separatedBy: ", ").filter { !$0.isEmpty })
+            if selectedValues != currentSelectedValues {
+                selectedValues = currentSelectedValues
             }
-            selectedValues = Set(answer.components(separatedBy: ", ").filter { !$0.isEmpty })
         }
 
         private func toggleSelection(for option: QuestAnswerChoice) {
@@ -187,27 +176,38 @@ private extension QuestOptions {
             }
         }
 
-        private func updateCurrentAnswerAndNotify() {
+        private func updateSelectedChoice() {
             let combinedValue = selectedValues.sorted().joined(separator: ", ")
-            currentAnswer = combinedValue.isEmpty ? nil : combinedValue
-            
-            let fakeAnswer = QuestAnswerChoice(value: combinedValue, choiceText: combinedValue, imageURL: nil, choiceFollowUp: nil)
-            onChoiceSelected(fakeAnswer)
+
+            if combinedValue.isEmpty {
+                if selectedChoice != nil {
+                    selectedChoice = nil
+                }
+            } else {
+                if selectedChoice?.value != combinedValue {
+                    let fakeAnswer = QuestAnswerChoice(value: combinedValue, choiceText: combinedValue, imageURL: nil, choiceFollowUp: nil)
+                    selectedChoice = fakeAnswer
+                }
+            }
         }
     }
 
     struct NumericInputView: View {
-        @Binding var currentAnswer: String?
-        var onChoiceSelected: (QuestAnswerChoice) -> ()
+        @Binding var selectedChoice: QuestAnswerChoice?
 
         var body: some View {
             HStack {
                 TextField("Enter value", text: Binding(
-                    get: { currentAnswer ?? "" },
+                    get: { selectedChoice?.value ?? "" },
                     set: { newValue in
-                        currentAnswer = newValue
-                        let answer = QuestAnswerChoice(value: newValue, choiceText: newValue, imageURL: "", choiceFollowUp: "")
-                        onChoiceSelected(answer)
+                        if newValue.isEmpty {
+                            selectedChoice = nil
+                        } else {
+                            if selectedChoice?.value != newValue {
+                                let answer = QuestAnswerChoice(value: newValue, choiceText: newValue, imageURL: nil, choiceFollowUp: nil)
+                                selectedChoice = answer
+                            }
+                        }
                     }
                 ))
                 .frame(width: 100)
@@ -249,23 +249,17 @@ private extension QuestOptions {
 
     struct OptionButton: View {
         let option: QuestAnswerChoice
-        @Binding var selectedAnswerId: UUID?
-        @Binding var currentAnswer: String?
-        let onChoiceSelected: (QuestAnswerChoice) -> Void
+        @Binding var selectedChoice: QuestAnswerChoice?
         let onLongPress: () -> Void
 
         var body: some View {
             Button(action: {
-                if selectedAnswerId == option.id {
+                if selectedChoice == option {
                     // Deselect
-                    selectedAnswerId = nil
-                    currentAnswer = nil
-                    // Don't call onChoiceSelected if you want to ignore blank assignment
+                    selectedChoice = nil
                 } else {
                     // Select
-                    selectedAnswerId = option.id
-                    currentAnswer = option.value
-                    onChoiceSelected(option)
+                    selectedChoice = option
                 }
             }) {
                 VStack(spacing: 8) {
@@ -283,7 +277,7 @@ private extension QuestOptions {
             }
             .overlay(
                 RoundedRectangle(cornerRadius: 8)
-                    .stroke(currentAnswer == option.value ? Asset.Colors.accentPink.swiftUIColor : Color.clear, lineWidth: 3)
+                    .stroke(selectedChoice == option ? Asset.Colors.accentPink.swiftUIColor : Color.clear, lineWidth: 3)
             )
             .onLongPressGesture(perform: onLongPress)
         }
@@ -343,13 +337,11 @@ private extension QuestOptions {
 
     struct FollowUpButton: View {
         let options: [QuestAnswerChoice]
-        let selectedAnswerId: UUID?
+        @Binding var selectedChoice: QuestAnswerChoice?
         let uploadPhoto: (Bool) -> Void
 
         var body: some View {
-            if let selected = selectedAnswerId.flatMap({ id in
-                options.first(where: { $0.id == id && $0.choiceFollowUp != nil })
-            }) {
+            if let selected = selectedChoice, selected.choiceFollowUp != nil {
                 Button(action: {
                     uploadPhoto(true)
                 }) {
@@ -406,9 +398,9 @@ private extension QuestOptions {
 
 #Preview {
     QuestOptions(options: [QuestAnswerChoice(value: "asphalt", choiceText: "Asphalt", imageURL: "https://raw.githubusercontent.com/TaskarCenterAtUW/tdei-tools/refs/heads/main/images/sidewalk/surface/asphalt_landscape.png", choiceFollowUp: nil),
-                           QuestAnswerChoice(value: "no", choiceText: "No, this roadway is too wide to cross safely.", imageURL: nil, choiceFollowUp: nil)], selectedAnswerId: .constant(UUID()), onChoiceSelected: { qa in
-        
-    }, currentAnswer: .constant("Binding<String?>"), questType: GoInfoGame.QuestType.exclusiveChoice) { s in
+                           QuestAnswerChoice(value: "no", choiceText: "No, this roadway is too wide to cross safely.", imageURL: nil, choiceFollowUp: nil)],
+                 selectedChoice: .constant(QuestAnswerChoice(value: "no", choiceText: "No, this roadway is too wide to cross safely.", imageURL: nil, choiceFollowUp: nil)),
+                 questType: GoInfoGame.QuestType.exclusiveChoice) { s in
         
     }
 }

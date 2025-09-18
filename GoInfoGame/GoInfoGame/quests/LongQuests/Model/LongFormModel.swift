@@ -102,7 +102,7 @@ struct LongQuest: Codable, Identifiable {
 }
 
 // MARK: - QuestAnswerChoice
-struct QuestAnswerChoice: Codable, Identifiable {
+struct QuestAnswerChoice: Codable, Identifiable, Equatable {
     let id = UUID()
     let value, choiceText: String
     let imageURL: String?

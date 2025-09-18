@@ -11,8 +11,6 @@ import Combine
 
 struct LongForm: View, QuestForm {
     
-    @State private var selectedAnswers: [UUID: UUID] = [:]
-    
     @ObservedObject private var viewModel = LongFormViewModel()
         
     var elementName: String?
@@ -166,14 +164,9 @@ struct LongForm: View, QuestForm {
                         if let quests = questsForLongForm() {
                             ForEach(quests, id: \.questID) { quest in
                                 if viewModel.shouldShowQuest(quest) {
-                                    LongQuestView(selectedAnswers: $selectedAnswers, quest: quest, onChoiceSelected: { selectedAnswerChoice in
-                                        viewModel.updateAnswers(quest: quest, selectedAnswerChoice: selectedAnswerChoice)
-                                    }, uploadPhoto:  { result in
-                                        if result {
-                                            isCameraPresented = true
-                                        }
-                                    },currentAnswer: $viewModel
-                                        .answersToBeSubmitted[quest.questTag])
+                                    LongQuestView(quest: quest, selectedChoice: binding(for: quest), uploadPhoto:  { result in
+                                        if result { isCameraPresented = true }
+                                    })
                                 }
                             }
                             VStack {
@@ -205,13 +198,13 @@ struct LongForm: View, QuestForm {
                 .hideKeyboardOnTap()
                 
                 Button(action: {
-                    if !viewModel.answersToBeSubmitted.isEmpty {
+                    var answersToSubmit = viewModel.getAnswersForSubmission()
+                    if !answersToSubmit.isEmpty {
                         if let action = action {
                             if !uploadedPhotos.isEmpty {
-                                viewModel.answersToBeSubmitted["ext:kartaview_url"] = uploadedPhotos.joined(separator: ", ")
+                                answersToSubmit["ext:kartaview_url"] = uploadedPhotos.joined(separator: ", ")
                             }
-                         
-                              action(viewModel.answersToBeSubmitted)
+                              action(answersToSubmit)
                           }
                     } else {
                         self.showSubmitAlert = true
@@ -229,6 +222,9 @@ struct LongForm: View, QuestForm {
                 }
                 .frame(maxWidth: .infinity)
 
+            }
+            .onChange(of: viewModel.selectedChoices) { _ in
+                viewModel.clearAnswersForHiddenQuests()
             }
             .onChange(of: capturedImage) { newValue in
                 if newValue != nil {
@@ -330,6 +326,15 @@ struct LongForm: View, QuestForm {
     
     func questsForLongForm() -> [LongQuest]? {
         return QuestsRepository.shared.questsForQuery(query ?? "")       
+    }
+    
+    private func binding(for quest: LongQuest) -> Binding<QuestAnswerChoice?> {
+        return Binding(
+            get: { viewModel.selectedChoices[quest.questID, default: nil] },
+            set: {
+                viewModel.selectedChoices[quest.questID] = $0
+            }
+        )
     }
 }
 

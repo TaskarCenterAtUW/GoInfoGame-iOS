@@ -9,19 +9,15 @@ import SwiftUI
 
 struct LongQuestView: View {
     
-    @Binding var selectedAnswers: [UUID: UUID]
-    
     var quest: LongQuest
-    
-    var onChoiceSelected: (QuestAnswerChoice) -> ()
-    
+        
+    @Binding var selectedChoice: QuestAnswerChoice?
+
     var uploadPhoto: (Bool) -> ()
   
     var questOptions: [QuestAnswerChoice] {
         return quest.questAnswerChoices ?? []
     }
-    
-    @Binding var currentAnswer:String?
     
     @State private var isImageExpanded: Bool = false
     
@@ -50,9 +46,7 @@ struct LongQuestView: View {
                 .font(.custom("Lato-Regular", size: 12))
                 .foregroundColor(Color(red: 131/255, green: 135/255, blue: 155/255))
             
-            QuestOptions(options: questOptions, selectedAnswerId: $selectedAnswers[quest.id], onChoiceSelected: { selectedChoice in
-                onChoiceSelected(selectedChoice)
-            }, currentAnswer: $currentAnswer, questType: quest.questType, uploadPhoto: uploadPhoto)
+            QuestOptions(options: questOptions, selectedChoice: $selectedChoice, questType: quest.questType, uploadPhoto: uploadPhoto)
         }
           .padding(.vertical, 5)
     }
@@ -69,10 +63,7 @@ struct LongQuestView: View {
                                                    QuestAnswerChoice(value: "no", choiceText: "No, this roadway is too wide to cross safely.", imageURL: nil, choiceFollowUp: nil)], questImageURL: nil, questAnswerValidation: nil, questAnswerDependency: nil, questUserAnswer: nil)
     
     
-    
-    LongQuestView(selectedAnswers: .constant([UUID(): UUID()]), quest: longQeust, onChoiceSelected: { qa in
+    LongQuestView(quest: longQeust, selectedChoice: .constant(nil), uploadPhoto: { s in
         
-    }, uploadPhoto: { s in
-        
-    }, currentAnswer: .constant(nil))
+    })
 }
