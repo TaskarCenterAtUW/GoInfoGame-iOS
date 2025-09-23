@@ -17,6 +17,9 @@ struct PosmLoginView: View {
     
     @State private var selectedEnvironment: APIEnvironment = .production
     @State private var showAlert = false
+    @State private var debugMode: Bool = false
+    @State private var showEnableDebugModeAlert: Bool = false
+    @State private var showDisableDebugModeAlert: Bool = false
             
     var body: some View {
         NavigationStack {
@@ -59,29 +62,29 @@ struct PosmLoginView: View {
                         .padding(10)
                         .cornerRadius(10)
                         .padding(.horizontal, 40)
-                    #if DEBUG
-                    Menu {
-                        ForEach(APIEnvironment.allCases, id: \.self) { environment in
-                            Button(action: {
-                                selectedEnvironment = environment
-                                APIConfiguration.shared.environment = environment
-                            }) {
-                                Text(environment.rawValue)
+                    if debugMode {
+                        Menu {
+                            ForEach(APIEnvironment.allCases, id: \.self) { environment in
+                                Button(action: {
+                                    selectedEnvironment = environment
+                                    APIConfiguration.shared.environment = environment
+                                }) {
+                                    Text(environment.rawValue)
+                                }
                             }
+                        } label: {
+                            HStack {
+                                Text("Environment: \(selectedEnvironment.rawValue)")
+                                    .foregroundColor(.black)
+                                Image(systemName: "chevron.down")
+                            }
+                            .padding()
+                            .background(Color(.systemGray6))
+                            .cornerRadius(10)
                         }
-                    } label: {
-                        HStack {
-                            Text("Environment: \(selectedEnvironment.rawValue)")
-                                .foregroundColor(.black)
-                            Image(systemName: "chevron.down")
-                        }
-                        .padding()
-                        .background(Color(.systemGray6))
-                        .cornerRadius(10)
+                        .padding(.horizontal, 40)
                     }
-                    .padding(.horizontal, 40)
                     
-                    #endif
                     Button(action: {
                         APIConfiguration.shared.environment = selectedEnvironment
                         viewModel.performLogin(for: selectedEnvironment)
@@ -138,7 +141,23 @@ struct PosmLoginView: View {
                     }
                     
                     Spacer()
+                    if debugMode {
+                        Button {
+                            showDisableDebugModeAlert = true
+                        } label: {
+                            Text("Exit debug mode")
+                                .font(FontFamily.Lato.bold.swiftUIFont(size: 16))
+                                .foregroundColor(Asset.Colors.d74BA827Pink.swiftUIColor)
+                        }
+                        .padding(.bottom, 5)
+                    }
                     appVersionText
+                        .accessibilityRespondsToUserInteraction()
+                        .onTapGesture(count: 7, perform: {
+                            if !debugMode {
+                                showEnableDebugModeAlert = true
+                            }
+                        })
                 }
                 .padding([.top], 0)
                 
@@ -166,6 +185,27 @@ struct PosmLoginView: View {
         } message: {
             Text("Would you like to use Face ID or Touch ID for faster logins?")
         }
+        .alert("Debug mode", isPresented: $showEnableDebugModeAlert) {
+            Button("Enable") {
+                debugMode = true
+            }
+            Button("Not Now", role: .cancel) {
+                
+            }
+        } message: {
+            Text("Do you want to enable debug mode?")
+        }
+        .alert("Debug mode", isPresented: $showDisableDebugModeAlert) {
+            Button("Disable") {
+                selectedEnvironment = .production
+                debugMode = false
+            }
+            Button("Not Now", role: .cancel) {
+                
+            }
+        } message: {
+            Text("Do you want to disable debug mode?")
+        }
         .onReceive(NotificationCenter.default.publisher(for: Notification.Name("SessionExpired"))) { notification in
                     showAlert = true
                 }
@@ -178,8 +218,7 @@ struct PosmLoginView: View {
     
     var appVersionText: Text {
         let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "N/A"
-        let build = Bundle.main.infoDictionary?["CFBundleVersion"] as? String ?? "N/A"
-        return Text("Version \(version) (\(build))")
+        return Text("Version \(version)")
             .font(FontFamily.Lato.medium.swiftUIFont(size: 16))
             .foregroundColor(Asset.Colors._83879BTextFiledTitle.swiftUIColor)
     }

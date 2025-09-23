@@ -1809,9 +1809,9 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = FAD5C5192AFCBE720040C61A /* Build configuration list for PBXNativeTarget "GoInfoGame" */;
 			buildPhases = (
+				3A8B389D639C310AE1E29BEB /* [CP] Check Pods Manifest.lock */,
 				C7927B562E42364100A7A34E /* SwiftGen */,
 				C77AACA72E44738A006713B2 /* Copy GoogleService-Info.plist */,
-				3A8B389D639C310AE1E29BEB /* [CP] Check Pods Manifest.lock */,
 				FAD5C4EB2AFCBE700040C61A /* Sources */,
 				FAD5C4EC2AFCBE700040C61A /* Frameworks */,
 				FAD5C4ED2AFCBE700040C61A /* Resources */,
@@ -2895,7 +2895,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 4;
+				CURRENT_PROJECT_VERSION = 1;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = G8MQVE5WWW;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
@@ -2918,7 +2918,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.0.1;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-l\"c++\"",
@@ -2960,7 +2960,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 4;
+				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = G8MQVE5WWW;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -2982,7 +2982,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.0.1;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-l\"c++\"",
