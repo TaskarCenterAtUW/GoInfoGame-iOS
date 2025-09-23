@@ -218,8 +218,7 @@ struct PosmLoginView: View {
     
     var appVersionText: Text {
         let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "N/A"
-        let build = Bundle.main.infoDictionary?["CFBundleVersion"] as? String ?? "N/A"
-        return Text("Version \(version) (\(build))")
+        return Text("Version \(version)")
             .font(FontFamily.Lato.medium.swiftUIFont(size: 16))
             .foregroundColor(Asset.Colors._83879BTextFiledTitle.swiftUIColor)
     }
