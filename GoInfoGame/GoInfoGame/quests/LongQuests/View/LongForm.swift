@@ -339,13 +339,120 @@ struct LongForm: View, QuestForm {
 }
 
 #Preview {
-    let quest = LongFormElement(elementType: "Sidewalks", questQuery: "ways with (highway=footway and footway=sidewalk)", elementTypeIcon: "icon", quests: [LongQuest(questID: 14,
-                                                                                                                           questTitle: "Does the length of this crossing allow for safe navigation?",
-                                                                                                                           questDescription: "Determine whether this crossing is short enough to cross safely.",
-                                                                                                                           questType: .exclusiveChoice,
-                                                                                                                           questTag: "ext:crossing_adequate_length",
-                                                                                                                           questAnswerChoices: [QuestAnswerChoice(value: "yes", choiceText: "Yes, this roadway can be crossed safely. this is to test the line limit functionlity. want to see the max capability of this feature. the max lines should be 10. this is for our obervations only. till now it is able to render 10 lines with out any issue.", imageURL: nil, choiceFollowUp: nil),
-                                                                                                                                                QuestAnswerChoice(value: "no", choiceText: "No, this roadway is too wide to cross safely.", imageURL: nil, choiceFollowUp: nil)], questImageURL: nil, questAnswerValidation: nil, questAnswerDependency: nil, questUserAnswer: nil)])
+    let jsonString = """
+        {
+              "element_type": "Sidewalks",
+              "element_type_icon": "sidewalk",
+              "quest_query": "ways with (highway=footway and footway=sidewalk)",
+              "quests": [
+                {
+                  "quest_id": 101,
+                  "quest_title": "What is this sidewalk's surface type?",
+                  "quest_description": "Choose the primary surface material of the sidewalk.",
+                  "quest_type": "ExclusiveChoice",
+                  "quest_tag": "ext:surface",
+                  "quest_answer_choices": [
+                    {
+                      "value": "asphalt",
+                      "choice_text": "Asphalt",
+                      "image_url": "https://raw.githubusercontent.com/TaskarCenterAtUW/tdei-tools/main/images/sidewalk/surface/asphalt_landscape.png"
+                    },
+                    {
+                      "value": "concrete",
+                      "choice_text": "Concrete",
+                      "image_url": "https://raw.githubusercontent.com/TaskarCenterAtUW/tdei-tools/main/images/sidewalk/surface/concrete_landscape.png"
+                    },
+                    {
+                      "value": "paving_stones",
+                      "choice_text": "Brick",
+                      "image_url": "https://raw.githubusercontent.com/TaskarCenterAtUW/tdei-tools/main/images/sidewalk/surface/brick_landscape.png"
+                    },
+                    {
+                      "value": "gravel",
+                      "choice_text": "Gravel",
+                      "image_url": "https://raw.githubusercontent.com/TaskarCenterAtUW/tdei-tools/main/images/sidewalk/surface/compacted_gravel_landscape.png"
+                    },
+                    {
+                      "value": "other",
+                      "choice_text": "Other"
+                    }
+                  ]
+                },
+                {
+                  "quest_id": 103,
+                  "quest_title": "How wide is this sidewalk, in inches?",
+                  "quest_description": "Specify the width of this sidewalk, in inches.",
+                  "quest_image_url": "https://raw.githubusercontent.com/TaskarCenterAtUW/tdei-tools/main/images/sidewalk/dimension/width_square.png",
+                  "quest_type": "Numeric",
+                  "quest_tag": "width",
+                  "quest_answer_validation": {
+                    "min": 12,
+                    "max": 240
+                  }
+                },
+                {
+                  "quest_id": 104,
+                  "quest_title": "Are there any obstructions along this sidewalk?",
+                  "quest_description": "Check if there are any obstructions blocking this sidewalk.",
+                  "quest_image_url": "https://raw.githubusercontent.com/TaskarCenterAtUW/tdei-tools/main/images/sidewalk/obstruction/street_furniture_square.png",
+                  "quest_type": "ExclusiveChoice",
+                  "quest_tag": "ext:obstruction",
+                  "quest_answer_choices": [
+                    {
+                      "value": "yes",
+                      "choice_text": "Yes"
+                    },
+                    {
+                      "value": "no",
+                      "choice_text": "No"
+                    }
+                  ]
+                },
+                {
+                  "quest_id": 105,
+                  "quest_title": "What types of obstructions are present along this sidewalk?",
+                  "quest_description": "Select all applicable types of obstructions that are present along this sidewalk.",
+                  "quest_type": "MultipleChoice",
+                  "quest_tag": "ext:obstruction:type",
+                  "quest_answer_dependency": {
+                    "question_id": 104,
+                    "required_value": "yes"
+                  },
+                  "quest_answer_choices": [
+                    {
+                      "value": "bollard",
+                      "choice_text": "Bollard",
+                      "image_url": "https://raw.githubusercontent.com/TaskarCenterAtUW/tdei-tools/main/images/sidewalk/obstruction/bollard_2_square.png"
+                    },
+                    {
+                      "value": "mailbox",
+                      "choice_text": "Mailbox",
+                      "image_url": "https://raw.githubusercontent.com/TaskarCenterAtUW/tdei-tools/main/images/sidewalk/obstruction/mailbox_landscape.png"
+                    },
+                    {
+                      "value": "pole",
+                      "choice_text": "Utility Pole",
+                      "image_url": "https://raw.githubusercontent.com/TaskarCenterAtUW/tdei-tools/main/images/sidewalk/obstruction/utility_2_square.png"
+                    },
+                    {
+                      "value": "waste_bin",
+                      "choice_text": "Trash Can",
+                      "image_url": "https://raw.githubusercontent.com/TaskarCenterAtUW/tdei-tools/main/images/sidewalk/obstruction/waste_bin_square.png"
+                    },
+                    {
+                      "value": "other",
+                      "choice_text": "Other obstruction",
+                      "choice_follow_up": "Please take a photo of the obstruction."
+                    }
+                  ]
+                }
+              ]
+            }
+        """
+    
+    guard let quest = try? JSONDecoder().decode(LongFormElement.self, from: jsonString.data(using: .utf8)!) else {
+        return Text("Error parsing JSON")
+    }
     QuestsRepository.shared.longQuestModels.append(quest)
     return LongForm(elementName: quest.elementType, questID: "questId",query: quest.questQuery, action: { tags in
                 })

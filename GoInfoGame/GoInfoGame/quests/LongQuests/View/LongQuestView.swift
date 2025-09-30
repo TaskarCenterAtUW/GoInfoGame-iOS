@@ -54,16 +54,49 @@ struct LongQuestView: View {
 }
 
 #Preview {
-    let longQeust = LongQuest(questID: 14,
-                              questTitle: "Does the length of this crossing allow for safe navigation?",
-                              questDescription: "Determine whether this crossing is short enough to cross safely.",
-                              questType: .exclusiveChoice,
-                              questTag: "ext:crossing_adequate_length",
-                              questAnswerChoices: [QuestAnswerChoice(value: "yes", choiceText: "Yes, this roadway can be crossed safely.", imageURL: nil, choiceFollowUp: nil),
-                                                   QuestAnswerChoice(value: "no", choiceText: "No, this roadway is too wide to cross safely.", imageURL: nil, choiceFollowUp: nil)], questImageURL: nil, questAnswerValidation: nil, questAnswerDependency: nil, questUserAnswer: nil)
-    
-    
-    LongQuestView(quest: longQeust, selectedChoice: .constant(nil), uploadPhoto: { s in
+    let jsonString = """
+{
+  "quest_id": 105,
+  "quest_title": "What types of obstructions are present along this sidewalk?",
+  "quest_description": "Select all applicable types of obstructions that are present along this sidewalk.",
+  "quest_type": "MultipleChoice",
+  "quest_tag": "ext:obstruction:type",
+  "quest_answer_dependency": {
+    "question_id": 104,
+    "required_value": "yes"
+  },
+  "quest_answer_choices": [
+    {
+      "value": "bollard",
+      "choice_text": "Bollard",
+      "image_url": "https://raw.githubusercontent.com/TaskarCenterAtUW/tdei-tools/main/images/sidewalk/obstruction/bollard_2_square.png"
+    },
+    {
+      "value": "mailbox",
+      "choice_text": "Mailbox",
+      "image_url": "https://raw.githubusercontent.com/TaskarCenterAtUW/tdei-tools/main/images/sidewalk/obstruction/mailbox_landscape.png"
+    },
+    {
+      "value": "pole",
+      "choice_text": "Utility Pole",
+      "image_url": "https://raw.githubusercontent.com/TaskarCenterAtUW/tdei-tools/main/images/sidewalk/obstruction/utility_2_square.png"
+    },
+    {
+      "value": "waste_bin",
+      "choice_text": "Trash Can",
+      "image_url": "https://raw.githubusercontent.com/TaskarCenterAtUW/tdei-tools/main/images/sidewalk/obstruction/waste_bin_square.png"
+    },
+    {
+      "value": "other",
+      "choice_text": "Other obstruction",
+      "choice_follow_up": "Please take a photo of the obstruction."
+    }
+  ]
+}
+"""
+    if let longQeust = try? JSONDecoder().decode(LongQuest.self, from: jsonString.data(using: .utf8)!) {
+        LongQuestView(quest: longQeust, selectedChoice: .constant(nil), uploadPhoto: { s in
         
-    })
+            })
+    }
 }

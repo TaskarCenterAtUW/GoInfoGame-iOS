@@ -69,7 +69,7 @@ struct LongQuest: Codable, Identifiable {
     var questAnswerChoices: [QuestAnswerChoice]?
     var questImageURL: String?
     var questAnswerValidation: QuestAnswerValidation?
-    var questAnswerDependency: QuestAnswerDependency?
+    var questAnswerDependency: [QuestAnswerDependency]?
     var questUserAnswer : String?
     
     func getFormValue() ->[String:String?] {
@@ -86,6 +86,27 @@ struct LongQuest: Codable, Identifiable {
         case questImageURL = "quest_image_url"
         case questAnswerValidation = "quest_answer_validation"
         case questAnswerDependency = "quest_answer_dependency"
+    }
+
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        questID = try container.decode(Int.self, forKey: .questID)
+        questTitle = try container.decode(String.self, forKey: .questTitle)
+        questDescription = try container.decode(String.self, forKey: .questDescription)
+        questType = try container.decode(QuestType.self, forKey: .questType)
+        questTag = try container.decode(String.self, forKey: .questTag)
+        questAnswerChoices = try container.decodeIfPresent([QuestAnswerChoice].self, forKey: .questAnswerChoices)
+        questImageURL = try container.decodeIfPresent(String.self, forKey: .questImageURL)
+        questAnswerValidation = try container.decodeIfPresent(QuestAnswerValidation.self, forKey: .questAnswerValidation)
+        
+        // Handle questAnswerDependency which can be an object or an array
+        if let singleDependency = try? container.decodeIfPresent(QuestAnswerDependency.self, forKey: .questAnswerDependency) {
+            questAnswerDependency = [singleDependency]
+        } else if let multipleDependencies = try? container.decodeIfPresent([QuestAnswerDependency].self, forKey: .questAnswerDependency) {
+            questAnswerDependency = multipleDependencies
+        } else {
+            questAnswerDependency = nil
+        }
     }
     
     func getQtype() -> QuestType {
