@@ -60,7 +60,8 @@ struct LongQuestView: View {
                     "quest_title": "Additional crossing notes...",
                     "quest_description": "Add any additional observations you'd like to record about this crossing",
                     "quest_type": "TextEntry",
-                    "quest_tag": "ext:crossing:description"
+                    "quest_tag": "ext:crossing:description",
+"quest_image_url": "https://raw.githubusercontent.com/TaskarCenterAtUW/tdei-tools/main/images/kerb/lowered_landscape.png"
                 }
 """
     if let longQeust = try? JSONDecoder().decode(LongQuest.self, from: jsonString.data(using: .utf8)!) {

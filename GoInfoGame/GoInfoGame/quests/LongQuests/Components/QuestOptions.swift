@@ -224,27 +224,35 @@ private extension QuestOptions {
     
     struct TextEntryView: View {
         @Binding var selectedChoice: QuestAnswerChoice?
-
+        let maxLenth: Int = 255
+        
+        private var currentValue: String {
+            selectedChoice?.value ?? ""
+        }
+        
         var body: some View {
-            HStack {
-                TextEditor( text: Binding(
+            ZStack(alignment: .bottomTrailing) {
+                TextEditor(text: Binding(
                     get: { selectedChoice?.value ?? "" },
                     set: { newValue in
-                        if newValue.isEmpty {
+                        let truncatedValue = String(newValue.prefix(maxLenth))
+                        if truncatedValue.isEmpty {
                             selectedChoice = nil
                         } else {
-                            if selectedChoice?.value != newValue {
-                                let answer = QuestAnswerChoice(value: newValue, choiceText: newValue, imageURL: nil, choiceFollowUp: nil)
-                                selectedChoice = answer
-                            }
+                            let answer = QuestAnswerChoice(value: truncatedValue, choiceText: truncatedValue, imageURL: nil, choiceFollowUp: nil)
+                            selectedChoice = answer
                         }
                     }
                 ))
-                .padding(1)
                 .frame(height: 100)
-                .textFieldStyle(PlainTextFieldStyle())
                 .keyboardType(UIKeyboardType.default)
                 .border(Color.gray)
+                
+                Text("\(currentValue.count) / \(maxLenth)")
+                    .font(.caption)
+                    .foregroundColor(.gray)
+                    .padding(5)
+                    .background(Color.white.opacity(0.5))
             }
         }
     }
