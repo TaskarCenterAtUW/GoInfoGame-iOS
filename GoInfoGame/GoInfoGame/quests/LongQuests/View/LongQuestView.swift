@@ -56,43 +56,12 @@ struct LongQuestView: View {
 #Preview {
     let jsonString = """
 {
-  "quest_id": 105,
-  "quest_title": "What types of obstructions are present along this sidewalk?",
-  "quest_description": "Select all applicable types of obstructions that are present along this sidewalk.",
-  "quest_type": "MultipleChoice",
-  "quest_tag": "ext:obstruction:type",
-  "quest_answer_dependency": {
-    "question_id": 104,
-    "required_value": "yes"
-  },
-  "quest_answer_choices": [
-    {
-      "value": "bollard",
-      "choice_text": "Bollard",
-      "image_url": "https://raw.githubusercontent.com/TaskarCenterAtUW/tdei-tools/main/images/sidewalk/obstruction/bollard_2_square.png"
-    },
-    {
-      "value": "mailbox",
-      "choice_text": "Mailbox",
-      "image_url": "https://raw.githubusercontent.com/TaskarCenterAtUW/tdei-tools/main/images/sidewalk/obstruction/mailbox_landscape.png"
-    },
-    {
-      "value": "pole",
-      "choice_text": "Utility Pole",
-      "image_url": "https://raw.githubusercontent.com/TaskarCenterAtUW/tdei-tools/main/images/sidewalk/obstruction/utility_2_square.png"
-    },
-    {
-      "value": "waste_bin",
-      "choice_text": "Trash Can",
-      "image_url": "https://raw.githubusercontent.com/TaskarCenterAtUW/tdei-tools/main/images/sidewalk/obstruction/waste_bin_square.png"
-    },
-    {
-      "value": "other",
-      "choice_text": "Other obstruction",
-      "choice_follow_up": "Please take a photo of the obstruction."
-    }
-  ]
-}
+                    "quest_id": 205,
+                    "quest_title": "Additional crossing notes...",
+                    "quest_description": "Add any additional observations you'd like to record about this crossing",
+                    "quest_type": "TextEntry",
+                    "quest_tag": "ext:crossing:description"
+                }
 """
     if let longQeust = try? JSONDecoder().decode(LongQuest.self, from: jsonString.data(using: .utf8)!) {
         LongQuestView(quest: longQeust, selectedChoice: .constant(nil), uploadPhoto: { s in

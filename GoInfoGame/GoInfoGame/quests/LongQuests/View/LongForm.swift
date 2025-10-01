@@ -161,7 +161,7 @@ struct LongForm: View, QuestForm {
                 
                 VStack {
                     List {
-                        if let quests = questsForLongForm() {
+                        if let quests = questsForLongForm()?.quests {
                             ForEach(quests, id: \.questID) { quest in
                                 if viewModel.shouldShowQuest(quest) {
                                     LongQuestView(quest: quest, selectedChoice: binding(for: quest), uploadPhoto:  { result in
@@ -324,8 +324,10 @@ struct LongForm: View, QuestForm {
         })
     }
     
-    func questsForLongForm() -> [LongQuest]? {
-        return QuestsRepository.shared.questsForQuery(query ?? "")       
+    func questsForLongForm() -> LongFormElement? {
+        let element = QuestsRepository.shared.questElementForQuery(query ?? "")
+        viewModel.longForm = element
+        return element
     }
     
     private func binding(for quest: LongQuest) -> Binding<QuestAnswerChoice?> {
@@ -341,110 +343,100 @@ struct LongForm: View, QuestForm {
 #Preview {
     let jsonString = """
         {
-              "element_type": "Sidewalks",
-              "element_type_icon": "sidewalk",
-              "quest_query": "ways with (highway=footway and footway=sidewalk)",
+              "element_type": "Crossings",
+              "element_type_icon": "pedestrian_crossing",
+              "quest_query": "ways with (highway=footway and footway=crossing)",
               "quests": [
                 {
-                  "quest_id": 101,
-                  "quest_title": "What is this sidewalk's surface type?",
-                  "quest_description": "Choose the primary surface material of the sidewalk.",
+                  "quest_id": 201,
+                  "quest_title": "Does this crossing have markings on the roadway?",
+                  "quest_description": "Check if there are roadway markings present at this crossing.",
                   "quest_type": "ExclusiveChoice",
-                  "quest_tag": "ext:surface",
+                  "quest_tag": "crossing:markings",
                   "quest_answer_choices": [
                     {
-                      "value": "asphalt",
-                      "choice_text": "Asphalt",
-                      "image_url": "https://raw.githubusercontent.com/TaskarCenterAtUW/tdei-tools/main/images/sidewalk/surface/asphalt_landscape.png"
+                      "value": "no",
+                      "choice_text": "No",
+                      "image_url": "https://raw.githubusercontent.com/TaskarCenterAtUW/tdei-tools/main/images/crossing/markings/no_square.png"
                     },
                     {
-                      "value": "concrete",
-                      "choice_text": "Concrete",
-                      "image_url": "https://raw.githubusercontent.com/TaskarCenterAtUW/tdei-tools/main/images/sidewalk/surface/concrete_landscape.png"
-                    },
-                    {
-                      "value": "paving_stones",
-                      "choice_text": "Brick",
-                      "image_url": "https://raw.githubusercontent.com/TaskarCenterAtUW/tdei-tools/main/images/sidewalk/surface/brick_landscape.png"
-                    },
-                    {
-                      "value": "gravel",
-                      "choice_text": "Gravel",
-                      "image_url": "https://raw.githubusercontent.com/TaskarCenterAtUW/tdei-tools/main/images/sidewalk/surface/compacted_gravel_landscape.png"
-                    },
-                    {
-                      "value": "other",
-                      "choice_text": "Other"
+                      "value": "yes",
+                      "choice_text": "Yes",
+                      "image_url": "https://raw.githubusercontent.com/TaskarCenterAtUW/tdei-tools/main/images/crossing/markings/zebra_square.png"
                     }
                   ]
                 },
                 {
-                  "quest_id": 103,
-                  "quest_title": "How wide is this sidewalk, in inches?",
-                  "quest_description": "Specify the width of this sidewalk, in inches.",
-                  "quest_image_url": "https://raw.githubusercontent.com/TaskarCenterAtUW/tdei-tools/main/images/sidewalk/dimension/width_square.png",
+                  "quest_id": 202,
+                  "quest_title": "Does this crossing have signals for pedestrians?",
+                  "quest_description": "Indicate whether this crossing has pedestrian signals.",
+                  "quest_type": "ExclusiveChoice",
+                  "quest_tag": "ext:crossing:signals",
+                  "quest_answer_choices": [
+                    {
+                      "value": "no",
+                      "choice_text": "No",
+                      "image_url": "https://raw.githubusercontent.com/TaskarCenterAtUW/tdei-tools/main/images/crossing/markings/no_2_square.png"
+                    },
+                    {
+                      "value": "yes",
+                      "choice_text": "Yes",
+                      "image_url": "https://raw.githubusercontent.com/TaskarCenterAtUW/tdei-tools/main/images/crossing/signals/arrow/yes_square.png"
+                    }
+                  ]
+                },
+                {
+                  "quest_id": 203,
+                  "quest_title": "What accessibility features are present at this signalized crossing?",
+                  "quest_description": "Select all accessibility features present at this signalized crossing.",
+                  "quest_type": "MultipleChoice",
+                  "quest_tag": "ext:crossing:signals:features",
+                  "quest_answer_dependency": [
+                    {
+                      "question_id": 202,
+                      "required_value": "yes"
+                    }
+                  ],
+                  "quest_answer_choices": [
+                    {
+                      "value": "button",
+                      "choice_text": "Button",
+                      "image_url": "https://raw.githubusercontent.com/TaskarCenterAtUW/tdei-tools/main/images/crossing/signals/arrow/yes_square.png"
+                    },
+                    {
+                      "value": "arrow",
+                      "choice_text": "Tactile Arrow",
+                      "image_url": "https://raw.githubusercontent.com/TaskarCenterAtUW/tdei-tools/main/images/crossing/signals/arrow/yes_square.png"
+                    },
+                    {
+                      "value": "sound",
+                      "choice_text": "Sound",
+                      "image_url": "https://raw.githubusercontent.com/TaskarCenterAtUW/tdei-tools/main/images/crossing/signals/sound/yes_square.png"
+                    },
+                    {
+                      "value": "vibration",
+                      "choice_text": "Tactile Vibration",
+                      "image_url": "https://raw.githubusercontent.com/TaskarCenterAtUW/tdei-tools/main/images/crossing/signals/vibration/yes_square.png"
+                    }
+                  ]
+                },
+                {
+                  "quest_id": 204,
+                  "quest_title": "How many lanes are crossed at this crossing?",
+                  "quest_description": "Count the total number of traffic lanes crossed at this crossing.",
                   "quest_type": "Numeric",
-                  "quest_tag": "width",
+                  "quest_tag": "ext:crossing:count_lanes_crossed",
                   "quest_answer_validation": {
-                    "min": 12,
-                    "max": 240
+                    "min": 1,
+                    "max": 10
                   }
                 },
                 {
-                  "quest_id": 104,
-                  "quest_title": "Are there any obstructions along this sidewalk?",
-                  "quest_description": "Check if there are any obstructions blocking this sidewalk.",
-                  "quest_image_url": "https://raw.githubusercontent.com/TaskarCenterAtUW/tdei-tools/main/images/sidewalk/obstruction/street_furniture_square.png",
-                  "quest_type": "ExclusiveChoice",
-                  "quest_tag": "ext:obstruction",
-                  "quest_answer_choices": [
-                    {
-                      "value": "yes",
-                      "choice_text": "Yes"
-                    },
-                    {
-                      "value": "no",
-                      "choice_text": "No"
-                    }
-                  ]
-                },
-                {
-                  "quest_id": 105,
-                  "quest_title": "What types of obstructions are present along this sidewalk?",
-                  "quest_description": "Select all applicable types of obstructions that are present along this sidewalk.",
-                  "quest_type": "MultipleChoice",
-                  "quest_tag": "ext:obstruction:type",
-                  "quest_answer_dependency": {
-                    "question_id": 104,
-                    "required_value": "yes"
-                  },
-                  "quest_answer_choices": [
-                    {
-                      "value": "bollard",
-                      "choice_text": "Bollard",
-                      "image_url": "https://raw.githubusercontent.com/TaskarCenterAtUW/tdei-tools/main/images/sidewalk/obstruction/bollard_2_square.png"
-                    },
-                    {
-                      "value": "mailbox",
-                      "choice_text": "Mailbox",
-                      "image_url": "https://raw.githubusercontent.com/TaskarCenterAtUW/tdei-tools/main/images/sidewalk/obstruction/mailbox_landscape.png"
-                    },
-                    {
-                      "value": "pole",
-                      "choice_text": "Utility Pole",
-                      "image_url": "https://raw.githubusercontent.com/TaskarCenterAtUW/tdei-tools/main/images/sidewalk/obstruction/utility_2_square.png"
-                    },
-                    {
-                      "value": "waste_bin",
-                      "choice_text": "Trash Can",
-                      "image_url": "https://raw.githubusercontent.com/TaskarCenterAtUW/tdei-tools/main/images/sidewalk/obstruction/waste_bin_square.png"
-                    },
-                    {
-                      "value": "other",
-                      "choice_text": "Other obstruction",
-                      "choice_follow_up": "Please take a photo of the obstruction."
-                    }
-                  ]
+                  "quest_id": 205,
+                  "quest_title": "Additional crossing notes...",
+                  "quest_description": "Add any additional observations you'd like to record about this crossing",
+                  "quest_type": "TextEntry",
+                  "quest_tag": "ext:crossing:description"
                 }
               ]
             }

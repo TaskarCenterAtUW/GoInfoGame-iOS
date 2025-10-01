@@ -157,6 +157,7 @@ enum QuestType: String, Codable {
     case exclusiveChoice = "ExclusiveChoice"
     case numeric = "Numeric"
     case multipleChoice = "MultipleChoice"
+    case textEntry = "TextEntry"
 //    case excWithImg = "ExclusiveChoiceWithImg"
 }
 

@@ -8,7 +8,7 @@
 import Foundation
 
 class LongFormViewModel: ObservableObject {
-    @Published var longForm: LongFormElement?
+    var longForm: LongFormElement?
     @Published var selectedChoices: [Int: QuestAnswerChoice?] = [:]
 
     init() {}

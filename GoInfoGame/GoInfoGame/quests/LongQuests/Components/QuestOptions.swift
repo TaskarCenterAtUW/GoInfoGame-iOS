@@ -35,6 +35,10 @@ struct QuestOptions: View {
             NumericInputView(
                 selectedChoice: $selectedChoice
             )
+        case .textEntry:
+            TextEntryView(
+                selectedChoice: $selectedChoice
+            )
         }
     }
 }
@@ -214,6 +218,33 @@ private extension QuestOptions {
                 .padding(1)
                 .textFieldStyle(PlainTextFieldStyle())
                 .keyboardType(UIKeyboardType.numberPad)
+            }
+        }
+    }
+    
+    struct TextEntryView: View {
+        @Binding var selectedChoice: QuestAnswerChoice?
+
+        var body: some View {
+            HStack {
+                TextEditor( text: Binding(
+                    get: { selectedChoice?.value ?? "" },
+                    set: { newValue in
+                        if newValue.isEmpty {
+                            selectedChoice = nil
+                        } else {
+                            if selectedChoice?.value != newValue {
+                                let answer = QuestAnswerChoice(value: newValue, choiceText: newValue, imageURL: nil, choiceFollowUp: nil)
+                                selectedChoice = answer
+                            }
+                        }
+                    }
+                ))
+                .padding(1)
+                .frame(height: 100)
+                .textFieldStyle(PlainTextFieldStyle())
+                .keyboardType(UIKeyboardType.default)
+                .border(Color.gray)
             }
         }
     }
