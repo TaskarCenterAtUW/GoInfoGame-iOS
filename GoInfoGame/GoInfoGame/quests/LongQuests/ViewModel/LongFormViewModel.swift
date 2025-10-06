@@ -8,15 +8,26 @@
 import Foundation
 
 class LongFormViewModel: ObservableObject {
-    @Published var longForm: LongFormElement?
+    var longForm: LongFormElement?
     @Published var selectedChoices: [Int: QuestAnswerChoice?] = [:]
 
     init() {}
         
      func shouldShowQuest(_ quest: LongQuest) -> Bool {
-        guard let dependency = quest.questAnswerDependency else {
-            return true
-        }
+         guard let dependencies = quest.questAnswerDependency else {
+             return true
+         }
+         var dependencyResult: Bool = true
+         for dependency in dependencies {
+             dependencyResult = dependencyResult && checkDependency(dependency)
+             if !dependencyResult {
+                 return dependencyResult
+             }
+         }
+         return dependencyResult
+    }
+    
+    func checkDependency(_ dependency: QuestAnswerDependency) -> Bool {
         if let answeredChoiceOptional = selectedChoices[dependency.questionID],
            let answeredChoice = answeredChoiceOptional,
            !answeredChoice.value.isEmpty {

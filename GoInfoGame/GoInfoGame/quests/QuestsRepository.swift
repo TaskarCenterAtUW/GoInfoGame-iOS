@@ -148,8 +148,8 @@ extension QuestsRepository {
         return longQuestModels.first(where: { $0.elementType.lowercased() == elementType.lowercased() })?.questQuery
     }
     
-    func questsForQuery(_ query: String) -> [LongQuest]? {
-        return longQuestModels.first(where: {$0.questQuery == query})?.quests
+    func questElementForQuery(_ query: String) -> LongFormElement? {
+        return longQuestModels.first(where: {$0.questQuery == query})
     }
 }
 

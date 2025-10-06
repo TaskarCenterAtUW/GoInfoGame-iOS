@@ -161,7 +161,7 @@ struct LongForm: View, QuestForm {
                 
                 VStack {
                     List {
-                        if let quests = questsForLongForm() {
+                        if let quests = questsForLongForm()?.quests {
                             ForEach(quests, id: \.questID) { quest in
                                 if viewModel.shouldShowQuest(quest) {
                                     LongQuestView(quest: quest, selectedChoice: binding(for: quest), uploadPhoto:  { result in
@@ -324,8 +324,10 @@ struct LongForm: View, QuestForm {
         })
     }
     
-    func questsForLongForm() -> [LongQuest]? {
-        return QuestsRepository.shared.questsForQuery(query ?? "")       
+    func questsForLongForm() -> LongFormElement? {
+        let element = QuestsRepository.shared.questElementForQuery(query ?? "")
+        viewModel.longForm = element
+        return element
     }
     
     private func binding(for quest: LongQuest) -> Binding<QuestAnswerChoice?> {
@@ -339,13 +341,110 @@ struct LongForm: View, QuestForm {
 }
 
 #Preview {
-    let quest = LongFormElement(elementType: "Sidewalks", questQuery: "ways with (highway=footway and footway=sidewalk)", elementTypeIcon: "icon", quests: [LongQuest(questID: 14,
-                                                                                                                           questTitle: "Does the length of this crossing allow for safe navigation?",
-                                                                                                                           questDescription: "Determine whether this crossing is short enough to cross safely.",
-                                                                                                                           questType: .exclusiveChoice,
-                                                                                                                           questTag: "ext:crossing_adequate_length",
-                                                                                                                           questAnswerChoices: [QuestAnswerChoice(value: "yes", choiceText: "Yes, this roadway can be crossed safely. this is to test the line limit functionlity. want to see the max capability of this feature. the max lines should be 10. this is for our obervations only. till now it is able to render 10 lines with out any issue.", imageURL: nil, choiceFollowUp: nil),
-                                                                                                                                                QuestAnswerChoice(value: "no", choiceText: "No, this roadway is too wide to cross safely.", imageURL: nil, choiceFollowUp: nil)], questImageURL: nil, questAnswerValidation: nil, questAnswerDependency: nil, questUserAnswer: nil)])
+    let jsonString = """
+        {
+              "element_type": "Crossings",
+              "element_type_icon": "pedestrian_crossing",
+              "quest_query": "ways with (highway=footway and footway=crossing)",
+              "quests": [
+                {
+                  "quest_id": 201,
+                  "quest_title": "Does this crossing have markings on the roadway?",
+                  "quest_description": "Check if there are roadway markings present at this crossing.",
+                  "quest_type": "ExclusiveChoice",
+                  "quest_tag": "crossing:markings",
+                  "quest_answer_choices": [
+                    {
+                      "value": "no",
+                      "choice_text": "No",
+                      "image_url": "https://raw.githubusercontent.com/TaskarCenterAtUW/tdei-tools/main/images/crossing/markings/no_square.png"
+                    },
+                    {
+                      "value": "yes",
+                      "choice_text": "Yes",
+                      "image_url": "https://raw.githubusercontent.com/TaskarCenterAtUW/tdei-tools/main/images/crossing/markings/zebra_square.png"
+                    }
+                  ]
+                },
+                {
+                  "quest_id": 202,
+                  "quest_title": "Does this crossing have signals for pedestrians?",
+                  "quest_description": "Indicate whether this crossing has pedestrian signals.",
+                  "quest_type": "ExclusiveChoice",
+                  "quest_tag": "ext:crossing:signals",
+                  "quest_answer_choices": [
+                    {
+                      "value": "no",
+                      "choice_text": "No",
+                      "image_url": "https://raw.githubusercontent.com/TaskarCenterAtUW/tdei-tools/main/images/crossing/markings/no_2_square.png"
+                    },
+                    {
+                      "value": "yes",
+                      "choice_text": "Yes",
+                      "image_url": "https://raw.githubusercontent.com/TaskarCenterAtUW/tdei-tools/main/images/crossing/signals/arrow/yes_square.png"
+                    }
+                  ]
+                },
+                {
+                  "quest_id": 203,
+                  "quest_title": "What accessibility features are present at this signalized crossing?",
+                  "quest_description": "Select all accessibility features present at this signalized crossing.",
+                  "quest_type": "MultipleChoice",
+                  "quest_tag": "ext:crossing:signals:features",
+                  "quest_answer_dependency": [
+                    {
+                      "question_id": 202,
+                      "required_value": "yes"
+                    }
+                  ],
+                  "quest_answer_choices": [
+                    {
+                      "value": "button",
+                      "choice_text": "Button",
+                      "image_url": "https://raw.githubusercontent.com/TaskarCenterAtUW/tdei-tools/main/images/crossing/signals/arrow/yes_square.png"
+                    },
+                    {
+                      "value": "arrow",
+                      "choice_text": "Tactile Arrow",
+                      "image_url": "https://raw.githubusercontent.com/TaskarCenterAtUW/tdei-tools/main/images/crossing/signals/arrow/yes_square.png"
+                    },
+                    {
+                      "value": "sound",
+                      "choice_text": "Sound",
+                      "image_url": "https://raw.githubusercontent.com/TaskarCenterAtUW/tdei-tools/main/images/crossing/signals/sound/yes_square.png"
+                    },
+                    {
+                      "value": "vibration",
+                      "choice_text": "Tactile Vibration",
+                      "image_url": "https://raw.githubusercontent.com/TaskarCenterAtUW/tdei-tools/main/images/crossing/signals/vibration/yes_square.png"
+                    }
+                  ]
+                },
+                {
+                  "quest_id": 204,
+                  "quest_title": "How many lanes are crossed at this crossing?",
+                  "quest_description": "Count the total number of traffic lanes crossed at this crossing.",
+                  "quest_type": "Numeric",
+                  "quest_tag": "ext:crossing:count_lanes_crossed",
+                  "quest_answer_validation": {
+                    "min": 1,
+                    "max": 10
+                  }
+                },
+                {
+                  "quest_id": 205,
+                  "quest_title": "Additional crossing notes...",
+                  "quest_description": "Add any additional observations you'd like to record about this crossing",
+                  "quest_type": "TextEntry",
+                  "quest_tag": "ext:crossing:description"
+                }
+              ]
+            }
+        """
+    
+    guard let quest = try? JSONDecoder().decode(LongFormElement.self, from: jsonString.data(using: .utf8)!) else {
+        return Text("Error parsing JSON")
+    }
     QuestsRepository.shared.longQuestModels.append(quest)
     return LongForm(elementName: quest.elementType, questID: "questId",query: quest.questQuery, action: { tags in
                 })

@@ -54,16 +54,19 @@ struct LongQuestView: View {
 }
 
 #Preview {
-    let longQeust = LongQuest(questID: 14,
-                              questTitle: "Does the length of this crossing allow for safe navigation?",
-                              questDescription: "Determine whether this crossing is short enough to cross safely.",
-                              questType: .exclusiveChoice,
-                              questTag: "ext:crossing_adequate_length",
-                              questAnswerChoices: [QuestAnswerChoice(value: "yes", choiceText: "Yes, this roadway can be crossed safely.", imageURL: nil, choiceFollowUp: nil),
-                                                   QuestAnswerChoice(value: "no", choiceText: "No, this roadway is too wide to cross safely.", imageURL: nil, choiceFollowUp: nil)], questImageURL: nil, questAnswerValidation: nil, questAnswerDependency: nil, questUserAnswer: nil)
-    
-    
-    LongQuestView(quest: longQeust, selectedChoice: .constant(nil), uploadPhoto: { s in
+    let jsonString = """
+{
+                    "quest_id": 205,
+                    "quest_title": "Additional crossing notes...",
+                    "quest_description": "Add any additional observations you'd like to record about this crossing",
+                    "quest_type": "TextEntry",
+                    "quest_tag": "ext:crossing:description",
+"quest_image_url": "https://raw.githubusercontent.com/TaskarCenterAtUW/tdei-tools/main/images/kerb/lowered_landscape.png"
+                }
+"""
+    if let longQeust = try? JSONDecoder().decode(LongQuest.self, from: jsonString.data(using: .utf8)!) {
+        LongQuestView(quest: longQeust, selectedChoice: .constant(nil), uploadPhoto: { s in
         
-    })
+            })
+    }
 }
