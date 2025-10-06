@@ -102,7 +102,7 @@ struct LongQuest: Codable, Identifiable {
 }
 
 // MARK: - QuestAnswerChoice
-struct QuestAnswerChoice: Codable, Identifiable {
+struct QuestAnswerChoice: Codable, Identifiable, Equatable {
     let id = UUID()
     let value, choiceText: String
     let imageURL: String?
@@ -135,6 +135,7 @@ struct QuestAnswerDependency: Codable {
 enum QuestType: String, Codable {
     case exclusiveChoice = "ExclusiveChoice"
     case numeric = "Numeric"
+    case multipleChoice = "MultipleChoice"
 //    case excWithImg = "ExclusiveChoiceWithImg"
 }
 
@@ -164,9 +165,3 @@ enum RequiredValue: Codable {
         }
     }
 }
-
-
-
-
-
-

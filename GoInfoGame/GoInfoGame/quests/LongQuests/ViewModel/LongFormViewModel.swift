@@ -9,8 +9,7 @@ import Foundation
 
 class LongFormViewModel: ObservableObject {
     @Published var longForm: LongFormElement?
-    @Published var answers: [Int: String] = [:]
-    @Published var answersToBeSubmitted: [String: String] = [:]
+    @Published var selectedChoices: [Int: QuestAnswerChoice?] = [:]
 
     init() {}
         
@@ -18,29 +17,46 @@ class LongFormViewModel: ObservableObject {
         guard let dependency = quest.questAnswerDependency else {
             return true
         }
-        if let answeredValue = answers[dependency.questionID] {
+        if let answeredChoiceOptional = selectedChoices[dependency.questionID],
+           let answeredChoice = answeredChoiceOptional,
+           !answeredChoice.value.isEmpty {
+            let answeredValues = answeredChoice.value.components(separatedBy: ", ")
             switch dependency.requiredValue {
             case .string(let reqValue):
-                return reqValue == answeredValue
+                return answeredValues.contains(reqValue)
             case .array(let reqValue):
-                return reqValue.contains(answeredValue)
-           
+                // Check for any intersection between the two sets of values.
+                let answeredSet = Set(answeredValues)
+                let requiredSet = Set(reqValue)
+                return !answeredSet.isDisjoint(with: requiredSet)
             }
             
         }
         return false
     }
     
-    func updateAnswers(quest: LongQuest, selectedAnswerChoice: QuestAnswerChoice) {
-        answers[quest.questID] = selectedAnswerChoice.value
-        answersToBeSubmitted[quest.questTag] = selectedAnswerChoice.value
-        answersToBeRemoved()
+    func clearAnswersForHiddenQuests() {
+        guard let quests = longForm?.quests else { return }
+        for quest in quests {
+            if !shouldShowQuest(quest) {
+                if selectedChoices[quest.questID] != nil {
+                    selectedChoices[quest.questID] = nil
+                }
+            }
+        }
     }
     
-    func answersToBeRemoved() {
-        guard let quests = longForm?.quests else { return }
-        let visibleQuestTags = quests.filter { shouldShowQuest($0)}.map { $0.questTag }
-        answersToBeSubmitted = answersToBeSubmitted.filter{ visibleQuestTags.contains($0.key) }
+    func getAnswersForSubmission() -> [String: String] {
+        var submissionDict: [String: String] = [:]
+        guard let quests = longForm?.quests else { return [:] }
         
+        for quest in quests {
+            if let choiceOptional = selectedChoices[quest.questID], let choice = choiceOptional {
+                if shouldShowQuest(quest) {
+                    submissionDict[quest.questTag] = choice.value
+                }
+            }
+        }
+        return submissionDict
     }
 }
