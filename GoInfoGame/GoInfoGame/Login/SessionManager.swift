@@ -12,12 +12,13 @@ import UIKit
 final class SessionManager: ObservableObject {
     static let shared = SessionManager()
     private init() {
-        username = KeychainManager.load(.username, for: APIConfiguration.shared.environment)
     }
 
     @Published var isLoginSuccessful: Bool = false
     @Published var hasLoginFailed: Bool = false
-    private(set) var username: String? = nil
+    var username: String? {
+        return KeychainManager.load(.username, for: APIConfiguration.shared.environment)
+    }
 
     var lastLoginPassword: String?
 
@@ -36,7 +37,6 @@ final class SessionManager: ObservableObject {
             DispatchQueue.main.async { [weak self] in
                 switch result {
                 case .success(let response):
-                    self?.username = username
                     _ = KeychainManager.save(key: "accessToken", data: response.accessToken)
                     self?.lastLoginPassword = password
                     UserDefaults.standard.setValue(response.expiresIn, forKey: "accessToken_expire_in")
@@ -53,7 +53,7 @@ final class SessionManager: ObservableObject {
                     print("Login failed:", error)
                     self?.isLoginSuccessful = false
                     self?.hasLoginFailed = true
-                    completion(false, "Invalid credentials")
+                    completion(false, L10n.Localizable.invalidCredentials)
                 }
             }
         }

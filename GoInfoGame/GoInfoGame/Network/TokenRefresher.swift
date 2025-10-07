@@ -11,11 +11,11 @@ import SwiftUI
 class TokenRefresher {
     static let shared = TokenRefresher()
     private var isRefreshing = false
-    private var refreshCompletionHandlers: [(Bool) -> Void] = []
+    private var refreshCompletionHandlers: [(Bool, Error?) -> Void] = []
     private let refreshQueue = DispatchQueue(label: "TokenRefreshQueue", attributes: .concurrent)
     
 
-    func refreshToken(completion: @escaping (Bool) -> Void) {
+    func refreshToken(refreshToken: String? = nil, completion: @escaping (Bool, Error?) -> Void) {
         refreshQueue.async(flags: .barrier) { [weak self] in
             guard let self = self else { return }
 
@@ -26,7 +26,7 @@ class TokenRefresher {
 
             self.isRefreshing = true
         }
-        let refreshToken = KeychainManager.load(key: "refreshToken")
+        let refreshToken = refreshToken ?? KeychainManager.load(key: "refreshToken")
         DispatchQueue.main.async {
             if let appDelegate = UIApplication.shared.delegate as? AppDelegate {
                 appDelegate.invalidateRefreshTokenTimer()
@@ -38,10 +38,12 @@ class TokenRefresher {
             guard let self = self else { return }
             
             var success = false
+            var error: Error? = nil
             switch result {
-            case .failure(let error):
-                print(error)
+            case .failure(let e):
+                print(e)
                 success = false
+                error = e
                 break
             case .success(let resp):
                 _ = KeychainManager.save(key: "refreshToken", data: resp.refreshToken)
@@ -60,11 +62,11 @@ class TokenRefresher {
 
             self.refreshQueue.async(flags: .barrier) {
                 self.isRefreshing = false
-                self.refreshCompletionHandlers.forEach { $0(success) }
+                self.refreshCompletionHandlers.forEach { $0(success, error) }
                 self.refreshCompletionHandlers.removeAll()
             }
             
-            completion(success)
+            completion(success, error)
         }
     }
 }
@@ -73,7 +75,7 @@ class TokenRefresher {
 extension TokenRefresher {
     func refreshTokenAsync() async -> Bool {
         await withCheckedContinuation { continuation in
-            self.refreshToken { success in
+            self.refreshToken { success, error in
                 continuation.resume(returning: success)
             }
         }

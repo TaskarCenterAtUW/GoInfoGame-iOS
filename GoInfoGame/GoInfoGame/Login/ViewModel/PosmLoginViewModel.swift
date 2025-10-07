@@ -100,5 +100,70 @@ class PosmLoginViewModel: ObservableObject {
             self.isLoginSuccess = true
         }
     }
+    
+    func loginWithRefreshToken(refreshToken: String) {
+        isLoading = true
+        
+        TokenRefresher.shared.refreshToken(refreshToken: refreshToken) { [weak self] result, error  in
+            DispatchQueue.main.async { [weak self, result, error] in
+                self?.isLoading = false
+                
+                self?.loggedIn = result
+                self?.isLoginSuccess = result
+                self?.hasLoginFailed = !result
+                if let _ = error {
+                    self?.loginFailedMessage = L10n.Localizable.invalidCredentials
+                }
+                
+                guard result,
+                      let accessToken = KeychainManager.load(key: "accessToken"),
+                      let email = self?.emailIDfromJWT(token: accessToken) else {
+                    return
+                }
+                _ = KeychainManager.save(.username, value: email, for: APIConfiguration.shared.environment)
+            }
+        }
+    }
+    
+    private func emailIDfromJWT(token: String) -> String? {
+        let segments = token.components(separatedBy: ".")
+        guard segments.count == 3 else {
+            debugPrint("Invalid JWT format.")
+            return nil
+        }
+        
+        let payloadSegment = segments[1]
+        var base64 = payloadSegment
+            .replacingOccurrences(of: "-", with: "+")
+            .replacingOccurrences(of: "_", with: "/")
+        
+        let remainingLength = base64.count % 4
+        if remainingLength > 0 {
+            let padding = String(repeating: "=", count: 4 - remainingLength)
+            base64 = base64 + padding
+        }
+        
+        guard let data = Data(base64Encoded: base64) else {
+            debugPrint("Could not Base64URL decode the payload.")
+            return nil
+        }
+        
+        do {
+            guard let jsonObject = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any] else {
+                debugPrint("Could not parse payload data as JSON object.")
+                return nil
+            }
+            
+            if let email = jsonObject["email"] as? String {
+                return email
+            } else {
+                debugPrint("Email claim not found in JWT payload, or is not a String.")
+                return nil
+            }
+        } catch {
+            debugPrint("Error parsing JSON payload: \(error)")
+            return nil
+        }
+    }
 }
 

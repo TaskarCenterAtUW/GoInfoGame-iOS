@@ -14,6 +14,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         
     @AppStorage("loggedIn") private var loggedIn: Bool = false
 
+    var posmLoginView: PosmLoginView? = nil
 
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
         // Use this method to optionally configure and attach the UIWindow `window` to the provided UIWindowScene `scene`.
@@ -39,6 +40,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                 window.rootViewController = UIHostingController(rootView: contentView)
                 self.window = window
                 window.makeKeyAndVisible()
+                self.posmLoginView = contentView
             }
         }
     }
@@ -75,13 +77,29 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
          print("Open contexts called")
         // gaurd and get the first URL 
         guard let url = URLContexts.first?.url else { return }
-
-        NotificationCenter.default.post(name: .init("HandleOAuthRedirect"), object: url)
-
         
+        if url.scheme == "avivscr" {
+            guard !loggedIn else {
+                debugPrint("user is already login")
+                return // user is already login
+            }
+            
+            guard let refreshToken = url.queryParameters?["code"] else {
+                debugPrint("invalid scheme url format")
+                return // invalid url format
+            }
+            
+            APIConfiguration.shared.environment = APIEnvironment(rawValue: url.queryParameters?["env"]?.lowercased() ?? "prod") ?? .production
+            guard let window = self.window,
+                  let hostingController = window.rootViewController as? UIHostingController<PosmLoginView> else {
+                debugPrint("PosmLoginView not found")
+                return
+            }
+            let loginView = hostingController.rootView
+            loginView.viewModel.loginWithRefreshToken(refreshToken: refreshToken)
+        } else {
+            NotificationCenter.default.post(name: .init("HandleOAuthRedirect"), object: url)
+        }
     }
-    
-    
-
 }
 

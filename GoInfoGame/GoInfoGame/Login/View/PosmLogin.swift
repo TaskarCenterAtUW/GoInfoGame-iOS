@@ -69,12 +69,12 @@ struct PosmLoginView: View {
                                     selectedEnvironment = environment
                                     APIConfiguration.shared.environment = environment
                                 }) {
-                                    Text(environment.rawValue)
+                                    Text(environment.displayString())
                                 }
                             }
                         } label: {
                             HStack {
-                                Text("Environment: \(selectedEnvironment.rawValue)")
+                                Text("Environment: \(selectedEnvironment.displayString())")
                                     .foregroundColor(.black)
                                 Image(systemName: "chevron.down")
                             }

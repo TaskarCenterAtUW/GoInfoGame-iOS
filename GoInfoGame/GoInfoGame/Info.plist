@@ -11,7 +11,19 @@
 			<string>com.vindago.goinfogame</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>goinfogame</string>
+				<string>avivscr</string>
+			</array>
+		</dict>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLIconFile</key>
+			<string></string>
+			<key>CFBundleURLName</key>
+			<string>tech.opentoall.aviv.scoutroute</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>avivscr</string>
 			</array>
 		</dict>
 	</array>
