@@ -21,6 +21,8 @@ internal enum L10n {
     internal static let composeMessage = L10n.tr("Localizable", "Compose message", fallback: "Compose message")
     /// Don't show again for this session
     internal static let dontShowAgain = L10n.tr("Localizable", "dont_show_again", fallback: "Don't show again for this session")
+    /// Invalid credentials
+    internal static let invalidCredentials = L10n.tr("Localizable", "Invalid credentials", fallback: "Invalid credentials")
     /// My Profile
     internal static let myProfile = L10n.tr("Localizable", "My Profile", fallback: "My Profile")
     /// OTHER ANSWERS...

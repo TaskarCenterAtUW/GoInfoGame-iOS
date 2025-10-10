@@ -147,7 +147,7 @@ class NetworkManager: NetworkHandler {
     private func refreshSession<T: Decodable>(promise: @escaping (Result<T, Error>) -> Void,
                                               request: APIRequest,
                                               type: T.Type) {
-        TokenRefresher.shared.refreshToken {[weak self] status in
+        TokenRefresher.shared.refreshToken {[weak self] status, _ in
             guard let self = self else {
                 return promise(.failure(NetworkError.badNetwrok))
             }

@@ -63,7 +63,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
     
     private func refreshToken() {
-        TokenRefresher.shared.refreshToken { status in
+        TokenRefresher.shared.refreshToken { status, _ in
             print("Refresh status \(status)")
             if status == false {
                 DispatchQueue.main.async {

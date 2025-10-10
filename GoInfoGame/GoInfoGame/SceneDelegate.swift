@@ -14,7 +14,6 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         
     @AppStorage("loggedIn") private var loggedIn: Bool = false
 
-
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
         // Use this method to optionally configure and attach the UIWindow `window` to the provided UIWindowScene `scene`.
         // If using a storyboard, the `window` property will automatically be initialized and attached to the scene.
@@ -39,6 +38,12 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                 window.rootViewController = UIHostingController(rootView: contentView)
                 self.window = window
                 window.makeKeyAndVisible()
+            }
+            
+            if let userActivity = connectionOptions.userActivities.first,
+               userActivity.activityType == NSUserActivityTypeBrowsingWeb,
+               let incomingURL = userActivity.webpageURL {
+                    handleUniversalLink(incomingURL)
             }
         }
     }
@@ -70,18 +75,44 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // Use this method to save data, release shared resources, and store enough scene-specific state information
         // to restore the scene back to its current state.
     }
+    
+    func scene(_ scene: UIScene, continue userActivity: NSUserActivity) {
+        guard userActivity.activityType == NSUserActivityTypeBrowsingWeb,
+              let incomingURL = userActivity.webpageURL else {
+            return
+        }
+
+        handleUniversalLink(incomingURL)
+    }
+    
+    private func handleUniversalLink(_ url: URL) {
+        print("Universal Link called")
+        guard !loggedIn else {
+            debugPrint("user is already login")
+            return // user is already login
+        }
+        
+        guard let refreshToken = url.queryParameters?["code"] else {
+            debugPrint("invalid scheme url format")
+            return // invalid url format
+        }
+        
+        APIConfiguration.shared.environment = APIEnvironment(rawValue: url.queryParameters?["env"]?.lowercased() ?? "prod") ?? .production
+        guard let window = self.window,
+              let hostingController = window.rootViewController as? UIHostingController<PosmLoginView> else {
+            debugPrint("PosmLoginView not found")
+            return
+        }
+        let loginView = hostingController.rootView
+        loginView.viewModel.loginWithRefreshToken(refreshToken: refreshToken)
+    }
 
     func scene(_ scene: UIScene, openURLContexts URLContexts: Set<UIOpenURLContext>) {
          print("Open contexts called")
         // gaurd and get the first URL 
         guard let url = URLContexts.first?.url else { return }
-
-        NotificationCenter.default.post(name: .init("HandleOAuthRedirect"), object: url)
-
         
+        NotificationCenter.default.post(name: .init("HandleOAuthRedirect"), object: url)
     }
-    
-    
-
 }
 

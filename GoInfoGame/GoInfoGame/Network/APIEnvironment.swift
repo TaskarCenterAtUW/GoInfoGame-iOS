@@ -8,9 +8,9 @@
 import Foundation
 
 enum APIEnvironment: String, CaseIterable {
-    case development = "Development"
-    case staging = "Staging"
-    case production = "Production"
+    case development = "dev"
+    case staging = "stage"
+    case production = "prod"
 //    case osm = "OSM"
 //
     var workspaceBaseURL: String {
@@ -65,6 +65,17 @@ enum APIEnvironment: String, CaseIterable {
             return "https://api.openstreetcam.org/1.0"
         case .production:
             return "https://api.openstreetcam.org/1.0"
+        }
+    }
+    
+    func displayString() -> String {
+        switch self {
+        case .development:
+            return "Development"
+        case .staging:
+            return "Staging"
+        case .production:
+            return "Production"
         }
     }
 }

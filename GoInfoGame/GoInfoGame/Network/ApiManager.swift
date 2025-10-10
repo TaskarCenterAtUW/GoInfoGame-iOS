@@ -151,7 +151,7 @@ class ApiManager {
                request.url!.lastPathComponent.contains("refresh-token") == false,
                request.url!.lastPathComponent.contains("authenticate") == false {
                 print("Failed requests: \(String(describing: request.url))")
-                TokenRefresher.shared.refreshToken { [weak self] status in
+                TokenRefresher.shared.refreshToken { [weak self] status, _ in
                     if status {
                         let accessToken = KeychainManager.load(key: "accessToken") ?? ""
                         var headers = endpoint.headers

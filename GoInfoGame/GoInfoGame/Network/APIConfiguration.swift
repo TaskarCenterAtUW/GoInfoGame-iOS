@@ -18,7 +18,7 @@ class APIConfiguration {
                    let savedEnvironment = APIEnvironment(rawValue: savedValue) {
                     return savedEnvironment
                 }
-                return .staging // default value
+                return .production // default value
             }
             set {
                 UserDefaults.standard.set(newValue.rawValue, forKey: environmentKey)
