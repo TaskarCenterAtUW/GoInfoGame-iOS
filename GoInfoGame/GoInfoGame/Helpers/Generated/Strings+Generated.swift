@@ -212,10 +212,22 @@ internal enum L10n {
     internal static let selectOne = L10n.tr("Localizable", "select_one", fallback: "Select One:")
     /// Cancel
     internal static let undoConfirmNegative = L10n.tr("Localizable", "undo_confirm_negative", fallback: "Cancel")
+    /// Update
+    internal static let update = L10n.tr("Localizable", "Update", fallback: "Update")
+    /// Update Available
+    internal static let updateAvailable = L10n.tr("Localizable", "Update Available", fallback: "Update Available")
+    /// Update Required
+    internal static let updateRequired = L10n.tr("Localizable", "Update Required", fallback: "Update Required")
     /// Usually looks like this?
     internal static let usuallyLooksLikeThis = L10n.tr("Localizable", "usually_looks_like_this", fallback: "Usually looks like this?")
     /// Workspace
     internal static let workspace = L10n.tr("Localizable", "Workspace", fallback: "Workspace")
+    internal enum ANewVersionOfTheAppIsAvailable {
+      /// A new version of the app is available. Please update to continue using the app.
+      internal static let pleaseUpdateToContinueUsingTheApp = L10n.tr("Localizable", "A new version of the app is available. Please update to continue using the app.", fallback: "A new version of the app is available. Please update to continue using the app.")
+      /// A new version of the app is available. Would you like to update now?
+      internal static let wouldYouLikeToUpdateNow = L10n.tr("Localizable", "A new version of the app is available. Would you like to update now?", fallback: "A new version of the app is available. Would you like to update now?")
+    }
   }
   internal enum Main {
     internal enum _13PWzT0e {

@@ -26,15 +26,15 @@ struct ForceUpdateViewModifier: ViewModifier {
         switch forceUpdateManager.appUpdateInfo {
         case .forceUpdate:
             return Alert(
-                title: Text("Update Required"),
-                message: Text("A new version of the app is available. Please update to continue using the app."),
-                dismissButton: .default(Text("Update"), action: openAppStore)
+                title: Text(L10n.Localizable.updateRequired),
+                message: Text(L10n.Localizable.ANewVersionOfTheAppIsAvailable.pleaseUpdateToContinueUsingTheApp),
+                dismissButton: .default(Text(L10n.Localizable.update), action: openAppStore)
             )
         case .softUpdate:
             return Alert(
-                title: Text("Update Available"),
-                message: Text("A new version of the app is available. Would you like to update now?"),
-                primaryButton: .default(Text("Update"), action: openAppStore),
+                title: Text(L10n.Localizable.updateAvailable),
+                message: Text(L10n.Localizable.ANewVersionOfTheAppIsAvailable.wouldYouLikeToUpdateNow),
+                primaryButton: .default(Text(L10n.Localizable.update), action: openAppStore),
                 secondaryButton: .cancel()
             )
         case .noUpdate:

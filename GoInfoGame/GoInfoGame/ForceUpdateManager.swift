@@ -58,7 +58,7 @@ class ForceUpdateManager: ObservableObject {
     
     func validateForceUpdate() -> AppUpdateInfo  {
         // latest version
-        guard var appRunningVersion = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String else {
+        guard let appRunningVersion = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String else {
             debugPrint("Bundle Short Version String not found")
             return .noUpdate
         }
