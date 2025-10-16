@@ -11,6 +11,8 @@ import SwiftUI
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     var window: UIWindow?
+    private var posmLoginView: PosmLoginView?
+    private let forceUpdateManager = ForceUpdateManager()
         
     @AppStorage("loggedIn") private var loggedIn: Bool = false
 
@@ -21,30 +23,28 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
   // guard let _ = (scene as? UIWindowScene) else { return }
         
         
+        let rootView: AnyView
         if loggedIn {
-            let contentView = InitialView()
-            // Use a UIHostingController as window root view controller.
-            if let windowScene = scene as? UIWindowScene {
-                let window = UIWindow(windowScene: windowScene)
-                window.rootViewController = UIHostingController(rootView: contentView)
-                self.window = window
-                window.makeKeyAndVisible()
-            }
+            rootView = AnyView(InitialView().modifier(ForceUpdateViewModifier(forceUpdateManager: self.forceUpdateManager)))
         } else {
-            let contentView = PosmLoginView()
-            // Use a UIHostingController as window root view controller.
-            if let windowScene = scene as? UIWindowScene {
-                let window = UIWindow(windowScene: windowScene)
-                window.rootViewController = UIHostingController(rootView: contentView)
-                self.window = window
-                window.makeKeyAndVisible()
-            }
-            
-            if let userActivity = connectionOptions.userActivities.first,
-               userActivity.activityType == NSUserActivityTypeBrowsingWeb,
-               let incomingURL = userActivity.webpageURL {
-                    handleUniversalLink(incomingURL)
-            }
+            let loginView = PosmLoginView(forceUpdateManager: forceUpdateManager)
+            self.posmLoginView = loginView
+            rootView = AnyView(loginView.modifier(ForceUpdateViewModifier(forceUpdateManager: self.forceUpdateManager)))
+        }
+        
+        // Use a UIHostingController as window root view controller.
+        if let windowScene = scene as? UIWindowScene {
+            let window = UIWindow(windowScene: windowScene)
+            window.rootViewController = UIHostingController(rootView: rootView)
+            self.window = window
+            window.makeKeyAndVisible()
+        }
+        
+        if !loggedIn,
+           let userActivity = connectionOptions.userActivities.first,
+           userActivity.activityType == NSUserActivityTypeBrowsingWeb,
+           let incomingURL = userActivity.webpageURL {
+            handleUniversalLink(incomingURL)
         }
     }
 
@@ -58,6 +58,9 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     func sceneDidBecomeActive(_ scene: UIScene) {
         // Called when the scene has moved from an inactive state to an active state.
         // Use this method to restart any tasks that were paused (or not yet started) when the scene was inactive.
+        Task {
+            try? await self.forceUpdateManager.checkForceUpdate()
+        }
     }
 
     func sceneWillResignActive(_ scene: UIScene) {
@@ -98,12 +101,11 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         }
         
         APIConfiguration.shared.environment = APIEnvironment(rawValue: url.queryParameters?["env"]?.lowercased() ?? "prod") ?? .production
-        guard let window = self.window,
-              let hostingController = window.rootViewController as? UIHostingController<PosmLoginView> else {
+        guard let loginView = self.posmLoginView else {
             debugPrint("PosmLoginView not found")
             return
         }
-        let loginView = hostingController.rootView
+
         loginView.viewModel.loginWithRefreshToken(refreshToken: refreshToken)
     }
 
@@ -115,4 +117,3 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         NotificationCenter.default.post(name: .init("HandleOAuthRedirect"), object: url)
     }
 }
-

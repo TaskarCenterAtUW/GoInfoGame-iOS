@@ -43,7 +43,8 @@ struct Utilities {
        // _ = KeychainManager.delete(key: "username")
         loggedIn = false
         UserProfileCache.shared.clearUserProfile()
-        UserDefaults.standard.removeObject(forKey: "accessToken_Generate")
-        UserDefaults.standard.removeObject(forKey: "accessToken_expire_in")
+        if let bundleID = Bundle.main.bundleIdentifier {
+            UserDefaults.standard.removePersistentDomain(forName: bundleID)
+        }
     }
 }

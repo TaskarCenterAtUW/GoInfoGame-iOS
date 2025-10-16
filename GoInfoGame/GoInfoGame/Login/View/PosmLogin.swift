@@ -20,6 +20,12 @@ struct PosmLoginView: View {
     @State private var debugMode: Bool = false
     @State private var showEnableDebugModeAlert: Bool = false
     @State private var showDisableDebugModeAlert: Bool = false
+    let forceUpdateManager: ForceUpdateManager?
+    
+    init(forceUpdateManager: ForceUpdateManager? = nil) {
+        self.forceUpdateManager = forceUpdateManager
+        APIConfiguration.shared.environment = .production
+    }
             
     var body: some View {
         NavigationStack {
@@ -87,7 +93,9 @@ struct PosmLoginView: View {
                     
                     Button(action: {
                         APIConfiguration.shared.environment = selectedEnvironment
-                        viewModel.performLogin(for: selectedEnvironment)
+                        if forceUpdateManager?.validateForceUpdate() == .noUpdate {
+                            viewModel.performLogin(for: selectedEnvironment)
+                        }
                     }) {
                         Text("Login")
                             .font(FontFamily.Lato.bold.swiftUIFont(size: 20))
