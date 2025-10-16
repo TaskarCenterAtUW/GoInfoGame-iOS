@@ -175,6 +175,7 @@
 		C7A922252E45C36D00705E21 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = C7A922242E45C36D00705E21 /* PrivacyInfo.xcprivacy */; };
 		C7BA83542E3C9C3600755BA7 /* QuestSyncButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7BA83532E3C9C3600755BA7 /* QuestSyncButton.swift */; };
 		C7D3103E2EA0B3BB00CA10A9 /* ForceUpdateViewModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7D3103D2EA0B3BB00CA10A9 /* ForceUpdateViewModifier.swift */; };
+		C7D310412EA1302500CA10A9 /* StoreKit.storekit in Resources */ = {isa = PBXBuildFile; fileRef = C7D310402EA1302500CA10A9 /* StoreKit.storekit */; };
 		C7ED070F2D70E2EC001FFFE2 /* TokenRefresher.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7ED070E2D70E2EC001FFFE2 /* TokenRefresher.swift */; };
 		CFECB318461BB876B1621890 /* Pods_osmapi.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C4F37DA661B22FA87DF8282F /* Pods_osmapi.framework */; };
 		FA18CAE22CC7CD89008247F2 /* KartaviewViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA18CAE12CC7CD89008247F2 /* KartaviewViewModel.swift */; };
@@ -527,6 +528,7 @@
 		C7A922242E45C36D00705E21 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		C7BA83532E3C9C3600755BA7 /* QuestSyncButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = QuestSyncButton.swift; path = GoInfoGame/UI/Map/QuestSyncButton.swift; sourceTree = SOURCE_ROOT; };
 		C7D3103D2EA0B3BB00CA10A9 /* ForceUpdateViewModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForceUpdateViewModifier.swift; sourceTree = "<group>"; };
+		C7D310402EA1302500CA10A9 /* StoreKit.storekit */ = {isa = PBXFileReference; lastKnownFileType = text; path = StoreKit.storekit; sourceTree = "<group>"; };
 		C7ED070E2D70E2EC001FFFE2 /* TokenRefresher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenRefresher.swift; sourceTree = "<group>"; };
 		C96303080D26026265099E0E /* Pods-GoInfoGame.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-GoInfoGame.release.xcconfig"; path = "Target Support Files/Pods-GoInfoGame/Pods-GoInfoGame.release.xcconfig"; sourceTree = "<group>"; };
 		D76D8E22AC705A38AFEA78B1 /* Pods-GoInfoGame-GoInfoGameUITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-GoInfoGame-GoInfoGameUITests.debug.xcconfig"; path = "Target Support Files/Pods-GoInfoGame-GoInfoGameUITests/Pods-GoInfoGame-GoInfoGameUITests.debug.xcconfig"; sourceTree = "<group>"; };
@@ -1575,6 +1577,7 @@
 				A4E7119A2B57A17600C9DE08 /* data */,
 				973FC00C2B4D2A6D00878269 /* Localizable.strings */,
 				FAD5C4F22AFCBE700040C61A /* AppDelegate.swift */,
+				C7D310402EA1302500CA10A9 /* StoreKit.storekit */,
 				FAD5C4F42AFCBE700040C61A /* SceneDelegate.swift */,
 				FAC9E60E2B04F9C800E2C608 /* OverpassRequestManager.swift */,
 				FABF3CF32B7419BB0080EAC9 /* LocationManagerDelegate.swift */,
@@ -1988,6 +1991,7 @@
 				FAD5C4FA2AFCBE700040C61A /* Main.storyboard in Resources */,
 				C75CC5D92E0D22F4008A94A0 /* LongQuestsResponse.json in Resources */,
 				C75CC5DA2E0D22F4008A94A0 /* Workspaces response.json in Resources */,
+				C7D310412EA1302500CA10A9 /* StoreKit.storekit in Resources */,
 				C75CC5DB2E0D22F4008A94A0 /* SCLIO Seattle pins response.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

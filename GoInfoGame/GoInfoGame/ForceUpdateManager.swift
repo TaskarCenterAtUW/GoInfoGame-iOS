@@ -8,11 +8,18 @@
 import Foundation
 import Combine
 import SwiftUI
+import StoreKit
 
 enum AppUpdateInfo {
     case noUpdate
     case softUpdate
     case forceUpdate
+}
+
+enum AppEnvironment {
+    case sandbox // TestFlight or Xcode run
+    case production // App Store release
+    case unknown
 }
 
 class ForceUpdateManager: ObservableObject {
@@ -21,6 +28,7 @@ class ForceUpdateManager: ObservableObject {
     @Published var appUpdateInfo: AppUpdateInfo = .noUpdate
     let updateCheckCompleted = PassthroughSubject<Void, Never>()
     private(set) var forceUpdateInfo: ForceUpdateResponse?
+    private(set) var appEnvironment: AppEnvironment = .unknown
     
     init(networkHandler: NetworkHandler = NetworkManager()) {
         self.networkHandler = networkHandler
@@ -49,6 +57,7 @@ class ForceUpdateManager: ObservableObject {
 //                """
 //            forceUpdateInfo = try JSONDecoder().decode(ForceUpdateResponse.self, from: JsonString.data(using: .utf8)!)
             forceUpdateInfo = try await networkHandler.fetchData(request: ForceUpdateRequest())
+            appEnvironment = await getAppEnvironment()
             _ = validateForceUpdate()
         }
         catch {
@@ -77,6 +86,28 @@ class ForceUpdateManager: ObservableObject {
             self?.updateCheckCompleted.send()
         }
         return updateInfo
+    }
+
+    func getAppEnvironment() async -> AppEnvironment {
+        
+        do {
+            // Retrieve the signed AppTransaction
+            let result = try await AppTransaction.shared
+            
+            // Verify the transaction signature
+            if case .verified(let appTransaction) = result {
+                if appTransaction.environment == .xcode ||
+                    appTransaction.environment == .sandbox {
+                    return .sandbox
+                } else if appTransaction.environment == .production {
+                    return .production
+                }
+            }
+        } catch {
+            print("Error fetching AppTransaction: \(error)")
+        }
+        
+        return .unknown
     }
 }
 
