@@ -110,3 +110,8 @@
 "Compose a note" = "Compose a note";
 "Compose message" = "Compose message";
 "Invalid credentials" = "Invalid credentials";
+"Update Required" = "Update Required";
+"A new version of the app is available. Please update to continue using the app." = "A new version of the app is available. Please update to continue using the app.";
+"Update Available" = "Update Available";
+"A new version of the app is available. Would you like to update now?" = "A new version of the app is available. Would you like to update now?";
+"Update" = "Update";

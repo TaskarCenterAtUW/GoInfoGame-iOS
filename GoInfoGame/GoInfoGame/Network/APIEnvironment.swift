@@ -11,8 +11,7 @@ enum APIEnvironment: String, CaseIterable {
     case development = "dev"
     case staging = "stage"
     case production = "prod"
-//    case osm = "OSM"
-//
+
     var workspaceBaseURL: String {
         switch self {
         case .development:
