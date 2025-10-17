@@ -44,14 +44,15 @@ struct ForceUpdateViewModifier: ViewModifier {
     }
 
     private func openAppStore() {
-        var URLString: String = ""
+        var URLString: String? = nil
         if forceUpdateManager.appEnvironment == .production {
-            URLString = "https://apps.apple.com/app/6749523895"
+            URLString = Bundle.main.infoDictionary?["AppStpre_URL"] as? String
         } else {
-            URLString = "https://testflight.apple.com/join/hpzSaUdQ"
+            URLString = Bundle.main.infoDictionary?["TestFlight_URL"] as? String
         }
         
-        if let url = URL(string: URLString) {
+        if let urlString = URLString,
+           let url = URL(string: urlString) {
             UIApplication.shared.open(url)
         }
     }

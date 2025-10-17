@@ -17,6 +17,10 @@
 	</array>
 	<key>APP_FORCE_UPDATE_URL</key>
 	<string>$(APP_FORCE_UPDATE_URL)</string>
+	<key>AppStpre_URL</key>
+	<string>https://apps.apple.com/app/6749523895</string>
+	<key>TestFlight_URL</key>
+	<string>https://testflight.apple.com/join/hpzSaUdQ</string>
 	<key>UIApplicationSceneManifest</key>
 	<dict>
 		<key>UIApplicationSupportsMultipleScenes</key>
