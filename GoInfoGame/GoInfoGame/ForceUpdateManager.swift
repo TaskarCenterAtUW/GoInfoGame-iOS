@@ -113,7 +113,8 @@ class ForceUpdateManager: ObservableObject {
 
 class ForceUpdateRequest: APIRequest {
     var urlRequest: URLRequest? {
-        guard let url = URL(string: "https://raw.githubusercontent.com/TaskarCenterAtUW/asr-config/refs/heads/main/force-update/app-force-update.json") else {
+        guard let urlString = Bundle.main.infoDictionary?["APP_FORCE_UPDATE_URL"] as? String,
+            let url = URL(string: urlString) else {
             return nil
         }
         let request = URLRequest(url: url)

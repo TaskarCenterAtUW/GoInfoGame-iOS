@@ -15,6 +15,8 @@
 			</array>
 		</dict>
 	</array>
+	<key>APP_FORCE_UPDATE_URL</key>
+	<string>$(APP_FORCE_UPDATE_URL)</string>
 	<key>UIApplicationSceneManifest</key>
 	<dict>
 		<key>UIApplicationSupportsMultipleScenes</key>

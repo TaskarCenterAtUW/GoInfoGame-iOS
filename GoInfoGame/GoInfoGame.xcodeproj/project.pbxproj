@@ -172,6 +172,7 @@
 		C78737AF2E4C9E3B00289D13 /* FloatingLabelTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = C78737AE2E4C9E3200289D13 /* FloatingLabelTextField.swift */; };
 		C787F3422E9CD34F00BEF0A6 /* ForceUpdateManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C787F3412E9CD34900BEF0A6 /* ForceUpdateManager.swift */; };
 		C7927B552E42363000A7A34E /* XCAssets+Generated.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7927B532E42363000A7A34E /* XCAssets+Generated.swift */; };
+		C7A357462EA22A120033F6FB /* Config.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = C7A357452EA22A120033F6FB /* Config.xcconfig */; };
 		C7A922252E45C36D00705E21 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = C7A922242E45C36D00705E21 /* PrivacyInfo.xcprivacy */; };
 		C7BA83542E3C9C3600755BA7 /* QuestSyncButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7BA83532E3C9C3600755BA7 /* QuestSyncButton.swift */; };
 		C7D3103E2EA0B3BB00CA10A9 /* ForceUpdateViewModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7D3103D2EA0B3BB00CA10A9 /* ForceUpdateViewModifier.swift */; };
@@ -525,6 +526,7 @@
 		C787EF162E9676CC00BEF0A6 /* GoInfoGame.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = GoInfoGame.entitlements; sourceTree = "<group>"; };
 		C787F3412E9CD34900BEF0A6 /* ForceUpdateManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForceUpdateManager.swift; sourceTree = "<group>"; };
 		C7927B532E42363000A7A34E /* XCAssets+Generated.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "XCAssets+Generated.swift"; sourceTree = "<group>"; };
+		C7A357452EA22A120033F6FB /* Config.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Config.xcconfig; sourceTree = "<group>"; };
 		C7A922242E45C36D00705E21 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		C7BA83532E3C9C3600755BA7 /* QuestSyncButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = QuestSyncButton.swift; path = GoInfoGame/UI/Map/QuestSyncButton.swift; sourceTree = SOURCE_ROOT; };
 		C7D3103D2EA0B3BB00CA10A9 /* ForceUpdateViewModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForceUpdateViewModifier.swift; sourceTree = "<group>"; };
@@ -1351,6 +1353,7 @@
 			isa = PBXGroup;
 			children = (
 				C77AAC982E446356006713B2 /* Firebase */,
+				C7A357452EA22A120033F6FB /* Config.xcconfig */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -1992,6 +1995,7 @@
 				C75CC5D92E0D22F4008A94A0 /* LongQuestsResponse.json in Resources */,
 				C75CC5DA2E0D22F4008A94A0 /* Workspaces response.json in Resources */,
 				C7D310412EA1302500CA10A9 /* StoreKit.storekit in Resources */,
+				C7A357462EA22A120033F6FB /* Config.xcconfig in Resources */,
 				C75CC5DB2E0D22F4008A94A0 /* SCLIO Seattle pins response.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -2786,6 +2790,7 @@
 		};
 		FAD5C5172AFCBE720040C61A /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = C7A357452EA22A120033F6FB /* Config.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
@@ -2847,6 +2852,7 @@
 		};
 		FAD5C5182AFCBE720040C61A /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = C7A357452EA22A120033F6FB /* Config.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;

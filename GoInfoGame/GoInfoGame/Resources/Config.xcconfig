@@ -1,0 +1,12 @@
+//
+//  Config.xcconfig
+//  GoInfoGame
+//
+//  Created by Prashamsa on 17/10/25.
+//
+
+// Configuration settings file format documentation can be found at:
+// https://developer.apple.com/documentation/xcode/adding-a-build-configuration-file-to-your-project
+
+APP_FORCE_UPDATE_URL = https:/${}/raw.githubusercontent.com/TaskarCenterAtUW/asr-config/refs/heads/main/force-update/app-force-update.json
+
