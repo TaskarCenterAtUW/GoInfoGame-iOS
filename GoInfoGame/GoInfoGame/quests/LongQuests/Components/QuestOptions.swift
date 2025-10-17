@@ -166,7 +166,7 @@ private extension QuestOptions {
         }
 
         private func initializeSelectedValues() {
-            let currentSelectedValues = Set((selectedChoice?.value ?? "").components(separatedBy: ", ").filter { !$0.isEmpty })
+            let currentSelectedValues = Set((selectedChoice?.value ?? "").components(separatedBy: ";").filter { !$0.isEmpty })
             if selectedValues != currentSelectedValues {
                 selectedValues = currentSelectedValues
             }
@@ -181,7 +181,7 @@ private extension QuestOptions {
         }
 
         private func updateSelectedChoice() {
-            let combinedValue = selectedValues.sorted().joined(separator: ", ")
+            let combinedValue = selectedValues.sorted().joined(separator: ";")
 
             if combinedValue.isEmpty {
                 if selectedChoice != nil {
