@@ -69,7 +69,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 DispatchQueue.main.async {
                     Utilities.clearAllData()
                     if let window = UIApplication.window() {
-                        window.rootViewController = UIHostingController(rootView: PosmLoginView())
+                        window.rootViewController = UIHostingController(rootView: PosmLoginView(forceUpdateManager: ForceUpdateManager()))
                     }
                 }
             }

@@ -131,7 +131,7 @@ class NetworkManager: NetworkHandler {
                     DispatchQueue.main.async {
                         if let window = UIApplication.window() {
                             Utilities.clearAllData()
-                            window.rootViewController = UIHostingController(rootView: PosmLoginView())
+                            window.rootViewController = UIHostingController(rootView: PosmLoginView(forceUpdateManager: ForceUpdateManager()))
                             DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
                                 NotificationCenter.default.post(name: Notification.Name("SessionExpired"), object: nil)
                             }
