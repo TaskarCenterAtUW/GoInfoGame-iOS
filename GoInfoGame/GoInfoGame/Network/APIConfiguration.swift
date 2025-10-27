@@ -10,18 +10,18 @@ import Foundation
 class APIConfiguration {
     static let shared = APIConfiguration()
     
-    private let environmentKey = "APIEnvironment"
+    static let environmentKey = "APIEnvironment"
         
         var environment: APIEnvironment {
             get {
-                if let savedValue = UserDefaults.standard.string(forKey: environmentKey),
+                if let savedValue = UserDefaults.standard.string(forKey: APIConfiguration.environmentKey),
                    let savedEnvironment = APIEnvironment(rawValue: savedValue) {
                     return savedEnvironment
                 }
                 return .production // default value
             }
             set {
-                UserDefaults.standard.set(newValue.rawValue, forKey: environmentKey)
+                UserDefaults.standard.set(newValue.rawValue, forKey: APIConfiguration.environmentKey)
             }
         }
     
