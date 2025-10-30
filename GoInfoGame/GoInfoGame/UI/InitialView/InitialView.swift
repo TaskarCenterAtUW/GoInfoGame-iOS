@@ -86,9 +86,9 @@ struct WorkspacesListView: View {
             VStack {
             }
             .onAppear {
-                viewModel.fetchLongQuestsFor(workspaceId: "\(selectedWorkspace.id)") { success, errorMessage  in
+                viewModel.fetchLongQuestsFor(workspaceId: "\(selectedWorkspace.id)") { success, errorMessage, workspace  in
                     if success {
-                        self.selectedWorkspace = selectedWorkspace
+                        self.selectedWorkspace = workspace
                         let workspaceId = "\(selectedWorkspace.id)"
                         _ = KeychainManager.save(key: "workspaceID", data: workspaceId)
                         DispatchQueue.main.async {
@@ -157,10 +157,10 @@ struct WorkspacesListView: View {
                         ForEach(viewModel.workspaces?.filter({$0.type == "osw" && $0.externalAppAccess == 1}) ?? [], id: \.id) { workspace in
                             Button {
                                 viewModel.checkAndDeleteWorkspaceDB(workspaceId: "\(workspace.id)")
-                                viewModel.fetchLongQuestsFor(workspaceId: "\(workspace.id)", completion: { success, errorMessage in
+                                viewModel.fetchLongQuestsFor(workspaceId: "\(workspace.id)", completion: { success, errorMessage, ws in
                                     if success {
                                         shouldNavigateToMapView = true
-                                        selectedWorkspace = workspace
+                                        selectedWorkspace = ws
                                         
                                         let workspaceId = "\(workspace.id)"
                                         _ = KeychainManager.save(key: "workspaceID", data: workspaceId)

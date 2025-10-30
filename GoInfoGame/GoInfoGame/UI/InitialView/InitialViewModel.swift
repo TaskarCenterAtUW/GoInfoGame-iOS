@@ -70,19 +70,19 @@ class InitialViewModel: ObservableObject {
         
     }
     
-    func fetchLongQuestsFor(workspaceId: String,completion: @escaping (Bool, String?) -> Void) {
+    func fetchLongQuestsFor(workspaceId: String,completion: @escaping (Bool, String?, Workspace?) -> Void) {
         
         isLoading = true
         
         ApiManager.shared.performRequest(to: .fetchWorkspaceDetails(workspaceId), setupType: .workspace, modelType: Workspace.self) { [weak self] result in
-            guard let self = self else { return completion(false, "Object memory released.") }
+            guard let self = self else { return completion(false, "Object memory released.", nil) }
             DispatchQueue.main.async { [unowned self] in
                 switch result {
                 case .success(let workspaces):
                     
                     guard let longQuestsResponse = workspaces.longFormQuest else {
                         self.isLoading = false
-                        completion(false, "Please configure longform." )
+                        completion(false, "Please configure longform.", nil )
                         return
                     }
                     // Validate quest query
@@ -93,7 +93,7 @@ class InitialViewModel: ObservableObject {
                         } catch {
                             print("Invalid quest filter: \(error)")
                             self.isLoading = false
-                            completion(false, "Invalid quest query.")
+                            completion(false, "Invalid quest query.", workspaces)
                             return
                         }
 
@@ -117,11 +117,11 @@ class InitialViewModel: ObservableObject {
                     }
 
                     self.isLoading = false
-                    completion(true, "")
+                    completion(true, "", workspaces)
                 case .failure(let error):
                     print("ERROR from workspace details api ----?>>>>>>\(error.localizedDescription)")
                     self.isLoading = false
-                    completion(false, "Not able to load the workspace details. Please try again later." )
+                    completion(false, "Not able to load the workspace details. Please try again later.", nil )
                 }
             }
         }
