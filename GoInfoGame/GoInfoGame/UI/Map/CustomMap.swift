@@ -565,7 +565,7 @@ struct CustomMap: UIViewRepresentable {
                .filter { !$0.isHidden }
                .map { $0.annotation }
         await context.coordinator.clusterManager.add(visibleAnnotations)
-        context.coordinator.mapReloader.reload(using: mapView, clusterManager: context.coordinator.clusterManager)
+        await context.coordinator.mapReloader.reload(using: mapView, clusterManager: context.coordinator.clusterManager)
     }
     
     func adjustCoordinateForOverlap(_ coordinate: CLLocationCoordinate2D, with index: Int) -> CLLocationCoordinate2D {
