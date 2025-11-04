@@ -165,13 +165,13 @@ struct CustomMap: UIViewRepresentable {
                 self.coordinator = coordinator
             }
 
-            func reload(using mapView: MKMapView?, clusterManager: ClusterManager<DisplayUnitAnnotation>) {
+            func reload(using mapView: MKMapView?) {
                 // Cancel the old reload if it's still running
                 currentTask?.cancel()
                 
                 currentTask = Task {
                     guard let mapView = mapView else { return }
-                    async let changes = clusterManager.reload(
+                    async let changes = coordinator.clusterManager.reload(
                         mapViewSize: mapView.bounds.size,
                         coordinateRegion: mapView.region
                     )
@@ -425,7 +425,7 @@ struct CustomMap: UIViewRepresentable {
         
         func mapView(_ mapView: MKMapView, regionDidChangeAnimated animated: Bool) {
             Task {
-                await mapReloader.reload(using: mapView, clusterManager: clusterManager)
+                await mapReloader.reload(using: mapView)
             }
         }
         
@@ -543,7 +543,7 @@ struct CustomMap: UIViewRepresentable {
     private func manageAnnotations(_ mapView: MKMapView, context: Context) async {
         
         await context.coordinator.clusterManager.removeAll()
-        await context.coordinator.mapReloader.reload(using: mapView, clusterManager: context.coordinator.clusterManager)
+        await context.coordinator.mapReloader.reload(using: mapView)
 //        let existingCoordinates = mapView.annotations.compactMap {
 //             ($0 as? DisplayUnitAnnotation)?.coordinate
 //         }
@@ -565,7 +565,7 @@ struct CustomMap: UIViewRepresentable {
                .filter { !$0.isHidden }
                .map { $0.annotation }
         await context.coordinator.clusterManager.add(visibleAnnotations)
-        await context.coordinator.mapReloader.reload(using: mapView, clusterManager: context.coordinator.clusterManager)
+        await context.coordinator.mapReloader.reload(using: mapView)
     }
     
     func adjustCoordinateForOverlap(_ coordinate: CLLocationCoordinate2D, with index: Int) -> CLLocationCoordinate2D {
