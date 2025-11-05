@@ -233,6 +233,7 @@ struct LongForm: View, QuestForm {
             }
             .sheet(isPresented: $isCameraPresented) {
                 CameraView(capturedImage: $capturedImage, isPresented: $isCameraPresented)
+                    .applyPresentationSizingPage()
                    }
         }
         .alert(self.submitAlert, isPresented: $showSubmitAlert) {

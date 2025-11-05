@@ -215,3 +215,16 @@ extension URLRequest {
         }
     }
 }
+
+extension View {
+    @ViewBuilder
+    func applyPresentationSizingPage() -> some View {
+        if #available(iOS 18.0, *) {
+            self.presentationSizing(.page)
+        } else {
+            // No-op for older OS, letting the default sizing apply.
+            // You can add a fallback here if needed, e.g., using detents.
+            self
+        }
+    }
+}

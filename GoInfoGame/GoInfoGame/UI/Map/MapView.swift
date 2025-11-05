@@ -322,6 +322,7 @@ struct MapView: View {
                     .presentationDetents([.fraction(0.85)])
                     .interactiveDismissDisabled()
                     .presentationDragIndicator(.hidden)
+                    .applyPresentationSizingPage()
             }
             .sheet(isPresented: $viewModel.showSatellitePicker) {
                 SatellitePickerSheet(
@@ -341,6 +342,7 @@ struct MapView: View {
                 .background(Color(red: 248/255, green: 248/255, blue: 248/255))
                 .presentationDetents([.fraction(0.36)])
                 .presentationDragIndicator(.visible)
+                .applyPresentationSizingPage()
             }
             .sheet(isPresented: $showUserSettingsSheet) {
                 UserSettingsView(selectedWorkspace: selectedWorkspace.title, options: OptionModel.options, onNavigate: { navigate in
@@ -383,6 +385,7 @@ struct MapView: View {
                     .presentationDetents([.fraction(0.36)])
                     .interactiveDismissDisabled()
                     .presentationDragIndicator(.hidden)
+                    .applyPresentationSizingPage()
             }
 
     
@@ -431,6 +434,7 @@ struct MapView: View {
                     .shadow(radius: 5)
                     .presentationDetents([.fraction(0.2)])
                     .presentationDragIndicator(.visible)
+                    .applyPresentationSizingPage()
                 }
             }
             .sheet(isPresented: $showCreateNoteSheet, content: {
@@ -446,6 +450,7 @@ struct MapView: View {
                 })
                     .presentationDetents([.fraction(0.6)])
                     .presentationDragIndicator(.visible)
+                    .applyPresentationSizingPage()
                 
             })
             .sheet(isPresented: $showAddFeatureSheet) {
@@ -460,6 +465,7 @@ struct MapView: View {
                 })
                     .presentationDetents([.fraction(0.6)])
                     .presentationDragIndicator(.visible)
+                    .applyPresentationSizingPage()
             }
 
         .sheet(isPresented: $isPresented, content: {
@@ -472,6 +478,7 @@ struct MapView: View {
             .scrollDisabled(false)
             .interactiveDismissDisabled()
             .environmentObject(contextualInfo)
+            .applyPresentationSizingPage()
            
         })
         .onReceive(MapViewPublisher.shared.dismissSheet) { scenario in
