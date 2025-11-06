@@ -127,9 +127,15 @@ struct APIEndpoint {
         let header = [
             "Authorization": "Bearer \(accessToken)",
             "X-Workspace": workspaceId,
-            "Content-Type": "application/xml"
+            "Content-Type": "application/json"
         ]
-        return APIEndpoint(path: "/notes?lat=\(lat)&lon=\(long)&text=\(note)", method: "POST", body: nil, headers: header, formData: nil)
+        let body = [
+            "lat" : lat,
+            "lon" : long,
+            "text" : note
+        ]
+        let jsonData = try? JSONSerialization.data(withJSONObject: body, options: [])
+        return APIEndpoint(path: "/notes.json", method: "POST", body: jsonData, headers: header, formData: nil)
         
     }
 }
