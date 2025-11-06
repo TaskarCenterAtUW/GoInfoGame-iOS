@@ -4,9 +4,9 @@
 <dict>
 	<key>com.apple.developer.associated-domains</key>
 	<array>
-		<string>applinks:www.srikanthvoonna.co.in</string>
-		<string>applinks:srikanthvoonna.co.in</string>
 		<string>applinks:portal-dev.tdei.us</string>
+		<string>applinks:portal-stage.tdei.us</string>
+		<string>applinks:portal.tdei.us</string>
 	</array>
 </dict>
 </plist>

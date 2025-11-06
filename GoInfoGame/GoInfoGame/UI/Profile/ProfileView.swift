@@ -205,6 +205,7 @@ struct LoginView: View {
             }
             .navigationBarHidden(false)
             .padding()
+            .applyPresentationSizingPage()
         }
         
     }

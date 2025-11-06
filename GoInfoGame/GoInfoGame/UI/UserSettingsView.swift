@@ -42,6 +42,7 @@ struct UserSettingsView: View {
             HStack(alignment: .firstTextBaseline) {
                 Text(selectedWorkspace)
                     .foregroundStyle(Asset.Colors.huskyPurple.swiftUIColor)
+                    .lineLimit(1)
 
 
                 Spacer()

@@ -9,6 +9,6 @@ import Foundation
 import SwiftUI
 class InitialViewController: UIHostingController<PosmLoginView> {
     required init?(coder aDecoder: NSCoder) {
-        super.init(coder: aDecoder, rootView: PosmLoginView())
+        super.init(coder: aDecoder, rootView: PosmLoginView(forceUpdateManager: ForceUpdateManager()))
     }
 }

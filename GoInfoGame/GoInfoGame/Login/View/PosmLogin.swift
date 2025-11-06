@@ -22,7 +22,7 @@ struct PosmLoginView: View {
     @State private var showDisableDebugModeAlert: Bool = false
     let forceUpdateManager: ForceUpdateManager?
     
-    init(forceUpdateManager: ForceUpdateManager? = nil) {
+    init(forceUpdateManager: ForceUpdateManager?) {
         self.forceUpdateManager = forceUpdateManager
         APIConfiguration.shared.environment = .production
     }
@@ -233,5 +233,5 @@ struct PosmLoginView: View {
 }
 
 #Preview {
-    PosmLoginView()
+    PosmLoginView(forceUpdateManager: nil)
 }

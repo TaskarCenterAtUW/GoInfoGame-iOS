@@ -34,6 +34,7 @@ struct FloatingActionButtonStack: View {
                             .presentationDetents([.fraction(0.85)])
                             .interactiveDismissDisabled()
                             .presentationDragIndicator(.hidden)
+                            .applyPresentationSizingPage()
                     }
                 }
                 .offset(x: -25, y: 10)

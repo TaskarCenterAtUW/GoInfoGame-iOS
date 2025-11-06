@@ -43,8 +43,6 @@ struct Utilities {
        // _ = KeychainManager.delete(key: "username")
         loggedIn = false
         UserProfileCache.shared.clearUserProfile()
-        if let bundleID = Bundle.main.bundleIdentifier {
-            UserDefaults.standard.removePersistentDomain(forName: bundleID)
-        }
+        UserDefaults.standard.removeObject(forKey: APIConfiguration.environmentKey)
     }
 }

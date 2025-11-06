@@ -76,33 +76,26 @@ struct WorkspacesListView: View {
     @State private var showAlert = false
     
     @State private var alertMessage = ""
+    @State private var autoRedirectToMapViewError: String?
     
     var body: some View {
         
-        if viewModel.workspaces?.count == 1 {
-            if let selectedWorkspace = viewModel.workspaces?.first {
-                VStack {
-                    if !shouldNavigateToMapView {
-                        ActivityView(activityText: "Fetching workspace data...")
-                        Spacer()
-                    }
-                }
-                .onAppear {
-                    viewModel.fetchLongQuestsFor(workspaceId: "\(selectedWorkspace.id)") { success, errorMessage  in
-                        if success {
-                            self.selectedWorkspace = selectedWorkspace
-                            let workspaceId = "\(selectedWorkspace.id)"
-                            _ = KeychainManager.save(key: "workspaceID", data: workspaceId)
-                            DispatchQueue.main.async {
-                                shouldNavigateToMapView = true
-                            }
-                        } else {
-                            DispatchQueue.main.async {
-                                alertMessage = errorMessage ?? "Something went wrong. Please pick another workspace."
-                                showAlert = true
-                                shouldNavigateToMapView = false
-                            }
+        if viewModel.workspaces?.count == 1,
+           let selectedWorkspace = viewModel.workspaces?.first,
+           autoRedirectToMapViewError == nil {
+            VStack {
+            }
+            .onAppear {
+                viewModel.fetchLongQuestsFor(workspaceId: "\(selectedWorkspace.id)") { success, errorMessage, workspace  in
+                    if success {
+                        self.selectedWorkspace = workspace
+                        let workspaceId = "\(selectedWorkspace.id)"
+                        _ = KeychainManager.save(key: "workspaceID", data: workspaceId)
+                        DispatchQueue.main.async {
+                            shouldNavigateToMapView = true
                         }
+                    } else {
+                        autoRedirectToMapViewError = errorMessage ?? "Something went wrong. Please pick another workspace."
                     }
                 }
             }
@@ -164,10 +157,10 @@ struct WorkspacesListView: View {
                         ForEach(viewModel.workspaces?.filter({$0.type == "osw" && $0.externalAppAccess == 1}) ?? [], id: \.id) { workspace in
                             Button {
                                 viewModel.checkAndDeleteWorkspaceDB(workspaceId: "\(workspace.id)")
-                                viewModel.fetchLongQuestsFor(workspaceId: "\(workspace.id)", completion: { success, errorMessage in
+                                viewModel.fetchLongQuestsFor(workspaceId: "\(workspace.id)", completion: { success, errorMessage, ws in
                                     if success {
                                         shouldNavigateToMapView = true
-                                        selectedWorkspace = workspace
+                                        selectedWorkspace = ws
                                         
                                         let workspaceId = "\(workspace.id)"
                                         _ = KeychainManager.save(key: "workspaceID", data: workspaceId)
