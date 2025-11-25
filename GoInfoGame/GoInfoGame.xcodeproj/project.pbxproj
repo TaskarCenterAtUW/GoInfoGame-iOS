@@ -172,6 +172,9 @@
 		C78737AF2E4C9E3B00289D13 /* FloatingLabelTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = C78737AE2E4C9E3200289D13 /* FloatingLabelTextField.swift */; };
 		C787F3422E9CD34F00BEF0A6 /* ForceUpdateManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C787F3412E9CD34900BEF0A6 /* ForceUpdateManager.swift */; };
 		C7927B552E42363000A7A34E /* XCAssets+Generated.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7927B532E42363000A7A34E /* XCAssets+Generated.swift */; };
+		C79C3B7A2ED4559500F80364 /* AccessibilityModeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C79C3B792ED4559500F80364 /* AccessibilityModeView.swift */; };
+		C79C3B7C2ED5786100F80364 /* NearestQuestCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = C79C3B7B2ED5786100F80364 /* NearestQuestCard.swift */; };
+		C79C3B7E2ED5885300F80364 /* lato-semibold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C79C3B7D2ED5885300F80364 /* lato-semibold.ttf */; };
 		C7A357462EA22A120033F6FB /* Config.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = C7A357452EA22A120033F6FB /* Config.xcconfig */; };
 		C7A922252E45C36D00705E21 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = C7A922242E45C36D00705E21 /* PrivacyInfo.xcprivacy */; };
 		C7BA83542E3C9C3600755BA7 /* QuestSyncButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7BA83532E3C9C3600755BA7 /* QuestSyncButton.swift */; };
@@ -526,6 +529,9 @@
 		C787EF162E9676CC00BEF0A6 /* GoInfoGame.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = GoInfoGame.entitlements; sourceTree = "<group>"; };
 		C787F3412E9CD34900BEF0A6 /* ForceUpdateManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForceUpdateManager.swift; sourceTree = "<group>"; };
 		C7927B532E42363000A7A34E /* XCAssets+Generated.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "XCAssets+Generated.swift"; sourceTree = "<group>"; };
+		C79C3B792ED4559500F80364 /* AccessibilityModeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccessibilityModeView.swift; sourceTree = "<group>"; };
+		C79C3B7B2ED5786100F80364 /* NearestQuestCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NearestQuestCard.swift; sourceTree = "<group>"; };
+		C79C3B7D2ED5885300F80364 /* lato-semibold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "lato-semibold.ttf"; sourceTree = "<group>"; };
 		C7A357452EA22A120033F6FB /* Config.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Config.xcconfig; sourceTree = "<group>"; };
 		C7A922242E45C36D00705E21 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		C7BA83532E3C9C3600755BA7 /* QuestSyncButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = QuestSyncButton.swift; path = GoInfoGame/UI/Map/QuestSyncButton.swift; sourceTree = SOURCE_ROOT; };
@@ -859,6 +865,7 @@
 		971575152B5FFD5F0044797C /* Map */ = {
 			isa = PBXGroup;
 			children = (
+				C79C3B782ED4557400F80364 /* Accessibility Mode */,
 				C71EB5AF2E2100B80009E610 /* MapRepository.swift */,
 				C71EB5AB2E2100510009E610 /* Satellite Server */,
 				971575182B5FFE910044797C /* LocationManagerCoordinator.swift */,
@@ -1393,6 +1400,15 @@
 			path = Generated;
 			sourceTree = "<group>";
 		};
+		C79C3B782ED4557400F80364 /* Accessibility Mode */ = {
+			isa = PBXGroup;
+			children = (
+				C79C3B792ED4559500F80364 /* AccessibilityModeView.swift */,
+				C79C3B7B2ED5786100F80364 /* NearestQuestCard.swift */,
+			);
+			path = "Accessibility Mode";
+			sourceTree = "<group>";
+		};
 		FA18CADE2CC7CD46008247F2 /* Kartaview */ = {
 			isa = PBXGroup;
 			children = (
@@ -1467,6 +1483,7 @@
 		FA8C74CF2C598F3D00D28220 /* Fonts */ = {
 			isa = PBXGroup;
 			children = (
+				C79C3B7D2ED5885300F80364 /* lato-semibold.ttf */,
 				FA8C74D22C5998D600D28220 /* Lato-Medium.ttf */,
 				FA8C74D12C598F9D00D28220 /* Lato-Bold.ttf */,
 				FA8C74D02C598F9D00D28220 /* Lato-Regular.ttf */,
@@ -1986,6 +2003,7 @@
 				973FC00A2B4D2A6D00878269 /* Localizable.strings in Resources */,
 				FAD5C4FF2AFCBE720040C61A /* LaunchScreen.storyboard in Resources */,
 				C76B63732E46019D0076A540 /* proximanova_bold.otf in Resources */,
+				C79C3B7E2ED5885300F80364 /* lato-semibold.ttf in Resources */,
 				C76B63742E46019D0076A540 /* proximanova_regular.otf in Resources */,
 				C76B63752E46019D0076A540 /* proximanova_light.otf in Resources */,
 				C76B63762E46019D0076A540 /* proximanova_semibold.otf in Resources */,
@@ -2384,6 +2402,7 @@
 				FAE481A22DD5EF3800149A48 /* PasswordAuthenticationPopupView.swift in Sources */,
 				05DBBB5F2B1263FF00B6F110 /* DatabaseConnector.swift in Sources */,
 				FAF44FC12B30850A004FE664 /* OnboardingView3.swift in Sources */,
+				C79C3B7A2ED4559500F80364 /* AccessibilityModeView.swift in Sources */,
 				970D5BD12B62B61300C20BE7 /* MapViewController.swift in Sources */,
 				FA9FE2D82BAC75390036F618 /* OAuthViewController.swift in Sources */,
 				FA50719A2D7263F800CE9798 /* LongFormImageView.swift in Sources */,
@@ -2413,6 +2432,7 @@
 				FA8C74C72C4FE2E900D28220 /* LongFormWidthView.swift in Sources */,
 				FAD5C4F52AFCBE700040C61A /* SceneDelegate.swift in Sources */,
 				FAF44FBF2B3084FB004FE664 /* OnboardingView2.swift in Sources */,
+				C79C3B7C2ED5786100F80364 /* NearestQuestCard.swift in Sources */,
 				971342732BBD242400174EBF /* InitialView.swift in Sources */,
 				97AC1C132B70EF0A004F0BF4 /* Surfaces.swift in Sources */,
 				972454152B14A49A0036B91A /* Extensions.swift in Sources */,

@@ -27,6 +27,7 @@ internal enum Asset {
   internal static let accentColor = ColorAsset(name: "AccentColor")
   internal enum Colors {
     internal static let _2D0369ProfileIcon = ColorAsset(name: "2D0369 Profile icon")
+    internal static let _39C27FGreen = ColorAsset(name: "39C27F green")
     internal static let _42526ETextFieldText = ColorAsset(name: "42526E Text field text")
     internal static let _83879BTextFiledTitle = ColorAsset(name: "83879B Text filed title")
     internal static let _8F57DEProfileIcon = ColorAsset(name: "8F57DE Profile icon ")
@@ -358,6 +359,7 @@ internal enum Asset {
   internal static let logo = ImageAsset(name: "logo")
   internal static let mapPoint = ImageAsset(name: "mapPoint")
   internal static let mapicon = ImageAsset(name: "mapicon")
+  internal static let navigation = ImageAsset(name: "navigation")
   internal static let noImage = ImageAsset(name: "no_image")
   internal static let osmlogo = ImageAsset(name: "osmlogo")
   internal static let sync = ImageAsset(name: "sync")

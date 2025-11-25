@@ -11,6 +11,8 @@ import Foundation
 // swiftlint:disable nesting type_body_length type_name vertical_whitespace_opening_braces
 internal enum L10n {
   internal enum Localizable {
+    /// Accessibility Mode
+    internal static let accessibilityMode = L10n.tr("Localizable", "Accessibility Mode", fallback: "Accessibility Mode")
     /// AVIV ScoutRoute
     internal static let appName = L10n.tr("Localizable", "App Name", fallback: "AVIV ScoutRoute")
     /// Can't Say
@@ -21,10 +23,14 @@ internal enum L10n {
     internal static let composeMessage = L10n.tr("Localizable", "Compose message", fallback: "Compose message")
     /// Don't show again for this session
     internal static let dontShowAgain = L10n.tr("Localizable", "dont_show_again", fallback: "Don't show again for this session")
+    /// Go back to map view
+    internal static let goBackToMapView = L10n.tr("Localizable", "Go back to map view", fallback: "Go back to map view")
     /// Invalid credentials
     internal static let invalidCredentials = L10n.tr("Localizable", "Invalid credentials", fallback: "Invalid credentials")
     /// My Profile
     internal static let myProfile = L10n.tr("Localizable", "My Profile", fallback: "My Profile")
+    /// Number of quests:
+    internal static let numberOfQuests = L10n.tr("Localizable", "Number of quests:", fallback: "Number of quests:")
     /// OTHER ANSWERS...
     internal static let otherAnswers = L10n.tr("Localizable", "other_answers", fallback: "OTHER ANSWERS...")
     /// Preferences
@@ -206,10 +212,16 @@ internal enum L10n {
     internal static let questWidthMostNarrowPath = L10n.tr("Localizable", "quest_width_most_narrow_path", fallback: "What is the width of the most narrow usable path along this footpath? (measure with your phone please)")
     /// Questions List
     internal static let questionsList = L10n.tr("Localizable", "questions_list", fallback: "Questions List")
+    /// Refresh list
+    internal static let refreshList = L10n.tr("Localizable", "Refresh list", fallback: "Refresh list")
     /// Select:
     internal static let select = L10n.tr("Localizable", "Select", fallback: "Select:")
+    /// Select the quest to start answering.
+    internal static let selectTheQuestToStartAnswering = L10n.tr("Localizable", "Select the quest to start answering.", fallback: "Select the quest to start answering.")
     /// Select One:
     internal static let selectOne = L10n.tr("Localizable", "select_one", fallback: "Select One:")
+    /// Undo Edits
+    internal static let undoEdits = L10n.tr("Localizable", "Undo Edits", fallback: "Undo Edits")
     /// Cancel
     internal static let undoConfirmNegative = L10n.tr("Localizable", "undo_confirm_negative", fallback: "Cancel")
     /// Update
