@@ -591,7 +591,7 @@ struct MapView: View {
             print("Accessibility icon tapped")
             enableAccessibility = true
         }) {
-            Image(systemName: "figure.stand")
+            Image("accessibility")
                 .resizable()
                 .padding(8)
                 .foregroundStyle(Asset.Colors.huskyPurple.swiftUIColor)

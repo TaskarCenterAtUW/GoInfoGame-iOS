@@ -356,6 +356,7 @@ internal enum Asset {
     internal static let tactileCrossing = ImageAsset(name: "tactile_crossing")
     internal static let tactilePavingIllustration = ImageAsset(name: "tactile_paving_illustration")
   }
+  internal static let accessibility = ImageAsset(name: "accessibility")
   internal static let logo = ImageAsset(name: "logo")
   internal static let mapPoint = ImageAsset(name: "mapPoint")
   internal static let mapicon = ImageAsset(name: "mapicon")
