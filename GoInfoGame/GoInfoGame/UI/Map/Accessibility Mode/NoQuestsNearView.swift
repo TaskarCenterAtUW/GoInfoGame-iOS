@@ -1,0 +1,48 @@
+//
+//  NoQuestsNearView.swift
+//  GoInfoGame
+//
+//  Created by Prashamsa on 27/11/25.
+//
+
+import SwiftUI
+
+struct NoQuestsNearView: View {
+    var body: some View {
+        VStack(alignment: .center, spacing: 20, content: {
+            ZStack(alignment: .center, content: {
+                Circle()
+                    .frame(width: 106, height: 106)
+                    .foregroundColor(Asset.Colors._39C27FGreen.swiftUIColor)
+                Image(systemName: "drop")
+                    .resizable()
+                    .foregroundStyle(Color.white)
+                    .aspectRatio(contentMode: .fit)
+                    .rotationEffect(.degrees(180.0))
+                    .frame(width: 60, height: 70)
+                
+                Image(systemName: "questionmark")
+                    .resizable()
+                    .foregroundStyle(Color.white)
+                    .aspectRatio(contentMode: .fit)
+                    .frame(width: 24, height: 28)
+                    .bold()
+
+            })
+            .frame(width: 106, height: 106)
+            
+            Text("No Quests Found!")
+                .font(FontFamily.Lato.heavy.swiftUIFont(fixedSize: 24))
+                .foregroundStyle(Asset.Colors._42526ETextFieldText.swiftUIColor)
+            
+            Text("Try moving to a different location to discover more quests.")
+                .font(FontFamily.Lato.medium.swiftUIFont(fixedSize: 18))
+                .foregroundStyle(Asset.Colors._42526ETextFieldText.swiftUIColor)
+                .multilineTextAlignment(.center)
+        })
+    }
+}
+
+#Preview {
+    NoQuestsNearView()
+}

@@ -23,42 +23,44 @@ struct AccessibilityModeView: View {
     var body: some View {
         NavigationStack {
             ZStack {
-                VStack(alignment: .leading, content: {
-                    HStack(alignment: .center, content: {
-                        numberOfQuestsView
-                        Spacer()
-                        refreshListButton
-                        
-                    })
-                    .padding(.bottom)
-                    dotteline
-                    List {
-                        ForEach(viewModel.nearestQuest, id: \.self) { item in
-                            Button {
-                                self.selectedQuest = item.quest
-                                mapViewModel.selectedQuest = item.quest.displayUnit
-                                self.showLongFrom = true
-                            } label: {
-                                NearestQuestCard(quest: item)
-                                    .cornerRadius(16)
+                if viewModel.nearestQuest.isEmpty {
+                    NoQuestsNearView()
+                } else {
+                    VStack(alignment: .leading, content: {
+                        HStack(alignment: .center, content: {
+                            numberOfQuestsView
+                            Spacer()
+                            refreshListButton
+                            
+                        })
+                        .padding(.bottom)
+                        dotteline
+                        List {
+                            ForEach(viewModel.nearestQuest, id: \.self) { item in
+                                Button {
+                                    self.selectedQuest = item.quest
+                                    mapViewModel.selectedQuest = item.quest.displayUnit
+                                    self.showLongFrom = true
+                                } label: {
+                                    NearestQuestCard(quest: item)
+                                        .cornerRadius(16)
+                                }
+                                .buttonStyle(PlainButtonStyle())
+                                .listRowInsets(EdgeInsets())
                             }
-                            .buttonStyle(PlainButtonStyle())
-                            .listRowInsets(EdgeInsets())
+                            
                         }
+                        .listStyle(.plain)
+                        .scrollContentBackground(.hidden)
+                        .background(Color.clear)
+                        .listRowSpacing(20)
+                        .padding(.top, 20)
+                        .padding(.bottom, 20)
                         
-                    }
-                    .listStyle(.plain)
-                    .scrollContentBackground(.hidden)
-                    .background(Color.clear)
-                    .listRowSpacing(20)
-                    .padding(.top, 20)
-                    .padding(.bottom, 20)
-                    
-                    
-                    dotteline
-                    bottomBar
-                })
-                
+                        dotteline
+                        bottomBar
+                    })
+                }
             }
             .padding()
             .toolbar {
