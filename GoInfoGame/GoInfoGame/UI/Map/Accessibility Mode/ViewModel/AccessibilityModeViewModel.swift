@@ -13,7 +13,6 @@ class AccessibilityModeViewModel: ObservableObject {
     private(set) var mapViewModel: MapViewModel
     @Published private(set) var nearestQuest: [AccessibilityQuest] = []
     let distanceThreshold: Double = 250 // 250 meters
-    @Published var selectedQuest: AccessibilityQuest? = nil
     var lastKnownLocation: CLLocationCoordinate2D?
     init(mapViewModel: MapViewModel, locationManager: LocationManagerDelegate = LocationManagerDelegate()) {
         self.locationManager = locationManager

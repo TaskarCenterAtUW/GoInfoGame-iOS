@@ -13,12 +13,13 @@ struct AccessibilityModeView: View {
     @ObservedObject var mapViewModel: MapViewModel
     @StateObject var viewModel: AccessibilityModeViewModel
     @State private var selectedDetent: PresentationDetent = .fraction(0.8)
+    @State var selectedQuest: DisplayUnitWithCoordinate?
     
     init (mapViewModel: MapViewModel) {
         self.mapViewModel = mapViewModel
         _viewModel = StateObject(wrappedValue: AccessibilityModeViewModel(mapViewModel: mapViewModel))
     }
-//    var selectedQuest: DisplayUnitWithCoordinate?
+    
     var body: some View {
         NavigationStack {
             ZStack {
@@ -34,7 +35,7 @@ struct AccessibilityModeView: View {
                     List {
                         ForEach(viewModel.nearestQuest, id: \.self) { item in
                             Button {
-                                viewModel.selectedQuest = item
+                                self.selectedQuest = item.quest
                                 mapViewModel.selectedQuest = item.quest.displayUnit
                                 self.showLongFrom = true
                             } label: {
@@ -81,7 +82,7 @@ struct AccessibilityModeView: View {
             viewModel.stopMonitoring()
         }
         .sheet(isPresented: $showLongFrom) {
-            QuestSheetView(viewModel: mapViewModel, annotationCoordinate: viewModel.selectedQuest?.quest.coordinateInfo)
+            QuestSheetView(viewModel: mapViewModel, annotationCoordinate: selectedQuest?.coordinateInfo)
                 .presentationDetents([.fraction(0.8), .fraction(0.5), .fraction(0.1)], selection: $selectedDetent)
                 .presentationDragIndicator(.visible)
                 .scrollDisabled(false)
