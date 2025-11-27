@@ -11,8 +11,7 @@ import SwiftUI
 
 struct AccessibilityModeView: View {
     @Environment(\.dismiss) var dismiss
-    @State private var numberOfQuests: Int = 10
-    let items = Array(0..<5)
+    @StateObject var viewModel: AccessibilityModeViewModel = .init()
     var body: some View {
         NavigationStack {
             ZStack {
@@ -26,8 +25,8 @@ struct AccessibilityModeView: View {
                     .padding(.bottom)
                     dotteline
                     List {
-                        ForEach(items, id: \.self) { item in
-                            NearestQuestCard()
+                        ForEach(viewModel.nearestQuest, id: \.self) { item in
+                            NearestQuestCard(quest: item)
                                 .cornerRadius(16)
                                 .listRowInsets(EdgeInsets())
                         }
@@ -60,6 +59,12 @@ struct AccessibilityModeView: View {
             .toolbarBackground(.visible, for: .navigationBar)
         }
         .ignoresSafeArea(.all, edges: .bottom)
+        .onAppear() {
+            viewModel.startMonitoring()
+        }
+        .onDisappear() {
+            viewModel.stopMonitoring()
+        }
     }
     
     private var dotteline: some View {
@@ -102,7 +107,7 @@ struct AccessibilityModeView: View {
     
     private var numberOfQuestsView: some View {
         VStack(alignment: .leading, spacing: 5.0, content: {
-            Text(L10n.Localizable.numberOfQuests + " \(numberOfQuests)")
+            Text(L10n.Localizable.numberOfQuests + " \(viewModel.nearestQuest.count)")
                 .font(FontFamily.Lato.bold.swiftUIFont(size: 16))
                 .foregroundColor(Asset.Colors.huskyPurple.swiftUIColor)
             Text(L10n.Localizable.selectTheQuestToStartAnswering)

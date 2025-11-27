@@ -228,3 +228,41 @@ extension View {
         }
     }
 }
+
+extension CLLocation {
+    /**
+     Calculates the initial bearing (in degrees) from this location to a target location.
+     */
+    func bearing(to location: CLLocation) -> Double {
+        // Convert latitudes and longitudes from degrees to radians
+        let lat1 = self.coordinate.latitude.degreesToRadians
+        let lon1 = self.coordinate.longitude.degreesToRadians
+        
+        let lat2 = location.coordinate.latitude.degreesToRadians
+        let lon2 = location.coordinate.longitude.degreesToRadians
+        
+        // Calculate the difference in longitude
+        let dLon = lon2 - lon1
+        
+        // Spherical trigonometry formula for bearing
+        let y = sin(dLon) * cos(lat2)
+        let x = cos(lat1) * sin(lat2) - sin(lat1) * cos(lat2) * cos(dLon)
+        
+        // Calculate the bearing in radians, then convert to degrees
+        let bearingRadians = atan2(y, x)
+        var bearingDegrees = bearingRadians.radiansToDegrees
+        
+        // Normalize the bearing to be between 0 and 360 degrees
+        if bearingDegrees < 0 {
+            bearingDegrees += 360
+        }
+        
+        return bearingDegrees
+    }
+}
+
+// Helper extension for conversion
+extension Double {
+    var degreesToRadians: Double { return self * .pi / 180 }
+    var radiansToDegrees: Double { return self * 180 / .pi }
+}

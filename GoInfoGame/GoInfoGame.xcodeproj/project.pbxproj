@@ -158,6 +158,7 @@
 		C75EAD372E042D4500F75969 /* SideWalkWidthForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = 973FC0132B4D353800878269 /* SideWalkWidthForm.swift */; };
 		C76187DC2E0153D800150201 /* ClusterMap in Frameworks */ = {isa = PBXBuildFile; productRef = C76187DB2E0153D800150201 /* ClusterMap */; };
 		C769AB552E431EFE00FA810A /* Strings+Generated.swift in Sources */ = {isa = PBXBuildFile; fileRef = C769AB542E431EFE00FA810A /* Strings+Generated.swift */; };
+		C769E6ED2ED6D4D600D085A9 /* AccessibilityModeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C769E6EC2ED6D4CD00D085A9 /* AccessibilityModeViewModel.swift */; };
 		C76B63732E46019D0076A540 /* proximanova_bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = C76B636F2E46019D0076A540 /* proximanova_bold.otf */; };
 		C76B63742E46019D0076A540 /* proximanova_regular.otf in Resources */ = {isa = PBXBuildFile; fileRef = C76B63712E46019D0076A540 /* proximanova_regular.otf */; };
 		C76B63752E46019D0076A540 /* proximanova_light.otf in Resources */ = {isa = PBXBuildFile; fileRef = C76B63702E46019D0076A540 /* proximanova_light.otf */; };
@@ -165,6 +166,7 @@
 		C76B63792E4605570076A540 /* Fonts+Generated.swift in Sources */ = {isa = PBXBuildFile; fileRef = C76B63772E4604000076A540 /* Fonts+Generated.swift */; };
 		C76B637F2E4625D30076A540 /* FirebasePerformance in Frameworks */ = {isa = PBXBuildFile; productRef = C76B637E2E4625D30076A540 /* FirebasePerformance */; };
 		C76DA1A12DF0679F00451E63 /* LongFormModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA8C74C32C4FDE1000D28220 /* LongFormModel.swift */; };
+		C76FAAE52ED76509009E0B4F /* gachibowli circle_path.gpx in Resources */ = {isa = PBXBuildFile; fileRef = C76FAAE42ED76509009E0B4F /* gachibowli circle_path.gpx */; };
 		C77A4A262DF2AF3100DED8B0 /* SecureInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C77A4A252DF2AF3100DED8B0 /* SecureInputView.swift */; };
 		C77AAC9D2E4463ED006713B2 /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = C77AAC9C2E4463ED006713B2 /* FirebaseAnalytics */; };
 		C77AAC9F2E4463ED006713B2 /* FirebaseCrashlytics in Frameworks */ = {isa = PBXBuildFile; productRef = C77AAC9E2E4463ED006713B2 /* FirebaseCrashlytics */; };
@@ -516,11 +518,13 @@
 		C75CC5D82E0D22F4008A94A0 /* LongQuestsResponse.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = LongQuestsResponse.json; sourceTree = "<group>"; };
 		C75E47732E151058006D903A /* Kondapur.gpx */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = Kondapur.gpx; sourceTree = "<group>"; };
 		C769AB542E431EFE00FA810A /* Strings+Generated.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Strings+Generated.swift"; sourceTree = "<group>"; };
+		C769E6EC2ED6D4CD00D085A9 /* AccessibilityModeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccessibilityModeViewModel.swift; sourceTree = "<group>"; };
 		C76B636F2E46019D0076A540 /* proximanova_bold.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = proximanova_bold.otf; sourceTree = "<group>"; };
 		C76B63702E46019D0076A540 /* proximanova_light.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = proximanova_light.otf; sourceTree = "<group>"; };
 		C76B63712E46019D0076A540 /* proximanova_regular.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = proximanova_regular.otf; sourceTree = "<group>"; };
 		C76B63722E46019D0076A540 /* proximanova_semibold.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = proximanova_semibold.otf; sourceTree = "<group>"; };
 		C76B63772E4604000076A540 /* Fonts+Generated.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Fonts+Generated.swift"; sourceTree = "<group>"; };
+		C76FAAE42ED76509009E0B4F /* gachibowli circle_path.gpx */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = "gachibowli circle_path.gpx"; sourceTree = "<group>"; };
 		C77A4A252DF2AF3100DED8B0 /* SecureInputView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecureInputView.swift; sourceTree = "<group>"; };
 		C77AAC992E446376006713B2 /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		C77AACA52E447364006713B2 /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
@@ -1356,9 +1360,18 @@
 			path = SampleResponses;
 			sourceTree = "<group>";
 		};
+		C769E6EB2ED6D4C100D085A9 /* ViewModel */ = {
+			isa = PBXGroup;
+			children = (
+				C769E6EC2ED6D4CD00D085A9 /* AccessibilityModeViewModel.swift */,
+			);
+			path = ViewModel;
+			sourceTree = "<group>";
+		};
 		C77AAC972E44634A006713B2 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				C76FAAE42ED76509009E0B4F /* gachibowli circle_path.gpx */,
 				C77AAC982E446356006713B2 /* Firebase */,
 				C7A357452EA22A120033F6FB /* Config.xcconfig */,
 			);
@@ -1403,6 +1416,7 @@
 		C79C3B782ED4557400F80364 /* Accessibility Mode */ = {
 			isa = PBXGroup;
 			children = (
+				C769E6EB2ED6D4C100D085A9 /* ViewModel */,
 				C79C3B792ED4559500F80364 /* AccessibilityModeView.swift */,
 				C79C3B7B2ED5786100F80364 /* NearestQuestCard.swift */,
 			);
@@ -2004,6 +2018,7 @@
 				FAD5C4FF2AFCBE720040C61A /* LaunchScreen.storyboard in Resources */,
 				C76B63732E46019D0076A540 /* proximanova_bold.otf in Resources */,
 				C79C3B7E2ED5885300F80364 /* lato-semibold.ttf in Resources */,
+				C76FAAE52ED76509009E0B4F /* gachibowli circle_path.gpx in Resources */,
 				C76B63742E46019D0076A540 /* proximanova_regular.otf in Resources */,
 				C76B63752E46019D0076A540 /* proximanova_light.otf in Resources */,
 				C76B63762E46019D0076A540 /* proximanova_semibold.otf in Resources */,
@@ -2402,6 +2417,7 @@
 				FAE481A22DD5EF3800149A48 /* PasswordAuthenticationPopupView.swift in Sources */,
 				05DBBB5F2B1263FF00B6F110 /* DatabaseConnector.swift in Sources */,
 				FAF44FC12B30850A004FE664 /* OnboardingView3.swift in Sources */,
+				C769E6ED2ED6D4D600D085A9 /* AccessibilityModeViewModel.swift in Sources */,
 				C79C3B7A2ED4559500F80364 /* AccessibilityModeView.swift in Sources */,
 				970D5BD12B62B61300C20BE7 /* MapViewController.swift in Sources */,
 				FA9FE2D82BAC75390036F618 /* OAuthViewController.swift in Sources */,

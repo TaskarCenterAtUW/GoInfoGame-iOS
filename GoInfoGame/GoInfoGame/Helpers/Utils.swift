@@ -45,4 +45,12 @@ struct Utilities {
         UserProfileCache.shared.clearUserProfile()
         UserDefaults.standard.removeObject(forKey: APIConfiguration.environmentKey)
     }
+    
+    static func degreesToCardinalDirection(bearing: Double) -> String {
+        let directions = ["North", "North East", "East", "South East", "South", "South West", "West", "Noth West", "North"]
+        // Shift the bearing by 22.5 degrees (half the 45 degree sector size)
+        // and then divide by 45 to get an index (0 to 8).
+        let index = Int(((bearing + 22.5) / 45.0).truncatingRemainder(dividingBy: 8.0))
+        return directions[index]
+    }
 }

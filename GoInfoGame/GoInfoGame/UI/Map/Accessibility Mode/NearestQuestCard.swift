@@ -6,8 +6,10 @@
 //
 
 import SwiftUI
+import CoreLocation
 
 struct NearestQuestCard: View {
+    let quest: AccessibilityModeViewModel.AccessibilityQuest
     var body: some View {
         ZStack {
             Asset.Colors.huskyPurple.swiftUIColor
@@ -20,7 +22,7 @@ struct NearestQuestCard: View {
                         .foregroundStyle(Color.white)
                 })
                 
-                Text("You are 50 meters from \"Sidewalk Quest\", to the Narth east.")
+                Text("You are \(Int(quest.distance.rounded())) meters from \"\(quest.questType)\", to the \(quest.direction).")
                     .font(FontFamily.Lato.semibold.swiftUIFont(size: 16))
                     .foregroundColor(Color.white)
                     .lineLimit(2)
@@ -33,5 +35,5 @@ struct NearestQuestCard: View {
 }
 
 #Preview {
-    NearestQuestCard()
+    NearestQuestCard(quest: AccessibilityModeViewModel.AccessibilityQuest(distance: 0.0, questType: "Side Walk", direction: "Unknown", quest: DisplayUnitWithCoordinate(displayUnit: DisplayUnit(title: "", description: "", id: "", parent: nil, sheetSize: nil), coordinateInfo: CLLocationCoordinate2D(latitude: 0.0, longitude: 0.0), id: 1, isHidden: false)))
 }
