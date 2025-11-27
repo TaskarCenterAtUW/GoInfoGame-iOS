@@ -391,7 +391,7 @@ struct MapView: View {
                     .applyPresentationSizingPage()
             }
             .fullScreenCover(isPresented: $enableAccessibility) {
-                AccessibilityModeView()
+                AccessibilityModeView(mapViewModel: viewModel)
             }
     
             .sheet(isPresented: $showMapLongPressedSheet) {
@@ -606,6 +606,7 @@ struct MapView: View {
 struct QuestSheetView: View {
     @ObservedObject var viewModel: MapViewModel
     let annotationCoordinate: CLLocationCoordinate2D?
+    @Environment(\.dismiss) var dismiss
 
     init(viewModel: MapViewModel, annotationCoordinate: CLLocationCoordinate2D?) {
         self.viewModel = viewModel
@@ -626,6 +627,9 @@ struct QuestSheetView: View {
             } else {
                 EmptyView()
             }
+        }
+        .onReceive(MapViewPublisher.shared.dismissSheet) { _ in
+            dismiss()
         }
     }
 }

@@ -7,11 +7,18 @@
 
 import SwiftUI
 
-import SwiftUI
-
 struct AccessibilityModeView: View {
     @Environment(\.dismiss) var dismiss
-    @StateObject var viewModel: AccessibilityModeViewModel = .init()
+    @State var showLongFrom: Bool = false
+    @ObservedObject var mapViewModel: MapViewModel
+    @StateObject var viewModel: AccessibilityModeViewModel
+    @State private var selectedDetent: PresentationDetent = .fraction(0.8)
+    
+    init (mapViewModel: MapViewModel) {
+        self.mapViewModel = mapViewModel
+        _viewModel = StateObject(wrappedValue: AccessibilityModeViewModel(mapViewModel: mapViewModel))
+    }
+//    var selectedQuest: DisplayUnitWithCoordinate?
     var body: some View {
         NavigationStack {
             ZStack {
@@ -26,10 +33,18 @@ struct AccessibilityModeView: View {
                     dotteline
                     List {
                         ForEach(viewModel.nearestQuest, id: \.self) { item in
-                            NearestQuestCard(quest: item)
-                                .cornerRadius(16)
-                                .listRowInsets(EdgeInsets())
+                            Button {
+                                viewModel.selectedQuest = item
+                                mapViewModel.selectedQuest = item.quest.displayUnit
+                                self.showLongFrom = true
+                            } label: {
+                                NearestQuestCard(quest: item)
+                                    .cornerRadius(16)
+                            }
+                            .buttonStyle(PlainButtonStyle())
+                            .listRowInsets(EdgeInsets())
                         }
+                        
                     }
                     .listStyle(.plain)
                     .scrollContentBackground(.hidden)
@@ -64,6 +79,19 @@ struct AccessibilityModeView: View {
         }
         .onDisappear() {
             viewModel.stopMonitoring()
+        }
+        .sheet(isPresented: $showLongFrom) {
+            QuestSheetView(viewModel: mapViewModel, annotationCoordinate: viewModel.selectedQuest?.quest.coordinateInfo)
+                .presentationDetents([.fraction(0.8), .fraction(0.5), .fraction(0.1)], selection: $selectedDetent)
+                .presentationDragIndicator(.visible)
+                .scrollDisabled(false)
+                .interactiveDismissDisabled()
+                .applyPresentationSizingPage()
+        }
+        .onChange(of: mapViewModel.items) { _ in
+            if let lkl = viewModel.lastKnownLocation {
+                viewModel.filterQuestsNerestToUser(location: lkl)
+            }
         }
     }
     
@@ -175,6 +203,6 @@ struct AccessibilityModeView: View {
     }
 }
 
-#Preview {
-    AccessibilityModeView()
-}
+//#Preview {
+//    AccessibilityModeView()
+//}
