@@ -141,10 +141,10 @@ struct AccessibilityModeView: View {
         VStack(alignment: .leading, spacing: 5.0, content: {
             Text(L10n.Localizable.numberOfQuests + " \(viewModel.nearestQuest.count)")
                 .font(FontFamily.Lato.bold.swiftUIFont(size: 16))
-                .foregroundColor(Asset.Colors.huskyPurple.swiftUIColor)
+                .foregroundColor(Asset.Colors._42526ETextFieldText.swiftUIColor)
             Text(L10n.Localizable.selectTheQuestToStartAnswering)
                 .font(FontFamily.Lato.regular.swiftUIFont(size: 14))
-                .foregroundColor(Color.gray)
+                .foregroundColor(Asset.Colors._42526ETextFieldText.swiftUIColor)
         })
     }
     
