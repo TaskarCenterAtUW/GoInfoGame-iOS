@@ -143,7 +143,7 @@ struct AccessibilityModeView: View {
                 .font(FontFamily.Lato.bold.swiftUIFont(size: 16))
                 .foregroundColor(Asset.Colors._42526ETextFieldText.swiftUIColor)
             Text(L10n.Localizable.selectTheQuestToStartAnswering)
-                .font(FontFamily.Lato.regular.swiftUIFont(size: 14))
+                .font(FontFamily.Lato.medium.swiftUIFont(size: 14))
                 .foregroundColor(Asset.Colors._42526ETextFieldText.swiftUIColor)
         })
     }
