@@ -148,14 +148,9 @@ struct AccessibilityModeView: View {
     }
     
     private var closeButton: some View {
-        Button(action: {
+        CrossMarkButton {
             dismiss()
-        }, label: {
-            Image(systemName: "xmark.circle")
-                .resizable()
-                .frame(width: 25, height: 25)
-                .foregroundStyle(Asset.Colors.accentPink.swiftUIColor)
-        })
+        }
     }
     
     private var undoEditButton: some View {

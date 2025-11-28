@@ -177,6 +177,7 @@
 		C79C3B7A2ED4559500F80364 /* AccessibilityModeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C79C3B792ED4559500F80364 /* AccessibilityModeView.swift */; };
 		C79C3B7C2ED5786100F80364 /* NearestQuestCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = C79C3B7B2ED5786100F80364 /* NearestQuestCard.swift */; };
 		C79C3B7E2ED5885300F80364 /* lato-semibold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C79C3B7D2ED5885300F80364 /* lato-semibold.ttf */; };
+		C79EDA8B2ED96B4500D2B100 /* CrossMarkButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = C79EDA8A2ED96B4500D2B100 /* CrossMarkButton.swift */; };
 		C7A357462EA22A120033F6FB /* Config.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = C7A357452EA22A120033F6FB /* Config.xcconfig */; };
 		C7A922252E45C36D00705E21 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = C7A922242E45C36D00705E21 /* PrivacyInfo.xcprivacy */; };
 		C7BA83542E3C9C3600755BA7 /* QuestSyncButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7BA83532E3C9C3600755BA7 /* QuestSyncButton.swift */; };
@@ -538,6 +539,7 @@
 		C79C3B792ED4559500F80364 /* AccessibilityModeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccessibilityModeView.swift; sourceTree = "<group>"; };
 		C79C3B7B2ED5786100F80364 /* NearestQuestCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NearestQuestCard.swift; sourceTree = "<group>"; };
 		C79C3B7D2ED5885300F80364 /* lato-semibold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "lato-semibold.ttf"; sourceTree = "<group>"; };
+		C79EDA8A2ED96B4500D2B100 /* CrossMarkButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CrossMarkButton.swift; sourceTree = "<group>"; };
 		C7A357452EA22A120033F6FB /* Config.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Config.xcconfig; sourceTree = "<group>"; };
 		C7A922242E45C36D00705E21 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		C7BA83532E3C9C3600755BA7 /* QuestSyncButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = QuestSyncButton.swift; path = GoInfoGame/UI/Map/QuestSyncButton.swift; sourceTree = SOURCE_ROOT; };
@@ -1483,6 +1485,7 @@
 				FA9F38212DC93F3D00D7AABF /* UndoSidebarView.swift */,
 				FAEE21DA2DCA1963002F9BEC /* UndoButton.swift */,
 				FA5071972D71F1B000CE9798 /* SyncLogger.swift */,
+				C79EDA8A2ED96B4500D2B100 /* CrossMarkButton.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -2364,6 +2367,7 @@
 				FABF3CF42B7419BB0080EAC9 /* LocationManagerDelegate.swift in Sources */,
 				973FC0192B4FB17000878269 /* LocalizedStrings.swift in Sources */,
 				A48037312BBA8C25007EE7E4 /* ApiManager.swift in Sources */,
+				C79EDA8B2ED96B4500D2B100 /* CrossMarkButton.swift in Sources */,
 				FABF3D002B8607D80080EAC9 /* MeasureSidewalkView.swift in Sources */,
 				C76DA1A12DF0679F00451E63 /* LongFormModel.swift in Sources */,
 				FA18CAE72CC80A34008247F2 /* UploadPhotoModel.swift in Sources */,
