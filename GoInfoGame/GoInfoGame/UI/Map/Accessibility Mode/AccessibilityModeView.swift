@@ -34,13 +34,14 @@ struct AccessibilityModeView: View {
                             
                         })
                         .padding(.bottom)
-                        dotteline
+                        
+                        DottedLine()
+                        
                         List {
                             ForEach(viewModel.nearestQuest, id: \.self) { item in
                                 Button {
                                     self.selectedQuest = item.quest
                                     mapViewModel.selectedQuest = item.quest.displayUnit
-                                    self.showLongFrom = true
                                 } label: {
                                     NearestQuestCard(quest: item)
                                         .cornerRadius(16)
@@ -57,7 +58,8 @@ struct AccessibilityModeView: View {
                         .padding(.top, 20)
                         .padding(.bottom, 20)
                         
-                        dotteline
+                        DottedLine()
+                        
                         bottomBar
                     })
                 }
@@ -96,23 +98,22 @@ struct AccessibilityModeView: View {
                 viewModel.filterQuestsNerestToUser(location: lkl)
             }
         }
-    }
-    
-    private var dotteline: some View {
-        Rectangle()
-            .frame(height: 1)
-            .foregroundColor(.clear)
-            .overlay(
-                Rectangle()
-                    .stroke(
-                        Asset.Colors._42526ETextFieldText.swiftUIColor,
-                        style: SwiftUI.StrokeStyle(
-                            lineWidth: 1,
-                            lineCap: .round,
-                            dash: [2, 4]
-                        )
-                    )
-            )
+        .sheet(item: $selectedQuest) { _ in
+            if let quest = selectedQuest {
+                QuestSelectionConfirmationView(questType: quest.displayUnit.parent?.elementType ?? "") {
+                    self.showLongFrom = true
+                } onHideQuest: {
+                    mapViewModel.hideQuest(elementId: String(quest.id), elementName: quest.displayUnit.parent?.elementType ?? "")
+                } onClose: {
+                    
+                }
+                .background(Color(red: 248/255, green: 248/255, blue: 248/255))
+                .presentationDetents([.fraction(0.36)])
+                .interactiveDismissDisabled()
+                .presentationDragIndicator(.hidden)
+                .applyPresentationSizingPage()
+            }
+        }
     }
     
     private var refreshListButton: some View {

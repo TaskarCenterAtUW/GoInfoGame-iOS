@@ -25,10 +25,14 @@ internal enum L10n {
     internal static let dontShowAgain = L10n.tr("Localizable", "dont_show_again", fallback: "Don't show again for this session")
     /// Go back to map view
     internal static let goBackToMapView = L10n.tr("Localizable", "Go back to map view", fallback: "Go back to map view")
+    /// Hide this quest
+    internal static let hideThisQuest = L10n.tr("Localizable", "Hide this quest", fallback: "Hide this quest")
     /// Invalid credentials
     internal static let invalidCredentials = L10n.tr("Localizable", "Invalid credentials", fallback: "Invalid credentials")
     /// My Profile
     internal static let myProfile = L10n.tr("Localizable", "My Profile", fallback: "My Profile")
+    /// Not now
+    internal static let notNow = L10n.tr("Localizable", "Not now", fallback: "Not now")
     /// Number of quests:
     internal static let numberOfQuests = L10n.tr("Localizable", "Number of quests:", fallback: "Number of quests:")
     /// OTHER ANSWERS...
@@ -220,6 +224,10 @@ internal enum L10n {
     internal static let selectTheQuestToStartAnswering = L10n.tr("Localizable", "Select the quest to start answering.", fallback: "Select the quest to start answering.")
     /// Select One:
     internal static let selectOne = L10n.tr("Localizable", "select_one", fallback: "Select One:")
+    /// Selected Type:
+    internal static let selectedType = L10n.tr("Localizable", "Selected Type:", fallback: "Selected Type:")
+    /// Start answering the questions
+    internal static let startAnsweringTheQuestions = L10n.tr("Localizable", "Start answering the questions", fallback: "Start answering the questions")
     /// Undo Edits
     internal static let undoEdits = L10n.tr("Localizable", "Undo Edits", fallback: "Undo Edits")
     /// Cancel

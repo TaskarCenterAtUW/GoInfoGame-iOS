@@ -178,6 +178,8 @@
 		C79C3B7C2ED5786100F80364 /* NearestQuestCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = C79C3B7B2ED5786100F80364 /* NearestQuestCard.swift */; };
 		C79C3B7E2ED5885300F80364 /* lato-semibold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C79C3B7D2ED5885300F80364 /* lato-semibold.ttf */; };
 		C79EDA8B2ED96B4500D2B100 /* CrossMarkButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = C79EDA8A2ED96B4500D2B100 /* CrossMarkButton.swift */; };
+		C79EDA8D2ED96D8400D2B100 /* QuestSelectionConfirmationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C79EDA8C2ED96D8400D2B100 /* QuestSelectionConfirmationView.swift */; };
+		C79EDA8F2ED9977700D2B100 /* DottedLineView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C79EDA8E2ED9977700D2B100 /* DottedLineView.swift */; };
 		C7A357462EA22A120033F6FB /* Config.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = C7A357452EA22A120033F6FB /* Config.xcconfig */; };
 		C7A922252E45C36D00705E21 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = C7A922242E45C36D00705E21 /* PrivacyInfo.xcprivacy */; };
 		C7BA83542E3C9C3600755BA7 /* QuestSyncButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7BA83532E3C9C3600755BA7 /* QuestSyncButton.swift */; };
@@ -540,6 +542,8 @@
 		C79C3B7B2ED5786100F80364 /* NearestQuestCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NearestQuestCard.swift; sourceTree = "<group>"; };
 		C79C3B7D2ED5885300F80364 /* lato-semibold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "lato-semibold.ttf"; sourceTree = "<group>"; };
 		C79EDA8A2ED96B4500D2B100 /* CrossMarkButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CrossMarkButton.swift; sourceTree = "<group>"; };
+		C79EDA8C2ED96D8400D2B100 /* QuestSelectionConfirmationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuestSelectionConfirmationView.swift; sourceTree = "<group>"; };
+		C79EDA8E2ED9977700D2B100 /* DottedLineView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DottedLineView.swift; sourceTree = "<group>"; };
 		C7A357452EA22A120033F6FB /* Config.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Config.xcconfig; sourceTree = "<group>"; };
 		C7A922242E45C36D00705E21 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		C7BA83532E3C9C3600755BA7 /* QuestSyncButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = QuestSyncButton.swift; path = GoInfoGame/UI/Map/QuestSyncButton.swift; sourceTree = SOURCE_ROOT; };
@@ -1426,6 +1430,7 @@
 				C79C3B792ED4559500F80364 /* AccessibilityModeView.swift */,
 				C7E9528C2ED887CC001BFB75 /* NoQuestsNearView.swift */,
 				C79C3B7B2ED5786100F80364 /* NearestQuestCard.swift */,
+				C79EDA8C2ED96D8400D2B100 /* QuestSelectionConfirmationView.swift */,
 			);
 			path = "Accessibility Mode";
 			sourceTree = "<group>";
@@ -1486,6 +1491,7 @@
 				FAEE21DA2DCA1963002F9BEC /* UndoButton.swift */,
 				FA5071972D71F1B000CE9798 /* SyncLogger.swift */,
 				C79EDA8A2ED96B4500D2B100 /* CrossMarkButton.swift */,
+				C79EDA8E2ED9977700D2B100 /* DottedLineView.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -2370,6 +2376,7 @@
 				C79EDA8B2ED96B4500D2B100 /* CrossMarkButton.swift in Sources */,
 				FABF3D002B8607D80080EAC9 /* MeasureSidewalkView.swift in Sources */,
 				C76DA1A12DF0679F00451E63 /* LongFormModel.swift in Sources */,
+				C79EDA8F2ED9977700D2B100 /* DottedLineView.swift in Sources */,
 				FA18CAE72CC80A34008247F2 /* UploadPhotoModel.swift in Sources */,
 				FAFDA1FA2C6B861A00ECEAE9 /* FileStorageManager.swift in Sources */,
 				FAEE21DB2DCA1963002F9BEC /* UndoButton.swift in Sources */,
@@ -2433,6 +2440,7 @@
 				970D5BD12B62B61300C20BE7 /* MapViewController.swift in Sources */,
 				FA9FE2D82BAC75390036F618 /* OAuthViewController.swift in Sources */,
 				FA50719A2D7263F800CE9798 /* LongFormImageView.swift in Sources */,
+				C79EDA8D2ED96D8400D2B100 /* QuestSelectionConfirmationView.swift in Sources */,
 				971342792BBD691500174EBF /* MapViewControllerView.swift in Sources */,
 				C75EAD362E042D4500F75969 /* SideWalkWidth.swift in Sources */,
 				C7E9528D2ED887CC001BFB75 /* NoQuestsNearView.swift in Sources */,
