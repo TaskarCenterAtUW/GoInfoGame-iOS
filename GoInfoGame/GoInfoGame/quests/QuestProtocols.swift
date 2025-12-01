@@ -79,7 +79,7 @@ class QuestBase {
     
     // Add a custom implementation
     
-   public func updateTags(id: Int64, tags:[String:String], type: ElementType, exclude_gig_tags: Bool = false) {
+    public func updateTags(id: Int64, questType: String, tags:[String:String], type: ElementType, exclude_gig_tags: Bool = false) {
        
        // Convert from ElementType enum to StoredElementEnum
        let storedElementType: StoredElementEnum = type == .way ? .way : .node
@@ -90,13 +90,13 @@ class QuestBase {
 //          _ = DatabaseConnector.shared.addWayTags(id: storedId, tags: tags)
            let way =  DatabaseConnector.shared.getWay(id: Int(id))!
            // Create a changeset
-           _ = DatabaseConnector.shared.createChangeset(id: Int(id), type: storedElementType, originalTags: way.tags.toDictionary(), tags: tags, version: way.version, nodes: way.nodes)
+           _ = DatabaseConnector.shared.createChangeset(id: Int(id), questType: questType, type: storedElementType, originalTags: way.tags.toDictionary(), tags: tags, version: way.version, nodes: way.nodes)
        case .node:
            elementSubmittingToPOSM = .node
 //          _ = DatabaseConnector.shared.addNodeTags(id: storedId, tags: tags)
            let node =  DatabaseConnector.shared.getNode(id: Int(id))!
            // Create a changeset
-           _ = DatabaseConnector.shared.createChangeset(id: Int(id), type: storedElementType, originalTags: node.tags.toDictionary(), tags: tags, version: node.version, point: CLLocationCoordinate2D(latitude: node.latitude, longitude: node.longitude))
+           _ = DatabaseConnector.shared.createChangeset(id: Int(id), questType: questType, type: storedElementType, originalTags: node.tags.toDictionary(), tags: tags, version: node.version, point: CLLocationCoordinate2D(latitude: node.latitude, longitude: node.longitude))
        case .unknown:
            print("Unknown Stored element type received")
        }
