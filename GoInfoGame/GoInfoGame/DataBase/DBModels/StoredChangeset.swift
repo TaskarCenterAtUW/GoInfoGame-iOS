@@ -46,6 +46,7 @@ class StoredChangeset: Object {
     @Persisted var isUndoCompleted: Bool = false
     @Persisted var undoOn: Date? = nil
     @Persisted var questType: String?
+    @Persisted var iconName: String
     
     public func asOSMWay(isUndo: Bool = false) -> OSMWay {
         var storage = originalTags.toDictionary()

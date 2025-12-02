@@ -146,7 +146,7 @@ class LongElementQuest: QuestBase, Quest {
     
     
     func onAnswer(answer: [String : String]) {
-        self.updateTags(id: id, questType: elementType, tags: answer, type: type)
+        self.updateTags(id: id, questType: elementType, tags: answer, type: type, iconName: iconName)
     }
         
     var questId: String {

@@ -290,13 +290,14 @@ class DatabaseConnector {
      - parameter tags [String:String] tags changed with this
      - Returns: An instance of `StoredChangeset`
         */
-    func createChangeset(id:Int, questType: String, type: StoredElementEnum, originalTags:[String:String], tags:[String:String], version: Int, point: CLLocationCoordinate2D? = nil, nodes: List<Int64>? = nil) -> StoredChangeset? {
+    func createChangeset(id:Int, questType: String, type: StoredElementEnum, originalTags:[String:String], tags:[String:String], version: Int, iconName: String, point: CLLocationCoordinate2D? = nil, nodes: List<Int64>? = nil) -> StoredChangeset? {
         let realm = try! Realm(configuration: RealmConfig.configuration)
         let storedChangeset = StoredChangeset()
         storedChangeset.elementId = id
         storedChangeset.elementType = type
         storedChangeset.version = version
         storedChangeset.questType = questType
+        storedChangeset.iconName = iconName
         if let point = point {
             storedChangeset.point = point
         }
@@ -443,6 +444,7 @@ struct RealmConfig {
         } else if oldSchemaVersion < 2 {
             migration.enumerateObjects(ofType: StoredChangeset.className()) { oldObject, newObject in
                 newObject?["questType"] = nil
+                newObject?["iconName"] = "notes"
             }
         }
     }
