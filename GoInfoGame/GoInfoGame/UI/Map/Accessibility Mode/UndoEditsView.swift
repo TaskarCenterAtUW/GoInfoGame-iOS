@@ -84,7 +84,6 @@ struct UndoEditsView: View {
                 } onClose: {
                     
                 }
-                .background(Color(red: 248/255, green: 248/255, blue: 248/255))
                 .presentationDetents([.fraction(0.7)])
                 .interactiveDismissDisabled()
                 .presentationDragIndicator(.hidden)
@@ -92,7 +91,7 @@ struct UndoEditsView: View {
             }
         }
         .onReceive(MapViewPublisher.shared.dismissSheet) { scenario in
-            if case let .undoDone(changesetId) = scenario {
+            if case .undoDone(_) = scenario {
                 viewModel.loadUndoItems()
             }
         }

@@ -82,7 +82,7 @@ struct UndoItemConfirmationView: View {
             .listStyle(.plain)
             .scrollContentBackground(.hidden)
             .background(Color.clear)
-            .listRowSpacing(20)
+            .listRowSpacing(10)
             .padding(.bottom, 20)
             .listRowSeparator(.hidden)
             
