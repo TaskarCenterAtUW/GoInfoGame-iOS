@@ -25,4 +25,8 @@ class UndoEditsViewModel: ObservableObject {
         
         self.undoItems = sortedGroups
     }
+    
+    func undo(item: UndoItem) {
+        MapUndoManager.shared.undo(for: item.id)
+    }
 }

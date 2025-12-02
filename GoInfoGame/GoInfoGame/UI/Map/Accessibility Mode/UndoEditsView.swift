@@ -11,6 +11,7 @@ struct UndoEditsView: View {
     @Environment(\.dismiss) var dismiss
     
     @ObservedObject private var viewModel: UndoEditsViewModel = UndoEditsViewModel(undoItems: [])
+    @State var selectedItem: UndoItem?
     var body: some View {
         NavigationStack {
             ZStack {
@@ -26,8 +27,14 @@ struct UndoEditsView: View {
                                 ForEach(section.items.sorted(by: { e1, e2 in
                                     e1.timestamp > e2.timestamp
                                 })) { item in
-                                    UndoItemView(undoItem: item)
-                                        .listRowInsets(EdgeInsets())
+                                    Button {
+                                        self.selectedItem = item
+                                    } label: {
+                                        UndoItemView(undoItem: item)
+                                            .listRowInsets(EdgeInsets())
+                                    }
+                                    .buttonStyle(PlainButtonStyle())
+                                    .listRowInsets(EdgeInsets())
                                 }
                             } header: {
                                 Text(section.date.formatted(date: .long, time: .omitted))
@@ -69,6 +76,25 @@ struct UndoEditsView: View {
                 }
             }
             .toolbarBackground(.visible, for: .navigationBar)
+        }
+        .sheet(item: $selectedItem) { _ in
+            if let item = selectedItem {
+                UndoItemConfirmationView(undoItem: item) {
+                    viewModel.undo(item: item)
+                } onClose: {
+                    
+                }
+                .background(Color(red: 248/255, green: 248/255, blue: 248/255))
+                .presentationDetents([.fraction(0.7)])
+                .interactiveDismissDisabled()
+                .presentationDragIndicator(.hidden)
+                .applyPresentationSizingPage()
+            }
+        }
+        .onReceive(MapViewPublisher.shared.dismissSheet) { scenario in
+            if case let .undoDone(changesetId) = scenario {
+                viewModel.loadUndoItems()
+            }
         }
     }
     
