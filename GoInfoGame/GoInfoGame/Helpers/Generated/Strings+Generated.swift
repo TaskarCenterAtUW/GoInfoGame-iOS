@@ -25,6 +25,8 @@ internal enum L10n {
     internal static let dontShowAgain = L10n.tr("Localizable", "dont_show_again", fallback: "Don't show again for this session")
     /// Go back to map view
     internal static let goBackToMapView = L10n.tr("Localizable", "Go back to map view", fallback: "Go back to map view")
+    /// Go back to previous screen
+    internal static let goBackToPreviousScreen = L10n.tr("Localizable", "Go back to previous screen", fallback: "Go back to previous screen")
     /// Hide this quest
     internal static let hideThisQuest = L10n.tr("Localizable", "Hide this quest", fallback: "Hide this quest")
     /// Invalid credentials
@@ -220,6 +222,8 @@ internal enum L10n {
     internal static let refreshList = L10n.tr("Localizable", "Refresh list", fallback: "Refresh list")
     /// Select:
     internal static let select = L10n.tr("Localizable", "Select", fallback: "Select:")
+    /// Select the quest based on date and time for preview & revert
+    internal static let selectTheQuestBasedOnDateAndTimeForPreviewRevert = L10n.tr("Localizable", "Select the quest based on date and time for preview & revert", fallback: "Select the quest based on date and time for preview & revert")
     /// Select the quest to start answering.
     internal static let selectTheQuestToStartAnswering = L10n.tr("Localizable", "Select the quest to start answering.", fallback: "Select the quest to start answering.")
     /// Select One:
@@ -228,8 +232,12 @@ internal enum L10n {
     internal static let selectedType = L10n.tr("Localizable", "Selected Type:", fallback: "Selected Type:")
     /// Start answering the questions
     internal static let startAnsweringTheQuestions = L10n.tr("Localizable", "Start answering the questions", fallback: "Start answering the questions")
+    /// Type
+    internal static let type = L10n.tr("Localizable", "Type", fallback: "Type")
     /// Undo Edits
     internal static let undoEdits = L10n.tr("Localizable", "Undo Edits", fallback: "Undo Edits")
+    /// Undo your recent changes
+    internal static let undoYourRecentChanges = L10n.tr("Localizable", "Undo your recent changes", fallback: "Undo your recent changes")
     /// Cancel
     internal static let undoConfirmNegative = L10n.tr("Localizable", "undo_confirm_negative", fallback: "Cancel")
     /// Update

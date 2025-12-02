@@ -38,7 +38,8 @@ class MapUndoManager {
         for edited in editedNodes {
             let keys = Array(edited.tags.keys)
             if !keys.isEmpty {
-                items.append(UndoItem(elementId: edited.elementId, type: edited.elementType.elementType(), changedKeys: keys, id: edited.id))
+                let date = Date(timeIntervalSince1970: Double(edited.timestamp) ?? 0.0)
+                items.append(UndoItem(elementId: edited.elementId, type: edited.elementType.elementType(), changedKeys: keys, id: edited.id, timestamp: date, questType: edited.questType))
             }
         }
 

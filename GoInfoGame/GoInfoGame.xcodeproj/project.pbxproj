@@ -167,6 +167,7 @@
 		C76B637F2E4625D30076A540 /* FirebasePerformance in Frameworks */ = {isa = PBXBuildFile; productRef = C76B637E2E4625D30076A540 /* FirebasePerformance */; };
 		C76DA1A12DF0679F00451E63 /* LongFormModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA8C74C32C4FDE1000D28220 /* LongFormModel.swift */; };
 		C76FAAE52ED76509009E0B4F /* gachibowli circle_path.gpx in Resources */ = {isa = PBXBuildFile; fileRef = C76FAAE42ED76509009E0B4F /* gachibowli circle_path.gpx */; };
+		C778A50F2EDD9C6D0014B9C5 /* UndoEditsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C778A50E2EDD9C6D0014B9C5 /* UndoEditsViewModel.swift */; };
 		C77A4A262DF2AF3100DED8B0 /* SecureInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C77A4A252DF2AF3100DED8B0 /* SecureInputView.swift */; };
 		C77AAC9D2E4463ED006713B2 /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = C77AAC9C2E4463ED006713B2 /* FirebaseAnalytics */; };
 		C77AAC9F2E4463ED006713B2 /* FirebaseCrashlytics in Frameworks */ = {isa = PBXBuildFile; productRef = C77AAC9E2E4463ED006713B2 /* FirebaseCrashlytics */; };
@@ -180,6 +181,8 @@
 		C79EDA8B2ED96B4500D2B100 /* CrossMarkButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = C79EDA8A2ED96B4500D2B100 /* CrossMarkButton.swift */; };
 		C79EDA8D2ED96D8400D2B100 /* QuestSelectionConfirmationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C79EDA8C2ED96D8400D2B100 /* QuestSelectionConfirmationView.swift */; };
 		C79EDA8F2ED9977700D2B100 /* DottedLineView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C79EDA8E2ED9977700D2B100 /* DottedLineView.swift */; };
+		C79EDA912ED9FD1F00D2B100 /* UndoEditsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C79EDA902ED9FD1F00D2B100 /* UndoEditsView.swift */; };
+		C79EDA932EDA0BBD00D2B100 /* UndoItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C79EDA922EDA0BBD00D2B100 /* UndoItemView.swift */; };
 		C7A357462EA22A120033F6FB /* Config.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = C7A357452EA22A120033F6FB /* Config.xcconfig */; };
 		C7A922252E45C36D00705E21 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = C7A922242E45C36D00705E21 /* PrivacyInfo.xcprivacy */; };
 		C7BA83542E3C9C3600755BA7 /* QuestSyncButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7BA83532E3C9C3600755BA7 /* QuestSyncButton.swift */; };
@@ -530,6 +533,7 @@
 		C76B63722E46019D0076A540 /* proximanova_semibold.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = proximanova_semibold.otf; sourceTree = "<group>"; };
 		C76B63772E4604000076A540 /* Fonts+Generated.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Fonts+Generated.swift"; sourceTree = "<group>"; };
 		C76FAAE42ED76509009E0B4F /* gachibowli circle_path.gpx */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = "gachibowli circle_path.gpx"; sourceTree = "<group>"; };
+		C778A50E2EDD9C6D0014B9C5 /* UndoEditsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UndoEditsViewModel.swift; sourceTree = "<group>"; };
 		C77A4A252DF2AF3100DED8B0 /* SecureInputView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecureInputView.swift; sourceTree = "<group>"; };
 		C77AAC992E446376006713B2 /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		C77AACA52E447364006713B2 /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
@@ -544,6 +548,8 @@
 		C79EDA8A2ED96B4500D2B100 /* CrossMarkButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CrossMarkButton.swift; sourceTree = "<group>"; };
 		C79EDA8C2ED96D8400D2B100 /* QuestSelectionConfirmationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuestSelectionConfirmationView.swift; sourceTree = "<group>"; };
 		C79EDA8E2ED9977700D2B100 /* DottedLineView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DottedLineView.swift; sourceTree = "<group>"; };
+		C79EDA902ED9FD1F00D2B100 /* UndoEditsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UndoEditsView.swift; sourceTree = "<group>"; };
+		C79EDA922EDA0BBD00D2B100 /* UndoItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UndoItemView.swift; sourceTree = "<group>"; };
 		C7A357452EA22A120033F6FB /* Config.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Config.xcconfig; sourceTree = "<group>"; };
 		C7A922242E45C36D00705E21 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		C7BA83532E3C9C3600755BA7 /* QuestSyncButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = QuestSyncButton.swift; path = GoInfoGame/UI/Map/QuestSyncButton.swift; sourceTree = SOURCE_ROOT; };
@@ -1374,6 +1380,7 @@
 			isa = PBXGroup;
 			children = (
 				C769E6EC2ED6D4CD00D085A9 /* AccessibilityModeViewModel.swift */,
+				C778A50E2EDD9C6D0014B9C5 /* UndoEditsViewModel.swift */,
 			);
 			path = ViewModel;
 			sourceTree = "<group>";
@@ -1431,6 +1438,8 @@
 				C7E9528C2ED887CC001BFB75 /* NoQuestsNearView.swift */,
 				C79C3B7B2ED5786100F80364 /* NearestQuestCard.swift */,
 				C79EDA8C2ED96D8400D2B100 /* QuestSelectionConfirmationView.swift */,
+				C79EDA902ED9FD1F00D2B100 /* UndoEditsView.swift */,
+				C79EDA922EDA0BBD00D2B100 /* UndoItemView.swift */,
 			);
 			path = "Accessibility Mode";
 			sourceTree = "<group>";
@@ -2392,6 +2401,7 @@
 				FAFDA2142C7351CB00ECEAE9 /* APIError.swift in Sources */,
 				FA9F381C2DB2FF4B00D7AABF /* ShadowOverlayRenderer.swift in Sources */,
 				059D47332B2C83BA000987FA /* Highway.swift in Sources */,
+				C79EDA912ED9FD1F00D2B100 /* UndoEditsView.swift in Sources */,
 				973FC0012B46CD5D00878269 /* QuestsListUIView.swift in Sources */,
 				973FC01F2B50DE7E00878269 /* ImageGridItemView.swift in Sources */,
 				FA633CB42DD4843B00324404 /* BiometricAuthManager.swift in Sources */,
@@ -2427,6 +2437,7 @@
 				FAFDA2062C6E8D7A00ECEAE9 /* APIEndPoint.swift in Sources */,
 				FA5853C12B21F17F00301CDA /* OnboardingView.swift in Sources */,
 				A4B83AF32B5F9385006684CA /* StoredWay.swift in Sources */,
+				C778A50F2EDD9C6D0014B9C5 /* UndoEditsViewModel.swift in Sources */,
 				C787F3422E9CD34F00BEF0A6 /* ForceUpdateManager.swift in Sources */,
 				FA18CAE52CC7D0DD008247F2 /* SequenceModel.swift in Sources */,
 				C71EB5AC2E2100510009E610 /* WMTSServer.swift in Sources */,
@@ -2439,6 +2450,7 @@
 				C79C3B7A2ED4559500F80364 /* AccessibilityModeView.swift in Sources */,
 				970D5BD12B62B61300C20BE7 /* MapViewController.swift in Sources */,
 				FA9FE2D82BAC75390036F618 /* OAuthViewController.swift in Sources */,
+				C79EDA932EDA0BBD00D2B100 /* UndoItemView.swift in Sources */,
 				FA50719A2D7263F800CE9798 /* LongFormImageView.swift in Sources */,
 				C79EDA8D2ED96D8400D2B100 /* QuestSelectionConfirmationView.swift in Sources */,
 				971342792BBD691500174EBF /* MapViewControllerView.swift in Sources */,

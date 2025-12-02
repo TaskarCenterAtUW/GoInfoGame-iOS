@@ -14,6 +14,7 @@ struct AccessibilityModeView: View {
     @StateObject var viewModel: AccessibilityModeViewModel
     @State private var selectedDetent: PresentationDetent = .fraction(0.8)
     @State var selectedQuest: DisplayUnitWithCoordinate?
+    @State var navigateToUndo: Bool = false
     
     init (mapViewModel: MapViewModel) {
         self.mapViewModel = mapViewModel
@@ -79,6 +80,13 @@ struct AccessibilityModeView: View {
             .toolbarBackground(.visible, for: .navigationBar)
         }
         .ignoresSafeArea(.all, edges: .bottom)
+        .onChange(of: navigateToUndo) { newValue in
+            if newValue {
+                viewModel.stopMonitoring()
+            } else {
+                viewModel.startMonitoring()
+            }
+        }
         .onAppear() {
             viewModel.startMonitoring()
         }
@@ -114,11 +122,15 @@ struct AccessibilityModeView: View {
                 .applyPresentationSizingPage()
             }
         }
+        .fullScreenCover(isPresented: $navigateToUndo) {
+            UndoEditsView()
+        }
     }
     
     private var refreshListButton: some View {
         Button {
-            
+            viewModel.stopMonitoring()
+            viewModel.startMonitoring()
         } label: {
             HStack {
                 Image(systemName:"arrow.clockwise")
@@ -156,7 +168,7 @@ struct AccessibilityModeView: View {
     
     private var undoEditButton: some View {
         Button {
-            
+            self.navigateToUndo = true
         } label: {
             HStack {
                 Image(systemName: "arrow.uturn.backward")
@@ -168,7 +180,7 @@ struct AccessibilityModeView: View {
         }
         .overlay(
             RoundedRectangle(cornerRadius: 20)
-                .stroke(Asset.Colors.huskyPurple.swiftUIColor, lineWidth: 2) // Stroke it with red color and desired thickness
+                .stroke(Asset.Colors.huskyPurple.swiftUIColor, lineWidth: 2)
         )
     }
     
@@ -186,7 +198,7 @@ struct AccessibilityModeView: View {
         }
         .overlay(
             RoundedRectangle(cornerRadius: 20)
-                .stroke(Asset.Colors.huskyPurple.swiftUIColor, lineWidth: 2) // Stroke it with red color and desired thickness
+                .stroke(Asset.Colors.huskyPurple.swiftUIColor, lineWidth: 2)
         )
     }
     

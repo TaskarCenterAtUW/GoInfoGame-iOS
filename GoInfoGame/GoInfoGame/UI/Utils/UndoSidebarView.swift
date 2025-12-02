@@ -8,6 +8,8 @@ struct UndoItem: Identifiable {
     let type: ElementType
     let changedKeys: [String]
     var id: String
+    let timestamp: Date
+    let questType: String?
 }
 
 struct UndoSidebarView: View {
