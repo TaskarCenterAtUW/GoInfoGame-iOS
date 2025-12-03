@@ -13,7 +13,6 @@ struct AccessibilityModeView: View {
     @ObservedObject var mapViewModel: MapViewModel
     @StateObject var viewModel: AccessibilityModeViewModel
     @State private var selectedDetent: PresentationDetent = .fraction(0.8)
-    @State var selectedQuest: DisplayUnitWithCoordinate?
     @State var navigateToUndo: Bool = false
     
     init (mapViewModel: MapViewModel) {
@@ -41,7 +40,7 @@ struct AccessibilityModeView: View {
                         List {
                             ForEach(viewModel.nearestQuest, id: \.self) { item in
                                 Button {
-                                    self.selectedQuest = item.quest
+                                    viewModel.selectedQuest = item.quest
                                     mapViewModel.selectedQuest = item.quest.displayUnit
                                 } label: {
                                     NearestQuestCard(quest: item)
@@ -94,7 +93,7 @@ struct AccessibilityModeView: View {
             viewModel.stopMonitoring()
         }
         .sheet(isPresented: $showLongFrom) {
-            QuestSheetView(viewModel: mapViewModel, annotationCoordinate: selectedQuest?.coordinateInfo)
+            QuestSheetView(viewModel: mapViewModel, annotationCoordinate: viewModel.selectedQuest?.coordinateInfo)
                 .presentationDetents([.fraction(0.8), .fraction(0.5), .fraction(0.1)], selection: $selectedDetent)
                 .presentationDragIndicator(.visible)
                 .scrollDisabled(false)
@@ -106,17 +105,28 @@ struct AccessibilityModeView: View {
                 viewModel.filterQuestsNerestToUser(location: lkl)
             }
         }
-        .sheet(item: $selectedQuest) { _ in
-            if let quest = selectedQuest {
-                QuestSelectionConfirmationView(questType: quest.displayUnit.parent?.elementType ?? "") {
+        .sheet(item: $viewModel.selectedQuest) { _ in
+            if let quest = viewModel.selectedQuest {
+                QuestSelectionConfirmationView(questType: quest.displayUnit.parent?.elementType ?? "", isAutoSelected: viewModel.isQuestAutoSelected) {
+                    if viewModel.isQuestAutoSelected {
+                        viewModel.autoSelectionCanceledIDs.insert(quest.id)
+                        viewModel.isQuestAutoSelected = false
+                    }
                     self.showLongFrom = true
                 } onHideQuest: {
+                    if viewModel.isQuestAutoSelected {
+                        viewModel.autoSelectionCanceledIDs.insert(quest.id)
+                        viewModel.isQuestAutoSelected = false
+                    }
                     mapViewModel.hideQuest(elementId: String(quest.id), elementName: quest.displayUnit.parent?.elementType ?? "")
                 } onClose: {
-                    
+                    if viewModel.isQuestAutoSelected {
+                        viewModel.autoSelectionCanceledIDs.insert(quest.id)
+                        viewModel.isQuestAutoSelected = false
+                    }
                 }
                 .background(Color(red: 248/255, green: 248/255, blue: 248/255))
-                .presentationDetents([.fraction(0.36)])
+                .presentationDetents([.fraction(viewModel.isQuestAutoSelected ? 0.6 : 0.36)])
                 .interactiveDismissDisabled()
                 .presentationDragIndicator(.hidden)
                 .applyPresentationSizingPage()

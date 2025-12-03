@@ -45,6 +45,8 @@ internal enum L10n {
     internal static let otherAnswers = L10n.tr("Localizable", "other_answers", fallback: "OTHER ANSWERS...")
     /// Preferences
     internal static let preferences = L10n.tr("Localizable", "Preferences", fallback: "Preferences")
+    /// Quest Type
+    internal static let questType = L10n.tr("Localizable", "Quest Type", fallback: "Quest Type")
     /// Are there one or more street lamps within 10 feet of this Bus stop?
     internal static let questBusStopLitTitle = L10n.tr("Localizable", "quest_busStopLit_title", fallback: "Are there one or more street lamps within 10 feet of this Bus stop?")
     /// What’s the height of the curbs at this crossing?
@@ -258,6 +260,10 @@ internal enum L10n {
     internal static let usuallyLooksLikeThis = L10n.tr("Localizable", "usually_looks_like_this", fallback: "Usually looks like this?")
     /// Workspace
     internal static let workspace = L10n.tr("Localizable", "Workspace", fallback: "Workspace")
+    /// You’ve arrived at the quest location!
+    internal static let youVeArrivedAtTheQuestLocation = L10n.tr("Localizable", "You’ve arrived at the quest location!", fallback: "You’ve arrived at the quest location!")
+    /// You’ve Arrived!
+    internal static let youVeArrived = L10n.tr("Localizable", "You’ve Arrived!", fallback: "You’ve Arrived!")
     internal enum ANewVersionOfTheAppIsAvailable {
       /// A new version of the app is available. Please update to continue using the app.
       internal static let pleaseUpdateToContinueUsingTheApp = L10n.tr("Localizable", "A new version of the app is available. Please update to continue using the app.", fallback: "A new version of the app is available. Please update to continue using the app.")

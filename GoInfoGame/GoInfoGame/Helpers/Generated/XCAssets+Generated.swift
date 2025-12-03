@@ -365,6 +365,7 @@ internal enum Asset {
   internal static let navigation = ImageAsset(name: "navigation")
   internal static let noImage = ImageAsset(name: "no_image")
   internal static let osmlogo = ImageAsset(name: "osmlogo")
+  internal static let reached = ImageAsset(name: "reached")
   internal static let sync = ImageAsset(name: "sync")
   internal static let workspacesLogo = ImageAsset(name: "workspaces_logo")
 }
