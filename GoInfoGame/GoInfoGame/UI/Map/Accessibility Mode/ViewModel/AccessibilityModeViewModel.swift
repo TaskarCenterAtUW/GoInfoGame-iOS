@@ -48,7 +48,12 @@ class AccessibilityModeViewModel: ObservableObject {
                 return nil
             }
         })
-        self.nearestQuest = nearestQuests
+        let sortedquests = nearestQuests.sorted { $0.distance < $1.distance }
+        if sortedquests.count > 5 {
+            self.nearestQuest = Array(sortedquests[0..<5])
+        } else {
+            self.nearestQuest = sortedquests
+        }
     }
     
     struct AccessibilityQuest: Hashable {
