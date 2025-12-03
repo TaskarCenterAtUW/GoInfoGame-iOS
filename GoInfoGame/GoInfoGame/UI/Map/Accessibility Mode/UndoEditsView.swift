@@ -30,8 +30,12 @@ struct UndoEditsView: View {
                                     Button {
                                         self.selectedItem = item
                                     } label: {
-                                        UndoItemView(undoItem: item)
-                                            .listRowInsets(EdgeInsets())
+                                        ZStack {
+                                            Color.white
+                                            UndoItemView(undoItem: item)
+                                                .listRowInsets(EdgeInsets())
+                                        }
+                                        
                                     }
                                     .buttonStyle(PlainButtonStyle())
                                     .listRowInsets(EdgeInsets())
@@ -82,7 +86,7 @@ struct UndoEditsView: View {
                 UndoItemConfirmationView(undoItem: item) {
                     viewModel.undo(item: item)
                 } onClose: {
-                    
+                    self.selectedItem = nil
                 }
                 .presentationDetents([.fraction(0.7)])
                 .interactiveDismissDisabled()
