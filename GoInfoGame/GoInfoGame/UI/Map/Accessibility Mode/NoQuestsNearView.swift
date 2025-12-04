@@ -31,11 +31,11 @@ struct NoQuestsNearView: View {
             })
             .frame(width: 106, height: 106)
             
-            Text("No Quests Found!")
+            Text(L10n.Localizable.noQuestsFound)
                 .font(FontFamily.Lato.heavy.swiftUIFont(fixedSize: 24))
                 .foregroundStyle(Asset.Colors._42526ETextFieldText.swiftUIColor)
             
-            Text("Try moving to a different location to discover more quests.")
+            Text(L10n.Localizable.tryMovingToADifferentLocationToDiscoverMoreQuests)
                 .font(FontFamily.Lato.medium.swiftUIFont(fixedSize: 18))
                 .foregroundStyle(Asset.Colors._42526ETextFieldText.swiftUIColor)
                 .multilineTextAlignment(.center)
