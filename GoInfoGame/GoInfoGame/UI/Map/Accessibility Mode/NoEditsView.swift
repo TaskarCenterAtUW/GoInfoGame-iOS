@@ -1,0 +1,40 @@
+//
+//  NoEditsView.swift
+//  GoInfoGame
+//
+//  Created by Prashamsa on 04/12/25.
+//
+
+import SwiftUI
+
+struct NoEditsView: View {
+    var body: some View {
+        VStack(alignment: .center, spacing: 20, content: {
+            ZStack(alignment: .center, content: {
+                Circle()
+                    .frame(width: 106, height: 106)
+                    .foregroundColor(Asset.Colors._39C27FGreen.swiftUIColor)
+                Image(systemName: "arrow.uturn.backward")
+                    .resizable()
+                    .foregroundStyle(Color.white)
+                    .aspectRatio(contentMode: .fit)
+                    .rotationEffect(.degrees(180.0))
+                    .frame(width: 60, height: 70)
+            })
+            .frame(width: 106, height: 106)
+            
+            Text(L10n.Localizable.noEditsFound)
+                .font(FontFamily.Lato.heavy.swiftUIFont(fixedSize: 24))
+                .foregroundStyle(Asset.Colors._42526ETextFieldText.swiftUIColor)
+            
+            Text(L10n.Localizable.newEditsWillAppearHereWhenAQuestIsAnswered)
+                .font(FontFamily.Lato.medium.swiftUIFont(fixedSize: 18))
+                .foregroundStyle(Asset.Colors._42526ETextFieldText.swiftUIColor)
+                .multilineTextAlignment(.center)
+        })
+    }
+}
+
+#Preview {
+    NoEditsView()
+}

@@ -149,6 +149,7 @@
 		C71EB5B72E2100E30009E610 /* NetworkManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C71EB5B22E2100E30009E610 /* NetworkManager.swift */; };
 		C71EB5B82E2100E30009E610 /* NetworkMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = C71EB5B32E2100E30009E610 /* NetworkMonitor.swift */; };
 		C71EB5B92E2100E30009E610 /* APIManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C71EB5B12E2100E30009E610 /* APIManager.swift */; };
+		C74AC4152EE198B50036E2C5 /* NoEditsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C74AC4142EE198B50036E2C5 /* NoEditsView.swift */; };
 		C75666D02E0D068900D36C41 /* OHHTTPStubs in Frameworks */ = {isa = PBXBuildFile; productRef = C75666CF2E0D068900D36C41 /* OHHTTPStubs */; };
 		C75666D22E0D068900D36C41 /* OHHTTPStubsSwift in Frameworks */ = {isa = PBXBuildFile; productRef = C75666D12E0D068900D36C41 /* OHHTTPStubsSwift */; };
 		C75CC5D92E0D22F4008A94A0 /* LongQuestsResponse.json in Resources */ = {isa = PBXBuildFile; fileRef = C75CC5D82E0D22F4008A94A0 /* LongQuestsResponse.json */; };
@@ -523,6 +524,7 @@
 		C71EB5B22E2100E30009E610 /* NetworkManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkManager.swift; sourceTree = "<group>"; };
 		C71EB5B32E2100E30009E610 /* NetworkMonitor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkMonitor.swift; sourceTree = "<group>"; };
 		C71EB5B42E2100E30009E610 /* ResponseHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResponseHandler.swift; sourceTree = "<group>"; };
+		C74AC4142EE198B50036E2C5 /* NoEditsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoEditsView.swift; sourceTree = "<group>"; };
 		C75CC5D62E0D22F4008A94A0 /* Workspaces response.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "Workspaces response.json"; sourceTree = "<group>"; };
 		C75CC5D72E0D22F4008A94A0 /* SCLIO Seattle pins response.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "SCLIO Seattle pins response.json"; sourceTree = "<group>"; };
 		C75CC5D82E0D22F4008A94A0 /* LongQuestsResponse.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = LongQuestsResponse.json; sourceTree = "<group>"; };
@@ -1443,6 +1445,7 @@
 				C79C3B7B2ED5786100F80364 /* NearestQuestCard.swift */,
 				C79EDA8C2ED96D8400D2B100 /* QuestSelectionConfirmationView.swift */,
 				C79EDA902ED9FD1F00D2B100 /* UndoEditsView.swift */,
+				C74AC4142EE198B50036E2C5 /* NoEditsView.swift */,
 				C78E8BC12EDF20E6002215C0 /* UndoItemConfirmationView.swift */,
 				C79EDA922EDA0BBD00D2B100 /* UndoItemView.swift */,
 				C78E8BC32EDF2D55002215C0 /* TagUpdatedView.swift */,
@@ -2442,6 +2445,7 @@
 				A40004EC2B62338400AF21FB /* AppQuestManager.swift in Sources */,
 				FA51484E2D76ED6C00C0D35B /* NotesViewModel.swift in Sources */,
 				FAFDA2062C6E8D7A00ECEAE9 /* APIEndPoint.swift in Sources */,
+				C74AC4152EE198B50036E2C5 /* NoEditsView.swift in Sources */,
 				FA5853C12B21F17F00301CDA /* OnboardingView.swift in Sources */,
 				A4B83AF32B5F9385006684CA /* StoredWay.swift in Sources */,
 				C778A50F2EDD9C6D0014B9C5 /* UndoEditsViewModel.swift in Sources */,

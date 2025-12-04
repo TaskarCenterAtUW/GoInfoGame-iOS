@@ -138,3 +138,7 @@
 "You’ve Arrived!" = "You’ve Arrived!";
 "You’ve arrived at the quest location!" = "You’ve arrived at the quest location!";
 "Quest Type" = "Quest Type";
+"No Quests Found!" = "No Quests Found!";
+"Try moving to a different location to discover more quests." = "Try moving to a different location to discover more quests.";
+"No Edits Found!" = "No Edits Found!";
+"New edits will appear here when a quest is answered." = "New edits will appear here when a quest is answered.";

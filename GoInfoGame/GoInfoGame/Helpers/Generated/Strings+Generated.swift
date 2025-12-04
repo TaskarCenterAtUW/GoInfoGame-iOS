@@ -37,6 +37,12 @@ internal enum L10n {
     internal static let invalidCredentials = L10n.tr("Localizable", "Invalid credentials", fallback: "Invalid credentials")
     /// My Profile
     internal static let myProfile = L10n.tr("Localizable", "My Profile", fallback: "My Profile")
+    /// New edits will appear here when a quest is answered.
+    internal static let newEditsWillAppearHereWhenAQuestIsAnswered = L10n.tr("Localizable", "New edits will appear here when a quest is answered.", fallback: "New edits will appear here when a quest is answered.")
+    /// No Edits Found!
+    internal static let noEditsFound = L10n.tr("Localizable", "No Edits Found!", fallback: "No Edits Found!")
+    /// No Quests Found!
+    internal static let noQuestsFound = L10n.tr("Localizable", "No Quests Found!", fallback: "No Quests Found!")
     /// Not now
     internal static let notNow = L10n.tr("Localizable", "Not now", fallback: "Not now")
     /// Number of quests:
@@ -240,6 +246,8 @@ internal enum L10n {
     internal static let selectedType = L10n.tr("Localizable", "Selected Type:", fallback: "Selected Type:")
     /// Start answering the questions
     internal static let startAnsweringTheQuestions = L10n.tr("Localizable", "Start answering the questions", fallback: "Start answering the questions")
+    /// Try moving to a different location to discover more quests.
+    internal static let tryMovingToADifferentLocationToDiscoverMoreQuests = L10n.tr("Localizable", "Try moving to a different location to discover more quests.", fallback: "Try moving to a different location to discover more quests.")
     /// Type
     internal static let type = L10n.tr("Localizable", "Type", fallback: "Type")
     /// Undo Edits

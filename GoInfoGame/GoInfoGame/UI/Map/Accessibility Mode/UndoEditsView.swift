@@ -20,38 +20,47 @@ struct UndoEditsView: View {
                         .padding(.bottom)
                     
                     DottedLine()
-                    
-                    List {
-                        ForEach(viewModel.undoItems, id: \.date) { section in
-                            Section {
-                                ForEach(section.items.sorted(by: { e1, e2 in
-                                    e1.timestamp > e2.timestamp
-                                })) { item in
-                                    Button {
-                                        self.selectedItem = item
-                                    } label: {
-                                        ZStack {
-                                            Color.white
-                                            UndoItemView(undoItem: item)
-                                                .listRowInsets(EdgeInsets())
+                    if viewModel.undoItems.isEmpty {
+                        VStack(alignment: .center) {
+                            Spacer()
+                            NoEditsView()
+                            Spacer()
+                        }
+                        .frame(maxWidth: .infinity)
+                    } else {
+                        List {
+                            ForEach(viewModel.undoItems, id: \.date) { section in
+                                Section {
+                                    ForEach(section.items.sorted(by: { e1, e2 in
+                                        e1.timestamp > e2.timestamp
+                                    })) { item in
+                                        Button {
+                                            self.selectedItem = item
+                                        } label: {
+                                            ZStack {
+                                                Color.white
+                                                UndoItemView(undoItem: item)
+                                                    .listRowInsets(EdgeInsets())
+                                            }
+                                            
                                         }
-                                        
+                                        .buttonStyle(PlainButtonStyle())
+                                        .listRowInsets(EdgeInsets())
                                     }
-                                    .buttonStyle(PlainButtonStyle())
-                                    .listRowInsets(EdgeInsets())
+                                } header: {
+                                    Text(section.date.formatted(date: .long, time: .omitted))
+                                        .font(FontFamily.Lato.bold.swiftUIFont(size: 14))
+                                        .foregroundColor(Asset.Colors._83879BTextFiledTitle.swiftUIColor)
                                 }
-                            } header: {
-                                Text(section.date.formatted(date: .long, time: .omitted))
-                                    .font(FontFamily.Lato.bold.swiftUIFont(size: 14))
-                                    .foregroundColor(Asset.Colors._83879BTextFiledTitle.swiftUIColor)
                             }
                         }
+                        .listStyle(.plain)
+                        .scrollContentBackground(.hidden)
+                        .background(Color.clear)
+                        .listRowSpacing(20)
+                        .padding(.bottom, 20)
+                        
                     }
-                    .listStyle(.plain)
-                    .scrollContentBackground(.hidden)
-                    .background(Color.clear)
-                    .listRowSpacing(20)
-                    .padding(.bottom, 20)
                     
                     DottedLine()
                     HStack {
