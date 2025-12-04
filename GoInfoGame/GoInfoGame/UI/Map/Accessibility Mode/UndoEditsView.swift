@@ -86,6 +86,7 @@ struct UndoEditsView: View {
                     CrossMarkButton {
                         dismiss()
                     }
+                    .accessibilityLabel(L10n.Localizable.closeUndoEditsScreen)
                 }
             }
             .toolbarBackground(.visible, for: .navigationBar)

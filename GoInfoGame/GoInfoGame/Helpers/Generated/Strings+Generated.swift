@@ -19,6 +19,12 @@ internal enum L10n {
     internal static let cancel = L10n.tr("Localizable", "Cancel", fallback: "Cancel")
     /// Can't Say
     internal static let cantSay = L10n.tr("Localizable", "cant_say", fallback: "Can't Say")
+    /// Close Accessbility Mode screen.
+    internal static let closeAccessbilityModeScreen = L10n.tr("Localizable", "Close Accessbility Mode screen.", fallback: "Close Accessbility Mode screen.")
+    /// Close the dialog.
+    internal static let closeTheDialog = L10n.tr("Localizable", "Close the dialog.", fallback: "Close the dialog.")
+    /// Close Undo Edits screen.
+    internal static let closeUndoEditsScreen = L10n.tr("Localizable", "Close Undo Edits screen.", fallback: "Close Undo Edits screen.")
     /// Compose a note
     internal static let composeANote = L10n.tr("Localizable", "Compose a note", fallback: "Compose a note")
     /// Compose message

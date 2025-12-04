@@ -174,6 +174,7 @@ struct AccessibilityModeView: View {
         CrossMarkButton {
             dismiss()
         }
+        .accessibilityLabel(L10n.Localizable.closeAccessbilityModeScreen)
     }
     
     private var undoEditButton: some View {

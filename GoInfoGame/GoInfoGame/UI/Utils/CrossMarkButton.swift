@@ -23,6 +23,7 @@ struct CrossMarkButton: View {
                 .frame(width: 25, height: 25)
                 .foregroundStyle(Asset.Colors.accentPink.swiftUIColor)
         })
+        .accessibilityLabel(L10n.Localizable.closeTheDialog)
     }
 }
 
