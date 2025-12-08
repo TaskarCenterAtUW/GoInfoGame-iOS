@@ -90,6 +90,10 @@
             isEnabled = "YES">
          </AdditionalOption>
       </AdditionalOptions>
+      <LocationScenarioReference
+         identifier = "../GoInfoGame/Resources/gachibowli circle_path.gpx"
+         referenceType = "0">
+      </LocationScenarioReference>
       <StoreKitConfigurationFileReference
          identifier = "../GoInfoGame/StoreKit.storekit">
       </StoreKitConfigurationFileReference>

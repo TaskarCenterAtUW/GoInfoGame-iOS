@@ -290,12 +290,14 @@ class DatabaseConnector {
      - parameter tags [String:String] tags changed with this
      - Returns: An instance of `StoredChangeset`
         */
-    func createChangeset(id:Int, type: StoredElementEnum, originalTags:[String:String], tags:[String:String], version: Int, point: CLLocationCoordinate2D? = nil, nodes: List<Int64>? = nil) -> StoredChangeset? {
+    func createChangeset(id:Int, questType: String, type: StoredElementEnum, originalTags:[String:String], tags:[String:String], version: Int, iconName: String, point: CLLocationCoordinate2D? = nil, nodes: List<Int64>? = nil) -> StoredChangeset? {
         let realm = try! Realm(configuration: RealmConfig.configuration)
         let storedChangeset = StoredChangeset()
         storedChangeset.elementId = id
         storedChangeset.elementType = type
         storedChangeset.version = version
+        storedChangeset.questType = questType
+        storedChangeset.iconName = iconName
         if let point = point {
             storedChangeset.point = point
         }
@@ -415,7 +417,7 @@ class DatabaseConnector {
 }
 
 struct RealmConfig {
-    static let configuration = Realm.Configuration(schemaVersion: 1) { migration, oldSchemaVersion in
+    static let configuration = Realm.Configuration(schemaVersion: 2) { migration, oldSchemaVersion in
         if oldSchemaVersion < 1 {
             let formatter = DateFormatter()
             formatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
@@ -435,9 +437,14 @@ struct RealmConfig {
                     let longitude = oldPoint["longitude"] as? Double ?? 0.0
 
                     // Assign these values to the new 'latitude' and 'longitude' properties
-                    newObject!["latitude"] = latitude
-                    newObject!["longitude"] = longitude
+                    newObject?["latitude"] = latitude
+                    newObject?["longitude"] = longitude
                 }
+            }
+        } else if oldSchemaVersion < 2 {
+            migration.enumerateObjects(ofType: StoredChangeset.className()) { oldObject, newObject in
+                newObject?["questType"] = nil
+                newObject?["iconName"] = "notes"
             }
         }
     }

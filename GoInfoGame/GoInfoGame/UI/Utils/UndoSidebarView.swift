@@ -4,10 +4,19 @@ import SwiftUI
 import osmparser
 
 struct UndoItem: Identifiable {
+    enum TagAction: String {
+        case added = "Added"
+        case modified = "Modified"
+    }
+    
     let elementId: Int
     let type: ElementType
     let changedKeys: [String]
     var id: String
+    let timestamp: Date
+    let questType: String?
+    let tags: [(action: TagAction, key: String, value: String)]
+    let iconName: String
 }
 
 struct UndoSidebarView: View {

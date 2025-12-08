@@ -127,6 +127,14 @@ struct DisplayUnitWithCoordinate: Identifiable, Equatable {
     let coordinateInfo: CLLocationCoordinate2D
     let id: Int64
     var isHidden: Bool
+    let location: CLLocation
+    init(displayUnit: DisplayUnit, coordinateInfo: CLLocationCoordinate2D, id: Int64, isHidden: Bool) {
+        self.displayUnit = displayUnit
+        self.coordinateInfo = coordinateInfo
+        self.id = id
+        self.isHidden = isHidden
+        self.location = CLLocation(latitude: coordinateInfo.latitude, longitude: coordinateInfo.longitude)
+    }
 
     var annotation: DisplayUnitAnnotation {
         let annotation = DisplayUnitAnnotation(id: displayUnit.id, coordinate: coordinateInfo)
@@ -135,12 +143,11 @@ struct DisplayUnitWithCoordinate: Identifiable, Equatable {
     }
     
     static func == (lhs: Self, rhs: Self) -> Bool {
-            lhs.id == rhs.id &&
-            lhs.isHidden == rhs.isHidden &&
-            lhs.coordinateInfo.latitude == rhs.coordinateInfo.latitude &&
-            lhs.coordinateInfo.longitude == rhs.coordinateInfo.longitude
-        }
-    
+        lhs.id == rhs.id &&
+        lhs.isHidden == rhs.isHidden &&
+        lhs.coordinateInfo.latitude == rhs.coordinateInfo.latitude &&
+        lhs.coordinateInfo.longitude == rhs.coordinateInfo.longitude
+    }
 }
 
 extension QuestsRepository {

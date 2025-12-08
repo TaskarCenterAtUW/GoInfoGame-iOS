@@ -35,9 +35,11 @@ internal enum FontFamily {
   }
   internal enum Lato {
     internal static let bold = FontConvertible(name: "Lato-Bold", family: "Lato", path: "Lato-Bold.ttf")
+    internal static let heavy = FontConvertible(name: "Lato-Heavy", family: "Lato", path: "lato-heavy.ttf")
     internal static let medium = FontConvertible(name: "Lato-Medium", family: "Lato", path: "Lato-Medium.ttf")
     internal static let regular = FontConvertible(name: "Lato-Regular", family: "Lato", path: "Lato-Regular.ttf")
-    internal static let all: [FontConvertible] = [bold, medium, regular]
+    internal static let semibold = FontConvertible(name: "Lato-Semibold", family: "Lato", path: "lato-semibold.ttf")
+    internal static let all: [FontConvertible] = [bold, heavy, medium, regular, semibold]
   }
   internal static let allCustomFonts: [FontConvertible] = [FONTSPRINGDEMOProximaNova.all, FONTSPRINGDEMOProximaNovaLight.all, FONTSPRINGDEMOProximaNovaSemibold.all, Lato.all].flatMap { $0 }
   internal static func registerAllCustomFonts() {

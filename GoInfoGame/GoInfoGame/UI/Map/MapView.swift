@@ -44,6 +44,8 @@ struct MapView: View {
     
     @State private var showUserSettingsSheet = false
     
+    @State private var enableAccessibility = false
+    
     @State private var showMultiSelectionBottomSheet = false
     
     @State private var mapViewRef: MKMapView?
@@ -261,6 +263,7 @@ struct MapView: View {
 
                 ToolbarItem(placement: .navigationBarTrailing) {
                     HStack(spacing: 5.0) {
+                        accessbilityButton
                         QuestSyncButton(badgeCount: viewModel.syncFailedElementsCount, isSyncing: isSyncing, action: {
                             debugPrint("Sync taped")
                             guard viewModel.syncFailedElementsCount > 0 else {
@@ -387,7 +390,9 @@ struct MapView: View {
                     .presentationDragIndicator(.hidden)
                     .applyPresentationSizingPage()
             }
-
+            .fullScreenCover(isPresented: $enableAccessibility) {
+                AccessibilityModeView(mapViewModel: viewModel)
+            }
     
             .sheet(isPresented: $showMapLongPressedSheet) {
                 if let _ = tappedCoordinate {
@@ -580,11 +585,28 @@ struct MapView: View {
     private func degreesToRadians(_ degrees: Double) -> Double {
         return degrees * .pi / 180.0
     }
+    
+    private var accessbilityButton: some View {
+        Button(action: {
+            print("Accessibility icon tapped")
+            enableAccessibility = true
+        }) {
+            Image("accessibility")
+                .resizable()
+                .padding(8)
+                .foregroundStyle(Asset.Colors.huskyPurple.swiftUIColor)
+                .background(Asset.Colors.e7E3EELightPurpuleBg.swiftUIColor)
+                .aspectRatio(1.0, contentMode: .fit)
+                .frame(width: 34, height: 34)
+                .clipShape(Circle())
+        }
+    }
 }
 
 struct QuestSheetView: View {
     @ObservedObject var viewModel: MapViewModel
     let annotationCoordinate: CLLocationCoordinate2D?
+    @Environment(\.dismiss) var dismiss
 
     init(viewModel: MapViewModel, annotationCoordinate: CLLocationCoordinate2D?) {
         self.viewModel = viewModel
@@ -605,6 +627,9 @@ struct QuestSheetView: View {
             } else {
                 EmptyView()
             }
+        }
+        .onReceive(MapViewPublisher.shared.dismissSheet) { _ in
+            dismiss()
         }
     }
 }

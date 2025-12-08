@@ -24,7 +24,6 @@ struct PosmLoginView: View {
     
     init(forceUpdateManager: ForceUpdateManager?) {
         self.forceUpdateManager = forceUpdateManager
-        APIConfiguration.shared.environment = .production
     }
             
     var body: some View {
