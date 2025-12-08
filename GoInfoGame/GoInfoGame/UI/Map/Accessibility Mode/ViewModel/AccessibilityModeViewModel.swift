@@ -16,7 +16,7 @@ class AccessibilityModeViewModel: ObservableObject {
     var isQuestAutoSelected: Bool = false
     @Published var selectedQuest: DisplayUnitWithCoordinate?
     let distanceThreshold: Double = 250 // 250 meters
-    let locationAccuracy: CLLocationAccuracy = 50
+    let locationAccuracy: CLLocationAccuracy = 30 // 30 meters
     var lastKnownLocation: CLLocationCoordinate2D?
     init(mapViewModel: MapViewModel, locationManager: LocationManagerDelegate = LocationManagerDelegate()) {
         self.locationManager = locationManager
