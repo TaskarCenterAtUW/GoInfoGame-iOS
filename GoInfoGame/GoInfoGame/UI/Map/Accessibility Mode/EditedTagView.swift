@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct TagUpdatedView: View {
+struct EditedTagView: View {
     let tagUpdate: (action: UndoItem.TagAction, key: String, value: String)
     var body: some View {
         VStack(alignment: .leading, content: {
@@ -27,5 +27,5 @@ struct TagUpdatedView: View {
 }
 
 #Preview {
-    TagUpdatedView(tagUpdate: (.added, "Key", "Value"))
+    EditedTagView(tagUpdate: (.added, "Key", "Value"))
 }

@@ -75,7 +75,7 @@ struct UndoItemConfirmationView: View {
             
             List {
                 ForEach(undoItem.tags, id: \.key) { item in
-                    TagUpdatedView(tagUpdate: item)
+                    EditedTagView(tagUpdate: item)
                         .listRowInsets(EdgeInsets())
                 }
             }
