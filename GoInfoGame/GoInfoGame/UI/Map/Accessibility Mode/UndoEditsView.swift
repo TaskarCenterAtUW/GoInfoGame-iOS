@@ -91,18 +91,16 @@ struct UndoEditsView: View {
             }
             .toolbarBackground(.visible, for: .navigationBar)
         }
-        .sheet(item: $selectedItem) { _ in
-            if let item = selectedItem {
-                UndoItemConfirmationView(undoItem: item) {
-                    viewModel.undo(item: item)
-                } onClose: {
-                    self.selectedItem = nil
-                }
-                .presentationDetents([.fraction(0.7)])
-                .interactiveDismissDisabled()
-                .presentationDragIndicator(.hidden)
-                .applyPresentationSizingPage()
+        .sheet(item: $selectedItem) { item in
+            UndoItemConfirmationView(undoItem: item) {
+                viewModel.undo(item: item)
+            } onClose: {
+                self.selectedItem = nil
             }
+            .presentationDetents([.fraction(0.7)])
+            .interactiveDismissDisabled()
+            .presentationDragIndicator(.hidden)
+            .applyPresentationSizingPage()
         }
         .onReceive(MapViewPublisher.shared.dismissSheet) { scenario in
             if case .undoDone(_) = scenario {
