@@ -89,6 +89,7 @@ struct UserProfileView: View {
                             Image(systemName: "arrow.left")
                                 .resizable()
                                 .foregroundStyle(Asset.Colors.huskyPurple.swiftUIColor)
+                                .accessibilityLabel(L10n.Localizable.back)
                         }
                     }
                     

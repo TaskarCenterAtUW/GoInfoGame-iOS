@@ -15,6 +15,8 @@ internal enum L10n {
     internal static let accessibilityMode = L10n.tr("Localizable", "Accessibility Mode", fallback: "Accessibility Mode")
     /// AVIV ScoutRoute
     internal static let appName = L10n.tr("Localizable", "App Name", fallback: "AVIV ScoutRoute")
+    /// Back
+    internal static let back = L10n.tr("Localizable", "Back", fallback: "Back")
     /// Cancel
     internal static let cancel = L10n.tr("Localizable", "Cancel", fallback: "Cancel")
     /// Can't Say
