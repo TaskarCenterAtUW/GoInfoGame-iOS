@@ -57,6 +57,8 @@ internal enum L10n {
     internal static let otherAnswers = L10n.tr("Localizable", "other_answers", fallback: "OTHER ANSWERS...")
     /// Preferences
     internal static let preferences = L10n.tr("Localizable", "Preferences", fallback: "Preferences")
+    /// Profile
+    internal static let profile = L10n.tr("Localizable", "Profile", fallback: "Profile")
     /// Quest Type
     internal static let questType = L10n.tr("Localizable", "Quest Type", fallback: "Quest Type")
     /// Are there one or more street lamps within 10 feet of this Bus stop?

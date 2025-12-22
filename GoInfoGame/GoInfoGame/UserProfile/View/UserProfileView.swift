@@ -134,7 +134,7 @@ struct UserProfileView: View {
                 .frame(width: 50, height: 50)
                 .foregroundStyle(.white)
                 .clipShape(Circle())
-                .accessibilityLabel("Profile")
+                .accessibilityLabel(L10n.Localizable.profile)
         }
         .frame(width: 60, height: 60)
         .background{

@@ -28,7 +28,7 @@ struct InitialView: View {
                                 }
                                 .frame(width: 34, height: 34)
                                 .clipShape(Circle())
-                                .accessibilityLabel("Profile")
+                                .accessibilityLabel(L10n.Localizable.profile)
                         }
                         Spacer()
                     }
