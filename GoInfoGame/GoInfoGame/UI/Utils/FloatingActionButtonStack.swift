@@ -27,7 +27,7 @@ struct FloatingActionButtonStack: View {
                             .background(.white)
                             .clipShape(Circle())
                             .shadow(radius: 10)
-                            .accessibilityLabel("Filter Quest Types")
+                            .accessibilityLabel(L10n.Localizable.filterQuestTypes)
                           
                     }
                     .sheet(isPresented: $showBottomSheet) {

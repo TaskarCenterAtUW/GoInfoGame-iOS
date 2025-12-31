@@ -35,6 +35,8 @@ internal enum L10n {
     internal static let dateTime = L10n.tr("Localizable", "Date & Time", fallback: "Date & Time")
     /// Don't show again for this session
     internal static let dontShowAgain = L10n.tr("Localizable", "dont_show_again", fallback: "Don't show again for this session")
+    /// Filter Quest Types
+    internal static let filterQuestTypes = L10n.tr("Localizable", "Filter Quest Types", fallback: "Filter Quest Types")
     /// Go back to map view
     internal static let goBackToMapView = L10n.tr("Localizable", "Go back to map view", fallback: "Go back to map view")
     /// Go back to previous screen
@@ -43,6 +45,8 @@ internal enum L10n {
     internal static let hideThisQuest = L10n.tr("Localizable", "Hide this quest", fallback: "Hide this quest")
     /// Invalid credentials
     internal static let invalidCredentials = L10n.tr("Localizable", "Invalid credentials", fallback: "Invalid credentials")
+    /// Map Modes.
+    internal static let mapModes = L10n.tr("Localizable", "Map Modes.", fallback: "Map Modes.")
     /// My Profile
     internal static let myProfile = L10n.tr("Localizable", "My Profile", fallback: "My Profile")
     /// New edits will appear here when a quest is answered.

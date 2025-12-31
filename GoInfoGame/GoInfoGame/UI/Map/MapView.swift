@@ -293,7 +293,7 @@ struct MapView: View {
                                 .background(Asset.Colors.e7E3EELightPurpuleBg.swiftUIColor)
                                 .frame(width: 34, height: 34)
                                 .clipShape(Circle())
-                                .accessibilityLabel("Map Modes.")
+                                .accessibilityLabel(L10n.Localizable.mapModes)
                         }
                         
                         Button(action: {
