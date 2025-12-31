@@ -98,6 +98,7 @@ struct MapView: View {
                           tappedCoordinate: $tappedCoordinate,
                           annotationCoordinate: $annotationCoordinate,
                           shadowOverlay: shadowOverlay)
+                .accessibilityHidden(true)
             .onChange(of: tappedCoordinate) { _ in
                 showMapLongPressedSheet = tappedCoordinate != nil
             }
