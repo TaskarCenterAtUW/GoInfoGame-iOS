@@ -98,6 +98,7 @@ struct MapView: View {
                           tappedCoordinate: $tappedCoordinate,
                           annotationCoordinate: $annotationCoordinate,
                           shadowOverlay: shadowOverlay)
+                .accessibilityHidden(true)
             .onChange(of: tappedCoordinate) { _ in
                 showMapLongPressedSheet = tappedCoordinate != nil
             }
@@ -237,6 +238,7 @@ struct MapView: View {
                                 }
                                 .frame(width: 34, height: 34)
                                 .clipShape(Circle())
+                                .accessibilityLabel(L10n.Localizable.profile)
                         }
                         
                         Rectangle()
@@ -291,6 +293,7 @@ struct MapView: View {
                                 .background(Asset.Colors.e7E3EELightPurpuleBg.swiftUIColor)
                                 .frame(width: 34, height: 34)
                                 .clipShape(Circle())
+                                .accessibilityLabel(L10n.Localizable.mapModes)
                         }
                         
                         Button(action: {

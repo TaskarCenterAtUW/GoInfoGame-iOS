@@ -15,6 +15,8 @@ internal enum L10n {
     internal static let accessibilityMode = L10n.tr("Localizable", "Accessibility Mode", fallback: "Accessibility Mode")
     /// AVIV ScoutRoute
     internal static let appName = L10n.tr("Localizable", "App Name", fallback: "AVIV ScoutRoute")
+    /// Back
+    internal static let back = L10n.tr("Localizable", "Back", fallback: "Back")
     /// Cancel
     internal static let cancel = L10n.tr("Localizable", "Cancel", fallback: "Cancel")
     /// Can't Say
@@ -33,6 +35,8 @@ internal enum L10n {
     internal static let dateTime = L10n.tr("Localizable", "Date & Time", fallback: "Date & Time")
     /// Don't show again for this session
     internal static let dontShowAgain = L10n.tr("Localizable", "dont_show_again", fallback: "Don't show again for this session")
+    /// Filter Quest Types
+    internal static let filterQuestTypes = L10n.tr("Localizable", "Filter Quest Types", fallback: "Filter Quest Types")
     /// Go back to map view
     internal static let goBackToMapView = L10n.tr("Localizable", "Go back to map view", fallback: "Go back to map view")
     /// Go back to previous screen
@@ -41,6 +45,8 @@ internal enum L10n {
     internal static let hideThisQuest = L10n.tr("Localizable", "Hide this quest", fallback: "Hide this quest")
     /// Invalid credentials
     internal static let invalidCredentials = L10n.tr("Localizable", "Invalid credentials", fallback: "Invalid credentials")
+    /// Map Modes.
+    internal static let mapModes = L10n.tr("Localizable", "Map Modes.", fallback: "Map Modes.")
     /// My Profile
     internal static let myProfile = L10n.tr("Localizable", "My Profile", fallback: "My Profile")
     /// New edits will appear here when a quest is answered.
@@ -57,6 +63,8 @@ internal enum L10n {
     internal static let otherAnswers = L10n.tr("Localizable", "other_answers", fallback: "OTHER ANSWERS...")
     /// Preferences
     internal static let preferences = L10n.tr("Localizable", "Preferences", fallback: "Preferences")
+    /// Profile
+    internal static let profile = L10n.tr("Localizable", "Profile", fallback: "Profile")
     /// Quest Type
     internal static let questType = L10n.tr("Localizable", "Quest Type", fallback: "Quest Type")
     /// Are there one or more street lamps within 10 feet of this Bus stop?
