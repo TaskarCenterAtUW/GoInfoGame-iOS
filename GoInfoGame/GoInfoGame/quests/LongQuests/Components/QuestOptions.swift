@@ -89,6 +89,8 @@ private extension QuestOptions {
                                         }
                                     }
                                 )
+                                .accessibilityElement(children: .combine)
+                                .accessibilityLabel((selectedChoice?.choiceText == option.choiceText) ? "\(option.choiceText) \(L10n.Localizable.optionSelected)" :  "\(option.choiceText) \(L10n.Localizable.optionUnselected)")
                             }
                         }
 
@@ -150,6 +152,8 @@ private extension QuestOptions {
                                         }
                                     }
                                 )
+                                .accessibilityElement(children: .combine)
+                                .accessibilityLabel((selectedValues.contains(option.value)) ? "\(option.choiceText) \(L10n.Localizable.optionSelected)" :  "\(option.choiceText) \(L10n.Localizable.optionUnselected)")
                             }
                         }
                     }
@@ -371,6 +375,7 @@ private extension QuestOptions {
                     .frame(width: 100, height: 100)
                     .minimumScaleFactor(0.67) // min font size is 10
             }
+            .accessibilityHidden(true)
         }
     }
 
