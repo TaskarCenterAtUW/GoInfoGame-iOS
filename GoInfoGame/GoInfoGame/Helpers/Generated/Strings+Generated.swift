@@ -59,6 +59,10 @@ internal enum L10n {
     internal static let notNow = L10n.tr("Localizable", "Not now", fallback: "Not now")
     /// Number of quests:
     internal static let numberOfQuests = L10n.tr("Localizable", "Number of quests:", fallback: "Number of quests:")
+    /// option selected
+    internal static let optionSelected = L10n.tr("Localizable", "option selected", fallback: "option selected")
+    /// option unselected
+    internal static let optionUnselected = L10n.tr("Localizable", "option unselected", fallback: "option unselected")
     /// OTHER ANSWERS...
     internal static let otherAnswers = L10n.tr("Localizable", "other_answers", fallback: "OTHER ANSWERS...")
     /// Preferences
