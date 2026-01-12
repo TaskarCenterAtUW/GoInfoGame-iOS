@@ -27,6 +27,7 @@ public struct OSMWay: Codable, OSMPayload, OSMElement  {
 
         // Set the date format to "yyyy-MM-dd"
         dateFormatter.dateFormat = "yyyy-MM-dd"
+        dateFormatter.timeZone = TimeZone(secondsFromGMT: 0)
 
         // Create a Date object (for example, the current date)
         let currentDate = Date()
@@ -79,6 +80,7 @@ public struct OSMWay: Codable, OSMPayload, OSMElement  {
 
        // Set the date format to "yyyy-MM-dd"
        dateFormatter.dateFormat = "yyyy-MM-dd"
+        dateFormatter.timeZone = TimeZone(secondsFromGMT: 0)
 
        // Create a Date object (for example, the current date)
        let currentDate = Date()
