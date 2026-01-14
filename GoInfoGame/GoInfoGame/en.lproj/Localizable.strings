@@ -115,7 +115,7 @@
 "Update Available" = "Update Available";
 "A new version of the app is available. Would you like to update now?" = "A new version of the app is available. Would you like to update now?";
 "Update" = "Update";
-"Accessibility Mode" = "Accessibility Mode";
+"Screen Reader Mode" = "Screen Reader Mode";
 "Number of quests:" = "Number of quests:";
 "Select the quest to start answering." = "Select the quest to start answering.";
 "Refresh list" = "Refresh list";
@@ -143,7 +143,7 @@
 "No Edits Found!" = "No Edits Found!";
 "New edits will appear here when a quest is answered." = "New edits will appear here when a quest is answered.";
 "Close the dialog." = "Close the dialog.";
-"Close Accessbility Mode screen." = "Close Accessbility Mode screen.";
+"Close Screen Reader Mode screen." = "Close Screen Reader Mode screen.";
 "Close Undo Edits screen." = "Close Undo Edits screen.";
 "Profile" = "Profile";
 "Back" = "Back";

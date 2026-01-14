@@ -68,7 +68,7 @@ struct AccessibilityModeView: View {
             .padding()
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
-                    Text(L10n.Localizable.accessibilityMode)
+                    Text(L10n.Localizable.screenReaderMode)
                         .font(FontFamily.Lato.bold.swiftUIFont(size: 16))
                         .foregroundStyle(Asset.Colors.huskyPurple.swiftUIColor)
                 }
@@ -186,7 +186,7 @@ struct AccessibilityModeView: View {
         CrossMarkButton {
             dismiss()
         }
-        .accessibilityLabel(L10n.Localizable.closeAccessbilityModeScreen)
+        .accessibilityLabel(L10n.Localizable.closeScreenReaderModeScreen)
     }
     
     private var filterButton: some View {
