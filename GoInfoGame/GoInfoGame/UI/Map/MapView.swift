@@ -60,6 +60,7 @@ struct MapView: View {
     
     @State private var showUndoSidebar = false
     @State private var shatilliteSelected: String? = nil
+    @State private var showFilterQuestsSheet = false
     
                 
     var body: some View {
@@ -183,11 +184,41 @@ struct MapView: View {
                         .padding(.leading, 16)
                         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottomLeading)
                         Spacer()
-                        FloatingActionButtonStack()
-                            .padding(.bottom, 30)
-                            .padding(.trailing, 16)
-                            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottomLeading)
-                        
+                        VStack(alignment: .trailing, spacing: 10, content: {
+                            Spacer()
+                            FloatingActionButton(systemName: "minus.magnifyingglass") {
+                                if var region = mapViewRef?.region {
+                                    region.span.latitudeDelta *= 2.0
+                                    region.span.longitudeDelta *= 2.0
+                                    mapViewRef?.setRegion(region, animated: true)
+                                }
+                            }
+                            .accessibilityLabel(L10n.Localizable.zoomOutMap)
+                            
+                            FloatingActionButton(systemName: "plus.magnifyingglass") {
+                                if var region = mapViewRef?.region {
+                                    region.span.latitudeDelta *= 0.5
+                                    region.span.longitudeDelta *= 0.5
+                                    mapViewRef?.setRegion(region, animated: true)
+                                }
+                            }
+                            .accessibilityLabel(L10n.Localizable.zoomInMap)
+                            
+                            FloatingActionButton(systemName: "slider.horizontal.3") {
+                                showFilterQuestsSheet.toggle()
+                            }
+                            .accessibilityLabel(L10n.Localizable.filterQuestTypes)
+                            .sheet(isPresented: $showFilterQuestsSheet) {
+                                ManageQuestsView()
+                                    .presentationDetents([.fraction(0.85)])
+                                    .interactiveDismissDisabled()
+                                    .presentationDragIndicator(.hidden)
+                                    .applyPresentationSizingPage()
+                            }
+                        })
+                        .padding(.bottom, 24)
+                        .padding(.trailing, 16)
+                        .frame(alignment: .bottomLeading)
                     }
                 }
                             
@@ -776,5 +807,29 @@ struct MultiQuestSelectionBottomSheet: View {
     }
 }
 
-
+#Preview(body: {
+    let jsonString = """
+        {
+            "id": 222,
+            "type": "osw",
+            "title": "Copy from stage Kondapur Dataset LF Schema 1.0.1",
+            "description": null,
+            "tdeiRecordId": null,
+            "tdeiProjectGroupId": "1ec1c79b-6b7a-4011-936b-c75dbbd903e3",
+            "tdeiServiceId": null,
+            "tdeiMetadata": null,
+            "createdAt": "2025-09-12T12:27:22.679848Z",
+            "createdBy": "f399ba72-c9b3-4fa1-8292-b3da9000d3ad",
+            "createdByName": "Srikanth Voonna",
+            "externalAppAccess": 1,
+            "kartaViewToken": null
+          }
+        """
+    if let data = jsonString.data(using: .utf8),
+       let workspace = try? JSONDecoder().decode(Workspace.self, from: data) {
+        MapView(selectedWorkspace: workspace, viewModel: MapViewModel(workspace: workspace))
+    } else {
+      EmptyView()
+    }
+})
 

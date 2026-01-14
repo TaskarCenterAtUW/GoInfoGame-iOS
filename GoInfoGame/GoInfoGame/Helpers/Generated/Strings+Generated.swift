@@ -290,6 +290,10 @@ internal enum L10n {
     internal static let youVeArrivedAtTheQuestLocation = L10n.tr("Localizable", "You’ve arrived at the quest location!", fallback: "You’ve arrived at the quest location!")
     /// You’ve Arrived!
     internal static let youVeArrived = L10n.tr("Localizable", "You’ve Arrived!", fallback: "You’ve Arrived!")
+    /// Zoom In Map
+    internal static let zoomInMap = L10n.tr("Localizable", "Zoom In Map", fallback: "Zoom In Map")
+    /// Zoom Out Map
+    internal static let zoomOutMap = L10n.tr("Localizable", "Zoom Out Map", fallback: "Zoom Out Map")
     internal enum ANewVersionOfTheAppIsAvailable {
       /// A new version of the app is available. Please update to continue using the app.
       internal static let pleaseUpdateToContinueUsingTheApp = L10n.tr("Localizable", "A new version of the app is available. Please update to continue using the app.", fallback: "A new version of the app is available. Please update to continue using the app.")
