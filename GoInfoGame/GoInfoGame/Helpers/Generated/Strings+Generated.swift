@@ -11,8 +11,6 @@ import Foundation
 // swiftlint:disable nesting type_body_length type_name vertical_whitespace_opening_braces
 internal enum L10n {
   internal enum Localizable {
-    /// Accessibility Mode
-    internal static let accessibilityMode = L10n.tr("Localizable", "Accessibility Mode", fallback: "Accessibility Mode")
     /// AVIV ScoutRoute
     internal static let appName = L10n.tr("Localizable", "App Name", fallback: "AVIV ScoutRoute")
     /// Back
@@ -21,8 +19,8 @@ internal enum L10n {
     internal static let cancel = L10n.tr("Localizable", "Cancel", fallback: "Cancel")
     /// Can't Say
     internal static let cantSay = L10n.tr("Localizable", "cant_say", fallback: "Can't Say")
-    /// Close Accessbility Mode screen.
-    internal static let closeAccessbilityModeScreen = L10n.tr("Localizable", "Close Accessbility Mode screen.", fallback: "Close Accessbility Mode screen.")
+    /// Close Screen Reader Mode screen.
+    internal static let closeScreenReaderModeScreen = L10n.tr("Localizable", "Close Screen Reader Mode screen.", fallback: "Close Screen Reader Mode screen.")
     /// Close the dialog.
     internal static let closeTheDialog = L10n.tr("Localizable", "Close the dialog.", fallback: "Close the dialog.")
     /// Close Undo Edits screen.
@@ -252,6 +250,8 @@ internal enum L10n {
     internal static let refreshList = L10n.tr("Localizable", "Refresh list", fallback: "Refresh list")
     /// Revert Changes
     internal static let revertChanges = L10n.tr("Localizable", "Revert Changes", fallback: "Revert Changes")
+    /// Screen Reader Mode
+    internal static let screenReaderMode = L10n.tr("Localizable", "Screen Reader Mode", fallback: "Screen Reader Mode")
     /// Select:
     internal static let select = L10n.tr("Localizable", "Select", fallback: "Select:")
     /// Select the quest based on date and time for preview & revert
@@ -290,6 +290,10 @@ internal enum L10n {
     internal static let youVeArrivedAtTheQuestLocation = L10n.tr("Localizable", "You’ve arrived at the quest location!", fallback: "You’ve arrived at the quest location!")
     /// You’ve Arrived!
     internal static let youVeArrived = L10n.tr("Localizable", "You’ve Arrived!", fallback: "You’ve Arrived!")
+    /// Zoom In Map
+    internal static let zoomInMap = L10n.tr("Localizable", "Zoom In Map", fallback: "Zoom In Map")
+    /// Zoom Out Map
+    internal static let zoomOutMap = L10n.tr("Localizable", "Zoom Out Map", fallback: "Zoom Out Map")
     internal enum ANewVersionOfTheAppIsAvailable {
       /// A new version of the app is available. Please update to continue using the app.
       internal static let pleaseUpdateToContinueUsingTheApp = L10n.tr("Localizable", "A new version of the app is available. Please update to continue using the app.", fallback: "A new version of the app is available. Please update to continue using the app.")

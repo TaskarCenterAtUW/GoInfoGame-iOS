@@ -14,6 +14,7 @@ struct AccessibilityModeView: View {
     @StateObject var viewModel: AccessibilityModeViewModel
     @State private var selectedDetent: PresentationDetent = .fraction(0.8)
     @State var navigateToUndo: Bool = false
+    @State private var showBottomSheet = false
     
     init (mapViewModel: MapViewModel) {
         self.mapViewModel = mapViewModel
@@ -67,9 +68,20 @@ struct AccessibilityModeView: View {
             .padding()
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
-                    Text(L10n.Localizable.accessibilityMode)
+                    Text(L10n.Localizable.screenReaderMode)
                         .font(FontFamily.Lato.bold.swiftUIFont(size: 16))
                         .foregroundStyle(Asset.Colors.huskyPurple.swiftUIColor)
+                }
+                
+                ToolbarItem(placement: .topBarTrailing) {
+                    filterButton
+                        .sheet(isPresented: $showBottomSheet) {
+                            ManageQuestsView()
+                                .presentationDetents([.fraction(0.85)])
+                                .interactiveDismissDisabled()
+                                .presentationDragIndicator(.hidden)
+                                .applyPresentationSizingPage()
+                        }
                 }
                 
                 ToolbarItem(placement: .topBarTrailing) {
@@ -174,9 +186,19 @@ struct AccessibilityModeView: View {
         CrossMarkButton {
             dismiss()
         }
-        .accessibilityLabel(L10n.Localizable.closeAccessbilityModeScreen)
+        .accessibilityLabel(L10n.Localizable.closeScreenReaderModeScreen)
     }
     
+    private var filterButton: some View {
+        Button(action: {
+            showBottomSheet.toggle()
+        }) {
+            Image(systemName: "slider.horizontal.3")
+                .font(.system(size: 20))
+                .foregroundColor(Asset.Colors.huskyPurple.swiftUIColor)
+                .accessibilityLabel(L10n.Localizable.filterQuestTypes)
+        }
+    }
     private var undoEditButton: some View {
         Button {
             self.navigateToUndo = true
@@ -225,6 +247,29 @@ struct AccessibilityModeView: View {
     }
 }
 
-//#Preview {
-//    AccessibilityModeView()
-//}
+#Preview {
+    let jsonString = """
+        {
+            "id": 222,
+            "type": "osw",
+            "title": "Copy from stage Kondapur Dataset LF Schema 1.0.1",
+            "description": null,
+            "tdeiRecordId": null,
+            "tdeiProjectGroupId": "1ec1c79b-6b7a-4011-936b-c75dbbd903e3",
+            "tdeiServiceId": null,
+            "tdeiMetadata": null,
+            "createdAt": "2025-09-12T12:27:22.679848Z",
+            "createdBy": "f399ba72-c9b3-4fa1-8292-b3da9000d3ad",
+            "createdByName": "Srikanth Voonna",
+            "externalAppAccess": 1,
+            "kartaViewToken": null
+          }
+        """
+    if let data = jsonString.data(using: .utf8),
+       let workspace = try? JSONDecoder().decode(Workspace.self, from: data) {
+        AccessibilityModeView(mapViewModel: MapViewModel(workspace: workspace))
+    } else {
+      EmptyView()
+    }
+    
+}
