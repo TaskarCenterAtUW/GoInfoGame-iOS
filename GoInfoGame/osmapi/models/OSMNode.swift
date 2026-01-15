@@ -37,7 +37,7 @@ public struct OSMNode: Codable, OSMPayload, OSMElement, OSMCreatePayload {
         let dateFormatter = DateFormatter()
 
         // Set the date format to "yyyy-MM-dd"
-        dateFormatter.dateFormat = "yyyy-MM-dd"
+        dateFormatter.dateFormat = "yyyy-MM-ddXXX"
         dateFormatter.timeZone = TimeZone(secondsFromGMT: 0)
 
         // Create a Date object (for example, the current date)
@@ -59,7 +59,7 @@ public struct OSMNode: Codable, OSMPayload, OSMElement, OSMCreatePayload {
         let dateFormatter = DateFormatter()
 
         // Set the date format to "yyyy-MM-dd"
-        dateFormatter.dateFormat = "yyyy-MM-dd"
+        dateFormatter.dateFormat = "yyyy-MM-ddXXX"
         dateFormatter.timeZone = TimeZone(secondsFromGMT: 0)
 
         // Create a Date object (for example, the current date)
@@ -113,7 +113,7 @@ public struct OSMNode: Codable, OSMPayload, OSMElement, OSMCreatePayload {
         let dateFormatter = DateFormatter()
 
         // Set the date format to "yyyy-MM-dd"
-        dateFormatter.dateFormat = "yyyy-MM-dd"
+        dateFormatter.dateFormat = "yyyy-MM-ddXXX"
         dateFormatter.timeZone = TimeZone(secondsFromGMT: 0)
 
         // Create a Date object (for example, the current date)
