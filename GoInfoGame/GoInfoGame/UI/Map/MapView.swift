@@ -13,6 +13,7 @@ struct MapView: View {
     let selectedWorkspace: Workspace
     @State var trackingMode: MapUserTrackingMode = MapUserTrackingMode.follow
     @Environment(\.presentationMode) private var presentationMode
+    @Environment(\.accessibilityVoiceOverEnabled) var isVoiceOverOn
     @AppStorage("isMapFromOnboarding") var isMapFromOnboarding: Bool = false
     @StateObject var viewModel: MapViewModel
     @State private var isPresented = false
@@ -192,6 +193,9 @@ struct MapView: View {
                                     region.span.longitudeDelta *= 2.0
                                     if region.span.latitudeDelta < 170.0 && region.span.longitudeDelta < 350.0 {
                                         mapViewRef?.setRegion(region, animated: true)
+                                        if let newZoom = mapViewRef?.zoomLevelFor(longitudeDelta: region.span.longitudeDelta) {
+                                            voiceOverAnnounce(message: "Zoomed out to level \(newZoom)")
+                                        }
                                     }
                                 }
                             }
@@ -202,6 +206,9 @@ struct MapView: View {
                                     region.span.latitudeDelta *= 0.5
                                     region.span.longitudeDelta *= 0.5
                                     mapViewRef?.setRegion(region, animated: true)
+                                    if let newZoom = mapViewRef?.zoomLevelFor(longitudeDelta: region.span.longitudeDelta) {
+                                        voiceOverAnnounce(message: "Zoomed in to level \(newZoom)")
+                                    }
                                 }
                             }
                             .accessibilityLabel(L10n.Localizable.zoomInMap)
@@ -562,6 +569,19 @@ struct MapView: View {
 //            let edited = DatabaseConnector.shared.getNode(id: 43)
 //            print("ORIGINAL --->>>\(original)")
 //            print("EDITED --->>>\(edited)")
+        }
+    }
+    
+    func voiceOverAnnounce(message: String) {
+        guard isVoiceOverOn else {
+            return
+        }
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+            if #available(iOS 17.0, *) {
+                AccessibilityNotification.Announcement(message).post()
+            } else {
+                UIAccessibility.post(notification: .announcement, argument: message)
+            }
         }
     }
     

@@ -76,7 +76,11 @@ extension MKMapView {
         // The distance (in meters) visible in the current map width
         return metersPerPixel * mapWidthInPixels
     }
-
+    
+    func zoomLevelFor(longitudeDelta: Double) -> Int {
+        let zoom = log2(360 / longitudeDelta)
+        return Int(max(0, zoom))
+    }
 }
 
 extension CLLocationCoordinate2D: CustomPersistable {
