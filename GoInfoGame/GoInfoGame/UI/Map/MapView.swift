@@ -190,7 +190,9 @@ struct MapView: View {
                                 if var region = mapViewRef?.region {
                                     region.span.latitudeDelta *= 2.0
                                     region.span.longitudeDelta *= 2.0
-                                    mapViewRef?.setRegion(region, animated: true)
+                                    if region.span.latitudeDelta < 170.0 && region.span.longitudeDelta < 350.0 {
+                                        mapViewRef?.setRegion(region, animated: true)
+                                    }
                                 }
                             }
                             .accessibilityLabel(L10n.Localizable.zoomOutMap)
