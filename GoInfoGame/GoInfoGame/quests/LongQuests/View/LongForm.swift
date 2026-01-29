@@ -70,7 +70,7 @@ struct LongForm: View, QuestForm {
     
     var body: some View {
         ZStack {
-            VStack(alignment: .leading) {
+            VStack(alignment: .leading, spacing: 0) {
                     HStack {
                         Text(elementName ?? "")
                             .font(.custom("Lato-Bold", size: 16))
@@ -230,7 +230,7 @@ struct LongForm: View, QuestForm {
                 .frame(maxWidth: .infinity)
 
             }
-            .padding(.top, 50)
+            .padding(.top, 30)
             .onChange(of: viewModel.selectedChoices) { _ in
                 viewModel.clearAnswersForHiddenQuests()
             }
