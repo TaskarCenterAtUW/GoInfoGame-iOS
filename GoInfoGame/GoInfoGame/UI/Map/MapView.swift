@@ -428,7 +428,7 @@ struct MapView: View {
                     
                 })
                     .background(Color(red: 248/255, green: 248/255, blue: 248/255))
-                    .presentationDetents([.fraction(0.36)])
+                    .presentationDetents([.fraction(0.38)])
                     .interactiveDismissDisabled()
                     .presentationDragIndicator(.hidden)
                     .applyPresentationSizingPage()
