@@ -98,13 +98,11 @@ struct LongForm: View, QuestForm {
                     }
                     .padding(EdgeInsets(top: 0, leading: 14, bottom: 0, trailing: 20))
                     Spacer()
-                    HStack {
-                        Button("Ignore this quest") {
-                            activeAlert = .hideQuestConfirmation
-                        }
-                        .padding(.trailing, 20)
-                        .foregroundStyle(Asset.Colors.accentPink.swiftUIColor)
+                    Button("Ignore this quest") {
+                        activeAlert = .hideQuestConfirmation
                     }
+                    .padding(.trailing, 20)
+                    .foregroundStyle(Asset.Colors.accentPink.swiftUIColor)
                 }
                 
                 if showCreateNoteMessage {
