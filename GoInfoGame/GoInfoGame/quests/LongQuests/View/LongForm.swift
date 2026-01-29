@@ -9,6 +9,16 @@ import SwiftUI
 import CoreLocation
 import Combine
 
+enum LongFormActiveAlert: Identifiable {
+    case hideQuestConfirmation
+    case submissionError(message: String)
+
+    var id: String {
+        // Using a simple string representation for the ID ensures each case is unique.
+        String(describing: self)
+    }
+}
+
 struct LongForm: View, QuestForm {
     
     @ObservedObject private var viewModel = LongFormViewModel()
@@ -27,11 +37,7 @@ struct LongForm: View, QuestForm {
     
     @Environment(\.presentationMode) var presentationMode
     
-    @State private var showSubmitAlert = false
-    
     @State private var showKartaviewAlert = false
-    
-    @State private var submitAlert = ""
     
     @State private var kartaViewAlert = ""
     
@@ -57,6 +63,10 @@ struct LongForm: View, QuestForm {
     @StateObject private var noteViewModel = NotesViewModel()
 
     @State private var keyboardHeight: CGFloat = 0
+    
+    @State private var activeAlert: LongFormActiveAlert?
+    
+    @State private var submitStatusMessage: String?
     
     var body: some View {
         ZStack {
@@ -88,14 +98,13 @@ struct LongForm: View, QuestForm {
                     }
                     .padding(EdgeInsets(top: 0, leading: 14, bottom: 0, trailing: 20))
                     Spacer()
-                    Button("Hide this") {
-                        withAnimation {
-                            MapViewPublisher.shared.dismissSheet.send(.hideElement(questID ?? "0", elementName ?? ""))
-                            presentationMode.wrappedValue.dismiss()
+                    HStack {
+                        Button("Ignore this quest") {
+                            activeAlert = .hideQuestConfirmation
                         }
+                        .padding(.trailing, 20)
+                        .foregroundStyle(Asset.Colors.accentPink.swiftUIColor)
                     }
-                    .padding(.trailing, 20)
-                    .foregroundStyle(Asset.Colors.accentPink.swiftUIColor)
                 }
                 
                 if showCreateNoteMessage {
@@ -170,14 +179,14 @@ struct LongForm: View, QuestForm {
                                 }
                             }
                             VStack {
-                                if showSubmitAlert {
-                                    Text(submitAlert)
+                                if let statusMessage = submitStatusMessage {
+                                    Text(statusMessage)
                                         .font(.custom("Lato-Bold", size: 16))
                                         .foregroundColor(.red)
                                         .background(Color.white)
                                         .onAppear {
                                             DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-                                                showSubmitAlert = false
+                                                submitStatusMessage = nil
                                             }
                                         }
                                 }
@@ -205,10 +214,10 @@ struct LongForm: View, QuestForm {
                                 answersToSubmit["ext:kartaview_url"] = uploadedPhotos.joined(separator: ", ")
                             }
                               action(answersToSubmit)
-                          }
+                        }
                     } else {
-                        self.showSubmitAlert = true
-                        self.submitAlert = "Please answer atleast one quest to submit"
+                        self.submitStatusMessage = "Please answer atleast one quest to submit"
+                        self.activeAlert = .submissionError(message: "Please answer atleast one quest to submit")
                     }
 
                 }) {
@@ -223,6 +232,7 @@ struct LongForm: View, QuestForm {
                 .frame(maxWidth: .infinity)
 
             }
+            .padding(.top, 50)
             .onChange(of: viewModel.selectedChoices) { _ in
                 viewModel.clearAnswersForHiddenQuests()
             }
@@ -235,10 +245,7 @@ struct LongForm: View, QuestForm {
                 CameraView(capturedImage: $capturedImage, isPresented: $isCameraPresented)
                     .applyPresentationSizingPage()
                    }
-        }
-        .alert(self.submitAlert, isPresented: $showSubmitAlert) {
-            Button("OK", role: .cancel) { }
-        }
+        
         if showKartaviewAlert {
             VStack {
                 Image(systemName: "checkmark.circle.fill")
@@ -272,6 +279,24 @@ struct LongForm: View, QuestForm {
                     .background(Color.white)
                     .cornerRadius(10)
                     .shadow(radius: 10)
+            }
+        }
+        }
+        .alert(item: $activeAlert) { alertType in
+            switch alertType {
+            case .hideQuestConfirmation:
+                return Alert(
+                    title: Text("Do you want to ignore this question?"),
+                    primaryButton: .destructive(Text("Ignore and Hide")) {
+                        withAnimation {
+                            MapViewPublisher.shared.dismissSheet.send(.hideElement(questID ?? "0", elementName ?? ""))
+                            presentationMode.wrappedValue.dismiss()
+                        }
+                    },
+                    secondaryButton: .cancel()
+                )
+            case .submissionError(let message):
+                return Alert(title: Text(message), dismissButton: .default(Text("OK")))
             }
         }
     }
