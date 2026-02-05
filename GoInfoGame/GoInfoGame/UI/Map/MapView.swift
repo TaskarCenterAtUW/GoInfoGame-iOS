@@ -158,6 +158,7 @@ struct MapView: View {
                                     MapUndoManager.shared.undo(for: id)
                                 }
                             )
+                            .accessibilitySortPriority(1)
                             if case .wmts(let server) = viewModel.selectedOption,
                                server.attribution.attributionRequired,
                                let url = URL(string: server.attribution.url),
@@ -194,6 +195,7 @@ struct MapView: View {
                                 }
                             }
                             .accessibilityLabel(L10n.Localizable.zoomOutMap)
+                            .accessibilitySortPriority(1)
                             
                             FloatingActionButton(systemName: "plus.magnifyingglass") {
                                 if var region = mapViewRef?.region {
@@ -206,11 +208,13 @@ struct MapView: View {
                                 }
                             }
                             .accessibilityLabel(L10n.Localizable.zoomInMap)
+                            .accessibilitySortPriority(1)
                             
                             FloatingActionButton(systemName: "slider.horizontal.3") {
                                 showFilterQuestsSheet.toggle()
                             }
                             .accessibilityLabel(L10n.Localizable.filterQuestTypes)
+                            .accessibilitySortPriority(1)
                             .sheet(isPresented: $showFilterQuestsSheet) {
                                 ManageQuestsView()
                                     .presentationDetents([.fraction(0.85)])
