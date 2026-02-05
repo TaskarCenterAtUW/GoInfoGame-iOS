@@ -361,19 +361,15 @@ private extension QuestOptions {
 
         var body: some View {
             ZStack {
-                Image("no_image")
-                    .resizable()
-                    .scaledToFill()
+                Text(text)
+                    .foregroundStyle(Color.black)
                     .frame(width: 100, height: 100)
-                    .clipped()
-                    .overlay(
+                    .minimumScaleFactor(0.67)
+                    .bold()
+                    .overlay {
                         RoundedRectangle(cornerRadius: 8)
                             .stroke(Color.gray, lineWidth: 1)
-                    )
-
-                StrokedText(text: text)
-                    .frame(width: 100, height: 100)
-                    .minimumScaleFactor(0.67) // min font size is 10
+                    }
             }
             .accessibilityHidden(true)
         }
