@@ -371,7 +371,6 @@ private extension QuestOptions {
                             .stroke(Color.gray, lineWidth: 1)
                     }
             }
-            .accessibilityHidden(true)
         }
     }
 
