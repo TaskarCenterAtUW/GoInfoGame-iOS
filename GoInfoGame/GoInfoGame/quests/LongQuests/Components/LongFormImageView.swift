@@ -64,9 +64,6 @@ struct LongFormImageView: View {
         }
         .frame(width: width, height: height)
         .clipped()
-        .accessibilityHidden(true)
-        
-   
     }
     
     private func loadImage() {
