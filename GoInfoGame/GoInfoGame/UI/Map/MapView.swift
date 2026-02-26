@@ -62,7 +62,7 @@ struct MapView: View {
     @State private var showUndoSidebar = false
     @State private var shatilliteSelected: String? = nil
     @State private var showFilterQuestsSheet = false
-    
+    @State private var showElemntDeletedAlert = false
     
     var body: some View {
         NavigationStack {
@@ -558,6 +558,16 @@ struct MapView: View {
         .onReceive(QuestsPublisher.shared.refreshQuest, perform: { _ in
             viewModel.refreshQuests()
         })
+        .onReceive(
+            enableAccessibility
+            ? Empty<Int, Never>().eraseToAnyPublisher()
+            : QuestsPublisher.shared.elementDeleted.eraseToAnyPublisher()
+        ) { _ in
+            showElemntDeletedAlert = true
+        }
+        .alert("Element is deleted from the server.", isPresented: $showElemntDeletedAlert) {
+            Button("OK", role: .cancel) { }
+        }
         .onAppear(){
             HiddenQuestManager.shared.loadHiddenQuests()
             print("selected workspace",selectedWorkspace.title)
@@ -697,6 +707,7 @@ public class MapViewPublisher: ObservableObject {
 
 public class QuestsPublisher: ObservableObject {
     public let refreshQuest = PassthroughSubject<String, Never>()
+    public let elementDeleted = PassthroughSubject<Int, Never>()
     static let shared = QuestsPublisher()
     private init() {}
 }

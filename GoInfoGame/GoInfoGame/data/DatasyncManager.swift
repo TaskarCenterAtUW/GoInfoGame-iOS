@@ -370,18 +370,28 @@ class DatasyncManager {
         } catch let error as APIError {
             switch error {
             case .conflict:
-                let updatedWay = try await fetchway2(wayId: wayId)
-                if let mergedWay = self.mergeWays(localWay: localWay, latestWay: updatedWay, exclude_gig_tags: exclude_gig_tags, editedTags: editedTags) {
-                    print("Local way")
-                    print(localWay)
-                    print("Merged way")
-                    print(mergedWay)
-                    return try await updateWay(way: mergedWay, exclude_gig_tags: exclude_gig_tags)
-                } else {
-                    print("Undo operation is not possible")
-                    return updatedWay.version
+                do {
+                    let updatedWay = try await fetchway2(wayId: wayId)
+                    if let mergedWay = self.mergeWays(localWay: localWay, latestWay: updatedWay, exclude_gig_tags: exclude_gig_tags, editedTags: editedTags) {
+                        print("Local way")
+                        print(localWay)
+                        print("Merged way")
+                        print(mergedWay)
+                        return try await updateWay(way: mergedWay, exclude_gig_tags: exclude_gig_tags)
+                    } else {
+                        print("Undo operation is not possible")
+                        return updatedWay.version
+                    }
+                } catch let error as APIError {
+                    if case .deleted = error {
+                        dbInstance.deleteChangesets(elementId: way.id)
+                        dbInstance.deleteWay(id: way.id)
+                        DispatchQueue.main.async {
+                            QuestsPublisher.shared.elementDeleted.send(way.id)
+                        }
+                    }
+                    throw error
                 }
-                
             default:
                 throw error
             }
@@ -402,21 +412,32 @@ class DatasyncManager {
         } catch let error as APIError {
             switch error {
             case .conflict:
-                SyncLogger.shared.logStep("Fetching node due to conflict")
-                let fetchedResult = try await fetchNode2(nodeId: "\(localNode.id)")
-                
-                if let mergedNode = self.mergeNodes(localNode: localNode, latestNode: fetchedResult, exclude_gig_tags: exclude_gig_tags, editedTags: editedTags) {
-                    print("Local Node:")
-                    print(localNode)
-                    print("Merged Node:")
-                    print(mergedNode)
-                    SyncLogger.shared.logStep("Nodes fetched and merged")
-                    return try await updateNode(node: mergedNode, exclude_gig_tags: exclude_gig_tags)
-                } else {
-                    print("Undo operation is not possible")
-                    // update the original node with the server node.
-                    // FIXME: this is not done. Need to do something.
-                    return fetchedResult.version
+                do {
+                    SyncLogger.shared.logStep("Fetching node due to conflict")
+                    let fetchedResult = try await fetchNode2(nodeId: "\(localNode.id)")
+                    
+                    if let mergedNode = self.mergeNodes(localNode: localNode, latestNode: fetchedResult, exclude_gig_tags: exclude_gig_tags, editedTags: editedTags) {
+                        print("Local Node:")
+                        print(localNode)
+                        print("Merged Node:")
+                        print(mergedNode)
+                        SyncLogger.shared.logStep("Nodes fetched and merged")
+                        return try await updateNode(node: mergedNode, exclude_gig_tags: exclude_gig_tags)
+                    } else {
+                        print("Undo operation is not possible")
+                        // update the original node with the server node.
+                        // FIXME: this is not done. Need to do something.
+                        return fetchedResult.version
+                    }
+                } catch let error as APIError {
+                    if case .deleted = error {
+                        dbInstance.deleteChangesets(elementId: localNode.id)
+                        dbInstance.deleteWay(id: localNode.id)
+                        DispatchQueue.main.async {
+                            QuestsPublisher.shared.elementDeleted.send(localNode.id)
+                        }
+                    }
+                    throw error
                 }
                 
             default:
