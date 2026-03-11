@@ -62,7 +62,9 @@ class AccessibilityModeViewModel: ObservableObject {
            nearestQuest.distance <= locationAccuracy {
             self.selectedQuest = nearestQuest.quest
             self.mapViewModel.selectedQuest = nearestQuest.quest.displayUnit
-            self.isQuestAutoSelected = true
+            if !self.isQuestAutoSelected {
+                self.isQuestAutoSelected = true
+            }
         } else if self.isQuestAutoSelected == true {
             self.selectedQuest = nil
             self.mapViewModel.selectedQuest = nil
