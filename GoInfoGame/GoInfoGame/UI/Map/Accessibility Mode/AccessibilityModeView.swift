@@ -15,6 +15,7 @@ struct AccessibilityModeView: View {
     @State private var selectedDetent: PresentationDetent = .fraction(0.8)
     @State var navigateToUndo: Bool = false
     @State private var showBottomSheet = false
+    @State private var showElemntDeletedAlert: Bool = false
     
     init (mapViewModel: MapViewModel) {
         self.mapViewModel = mapViewModel
@@ -116,6 +117,12 @@ struct AccessibilityModeView: View {
             if let lkl = viewModel.lastKnownLocation {
                 viewModel.filterQuestsNerestToUser(location: lkl)
             }
+        }
+        .onReceive(QuestsPublisher.shared.elementDeleted, perform: { _ in
+            showElemntDeletedAlert = true
+        })
+        .alert("Element is deleted from the server.", isPresented: $showElemntDeletedAlert) {
+            Button("OK", role: .cancel) { }
         }
         .sheet(item: $viewModel.selectedQuest) { _ in
             if let quest = viewModel.selectedQuest {

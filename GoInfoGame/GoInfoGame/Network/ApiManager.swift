@@ -176,7 +176,7 @@ class ApiManager {
             }
             
             switch httpResponse.statusCode {
-            case 400...499 where httpResponse.statusCode != 409:
+            case 400...499 where httpResponse.statusCode != 409 && httpResponse.statusCode != 410:
                 completion(.failure(APIError.custom("Client Error. Please try again later.")))
                 return
             case 500...599:
@@ -189,6 +189,11 @@ class ApiManager {
             guard let data = data else {
                 completion(.failure(APIError.custom("No data returned")))
                 return
+            }
+            
+            if httpResponse.url?.lastPathComponent.hasSuffix(".json") == true
+                && httpResponse.statusCode == 410 {
+                return completion(.failure(APIError.deleted))
             }
             
             if useJSON {

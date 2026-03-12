@@ -169,6 +169,44 @@ class DatabaseConnector {
         let realm = try! Realm(configuration: RealmConfig.configuration)
         return realm.objects(StoredWay.self).filter(predicate)
     }
+    
+    func deleteWay(id: Int) {
+        
+        guard let realm = try? Realm(configuration: RealmConfig.configuration),
+              let way = realm.object(ofType: StoredWay.self, forPrimaryKey: id) else {
+            return
+        }
+        try? realm.write {
+            realm.delete(way)
+        }
+    }
+    
+    func deleteNode(id: Int) {
+        guard let realm = try? Realm(configuration: RealmConfig.configuration),
+              let node = realm.object(ofType: StoredNode.self, forPrimaryKey: id) else {
+            return
+        }
+        try? realm.write {
+            realm.delete(node)
+        }
+    }
+    
+    func deleteChangesets(elementId: Int) {
+        let predicateString = "elementId = \(elementId)"
+        guard let realm = try? Realm(configuration: RealmConfig.configuration)else {
+            return
+        }
+        let changesets = realm.objects(StoredChangeset.self).filter(NSPredicate(format: predicateString))
+        if changesets.count == 0 {
+            return
+        }
+        try? realm.write {
+            for ch in changesets {
+                realm.delete(ch)
+            }
+            
+        }
+    }
     /**
      Fetches the center of a given StoredWay
      @param id String value of the way ID

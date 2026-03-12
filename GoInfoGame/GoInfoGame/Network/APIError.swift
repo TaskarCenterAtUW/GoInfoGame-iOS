@@ -23,6 +23,7 @@ enum APIError: LocalizedError {
     case notFound(String)
     case conflict
     case serverError
+    case deleted
     case unknown(code: Int, description: String)
 
     init(statusCode: Int, context: String? = nil) {
@@ -32,6 +33,7 @@ enum APIError: LocalizedError {
         case 403: self = .forbidden
         case 404: self = .notFound(context ?? "Item")
         case 409: self = .conflict
+        case 410: self = .deleted
         case 500: self = .serverError
         default: self = .unknown(code: statusCode, description: HTTPURLResponse.localizedString(forStatusCode: statusCode))
         }
@@ -65,6 +67,8 @@ enum APIError: LocalizedError {
             return message
         case .noNetworkConnection:
             return "No network connection."
+        case .deleted:
+            return "Deleted: The element is deleted from the server."
         }
     }
 }
