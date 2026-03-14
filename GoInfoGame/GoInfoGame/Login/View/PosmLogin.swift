@@ -113,8 +113,8 @@ struct PosmLoginView: View {
                             UIApplication.shared.open(url)
                         }
                     }) {
-                        Text("Sign me")
-                            .font(FontFamily.Lato.bold.swiftUIFont(size: 14))
+                        Text("I'm a new user")
+                            .font(FontFamily.Lato.bold.swiftUIFont(size: 20))
                             .foregroundColor(Asset.Colors.huskyPurple.swiftUIColor)
                             .padding()
                     }
