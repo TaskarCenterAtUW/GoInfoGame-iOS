@@ -107,6 +107,18 @@ struct PosmLoginView: View {
                     .padding(.top, 20)
                     .padding(.horizontal, 40)
                     
+                    Button(action: {
+                        if let url = URL(string: "https://portal.tdei.us/register"),
+                           UIApplication.shared.canOpenURL(url) {
+                            UIApplication.shared.open(url)
+                        }
+                    }) {
+                        Text("Sign me")
+                            .font(FontFamily.Lato.bold.swiftUIFont(size: 14))
+                            .foregroundColor(Asset.Colors.huskyPurple.swiftUIColor)
+                            .padding()
+                    }
+                    
                     if SessionManager.shared.canUseBiometricLogin(for: selectedEnvironment) {
                         Button(action: {
                             APIConfiguration.shared.environment = selectedEnvironment
