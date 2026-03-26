@@ -100,6 +100,7 @@ struct MapView: View {
                           tappedCoordinate: $tappedCoordinate,
                           annotationCoordinate: $annotationCoordinate,
                           shadowOverlay: shadowOverlay)
+                .accessibilityHidden(enableAccessibility) // Hide map from VoiceOver when accessibility mode is enabled
                 .onChange(of: tappedCoordinate) { _ in
                     showMapLongPressedSheet = tappedCoordinate != nil
                 }

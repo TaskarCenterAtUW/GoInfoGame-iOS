@@ -233,6 +233,35 @@ extension View {
     }
 }
 
+// New: helper to focus the accessibility on a view when it appears.
+extension View {
+    /// Requests VoiceOver focus to this view when it appears (only if VoiceOver is enabled).
+    /// Use this on the top-most element in a presented sheet to move VoiceOver focus to it.
+    func focusAccessibilityOnAppear() -> some View {
+        modifier(_FocusAccessibilityOnAppear())
+    }
+}
+
+private struct _FocusAccessibilityOnAppear: ViewModifier {
+    @Environment(\.accessibilityVoiceOverEnabled) private var voiceOverEnabled
+    @AccessibilityFocusState private var isFocused: Bool
+
+    func body(content: Content) -> some View {
+        content
+            .accessibilityFocused($isFocused)
+            .onAppear {
+                guard voiceOverEnabled else { return }
+                // Small delay to ensure the sheet presentation completes and the view is in the hierarchy
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.12) {
+                    // Set true to move VoiceOver focus to this element
+                    isFocused = true
+                    // Post a screen changed notification as a fallback to ensure the system moves focus
+                    UIAccessibility.post(notification: .screenChanged, argument: nil)
+                }
+            }
+    }
+}
+
 extension CLLocation {
     /**
      Calculates the initial bearing (in degrees) from this location to a target location.

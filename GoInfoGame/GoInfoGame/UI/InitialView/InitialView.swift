@@ -39,6 +39,7 @@ struct InitialView: View {
                         Asset.workspacesLogo.swiftUIImage
                             .resizable()
                             .frame(width: 100, height: 100)
+                            .accessibilityHidden(true)
                         Text(L10n.Localizable.appName)
                             .font(.system(size: 30, design: .rounded))
                             .foregroundStyle(Asset.Colors.huskyPurple.swiftUIColor)

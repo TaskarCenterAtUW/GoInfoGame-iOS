@@ -6,6 +6,8 @@
 //
 
 import SwiftUI
+import UIKit
+import Foundation
 
 struct AccessibilityModeView: View {
     @Environment(\.dismiss) var dismiss
@@ -76,13 +78,6 @@ struct AccessibilityModeView: View {
                 
                 ToolbarItem(placement: .topBarTrailing) {
                     filterButton
-                        .sheet(isPresented: $showBottomSheet) {
-                            ManageQuestsView()
-                                .presentationDetents([.fraction(0.85)])
-                                .interactiveDismissDisabled()
-                                .presentationDragIndicator(.hidden)
-                                .applyPresentationSizingPage()
-                        }
                 }
                 
                 ToolbarItem(placement: .topBarTrailing) {
@@ -112,6 +107,7 @@ struct AccessibilityModeView: View {
                 .scrollDisabled(false)
                 .interactiveDismissDisabled()
                 .applyPresentationSizingPage()
+                .focusAccessibilityOnAppear()
         }
         .onChange(of: mapViewModel.items) { _ in
             if let lkl = viewModel.lastKnownLocation {
@@ -149,11 +145,15 @@ struct AccessibilityModeView: View {
                 .interactiveDismissDisabled()
                 .presentationDragIndicator(.hidden)
                 .applyPresentationSizingPage()
+                .focusAccessibilityOnAppear()
             }
         }
         .fullScreenCover(isPresented: $navigateToUndo) {
             UndoEditsView()
+                .focusAccessibilityOnAppear()
         }
+        // Tell VoiceOver this view is modal so it confines focus to the presented accessibility UI
+        .accessibilityAddTraits(.isModal)
     }
     
     private var refreshListButton: some View {
@@ -204,6 +204,14 @@ struct AccessibilityModeView: View {
                 .font(.system(size: 20))
                 .foregroundColor(Asset.Colors.huskyPurple.swiftUIColor)
                 .accessibilityLabel(L10n.Localizable.filterQuestTypes)
+        }
+        .sheet(isPresented: $showBottomSheet) {
+            ManageQuestsView()
+                .presentationDetents([.fraction(0.85)])
+                .interactiveDismissDisabled()
+                .presentationDragIndicator(.hidden)
+                .applyPresentationSizingPage()
+                .focusAccessibilityOnAppear()
         }
     }
     private var undoEditButton: some View {
