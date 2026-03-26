@@ -30,6 +30,7 @@ struct UndoSidebarView: View {
             HStack {
                 Image(systemName: "arrow.uturn.backward.circle.fill")
                     .font(.title)
+                    .accessibilityHidden(true)
                     
                 Text("Undo Edits")
                     .font(.headline)

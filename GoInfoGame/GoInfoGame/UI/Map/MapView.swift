@@ -222,6 +222,7 @@ struct MapView: View {
                                     .interactiveDismissDisabled()
                                     .presentationDragIndicator(.hidden)
                                     .applyPresentationSizingPage()
+                                    .focusAccessibilityOnAppear()
                             }
                         })
                         .padding(.bottom, 24)
@@ -431,6 +432,7 @@ struct MapView: View {
             .interactiveDismissDisabled()
             .presentationDragIndicator(.hidden)
             .applyPresentationSizingPage()
+            .focusAccessibilityOnAppear()
         }
         .fullScreenCover(isPresented: $enableAccessibility) {
             AccessibilityModeView(mapViewModel: viewModel)
