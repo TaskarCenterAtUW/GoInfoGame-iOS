@@ -60,9 +60,11 @@ class AccessibilityModeViewModel: ObservableObject {
         if let nearestQuest =  sortedquests.first,
            autoSelectionCanceledIDs.contains(nearestQuest.quest.id) == false,
            nearestQuest.distance <= locationAccuracy {
-            self.selectedQuest = nearestQuest.quest
-            self.mapViewModel.selectedQuest = nearestQuest.quest.displayUnit
-            self.isQuestAutoSelected = true
+            if self.isQuestAutoSelected == false {
+                self.selectedQuest = nearestQuest.quest
+                self.mapViewModel.selectedQuest = nearestQuest.quest.displayUnit
+                self.isQuestAutoSelected = true
+            }
         } else if self.isQuestAutoSelected == true {
             self.selectedQuest = nil
             self.mapViewModel.selectedQuest = nil
