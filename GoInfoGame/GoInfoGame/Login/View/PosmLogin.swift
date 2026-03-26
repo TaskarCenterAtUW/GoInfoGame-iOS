@@ -107,6 +107,43 @@ struct PosmLoginView: View {
                     .padding(.top, 20)
                     .padding(.horizontal, 40)
                     
+                    Button(action: {
+                        if let url = URL(string: "http://tinyurl.com/OTP2026Walk"),
+                           UIApplication.shared.canOpenURL(url) {
+                            UIApplication.shared.open(url)
+                        }
+                    }) {
+                        Text("I'm a new user")
+                            .font(FontFamily.Lato.bold.swiftUIFont(size: 16))
+                            .foregroundColor(Asset.Colors.huskyPurple.swiftUIColor)
+                            .padding()
+                    }
+                    
+                    Button(action:{
+                        if let url = URL(string: "mailto:tdei@uw.edu"),
+                           UIApplication.shared.canOpenURL(url) {
+                            UIApplication.shared.open(url)
+                        }
+                    }) {
+                        Text("Questions? Contact Us")
+                            .font(FontFamily.Lato.bold.swiftUIFont(size: 16))
+                            .foregroundColor(Asset.Colors.huskyPurple.swiftUIColor)
+                            .padding()
+                    }
+                    
+                    Button(action:{
+                        if let url = URL(string: "https://www.accessmap.app/dir?wp=-122.3346457_47.6059712%27-122.3310313_47.6062336&region=wa.seattle&lon=-122.3331631&lat=47.6070952&z=15.6&sa=1&mu=0.12&md=0.15&ab=1&aps=0"),
+                           UIApplication.shared.canOpenURL(url) {
+                            UIApplication.shared.open(url)
+                        }
+                    }) {
+                        Text("Looking for AccessMap Route?")
+                            .font(FontFamily.Lato.bold.swiftUIFont(size: 16))
+                            .foregroundColor(Asset.Colors.huskyPurple.swiftUIColor)
+                            .padding(.bottom, 5)
+                        
+                    }
+                    
                     if SessionManager.shared.canUseBiometricLogin(for: selectedEnvironment) {
                         Button(action: {
                             APIConfiguration.shared.environment = selectedEnvironment
@@ -158,13 +195,18 @@ struct PosmLoginView: View {
                         }
                         .padding(.bottom, 5)
                     }
-                    appVersionText
-                        .accessibilityRespondsToUserInteraction()
-                        .onTapGesture(count: 7, perform: {
-                            if !debugMode {
-                                showEnableDebugModeAlert = true
-                            }
-                        })
+                    HStack {
+                        appVersionText
+                            .accessibilityRespondsToUserInteraction()
+                            .onTapGesture(count: 7, perform: {
+                                if !debugMode {
+                                    showEnableDebugModeAlert = true
+                                }
+                            })
+                        
+                        
+                    }
+                    
                 }
                 .padding([.top], 0)
                 
