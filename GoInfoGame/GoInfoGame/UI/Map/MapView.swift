@@ -369,6 +369,7 @@ struct MapView: View {
                 .interactiveDismissDisabled()
                 .presentationDragIndicator(.hidden)
                 .applyPresentationSizingPage()
+                .focusAccessibilityOnAppear()
         }
         .sheet(isPresented: $viewModel.showSatellitePicker) {
             SatellitePickerSheet(

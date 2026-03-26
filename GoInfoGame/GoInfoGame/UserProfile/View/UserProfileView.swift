@@ -35,8 +35,10 @@ struct UserProfileView: View {
                             VStack(alignment: .center, spacing: 6) {
                                 Text(userFullName())
                                     .font(FontFamily.Lato.bold.swiftUIFont(fixedSize: 20))
+                                    .accessibilityLabel("Username \(userFullName())")
                                 Text(viewModel.user?.email ?? " ")
                                     .font(FontFamily.Lato.regular.swiftUIFont(fixedSize: 16))
+                                    .accessibilityLabel("User email \(viewModel.user?.email ?? "")")
                             }
                             .foregroundStyle(Asset.Colors._42526ETextFieldText.swiftUIColor)
                         }
@@ -142,6 +144,7 @@ struct UserProfileView: View {
             LinearGradient(gradient: Gradient(colors: [Asset.Colors._8F57DEProfileIcon.swiftUIColor, Asset.Colors._2D0369ProfileIcon.swiftUIColor,]), startPoint: .top, endPoint: .bottom)
         }
         .clipShape(Circle())
+        .accessibilityHidden(true)
     }
 
         
