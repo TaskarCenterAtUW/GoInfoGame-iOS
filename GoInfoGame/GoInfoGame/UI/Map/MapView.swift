@@ -287,13 +287,22 @@ struct MapView: View {
                         .cornerRadius(0.5)
                     
                     VStack(alignment: .leading) {
-                        Text(L10n.Localizable.workspace)
-                            .font(FontFamily.Lato.regular.swiftUIFont(size: 12))
-                            .foregroundStyle(Asset.Colors._83879BTextFiledTitle.swiftUIColor)
+                        ScrollView(showsIndicators: false) {
+                            VStack(alignment: .leading) {
+                                Text(L10n.Localizable.workspace)
+                                    .font(FontFamily.Lato.regular.swiftUIFont(size: 12, relativeTo: .body))
+                                    .foregroundStyle(Asset.Colors.huskyPurple.swiftUIColor)
+                                    .multilineTextAlignment(.leading)
+                                
+                                Text(selectedWorkspace.title)
+                                    .font(FontFamily.Lato.bold.swiftUIFont(size: 14, relativeTo: .body))
+                                    .foregroundStyle(Asset.Colors.huskyPurple.swiftUIColor)
+                                    .multilineTextAlignment(.leading)
+                            }
+                        }
+                        .accessibilityElement(children: .combine)
+                        .accessibilityLabel("\(L10n.Localizable.workspace): \(selectedWorkspace.title)")
                         
-                        Text(selectedWorkspace.title)
-                            .font(FontFamily.Lato.bold.swiftUIFont(size: 14))
-                            .foregroundStyle(Asset.Colors.huskyPurple.swiftUIColor)
                     }
                 }
                 
