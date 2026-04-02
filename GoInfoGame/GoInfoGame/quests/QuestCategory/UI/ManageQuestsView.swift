@@ -16,8 +16,9 @@ struct ManageQuestsView: View {
         VStack(alignment: .leading, spacing: 12) {
             HStack(alignment: .firstTextBaseline) {
                 Text("Choose which features to survey")
-                    .font(.custom("Lato-Bold", size: 20))
+                    .font(.custom("Lato-Bold", size: 20, relativeTo: .title))
                     .foregroundColor(Asset.Colors.huskyPurple.swiftUIColor)
+                    .multilineTextAlignment(.leading)
                     .padding(.top, 30)
 
                 Spacer()
@@ -34,13 +35,14 @@ struct ManageQuestsView: View {
             .padding(.horizontal, 16)
 
             Text("Show all hidden elements on the map by individual item or type")
-                .font(.custom("Lato-Bold", size: 12))
-                .foregroundColor(Color(red: 132/255, green: 135/255, blue: 153/255))
+                .font(.custom("Lato-Bold", size: 12, relativeTo: .subheadline))
+                .foregroundColor(Asset.Colors.huskyPurple.swiftUIColor)
+                .multilineTextAlignment(.leading)
                 .padding(.horizontal)
 
             Text("FEATURES")
-                .font(.custom("Lato-Bold", size: 15))
-                .foregroundColor(Color(red: 132/255, green: 135/255, blue: 153/255))
+                .font(.custom("Lato-Bold", size: 15, relativeTo: .headline))
+                .foregroundColor(Asset.Colors.huskyPurple.swiftUIColor)
                 .padding(.horizontal)
                 .padding(.top, 10)
                 .padding(.leading, 15)
@@ -55,8 +57,8 @@ struct ManageQuestsView: View {
 
                         Toggle(isOn: $questManager.allQuests[index].isDefault) {
                             Text(title)
-                                .font(.custom("Lato-Bold", size: 16))
-                                .foregroundColor(Color(red: 69/255, green: 81/255, blue: 108/255))
+                                .font(.custom("Lato-Bold", size: 16, relativeTo: .headline))
+                                .foregroundColor(Asset.Colors.huskyPurple.swiftUIColor)
                         }
                         .toggleStyle(SwitchToggleStyle(tint: Asset.Colors.accentPink.swiftUIColor))
                         .padding(.horizontal, 10)
@@ -81,8 +83,9 @@ struct ManageQuestsView: View {
             } else {
                 HStack(alignment: .firstTextBaseline) {
                     Text("HIDDEN ELEMENTS")
-                        .font(.custom("Lato-Bold", size: 15))
-                        .foregroundColor(Color(red: 132/255, green: 135/255, blue: 153/255))
+                        .font(.custom("Lato-Bold", size: 15, relativeTo: .headline))
+                        .foregroundColor(Asset.Colors.huskyPurple.swiftUIColor)
+                        .multilineTextAlignment(.leading)
                         .padding(.horizontal)
                         .padding(.top, 10)
                         .padding(.leading, 15)
@@ -91,11 +94,12 @@ struct ManageQuestsView: View {
                         hiddenQuestManager.removeAllHiddenQuests()
                     }) {
                         Text("Unhide All")
-                            .font(.custom("Lato-Bold", size: 16))
+                            .font(.custom("Lato-Bold", size: 16, relativeTo: .headline))
                             .foregroundColor(.white)
                             .padding(.vertical, 10) // vertical padding
                             .padding(.horizontal, 20) // horizontal padding
                             .background(Asset.Colors.huskyPurple.swiftUIColor)
+                            .multilineTextAlignment(.leading)
                             .cornerRadius(10)
                     }
                     .padding(.trailing, 15)
@@ -103,8 +107,9 @@ struct ManageQuestsView: View {
                     
                 }
                 Text("Swipe left on item to show delete option and delete it from the list.")
-                    .font(.custom("Lato-Bold", size: 12))
-                    .foregroundColor(Color(red: 132/255, green: 135/255, blue: 153/255))
+                    .font(.custom("Lato-Bold", size: 12, relativeTo: .subheadline))
+                    .multilineTextAlignment(.leading)
+                    .foregroundColor(Asset.Colors.huskyPurple.swiftUIColor)
                     .padding(.horizontal)
 
                 List {
@@ -113,16 +118,17 @@ struct ManageQuestsView: View {
 
                         HStack {
                             Text("ID: \(String(quest.id))")
-                                .font(.custom("Lato-Bold", size: 15))
+                                .font(.custom("Lato-Bold", size: 15, relativeTo: .headline))
                                 .foregroundColor(Color(red: 69 / 255, green: 81 / 255, blue: 108 / 255))
                         
                             Spacer()
                             Text(quest.name)
-                                .font(.custom("Lato-Bold", size: 13))
-                                .foregroundColor(.gray)
+                                .font(.custom("Lato-Bold", size: 13, relativeTo: .subheadline))
+                                .foregroundColor(Asset.Colors.huskyPurple.swiftUIColor)
                                 
                         }
-                       
+                        .accessibilityElement(children: .combine)
+                        .accessibilityLabel("\(quest.name), ID: \(quest.id)")
                         .listRowInsets(EdgeInsets(top: 6, leading: 10, bottom: 6, trailing: 10))
                     }
                     .onDelete { indexSet in
