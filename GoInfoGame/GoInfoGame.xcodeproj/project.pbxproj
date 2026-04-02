@@ -191,6 +191,9 @@
 		C7BA83542E3C9C3600755BA7 /* QuestSyncButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7BA83532E3C9C3600755BA7 /* QuestSyncButton.swift */; };
 		C7D3103E2EA0B3BB00CA10A9 /* ForceUpdateViewModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7D3103D2EA0B3BB00CA10A9 /* ForceUpdateViewModifier.swift */; };
 		C7D310412EA1302500CA10A9 /* StoreKit.storekit in Resources */ = {isa = PBXBuildFile; fileRef = C7D310402EA1302500CA10A9 /* StoreKit.storekit */; };
+		C7DD04152F7E7A5800307026 /* Lato-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FA8C74D12C598F9D00D28220 /* Lato-Bold.ttf */; };
+		C7DD04162F7E7A6100307026 /* Lato-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FA8C74D02C598F9D00D28220 /* Lato-Regular.ttf */; };
+		C7DD04172F7E7A6100307026 /* Lato-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FA8C74D22C5998D600D28220 /* Lato-Medium.ttf */; };
 		C7E9528D2ED887CC001BFB75 /* NoQuestsNearView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7E9528C2ED887CC001BFB75 /* NoQuestsNearView.swift */; };
 		C7E9528F2ED88B00001BFB75 /* lato-heavy.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C7E9528E2ED88B00001BFB75 /* lato-heavy.ttf */; };
 		C7ED070F2D70E2EC001FFFE2 /* TokenRefresher.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7ED070E2D70E2EC001FFFE2 /* TokenRefresher.swift */; };
@@ -2054,9 +2057,12 @@
 				C7E9528F2ED88B00001BFB75 /* lato-heavy.ttf in Resources */,
 				C76FAAE52ED76509009E0B4F /* gachibowli circle_path.gpx in Resources */,
 				C76B63742E46019D0076A540 /* proximanova_regular.otf in Resources */,
+				C7DD04152F7E7A5800307026 /* Lato-Bold.ttf in Resources */,
 				C76B63752E46019D0076A540 /* proximanova_light.otf in Resources */,
 				C76B63762E46019D0076A540 /* proximanova_semibold.otf in Resources */,
 				C7A922252E45C36D00705E21 /* PrivacyInfo.xcprivacy in Resources */,
+				C7DD04162F7E7A6100307026 /* Lato-Regular.ttf in Resources */,
+				C7DD04172F7E7A6100307026 /* Lato-Medium.ttf in Resources */,
 				FAD5C4FC2AFCBE720040C61A /* Assets.xcassets in Resources */,
 				FAD5C4FA2AFCBE700040C61A /* Main.storyboard in Resources */,
 				C75CC5D92E0D22F4008A94A0 /* LongQuestsResponse.json in Resources */,
