@@ -41,7 +41,7 @@ struct InitialView: View {
                             .frame(width: 100, height: 100)
                             .accessibilityHidden(true)
                         Text(L10n.Localizable.appName)
-                            .font(.system(size: 30, design: .rounded))
+                            .font(.system(.title, design: .rounded))
                             .foregroundStyle(Asset.Colors.huskyPurple.swiftUIColor)
                     }
                     .padding()
@@ -103,17 +103,20 @@ struct WorkspacesListView: View {
             }
         } else if viewModel.workspaces == nil {
             if viewModel.errorMessage == nil {
-                VStack {
-                    Text("Loading workspaces available for you... Please make sure you have location service enabled.")
-                        .font(.custom("Lato-Bold", size: 20))
-                        .foregroundColor((Asset.Colors.huskyPurple.swiftUIColor))
-                        .multilineTextAlignment(.center)
-                    Spacer()
+                ScrollView {
+                    VStack {
+                        Text("Loading workspaces available for you... Please make sure you have location service enabled.")
+                            .font(.custom("Lato-Bold", size: 20, relativeTo: .body))
+                            .foregroundColor((Asset.Colors.huskyPurple.swiftUIColor))
+                            .multilineTextAlignment(.center)
+                        Spacer()
+                    }
+                    .frame(maxWidth: .infinity)
                 }
             } else {
                 VStack {
                     Text(viewModel.errorMessage ?? "Something went wrong. Please try again later.")
-                        .font(.custom("Lato-Bold", size: 20))
+                        .font(.custom("Lato-Bold", size: 20, relativeTo: .body))
                         .foregroundColor((Asset.Colors.huskyPurple.swiftUIColor))
                         .multilineTextAlignment(.center)
                         .padding(.top, 20)
@@ -129,7 +132,7 @@ struct WorkspacesListView: View {
                                     .resizable()
                                     .frame(width: 50, height: 50)
                                 Text("Try again")
-                                    .font(.custom("Lato-Bold", size: 20))
+                                    .font(.custom("Lato-Bold", size: 20, relativeTo: .body))
                             }
                         }
                         .foregroundStyle(Asset.Colors.accentPink.swiftUIColor)
@@ -142,19 +145,20 @@ struct WorkspacesListView: View {
         } else if viewModel.workspaces?.count == 0 {
             VStack {
                 Text("No workspaces available for you to work on.")
-                    .font(.custom("Lato-Bold", size: 20))
+                    .font(.custom("Lato-Bold", size: 20, relativeTo: .body))
                     .foregroundColor((Asset.Colors.huskyPurple.swiftUIColor))
                     .multilineTextAlignment(.center)
                 Spacer()
             }
             
         } else {
-            VStack {
-                Text("Pick the workspace you want to contribute to")
-                    .font(.system(size: 16, design: .rounded))
-                    .foregroundStyle(.gray)
-                
-                ScrollView {
+            ScrollView {
+                VStack(spacing: 20) {
+                    Text("Pick the workspace you want to contribute to")
+                        .font(.system(.body, design: .rounded))
+                        .foregroundColor(Asset.Colors.huskyPurple.swiftUIColor)
+                        .multilineTextAlignment(.center)
+                    
                     VStack(spacing: 20) {
                         ForEach(viewModel.workspaces?.filter({$0.type == "osw" && $0.externalAppAccess == 1}) ?? [], id: \.id) { workspace in
                             Button {
@@ -178,7 +182,7 @@ struct WorkspacesListView: View {
                                 })
                             }  label: {
                                 Text(workspace.title)
-                                    .font(.custom("Lato-Bold", size: 17))
+                                    .font(.custom("Lato-Bold", size: 17, relativeTo: .body))
                                     .frame(maxWidth: .infinity, minHeight: 50)
                                     .foregroundColor(Color.white)
                                     .background(Asset.Colors.huskyPurple.swiftUIColor)
@@ -186,11 +190,12 @@ struct WorkspacesListView: View {
                             }
                         }
                     }
+                    .padding()
                 }
-                .padding()
+                .padding([.leading, .trailing])
             }
-            .alert(alertMessage, isPresented: $showAlert) {
-                Button("OK", role: .cancel) { }
+            .alert(isPresented: $showAlert) {
+                Alert(title: Text(alertMessage), dismissButton: .cancel())
             }
         }
     }
@@ -200,15 +205,15 @@ struct LocationDisabledView: View {
     var body: some View {
         VStack {
             Text(L10n.Localizable.appName)
-                .font(.custom("Lato-Bold", size: 30))
+                .font(.custom("Lato-Bold", size: 30, relativeTo: .title))
                 .foregroundColor((Asset.Colors.huskyPurple.swiftUIColor))
                 .padding([.bottom], 50)
             
             Text("Location Services Disabled")
-                .font(.custom("Lato-Bold", size: 25))
+                .font(.custom("Lato-Bold", size: 25, relativeTo: .title2))
                 .padding()
             Text("Please enable location services on your device settings to use this app.")
-                .font(.custom("Lato-Bold", size: 19))
+                .font(.custom("Lato-Bold", size: 19, relativeTo: .body))
                 .multilineTextAlignment(.center)
                 .padding()
             Button(action: {
@@ -217,7 +222,7 @@ struct LocationDisabledView: View {
                 }
             }) {
                 Text("Open Settings")
-                    .font(.custom("Lato-Bold", size: 20))
+                    .font(.custom("Lato-Bold", size: 20, relativeTo: .body))
                     .foregroundColor(.blue)
             }
             .padding()
@@ -229,8 +234,3 @@ struct LocationDisabledView: View {
 #Preview {
     InitialView()
 }
-
-
-
-
-
