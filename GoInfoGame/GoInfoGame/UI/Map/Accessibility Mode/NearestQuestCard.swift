@@ -22,11 +22,16 @@ struct NearestQuestCard: View {
                         .foregroundStyle(Color.white)
                 })
                 
+                
                 Text("You are \(Int(quest.distance.rounded())) meters from \"\(quest.questType)\", to the \(quest.direction).")
-                    .font(FontFamily.Lato.semibold.swiftUIFont(size: 16))
+                    .font(FontFamily.Lato.semibold.swiftUIFont(size: 16, relativeTo: .body))
                     .foregroundColor(Color.white)
-                    .lineLimit(2)
+                    .minimumScaleFactor(0.5)
+                    .multilineTextAlignment(.leading)
+                    .lineLimit(nil)
                     .lineSpacing(2.0)
+                    .fixedSize(horizontal: false, vertical: true)
+                    .accessibilityLabel("You are \(Int(quest.distance.rounded())) meters from \"\(quest.questType)\", to the \(quest.direction).")
                 Spacer()
             })
             .padding(15)

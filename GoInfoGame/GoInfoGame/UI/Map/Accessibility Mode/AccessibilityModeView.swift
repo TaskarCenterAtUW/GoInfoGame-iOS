@@ -72,8 +72,11 @@ struct AccessibilityModeView: View {
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
                     Text(L10n.Localizable.screenReaderMode)
-                        .font(FontFamily.Lato.bold.swiftUIFont(size: 16))
+                        .font(FontFamily.Lato.bold.swiftUIFont(size: 16, relativeTo: .headline))
                         .foregroundStyle(Asset.Colors.huskyPurple.swiftUIColor)
+                        .lineLimit(nil)
+                        .fixedSize(horizontal: false, vertical: true)
+                        .accessibilityLabel(L10n.Localizable.screenReaderMode)
                 }
                 
                 ToolbarItem(placement: .topBarTrailing) {
@@ -166,7 +169,11 @@ struct AccessibilityModeView: View {
                     .resizable()
                     .frame(width: 14, height: 14)
                 Text(L10n.Localizable.refreshList)
-                    .font(FontFamily.Lato.semibold.swiftUIFont(fixedSize: 12))
+                    .font(FontFamily.Lato.semibold.swiftUIFont(size: 12, relativeTo: .body))
+                    .multilineTextAlignment(.leading)
+                    .lineLimit(nil)
+                    .fixedSize(horizontal: false, vertical: false)
+                    .accessibilityLabel(L10n.Localizable.refreshList)
                 
             }
             .foregroundColor(.white)
@@ -179,14 +186,22 @@ struct AccessibilityModeView: View {
     }
     
     private var numberOfQuestsView: some View {
-        VStack(alignment: .leading, spacing: 5.0, content: {
+        VStack(alignment: .leading, spacing: 5.0) {
             Text(L10n.Localizable.numberOfQuests + " \(viewModel.nearestQuest.count)")
-                .font(FontFamily.Lato.bold.swiftUIFont(size: 16))
+                .font(FontFamily.Lato.bold.swiftUIFont(size: 16, relativeTo: .headline))
                 .foregroundColor(Asset.Colors._42526ETextFieldText.swiftUIColor)
+                .multilineTextAlignment(.leading)
+                .lineLimit(nil)
+                .fixedSize(horizontal: false, vertical: true)
+                .accessibilityLabel(L10n.Localizable.numberOfQuests + " \(viewModel.nearestQuest.count)")
+
             Text(L10n.Localizable.selectTheQuestToStartAnswering)
-                .font(FontFamily.Lato.medium.swiftUIFont(size: 14))
-                .foregroundColor(Asset.Colors._42526ETextFieldText.swiftUIColor)
-        })
+                .font(FontFamily.Lato.medium.swiftUIFont(size: 14, relativeTo: .subheadline))
+                .multilineTextAlignment(.leading)
+                .lineLimit(nil)
+                .fixedSize(horizontal: false, vertical: true)
+                .accessibilityLabel(L10n.Localizable.closeScreenReaderModeScreen)
+        }
     }
     
     private var closeButton: some View {
@@ -201,7 +216,7 @@ struct AccessibilityModeView: View {
             showBottomSheet.toggle()
         }) {
             Image(systemName: "slider.horizontal.3")
-                .font(.system(size: 20))
+                .font(.title3)
                 .foregroundColor(Asset.Colors.huskyPurple.swiftUIColor)
                 .accessibilityLabel(L10n.Localizable.filterQuestTypes)
         }
@@ -221,7 +236,11 @@ struct AccessibilityModeView: View {
             HStack {
                 Image(systemName: "arrow.uturn.backward")
                 Text(L10n.Localizable.undoEdits)
-                    .font(FontFamily.Lato.bold.swiftUIFont(fixedSize: 16))
+                    .font(FontFamily.Lato.bold.swiftUIFont(size: 16, relativeTo: .headline))
+                    .multilineTextAlignment(.center)
+                    .lineLimit(nil)
+                    .fixedSize(horizontal: false, vertical: true)
+                    .accessibilityLabel(L10n.Localizable.undoEdits)
             }
             .foregroundStyle(Asset.Colors.huskyPurple.swiftUIColor)
             .padding(10)
@@ -239,7 +258,11 @@ struct AccessibilityModeView: View {
             HStack {
                 Image(systemName: "arrow.left")
                 Text(L10n.Localizable.goBackToMapView)
-                    .font(FontFamily.Lato.bold.swiftUIFont(fixedSize: 16))
+                    .font(FontFamily.Lato.bold.swiftUIFont(size: 16, relativeTo: .headline))
+                    .multilineTextAlignment(.center)
+                    .lineLimit(nil)
+                    .fixedSize(horizontal: false, vertical: true)
+                    .accessibilityLabel(L10n.Localizable.goBackToMapView)
             }
             .foregroundStyle(Asset.Colors.huskyPurple.swiftUIColor)
             .padding(10)
