@@ -49,8 +49,11 @@ struct UndoEditsView: View {
                                     }
                                 } header: {
                                     Text(section.date.formatted(date: .long, time: .omitted))
-                                        .font(FontFamily.Lato.bold.swiftUIFont(size: 14))
-                                        .foregroundColor(Asset.Colors._83879BTextFiledTitle.swiftUIColor)
+                                        .font(FontFamily.Lato.bold.swiftUIFont(size: 14, relativeTo: .subheadline))
+                                        .foregroundColor(Asset.Colors.huskyPurple.swiftUIColor)
+                                        .multilineTextAlignment(.leading)
+                                        .lineLimit(nil)
+                                        .accessibilityLabel(section.date.formatted(date: .long, time: .omitted))
                                 }
                             }
                         }
@@ -80,6 +83,9 @@ struct UndoEditsView: View {
                     Text(L10n.Localizable.undoEdits)
                         .font(FontFamily.Lato.bold.swiftUIFont(size: 16))
                         .foregroundStyle(Asset.Colors.huskyPurple.swiftUIColor)
+                        .multilineTextAlignment(.leading)
+                        .lineLimit(nil)
+                        .accessibilityLabel(L10n.Localizable.undoEdits)
                 }
                 
                 ToolbarItem(placement: .topBarTrailing) {
@@ -112,11 +118,18 @@ struct UndoEditsView: View {
     private var pageHeadding: some View {
         VStack(alignment: .leading, spacing: 5.0, content: {
             Text(L10n.Localizable.undoYourRecentChanges)
-                .font(FontFamily.Lato.bold.swiftUIFont(size: 16))
+                .font(FontFamily.Lato.bold.swiftUIFont(size: 16, relativeTo: .headline))
                 .foregroundColor(Asset.Colors._42526ETextFieldText.swiftUIColor)
+                .multilineTextAlignment(.leading)
+                .lineLimit(nil)
+                .accessibilityLabel(L10n.Localizable.undoYourRecentChanges)
+            
             Text(L10n.Localizable.selectTheQuestBasedOnDateAndTimeForPreviewRevert)
-                .font(FontFamily.Lato.medium.swiftUIFont(size: 14))
+                .font(FontFamily.Lato.medium.swiftUIFont(size: 14, relativeTo: .body))
                 .foregroundColor(Asset.Colors._42526ETextFieldText.swiftUIColor)
+                .multilineTextAlignment(.leading)
+                .lineLimit(nil)
+                .accessibilityLabel(L10n.Localizable.selectTheQuestBasedOnDateAndTimeForPreviewRevert)
         })
     }
     
@@ -127,7 +140,10 @@ struct UndoEditsView: View {
             HStack {
                 Image(systemName: "arrow.left")
                 Text(L10n.Localizable.goBackToPreviousScreen)
-                    .font(FontFamily.Lato.bold.swiftUIFont(fixedSize: 16))
+                    .font(FontFamily.Lato.bold.swiftUIFont(size: 16, relativeTo: .headline))
+                    .multilineTextAlignment(.leading)
+                    .lineLimit(nil)
+                    .accessibilityLabel(L10n.Localizable.goBackToPreviousScreen)
             }
             .foregroundStyle(Asset.Colors.huskyPurple.swiftUIColor)
             .padding(10)
