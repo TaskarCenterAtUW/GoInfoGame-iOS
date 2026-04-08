@@ -12,17 +12,32 @@ struct EditedTagView: View {
     var body: some View {
         VStack(alignment: .leading, content: {
             Text(tagUpdate.action.rawValue.uppercased())
-                .font(FontFamily.Lato.medium.swiftUIFont(fixedSize: 12))
-                .foregroundStyle(Asset.Colors.a2A2A2Gray.swiftUIColor)
-            HStack {
-                Text(tagUpdate.key)
-                    .font(FontFamily.Lato.bold.swiftUIFont(fixedSize: 16))
-                Text("= " + tagUpdate.value)
-                    .font(FontFamily.Lato.medium.swiftUIFont(fixedSize: 16))
+                .font(FontFamily.Lato.medium.swiftUIFont(size: 12, relativeTo: .body))
+                .foregroundStyle(Asset.Colors.huskyPurple.swiftUIColor)
+                .multilineTextAlignment(.leading)
+                .lineLimit(nil)
+                .accessibilityLabel(tagUpdate.action.rawValue.uppercased())
+            
+            VStack {
+                HStack {
+                    Text(tagUpdate.key)
+                        .font(FontFamily.Lato.bold.swiftUIFont(size: 16, relativeTo: .headline))
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .accessibilityLabel(tagUpdate.key)
+                    Text("= " + tagUpdate.value)
+                        .font(FontFamily.Lato.medium.swiftUIFont(size: 16, relativeTo: .headline))
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .accessibilityLabel("= " + tagUpdate.value)
+                }
             }
-            .foregroundStyle(Asset.Colors._42526ETextFieldText.swiftUIColor)
+            .foregroundStyle(Asset.Colors.huskyPurple.swiftUIColor)
+            .multilineTextAlignment(.leading)
+            .lineLimit(nil)
+            .fixedSize(horizontal: false, vertical: true)
         })
-        .frame(maxWidth: .infinity, alignment: .leading)
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel("\(tagUpdate.key) key \(tagUpdate.action.rawValue) with value \(tagUpdate.value)")
+
     }
 }
 
