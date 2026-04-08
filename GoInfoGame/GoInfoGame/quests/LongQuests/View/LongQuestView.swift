@@ -24,9 +24,11 @@ struct LongQuestView: View {
     var body: some View {
         VStack(alignment: .leading) {
             Text(quest.questTitle)
-                .font(.custom("Lato-Bold", size: 16))
-                .foregroundColor(Color(red: 66/255, green: 82/255, blue: 110/255))
+                .font(.custom("Lato-Bold", size: 16, relativeTo: .headline))
+                .foregroundColor(Asset.Colors.huskyPurple.swiftUIColor)
+                .multilineTextAlignment(.leading)
                 .padding([.bottom], 10)
+                .accessibilityLabel(quest.questTitle)
             
             if let imageUrl = quest.questImageURL, !imageUrl.isEmpty {
                 LongFormImageView(urlString: imageUrl, width: isImageExpanded ? 300 : 100, height: isImageExpanded ? 300 : 100)
@@ -40,11 +42,14 @@ struct LongQuestView: View {
                             },
                             perform: {}
                         )
+                .accessibilityLabel("Image for \(quest.questTitle)")
             }
             
             Text(quest.questDescription)
-                .font(.custom("Lato-Regular", size: 12))
-                .foregroundColor(Color(red: 131/255, green: 135/255, blue: 155/255))
+                .font(.custom("Lato-Regular", size: 12, relativeTo: .body))
+                .foregroundColor(Asset.Colors.huskyPurple.swiftUIColor)
+                .multilineTextAlignment(.leading)
+                .accessibilityLabel(quest.questDescription)
             
             QuestOptions(options: questOptions, selectedChoice: $selectedChoice, questType: quest.questType, uploadPhoto: uploadPhoto)
         }

@@ -218,10 +218,18 @@ private extension QuestOptions {
                         }
                     }
                 ))
-                .frame(width: 100)
-                .padding(1)
+                .font(FontFamily.Lato.regular.swiftUIFont(size: 14, relativeTo: .body))
                 .textFieldStyle(PlainTextFieldStyle())
-                .keyboardType(UIKeyboardType.numberPad)
+                .keyboardType(.numberPad)
+                .padding(.vertical, 12) // Adds internal space
+                .padding(.horizontal, 10)
+                .frame(minWidth: 100, minHeight: 44) // Meets accessibility minimums
+                .background(Color.clear) // Helps define the tappable area
+                .contentShape(Rectangle()) // Makes the entire frame hit-testable
+                .fixedSize(horizontal: false, vertical: true)
+                .multilineTextAlignment(.leading)
+                .lineLimit(nil)
+                .accessibilityLabel("Numeric input field. Current value: \(selectedChoice?.value ?? "empty").")
             }
         }
     }
@@ -248,15 +256,25 @@ private extension QuestOptions {
                         }
                     }
                 ))
-                .frame(height: 100)
+                .font(FontFamily.Lato.regular.swiftUIFont(size: 14, relativeTo: .body))
+                .textFieldStyle(PlainTextFieldStyle())
                 .keyboardType(UIKeyboardType.default)
+                .padding(.vertical, 12) // Adds internal space
+                .frame(minWidth: 100, minHeight: 100) // Meets accessibility minimums
+                .background(Color.clear) // Helps define the tappable area
+                .contentShape(Rectangle()) // Makes the entire frame hit-testable
+                .fixedSize(horizontal: false, vertical: true)
+                .multilineTextAlignment(.leading)
+                .lineLimit(nil)
                 .border(Color.gray)
+                .accessibilityLabel("Text entry field. \(currentValue.count) out of \(maxLenth) characters used.")
                 
                 Text("\(currentValue.count) / \(maxLenth)")
                     .font(.caption)
-                    .foregroundColor(.gray)
+                    .foregroundColor(.black)
                     .padding(5)
                     .background(Color.white.opacity(0.5))
+                    .accessibilityHidden(true)
             }
         }
     }

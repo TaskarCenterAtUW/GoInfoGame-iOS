@@ -42,16 +42,22 @@ struct LongFormImageView: View {
                                   .font(.system(size: 15, weight: .bold))
                                   .foregroundColor(.black)
                                   .offset(x: offset.0, y: offset.1)
+                                  .multilineTextAlignment(.center)
+                                  .accessibilityLabel(label)
                           }
 
                           Text(label)
                               .font(.system(size: 15, weight: .bold))
                               .foregroundColor(.white)
                               .shadow(color: Color.black.opacity(0.7), radius: 4, x: 0, y: 2)
+                              .multilineTextAlignment(.center)
+                              .accessibilityLabel(label)
                             
                     }
                 }
                 .frame(width: width, height: height)
+                .accessibilityElement(children: .combine)
+                .accessibilityLabel(label ?? "Image")
 
              
             } else {
