@@ -24,13 +24,18 @@ struct NoEditsView: View {
             .frame(width: 106, height: 106)
             
             Text(L10n.Localizable.noEditsFound)
-                .font(FontFamily.Lato.heavy.swiftUIFont(fixedSize: 24))
-                .foregroundStyle(Asset.Colors._42526ETextFieldText.swiftUIColor)
-            
-            Text(L10n.Localizable.newEditsWillAppearHereWhenAQuestIsAnswered)
-                .font(FontFamily.Lato.medium.swiftUIFont(fixedSize: 18))
+                .font(FontFamily.Lato.heavy.swiftUIFont(size: 24, relativeTo: .title))
                 .foregroundStyle(Asset.Colors._42526ETextFieldText.swiftUIColor)
                 .multilineTextAlignment(.center)
+                .lineLimit(nil)
+                .accessibilityLabel(L10n.Localizable.noEditsFound)
+            
+            Text(L10n.Localizable.newEditsWillAppearHereWhenAQuestIsAnswered)
+                .font(FontFamily.Lato.medium.swiftUIFont(size: 18, relativeTo: .body))
+                .foregroundStyle(Asset.Colors._42526ETextFieldText.swiftUIColor)
+                .multilineTextAlignment(.center)
+                .lineLimit(nil)
+                .accessibilityLabel(L10n.Localizable.newEditsWillAppearHereWhenAQuestIsAnswered)
         })
     }
 }
