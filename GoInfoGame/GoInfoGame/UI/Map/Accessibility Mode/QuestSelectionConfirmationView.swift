@@ -54,6 +54,7 @@ struct QuestSelectionConfirmationView: View {
                     onClose()
                 })
             })
+            .padding(.top, 20)
             .accessibilityElement(children: .combine)
             .accessibilityLabel(isAutoSelected ? L10n.Localizable.youVeArrived : "\(L10n.Localizable.selectedType) \(questType)")
             
