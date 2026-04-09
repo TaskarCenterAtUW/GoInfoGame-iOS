@@ -30,9 +30,7 @@ struct MapView: View {
     @State private var showPopover = false
     
     @AppStorage("baseUrl") var baseUrl = ""
-    
-    @State private var showSattiliteSelectionSheet: Bool = false
-    
+        
     @State private var tappedCoordinate: CLLocationCoordinate2D? = nil
     
     @State private var annotationCoordinate: CLLocationCoordinate2D? = nil
@@ -60,7 +58,6 @@ struct MapView: View {
     @State private var shadowOverlay = ShadowOverlay()
     
     @State private var showUndoSidebar = false
-    @State private var shatilliteSelected: String? = nil
     @State private var showFilterQuestsSheet = false
     @State private var showElemntDeletedAlert = false
     
