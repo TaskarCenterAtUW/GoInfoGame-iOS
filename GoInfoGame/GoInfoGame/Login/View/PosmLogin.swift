@@ -46,13 +46,17 @@ struct PosmLoginView: View {
                             Group {
                                 VStack(alignment: .leading) {
                                     Text("AVIV")
-                                        .font(FontFamily.Lato.regular.swiftUIFont(size: 52))
+                                        .font(FontFamily.Lato.regular.swiftUIFont(size: 52, relativeTo: .largeTitle))
                                     Text("ScoutRoute")
-                                        .font(FontFamily.Lato.medium.swiftUIFont(size: 24))
+                                        .font(FontFamily.Lato.medium.swiftUIFont(size: 24, relativeTo: .title))
                                 }
                             }
+                            .multilineTextAlignment(.leading)
+                            .lineLimit(nil)
                             .foregroundColor(Asset.Colors.huskyPurple.swiftUIColor)
                         }
+                        .accessibilityElement(children: .combine)
+                        .accessibilityLabel("AVIV ScoutRoute logo")
                         .padding([.bottom], 50)
                     }
                     .frame(height: 250)
@@ -67,6 +71,8 @@ struct PosmLoginView: View {
                         .padding(10)
                         .cornerRadius(10)
                         .padding(.horizontal, 40)
+                        .textInputAutocapitalization(.never)
+                    
                     if debugMode {
                         Menu {
                             ForEach(APIEnvironment.allCases, id: \.self) { environment in
@@ -114,8 +120,10 @@ struct PosmLoginView: View {
                         }
                     }) {
                         Text("I'm a new user")
-                            .font(FontFamily.Lato.bold.swiftUIFont(size: 16))
+                            .font(FontFamily.Lato.bold.swiftUIFont(size: 16, relativeTo: .headline))
                             .foregroundColor(Asset.Colors.huskyPurple.swiftUIColor)
+                            .multilineTextAlignment(.center)
+                            .lineLimit(nil)
                             .padding()
                     }
                     
@@ -126,9 +134,12 @@ struct PosmLoginView: View {
                         }
                     }) {
                         Text("Questions? Contact Us")
-                            .font(FontFamily.Lato.bold.swiftUIFont(size: 16))
+                            .font(FontFamily.Lato.bold.swiftUIFont(size: 16, relativeTo: .headline))
                             .foregroundColor(Asset.Colors.huskyPurple.swiftUIColor)
+                            .multilineTextAlignment(.center)
+                            .lineLimit(nil)
                             .padding()
+                            .accessibilityLabel("Questions? Contact Us. Tap to open email client")
                     }
                     
                     Button(action:{
@@ -138,9 +149,12 @@ struct PosmLoginView: View {
                         }
                     }) {
                         Text("Looking for AccessMap Route?")
-                            .font(FontFamily.Lato.bold.swiftUIFont(size: 16))
+                            .font(FontFamily.Lato.bold.swiftUIFont(size: 16, relativeTo: .headline))
                             .foregroundColor(Asset.Colors.huskyPurple.swiftUIColor)
+                            .multilineTextAlignment(.center)
+                            .lineLimit(nil)
                             .padding(.bottom, 5)
+                            .accessibilityLabel("Looking for AccessMap Route? Tap to open AccessMap website")
                         
                     }
                     
@@ -203,9 +217,8 @@ struct PosmLoginView: View {
                                     showEnableDebugModeAlert = true
                                 }
                             })
-                        
-                        
                     }
+                    .frame(maxWidth: .infinity)
                     
                 }
                 .padding([.top], 0)
@@ -265,11 +278,17 @@ struct PosmLoginView: View {
                 }
     }
     
-    var appVersionText: Text {
+    var appVersionText: some View {
         let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "N/A"
         return Text("Version \(version)")
-            .font(FontFamily.Lato.medium.swiftUIFont(size: 16))
-            .foregroundColor(Asset.Colors._83879BTextFiledTitle.swiftUIColor)
+            .font(FontFamily.Lato.medium.swiftUIFont(size: 16, relativeTo: .headline))
+            .foregroundColor(Asset.Colors.huskyPurple.swiftUIColor)
+            .padding(.horizontal, 10)
+            .frame(minWidth: 44, minHeight: 44) // Explicitly meet accessibility standards
+            .contentShape(Rectangle()) // Makes the whole 44x44 area tappable
+            .multilineTextAlignment(.center)
+            .lineLimit(nil)
+            .accessibilityLabel("App version \(version)")
     }
 }
 

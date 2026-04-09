@@ -7,6 +7,7 @@
 
 import SwiftUI
 import LocalAuthentication
+import UIKit
 
 struct UserProfileView: View {
     @Environment(\.dismiss) var dismiss
@@ -23,64 +24,80 @@ struct UserProfileView: View {
         Group {
             ZStack {
                 Asset.Colors.f5F5F5LightGrayBackground.swiftUIColor
-                VStack {
-                    ZStack {
-                        Asset.Colors.e7E3EELightPurpuleBg.swiftUIColor
-                            .edgesIgnoringSafeArea(.top)
-                            .padding(.top, 0)
+                ScrollView(.vertical, showsIndicators: false) {
+                    VStack {
+                        ZStack {
+                            Asset.Colors.e7E3EELightPurpuleBg.swiftUIColor
+                                .edgesIgnoringSafeArea(.top)
+                                .padding(.top, 0)
                         
-                        VStack(alignment: .center, spacing: 16) {
-                            profileImage
+                            VStack(alignment: .center, spacing: 16) {
+                                profileImage
                             
-                            VStack(alignment: .center, spacing: 6) {
-                                Text(userFullName())
-                                    .font(FontFamily.Lato.bold.swiftUIFont(fixedSize: 20))
-                                Text(viewModel.user?.email ?? " ")
-                                    .font(FontFamily.Lato.regular.swiftUIFont(fixedSize: 16))
+                                VStack(alignment: .center, spacing: 6) {
+                                    Text(userFullName())
+                                        .font(FontFamily.Lato.bold.swiftUIFont(size: 20, relativeTo: .title3))
+                                        .multilineTextAlignment(.center)
+                                        .fixedSize(horizontal: false, vertical: true)
+                                        .lineLimit(nil)
+                                    Text(viewModel.user?.email ?? " ")
+                                        .font(FontFamily.Lato.regular.swiftUIFont(size: 16, relativeTo: .body))
+                                        .multilineTextAlignment(.center)
+                                        .fixedSize(horizontal: false, vertical: true)
+                                        .lineLimit(nil)
+                                }
+                                .foregroundStyle(Asset.Colors._42526ETextFieldText.swiftUIColor)
+                                // Make header content win layout space and be treated as one accessibility element
+                                .layoutPriority(2)
+                                .accessibilityElement(children: .combine)
+                                .accessibilityLabel("Username \(userFullName()) and email ID \(viewModel.user?.email ?? "")")
                             }
-                            .foregroundStyle(Asset.Colors._42526ETextFieldText.swiftUIColor)
                         }
-                    }
-                    .frame(height: 200)
+                        .frame(minHeight: 200)
+                        .zIndex(1)
                     
-                    ZStack {
-                        Color.white
-                        VStack(alignment: .leading, spacing: 25) {
-                            Text(L10n.Localizable.preferences.uppercased())
-                                .font(FontFamily.Lato.bold.swiftUIFont(size: 14))
-                                .foregroundStyle(Asset.Colors._83879BTextFiledTitle.swiftUIColor)
-                            
-                            if BiometricAuthManager.canEvaluateBiometrics() {
-                                BiometricToggleView(isEnabled: $useBiometricID) {status in
-                                    if status {
-                                        showPasswordAuthenticationView = true
-                                    } else {
-                                        SessionManager.shared.logout(environment: APIConfiguration.shared.environment, clearBiometricCreds: true)
+                        ZStack {
+                            Color.white
+                            VStack(alignment: .leading, spacing: 25) {
+                                Text(L10n.Localizable.preferences.uppercased())
+                                    .font(FontFamily.Lato.bold.swiftUIFont(size: 14))
+                                    .foregroundStyle(Asset.Colors.huskyPurple.swiftUIColor)
+                                
+                                if BiometricAuthManager.canEvaluateBiometrics() {
+                                    BiometricToggleView(isEnabled: $useBiometricID) {status in
+                                        if status {
+                                            showPasswordAuthenticationView = true
+                                        } else {
+                                            SessionManager.shared.logout(environment: APIConfiguration.shared.environment, clearBiometricCreds: true)
+                                        }
                                     }
                                 }
-                            }
-                            
-                            Line()
-                                .stroke(style: .init(dash: [4]))
-                                .foregroundStyle(Asset.Colors.ddddddLine.swiftUIColor)
-                                .frame(height: 1)
-                            
-                            HStack {
+                                
+                                Line()
+                                    .stroke(style: .init(dash: [4]))
+                                    .foregroundStyle(Asset.Colors.ddddddLine.swiftUIColor)
+                                    .frame(height: 1)
+                                
+                                HStack {
+                                    Spacer()
+                                    logOutButton
+                                    Spacer()
+                                }
+                                
                                 Spacer()
-                                logOutButton
-                                Spacer()
                             }
-                            
-                            Spacer()
+                            .padding()
                         }
                         .padding()
+                        .padding(.bottom, 0)
+                        .cornerRadius(20)
                     }
-                    .padding()
-                    .padding(.bottom, 0)
-                    .cornerRadius(20)
-                    .clipped()
+                    .frame(maxWidth: .infinity)
                 }
                 .navigationBarBackButtonHidden()
+                .navigationTitle(L10n.Localizable.myProfile)
+                // want to apply Asset.Colors.huskyPurple.swiftUIColor color to navigation title.
+                .navigationBarTitleDisplayMode(.inline)
                 .toolbar {
                     ToolbarItem(placement: .navigationBarLeading) {
                         Button(action: {
@@ -91,12 +108,6 @@ struct UserProfileView: View {
                                 .foregroundStyle(Asset.Colors.huskyPurple.swiftUIColor)
                                 .accessibilityLabel(L10n.Localizable.back)
                         }
-                    }
-                    
-                    ToolbarItem(placement: .principal) {
-                        Text(L10n.Localizable.myProfile)
-                            .font(FontFamily.Lato.bold.swiftUIFont(size: 16))
-                            .foregroundStyle(Asset.Colors._42526ETextFieldText.swiftUIColor)
                     }
                 }
             }
@@ -114,6 +125,8 @@ struct UserProfileView: View {
                 }
             }
         }
+        // apply the modifier to set nav title color for this screen only
+        .modifier(NavigationBarTitleColorModifier(color: UIColor(Asset.Colors.huskyPurple.swiftUIColor)))
         .onAppear {
             useBiometricID = SessionManager.shared.isBiometricEnabled(for: APIConfiguration.shared.environment)
             viewModel.fetchUserProfile()
@@ -142,6 +155,7 @@ struct UserProfileView: View {
             LinearGradient(gradient: Gradient(colors: [Asset.Colors._8F57DEProfileIcon.swiftUIColor, Asset.Colors._2D0369ProfileIcon.swiftUIColor,]), startPoint: .top, endPoint: .bottom)
         }
         .clipShape(Circle())
+        .accessibilityHidden(true)
     }
 
         
@@ -158,7 +172,7 @@ struct UserProfileView: View {
                 Image(systemName: "rectangle.portrait.and.arrow.right")
                     .foregroundStyle(.white)
                 Text("Logout")
-                    .font(FontFamily.Lato.bold.swiftUIFont(fixedSize: 16))
+                    .font(FontFamily.Lato.bold.swiftUIFont(size: 20, relativeTo: .headline))
                     .foregroundColor(Color.white)
                     
             }
@@ -175,6 +189,47 @@ struct Line: Shape {
         path.move(to: CGPoint(x: 0, y: 0))
         path.addLine(to: CGPoint(x: rect.width, y: 0))
         return path
+    }
+}
+
+// MARK: - Navigation Bar Title Color Modifier
+/// Temporarily applies a UINavigationBarAppearance with the provided title color while the view appears,
+/// and restores the previous appearance on disappear to limit side-effects.
+private struct NavigationBarTitleColorModifier: ViewModifier {
+    let color: UIColor
+    @State private var previousStandard: UINavigationBarAppearance? = nil
+    @State private var previousScrollEdge: UINavigationBarAppearance? = nil
+    @State private var previousCompact: UINavigationBarAppearance? = nil
+
+    func body(content: Content) -> some View {
+        content
+            .onAppear {
+                // Save existing appearances
+                let proxy = UINavigationBar.appearance()
+                previousStandard = proxy.standardAppearance
+                previousScrollEdge = proxy.scrollEdgeAppearance
+                previousCompact = proxy.compactAppearance
+
+                // Create and apply new appearance
+                let newAppearance = UINavigationBarAppearance()
+                newAppearance.configureWithOpaqueBackground()
+                newAppearance.backgroundColor = .clear
+                var titleAttrs = newAppearance.titleTextAttributes
+                titleAttrs[.foregroundColor] = color
+                titleAttrs[.font] = UIFont.preferredFont(forTextStyle: .headline)
+                newAppearance.titleTextAttributes = titleAttrs
+                newAppearance.largeTitleTextAttributes = titleAttrs
+
+                proxy.standardAppearance = newAppearance
+                proxy.scrollEdgeAppearance = newAppearance
+                proxy.compactAppearance = newAppearance
+            }
+            .onDisappear {
+                let proxy = UINavigationBar.appearance()
+                if let prev = previousStandard { proxy.standardAppearance = prev }
+                if let prev = previousScrollEdge { proxy.scrollEdgeAppearance = prev }
+                if let prev = previousCompact { proxy.compactAppearance = prev }
+            }
     }
 }
 

@@ -30,9 +30,7 @@ struct MapView: View {
     @State private var showPopover = false
     
     @AppStorage("baseUrl") var baseUrl = ""
-    
-    @State private var showSattiliteSelectionSheet: Bool = false
-    
+        
     @State private var tappedCoordinate: CLLocationCoordinate2D? = nil
     
     @State private var annotationCoordinate: CLLocationCoordinate2D? = nil
@@ -60,7 +58,6 @@ struct MapView: View {
     @State private var shadowOverlay = ShadowOverlay()
     
     @State private var showUndoSidebar = false
-    @State private var shatilliteSelected: String? = nil
     @State private var showFilterQuestsSheet = false
     @State private var showElemntDeletedAlert = false
     
@@ -100,6 +97,7 @@ struct MapView: View {
                           tappedCoordinate: $tappedCoordinate,
                           annotationCoordinate: $annotationCoordinate,
                           shadowOverlay: shadowOverlay)
+                .accessibilityHidden(enableAccessibility) // Hide map from VoiceOver when accessibility mode is enabled
                 .onChange(of: tappedCoordinate) { _ in
                     showMapLongPressedSheet = tappedCoordinate != nil
                 }
@@ -221,6 +219,7 @@ struct MapView: View {
                                     .interactiveDismissDisabled()
                                     .presentationDragIndicator(.hidden)
                                     .applyPresentationSizingPage()
+                                    .focusAccessibilityOnAppear()
                             }
                         })
                         .padding(.bottom, 24)
@@ -285,13 +284,22 @@ struct MapView: View {
                         .cornerRadius(0.5)
                     
                     VStack(alignment: .leading) {
-                        Text(L10n.Localizable.workspace)
-                            .font(FontFamily.Lato.regular.swiftUIFont(size: 12))
-                            .foregroundStyle(Asset.Colors._83879BTextFiledTitle.swiftUIColor)
+                        ScrollView(showsIndicators: false) {
+                            VStack(alignment: .leading) {
+                                Text(L10n.Localizable.workspace)
+                                    .font(FontFamily.Lato.regular.swiftUIFont(size: 12, relativeTo: .body))
+                                    .foregroundStyle(Asset.Colors.huskyPurple.swiftUIColor)
+                                    .multilineTextAlignment(.leading)
+                                
+                                Text(selectedWorkspace.title)
+                                    .font(FontFamily.Lato.bold.swiftUIFont(size: 14, relativeTo: .body))
+                                    .foregroundStyle(Asset.Colors.huskyPurple.swiftUIColor)
+                                    .multilineTextAlignment(.leading)
+                            }
+                        }
+                        .accessibilityElement(children: .combine)
+                        .accessibilityLabel("\(L10n.Localizable.workspace): \(selectedWorkspace.title)")
                         
-                        Text(selectedWorkspace.title)
-                            .font(FontFamily.Lato.bold.swiftUIFont(size: 14))
-                            .foregroundStyle(Asset.Colors.huskyPurple.swiftUIColor)
                     }
                 }
                 
@@ -367,6 +375,7 @@ struct MapView: View {
                 .interactiveDismissDisabled()
                 .presentationDragIndicator(.hidden)
                 .applyPresentationSizingPage()
+                .focusAccessibilityOnAppear()
         }
         .sheet(isPresented: $viewModel.showSatellitePicker) {
             SatellitePickerSheet(
@@ -430,6 +439,7 @@ struct MapView: View {
             .interactiveDismissDisabled()
             .presentationDragIndicator(.hidden)
             .applyPresentationSizingPage()
+            .focusAccessibilityOnAppear()
         }
         .fullScreenCover(isPresented: $enableAccessibility) {
             AccessibilityModeView(mapViewModel: viewModel)

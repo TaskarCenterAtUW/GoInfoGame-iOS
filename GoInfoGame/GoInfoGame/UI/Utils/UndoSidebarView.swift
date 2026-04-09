@@ -30,13 +30,17 @@ struct UndoSidebarView: View {
             HStack {
                 Image(systemName: "arrow.uturn.backward.circle.fill")
                     .font(.title)
+                    .accessibilityHidden(true)
                     
                 Text("Undo Edits")
                     .font(.headline)
+                    .multilineTextAlignment(.leading)
+                    .fixedSize(horizontal: false, vertical: true)
                 Spacer()
                 Button(action: onClose) {
                     Image(systemName: "xmark.circle")
                         .foregroundStyle(Asset.Colors.accentPink.swiftUIColor)
+                        .padding(6)
                 }
             }
             .foregroundColor(Asset.Colors.huskyPurple.swiftUIColor)
@@ -50,11 +54,12 @@ struct UndoSidebarView: View {
                             Text("\(item.type == .way ? "Way" : "Node") #\(String(item.elementId))")
                                 .font(.subheadline)
                                 .bold()
+                                .foregroundColor(Asset.Colors.huskyPurple.swiftUIColor)
 
                             if !item.changedKeys.isEmpty {
                                 Text("Tap to view changes")
                                     .font(.caption)
-                                    .foregroundColor(.gray)
+                                    .foregroundColor(Asset.Colors.huskyPurple.swiftUIColor)
                             }
                         }
                         .padding(8)

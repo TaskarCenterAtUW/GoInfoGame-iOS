@@ -13,8 +13,14 @@ struct UndoItemView: View {
         VStack(alignment: .leading, content: {
             Text(undoItem.timestamp.formatted(date: .omitted, time: .shortened))
                 .font(FontFamily.Lato.medium.swiftUIFont(fixedSize: 14))
+                .multilineTextAlignment(.leading)
+                .lineLimit(nil)
+                .accessibilityLabel(undoItem.timestamp.formatted(date: .omitted, time: .shortened))
             Text(L10n.Localizable.type + ": " + (undoItem.questType ?? "Not Avilable"))
                 .font(FontFamily.Lato.bold.swiftUIFont(fixedSize: 16))
+                .multilineTextAlignment(.leading)
+                .lineLimit(nil)
+                .accessibilityLabel(L10n.Localizable.type + ": " + (undoItem.questType ?? "Not Avilable"))
         })
         .foregroundStyle(Asset.Colors._42526ETextFieldText.swiftUIColor)
         .frame(maxWidth: .infinity, alignment: .leading)
@@ -24,6 +30,8 @@ struct UndoItemView: View {
                 .stroke(Asset.Colors._42526ETextFieldText.swiftUIColor, lineWidth: 1)
                 .foregroundStyle(Color.clear)
         }
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel("Undo Item: " + (undoItem.questType ?? "Not Available") + ", answered at:" + undoItem.timestamp.formatted(date: .omitted, time: .shortened))
     }
 }
 

@@ -36,6 +36,7 @@ struct UndoButton: View {
                 )
                 .transition(.move(edge: .leading))
                 .padding(.top, 20)
+                .focusAccessibilityOnAppear()
             } else {
                 Button(action: {
                     undoItems = MapUndoManager.shared.getUndoItems()
@@ -107,6 +108,7 @@ struct UndoButton: View {
                 .background(Color.white)
                 .cornerRadius(12)
                 .shadow(radius: 10)
+                .focusAccessibilityOnAppear()
             }
         }
     }

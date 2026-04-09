@@ -73,8 +73,11 @@ struct LongForm: View, QuestForm {
             VStack(alignment: .leading, spacing: 0) {
                     HStack {
                         Text(elementName ?? "")
-                            .font(.custom("Lato-Bold", size: 16))
+                            .font(.custom("Lato-Bold", size: 16, relativeTo: .headline))
                             .foregroundStyle(Asset.Colors.huskyPurple.swiftUIColor)
+                            .multilineTextAlignment(.leading)
+                            .lineLimit(nil)
+                            .accessibilityLabel(elementName ?? "")
                         Spacer()
                         LongFormDismissButtonView {
                             withAnimation {
@@ -82,28 +85,41 @@ struct LongForm: View, QuestForm {
                             }
                         }
                     }.padding(EdgeInsets(top: 20, leading: 20, bottom: 10, trailing: 20))
+                    .layoutPriority(1)
                 
                 Text("ID: \(questID ?? "0")")
-                    .font(.custom("Lato-Regular", size: 13))
+                    .font(.custom("Lato-Regular", size: 14, relativeTo: .headline))
                     .padding([.leading], 20)
                     .foregroundStyle(Asset.Colors.huskyPurple.swiftUIColor)
-                
+                    .multilineTextAlignment(.leading)
+                    .layoutPriority(1)
+                    .accessibilityLabel("ID: \(questID ?? "0")")
                 HStack {
                     Button {
                         showNotesBox = true
                     } label: {
                         Text(" Compose Note")
-                            .font(.custom("Lato-Bold", size: 15))
-                            .foregroundStyle(Asset.Colors.accentPink.swiftUIColor)
+                            .font(.custom("Lato-Bold", size: 14, relativeTo: .headline))
+                            .foregroundStyle(Asset.Colors.huskyPurple.swiftUIColor)
+                            .multilineTextAlignment(.center)
+                            .padding(.vertical, 10)
+                            .accessibilityLabel("Compose Note")
                     }
                     .padding(EdgeInsets(top: 0, leading: 14, bottom: 0, trailing: 20))
                     Spacer()
-                    Button("Ignore this quest") {
+                    Button {
                         activeAlert = .hideQuestConfirmation
+                    } label: {
+                        Text("Ignore this quest")
+                            .font(.custom("Lato-Bold", size: 14, relativeTo: .headline))
+                            .foregroundStyle(Asset.Colors.huskyPurple.swiftUIColor)
+                            .multilineTextAlignment(.center)
+                            .padding(.vertical, 10)
+                            .accessibilityLabel("Ignore this quest")
                     }
                     .padding(.trailing, 20)
-                    .foregroundStyle(Asset.Colors.accentPink.swiftUIColor)
                 }
+                .layoutPriority(1)
                 
                 if showCreateNoteMessage {
                     Text(alertMessage)
@@ -122,6 +138,7 @@ struct LongForm: View, QuestForm {
                             .textFieldStyle(RoundedBorderTextFieldStyle())
                             .padding(.horizontal, 20)
                             .border(Asset.Colors.huskyPurple.swiftUIColor)
+                            .accessibilityLabel("Note text editor")
                         
                         HStack {
                             Button(action: {
@@ -145,6 +162,7 @@ struct LongForm: View, QuestForm {
                                         .frame(maxWidth: .infinity)
                                         .background(noteText != "" ? Asset.Colors.huskyPurple.swiftUIColor : Color.gray)
                                         .cornerRadius(9)
+                                        .accessibilityLabel("Submit this note")
                                 }
                             }
                             .disabled(noteText == "")
@@ -159,6 +177,7 @@ struct LongForm: View, QuestForm {
                                     .frame(maxWidth: .infinity)
                                     .background(Asset.Colors.accentPink.swiftUIColor)
                                     .cornerRadius(9)
+                                    .accessibilityLabel("Cancel note composition")
                             }
                         }
                         .padding(.horizontal, 20)
@@ -179,14 +198,17 @@ struct LongForm: View, QuestForm {
                             VStack {
                                 if let statusMessage = submitStatusMessage {
                                     Text(statusMessage)
-                                        .font(.custom("Lato-Bold", size: 16))
+                                        .font(.custom("Lato-Bold", size: 16, relativeTo: .headline))
                                         .foregroundColor(.red)
                                         .background(Color.white)
+                                        .multilineTextAlignment(.center)
+                                        .lineLimit(nil)
                                         .onAppear {
                                             DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
                                                 submitStatusMessage = nil
                                             }
                                         }
+                                        .accessibilityHidden(true)
                                 }
                             }
                             .frame(maxWidth: .infinity)
@@ -220,12 +242,14 @@ struct LongForm: View, QuestForm {
 
                 }) {
                     Text("Submit")
-                        .font(.custom("Lato-Bold", size: 16))
+                        .font(.custom("Lato-Bold", size: 16, relativeTo: .title))
                         .foregroundColor(.white)
-                        .padding()
-                        .frame(width: 200, height: 40)
+                        .padding(.vertical, 14)
+                        .padding(.horizontal, 40)
                         .background(Asset.Colors.huskyPurple.swiftUIColor)
+                        .multilineTextAlignment(.center)
                         .cornerRadius(20)
+                        .accessibilityLabel("Submit Answers")
                 }
                 .frame(maxWidth: .infinity)
 
@@ -389,78 +413,6 @@ struct LongForm: View, QuestForm {
                       "image_url": "https://raw.githubusercontent.com/TaskarCenterAtUW/tdei-tools/main/images/crossing/markings/zebra_square.png"
                     }
                   ]
-                },
-                {
-                  "quest_id": 202,
-                  "quest_title": "Does this crossing have signals for pedestrians?",
-                  "quest_description": "Indicate whether this crossing has pedestrian signals.",
-                  "quest_type": "ExclusiveChoice",
-                  "quest_tag": "ext:crossing:signals",
-                  "quest_answer_choices": [
-                    {
-                      "value": "no",
-                      "choice_text": "No",
-                      "image_url": "https://raw.githubusercontent.com/TaskarCenterAtUW/tdei-tools/main/images/crossing/markings/no_2_square.png"
-                    },
-                    {
-                      "value": "yes",
-                      "choice_text": "Yes",
-                      "image_url": "https://raw.githubusercontent.com/TaskarCenterAtUW/tdei-tools/main/images/crossing/signals/arrow/yes_square.png"
-                    }
-                  ]
-                },
-                {
-                  "quest_id": 203,
-                  "quest_title": "What accessibility features are present at this signalized crossing?",
-                  "quest_description": "Select all accessibility features present at this signalized crossing.",
-                  "quest_type": "MultipleChoice",
-                  "quest_tag": "ext:crossing:signals:features",
-                  "quest_answer_dependency": [
-                    {
-                      "question_id": 202,
-                      "required_value": "yes"
-                    }
-                  ],
-                  "quest_answer_choices": [
-                    {
-                      "value": "button",
-                      "choice_text": "Button",
-                      "image_url": "https://raw.githubusercontent.com/TaskarCenterAtUW/tdei-tools/main/images/crossing/signals/arrow/yes_square.png"
-                    },
-                    {
-                      "value": "arrow",
-                      "choice_text": "Tactile Arrow",
-                      "image_url": "https://raw.githubusercontent.com/TaskarCenterAtUW/tdei-tools/main/images/crossing/signals/arrow/yes_square.png"
-                    },
-                    {
-                      "value": "sound",
-                      "choice_text": "Sound",
-                      "image_url": "https://raw.githubusercontent.com/TaskarCenterAtUW/tdei-tools/main/images/crossing/signals/sound/yes_square.png"
-                    },
-                    {
-                      "value": "vibration",
-                      "choice_text": "Tactile Vibration",
-                      "image_url": "https://raw.githubusercontent.com/TaskarCenterAtUW/tdei-tools/main/images/crossing/signals/vibration/yes_square.png"
-                    }
-                  ]
-                },
-                {
-                  "quest_id": 204,
-                  "quest_title": "How many lanes are crossed at this crossing?",
-                  "quest_description": "Count the total number of traffic lanes crossed at this crossing.",
-                  "quest_type": "Numeric",
-                  "quest_tag": "ext:crossing:count_lanes_crossed",
-                  "quest_answer_validation": {
-                    "min": 1,
-                    "max": 10
-                  }
-                },
-                {
-                  "quest_id": 205,
-                  "quest_title": "Additional crossing notes...",
-                  "quest_description": "Add any additional observations you'd like to record about this crossing",
-                  "quest_type": "TextEntry",
-                  "quest_tag": "ext:crossing:description"
                 }
               ]
             }

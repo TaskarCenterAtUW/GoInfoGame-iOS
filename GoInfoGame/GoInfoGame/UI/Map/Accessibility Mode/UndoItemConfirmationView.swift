@@ -25,10 +25,11 @@ struct UndoItemConfirmationView: View {
         VStack(alignment: .center, spacing: 20, content: {
             HStack(alignment: .center, content: {
                 Text(L10n.Localizable.undoTheFollowingChanges)
-                    .font(FontFamily.Lato.bold.swiftUIFont(fixedSize: 18))
+                    .font(FontFamily.Lato.bold.swiftUIFont(size: 18, relativeTo: .headline))
                     .foregroundStyle(Asset.Colors._42526ETextFieldText.swiftUIColor)
-                
-                
+                    .multilineTextAlignment(.leading)
+                    .lineLimit(nil)
+                    .accessibilityLabel(L10n.Localizable.undoTheFollowingChanges)
                 
                 Spacer()
                 
@@ -43,20 +44,35 @@ struct UndoItemConfirmationView: View {
             VStack(alignment: .leading, content: {
                 HStack {
                     VStack(alignment: .leading, spacing: 10, content: {
+                        
                         HStack {
-                            Text(L10n.Localizable.type)
-                                .font(FontFamily.Lato.bold.swiftUIFont(fixedSize: 16))
-                            
-                            Text(": " + (undoItem.questType ?? "Not Avilable"))
-                                .font(FontFamily.Lato.regular.swiftUIFont(fixedSize: 16))
+                            (
+                                Text(L10n.Localizable.type)
+                                    .font(FontFamily.Lato.bold.swiftUIFont(size: 16, relativeTo: .headline))
+                                +
+                                Text(": " + (undoItem.questType ?? "Not Avilable"))
+                                    .font(FontFamily.Lato.regular.swiftUIFont(size: 16, relativeTo: .headline))
+                            )
+                            .multilineTextAlignment(.leading)
+                            .lineLimit(nil)
+                            .fixedSize(horizontal: false, vertical: true)
+                            .accessibilityElement(children: .combine)
+                            .accessibilityLabel("\(L10n.Localizable.type): \(undoItem.questType ?? "Not Available")")
                         }
                         
                         HStack {
-                            Text(L10n.Localizable.dateTime)
-                                .font(FontFamily.Lato.bold.swiftUIFont(fixedSize: 16))
-                            
-                            Text(": " + (undoItem.timestamp.formatted(date: .long, time: .shortened)))
-                                .font(FontFamily.Lato.regular.swiftUIFont(fixedSize: 16))
+                            (
+                                Text(L10n.Localizable.dateTime)
+                                    .font(FontFamily.Lato.bold.swiftUIFont(size: 16, relativeTo: .headline))
+                                +
+                                Text(": " + (undoItem.timestamp.formatted(date: .long, time: .shortened)))
+                                    .font(FontFamily.Lato.regular.swiftUIFont(size: 16, relativeTo: .headline))
+                            )
+                            .multilineTextAlignment(.leading)
+                            .lineLimit(nil)
+                            .fixedSize(horizontal: false, vertical: true)
+                            .accessibilityElement(children: .combine)
+                            .accessibilityLabel("\(L10n.Localizable.dateTime): \(undoItem.timestamp.formatted(date: .long, time: .shortened))")
                         }
                     })
                     .foregroundStyle(Asset.Colors._42526ETextFieldText.swiftUIColor)
@@ -88,9 +104,12 @@ struct UndoItemConfirmationView: View {
             
             DottedLine()
             
-            revertChangesButton
+            HStack {
+                revertChangesButton
+                
+                cancelButton
+            }
             
-            cancelButton
         })
         .padding()
     }
@@ -101,14 +120,17 @@ struct UndoItemConfirmationView: View {
             onRevertChanges()
         } label: {
             ZStack {
-                RoundedRectangle(cornerRadius: 25)
-                    .fill(Asset.Colors.ff0041Red.swiftUIColor)
                 Text(L10n.Localizable.revertChanges)
                     .foregroundStyle(.white)
-                    .font(FontFamily.Lato.bold.swiftUIFont(fixedSize: 16))
+                    .frame(maxWidth: .infinity)
+                    .padding()
+                    .background(Asset.Colors.ff0041Red.swiftUIColor)
+                    .font(FontFamily.Lato.bold.swiftUIFont(size: 16, relativeTo: .headline))
+                    .cornerRadius(25)
                     .multilineTextAlignment(.center)
+                    .lineLimit(nil)
+                    .accessibilityLabel(Text(L10n.Localizable.revertChanges))
             }
-            .frame(height: 50)
         }
     }
     
@@ -118,15 +140,21 @@ struct UndoItemConfirmationView: View {
             onClose()
         } label: {
             ZStack {
-                RoundedRectangle(cornerRadius: 25)
-                    .stroke(Asset.Colors.huskyPurple.swiftUIColor, lineWidth: 2.0)
-                    .background(.clear)
                 Text(L10n.Localizable.cancel)
-                    .font(FontFamily.Lato.bold.swiftUIFont(fixedSize: 16))
+                    .font(FontFamily.Lato.bold.swiftUIFont(size: 16, relativeTo: .headline))
+                    .padding()
+                    .frame(maxWidth: .infinity)
+                    .cornerRadius(25)
+                    .overlay(content: {
+                        RoundedRectangle(cornerRadius: 25)
+                            .stroke(Asset.Colors.huskyPurple.swiftUIColor, lineWidth: 2.0)
+                            .background(.clear)
+                    })
                     .multilineTextAlignment(.center)
                     .foregroundStyle(Asset.Colors.huskyPurple.swiftUIColor)
+                    .accessibilityLabel(Text(L10n.Localizable.cancel))
+                
             }
-            .frame(height: 50)
         }
     }
 }

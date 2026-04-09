@@ -18,6 +18,10 @@ struct SatellitePickerSheet: View {
                 ForEach(options, id: \.self) { option in
                     HStack {
                         Text(option.name)
+                            .font(FontFamily.Lato.regular.swiftUIFont(size: 14, relativeTo: .body))
+                            .multilineTextAlignment(.leading)
+                            .lineLimit(nil)
+                            .accessibilityLabel(option.name)
                         Spacer()
                         if option == selected {
                             Image(systemName: "checkmark")
@@ -36,6 +40,10 @@ struct SatellitePickerSheet: View {
                 ToolbarItem(placement: .principal) {
                     Text("Select Satellite Layer")
                         .foregroundColor(Asset.Colors.huskyPurple.swiftUIColor)
+                        .font(FontFamily.Lato.regular.swiftUIFont(size: 14, relativeTo: .body))
+                        .multilineTextAlignment(.leading)
+                        .lineLimit(nil)
+                        .accessibilityLabel("Select Satellite Layer")
                 }
             }
         }

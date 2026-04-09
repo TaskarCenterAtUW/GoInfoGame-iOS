@@ -21,6 +21,14 @@
 	<string>https://apps.apple.com/app/6749523895</string>
 	<key>TestFlight_URL</key>
 	<string>https://testflight.apple.com/join/hpzSaUdQ</string>
+	<key>UIAppFonts</key>
+	<array>
+		<string>Lato-Medium.ttf</string>
+		<string>lato-semibold.ttf</string>
+		<string>lato-heavy.ttf</string>
+		<string>Lato-Bold.ttf</string>
+		<string>Lato-Regular.ttf</string>
+	</array>
 	<key>UIApplicationSceneManifest</key>
 	<dict>
 		<key>UIApplicationSupportsMultipleScenes</key>

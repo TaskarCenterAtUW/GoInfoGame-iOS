@@ -28,18 +28,24 @@ struct QuestSelectionConfirmationView: View {
             HStack(alignment: .center, content: {
                 if isAutoSelected {
                     Text(L10n.Localizable.youVeArrived)
-                        .font(FontFamily.Lato.bold.swiftUIFont(fixedSize: 18))
+                        .font(FontFamily.Lato.bold.swiftUIFont(size: 18, relativeTo: .headline))
                         .foregroundStyle(Asset.Colors._42526ETextFieldText.swiftUIColor)
+                        .multilineTextAlignment(.leading)
+                        .lineLimit(nil)
+                        .accessibilityLabel(L10n.Localizable.youVeArrived)
                 } else {
-                    Text(L10n.Localizable.selectedType)
-                        .font(FontFamily.Lato.bold.swiftUIFont(fixedSize: 18))
-                        .foregroundStyle(Asset.Colors._42526ETextFieldText.swiftUIColor)
-                    
-                    Text(" " + questType)
-                        .font(FontFamily.Lato.regular.swiftUIFont(fixedSize: 18))
-                        .foregroundStyle(Asset.Colors._42526ETextFieldText.swiftUIColor)
+                    (
+                        Text(L10n.Localizable.selectedType)
+                            .font(FontFamily.Lato.bold.swiftUIFont(size: 18, relativeTo: .headline))
+                        +
+                        Text(" " + questType)
+                            .font(FontFamily.Lato.regular.swiftUIFont(size: 18, relativeTo: .headline))
+                    )
+                    .foregroundStyle(Asset.Colors._42526ETextFieldText.swiftUIColor)
+                    .multilineTextAlignment(.leading)
+                    .lineLimit(nil)
+                    .accessibilityLabel("\(L10n.Localizable.selectedType) \(questType)")
                 }
-                
                 
                 Spacer()
                 
@@ -48,6 +54,9 @@ struct QuestSelectionConfirmationView: View {
                     onClose()
                 })
             })
+            .padding(.top, 20)
+            .accessibilityElement(children: .combine)
+            .accessibilityLabel(isAutoSelected ? L10n.Localizable.youVeArrived : "\(L10n.Localizable.selectedType) \(questType)")
             
             DottedLine()
                 .padding(.bottom)
@@ -57,20 +66,25 @@ struct QuestSelectionConfirmationView: View {
                     Asset.reached.swiftUIImage
                     
                     Text(L10n.Localizable.youVeArrivedAtTheQuestLocation)
-                        .font(FontFamily.Lato.bold.swiftUIFont(fixedSize: 24))
-                        .multilineTextAlignment(.center)
+                        .font(FontFamily.Lato.bold.swiftUIFont(size: 24, relativeTo: .headline))
                         .foregroundStyle(Asset.Colors._42526ETextFieldText.swiftUIColor)
+                        .multilineTextAlignment(.center)
+                        .lineLimit(nil)
+                        .accessibilityLabel(L10n.Localizable.youVeArrivedAtTheQuestLocation)
                     
                     HStack {
-                        Text(L10n.Localizable.questType)
-                            .font(FontFamily.Lato.bold.swiftUIFont(fixedSize: 18))
-                            .foregroundStyle(Asset.Colors._42526ETextFieldText.swiftUIColor)
-                        
-                        Text(": \(questType)")
-                            .font(FontFamily.Lato.regular.swiftUIFont(fixedSize: 18))
-                            .foregroundStyle(Asset.Colors._42526ETextFieldText.swiftUIColor)
+                        (
+                            Text(L10n.Localizable.questType)
+                                .font(FontFamily.Lato.bold.swiftUIFont(size: 18, relativeTo: .headline))
+                            +
+                            Text(": \(questType)")
+                                .font(FontFamily.Lato.regular.swiftUIFont(size: 18, relativeTo: .headline))
+                        )
+                        .foregroundStyle(Asset.Colors._42526ETextFieldText.swiftUIColor)
+                        .multilineTextAlignment(.leading)
+                        .lineLimit(nil)
+                        .accessibilityLabel("\(L10n.Localizable.questType): \(questType)")
                     }
-                    
                 }
                 .padding(.bottom)
             }
@@ -89,15 +103,16 @@ struct QuestSelectionConfirmationView: View {
             dismiss()
             onStartAnswer()
         } label: {
-            ZStack {
-                RoundedRectangle(cornerRadius: 25)
-                    .fill(Asset.Colors.huskyPurple.swiftUIColor)
-                Text(L10n.Localizable.startAnsweringTheQuestions)
-                    .foregroundStyle(.white)
-                    .font(FontFamily.Lato.bold.swiftUIFont(fixedSize: 16))
-                    .multilineTextAlignment(.center)
-            }
-            .frame(height: 50)
+            Text(L10n.Localizable.startAnsweringTheQuestions)
+                .frame(maxWidth: .infinity)
+                .padding()
+                .background(Asset.Colors.huskyPurple.swiftUIColor)
+                .foregroundStyle(.white)
+                .cornerRadius(25)
+                .font(FontFamily.Lato.bold.swiftUIFont(size: 16))
+                .multilineTextAlignment(.center)
+                .lineLimit(nil)
+                .accessibilityLabel(Text(L10n.Localizable.startAnsweringTheQuestions))
         }
     }
     
@@ -106,16 +121,18 @@ struct QuestSelectionConfirmationView: View {
             dismiss()
             onHideQuest()
         } label: {
-            ZStack {
-                RoundedRectangle(cornerRadius: 25)
-                    .stroke(Asset.Colors.huskyPurple.swiftUIColor, lineWidth: 2.0)
-                    .background(.clear)
-                Text(L10n.Localizable.hideThisQuest)
-                    .font(FontFamily.Lato.bold.swiftUIFont(fixedSize: 16))
-                    .multilineTextAlignment(.center)
-                    .foregroundStyle(Asset.Colors.huskyPurple.swiftUIColor)
-            }
-            .frame(height: 50)
+            Text(L10n.Localizable.hideThisQuest)
+                .padding()
+                .frame(maxWidth: .infinity)
+                .font(FontFamily.Lato.bold.swiftUIFont(size: 16, relativeTo: .headline))
+                .multilineTextAlignment(.center)
+                .lineLimit(nil)
+                .foregroundStyle(Asset.Colors.huskyPurple.swiftUIColor)
+                .overlay {
+                    RoundedRectangle(cornerRadius: 25)
+                        .stroke(Asset.Colors.huskyPurple.swiftUIColor, lineWidth: 2.0)
+                }
+                .accessibilityLabel(Text(L10n.Localizable.hideThisQuest))
         }
     }
     
@@ -125,8 +142,11 @@ struct QuestSelectionConfirmationView: View {
             onClose()
         } label: {
             Text(L10n.Localizable.notNow)
-                .font(FontFamily.Lato.bold.swiftUIFont(fixedSize: 16))
+                .font(FontFamily.Lato.bold.swiftUIFont(size: 16, relativeTo: .headline))
                 .foregroundStyle(Asset.Colors.huskyPurple.swiftUIColor)
+                .multilineTextAlignment(.center)
+                .lineLimit(nil)
+                .accessibilityLabel(Text(L10n.Localizable.notNow))
         }
     }
 }

@@ -24,7 +24,9 @@ struct FloatingLabelTextField: View {
                 Text(title)
                     .foregroundColor(Asset.Colors._83879BTextFiledTitle.swiftUIColor)
                     .background(.white)
-                    .font(FontFamily.Lato.regular.swiftUIFont(fixedSize: 16))
+                    .font(FontFamily.Lato.regular.swiftUIFont(size: 16, relativeTo:    .headline))
+                    .multilineTextAlignment(.leading)
+                    .lineLimit(nil)
                     .padding(.horizontal, 4)
                     .offset(y: -25)
             }
@@ -33,16 +35,23 @@ struct FloatingLabelTextField: View {
             // TextField or SecureField
             if isSecure {
                 SecureInputView(title, text: $text)
+                    .font(FontFamily.Lato.bold.swiftUIFont(size: 16, relativeTo: .headline))
                     .padding(.horizontal, 8)
                     .frame(height: 50)
+                    .multilineTextAlignment(.leading)
+                    .lineLimit(nil)
             } else {
                 TextField(title, text: $text)
                     .padding(.horizontal, 8)
-                    .frame(height: 50)
-                    .font(FontFamily.Lato.bold.swiftUIFont(fixedSize: 16))
+                    .padding(.vertical, 12) // Use padding to create height instead of a fixed frame
+                    .font(FontFamily.Lato.bold.swiftUIFont(size: 16, relativeTo: .headline))
                     .foregroundStyle(Asset.Colors._42526ETextFieldText.swiftUIColor)
+                    .multilineTextAlignment(.leading)
+                    .lineLimit(nil)
             }
         }
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel("Text field with title " + title)
     }
 }
 #Preview {
