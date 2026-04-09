@@ -41,8 +41,11 @@ struct UserSettingsView: View {
         VStack(alignment: .leading, spacing: 12) {
             HStack(alignment: .firstTextBaseline) {
                 Text(selectedWorkspace)
+                    .font(FontFamily.Lato.bold.swiftUIFont(size: 16, relativeTo: .headline))
                     .foregroundStyle(Asset.Colors.huskyPurple.swiftUIColor)
-                    .lineLimit(1)
+                    .multilineTextAlignment(.leading)
+                    .lineLimit(nil)
+                    .accessibilityLabel(selectedWorkspace)
 
 
                 Spacer()
@@ -71,9 +74,12 @@ struct UserSettingsView: View {
                                 .foregroundColor(Asset.Colors.huskyPurple.swiftUIColor)
 
                             Text(option.title)
-                                .font(.custom("Lato-Bold", size: 16))
+                                .font(.custom("Lato-Bold", size: 16, relativeTo: .headline))
                                 .foregroundColor(Color(red: 69/255, green: 81/255, blue: 108/255))
                                 .padding(.leading, 8)
+                                .multilineTextAlignment(.leading)
+                                .lineLimit(nil)
+                                .accessibilityLabel(option.title)
 
                             Spacer()
                         }
@@ -84,6 +90,8 @@ struct UserSettingsView: View {
                         .onTapGesture {
                             onNavigate(option.destination)
                         }
+                        .accessibilityElement(children: .combine)
+                        .accessibilityLabel(option.title)
 
                         if option.title != options.last?.title {
                             Divider().padding(.leading, 16)
