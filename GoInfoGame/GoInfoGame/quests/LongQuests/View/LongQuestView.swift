@@ -19,6 +19,8 @@ struct LongQuestView: View {
         return quest.questAnswerChoices ?? []
     }
     
+    @AppStorage("lowBandwidthMode") private var lowBandwidthMode: Bool = false
+    
     @State private var isImageExpanded: Bool = false
     
     var body: some View {
@@ -30,7 +32,7 @@ struct LongQuestView: View {
                 .padding([.bottom], 10)
                 .accessibilityLabel(quest.questTitle)
             
-            if let imageUrl = quest.questImageURL, !imageUrl.isEmpty {
+            if !lowBandwidthMode, let imageUrl = quest.questImageURL, !imageUrl.isEmpty {
                 LongFormImageView(urlString: imageUrl, width: isImageExpanded ? 300 : 100, height: isImageExpanded ? 300 : 100)
                 .onLongPressGesture(
                             minimumDuration: 0.5,
