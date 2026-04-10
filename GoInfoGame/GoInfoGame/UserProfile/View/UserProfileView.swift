@@ -87,6 +87,7 @@ struct UserProfileView: View {
                                 }
                                 .toggleStyle(SwitchToggleStyle(tint: Asset.Colors.accentPink.swiftUIColor))
                                 .accessibilityLabel(L10n.Localizable.lowBandwidthMode)
+                                .accessibilityHint(L10n.Localizable.disableQuestImagesToSaveData)
                                 
                                 Line()
                                     .stroke(style: .init(dash: [4]))
