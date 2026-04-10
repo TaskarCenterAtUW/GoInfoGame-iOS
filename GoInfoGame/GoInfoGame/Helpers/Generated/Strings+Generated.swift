@@ -31,6 +31,8 @@ internal enum L10n {
     internal static let composeMessage = L10n.tr("Localizable", "Compose message", fallback: "Compose message")
     /// Date & Time
     internal static let dateTime = L10n.tr("Localizable", "Date & Time", fallback: "Date & Time")
+    /// Disable quest images to save data
+    internal static let disableQuestImagesToSaveData = L10n.tr("Localizable", "Disable quest images to save data", fallback: "Disable quest images to save data")
     /// Don't show again for this session
     internal static let dontShowAgain = L10n.tr("Localizable", "dont_show_again", fallback: "Don't show again for this session")
     /// Filter Quest Types
@@ -43,6 +45,8 @@ internal enum L10n {
     internal static let hideThisQuest = L10n.tr("Localizable", "Hide this quest", fallback: "Hide this quest")
     /// Invalid credentials
     internal static let invalidCredentials = L10n.tr("Localizable", "Invalid credentials", fallback: "Invalid credentials")
+    /// Low Bandwidth Mode
+    internal static let lowBandwidthMode = L10n.tr("Localizable", "Low Bandwidth Mode", fallback: "Low Bandwidth Mode")
     /// Map Modes.
     internal static let mapModes = L10n.tr("Localizable", "Map Modes.", fallback: "Map Modes.")
     /// My Profile

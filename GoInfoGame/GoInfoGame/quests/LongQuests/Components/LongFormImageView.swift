@@ -13,6 +13,8 @@ struct LongFormImageView: View {
     let width: CGFloat
     let height: CGFloat
     
+    @AppStorage("lowBandwidthMode") private var lowBandwidthMode: Bool = false
+    
     @State private var uiImage: UIImage?
     
     var label: String? = nil
@@ -20,7 +22,16 @@ struct LongFormImageView: View {
     var body: some View {
         Group {
             ZStack(alignment: .bottom) {
-                if let uiImage = uiImage {
+                if lowBandwidthMode {
+                    // Low bandwidth: show placeholder instead of downloading
+                    Image(systemName: "photo")
+                        .font(.title2)
+                        .foregroundColor(.gray)
+                        .frame(width: width, height: height)
+                        .background(Color.gray.opacity(0.15))
+                        .cornerRadius(8)
+                        .accessibilityLabel(label ?? "Image hidden to save data")
+                } else if let uiImage = uiImage {
                     Image(uiImage: uiImage)
                         .resizable()
                         .scaledToFill()

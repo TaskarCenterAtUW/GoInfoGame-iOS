@@ -16,6 +16,8 @@ struct UserProfileView: View {
     
     @AppStorage("loggedIn") private var loggedIn: Bool = false
     
+    @AppStorage("lowBandwidthMode") private var lowBandwidthMode: Bool = false
+    
     @State private var useBiometricID: Bool = false
         
     @State private var showPasswordAuthenticationView: Bool = false
@@ -72,6 +74,19 @@ struct UserProfileView: View {
                                         }
                                     }
                                 }
+                                
+                                Toggle(isOn: $lowBandwidthMode) {
+                                    VStack(alignment: .leading, spacing: 4) {
+                                        Text(L10n.Localizable.lowBandwidthMode)
+                                            .font(FontFamily.Lato.bold.swiftUIFont(size: 16, relativeTo: .headline))
+                                            .foregroundStyle(Asset.Colors._42526ETextFieldText.swiftUIColor)
+                                        Text(L10n.Localizable.disableQuestImagesToSaveData)
+                                            .font(FontFamily.Lato.regular.swiftUIFont(size: 12, relativeTo: .caption))
+                                            .foregroundStyle(Asset.Colors._42526ETextFieldText.swiftUIColor)
+                                    }
+                                }
+                                .toggleStyle(SwitchToggleStyle(tint: Asset.Colors.accentPink.swiftUIColor))
+                                .accessibilityLabel(L10n.Localizable.lowBandwidthMode)
                                 
                                 Line()
                                     .stroke(style: .init(dash: [4]))
