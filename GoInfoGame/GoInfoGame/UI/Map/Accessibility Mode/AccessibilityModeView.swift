@@ -100,6 +100,7 @@ struct AccessibilityModeView: View {
         .onAppear() {
             viewModel.startMonitoring()
         }
+        .focusAccessibilityOnAppear()
         .onDisappear() {
             viewModel.stopMonitoring()
         }
