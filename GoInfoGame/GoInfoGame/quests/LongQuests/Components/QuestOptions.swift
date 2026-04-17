@@ -17,6 +17,8 @@ struct QuestOptions: View {
     
     var uploadPhoto: (Bool) -> ()
     
+    @AppStorage("lowBandwidthMode") private var lowBandwidthMode: Bool = false
+    
     var body: some View {
         switch questType {
         case .exclusiveChoice:
@@ -39,6 +41,8 @@ struct QuestOptions: View {
             TextEntryView(
                 selectedChoice: $selectedChoice
             )
+        case .autoCapture:
+            AutoCaptureView(selectedChoice: $selectedChoice)
         }
     }
 }
@@ -313,6 +317,8 @@ private extension QuestOptions {
         @Binding var selectedChoice: QuestAnswerChoice?
         let onLongPress: () -> Void
 
+        @AppStorage("lowBandwidthMode") private var lowBandwidthMode: Bool = false
+
         var body: some View {
             Button(action: {
                 if selectedChoice == option {
@@ -325,12 +331,16 @@ private extension QuestOptions {
             }) {
                 VStack(spacing: 8) {
                     if let imageUrl = option.imageURL, !imageUrl.isEmpty {
-                        LongFormImageView(
-                            urlString: imageUrl,
-                            width: 100,
-                            height: 100,
-                            label: option.choiceText
-                        )
+                        if lowBandwidthMode {
+                            NoImageView(text: option.choiceText)
+                        } else {
+                            LongFormImageView(
+                                urlString: imageUrl,
+                                width: 100,
+                                height: 100,
+                                label: option.choiceText
+                            )
+                        }
                     } else {
                         NoImageView(text: option.choiceText)
                     }
@@ -350,16 +360,22 @@ private extension QuestOptions {
         let onTap: () -> Void
         let onLongPress: () -> Void
 
+        @AppStorage("lowBandwidthMode") private var lowBandwidthMode: Bool = false
+
         var body: some View {
             Button(action: onTap) {
                 VStack(spacing: 8) {
                     if let imageUrl = option.imageURL, !imageUrl.isEmpty {
-                        LongFormImageView(
-                            urlString: imageUrl,
-                            width: 100,
-                            height: 100,
-                            label: option.choiceText
-                        )
+                        if lowBandwidthMode {
+                            NoImageView(text: option.choiceText)
+                        } else {
+                            LongFormImageView(
+                                urlString: imageUrl,
+                                width: 100,
+                                height: 100,
+                                label: option.choiceText
+                            )
+                        }
                     } else {
                         NoImageView(text: option.choiceText)
                     }
@@ -370,6 +386,162 @@ private extension QuestOptions {
                     .stroke(isSelected ? Asset.Colors.accentPink.swiftUIColor : Color.clear, lineWidth: 3)
             )
             .onLongPressGesture(perform: onLongPress)
+        }
+    }
+
+    // MARK: - AutoCaptureView (embedded to ensure availability)
+    struct AutoCaptureView: View {
+        @Binding var selectedChoice: QuestAnswerChoice?
+        @State private var capturedImage: UIImage? = nil
+        @State private var widthMeters: Double? = nil
+        @State private var slopeDegrees: Double? = nil
+        @State private var isProcessing = false
+        @State private var showImagePicker = false
+
+        var body: some View {
+            ZStack {
+                VStack(spacing: 16) {
+                    if let image = capturedImage {
+                        Image(uiImage: image)
+                            .resizable()
+                            .scaledToFit()
+                            .frame(maxWidth: 300, maxHeight: 300)
+                            .cornerRadius(8)
+                            .accessibilityHidden(true)
+
+                        if let w = widthMeters, let s = slopeDegrees {
+                            VStack(alignment: .leading, spacing: 6) {
+                                Text(String(format: "Width: %.2f m", w))
+                                    .font(.system(.headline))
+                                    .accessibilityLabel("Sidewalk width: \(String(format: "%.2f", w)) meters")
+
+                                Text(String(format: "Slope: %.1f°", s))
+                                    .font(.system(.subheadline))
+                                    .accessibilityLabel("Slope: \(String(format: "%.1f", s)) degrees")
+                            }
+                            .padding(8)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .background(Color(UIColor.secondarySystemBackground))
+                            .cornerRadius(8)
+                        }
+
+                        VStack {
+                            Button(action: {
+                                // finalize choice
+                                if let w = widthMeters, let s = slopeDegrees {
+                                    let value = "{\"width_m\":\(w),\"slope_deg\":\(s)}"
+                                    let text = String(format: "Width: %.2fm, Slope: %.1f°", w, s)
+                                    let answer = QuestAnswerChoice(value: value, choiceText: text, imageURL: nil, choiceFollowUp: nil)
+                                    selectedChoice = answer
+                                }
+                            }) {
+                                Text("Use Measurement")
+                                    .font(.headline)
+                                    .foregroundColor(.white)
+                                    .frame(maxWidth: .infinity)
+                                    .padding(.vertical, 12)
+                                    .background(Asset.Colors.huskyPurple.swiftUIColor)
+                                    .cornerRadius(10)
+                            }
+                            .buttonStyle(PlainButtonStyle())
+                        }
+                        .contentShape(Rectangle())
+                        .accessibilityIdentifier("autoCapture_use_measurement")
+                    } else {
+                        VStack(spacing: 12) {
+                            Image(systemName: "camera.fill")
+                                .font(.system(size: 48))
+                                .foregroundColor(Asset.Colors.huskyPurple.swiftUIColor)
+                                .padding(.top, 20)
+                                .accessibilityHidden(true)
+
+                            Text("Capture a photo to estimate sidewalk width and slope")
+                                .font(.body)
+                                .multilineTextAlignment(.center)
+                                .fixedSize(horizontal: false, vertical: true)
+                                .padding(.horizontal)
+                        }
+
+                        Button(action: {
+                            showImagePicker = true
+                        }) {
+                            Text("Open Camera")
+                                .font(.headline)
+                                .padding(.vertical, 12)
+                                .padding(.horizontal, 28)
+                                .background(Asset.Colors.accentPink.swiftUIColor)
+                                .foregroundColor(.white)
+                                .cornerRadius(10)
+                        }
+                        .buttonStyle(PlainButtonStyle())
+                        .contentShape(Rectangle())
+                        .accessibilityIdentifier("autoCapture_open_camera")
+                    }
+
+                    if isProcessing {
+                        ProgressView()
+                            .padding()
+                    }
+
+                    Spacer()
+                }
+                .padding()
+            }
+            .sheet(isPresented: $showImagePicker) {
+                ImagePickerWrapper(image: $capturedImage, sourceType: .camera)
+            }
+            .onChange(of: capturedImage) { newImage in
+                if newImage != nil {
+                    // Mock measurement generation
+                    isProcessing = true
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.25) {
+                        widthMeters = Double.random(in: 0.5...4.0)
+                        slopeDegrees = Double.random(in: 0.0...15.0)
+                        isProcessing = false
+                        // Reset showImagePicker for next use
+                        showImagePicker = false
+                    }
+                }
+            }
+        }
+    }
+
+    // MARK: - ImagePickerWrapper
+    struct ImagePickerWrapper: UIViewControllerRepresentable {
+        @Binding var image: UIImage?
+        var sourceType: UIImagePickerController.SourceType = .photoLibrary
+
+        func makeUIViewController(context: Context) -> UIImagePickerController {
+            let picker = UIImagePickerController()
+            picker.sourceType = sourceType
+            picker.delegate = context.coordinator
+            picker.modalPresentationStyle = .fullScreen
+            return picker
+        }
+
+        func updateUIViewController(_ uiViewController: UIImagePickerController, context: Context) {}
+
+        func makeCoordinator() -> Coordinator {
+            Coordinator(image: $image)
+        }
+
+        class Coordinator: NSObject, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+            @Binding var image: UIImage?
+
+            init(image: Binding<UIImage?>) {
+                self._image = image
+            }
+
+            func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey: Any]) {
+                if let pickedImage = info[.originalImage] as? UIImage {
+                    self.image = pickedImage
+                }
+                picker.dismiss(animated: true)
+            }
+
+            func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
+                picker.dismiss(animated: true)
+            }
         }
     }
 
