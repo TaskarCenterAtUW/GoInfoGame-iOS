@@ -389,120 +389,190 @@ private extension QuestOptions {
         }
     }
 
-    // MARK: - AutoCaptureView (embedded to ensure availability)
+    // MARK: - AutoCaptureView (Multi-capture version)
     struct AutoCaptureView: View {
         @Binding var selectedChoice: QuestAnswerChoice?
-        @State private var capturedImage: UIImage? = nil
-        @State private var widthMeters: Double? = nil
-        @State private var slopeDegrees: Double? = nil
-        @State private var isProcessing = false
+        
+        // Data model for a single capture
+        struct Capture: Identifiable {
+            let id = UUID()
+            let image: UIImage
+            let widthMeters: Double
+            let slopeDegrees: Double
+        }
+        
+        @State private var captures: [Capture] = []
         @State private var showImagePicker = false
+        @State private var isProcessing = false
+        @State private var tempImage: UIImage? = nil
 
         var body: some View {
             ZStack {
-                VStack(spacing: 16) {
-                    if let image = capturedImage {
-                        Image(uiImage: image)
-                            .resizable()
-                            .scaledToFit()
-                            .frame(maxWidth: 300, maxHeight: 300)
-                            .cornerRadius(8)
-                            .accessibilityHidden(true)
-
-                        if let w = widthMeters, let s = slopeDegrees {
-                            VStack(alignment: .leading, spacing: 6) {
-                                Text(String(format: "Width: %.2f m", w))
-                                    .font(.system(.headline))
-                                    .accessibilityLabel("Sidewalk width: \(String(format: "%.2f", w)) meters")
-
-                                Text(String(format: "Slope: %.1f°", s))
-                                    .font(.system(.subheadline))
-                                    .accessibilityLabel("Slope: \(String(format: "%.1f", s)) degrees")
-                            }
-                            .padding(8)
-                            .frame(maxWidth: .infinity, alignment: .leading)
-                            .background(Color(UIColor.secondarySystemBackground))
-                            .cornerRadius(8)
-                        }
-
-                        VStack {
-                            Button(action: {
-                                // finalize choice
-                                if let w = widthMeters, let s = slopeDegrees {
-                                    let value = "{\"width_m\":\(w),\"slope_deg\":\(s)}"
-                                    let text = String(format: "Width: %.2fm, Slope: %.1f°", w, s)
-                                    let answer = QuestAnswerChoice(value: value, choiceText: text, imageURL: nil, choiceFollowUp: nil)
-                                    selectedChoice = answer
-                                }
-                            }) {
-                                Text("Use Measurement")
+                ScrollView {
+                    VStack(spacing: 16) {
+                        // Display all captures
+                        if !captures.isEmpty {
+                            VStack(alignment: .leading, spacing: 12) {
+                                Text("Captured Measurements")
                                     .font(.headline)
-                                    .foregroundColor(.white)
-                                    .frame(maxWidth: .infinity)
-                                    .padding(.vertical, 12)
-                                    .background(Asset.Colors.huskyPurple.swiftUIColor)
-                                    .cornerRadius(10)
+                                    .padding(.horizontal)
+                                
+                                ForEach(captures) { capture in
+                                    CaptureCard(
+                                        capture: capture,
+                                        onDelete: {
+                                            captures.removeAll { $0.id == capture.id }
+                                            updateSelectedChoice()
+                                        }
+                                    )
+                                }
                             }
-                            .buttonStyle(PlainButtonStyle())
                         }
-                        .contentShape(Rectangle())
-                        .accessibilityIdentifier("autoCapture_use_measurement")
-                    } else {
-                        VStack(spacing: 12) {
-                            Image(systemName: "camera.fill")
-                                .font(.system(size: 48))
-                                .foregroundColor(Asset.Colors.huskyPurple.swiftUIColor)
-                                .padding(.top, 20)
-                                .accessibilityHidden(true)
-
-                            Text("Capture a photo to estimate sidewalk width and slope")
-                                .font(.body)
-                                .multilineTextAlignment(.center)
-                                .fixedSize(horizontal: false, vertical: true)
-                                .padding(.horizontal)
-                        }
-
+                        
+                        // Add more captures button
                         Button(action: {
                             showImagePicker = true
                         }) {
-                            Text("Open Camera")
-                                .font(.headline)
-                                .padding(.vertical, 12)
-                                .padding(.horizontal, 28)
-                                .background(Asset.Colors.accentPink.swiftUIColor)
-                                .foregroundColor(.white)
-                                .cornerRadius(10)
+                            HStack(spacing: 8) {
+                                Image(systemName: "camera.fill")
+                                Text(captures.isEmpty ? "Open Camera" : "Add Another Capture")
+                            }
+                            .font(.headline)
+                            .padding(.vertical, 12)
+                            .padding(.horizontal, 28)
+                            .background(Asset.Colors.accentPink.swiftUIColor)
+                            .foregroundColor(.white)
+                            .cornerRadius(10)
                         }
                         .buttonStyle(PlainButtonStyle())
                         .contentShape(Rectangle())
                         .accessibilityIdentifier("autoCapture_open_camera")
-                    }
-
-                    if isProcessing {
-                        ProgressView()
+                        
+                        if isProcessing {
+                            VStack(spacing: 8) {
+                                ProgressView()
+                                Text("Analyzing image...")
+                                    .font(.caption)
+                                    .foregroundColor(.gray)
+                            }
                             .padding()
+                        }
+                        
+                        // Empty state
+                        if captures.isEmpty && !isProcessing {
+                            VStack(spacing: 12) {
+                                Image(systemName: "camera.fill")
+                                    .font(.system(size: 48))
+                                    .foregroundColor(Asset.Colors.huskyPurple.swiftUIColor)
+                                    .padding(.top, 20)
+                                    .accessibilityHidden(true)
+                                
+                                Text("Capture multiple photos to estimate sidewalk width and slope")
+                                    .font(.body)
+                                    .multilineTextAlignment(.center)
+                                    .fixedSize(horizontal: false, vertical: true)
+                                    .padding(.horizontal)
+                            }
+                        }
+                        
+                        Spacer()
                     }
-
-                    Spacer()
+                    .padding()
                 }
-                .padding()
             }
             .sheet(isPresented: $showImagePicker) {
-                ImagePickerWrapper(image: $capturedImage, sourceType: .camera)
+                ImagePickerWrapper(image: $tempImage, sourceType: .camera)
             }
-            .onChange(of: capturedImage) { newImage in
-                if newImage != nil {
-                    // Mock measurement generation
+            .onChange(of: tempImage) { newImage in
+                if let image = newImage {
                     isProcessing = true
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.25) {
-                        widthMeters = Double.random(in: 0.5...4.0)
-                        slopeDegrees = Double.random(in: 0.0...15.0)
-                        isProcessing = false
-                        // Reset showImagePicker for next use
-                        showImagePicker = false
+                    
+                    // Process the captured image with a delay
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+                        let width = Double.random(in: 0.5...4.0)
+                        let slope = Double.random(in: 0.0...15.0)
+                        
+                        let newCapture = Capture(
+                            image: image,
+                            widthMeters: width,
+                            slopeDegrees: slope
+                        )
+                        
+                        self.captures.append(newCapture)
+                        self.tempImage = nil
+                        self.isProcessing = false
+                        self.showImagePicker = false
+                        
+                        // Update selectedChoice with CSV format
+                        self.updateSelectedChoice()
                     }
                 }
             }
+        }
+        
+        private func updateSelectedChoice() {
+            guard !captures.isEmpty else {
+                selectedChoice = nil
+                return
+            }
+            
+            // Create CSV format for width and slope values
+            let widthCSV = captures.map { String(format: "%.2f", $0.widthMeters) }.joined(separator: ",")
+            let slopeCSV = captures.map { String(format: "%.1f", $0.slopeDegrees) }.joined(separator: ",")
+            
+            let value = "width_m:\(widthCSV)|slope_deg:\(slopeCSV)"
+            let text = "\(captures.count) capture\(captures.count > 1 ? "s" : "")"
+            
+            let answer = QuestAnswerChoice(
+                value: value,
+                choiceText: text,
+                imageURL: nil,
+                choiceFollowUp: nil
+            )
+            
+            selectedChoice = answer
+        }
+    }
+    
+    // MARK: - CaptureCard (individual capture display)
+    struct CaptureCard: View {
+        let capture: QuestOptions.AutoCaptureView.Capture
+        let onDelete: () -> Void
+        
+        var body: some View {
+            VStack(spacing: 8) {
+                HStack {
+                    Image(uiImage: capture.image)
+                        .resizable()
+                        .scaledToFill()
+                        .frame(width: 80, height: 80)
+                        .cornerRadius(6)
+                        .clipped()
+                    
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text(String(format: "Width: %.2f m", capture.widthMeters))
+                            .font(.system(.subheadline, design: .rounded))
+                            .fontWeight(.semibold)
+                        
+                        Text(String(format: "Slope: %.1f°", capture.slopeDegrees))
+                            .font(.system(.subheadline, design: .rounded))
+                            .fontWeight(.semibold)
+                    }
+                    
+                    Spacer()
+                    
+                    Button(action: onDelete) {
+                        Image(systemName: "xmark.circle.fill")
+                            .font(.system(size: 20))
+                            .foregroundColor(.red)
+                    }
+                    .accessibilityLabel("Delete this capture")
+                }
+                .padding(8)
+                .background(Color(UIColor.secondarySystemBackground))
+                .cornerRadius(8)
+            }
+            .padding(.horizontal)
         }
     }
 
