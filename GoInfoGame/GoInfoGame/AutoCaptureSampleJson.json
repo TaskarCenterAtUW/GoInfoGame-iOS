@@ -147,7 +147,7 @@
           "quest_title": "Do you want to capture width and slope with your device LiDEAR?",
           "quest_description": "Your Device is capable of auto-capturing the Sidewalk properties. Give it a try.",
           "quest_type": "AutoCapture",
-          "quest_tag": "ext:autoCapture:width",
+          "quest_tag": "ext:autoCapture",
           "quest_answer_choices": [
             {
               "value": "bollard",

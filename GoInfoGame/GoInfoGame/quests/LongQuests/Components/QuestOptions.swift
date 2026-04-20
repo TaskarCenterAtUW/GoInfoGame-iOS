@@ -405,6 +405,7 @@ private extension QuestOptions {
         @State private var showImagePicker = false
         @State private var isProcessing = false
         @State private var tempImage: UIImage? = nil
+        @State private var lastSelectedChoiceValue: String = ""
 
         var body: some View {
             ZStack {
@@ -480,6 +481,30 @@ private extension QuestOptions {
                     .padding()
                 }
             }
+            .onAppear {
+                // Reconstruct captures from selectedChoice if the view was recreated during scroll
+                if captures.isEmpty, let selected = selectedChoice, !selected.value.isEmpty {
+                    if selected.value != lastSelectedChoiceValue {
+                        let reconstructed = parseCaptures(from: selected.value)
+                        if !reconstructed.isEmpty {
+                            captures = reconstructed
+                            lastSelectedChoiceValue = selected.value
+                        }
+                    }
+                }
+            }
+            .onChange(of: selectedChoice) { newChoice in
+                // Monitor selectedChoice for external changes
+                if let selected = newChoice, !selected.value.isEmpty, selected.value != lastSelectedChoiceValue {
+                    if captures.isEmpty {
+                        let reconstructed = parseCaptures(from: selected.value)
+                        if !reconstructed.isEmpty {
+                            captures = reconstructed
+                            lastSelectedChoiceValue = selected.value
+                        }
+                    }
+                }
+            }
             .sheet(isPresented: $showImagePicker) {
                 ImagePickerWrapper(image: $tempImage, sourceType: .camera)
             }
@@ -513,6 +538,7 @@ private extension QuestOptions {
         private func updateSelectedChoice() {
             guard !captures.isEmpty else {
                 selectedChoice = nil
+                lastSelectedChoiceValue = ""
                 return
             }
             
@@ -531,6 +557,73 @@ private extension QuestOptions {
             )
             
             selectedChoice = answer
+            lastSelectedChoiceValue = value
+        }
+        
+        private func parseCaptures(from value: String) -> [Capture] {
+            // Parse the CSV format back to Capture objects
+            // Format: "width_m:2.34,1.92|slope_deg:2.31,1.45"
+            let components = value.split(separator: "|")
+            var widths: [Double] = []
+            var slopes: [Double] = []
+            
+            for component in components {
+                let keyValue = component.split(separator: ":", maxSplits: 1)
+                if keyValue.count == 2 {
+                    let key = String(keyValue[0])
+                    let values = String(keyValue[1]).split(separator: ",").compactMap { Double($0) }
+                    
+                    if key == "width_m" {
+                        widths = values
+                    } else if key == "slope_deg" {
+                        slopes = values
+                    }
+                }
+            }
+            
+            // Create placeholder captures with the measurements
+            // We can't reconstruct actual images from CSV, but we can show measurements
+            var reconstructedCaptures: [Capture] = []
+            for (index, width) in widths.enumerated() {
+                if index < slopes.count {
+                    // Create a placeholder image (solid color)
+                    let placeholderImage = createPlaceholderImage()
+                    let capture = Capture(
+                        image: placeholderImage,
+                        widthMeters: width,
+                        slopeDegrees: slopes[index]
+                    )
+                    reconstructedCaptures.append(capture)
+                }
+            }
+            
+            return reconstructedCaptures
+        }
+        
+        private func createPlaceholderImage() -> UIImage {
+            let size = CGSize(width: 80, height: 80)
+            let renderer = UIGraphicsImageRenderer(size: size)
+            
+            return renderer.image { context in
+                // Draw light gray background
+                UIColor.lightGray.setFill()
+                context.fill(CGRect(origin: .zero, size: size))
+                
+                // Draw camera icon text
+                let text = "📷"
+                let attributes: [NSAttributedString.Key: Any] = [
+                    .font: UIFont.systemFont(ofSize: 32),
+                ]
+                let nsText = text as NSString
+                let textSize = nsText.size(withAttributes: attributes)
+                let textRect = CGRect(
+                    x: (size.width - textSize.width) / 2,
+                    y: (size.height - textSize.height) / 2,
+                    width: textSize.width,
+                    height: textSize.height
+                )
+                nsText.draw(in: textRect, withAttributes: attributes)
+            }
         }
     }
     
