@@ -149,6 +149,7 @@ struct CustomMap: UIViewRepresentable {
         var previosMultiSelectionMode: Bool = false
         private var annotations: [DisplayUnitAnnotation] = []
         private(set) var clusterManager: ClusterManager = ClusterManager<DisplayUnitAnnotation>(configuration: .init(maxZoomLevel: 17, minCountForClustering: 2, clusterPosition: .nearCenter))
+        lazy private(set) var mapReloader: MapReloader = MapReloader(coordinator: self)
         
         init(_ parent: CustomMap, shadowOverlay: ShadowOverlay) {
             self.parent = parent
@@ -156,10 +157,28 @@ struct CustomMap: UIViewRepresentable {
             self.shadowOverlay = shadowOverlay
         }
         
-        func reloadMap() async {
-            guard let mapView = mapView else { return }
-            async let changes = clusterManager.reload(mapViewSize: mapView.bounds.size, coordinateRegion: mapView.region)
-            await applyChanges(changes)
+        actor MapReloader {
+            private var currentTask: Task<Void, Never>?
+            let coordinator: Coordinator
+            
+            init(coordinator: Coordinator) {
+                self.coordinator = coordinator
+            }
+
+            func reload(using mapView: MKMapView?) {
+                // Cancel the old reload if it's still running
+                currentTask?.cancel()
+                
+                currentTask = Task {
+                    guard let mapView = mapView else { return }
+                    async let changes = coordinator.clusterManager.reload(
+                        mapViewSize: mapView.bounds.size,
+                        coordinateRegion: mapView.region
+                    )
+                    debugPrint("map issue insertions: \(await changes.insertions.count) deletions: \(await changes.removals.count)")
+                    await coordinator.applyChanges(changes)
+                }
+            }
         }
                 
         @MainActor
@@ -405,7 +424,9 @@ struct CustomMap: UIViewRepresentable {
         }
         
         func mapView(_ mapView: MKMapView, regionDidChangeAnimated animated: Bool) {
-            Task { await reloadMap() }
+            Task {
+                await mapReloader.reload(using: mapView)
+            }
         }
         
         private func selectedAnAnnotation(selectedQuest: DisplayUnitAnnotation) {
@@ -522,7 +543,7 @@ struct CustomMap: UIViewRepresentable {
     private func manageAnnotations(_ mapView: MKMapView, context: Context) async {
         
         await context.coordinator.clusterManager.removeAll()
-        await context.coordinator.reloadMap()
+        await context.coordinator.mapReloader.reload(using: mapView)
 //        let existingCoordinates = mapView.annotations.compactMap {
 //             ($0 as? DisplayUnitAnnotation)?.coordinate
 //         }
@@ -544,7 +565,7 @@ struct CustomMap: UIViewRepresentable {
                .filter { !$0.isHidden }
                .map { $0.annotation }
         await context.coordinator.clusterManager.add(visibleAnnotations)
-        await context.coordinator.reloadMap()
+        await context.coordinator.mapReloader.reload(using: mapView)
     }
     
     func adjustCoordinateForOverlap(_ coordinate: CLLocationCoordinate2D, with index: Int) -> CLLocationCoordinate2D {
