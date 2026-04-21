@@ -411,8 +411,9 @@ private extension QuestOptions {
         struct Capture: Identifiable {
             let id = UUID()
             let image: UIImage
-            let widthMeters: Double
-            let slopeDegrees: Double
+            let widthMeters: Double?      // nil if capture failed
+            let slopeDegrees: Double?     // nil if capture failed
+            let crossSlopeDegrees: Double? // nil if capture failed
         }
         
         @State private var captures: [Capture] = []
@@ -528,13 +529,20 @@ private extension QuestOptions {
                     
                     // Process the captured image with a delay
                     DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
-                        let width = Double.random(in: 0.5...4.0)
-                        let slope = Double.random(in: 0.0...15.0)
+                        // Simulate occasional capture failures (5% chance per measurement)
+                        let widthSuccess = Double.random(in: 0.0...1.0) > 0.05
+                        let slopeSuccess = Double.random(in: 0.0...1.0) > 0.05
+                        let crossSlopeSuccess = Double.random(in: 0.0...1.0) > 0.05
+                        
+                        let width = widthSuccess ? Double.random(in: 0.5...4.0) : nil
+                        let slope = slopeSuccess ? Double.random(in: 0.0...15.0) : nil
+                        let crossSlope = crossSlopeSuccess ? Double.random(in: -10.0...10.0) : nil
                         
                         let newCapture = Capture(
                             image: image,
                             widthMeters: width,
-                            slopeDegrees: slope
+                            slopeDegrees: slope,
+                            crossSlopeDegrees: crossSlope
                         )
                         
                         self.captures.append(newCapture)
@@ -556,11 +564,13 @@ private extension QuestOptions {
                 return
             }
             
-            // Create CSV format for width and slope values
-            let widthCSV = captures.map { String(format: "%.2f", $0.widthMeters) }.joined(separator: ",")
-            let slopeCSV = captures.map { String(format: "%.1f", $0.slopeDegrees) }.joined(separator: ",")
+            // Create CSV format for width, slope, and cross-slope values
+            // Use "NA" placeholder for failed measurements
+            let widthCSV = captures.map { $0.widthMeters.map { String(format: "%.2f", $0) } ?? "NA" }.joined(separator: ",")
+            let slopeCSV = captures.map { $0.slopeDegrees.map { String(format: "%.1f", $0) } ?? "NA" }.joined(separator: ",")
+            let crossSlopeCSV = captures.map { $0.crossSlopeDegrees.map { String(format: "%.1f", $0) } ?? "NA" }.joined(separator: ",")
             
-            let value = "width_m:\(widthCSV)|slope_deg:\(slopeCSV)"
+            let value = "width_m:\(widthCSV)|slope_deg:\(slopeCSV)|cross_slope_deg:\(crossSlopeCSV)"
             let text = "\(captures.count) capture\(captures.count > 1 ? "s" : "")"
             
             let answer = QuestAnswerChoice(
@@ -576,39 +586,46 @@ private extension QuestOptions {
         
         private func parseCaptures(from value: String) -> [Capture] {
             // Parse the CSV format back to Capture objects
-            // Format: "width_m:2.34,1.92|slope_deg:2.31,1.45"
+            // Format: "width_m:2.34,NA,3.12|slope_deg:2.31,1.45,NA|cross_slope_deg:1.5,2.3,NA"
             let components = value.split(separator: "|")
-            var widths: [Double] = []
-            var slopes: [Double] = []
+            var widths: [Double?] = []
+            var slopes: [Double?] = []
+            var crossSlopes: [Double?] = []
             
             for component in components {
                 let keyValue = component.split(separator: ":", maxSplits: 1)
                 if keyValue.count == 2 {
                     let key = String(keyValue[0])
-                    let values = String(keyValue[1]).split(separator: ",").compactMap { Double($0) }
+                    let values = String(keyValue[1]).split(separator: ",").map { valueStr -> Double? in
+                        let trimmed = String(valueStr).trimmingCharacters(in: .whitespaces)
+                        return trimmed == "NA" ? nil : Double(trimmed)
+                    }
                     
                     if key == "width_m" {
                         widths = values
                     } else if key == "slope_deg" {
                         slopes = values
+                    } else if key == "cross_slope_deg" {
+                        crossSlopes = values
                     }
                 }
             }
             
             // Create placeholder captures with the measurements
-            // We can't reconstruct actual images from CSV, but we can show measurements
             var reconstructedCaptures: [Capture] = []
             for (index, width) in widths.enumerated() {
-                if index < slopes.count {
-                    // Create a placeholder image (solid color)
-                    let placeholderImage = createPlaceholderImage()
-                    let capture = Capture(
-                        image: placeholderImage,
-                        widthMeters: width,
-                        slopeDegrees: slopes[index]
-                    )
-                    reconstructedCaptures.append(capture)
-                }
+                let slope = index < slopes.count ? slopes[index] : nil
+                let crossSlope = index < crossSlopes.count ? crossSlopes[index] : nil
+                
+                // Create a placeholder image (solid color)
+                let placeholderImage = createPlaceholderImage()
+                let capture = Capture(
+                    image: placeholderImage,
+                    widthMeters: width,
+                    slopeDegrees: slope,
+                    crossSlopeDegrees: crossSlope
+                )
+                reconstructedCaptures.append(capture)
             }
             
             return reconstructedCaptures
@@ -657,11 +674,15 @@ private extension QuestOptions {
                         .clipped()
                     
                     VStack(alignment: .leading, spacing: 4) {
-                        Text(String(format: "Width: %.2f m", capture.widthMeters))
+                        Text(String(format: "Width: %@", capture.widthMeters.map { String(format: "%.2f m", $0) } ?? "NA"))
                             .font(.system(.subheadline, design: .rounded))
                             .fontWeight(.semibold)
                         
-                        Text(String(format: "Slope: %.1f°", capture.slopeDegrees))
+                        Text(String(format: "Slope: %@", capture.slopeDegrees.map { String(format: "%.1f°", $0) } ?? "NA"))
+                            .font(.system(.subheadline, design: .rounded))
+                            .fontWeight(.semibold)
+                        
+                        Text(String(format: "Cross Slope: %@", capture.crossSlopeDegrees.map { String(format: "%.1f°", $0) } ?? "NA"))
                             .font(.system(.subheadline, design: .rounded))
                             .fontWeight(.semibold)
                     }
