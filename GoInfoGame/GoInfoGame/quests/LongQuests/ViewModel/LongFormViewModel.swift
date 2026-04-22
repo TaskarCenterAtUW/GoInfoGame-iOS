@@ -64,10 +64,66 @@ class LongFormViewModel: ObservableObject {
         for quest in quests {
             if let choiceOptional = selectedChoices[quest.questID], let choice = choiceOptional {
                 if shouldShowQuest(quest) {
-                    submissionDict[quest.questTag] = choice.value
+                    // Handle AutoCapture quest type
+                    if quest.questType == .autoCapture {
+                        handleAutoCaptureTags(choice: choice, submissionDict: &submissionDict)
+                    } else {
+                        submissionDict[quest.questTag] = choice.value
+                    }
                 }
+            } else if let quest = quests.first(where: { $0.questID == quest.questID }),
+                      quest.questType == .autoCapture {
+                // AutoCapture quest not answered - mark as ignored
+                submissionDict["ext:autoCapture:ignored"] = "true"
             }
         }
         return submissionDict
+    }
+    
+    // MARK: - AutoCapture Helper Methods
+    
+    private func handleAutoCaptureTags(choice: QuestAnswerChoice, submissionDict: inout [String: String]) {
+        // Parse CSV data from choice.value
+        // Format: "width_m:2.34,1.92|slope_deg:2.31,1.45|cross_slope_deg:1.5,2.3"
+        
+        let widthValues = extractCSVValues(from: choice.value, key: "width_m")
+        let slopeValues = extractCSVValues(from: choice.value, key: "slope_deg")
+        let crossSlopeValues = extractCSVValues(from: choice.value, key: "cross_slope_deg")
+        
+        // Check if any captures were made (array not empty)
+        let hasCaptureAttempts = !widthValues.isEmpty || !slopeValues.isEmpty || !crossSlopeValues.isEmpty
+        
+        if hasCaptureAttempts {
+            // Add AutoCapture tags (including NA values for failed captures)
+            if !widthValues.isEmpty {
+                submissionDict["ext:autoCapture:width"] = widthValues.joined(separator: ",")
+            }
+            if !slopeValues.isEmpty {
+                submissionDict["ext:autoCapture:slope"] = slopeValues.joined(separator: ",")
+            }
+            if !crossSlopeValues.isEmpty {
+                submissionDict["ext:autoCapture:cross-slope"] = crossSlopeValues.joined(separator: ",")
+            }
+        } else {
+            // No capture attempts made at all
+            submissionDict["ext:autoCapture:ignored"] = "true"
+        }
+    }
+    
+    private func extractCSVValues(from csvString: String, key: String) -> [String] {
+        // Extract values for a specific key from the CSV format
+        // e.g., key="width_m" from "width_m:2.34,1.92|slope_deg:2.31,1.45"
+        
+        let parts = csvString.split(separator: "|").map(String.init)
+        
+        for part in parts {
+            if part.hasPrefix(key + ":") {
+                let valueString = String(part.dropFirst(key.count + 1))
+                let values = valueString.split(separator: ",").map(String.init)
+                return values
+            }
+        }
+        
+        return []
     }
 }
