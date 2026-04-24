@@ -154,6 +154,7 @@
 		C71EB5B72E2100E30009E610 /* NetworkManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C71EB5B22E2100E30009E610 /* NetworkManager.swift */; };
 		C71EB5B82E2100E30009E610 /* NetworkMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = C71EB5B32E2100E30009E610 /* NetworkMonitor.swift */; };
 		C71EB5B92E2100E30009E610 /* APIManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C71EB5B12E2100E30009E610 /* APIManager.swift */; };
+		C73D2F792F98A0A800978D89 /* LiDARDetection.swift in Sources */ = {isa = PBXBuildFile; fileRef = C73D2F782F98A0A800978D89 /* LiDARDetection.swift */; };
 		C74AC4152EE198B50036E2C5 /* NoEditsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C74AC4142EE198B50036E2C5 /* NoEditsView.swift */; };
 		C75666D02E0D068900D36C41 /* OHHTTPStubs in Frameworks */ = {isa = PBXBuildFile; productRef = C75666CF2E0D068900D36C41 /* OHHTTPStubs */; };
 		C75666D22E0D068900D36C41 /* OHHTTPStubsSwift in Frameworks */ = {isa = PBXBuildFile; productRef = C75666D12E0D068900D36C41 /* OHHTTPStubsSwift */; };
@@ -538,6 +539,7 @@
 		C71EB5B22E2100E30009E610 /* NetworkManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkManager.swift; sourceTree = "<group>"; };
 		C71EB5B32E2100E30009E610 /* NetworkMonitor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkMonitor.swift; sourceTree = "<group>"; };
 		C71EB5B42E2100E30009E610 /* ResponseHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResponseHandler.swift; sourceTree = "<group>"; };
+		C73D2F782F98A0A800978D89 /* LiDARDetection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiDARDetection.swift; sourceTree = "<group>"; };
 		C74AC4142EE198B50036E2C5 /* NoEditsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoEditsView.swift; sourceTree = "<group>"; };
 		C75CC5D62E0D22F4008A94A0 /* Workspaces response.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "Workspaces response.json"; sourceTree = "<group>"; };
 		C75CC5D72E0D22F4008A94A0 /* SCLIO Seattle pins response.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "SCLIO Seattle pins response.json"; sourceTree = "<group>"; };
@@ -739,6 +741,7 @@
 		0536DD8A2B0BD2A900B04C4B /* Helpers */ = {
 			isa = PBXGroup;
 			children = (
+				C73D2F782F98A0A800978D89 /* LiDARDetection.swift */,
 				C7927B542E42363000A7A34E /* Generated */,
 				C75CC5D52E0D22E0008A94A0 /* SampleResponses */,
 				0536DD8B2B0BD2C200B04C4B /* Constants.swift */,
@@ -2535,6 +2538,7 @@
 				A48037362BBA8DDC007EE7E4 /* WorkspacesResponse.swift in Sources */,
 				171574E02FD1CC4A00AA6603 /* PhotoLookupResponse.swift in Sources */,
 				C769AB552E431EFE00FA810A /* Strings+Generated.swift in Sources */,
+				C73D2F792F98A0A800978D89 /* LiDARDetection.swift in Sources */,
 				0536DD992B0BDBFE00B04C4B /* OAuthManager.swift in Sources */,
 				A4E711A62B57BBCA00C9DE08 /* QuestProtocols.swift in Sources */,
 				FAFDA2122C6F64E800ECEAE9 /* UserProfileView.swift in Sources */,

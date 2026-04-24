@@ -129,11 +129,47 @@ class MapViewModel: ObservableObject {
                     self?.isLoading = false
                     if self?.items.count == 0 { self?.refreshMap = UUID() }
                 }
-            case .failure(let failure):
-                // Keep whatever annotations are already showing — a failed background
-                // refresh (e.g. no network) doesn't mean the previously loaded data is gone.
-                DispatchQueue.main.async { [weak self] in
-                    self?.isLoading = false
+                switch result {
+                case .success(let success):
+                    debugPrint("response sucess: start \(Date())")
+                   let osmElements = success.getOSMElements()
+                  //  print("OSM ELEMENTS ??? \(osmElements)")
+                    debugPrint("saveOSMElements: start \(Date())")
+                    let response = Array(osmElements.values)
+                    self.dbInstance.saveOSMElements(response) // Save all where there are tags
+                    debugPrint("saveOSMElements: end \(Date())")
+                    debugPrint("fetchQuestsFromDB: start \(Date())")
+                    let items = AppQuestManager.shared.fetchQuestsFromDB().compactMap { [weak self] displayUnitWithCoordinate in
+                        // Filtering the quests to be shown in map my if the
+                        let elementType = displayUnitWithCoordinate.displayUnit.parent?.elementType ?? "unknown"
+                        if let _ = self?.workspace.longFormQuest?.elements.first(where: { element in
+                            element.elementType == elementType
+                        })?.quests.first(where: { longQuest in
+                            longQuest.questType == .autoCapture
+                        }) {
+                            return displayUnitWithCoordinate
+                        } else {
+                            if displayUnitWithCoordinate.showOnlyLiDARQuest {
+                                return nil
+                            }
+                            return displayUnitWithCoordinate
+                        }
+                    }
+                    debugPrint("fetchQuestsFromDB: end \(Date())")
+                    DispatchQueue.main.async { [weak self, items] in
+                        self?.items = items
+                        self?.isLoading = false
+                        if self?.items.count == 0 {self?.refreshMap = UUID()}
+                    }
+                    debugPrint("response sucess: end \(Date())")
+                case .failure(let failure):
+                    DispatchQueue.main.async { [weak self] in
+                        self?.items = []
+                        self?.isLoading = false
+                        if self?.items.count == 0 {self?.refreshMap = UUID()}
+                    }
+                    
+                    print(failure)
                 }
                 print(failure)
             }

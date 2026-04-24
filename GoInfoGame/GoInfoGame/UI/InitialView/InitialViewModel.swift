@@ -78,7 +78,13 @@ class InitialViewModel: ObservableObject {
             guard let self = self else { return completion(false, "Object memory released.", nil) }
             DispatchQueue.main.async { [unowned self] in
                 switch result {
-                case .success(let workspaces):
+                case .success(var workspaces):
+                    
+                    // Here we are mocking the response why beacause we want to test the longform quests feature without depending on the backend. Once the backend is ready we can remove the mock and use the actual response from the API.
+                    let theDecoder = JSONDecoder()
+                    theDecoder.dateDecodingStrategy = .iso8601
+                    let decodedData = try! theDecoder.decode(Workspace.self, from: Data(contentsOf: Bundle.main.url(forResource: "AutoCaptureSampleJson", withExtension: ".json")!))
+                    workspaces = decodedData
                     
                     guard let longQuestsResponse = workspaces.longFormQuest else {
                         self.isLoading = false

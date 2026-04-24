@@ -90,7 +90,7 @@ class LongElementQuest: QuestBase, Quest {
             var filter = ""
             
             if let longQuestQuery = longQuestQuery {
-                filter = longQuestQuery + " and !ext:gig_complete"
+                filter = longQuestQuery + ""
             } else {
                 filter = " and !ext:gig_complete"
             }

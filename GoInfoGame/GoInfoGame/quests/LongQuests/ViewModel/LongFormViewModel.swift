@@ -60,7 +60,7 @@ class LongFormViewModel: ObservableObject {
     func getAnswersForSubmission() -> [String: String] {
         var submissionDict: [String: String] = [:]
         guard let quests = longForm?.quests else { return [:] }
-        
+        let isLiDARSupportedDevice = LiDARDetection.shared.isLiDARSupported()
         for quest in quests {
             if let choiceOptional = selectedChoices[quest.questID], let choice = choiceOptional {
                 if shouldShowQuest(quest) {
@@ -71,10 +71,11 @@ class LongFormViewModel: ObservableObject {
                         submissionDict[quest.questTag] = choice.value
                     }
                 }
-            } else if let quest = quests.first(where: { $0.questID == quest.questID }),
+            } else if isLiDARSupportedDevice,
+                      let quest = quests.first(where: { $0.questID == quest.questID }),
                       quest.questType == .autoCapture {
                 // AutoCapture quest not answered - mark as ignored
-                submissionDict["ext:autoCapture:ignored"] = "true"
+                submissionDict["ext:autoCapture:ignored"] = "yes"
             }
         }
         return submissionDict
@@ -104,9 +105,10 @@ class LongFormViewModel: ObservableObject {
             if !crossSlopeValues.isEmpty {
                 submissionDict["ext:autoCapture:cross-slope"] = crossSlopeValues.joined(separator: ",")
             }
+            submissionDict["ext:autoCapture:ignored"] = "no"
         } else {
             // No capture attempts made at all
-            submissionDict["ext:autoCapture:ignored"] = "true"
+            submissionDict["ext:autoCapture:ignored"] = "yes"
         }
     }
     
