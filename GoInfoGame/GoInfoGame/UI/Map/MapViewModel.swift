@@ -141,7 +141,22 @@ class MapViewModel: ObservableObject {
                     self.dbInstance.saveOSMElements(response) // Save all where there are tags
                     debugPrint("saveOSMElements: end \(Date())")
                     debugPrint("fetchQuestsFromDB: start \(Date())")
-                    let items = AppQuestManager.shared.fetchQuestsFromDB()
+                    let items = AppQuestManager.shared.fetchQuestsFromDB().compactMap { [weak self] displayUnitWithCoordinate in
+                        // Filtering the quests to be shown in map my if the
+                        let elementType = displayUnitWithCoordinate.displayUnit.parent?.elementType ?? "unknown"
+                        if let _ = self?.workspace.longFormQuest?.elements.first(where: { element in
+                            element.elementType == elementType
+                        })?.quests.first(where: { longQuest in
+                            longQuest.questType == .autoCapture
+                        }) {
+                            return displayUnitWithCoordinate
+                        } else {
+                            if displayUnitWithCoordinate.showOnlyLiDARQuest {
+                                return nil
+                            }
+                            return displayUnitWithCoordinate
+                        }
+                    }
                     debugPrint("fetchQuestsFromDB: end \(Date())")
                     DispatchQueue.main.async { [weak self, items] in
                         self?.items = items
