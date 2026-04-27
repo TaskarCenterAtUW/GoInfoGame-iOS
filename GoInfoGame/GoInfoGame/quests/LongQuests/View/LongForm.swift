@@ -35,6 +35,8 @@ struct LongForm: View, QuestForm {
     
     var coordinate: CLLocationCoordinate2D?
     
+    let showOnlyLiDARQuests: Bool = false
+    
     @Environment(\.presentationMode) var presentationMode
     
     @State private var showKartaviewAlert = false
@@ -67,6 +69,8 @@ struct LongForm: View, QuestForm {
     @State private var activeAlert: LongFormActiveAlert?
     
     @State private var submitStatusMessage: String?
+    
+    @State private var deviceSupportsLiDAR: Bool = false
     
     var body: some View {
         ZStack {
@@ -190,9 +194,11 @@ struct LongForm: View, QuestForm {
                         if let quests = questsForLongForm()?.quests {
                             ForEach(quests, id: \.questID) { quest in
                                 if viewModel.shouldShowQuest(quest) {
-                                    LongQuestView(quest: quest, selectedChoice: binding(for: quest), uploadPhoto:  { result in
-                                        if result { isCameraPresented = true }
-                                    })
+                                    if canShowQuest(quest) {
+                                        LongQuestView(quest: quest, selectedChoice: binding(for: quest), uploadPhoto:  { result in
+                                            if result { isCameraPresented = true }
+                                        })
+                                    }
                                 }
                             }
                             VStack {
@@ -255,6 +261,9 @@ struct LongForm: View, QuestForm {
 
             }
             .padding(.top, 30)
+            .onAppear {
+                deviceSupportsLiDAR = LiDARDetection.shared.isLiDARSupported()
+            }
             .onChange(of: viewModel.selectedChoices) { _ in
                 viewModel.clearAnswersForHiddenQuests()
             }
@@ -385,6 +394,24 @@ struct LongForm: View, QuestForm {
                 viewModel.selectedChoices[quest.questID] = $0
             }
         )
+    }
+    
+    private func canShowQuest(_ quest: LongQuest) -> Bool {
+        if showOnlyLiDARQuests {
+            if quest.questType == .autoCapture,
+               deviceSupportsLiDAR {
+                return true
+            }
+            return false
+        } else {
+            if quest.questType == .autoCapture {
+                if deviceSupportsLiDAR {
+                    return true
+                }
+                return false
+            }
+            return true
+        }
     }
 }
 
