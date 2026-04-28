@@ -35,7 +35,7 @@ struct LongForm: View, QuestForm {
 
     var coordinate: CLLocationCoordinate2D?
     
-    let showOnlyLiDARQuests: Bool = false
+    let showOnlyLiDARQuests: Bool
     
     @Environment(\.presentationMode) var presentationMode
     
@@ -449,6 +449,5 @@ struct LongForm: View, QuestForm {
         return Text("Error parsing JSON")
     }
     QuestsRepository.shared.longQuestModels.append(quest)
-    return LongForm(elementName: quest.elementType, questID: "questId",query: quest.questQuery, action: { tags in
-                })
+    return LongForm(elementName: quest.elementType, questID: "questId",query: quest.questQuery, action: nil, showOnlyLiDARQuests: false)
 }

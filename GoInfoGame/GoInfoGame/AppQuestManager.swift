@@ -180,6 +180,9 @@ class AppQuestManager {
                     // Create a duplicate of the quest
                     // Create a display Unit
                     let duplicateQuest = quest.quest.copyWithElement(element: node)
+                    if let duplicateQuest = duplicateQuest as? LongElementQuest {
+                        duplicateQuest.showOnlyLiDARQuestion = showOnlyLiDARQuest
+                    }
                     let unit = DisplayUnitWithCoordinate(displayUnit: duplicateQuest.displayUnit, coordinateInfo:  CLLocationCoordinate2D(latitude: node.position.latitude, longitude: node.position.longitude), id: node.id, isHidden: false, showOnlyLiDARQuest: showOnlyLiDARQuest)
                     displayUnits.append(unit)
                     nodeQuests.append(duplicateQuest)
@@ -206,6 +209,9 @@ class AppQuestManager {
                     // Create a duplicate of the quest
                     // Need to add another here.
                     let duplicateQuest = quest.quest.copyWithElement(element: way)
+                    if let duplicateQuest = duplicateQuest as? LongElementQuest {
+                        duplicateQuest.showOnlyLiDARQuestion = showOnlyLiDARQuest
+                    }
                     let position  = dbInstance.getCenterForWay(id: way.id) ?? CLLocationCoordinate2D()
                     let unit = DisplayUnitWithCoordinate(displayUnit: duplicateQuest.displayUnit, coordinateInfo: position, id: way.id, isHidden: false, showOnlyLiDARQuest: showOnlyLiDARQuest)
                     displayUnits.append(unit)
