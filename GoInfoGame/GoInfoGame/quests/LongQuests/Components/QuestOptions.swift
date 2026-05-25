@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import PointNMapShared
 
 struct QuestOptions: View {
     
@@ -407,10 +408,24 @@ private extension QuestOptions {
     struct AutoCaptureView: View {
         @Binding var selectedChoice: QuestAnswerChoice?
         
+        @State private var selectedClasses: [AccessibilityFeatureClass] = []
+        @StateObject private var sharedAppData: SharedBaseData = SharedBaseData()
+        @StateObject private var sharedAppContext: SharedBaseContext = SharedBaseContext()
+        @StateObject private var segmentationPipeline: SegmentationARPipeline = SegmentationARPipeline()
+        @StateObject private var sharedBaseSettings: SharedBaseSettings = SharedBaseSettings()
+        let isEnhancedAnalysisEnabled = true
+        @StateObject var segmentationAnnontationPipeline: SegmentationAnnotationPipeline = SegmentationAnnotationPipeline()
+        @StateObject var attributeEstimationPipeline: AttributeEstimationPipeline = AttributeEstimationPipeline()
+        @StateObject var manager: AnnotationImageManager = AnnotationImageManager()
+//        class CurrentFeaturesViewModel: ObservableObject {
+//            @Published var currentFeatures: [EditableAccessibilityFeature] = []
+//        }
+//        @StateObject private var currentFeaturesViewModel: CurrentFeaturesViewModel = CurrentFeaturesViewModel()
+        
         // Data model for a single capture
         struct Capture: Identifiable {
             let id = UUID()
-            let image: UIImage
+            let image: UIImage?
             let widthMeters: Double?      // nil if capture failed
             let slopeDegrees: Double?     // nil if capture failed
             let crossSlopeDegrees: Double? // nil if capture failed
@@ -421,6 +436,8 @@ private extension QuestOptions {
         @State private var isProcessing = false
         @State private var tempImage: UIImage? = nil
         @State private var lastSelectedChoiceValue: String = ""
+        @State private var isProcessingError: Bool = false
+        @State private var errorMessage: String = ""
 
         var body: some View {
             ZStack {
@@ -491,6 +508,17 @@ private extension QuestOptions {
                             }
                         }
                         
+                        if isProcessingError {
+                            Text(errorMessage)
+                                .foregroundColor(Color.red)
+                                .padding(.horizontal, 20)
+                                .onAppear {
+                                    DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
+                                        isProcessingError = false
+                                    }
+                                }
+                        }
+                        
                         Spacer()
                     }
                     .padding()
@@ -507,6 +535,7 @@ private extension QuestOptions {
                         }
                     }
                 }
+                configure()
             }
             .onChange(of: selectedChoice) { newChoice in
                 // Monitor selectedChoice for external changes
@@ -521,7 +550,11 @@ private extension QuestOptions {
                 }
             }
             .sheet(isPresented: $showImagePicker) {
-                ImagePickerWrapper(image: $tempImage, sourceType: .camera)
+                ARCameraViewBase(selectedClasses: self.selectedClasses.sorted(), onCaptureComplete: onCaptureComplete)
+                .environmentObject(self.sharedAppData)
+                .environmentObject(self.sharedAppContext)
+                .environmentObject(self.segmentationPipeline)
+                .environmentObject(self.sharedBaseSettings)
             }
             .onChange(of: tempImage) { newImage in
                 if let image = newImage {
@@ -554,6 +587,98 @@ private extension QuestOptions {
                         self.updateSelectedChoice()
                     }
                 }
+            }
+        }
+        
+        public func onCaptureComplete(captureData: CaptureData) {
+            self.errorMessage = ""
+            self.showImagePicker = false
+            self.isProcessing = true
+            
+            Task {
+                do {
+                    try? await Task.sleep(for: .seconds(1))
+                    var captureMeshData: (any CaptureMeshDataProtocol)? = nil
+                    if sharedBaseSettings.isEnhancedAnalysisEnabled {
+                        guard let captureMeshDataResults = captureData.meshData?.captureMeshDataResults else {
+                            throw NSError(
+                                domain: "CaptureMeshDataErrorDomain", code: -1, userInfo: [NSLocalizedDescriptionKey: "Mesh data is missing from capture data."]
+                            )
+                        }
+                        captureMeshData = CaptureImageAndMeshData(
+                            captureImageData: CaptureImageData(captureData.imageData),
+                            captureMeshDataResults: captureMeshDataResults
+                        )
+                    }
+                    try attributeEstimationPipeline.configure(
+                        captureImageData: captureData.imageData,
+                        captureMeshData: captureMeshData
+                    )
+                    try manager.configure(
+                        selectedClasses: selectedClasses, segmentationAnnotationPipeline: segmentationAnnontationPipeline,
+                        captureImageData: captureData.imageData,
+                        captureMeshData: captureMeshData,
+                        isEnhancedAnalysisEnabled: sharedBaseSettings.isEnhancedAnalysisEnabled
+                    )
+                    let captureDataHistory = Array(await sharedAppData.captureDataQueue.snapshot())
+                    manager.setupAlignedSegmentationLabelImages(captureDataHistory: captureDataHistory)
+                    
+                    var currentFeatures: [EditableAccessibilityFeature] = []
+                    try selectedClasses.forEach { currentClass in
+                        let accessibilityFeatures = try manager.updateFeatureClass(accessibilityFeatureClass: currentClass)
+                        try accessibilityFeatures.forEach { accessibilityFeature in
+                            try attributeEstimationPipeline.setPrerequisites(accessibilityFeature: accessibilityFeature)
+                            try attributeEstimationPipeline.processAttributeRequest(
+                                accessibilityFeature: accessibilityFeature
+                            )
+                            attributeEstimationPipeline.clearPrerequisites()
+                        }
+                        currentFeatures.append(contentsOf: accessibilityFeatures)
+                        
+                        var widthMeters: Double?
+                        var slopeDegrees: Double?
+                        var crossSlopeDegrees: Double?
+                        
+                        accessibilityFeatures.first?.attributeValues.forEach { feature in
+                            if feature.key == .width, case .length(let measurement) = feature.value {
+                                widthMeters = Double(measurement.value)
+                            } else if feature.key == .crossSlope, case .angle(let measurement) = feature.value {
+                                crossSlopeDegrees = Double(measurement.value)
+                            } else if feature.key == .runningSlope, case .angle(let measurement) = feature.value {
+                                slopeDegrees = Double(measurement.value)
+                            }
+                        }
+                        
+                        let capture = Capture(image: nil, widthMeters: widthMeters, slopeDegrees: slopeDegrees, crossSlopeDegrees: crossSlopeDegrees)
+                        
+//                        await MainActor.run {
+                            self.captures.append(capture)
+                            self.isProcessing = false
+                            self.updateSelectedChoice()
+//                        }
+                    }
+                } catch {
+                    print("Error configuring attribute estimation pipeline: \(error)")
+                    self.errorMessage = error.localizedDescription
+                    self.isProcessingError = true
+                    self.isProcessing = false
+                }
+            }
+        }
+        
+        public func configure() {
+            // For demonstration purposes, we select only sidewalk class by default
+            guard let sidewalkClass = PointNMapConstants.SelectedAccessibilityFeatureConfig.classes.first(where: { $0.kind == .sidewalk }) else {
+                return
+            }
+            self.sharedBaseSettings.isEnhancedAnalysisEnabled = self.isEnhancedAnalysisEnabled
+            self.selectedClasses = [sidewalkClass]
+            do {
+                try self.sharedAppContext.configure()
+                try segmentationPipeline.configure()
+                try segmentationAnnontationPipeline.configure()
+            } catch {
+                print("Error during setup configuration: \(error)")
             }
         }
         
@@ -666,7 +791,7 @@ private extension QuestOptions {
         var body: some View {
             VStack(spacing: 8) {
                 HStack {
-                    Image(uiImage: capture.image)
+                    Image(uiImage: (capture.image ?? UIImage(systemName: "photo")!))
                         .resizable()
                         .scaledToFill()
                         .frame(width: 80, height: 80)
