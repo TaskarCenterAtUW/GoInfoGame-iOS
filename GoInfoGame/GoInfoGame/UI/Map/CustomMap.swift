@@ -129,7 +129,7 @@ struct CustomMap: UIViewRepresentable {
     }
     
     // Coordinator class for managing delegate methods
-    class Coordinator: NSObject, MKMapViewDelegate {
+    class Coordinator: NSObject, MKMapViewDelegate, UIGestureRecognizerDelegate {
         var parent: CustomMap
         var isRegionSet = false // boolean flag to track if region has been set
         var contextualInfo: ((String) -> Void)?
@@ -312,7 +312,9 @@ struct CustomMap: UIViewRepresentable {
                 customizeAnnotationView(annotationView, with: annotation as! DisplayUnitAnnotation)
                 annotationView.isDraggable = false
                 annotationView.isUserInteractionEnabled = true
-                annotationView.addGestureRecognizer(CustomTouchGestureRecognizer(target: self, action: #selector(handleAnnotationTouch(_:))))
+                let touchRecognizer = CustomTouchGestureRecognizer(target: self, action: #selector(handleAnnotationTouch(_:)))
+                touchRecognizer.delegate = self
+                annotationView.addGestureRecognizer(touchRecognizer)
                 annotationView.displayPriority = .required
                 annotationView.zPriority = .max
                 return annotationView
@@ -335,7 +337,24 @@ struct CustomMap: UIViewRepresentable {
                         zoomRect = zoomRect.union(pointRect)
                     }
                 }
-                mapView.setVisibleMapRect(zoomRect, animated: true)
+
+                // When members are tightly packed, the union rect is essentially a point —
+                // setVisibleMapRect won't zoom in enough for clustering to break apart.
+                // Force a deep camera zoom centered on the cluster so the pins separate.
+                let region = MKCoordinateRegion(zoomRect)
+                let tightThreshold = 0.0005 // ~55m at the equator
+                if region.span.latitudeDelta < tightThreshold && region.span.longitudeDelta < tightThreshold {
+                    let camera = MKMapCamera(
+                        lookingAtCenter: cluster.coordinate,
+                        fromDistance: 150,
+                        pitch: 0,
+                        heading: mapView.camera.heading
+                    )
+                    mapView.setCamera(camera, animated: true)
+                } else {
+                    let padding = UIEdgeInsets(top: 60, left: 60, bottom: 60, right: 60)
+                    mapView.setVisibleMapRect(zoomRect, edgePadding: padding, animated: true)
+                }
             }
         }
         
@@ -482,6 +501,12 @@ struct CustomMap: UIViewRepresentable {
             UIAccessibility.post(notification: .layoutChanged, argument: mapView)
         }
         
+        // Let the map's pan/zoom gestures run at the same time as our annotation touch recognizer,
+        // so a touch that starts on a pin can still pan the map.
+        func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
+            return true
+        }
+
         @objc func handleAnnotationTouch(_ gesture: CustomTouchGestureRecognizer) {
             guard let annotation = gesture.annotation else { return }
 
@@ -500,7 +525,7 @@ struct CustomMap: UIViewRepresentable {
                         self?.currentAnnotation = nil
                     }
                 }
-            case .ended, .cancelled:
+            case .ended:
                 if let startTime = touchStartTime, let currentAnnotation = currentAnnotation {
                     let touchDuration = Date().timeIntervalSince(startTime)
                     if touchDuration < 0.5 {
@@ -508,6 +533,12 @@ struct CustomMap: UIViewRepresentable {
                         self.handleSelected(annotation: annotation)
                     }
                 }
+                touchStartTime = nil
+                currentAnnotation = nil
+                longPressTimer?.invalidate()
+                longPressTimer = nil
+            case .cancelled:
+                // Finger moved beyond the tap threshold — treat as a pan, not a tap.
                 touchStartTime = nil
                 currentAnnotation = nil
                 longPressTimer?.invalidate()
@@ -684,20 +715,35 @@ class CustomAnnotationView: MKAnnotationView {
 
 class CustomTouchGestureRecognizer: UIGestureRecognizer {
     weak var annotation: DisplayUnitAnnotation?
+    private var initialLocation: CGPoint?
+    // How far the finger can drift before we treat the touch as a pan instead of a tap.
+    private let movementTolerance: CGFloat = 10
 
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent) {
         state = .began
         if let view = view as? CustomAnnotationView, let annotation = view.annotation as? DisplayUnitAnnotation {
             self.annotation = annotation
         }
+        initialLocation = touches.first?.location(in: view)
+    }
+
+    override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent) {
+        guard let initial = initialLocation, let current = touches.first?.location(in: view) else { return }
+        let dx = current.x - initial.x
+        let dy = current.y - initial.y
+        if dx * dx + dy * dy > movementTolerance * movementTolerance {
+            state = .cancelled
+        }
     }
 
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent) {
         state = .ended
+        initialLocation = nil
     }
 
     override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent) {
         state = .cancelled
+        initialLocation = nil
     }
 }
 
