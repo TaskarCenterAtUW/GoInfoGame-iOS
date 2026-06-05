@@ -228,7 +228,7 @@ private extension QuestOptions {
                 ))
                 .font(FontFamily.Lato.regular.swiftUIFont(size: 14, relativeTo: .body))
                 .textFieldStyle(PlainTextFieldStyle())
-                .keyboardType(.numberPad)
+                .keyboardType(.decimalPad)
                 .padding(.vertical, 12) // Adds internal space
                 .padding(.horizontal, 10)
                 .frame(minWidth: 100, minHeight: 44) // Meets accessibility minimums
