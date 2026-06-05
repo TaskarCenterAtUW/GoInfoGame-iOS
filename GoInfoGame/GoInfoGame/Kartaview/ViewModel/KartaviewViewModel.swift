@@ -116,16 +116,8 @@ class KartaviewViewModel: ObservableObject {
             case .success(let success):
                 let status = success.status.httpCode
                 if status == 200 {
-                    print("PHOTO UPLOADED ----->>>> FETCHING PHOTO URL")
-                    self.fetchPhotoLthUrl(sequenceId: sequenceId, sequenceIndex: "1") { lthUrl in
-                        guard let lthUrl = lthUrl else {
-                            print("Failed to retrieve photo URL")
-                            completion("An error occured", false)
-                            return
-                        }
-                        print("PHOTO URL FETCHED -----> PROCEEDING TO FINISH UPLOAD: \(lthUrl)")
-                        self.finishUploading(path: lthUrl, sequenceId: sequenceId, completion: completion)
-                    }
+                    print("PHOTO UPLOADED ----->>>> FINISHING SEQUENCE")
+                    self.finishUploading(sequenceId: sequenceId, completion: completion)
                 }
             case .failure(let failure):
                 print("FAILED")
@@ -168,9 +160,9 @@ class KartaviewViewModel: ObservableObject {
         }
     }
     
-    func finishUploading(path: String, sequenceId: String, completion: @escaping (String, Bool) -> ()) {
+    func finishUploading(sequenceId: String, completion: @escaping (String, Bool) -> ()) {
         let kartaViewAccessToken = "96aca5c4b80709fc6d9aced613b51905c0fbc37870640d7bdabede269165bde7"
-        
+
         let formData: [[String: Any]] = [
              [
                 "key": "sequenceId",
@@ -183,14 +175,22 @@ class KartaviewViewModel: ObservableObject {
                 "type": "text"
               ],
         ]
-        
+
         ApiManager.shared.performRequest(to: .finshedUploadingToKartaview(formData), setupType: .kartaview, modelType: FinishUploadingModel.self) { result in
             switch result {
             case .success(let success):
                 let status = success.status.httpCode
                 if status == 200 {
-                  print("PHOTO UPLOADED SUCCESSFULLY")
-                    completion(path, true)
+                    print("SEQUENCE FINISHED -----> FETCHING PHOTO URL")
+                    self.fetchPhotoLthUrl(sequenceId: sequenceId, sequenceIndex: "1") { lthUrl in
+                        guard let lthUrl = lthUrl else {
+                            print("Failed to retrieve photo URL")
+                            completion("An error occured", false)
+                            return
+                        }
+                        print("PHOTO URL FETCHED: \(lthUrl)")
+                        completion(lthUrl, true)
+                    }
                 }
             case .failure(let failure):
                 print("FINISHING FAILED")
