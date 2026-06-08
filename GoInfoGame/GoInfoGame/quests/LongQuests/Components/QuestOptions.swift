@@ -28,7 +28,8 @@ struct QuestOptions: View {
         case .multipleChoice:
             MultipleChoiceView(
                 options: options,
-                selectedChoice: $selectedChoice
+                selectedChoice: $selectedChoice,
+                uploadPhoto: uploadPhoto
             )
             
         case .numeric:
@@ -109,6 +110,7 @@ private extension QuestOptions {
     struct MultipleChoiceView: View {
         let options: [QuestAnswerChoice]
         @Binding var selectedChoice: QuestAnswerChoice?
+        var uploadPhoto: (Bool) -> ()
 
         @State private var selectedValues: Set<String> = []
         @State private var selectedImageURL: String? = nil
@@ -156,6 +158,12 @@ private extension QuestOptions {
                                 .accessibilityLabel((selectedValues.contains(option.value)) ? "\(option.choiceText) \(L10n.Localizable.optionSelected)" :  "\(option.choiceText) \(L10n.Localizable.optionUnselected)")
                             }
                         }
+
+                        FollowUpButton(
+                            options: options,
+                            selectedChoice: $selectedChoice,
+                            uploadPhoto: uploadPhoto
+                        )
                     }
                     .padding()
                 }
@@ -220,7 +228,7 @@ private extension QuestOptions {
                 ))
                 .font(FontFamily.Lato.regular.swiftUIFont(size: 14, relativeTo: .body))
                 .textFieldStyle(PlainTextFieldStyle())
-                .keyboardType(.numberPad)
+                .keyboardType(.decimalPad)
                 .padding(.vertical, 12) // Adds internal space
                 .padding(.horizontal, 10)
                 .frame(minWidth: 100, minHeight: 44) // Meets accessibility minimums
@@ -397,8 +405,14 @@ private extension QuestOptions {
         @Binding var selectedChoice: QuestAnswerChoice?
         let uploadPhoto: (Bool) -> Void
 
+        private var followUpText: String? {
+            guard let value = selectedChoice?.value else { return nil }
+            let selectedValues = Set(value.components(separatedBy: ";").filter { !$0.isEmpty })
+            return options.first(where: { selectedValues.contains($0.value) && $0.choiceFollowUp != nil })?.choiceFollowUp
+        }
+
         var body: some View {
-            if let selected = selectedChoice, selected.choiceFollowUp != nil {
+            if let followUp = followUpText {
                 Button(action: {
                     uploadPhoto(true)
                 }) {
@@ -407,7 +421,7 @@ private extension QuestOptions {
                             .font(.system(size: 14, weight: .medium))
                             .foregroundColor(.white)
 
-                        Text(selected.choiceFollowUp ?? "Upload a picture")
+                        Text(followUp)
                             .font(.custom("Lato-Regular", size: 13))
                             .foregroundColor(.white)
                             .multilineTextAlignment(.leading)

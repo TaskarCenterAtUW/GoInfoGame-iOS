@@ -44,4 +44,8 @@ class APIConfiguration {
     func kartaViewUrl(for endpoint: APIEndpoint) -> URL? {
         return URL(string: environment.kartaViewBaseURL + endpoint.path)
     }
+
+    func kartaViewV2Url(for endpoint: APIEndpoint) -> URL? {
+        return URL(string: environment.kartaViewV2BaseURL + endpoint.path)
+    }
 }

@@ -21,6 +21,7 @@
 		05DBBB622B164D9A00B6F110 /* RealOPElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05DBBB612B164D9A00B6F110 /* RealOPElement.swift */; };
 		05DBBB642B17204300B6F110 /* RealmOPGeometry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05DBBB632B17204300B6F110 /* RealmOPGeometry.swift */; };
 		05DBBB662B17209600B6F110 /* RealmOPMeta.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05DBBB652B17209600B6F110 /* RealmOPMeta.swift */; };
+		171574E02FD1CC4A00AA6603 /* PhotoLookupResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 171574DF2FD1CC4A00AA6603 /* PhotoLookupResponse.swift */; };
 		188843AD2B5FA2DF0008DCF8 /* TactilePavingStepsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 188843AC2B5FA2DF0008DCF8 /* TactilePavingStepsTests.swift */; };
 		188843AF2B5FB32D0008DCF8 /* WayLitTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 188843AE2B5FB32D0008DCF8 /* WayLitTests.swift */; };
 		342561966FC217124BD9CFE7 /* Pods_GoInfoGame_GoInfoGameUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2D539E22EFF6636F8CBA035A /* Pods_GoInfoGame_GoInfoGameUITests.framework */; };
@@ -358,6 +359,7 @@
 		05DBBB652B17209600B6F110 /* RealmOPMeta.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RealmOPMeta.swift; sourceTree = "<group>"; };
 		0644279A63026564F68E19C5 /* Pods-osmapi.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-osmapi.release.xcconfig"; path = "Target Support Files/Pods-osmapi/Pods-osmapi.release.xcconfig"; sourceTree = "<group>"; };
 		066F85ADCDCE7357368131F8 /* Pods_GoInfoGameTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_GoInfoGameTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		171574DF2FD1CC4A00AA6603 /* PhotoLookupResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoLookupResponse.swift; sourceTree = "<group>"; };
 		188843AC2B5FA2DF0008DCF8 /* TactilePavingStepsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TactilePavingStepsTests.swift; sourceTree = "<group>"; };
 		188843AE2B5FB32D0008DCF8 /* WayLitTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WayLitTests.swift; sourceTree = "<group>"; };
 		18EC425B2B84987200DE05D7 /* TactilePavingCrosswalkForm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TactilePavingCrosswalkForm.swift; sourceTree = "<group>"; };
@@ -1608,6 +1610,7 @@
 		FAD5C4E62AFCBE700040C61A = {
 			isa = PBXGroup;
 			children = (
+				171574DF2FD1CC4A00AA6603 /* PhotoLookupResponse.swift */,
 				FAD5C4F12AFCBE700040C61A /* GoInfoGame */,
 				FAD5C5082AFCBE720040C61A /* GoInfoGameTests */,
 				FAD5C5122AFCBE720040C61A /* GoInfoGameUITests */,
@@ -2507,6 +2510,7 @@
 				971902112B983EFC009B3270 /* CustomMap.swift in Sources */,
 				FA5071982D71F1B000CE9798 /* SyncLogger.swift in Sources */,
 				A48037362BBA8DDC007EE7E4 /* WorkspacesResponse.swift in Sources */,
+				171574E02FD1CC4A00AA6603 /* PhotoLookupResponse.swift in Sources */,
 				C769AB552E431EFE00FA810A /* Strings+Generated.swift in Sources */,
 				0536DD992B0BDBFE00B04C4B /* OAuthManager.swift in Sources */,
 				A4E711A62B57BBCA00C9DE08 /* QuestProtocols.swift in Sources */,
@@ -3025,7 +3029,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.2.3;
+				MARKETING_VERSION = 1.2.4;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-l\"c++\"",
@@ -3090,7 +3094,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.2.3;
+				MARKETING_VERSION = 1.2.4;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-l\"c++\"",

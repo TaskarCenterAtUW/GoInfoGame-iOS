@@ -66,6 +66,13 @@ enum APIEnvironment: String, CaseIterable {
             return "https://api.openstreetcam.org/1.0"
         }
     }
+
+    var kartaViewV2BaseURL: String {
+        switch self {
+        case .development, .staging, .production:
+            return "https://api.openstreetcam.org/2.0"
+        }
+    }
     
     func displayString() -> String {
         switch self {
