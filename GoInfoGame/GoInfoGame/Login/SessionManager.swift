@@ -38,6 +38,7 @@ final class SessionManager: ObservableObject {
                 switch result {
                 case .success(let response):
                     _ = KeychainManager.save(key: "accessToken", data: response.accessToken)
+                    _ = KeychainManager.save(key: "refreshToken", data: response.refreshToken)
                     self?.lastLoginPassword = password
                     UserDefaults.standard.setValue(response.expiresIn, forKey: "accessToken_expire_in")
                     UserDefaults.standard.setValue(Date().timeIntervalSince1970, forKey: "accessToken_Generate")

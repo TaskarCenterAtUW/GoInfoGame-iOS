@@ -180,8 +180,12 @@ struct UserProfileView: View {
             Utilities.clearAllData()
             
             if let window = UIApplication.window() {
-                   window.rootViewController = UIHostingController(rootView: PosmLoginView(forceUpdateManager: ForceUpdateManager()))
-               }
+                window.rootViewController = UIHostingController(rootView: PosmLoginView(forceUpdateManager: ForceUpdateManager()))
+            }
+            
+            if let appDelegate = UIApplication.shared.delegate as? AppDelegate {
+                appDelegate.invalidateRefreshTokenTimer()
+            }
           //  accessToken = nil
         } label: {
             HStack(spacing: 10) {
