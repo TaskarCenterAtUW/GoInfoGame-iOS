@@ -154,6 +154,7 @@ struct CustomMap: UIViewRepresentable {
             self.parent = parent
             self.contextualInfo = parent.contextualInfo
             self.shadowOverlay = shadowOverlay
+            super.init()
         }
         
         func reloadMap() async {
@@ -188,6 +189,11 @@ struct CustomMap: UIViewRepresentable {
                     annotations.append(cluster)
                     mapView?.addAnnotation(cluster)
                 }
+            }
+            
+            // ✅ Ensure user location stays on top after clustering changes
+            if let mapView = mapView {
+                ensureUserLocationOnTop(mapView)
             }
         }
         
@@ -276,8 +282,8 @@ struct CustomMap: UIViewRepresentable {
         // Customizes the view for each annotation
         func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
             if annotation is MKUserLocation {
-                   return nil
-               }
+                return nil
+            }
             
             switch annotation {
             case is CluserableDisplayUnitAnnotation:
@@ -290,7 +296,7 @@ struct CustomMap: UIViewRepresentable {
                 annotationView.markerTintColor = UIColor(red: 135/255, green: 62/255, blue: 242/255, alpha: 1.0)
                 annotationView.glyphText = "\((annotation as? CluserableDisplayUnitAnnotation)?.memberAnnotations.count ?? 0)"
                 annotationView.displayPriority = .required
-                annotationView.zPriority = .max
+                annotationView.layer.zPosition = 100
                 return annotationView
                 
             case is DisplayUnitAnnotation:
@@ -303,7 +309,6 @@ struct CustomMap: UIViewRepresentable {
                 if let ann = annotation as? DisplayUnitAnnotation {
                     if let annotationType = (ann.displayUnit?.parent as? LongElementQuest)?.elementType {
                         let isSelectable = (parent.selectedAnnotationType == nil || parent.selectedAnnotationType == annotationType)
-                        // Dim other annotation types
                         annotationView.alpha = isSelectable ? 1.0 : 0.5
                         annotationView.isUserInteractionEnabled = isSelectable
                     }
@@ -316,11 +321,51 @@ struct CustomMap: UIViewRepresentable {
                 touchRecognizer.delegate = self
                 annotationView.addGestureRecognizer(touchRecognizer)
                 annotationView.displayPriority = .required
-                annotationView.zPriority = .max
+                annotationView.layer.zPosition = 50
                 return annotationView
             default:
                 return nil
             }
+        }
+        
+        // ✅ Ensure user location is always on top
+        func mapView(_ mapView: MKMapView, didAdd views: [MKAnnotationView]) {
+            for view in views {
+                if view.annotation is MKUserLocation {
+                    view.layer.zPosition = 10000
+                    view.displayPriority = .required
+                    if let superview = view.superview {
+                        superview.bringSubviewToFront(view)
+                    }
+                } else {
+                    // Keep other annotations below user location
+                    view.layer.zPosition = view.annotation is CluserableDisplayUnitAnnotation ? 100 : 50
+                }
+            }
+            
+            // Schedule a delayed check to ensure user location stays on top
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) { [weak self] in
+                self?.ensureUserLocationOnTop(mapView)
+            }
+        }
+        
+        // ✅ Helper to ensure user location is always on top
+        private func ensureUserLocationOnTop(_ mapView: MKMapView) {
+            // Direct access to user location view is more efficient
+            guard let userLocationView = mapView.view(for: mapView.userLocation) else { return }
+            
+            userLocationView.layer.zPosition = 10000
+            userLocationView.displayPriority = .required
+            
+            // Force the view to be on top in the view hierarchy
+            if let superview = userLocationView.superview {
+                superview.bringSubviewToFront(userLocationView)
+            }
+        }
+        
+        // ✅ Handle user location updates to keep it on top (primary method)
+        func mapView(_ mapView: MKMapView, didUpdate userLocation: MKUserLocation) {
+            ensureUserLocationOnTop(mapView)
         }
         
         func mapView(_ mapView: MKMapView, didSelect view: MKAnnotationView) {
@@ -424,7 +469,13 @@ struct CustomMap: UIViewRepresentable {
         }
         
         func mapView(_ mapView: MKMapView, regionDidChangeAnimated animated: Bool) {
-            Task { await reloadMap() }
+            Task { 
+                await reloadMap()
+                // ✅ Ensure user location stays on top after region change
+                await MainActor.run {
+                    self.ensureUserLocationOnTop(mapView)
+                }
+            }
         }
         
         private func selectedAnAnnotation(selectedQuest: DisplayUnitAnnotation) {
