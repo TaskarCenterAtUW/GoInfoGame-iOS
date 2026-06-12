@@ -174,13 +174,6 @@
 		C76B637F2E4625D30076A540 /* FirebasePerformance in Frameworks */ = {isa = PBXBuildFile; productRef = C76B637E2E4625D30076A540 /* FirebasePerformance */; };
 		C76DA1A12DF0679F00451E63 /* LongFormModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA8C74C32C4FDE1000D28220 /* LongFormModel.swift */; };
 		C76FAAE52ED76509009E0B4F /* gachibowli circle_path.gpx in Resources */ = {isa = PBXBuildFile; fileRef = C76FAAE42ED76509009E0B4F /* gachibowli circle_path.gpx */; };
-		C7742E582FB6D93B004063C8 /* PointNMapShared.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C7742E522FB6D93B004063C8 /* PointNMapShared.framework */; };
-		C7742E592FB6D93B004063C8 /* PointNMapShared.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = C7742E522FB6D93B004063C8 /* PointNMapShared.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		C7742F752FB6D9CB004063C8 /* DequeModule in Frameworks */ = {isa = PBXBuildFile; productRef = C7742F742FB6D9CB004063C8 /* DequeModule */; };
-		C7742F822FB6E19E004063C8 /* PointNMapShaderTypes.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C7742F7C2FB6E19E004063C8 /* PointNMapShaderTypes.framework */; };
-		C7742F832FB6E19E004063C8 /* PointNMapShaderTypes.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = C7742F7C2FB6E19E004063C8 /* PointNMapShaderTypes.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		C7742F8E2FB6E1D4004063C8 /* PointNMapShaderTypes.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C7742F7C2FB6E19E004063C8 /* PointNMapShaderTypes.framework */; };
-		C7742F8F2FB6E1D4004063C8 /* PointNMapShaderTypes.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = C7742F7C2FB6E19E004063C8 /* PointNMapShaderTypes.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		C778A50F2EDD9C6D0014B9C5 /* UndoEditsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C778A50E2EDD9C6D0014B9C5 /* UndoEditsViewModel.swift */; };
 		C77A4A262DF2AF3100DED8B0 /* SecureInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C77A4A252DF2AF3100DED8B0 /* SecureInputView.swift */; };
 		C77AAC9D2E4463ED006713B2 /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = C77AAC9C2E4463ED006713B2 /* FirebaseAnalytics */; };
@@ -191,6 +184,10 @@
 		C787F3422E9CD34F00BEF0A6 /* ForceUpdateManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C787F3412E9CD34900BEF0A6 /* ForceUpdateManager.swift */; };
 		C78E8BC22EDF20E6002215C0 /* UndoItemConfirmationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C78E8BC12EDF20E6002215C0 /* UndoItemConfirmationView.swift */; };
 		C78E8BC42EDF2D55002215C0 /* EditedTagView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C78E8BC32EDF2D55002215C0 /* EditedTagView.swift */; };
+		C78EEFA62FDAD18A00729240 /* PointNMapShared.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C78EEFA52FDAD18A00729240 /* PointNMapShared.framework */; };
+		C78EEFA72FDAD18A00729240 /* PointNMapShared.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = C78EEFA52FDAD18A00729240 /* PointNMapShared.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		C78EEFA92FDAD19000729240 /* PointNMapShaderTypes.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C78EEFA82FDAD19000729240 /* PointNMapShaderTypes.framework */; };
+		C78EEFAA2FDAD19000729240 /* PointNMapShaderTypes.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = C78EEFA82FDAD19000729240 /* PointNMapShaderTypes.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		C7927B552E42363000A7A34E /* XCAssets+Generated.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7927B532E42363000A7A34E /* XCAssets+Generated.swift */; };
 		C79C3B7A2ED4559500F80364 /* AccessibilityModeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C79C3B792ED4559500F80364 /* AccessibilityModeView.swift */; };
 		C79C3B7C2ED5786100F80364 /* NearestQuestCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = C79C3B7B2ED5786100F80364 /* NearestQuestCard.swift */; };
@@ -324,27 +321,6 @@
 			remoteGlobalIDString = A4AD13112B5E90BD0041A881;
 			remoteInfo = osmparser;
 		};
-		C7742E562FB6D93B004063C8 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = FAD5C4E72AFCBE700040C61A /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = C7742E512FB6D93B004063C8;
-			remoteInfo = PointNMapShared;
-		};
-		C7742F802FB6E19E004063C8 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = FAD5C4E72AFCBE700040C61A /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = C7742F7B2FB6E19E004063C8;
-			remoteInfo = PointNMapShaderTypes;
-		};
-		C7742F902FB6E1D4004063C8 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = FAD5C4E72AFCBE700040C61A /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = C7742F7B2FB6E19E004063C8;
-			remoteInfo = PointNMapShaderTypes;
-		};
 		FAD5C5062AFCBE720040C61A /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = FAD5C4E72AFCBE700040C61A /* Project object */;
@@ -368,21 +344,10 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				C7742F832FB6E19E004063C8 /* PointNMapShaderTypes.framework in Embed Frameworks */,
+				C78EEFAA2FDAD19000729240 /* PointNMapShaderTypes.framework in Embed Frameworks */,
 				A40E72802B5D462A00328848 /* osmapi.framework in Embed Frameworks */,
 				A4AD13282B5E90BD0041A881 /* osmparser.framework in Embed Frameworks */,
-				C7742E592FB6D93B004063C8 /* PointNMapShared.framework in Embed Frameworks */,
-			);
-			name = "Embed Frameworks";
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		C7742F732FB6D9B5004063C8 /* Embed Frameworks */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "";
-			dstSubfolderSpec = 10;
-			files = (
-				C7742F8F2FB6E1D4004063C8 /* PointNMapShaderTypes.framework in Embed Frameworks */,
+				C78EEFA72FDAD18A00729240 /* PointNMapShared.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -594,9 +559,6 @@
 		C76B63722E46019D0076A540 /* proximanova_semibold.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = proximanova_semibold.otf; sourceTree = "<group>"; };
 		C76B63772E4604000076A540 /* Fonts+Generated.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Fonts+Generated.swift"; sourceTree = "<group>"; };
 		C76FAAE42ED76509009E0B4F /* gachibowli circle_path.gpx */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = "gachibowli circle_path.gpx"; sourceTree = "<group>"; };
-		C7742E522FB6D93B004063C8 /* PointNMapShared.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = PointNMapShared.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		C7742F7C2FB6E19E004063C8 /* PointNMapShaderTypes.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = PointNMapShaderTypes.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		C7742F922FB70A2D004063C8 /* PointNMap-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "PointNMap-Bridging-Header.h"; sourceTree = "<group>"; };
 		C778A50E2EDD9C6D0014B9C5 /* UndoEditsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UndoEditsViewModel.swift; sourceTree = "<group>"; };
 		C77A4A252DF2AF3100DED8B0 /* SecureInputView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecureInputView.swift; sourceTree = "<group>"; };
 		C77AAC992E446376006713B2 /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
@@ -607,6 +569,9 @@
 		C787F3412E9CD34900BEF0A6 /* ForceUpdateManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForceUpdateManager.swift; sourceTree = "<group>"; };
 		C78E8BC12EDF20E6002215C0 /* UndoItemConfirmationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UndoItemConfirmationView.swift; sourceTree = "<group>"; };
 		C78E8BC32EDF2D55002215C0 /* EditedTagView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditedTagView.swift; sourceTree = "<group>"; };
+		C78EEFA52FDAD18A00729240 /* PointNMapShared.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = PointNMapShared.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		C78EEFA82FDAD19000729240 /* PointNMapShaderTypes.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = PointNMapShaderTypes.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		C78EEFAC2FDAD91000729240 /* PointNMap-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "PointNMap-Bridging-Header.h"; sourceTree = "<group>"; };
 		C7927B532E42363000A7A34E /* XCAssets+Generated.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "XCAssets+Generated.swift"; sourceTree = "<group>"; };
 		C79C3B792ED4559500F80364 /* AccessibilityModeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccessibilityModeView.swift; sourceTree = "<group>"; };
 		C79C3B7B2ED5786100F80364 /* NearestQuestCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NearestQuestCard.swift; sourceTree = "<group>"; };
@@ -705,43 +670,6 @@
 		30877432D1026706D7E805DA /* map_theme */ = {isa = PBXFileReference; lastKnownFileType = folder; path = map_theme; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
-/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		C7742F762FB6DA51004063C8 /* Exceptions for "PointNMapShared" folder in "PointNMapShared" target */ = {
-			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			publicHeaders = (
-				PointNMapShared.h,
-			);
-			target = C7742E512FB6D93B004063C8 /* PointNMapShared */;
-		};
-		C7742F842FB6E19E004063C8 /* Exceptions for "PointNMapShaderTypes" folder in "PointNMapShaderTypes" target */ = {
-			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			publicHeaders = (
-				PointNMapShaderTypes.h,
-				ShaderTypes.h,
-			);
-			target = C7742F7B2FB6E19E004063C8 /* PointNMapShaderTypes */;
-		};
-/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
-
-/* Begin PBXFileSystemSynchronizedRootGroup section */
-		C7742E532FB6D93B004063C8 /* PointNMapShared */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			exceptions = (
-				C7742F762FB6DA51004063C8 /* Exceptions for "PointNMapShared" folder in "PointNMapShared" target */,
-			);
-			path = PointNMapShared;
-			sourceTree = "<group>";
-		};
-		C7742F7D2FB6E19E004063C8 /* PointNMapShaderTypes */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			exceptions = (
-				C7742F842FB6E19E004063C8 /* Exceptions for "PointNMapShaderTypes" folder in "PointNMapShaderTypes" target */,
-			);
-			path = PointNMapShaderTypes;
-			sourceTree = "<group>";
-		};
-/* End PBXFileSystemSynchronizedRootGroup section */
-
 /* Begin PBXFrameworksBuildPhase section */
 		A40E72672B5D462A00328848 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
@@ -774,37 +702,21 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		C7742E4F2FB6D93B004063C8 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				C7742F8E2FB6E1D4004063C8 /* PointNMapShaderTypes.framework in Frameworks */,
-				C7742F752FB6D9CB004063C8 /* DequeModule in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		C7742F792FB6E19E004063C8 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		FAD5C4EC2AFCBE700040C61A /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 				C77AAC9D2E4463ED006713B2 /* FirebaseAnalytics in Frameworks */,
-				C7742F822FB6E19E004063C8 /* PointNMapShaderTypes.framework in Frameworks */,
+				C78EEFA92FDAD19000729240 /* PointNMapShaderTypes.framework in Frameworks */,
 				C75666D02E0D068900D36C41 /* OHHTTPStubs in Frameworks */,
 				C76B637F2E4625D30076A540 /* FirebasePerformance in Frameworks */,
-				C7742E582FB6D93B004063C8 /* PointNMapShared.framework in Frameworks */,
 				C75666D22E0D068900D36C41 /* OHHTTPStubsSwift in Frameworks */,
 				97F2FA8A2B0630A3000B9726 /* Pods_GoInfoGame.framework in Frameworks */,
 				A4AD13272B5E90BD0041A881 /* osmparser.framework in Frameworks */,
 				C787B2FE2FECE5E80026C40E /* MapLibre in Frameworks */,
 				C77AAC9F2E4463ED006713B2 /* FirebaseCrashlytics in Frameworks */,
 				C76187DC2E0153D800150201 /* ClusterMap in Frameworks */,
+				C78EEFA62FDAD18A00729240 /* PointNMapShared.framework in Frameworks */,
 				A40E727F2B5D462A00328848 /* osmapi.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -974,6 +886,8 @@
 		416A9A4590B07971607790B0 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				C78EEFA82FDAD19000729240 /* PointNMapShaderTypes.framework */,
+				C78EEFA52FDAD18A00729240 /* PointNMapShared.framework */,
 				97F2FA8D2B0630C4000B9726 /* SwiftOverpassAPI.framework */,
 				66BED441AF03CC04539E8D4A /* Pods_GoInfoGame.framework */,
 				2D539E22EFF6636F8CBA035A /* Pods_GoInfoGame_GoInfoGameUITests.framework */,
@@ -1735,8 +1649,6 @@
 				A40E72792B5D462A00328848 /* osmapiTests */,
 				A4AD13132B5E90BD0041A881 /* osmparser */,
 				A4AD13212B5E90BD0041A881 /* osmparserTests */,
-				C7742E532FB6D93B004063C8 /* PointNMapShared */,
-				C7742F7D2FB6E19E004063C8 /* PointNMapShaderTypes */,
 				FAD5C4F02AFCBE700040C61A /* Products */,
 				542FC000DFD01277B18A7CDB /* Pods */,
 				416A9A4590B07971607790B0 /* Frameworks */,
@@ -1753,8 +1665,6 @@
 				A40E72732B5D462A00328848 /* osmapiTests.xctest */,
 				A4AD13122B5E90BD0041A881 /* osmparser.framework */,
 				A4AD131B2B5E90BD0041A881 /* osmparserTests.xctest */,
-				C7742E522FB6D93B004063C8 /* PointNMapShared.framework */,
-				C7742F7C2FB6E19E004063C8 /* PointNMapShaderTypes.framework */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -1762,7 +1672,7 @@
 		FAD5C4F12AFCBE700040C61A /* GoInfoGame */ = {
 			isa = PBXGroup;
 			children = (
-				C7742F922FB70A2D004063C8 /* PointNMap-Bridging-Header.h */,
+				C78EEFAC2FDAD91000729240 /* PointNMap-Bridging-Header.h */,
 				C7F75B3F2F8F6A8B0054E711 /* AutoCaptureSampleJson.json */,
 				C787EF162E9676CC00BEF0A6 /* GoInfoGame.entitlements */,
 				FA18CADE2CC7CD46008247F2 /* Kartaview */,
@@ -1935,20 +1845,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		C7742E4D2FB6D93B004063C8 /* Headers */ = {
-			isa = PBXHeadersBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		C7742F772FB6E19E004063C8 /* Headers */ = {
-			isa = PBXHeadersBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
@@ -2027,55 +1923,6 @@
 			productReference = A4AD131B2B5E90BD0041A881 /* osmparserTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
-		C7742E512FB6D93B004063C8 /* PointNMapShared */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = C7742E5A2FB6D93B004063C8 /* Build configuration list for PBXNativeTarget "PointNMapShared" */;
-			buildPhases = (
-				C7742E4D2FB6D93B004063C8 /* Headers */,
-				C7742E4E2FB6D93B004063C8 /* Sources */,
-				C7742E4F2FB6D93B004063C8 /* Frameworks */,
-				C7742E502FB6D93B004063C8 /* Resources */,
-				C7742F732FB6D9B5004063C8 /* Embed Frameworks */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				C7742F912FB6E1D4004063C8 /* PBXTargetDependency */,
-			);
-			fileSystemSynchronizedGroups = (
-				C7742E532FB6D93B004063C8 /* PointNMapShared */,
-			);
-			name = PointNMapShared;
-			packageProductDependencies = (
-				C7742F742FB6D9CB004063C8 /* DequeModule */,
-			);
-			productName = PointNMapShared;
-			productReference = C7742E522FB6D93B004063C8 /* PointNMapShared.framework */;
-			productType = "com.apple.product-type.framework";
-		};
-		C7742F7B2FB6E19E004063C8 /* PointNMapShaderTypes */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = C7742F852FB6E19E004063C8 /* Build configuration list for PBXNativeTarget "PointNMapShaderTypes" */;
-			buildPhases = (
-				C7742F772FB6E19E004063C8 /* Headers */,
-				C7742F782FB6E19E004063C8 /* Sources */,
-				C7742F792FB6E19E004063C8 /* Frameworks */,
-				C7742F7A2FB6E19E004063C8 /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-			);
-			fileSystemSynchronizedGroups = (
-				C7742F7D2FB6E19E004063C8 /* PointNMapShaderTypes */,
-			);
-			name = PointNMapShaderTypes;
-			packageProductDependencies = (
-			);
-			productName = PointNMapShaderTypes;
-			productReference = C7742F7C2FB6E19E004063C8 /* PointNMapShaderTypes.framework */;
-			productType = "com.apple.product-type.framework";
-		};
 		FAD5C4EE2AFCBE700040C61A /* GoInfoGame */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = FAD5C5192AFCBE720040C61A /* Build configuration list for PBXNativeTarget "GoInfoGame" */;
@@ -2095,8 +1942,6 @@
 			dependencies = (
 				A40E727E2B5D462A00328848 /* PBXTargetDependency */,
 				A4AD13262B5E90BD0041A881 /* PBXTargetDependency */,
-				C7742E572FB6D93B004063C8 /* PBXTargetDependency */,
-				C7742F812FB6E19E004063C8 /* PBXTargetDependency */,
 			);
 			name = GoInfoGame;
 			productName = GoInfoGame;
@@ -2166,12 +2011,6 @@
 						CreatedOnToolsVersion = 15.1;
 						TestTargetID = FAD5C4EE2AFCBE700040C61A;
 					};
-					C7742E512FB6D93B004063C8 = {
-						CreatedOnToolsVersion = 26.3;
-					};
-					C7742F7B2FB6E19E004063C8 = {
-						CreatedOnToolsVersion = 26.3;
-					};
 					FAD5C4EE2AFCBE700040C61A = {
 						CreatedOnToolsVersion = 14.1;
 					};
@@ -2212,8 +2051,6 @@
 				A40E72722B5D462A00328848 /* osmapiTests */,
 				A4AD13112B5E90BD0041A881 /* osmparser */,
 				A4AD131A2B5E90BD0041A881 /* osmparserTests */,
-				C7742E512FB6D93B004063C8 /* PointNMapShared */,
-				C7742F7B2FB6E19E004063C8 /* PointNMapShaderTypes */,
 			);
 		};
 /* End PBXProject section */
@@ -2241,20 +2078,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		A4AD13192B5E90BD0041A881 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		C7742E502FB6D93B004063C8 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		C7742F7A2FB6E19E004063C8 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -2593,20 +2416,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		C7742E4E2FB6D93B004063C8 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		C7742F782FB6E19E004063C8 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		FAD5C4EB2AFCBE700040C61A /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -2819,21 +2628,6 @@
 			isa = PBXTargetDependency;
 			target = A4AD13112B5E90BD0041A881 /* osmparser */;
 			targetProxy = A4AD13252B5E90BD0041A881 /* PBXContainerItemProxy */;
-		};
-		C7742E572FB6D93B004063C8 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = C7742E512FB6D93B004063C8 /* PointNMapShared */;
-			targetProxy = C7742E562FB6D93B004063C8 /* PBXContainerItemProxy */;
-		};
-		C7742F812FB6E19E004063C8 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = C7742F7B2FB6E19E004063C8 /* PointNMapShaderTypes */;
-			targetProxy = C7742F802FB6E19E004063C8 /* PBXContainerItemProxy */;
-		};
-		C7742F912FB6E1D4004063C8 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = C7742F7B2FB6E19E004063C8 /* PointNMapShaderTypes */;
-			targetProxy = C7742F902FB6E1D4004063C8 /* PBXContainerItemProxy */;
 		};
 		FAD5C5072AFCBE720040C61A /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -3122,199 +2916,6 @@
 			};
 			name = Release;
 		};
-		C7742E5B2FB6D93B004063C8 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
-				BUILD_LIBRARY_FOR_DISTRIBUTION = YES;
-				CODE_SIGN_IDENTITY = "Apple Development";
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = G8MQVE5WWW;
-				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 1;
-				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				ENABLE_MODULE_VERIFIER = YES;
-				ENABLE_USER_SCRIPT_SANDBOXING = YES;
-				GCC_C_LANGUAGE_STANDARD = gnu17;
-				GENERATE_INFOPLIST_FILE = YES;
-				HEADER_SEARCH_PATHS = (
-					"$(SRCROOT)/PointNMapShared",
-					"$(SRCROOT)/PointNMapShaderTypes",
-				);
-				INFOPLIST_KEY_NSHumanReadableCopyright = "";
-				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 18.6;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@loader_path/Frameworks",
-				);
-				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
-				MARKETING_VERSION = 1.0;
-				MODULE_VERIFIER_SUPPORTED_LANGUAGES = "objective-c objective-c++";
-				MODULE_VERIFIER_SUPPORTED_LANGUAGE_STANDARDS = "gnu17 gnu++20";
-				MTL_HEADER_SEARCH_PATHS = "$(SRCROOT)/PointNMapShared $(SRCROOT)/PointNMapShaderTypes";
-				PRODUCT_BUNDLE_IDENTIFIER = tech.opentoall.aviv.scoutroute.PointNMapShared;
-				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
-				SKIP_INSTALL = YES;
-				STRING_CATALOG_GENERATE_SYMBOLS = YES;
-				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
-				SUPPORTS_MACCATALYST = NO;
-				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
-				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
-				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
-				SWIFT_APPROACHABLE_CONCURRENCY = YES;
-				SWIFT_EMIT_LOC_STRINGS = YES;
-				SWIFT_INSTALL_MODULE = YES;
-				SWIFT_INSTALL_OBJC_HEADER = NO;
-				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				VERSIONING_SYSTEM = "apple-generic";
-				VERSION_INFO_PREFIX = "";
-			};
-			name = Debug;
-		};
-		C7742E5C2FB6D93B004063C8 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
-				BUILD_LIBRARY_FOR_DISTRIBUTION = YES;
-				CODE_SIGN_IDENTITY = "Apple Development";
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = G8MQVE5WWW;
-				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 1;
-				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				ENABLE_MODULE_VERIFIER = YES;
-				ENABLE_USER_SCRIPT_SANDBOXING = YES;
-				GCC_C_LANGUAGE_STANDARD = gnu17;
-				GENERATE_INFOPLIST_FILE = YES;
-				HEADER_SEARCH_PATHS = (
-					"$(SRCROOT)/PointNMapShared",
-					"$(SRCROOT)/PointNMapShaderTypes",
-				);
-				INFOPLIST_KEY_NSHumanReadableCopyright = "";
-				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 18.6;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@loader_path/Frameworks",
-				);
-				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
-				MARKETING_VERSION = 1.0;
-				MODULE_VERIFIER_SUPPORTED_LANGUAGES = "objective-c objective-c++";
-				MODULE_VERIFIER_SUPPORTED_LANGUAGE_STANDARDS = "gnu17 gnu++20";
-				MTL_HEADER_SEARCH_PATHS = "$(SRCROOT)/PointNMapShared $(SRCROOT)/PointNMapShaderTypes";
-				PRODUCT_BUNDLE_IDENTIFIER = tech.opentoall.aviv.scoutroute.PointNMapShared;
-				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
-				SKIP_INSTALL = YES;
-				STRING_CATALOG_GENERATE_SYMBOLS = YES;
-				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
-				SUPPORTS_MACCATALYST = NO;
-				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
-				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
-				SWIFT_APPROACHABLE_CONCURRENCY = YES;
-				SWIFT_EMIT_LOC_STRINGS = YES;
-				SWIFT_INSTALL_MODULE = YES;
-				SWIFT_INSTALL_OBJC_HEADER = NO;
-				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				VERSIONING_SYSTEM = "apple-generic";
-				VERSION_INFO_PREFIX = "";
-			};
-			name = Release;
-		};
-		C7742F862FB6E19E004063C8 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
-				CODE_SIGN_IDENTITY = "Apple Development";
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				DEFINES_MODULE = YES;
-				DEVELOPMENT_TEAM = G8MQVE5WWW;
-				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 1;
-				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				ENABLE_MODULE_VERIFIER = YES;
-				ENABLE_USER_SCRIPT_SANDBOXING = YES;
-				GCC_C_LANGUAGE_STANDARD = gnu17;
-				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_NSHumanReadableCopyright = "";
-				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 26.2;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@loader_path/Frameworks",
-				);
-				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
-				MARKETING_VERSION = 1.0;
-				MODULE_VERIFIER_SUPPORTED_LANGUAGES = "objective-c objective-c++";
-				MODULE_VERIFIER_SUPPORTED_LANGUAGE_STANDARDS = "gnu17 gnu++20";
-				PRODUCT_BUNDLE_IDENTIFIER = tech.opentoall.aviv.scoutroute.PointNMapShaderTypes;
-				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
-				SKIP_INSTALL = YES;
-				STRING_CATALOG_GENERATE_SYMBOLS = YES;
-				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
-				SUPPORTS_MACCATALYST = NO;
-				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
-				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
-				SWIFT_EMIT_LOC_STRINGS = YES;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				VERSIONING_SYSTEM = "apple-generic";
-				VERSION_INFO_PREFIX = "";
-			};
-			name = Debug;
-		};
-		C7742F872FB6E19E004063C8 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
-				CODE_SIGN_IDENTITY = "Apple Development";
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				DEFINES_MODULE = YES;
-				DEVELOPMENT_TEAM = G8MQVE5WWW;
-				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 1;
-				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				ENABLE_MODULE_VERIFIER = YES;
-				ENABLE_USER_SCRIPT_SANDBOXING = YES;
-				GCC_C_LANGUAGE_STANDARD = gnu17;
-				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_NSHumanReadableCopyright = "";
-				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 26.2;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@loader_path/Frameworks",
-				);
-				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
-				MARKETING_VERSION = 1.0;
-				MODULE_VERIFIER_SUPPORTED_LANGUAGES = "objective-c objective-c++";
-				MODULE_VERIFIER_SUPPORTED_LANGUAGE_STANDARDS = "gnu17 gnu++20";
-				PRODUCT_BUNDLE_IDENTIFIER = tech.opentoall.aviv.scoutroute.PointNMapShaderTypes;
-				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
-				SKIP_INSTALL = YES;
-				STRING_CATALOG_GENERATE_SYMBOLS = YES;
-				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
-				SUPPORTS_MACCATALYST = NO;
-				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
-				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
-				SWIFT_EMIT_LOC_STRINGS = YES;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				VERSIONING_SYSTEM = "apple-generic";
-				VERSION_INFO_PREFIX = "";
-			};
-			name = Release;
-		};
 		FAD5C5172AFCBE720040C61A /* Debug */ = {
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = C7A357452EA22A120033F6FB /* Config.xcconfig */;
@@ -3453,8 +3054,8 @@
 					"\"${PODS_CONFIGURATION_BUILD_DIR}/Realm/Realm.framework/Headers\"",
 					"\"${PODS_CONFIGURATION_BUILD_DIR}/RealmSwift/RealmSwift.framework/Headers\"",
 					"\"${PODS_XCFRAMEWORKS_BUILD_DIR}/Realm/Headers\"",
-					"$(SRCROOT)/PointNMap",
-					"$(SRCROOT)/PointNMapShaderTypes",
+					"\"$(SRCROOT)/../Frameworks/PointNMap/PointNMapShaderTypes\"",
+					"\"$(SRCROOT)/../Frameworks/PointNMap/PointNMapShared\"",
 				);
 				INFOPLIST_FILE = GoInfoGame/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "AVIV ScoutRoute";
@@ -3504,7 +3105,7 @@
 				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
-				SWIFT_OBJC_BRIDGING_HEADER = "GoInfoGame/PointNMap-Bridging-Header.h";
+				SWIFT_OBJC_BRIDGING_HEADER = "../Frameworks/PointNMap/PointNMap/PointNMap-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -3529,8 +3130,8 @@
 					"\"${PODS_CONFIGURATION_BUILD_DIR}/Realm/Realm.framework/Headers\"",
 					"\"${PODS_CONFIGURATION_BUILD_DIR}/RealmSwift/RealmSwift.framework/Headers\"",
 					"\"${PODS_XCFRAMEWORKS_BUILD_DIR}/Realm/Headers\"",
-					"$(SRCROOT)/PointNMap",
-					"$(SRCROOT)/PointNMapShaderTypes",
+					"\"$(SRCROOT)/../Frameworks/PointNMap/PointNMapShared\"",
+					"\"$(SRCROOT)/../Frameworks/PointNMap/PointNMapShaderTypes\"",
 				);
 				INFOPLIST_FILE = GoInfoGame/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "AVIV ScoutRoute";
@@ -3580,7 +3181,7 @@
 				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
-				SWIFT_OBJC_BRIDGING_HEADER = "GoInfoGame/PointNMap-Bridging-Header.h";
+				SWIFT_OBJC_BRIDGING_HEADER = "../Frameworks/PointNMap/PointNMap/PointNMap-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -3701,24 +3302,6 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		C7742E5A2FB6D93B004063C8 /* Build configuration list for PBXNativeTarget "PointNMapShared" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				C7742E5B2FB6D93B004063C8 /* Debug */,
-				C7742E5C2FB6D93B004063C8 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		C7742F852FB6E19E004063C8 /* Build configuration list for PBXNativeTarget "PointNMapShaderTypes" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				C7742F862FB6E19E004063C8 /* Debug */,
-				C7742F872FB6E19E004063C8 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
 		FAD5C4EA2AFCBE700040C61A /* Build configuration list for PBXProject "GoInfoGame" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
@@ -3812,11 +3395,6 @@
 			isa = XCSwiftPackageProductDependency;
 			package = C77AAC9B2E4463ED006713B2 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
 			productName = FirebasePerformance;
-		};
-		C7742F742FB6D9CB004063C8 /* DequeModule */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = C7971A0C2FB5EAB000A8DCE8 /* XCRemoteSwiftPackageReference "swift-collections" */;
-			productName = DequeModule;
 		};
 		C77AAC9C2E4463ED006713B2 /* FirebaseAnalytics */ = {
 			isa = XCSwiftPackageProductDependency;
