@@ -40,6 +40,12 @@ struct CustomMap: UIViewRepresentable {
     
     @Binding var annotationCoordinate: CLLocationCoordinate2D?
     
+    @Binding var nearbyAnnotations: [DisplayUnitAnnotation]
+    @Binding var showNearbyAnnotationsPicker: Bool
+    
+    // Distance threshold in meters for detecting nearby annotations
+    var nearbyAnnotationThreshold: CLLocationDistance = 50
+    
     var shadowOverlay: ShadowOverlay
         
     // Creates and configures the UIView
@@ -403,6 +409,37 @@ struct CustomMap: UIViewRepresentable {
             }
         }
         
+        // Find annotations within a certain distance of a tapped point
+        func findNearbyAnnotations(to targetAnnotation: DisplayUnitAnnotation, threshold: CLLocationDistance = 50) -> [DisplayUnitAnnotation] {
+            guard let mapView = mapView else { return [] }
+            
+            let targetLocation = CLLocation(
+                latitude: targetAnnotation.coordinate.latitude,
+                longitude: targetAnnotation.coordinate.longitude
+            )
+            
+            var nearby: [DisplayUnitAnnotation] = []
+            
+            for annotation in mapView.annotations {
+                if let displayAnnotation = annotation as? DisplayUnitAnnotation,
+                   displayAnnotation != targetAnnotation {
+                    
+                    let annotationLocation = CLLocation(
+                        latitude: displayAnnotation.coordinate.latitude,
+                        longitude: displayAnnotation.coordinate.longitude
+                    )
+                    
+                    let distance = targetLocation.distance(from: annotationLocation)
+                    
+                    if distance <= threshold {
+                        nearby.append(displayAnnotation)
+                    }
+                }
+            }
+            
+            return nearby
+        }
+        
         func handleSelected(annotation: MKAnnotation) {
             mapView?.selectAnnotation(annotation, animated: true)
             if let annotation = annotation as? DisplayUnitAnnotation {
@@ -460,9 +497,24 @@ struct CustomMap: UIViewRepresentable {
                         }
                     }
                 } else {
-                    selectedAnAnnotation(selectedQuest: annotation)
-                    if let mapView = mapView {
-                        centerAnnotationAtTop(mapView: mapView, annotation: annotation)
+                    // Check for nearby annotations before selecting
+                    let nearbyAnnotations = findNearbyAnnotations(to: annotation, threshold: parent.nearbyAnnotationThreshold)
+                    
+                    if !nearbyAnnotations.isEmpty {
+                        // There are nearby annotations - show picker
+                        var allAnnotations = [annotation] + nearbyAnnotations
+                        allAnnotations.sort { ($0.title ?? "") < ($1.title ?? "") }
+                        
+                        DispatchQueue.main.async {
+                            self.parent.nearbyAnnotations = allAnnotations
+                            self.parent.showNearbyAnnotationsPicker = true
+                        }
+                    } else {
+                        // No nearby annotations - select normally
+                        selectedAnAnnotation(selectedQuest: annotation)
+                        if let mapView = mapView {
+                            centerAnnotationAtTop(mapView: mapView, annotation: annotation)
+                        }
                     }
                 }
             }

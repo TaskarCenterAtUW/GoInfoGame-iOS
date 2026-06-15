@@ -174,6 +174,7 @@
 		C77AAC9D2E4463ED006713B2 /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = C77AAC9C2E4463ED006713B2 /* FirebaseAnalytics */; };
 		C77AAC9F2E4463ED006713B2 /* FirebaseCrashlytics in Frameworks */ = {isa = PBXBuildFile; productRef = C77AAC9E2E4463ED006713B2 /* FirebaseCrashlytics */; };
 		C77EEBCF2DE59D3200494CB4 /* UndoMerge.swift in Sources */ = {isa = PBXBuildFile; fileRef = C77EEBCE2DE59D3200494CB4 /* UndoMerge.swift */; };
+		C782FC8E2FDBCB65009D5FC7 /* NearbyAnnotationsSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = C782FC8D2FDBCB65009D5FC7 /* NearbyAnnotationsSheet.swift */; };
 		C78737AF2E4C9E3B00289D13 /* FloatingLabelTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = C78737AE2E4C9E3200289D13 /* FloatingLabelTextField.swift */; };
 		C787F3422E9CD34F00BEF0A6 /* ForceUpdateManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C787F3412E9CD34900BEF0A6 /* ForceUpdateManager.swift */; };
 		C78E8BC22EDF20E6002215C0 /* UndoItemConfirmationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C78E8BC12EDF20E6002215C0 /* UndoItemConfirmationView.swift */; };
@@ -547,6 +548,7 @@
 		C77AAC992E446376006713B2 /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		C77AACA52E447364006713B2 /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		C77EEBCE2DE59D3200494CB4 /* UndoMerge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UndoMerge.swift; sourceTree = "<group>"; };
+		C782FC8D2FDBCB65009D5FC7 /* NearbyAnnotationsSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NearbyAnnotationsSheet.swift; sourceTree = "<group>"; };
 		C78737AE2E4C9E3200289D13 /* FloatingLabelTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FloatingLabelTextField.swift; sourceTree = "<group>"; };
 		C787EF162E9676CC00BEF0A6 /* GoInfoGame.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = GoInfoGame.entitlements; sourceTree = "<group>"; };
 		C787F3412E9CD34900BEF0A6 /* ForceUpdateManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForceUpdateManager.swift; sourceTree = "<group>"; };
@@ -908,6 +910,7 @@
 				FA50718B2D54E08800CE9798 /* AddFeatureView.swift */,
 				FA50718F2D5B31CC00CE9798 /* CreateNoteView.swift */,
 				FA51484D2D76ED6300C0D35B /* NotesViewModel.swift */,
+				C782FC8D2FDBCB65009D5FC7 /* NearbyAnnotationsSheet.swift */,
 			);
 			path = Map;
 			sourceTree = "<group>";
@@ -2469,6 +2472,7 @@
 				C769E6ED2ED6D4D600D085A9 /* AccessibilityModeViewModel.swift in Sources */,
 				C79C3B7A2ED4559500F80364 /* AccessibilityModeView.swift in Sources */,
 				970D5BD12B62B61300C20BE7 /* MapViewController.swift in Sources */,
+				C782FC8E2FDBCB65009D5FC7 /* NearbyAnnotationsSheet.swift in Sources */,
 				FA9FE2D82BAC75390036F618 /* OAuthViewController.swift in Sources */,
 				C79EDA932EDA0BBD00D2B100 /* UndoItemView.swift in Sources */,
 				FA50719A2D7263F800CE9798 /* LongFormImageView.swift in Sources */,

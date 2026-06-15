@@ -51,6 +51,10 @@ struct MapView: View {
     
     @State private var navigateToProfile = false
     
+    @State private var nearbyAnnotations: [DisplayUnitAnnotation] = []
+    
+    @State private var showNearbyAnnotationsPicker = false
+    
     @State private var showManageQuestSheet = false
     
     @State private var showZoomInAlert = false
@@ -96,6 +100,8 @@ struct MapView: View {
                 },
                           tappedCoordinate: $tappedCoordinate,
                           annotationCoordinate: $annotationCoordinate,
+                          nearbyAnnotations: $nearbyAnnotations,
+                          showNearbyAnnotationsPicker: $showNearbyAnnotationsPicker,
                           shadowOverlay: shadowOverlay)
                 .accessibilityHidden(enableAccessibility) // Hide map from VoiceOver when accessibility mode is enabled
                 .onChange(of: tappedCoordinate) { _ in
@@ -522,6 +528,24 @@ struct MapView: View {
             .presentationDetents([.fraction(0.6)])
             .presentationDragIndicator(.visible)
             .applyPresentationSizingPage()
+        }
+        
+        .sheet(isPresented: $showNearbyAnnotationsPicker) {
+            NearbyAnnotationsSheet(
+                isPresented: $showNearbyAnnotationsPicker,
+                annotations: $nearbyAnnotations,
+                onSelect: { selectedAnnotation in
+                    // Select the chosen annotation
+                    viewModel.selectedQuest = selectedAnnotation.displayUnit
+                    annotationCoordinate = selectedAnnotation.coordinate
+                    isPresented = true
+                    shouldShowPolyline = true
+                    
+                    if (selectedAnnotation.displayUnit?.parent?.polylines) != nil {
+                        viewModel.region.center = selectedAnnotation.coordinate
+                    }
+                }
+            )
         }
         
         .sheet(isPresented: $isPresented, content: {
