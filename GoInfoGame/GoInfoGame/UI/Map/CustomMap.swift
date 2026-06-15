@@ -410,6 +410,7 @@ struct CustomMap: UIViewRepresentable {
         }
         
         // Find annotations within a certain distance of a tapped point
+        // If a cluster is nearby, expand it to include all member annotations
         func findNearbyAnnotations(to targetAnnotation: DisplayUnitAnnotation, threshold: CLLocationDistance = 50) -> [DisplayUnitAnnotation] {
             guard let mapView = mapView else { return [] }
             
@@ -421,8 +422,10 @@ struct CustomMap: UIViewRepresentable {
             var nearby: [DisplayUnitAnnotation] = []
             
             for annotation in mapView.annotations {
+                // Skip the target annotation itself
                 if let displayAnnotation = annotation as? DisplayUnitAnnotation,
-                   displayAnnotation != targetAnnotation {
+                   displayAnnotation != targetAnnotation,
+                   !(displayAnnotation is CluserableDisplayUnitAnnotation) {
                     
                     let annotationLocation = CLLocation(
                         latitude: displayAnnotation.coordinate.latitude,
@@ -433,6 +436,23 @@ struct CustomMap: UIViewRepresentable {
                     
                     if distance <= threshold {
                         nearby.append(displayAnnotation)
+                    }
+                }
+                // If we find a cluster nearby, expand it to include all member annotations
+                else if let clusterAnnotation = annotation as? CluserableDisplayUnitAnnotation,
+                        clusterAnnotation != targetAnnotation {
+                    
+                    let clusterLocation = CLLocation(
+                        latitude: clusterAnnotation.coordinate.latitude,
+                        longitude: clusterAnnotation.coordinate.longitude
+                    )
+                    
+                    let distance = targetLocation.distance(from: clusterLocation)
+                    
+                    if distance <= threshold {
+                        // Add all member annotations from the cluster instead of the cluster itself
+                        let memberAnnotations = clusterAnnotation.memberAnnotations.compactMap { $0 as? DisplayUnitAnnotation }
+                        nearby.append(contentsOf: memberAnnotations)
                     }
                 }
             }
