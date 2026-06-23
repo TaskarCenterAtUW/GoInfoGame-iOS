@@ -415,15 +415,15 @@ private extension QuestOptions {
         }
 
         // Reverse lookup: OSM tag key → human-readable display name, built from allCases.
-        private var osmTagDisplayNames: [String: String] {
-            Dictionary(uniqueKeysWithValues: AccessibilityFeatureAttribute.allCases.compactMap { attribute in
-                guard let tag = osmTag(for: attribute) else { return nil }
+        static let osmTagDisplayNames: [String: String] = Dictionary(
+            uniqueKeysWithValues: AccessibilityFeatureAttribute.allCases.compactMap { attribute in
+                guard let tag = osmTagKey(for: attribute) else { return nil }
                 return (tag, attribute.displayName)
-            })
-        }
+            }
+        )
 
         // Maps each AccessibilityFeatureAttribute to its OSM tag key.
-        private func osmTag(for attribute: AccessibilityFeatureAttribute) -> String? {
+        nonisolated private static func osmTagKey(for attribute: AccessibilityFeatureAttribute) -> String? {
             switch attribute {
             case .width:                return "ext:autocapture-width" // For Sidewalk
             case .runningSlope:         return "ext:autocapture-running-slope" // For Sidewalk
@@ -465,7 +465,7 @@ private extension QuestOptions {
                                 ForEach(captures) { capture in
                                     CaptureCard(
                                         capture: capture,
-                                        tagDisplayNames: osmTagDisplayNames,
+                                        tagDisplayNames: AutoCaptureView.osmTagDisplayNames,
                                         onDelete: {
                                             captures.removeAll { $0.id == capture.id }
                                             updateSelectedChoice()
@@ -575,15 +575,25 @@ private extension QuestOptions {
             self.errorMessage = ""
             self.showImagePicker = false
             self.isProcessing = true
-            
-            Task {
+
+            // Snapshot all MainActor state before entering the background task.
+            // Task.detached has no actor context, so @StateObject and other
+            // @MainActor-isolated properties cannot be accessed inside it directly.
+            let selectedClasses = self.selectedClasses
+            let isEnhancedAnalysisEnabled = self.sharedBaseSettings.isEnhancedAnalysisEnabled
+            let attributeEstimationPipeline = self.attributeEstimationPipeline
+            let manager = self.manager
+            let segmentationAnnontationPipeline = self.segmentationAnnontationPipeline
+            let sharedAppData = self.sharedAppData
+
+            Task.detached(priority: .userInitiated) {
                 do {
-                    try? await Task.sleep(for: .seconds(1))
                     var captureMeshData: (any CaptureMeshDataProtocol)? = nil
-                    if sharedBaseSettings.isEnhancedAnalysisEnabled {
+                    if isEnhancedAnalysisEnabled {
                         guard let captureMeshDataResults = captureData.meshData?.captureMeshDataResults else {
                             throw NSError(
-                                domain: "CaptureMeshDataErrorDomain", code: -1, userInfo: [NSLocalizedDescriptionKey: "Mesh data is missing from capture data."]
+                                domain: "CaptureMeshDataErrorDomain", code: -1,
+                                userInfo: [NSLocalizedDescriptionKey: "Mesh data is missing from capture data."]
                             )
                         }
                         captureMeshData = CaptureImageAndMeshData(
@@ -596,45 +606,46 @@ private extension QuestOptions {
                         captureMeshData: captureMeshData
                     )
                     try manager.configure(
-                        selectedClasses: selectedClasses, segmentationAnnotationPipeline: segmentationAnnontationPipeline,
+                        selectedClasses: selectedClasses,
+                        segmentationAnnotationPipeline: segmentationAnnontationPipeline,
                         captureImageData: captureData.imageData,
                         captureMeshData: captureMeshData,
-                        isEnhancedAnalysisEnabled: sharedBaseSettings.isEnhancedAnalysisEnabled
+                        isEnhancedAnalysisEnabled: isEnhancedAnalysisEnabled
                     )
                     let captureDataHistory = Array(await sharedAppData.captureDataQueue.snapshot())
                     manager.setupAlignedSegmentationLabelImages(captureDataHistory: captureDataHistory)
-                    
-                    var currentFeatures: [EditableAccessibilityFeature] = []
-                    try selectedClasses.forEach { currentClass in
+
+                    var newCaptures: [Capture] = []
+                    for currentClass in selectedClasses {
                         let accessibilityFeatures = try manager.updateFeatureClass(accessibilityFeatureClass: currentClass)
-                        try accessibilityFeatures.forEach { accessibilityFeature in
+                        for accessibilityFeature in accessibilityFeatures {
                             try attributeEstimationPipeline.setPrerequisites(accessibilityFeature: accessibilityFeature)
-                            try attributeEstimationPipeline.processAttributeRequest(
-                                accessibilityFeature: accessibilityFeature
-                            )
+                            try attributeEstimationPipeline.processAttributeRequest(accessibilityFeature: accessibilityFeature)
                             attributeEstimationPipeline.clearPrerequisites()
                         }
-                        currentFeatures.append(contentsOf: accessibilityFeatures)
-                        
+
                         var tags: [String: String] = [:]
                         accessibilityFeatures.first?.attributeValues.forEach { attribute, value in
-                            if let osmTag = osmTag(for: attribute) {
-                                tags[osmTag] = value?.toString() ?? "NA"
+                            if let tag = Self.osmTagKey(for: attribute) {
+                                tags[tag] = value?.toString() ?? "NA"
                             }
                         }
-                        let capture = Capture(osmTags: tags)
-                        
-//                        await MainActor.run {
-                            self.captures.append(capture)
-                            self.isProcessing = false
-                            self.updateSelectedChoice()
-//                        }
+                        newCaptures.append(Capture(osmTags: tags))
+                    }
+
+                    let completedCaptures = newCaptures
+                    await MainActor.run {
+                        self.captures.append(contentsOf: completedCaptures)
+                        self.isProcessing = false
+                        self.updateSelectedChoice()
                     }
                 } catch {
                     print("Error configuring attribute estimation pipeline: \(error)")
-                    self.errorMessage = error.localizedDescription
-                    self.isProcessingError = true
-                    self.isProcessing = false
+                    await MainActor.run {
+                        self.errorMessage = error.localizedDescription
+                        self.isProcessingError = true
+                        self.isProcessing = false
+                    }
                 }
             }
         }
