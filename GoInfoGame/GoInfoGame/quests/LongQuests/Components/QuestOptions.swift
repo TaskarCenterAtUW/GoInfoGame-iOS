@@ -425,10 +425,9 @@ private extension QuestOptions {
         // Data model for a single capture
         struct Capture: Identifiable {
             let id = UUID()
-            let image: UIImage?
-            let widthMeters: Double?      // nil if capture failed
-            let slopeDegrees: Double?     // nil if capture failed
-            let crossSlopeDegrees: Double? // nil if capture failed
+            let widthMeters: Double?
+            let slopeDegrees: Double?
+            let crossSlopeDegrees: Double?
         }
         
         @State private var captures: [Capture] = []
@@ -616,7 +615,7 @@ private extension QuestOptions {
                             }
                         }
                         
-                        let capture = Capture(image: nil, widthMeters: widthMeters, slopeDegrees: slopeDegrees, crossSlopeDegrees: crossSlopeDegrees)
+                        let capture = Capture(widthMeters: widthMeters, slopeDegrees: slopeDegrees, crossSlopeDegrees: crossSlopeDegrees)
                         
 //                        await MainActor.run {
                             self.captures.append(capture)
@@ -703,50 +702,15 @@ private extension QuestOptions {
                 }
             }
             
-            // Create placeholder captures with the measurements
             var reconstructedCaptures: [Capture] = []
             for (index, width) in widths.enumerated() {
                 let slope = index < slopes.count ? slopes[index] : nil
                 let crossSlope = index < crossSlopes.count ? crossSlopes[index] : nil
-                
-                // Create a placeholder image (solid color)
-                let placeholderImage = createPlaceholderImage()
-                let capture = Capture(
-                    image: placeholderImage,
-                    widthMeters: width,
-                    slopeDegrees: slope,
-                    crossSlopeDegrees: crossSlope
-                )
+                let capture = Capture(widthMeters: width, slopeDegrees: slope, crossSlopeDegrees: crossSlope)
                 reconstructedCaptures.append(capture)
             }
-            
+
             return reconstructedCaptures
-        }
-        
-        private func createPlaceholderImage() -> UIImage {
-            let size = CGSize(width: 80, height: 80)
-            let renderer = UIGraphicsImageRenderer(size: size)
-            
-            return renderer.image { context in
-                // Draw light gray background
-                UIColor.lightGray.setFill()
-                context.fill(CGRect(origin: .zero, size: size))
-                
-                // Draw camera icon text
-                let text = "📷"
-                let attributes: [NSAttributedString.Key: Any] = [
-                    .font: UIFont.systemFont(ofSize: 32),
-                ]
-                let nsText = text as NSString
-                let textSize = nsText.size(withAttributes: attributes)
-                let textRect = CGRect(
-                    x: (size.width - textSize.width) / 2,
-                    y: (size.height - textSize.height) / 2,
-                    width: textSize.width,
-                    height: textSize.height
-                )
-                nsText.draw(in: textRect, withAttributes: attributes)
-            }
         }
     }
     
@@ -758,13 +722,6 @@ private extension QuestOptions {
         var body: some View {
             VStack(spacing: 8) {
                 HStack {
-                    Image(uiImage: (capture.image ?? UIImage(systemName: "photo")!))
-                        .resizable()
-                        .scaledToFill()
-                        .frame(width: 80, height: 80)
-                        .cornerRadius(6)
-                        .clipped()
-                    
                     VStack(alignment: .leading, spacing: 4) {
                         Text(String(format: "Width: %@", capture.widthMeters.map { String(format: "%.2f m", $0) } ?? "NA"))
                             .font(.system(.subheadline, design: .rounded))
@@ -795,46 +752,6 @@ private extension QuestOptions {
             .padding(.horizontal)
         }
     }
-
-    // MARK: - ImagePickerWrapper
-    struct ImagePickerWrapper: UIViewControllerRepresentable {
-        @Binding var image: UIImage?
-        var sourceType: UIImagePickerController.SourceType = .photoLibrary
-
-        func makeUIViewController(context: Context) -> UIImagePickerController {
-            let picker = UIImagePickerController()
-            picker.sourceType = sourceType
-            picker.delegate = context.coordinator
-            picker.modalPresentationStyle = .fullScreen
-            return picker
-        }
-
-        func updateUIViewController(_ uiViewController: UIImagePickerController, context: Context) {}
-
-        func makeCoordinator() -> Coordinator {
-            Coordinator(image: $image)
-        }
-
-        class Coordinator: NSObject, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
-            @Binding var image: UIImage?
-
-            init(image: Binding<UIImage?>) {
-                self._image = image
-            }
-
-            func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey: Any]) {
-                if let pickedImage = info[.originalImage] as? UIImage {
-                    self.image = pickedImage
-                }
-                picker.dismiss(animated: true)
-            }
-
-            func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
-                picker.dismiss(animated: true)
-            }
-        }
-    }
-
 
     struct NoImageView: View {
         let text: String
