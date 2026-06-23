@@ -475,24 +475,26 @@ private extension QuestOptions {
                             }
                         }
                         
-                        // Add more captures button
-                        Button(action: {
-                            showImagePicker = true
-                        }) {
-                            HStack(spacing: 8) {
-                                Image(systemName: "camera.fill")
-                                Text(captures.isEmpty ? "Open Camera" : "Add Another Capture")
+                        // Only allow one capture at a time (temporary restriction)
+                        if captures.isEmpty {
+                            Button(action: {
+                                showImagePicker = true
+                            }) {
+                                HStack(spacing: 8) {
+                                    Image(systemName: "camera.fill")
+                                    Text("Open Camera")
+                                }
+                                .font(.headline)
+                                .padding(.vertical, 12)
+                                .padding(.horizontal, 28)
+                                .background(Asset.Colors.accentPink.swiftUIColor)
+                                .foregroundColor(.white)
+                                .cornerRadius(10)
                             }
-                            .font(.headline)
-                            .padding(.vertical, 12)
-                            .padding(.horizontal, 28)
-                            .background(Asset.Colors.accentPink.swiftUIColor)
-                            .foregroundColor(.white)
-                            .cornerRadius(10)
+                            .buttonStyle(PlainButtonStyle())
+                            .contentShape(Rectangle())
+                            .accessibilityIdentifier("autoCapture_open_camera")
                         }
-                        .buttonStyle(PlainButtonStyle())
-                        .contentShape(Rectangle())
-                        .accessibilityIdentifier("autoCapture_open_camera")
                         
                         if isProcessing {
                             VStack(spacing: 8) {
@@ -513,7 +515,7 @@ private extension QuestOptions {
                                     .padding(.top, 20)
                                     .accessibilityHidden(true)
                                 
-                                Text("Capture multiple photos to estimate sidewalk width and slope")
+                                Text("Capture a photo to estimate sidewalk width and slope")
                                     .font(.body)
                                     .multilineTextAlignment(.center)
                                     .fixedSize(horizontal: false, vertical: true)
