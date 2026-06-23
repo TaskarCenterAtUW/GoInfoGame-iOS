@@ -434,7 +434,6 @@ private extension QuestOptions {
         @State private var captures: [Capture] = []
         @State private var showImagePicker = false
         @State private var isProcessing = false
-        @State private var tempImage: UIImage? = nil
         @State private var lastSelectedChoiceValue: String = ""
         @State private var isProcessingError: Bool = false
         @State private var errorMessage: String = ""
@@ -555,38 +554,6 @@ private extension QuestOptions {
                 .environmentObject(self.sharedAppContext)
                 .environmentObject(self.segmentationPipeline)
                 .environmentObject(self.sharedBaseSettings)
-            }
-            .onChange(of: tempImage) { newImage in
-                if let image = newImage {
-                    isProcessing = true
-                    
-                    // Process the captured image with a delay
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
-                        // Simulate occasional capture failures (5% chance per measurement)
-                        let widthSuccess = Double.random(in: 0.0...1.0) > 0.05
-                        let slopeSuccess = Double.random(in: 0.0...1.0) > 0.05
-                        let crossSlopeSuccess = Double.random(in: 0.0...1.0) > 0.05
-                        
-                        let width = widthSuccess ? Double.random(in: 0.5...4.0) : nil
-                        let slope = slopeSuccess ? Double.random(in: 0.0...15.0) : nil
-                        let crossSlope = crossSlopeSuccess ? Double.random(in: -10.0...10.0) : nil
-                        
-                        let newCapture = Capture(
-                            image: image,
-                            widthMeters: width,
-                            slopeDegrees: slope,
-                            crossSlopeDegrees: crossSlope
-                        )
-                        
-                        self.captures.append(newCapture)
-                        self.tempImage = nil
-                        self.isProcessing = false
-                        self.showImagePicker = false
-                        
-                        // Update selectedChoice with CSV format
-                        self.updateSelectedChoice()
-                    }
-                }
             }
         }
         
