@@ -408,12 +408,40 @@ private extension QuestOptions {
 //        }
 //        @StateObject private var currentFeaturesViewModel: CurrentFeaturesViewModel = CurrentFeaturesViewModel()
         
-        // Data model for a single capture
+        // Data model for a single capture. Keys are OSM tags (e.g. "ext:autocapture-width").
         struct Capture: Identifiable {
             let id = UUID()
-            let widthMeters: Double?
-            let slopeDegrees: Double?
-            let crossSlopeDegrees: Double?
+            let osmTags: [String: String]
+        }
+
+        // Reverse lookup: OSM tag key → human-readable display name, built from allCases.
+        private var osmTagDisplayNames: [String: String] {
+            Dictionary(uniqueKeysWithValues: AccessibilityFeatureAttribute.allCases.compactMap { attribute in
+                guard let tag = osmTag(for: attribute) else { return nil }
+                return (tag, attribute.displayName)
+            })
+        }
+
+        // Maps each AccessibilityFeatureAttribute to its OSM tag key.
+        private func osmTag(for attribute: AccessibilityFeatureAttribute) -> String? {
+            switch attribute {
+            case .width:                return "ext:autocapture-width" // For Sidewalk
+            case .runningSlope:         return "ext:autocapture-running-slope" // For Sidewalk
+            case .crossSlope:           return "ext:autocapture-cross-slope" // For Sidewalk
+//            case .surfaceIntegrity:     return "ext:autocapture-surface-integrity"
+//            case .surfaceDisruption:    return "ext:autocapture-surface-disruption" // Got Long press feature
+//            case .heightFromGround:     return "ext:autocapture-height-from-ground" // Got Long press feature
+//            case .lidarDepth:           return "ext:autocapture-lidar-depth"
+//            case .latitudeDelta:        return "ext:autocapture-latitude-delta"
+//            case .longitudeDelta:       return "ext:autocapture-longitude-delta"
+//            case .widthLegacy:          return "ext:autocapture-width-legacy"
+//            case .runningSlopeLegacy:   return "ext:autocapture-running-slope-legacy"
+//            case .crossSlopeLegacy:     return "ext:autocapture-cross-slope-legacy"
+//            case .widthFromImage:       return "ext:autocapture-width-from-image"
+//            case .runningSlopeFromImage: return "ext:autocapture-running-slope-from-image"
+//            case .crossSlopeFromImage:  return "ext:autocapture-cross-slope-from-image"
+            default: return nil
+            }
         }
         
         @State private var captures: [Capture] = []
@@ -437,6 +465,7 @@ private extension QuestOptions {
                                 ForEach(captures) { capture in
                                     CaptureCard(
                                         capture: capture,
+                                        tagDisplayNames: osmTagDisplayNames,
                                         onDelete: {
                                             captures.removeAll { $0.id == capture.id }
                                             updateSelectedChoice()
@@ -587,21 +616,13 @@ private extension QuestOptions {
                         }
                         currentFeatures.append(contentsOf: accessibilityFeatures)
                         
-                        var widthMeters: Double?
-                        var slopeDegrees: Double?
-                        var crossSlopeDegrees: Double?
-                        
-                        accessibilityFeatures.first?.attributeValues.forEach { feature in
-                            if feature.key == .width, case .length(let measurement) = feature.value {
-                                widthMeters = Double(measurement.value)
-                            } else if feature.key == .crossSlope, case .angle(let measurement) = feature.value {
-                                crossSlopeDegrees = Double(measurement.value)
-                            } else if feature.key == .runningSlope, case .angle(let measurement) = feature.value {
-                                slopeDegrees = Double(measurement.value)
+                        var tags: [String: String] = [:]
+                        accessibilityFeatures.first?.attributeValues.forEach { attribute, value in
+                            if let osmTag = osmTag(for: attribute) {
+                                tags[osmTag] = value?.toString() ?? "NA"
                             }
                         }
-                        
-                        let capture = Capture(widthMeters: widthMeters, slopeDegrees: slopeDegrees, crossSlopeDegrees: crossSlopeDegrees)
+                        let capture = Capture(osmTags: tags)
                         
 //                        await MainActor.run {
                             self.captures.append(capture)
@@ -640,90 +661,56 @@ private extension QuestOptions {
                 lastSelectedChoiceValue = ""
                 return
             }
-            
-            // Create CSV format for width, slope, and cross-slope values
-            // Use "NA" placeholder for failed measurements
-            let widthCSV = captures.map { $0.widthMeters.map { String(format: "%.2f", $0) } ?? "NA" }.joined(separator: ",")
-            let slopeCSV = captures.map { $0.slopeDegrees.map { String(format: "%.1f", $0) } ?? "NA" }.joined(separator: ",")
-            let crossSlopeCSV = captures.map { $0.crossSlopeDegrees.map { String(format: "%.1f", $0) } ?? "NA" }.joined(separator: ",")
-            
-            let value = "width_m:\(widthCSV)|slope_deg:\(slopeCSV)|cross_slope_deg:\(crossSlopeCSV)"
+
+            // Serialize captures as capture blocks separated by "||".
+            // Within each block, OSM tags are "key=value" pairs separated by "|".
+            let value = captures.map { capture in
+                capture.osmTags.sorted(by: { $0.key < $1.key })
+                    .map { "\($0.key)=\($0.value)" }
+                    .joined(separator: "|")
+            }.joined(separator: "||")
+
             let text = "\(captures.count) capture\(captures.count > 1 ? "s" : "")"
-            
-            let answer = QuestAnswerChoice(
-                value: value,
-                choiceText: text,
-                imageURL: nil,
-                choiceFollowUp: nil
-            )
-            
+            let answer = QuestAnswerChoice(value: value, choiceText: text, imageURL: nil, choiceFollowUp: nil)
             selectedChoice = answer
             lastSelectedChoiceValue = value
         }
-        
+
         private func parseCaptures(from value: String) -> [Capture] {
-            // Parse the CSV format back to Capture objects
-            // Format: "width_m:2.34,NA,3.12|slope_deg:2.31,1.45,NA|cross_slope_deg:1.5,2.3,NA"
-            let components = value.split(separator: "|")
-            var widths: [Double?] = []
-            var slopes: [Double?] = []
-            var crossSlopes: [Double?] = []
-            
-            for component in components {
-                let keyValue = component.split(separator: ":", maxSplits: 1)
-                if keyValue.count == 2 {
-                    let key = String(keyValue[0])
-                    let values = String(keyValue[1]).split(separator: ",").map { valueStr -> Double? in
-                        let trimmed = String(valueStr).trimmingCharacters(in: .whitespaces)
-                        return trimmed == "NA" ? nil : Double(trimmed)
-                    }
-                    
-                    if key == "width_m" {
-                        widths = values
-                    } else if key == "slope_deg" {
-                        slopes = values
-                    } else if key == "cross_slope_deg" {
-                        crossSlopes = values
+            return value.components(separatedBy: "||").compactMap { block in
+                let trimmed = block.trimmingCharacters(in: .whitespaces)
+                guard !trimmed.isEmpty else { return nil }
+                var tags: [String: String] = [:]
+                for pair in trimmed.split(separator: "|") {
+                    let kv = String(pair).split(separator: "=", maxSplits: 1)
+                    if kv.count == 2 {
+                        tags[String(kv[0])] = String(kv[1])
                     }
                 }
+                return tags.isEmpty ? nil : Capture(osmTags: tags)
             }
-            
-            var reconstructedCaptures: [Capture] = []
-            for (index, width) in widths.enumerated() {
-                let slope = index < slopes.count ? slopes[index] : nil
-                let crossSlope = index < crossSlopes.count ? crossSlopes[index] : nil
-                let capture = Capture(widthMeters: width, slopeDegrees: slope, crossSlopeDegrees: crossSlope)
-                reconstructedCaptures.append(capture)
-            }
-
-            return reconstructedCaptures
         }
     }
     
     // MARK: - CaptureCard (individual capture display)
     struct CaptureCard: View {
         let capture: QuestOptions.AutoCaptureView.Capture
+        let tagDisplayNames: [String: String]
         let onDelete: () -> Void
-        
+
         var body: some View {
             VStack(spacing: 8) {
-                HStack {
+                HStack(alignment: .top) {
                     VStack(alignment: .leading, spacing: 4) {
-                        Text(String(format: "Width: %@", capture.widthMeters.map { String(format: "%.2f m", $0) } ?? "NA"))
-                            .font(.system(.subheadline, design: .rounded))
-                            .fontWeight(.semibold)
-                        
-                        Text(String(format: "Slope: %@", capture.slopeDegrees.map { String(format: "%.1f°", $0) } ?? "NA"))
-                            .font(.system(.subheadline, design: .rounded))
-                            .fontWeight(.semibold)
-                        
-                        Text(String(format: "Cross Slope: %@", capture.crossSlopeDegrees.map { String(format: "%.1f°", $0) } ?? "NA"))
-                            .font(.system(.subheadline, design: .rounded))
-                            .fontWeight(.semibold)
+                        ForEach(capture.osmTags.sorted(by: { $0.key < $1.key }), id: \.key) { tag, value in
+                            Text("\(tagDisplayNames[tag] ?? tag): \(value)")
+                                .font(.system(.subheadline, design: .rounded))
+                                .fontWeight(.semibold)
+                        }
                     }
-                    
+
                     Spacer()
-                    
+
                     Button(action: onDelete) {
                         Image(systemName: "xmark.circle.fill")
                             .font(.system(size: 20))
