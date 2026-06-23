@@ -499,7 +499,7 @@ private extension QuestOptions {
                         if isProcessing {
                             VStack(spacing: 8) {
                                 ProgressView()
-                                Text("Analyzing image...")
+                                Text("Analyzing image may take few seconds...")
                                     .font(.caption)
                                     .foregroundColor(.gray)
                             }
