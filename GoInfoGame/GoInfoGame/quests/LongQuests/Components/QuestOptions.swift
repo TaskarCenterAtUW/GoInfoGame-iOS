@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import PointNMapShared
 
 struct QuestOptions: View {
     
@@ -393,20 +394,62 @@ private extension QuestOptions {
     struct AutoCaptureView: View {
         @Binding var selectedChoice: QuestAnswerChoice?
         
-        // Data model for a single capture
+        @State private var selectedClasses: [AccessibilityFeatureClass] = []
+        @StateObject private var sharedAppData: SharedBaseData = SharedBaseData()
+        @StateObject private var sharedAppContext: SharedBaseContext = SharedBaseContext()
+        @StateObject private var segmentationPipeline: SegmentationARPipeline = SegmentationARPipeline()
+        @StateObject private var sharedBaseSettings: SharedBaseSettings = SharedBaseSettings()
+        let isEnhancedAnalysisEnabled = true
+        @StateObject var segmentationAnnontationPipeline: SegmentationAnnotationPipeline = SegmentationAnnotationPipeline()
+        @StateObject var attributeEstimationPipeline: AttributeEstimationPipeline = AttributeEstimationPipeline()
+        @StateObject var manager: AnnotationImageManager = AnnotationImageManager()
+//        class CurrentFeaturesViewModel: ObservableObject {
+//            @Published var currentFeatures: [EditableAccessibilityFeature] = []
+//        }
+//        @StateObject private var currentFeaturesViewModel: CurrentFeaturesViewModel = CurrentFeaturesViewModel()
+        
+        // Data model for a single capture. Keys are OSM tags (e.g. "ext:autocapture-width").
         struct Capture: Identifiable {
             let id = UUID()
-            let image: UIImage
-            let widthMeters: Double?      // nil if capture failed
-            let slopeDegrees: Double?     // nil if capture failed
-            let crossSlopeDegrees: Double? // nil if capture failed
+            let osmTags: [String: String]
+        }
+
+        // Reverse lookup: OSM tag key → human-readable display name, built from allCases.
+        static let osmTagDisplayNames: [String: String] = Dictionary(
+            uniqueKeysWithValues: AccessibilityFeatureAttribute.allCases.compactMap { attribute in
+                guard let tag = osmTagKey(for: attribute) else { return nil }
+                return (tag, attribute.displayName)
+            }
+        )
+
+        // Maps each AccessibilityFeatureAttribute to its OSM tag key.
+        nonisolated private static func osmTagKey(for attribute: AccessibilityFeatureAttribute) -> String? {
+            switch attribute {
+            case .width:                return "ext:autocapture-width" // For Sidewalk
+            case .runningSlope:         return "ext:autocapture-running-slope" // For Sidewalk
+            case .crossSlope:           return "ext:autocapture-cross-slope" // For Sidewalk
+//            case .surfaceIntegrity:     return "ext:autocapture-surface-integrity"
+//            case .surfaceDisruption:    return "ext:autocapture-surface-disruption" // Got Long press feature
+//            case .heightFromGround:     return "ext:autocapture-height-from-ground" // Got Long press feature
+//            case .lidarDepth:           return "ext:autocapture-lidar-depth"
+//            case .latitudeDelta:        return "ext:autocapture-latitude-delta"
+//            case .longitudeDelta:       return "ext:autocapture-longitude-delta"
+//            case .widthLegacy:          return "ext:autocapture-width-legacy"
+//            case .runningSlopeLegacy:   return "ext:autocapture-running-slope-legacy"
+//            case .crossSlopeLegacy:     return "ext:autocapture-cross-slope-legacy"
+//            case .widthFromImage:       return "ext:autocapture-width-from-image"
+//            case .runningSlopeFromImage: return "ext:autocapture-running-slope-from-image"
+//            case .crossSlopeFromImage:  return "ext:autocapture-cross-slope-from-image"
+            default: return nil
+            }
         }
         
         @State private var captures: [Capture] = []
         @State private var showImagePicker = false
         @State private var isProcessing = false
-        @State private var tempImage: UIImage? = nil
         @State private var lastSelectedChoiceValue: String = ""
+        @State private var isProcessingError: Bool = false
+        @State private var errorMessage: String = ""
 
         var body: some View {
             ZStack {
@@ -422,6 +465,7 @@ private extension QuestOptions {
                                 ForEach(captures) { capture in
                                     CaptureCard(
                                         capture: capture,
+                                        tagDisplayNames: AutoCaptureView.osmTagDisplayNames,
                                         onDelete: {
                                             captures.removeAll { $0.id == capture.id }
                                             updateSelectedChoice()
@@ -431,29 +475,31 @@ private extension QuestOptions {
                             }
                         }
                         
-                        // Add more captures button
-                        Button(action: {
-                            showImagePicker = true
-                        }) {
-                            HStack(spacing: 8) {
-                                Image(systemName: "camera.fill")
-                                Text(captures.isEmpty ? "Open Camera" : "Add Another Capture")
+                        // Only allow one capture at a time (temporary restriction)
+                        if captures.isEmpty {
+                            Button(action: {
+                                showImagePicker = true
+                            }) {
+                                HStack(spacing: 8) {
+                                    Image(systemName: "camera.fill")
+                                    Text("Open Camera")
+                                }
+                                .font(.headline)
+                                .padding(.vertical, 12)
+                                .padding(.horizontal, 28)
+                                .background(Asset.Colors.accentPink.swiftUIColor)
+                                .foregroundColor(.white)
+                                .cornerRadius(10)
                             }
-                            .font(.headline)
-                            .padding(.vertical, 12)
-                            .padding(.horizontal, 28)
-                            .background(Asset.Colors.accentPink.swiftUIColor)
-                            .foregroundColor(.white)
-                            .cornerRadius(10)
+                            .buttonStyle(PlainButtonStyle())
+                            .contentShape(Rectangle())
+                            .accessibilityIdentifier("autoCapture_open_camera")
                         }
-                        .buttonStyle(PlainButtonStyle())
-                        .contentShape(Rectangle())
-                        .accessibilityIdentifier("autoCapture_open_camera")
                         
                         if isProcessing {
                             VStack(spacing: 8) {
                                 ProgressView()
-                                Text("Analyzing image...")
+                                Text("Analyzing image may take few seconds...")
                                     .font(.caption)
                                     .foregroundColor(.gray)
                             }
@@ -469,12 +515,23 @@ private extension QuestOptions {
                                     .padding(.top, 20)
                                     .accessibilityHidden(true)
                                 
-                                Text("Capture multiple photos to estimate sidewalk width and slope")
+                                Text("Capture a photo to estimate sidewalk width and slope")
                                     .font(.body)
                                     .multilineTextAlignment(.center)
                                     .fixedSize(horizontal: false, vertical: true)
                                     .padding(.horizontal)
                             }
+                        }
+                        
+                        if isProcessingError {
+                            Text(errorMessage)
+                                .foregroundColor(Color.red)
+                                .padding(.horizontal, 20)
+                                .onAppear {
+                                    DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
+                                        isProcessingError = false
+                                    }
+                                }
                         }
                         
                         Spacer()
@@ -493,6 +550,7 @@ private extension QuestOptions {
                         }
                     }
                 }
+                configure()
             }
             .onChange(of: selectedChoice) { newChoice in
                 // Monitor selectedChoice for external changes
@@ -507,39 +565,106 @@ private extension QuestOptions {
                 }
             }
             .sheet(isPresented: $showImagePicker) {
-                ImagePickerWrapper(image: $tempImage, sourceType: .camera)
+                ARCameraViewBase(selectedClasses: self.selectedClasses.sorted(), onCaptureComplete: onCaptureComplete)
+                .environmentObject(self.sharedAppData)
+                .environmentObject(self.sharedAppContext)
+                .environmentObject(self.segmentationPipeline)
+                .environmentObject(self.sharedBaseSettings)
             }
-            .onChange(of: tempImage) { newImage in
-                if let image = newImage {
-                    isProcessing = true
-                    
-                    // Process the captured image with a delay
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
-                        // Simulate occasional capture failures (5% chance per measurement)
-                        let widthSuccess = Double.random(in: 0.0...1.0) > 0.05
-                        let slopeSuccess = Double.random(in: 0.0...1.0) > 0.05
-                        let crossSlopeSuccess = Double.random(in: 0.0...1.0) > 0.05
-                        
-                        let width = widthSuccess ? Double.random(in: 0.5...4.0) : nil
-                        let slope = slopeSuccess ? Double.random(in: 0.0...15.0) : nil
-                        let crossSlope = crossSlopeSuccess ? Double.random(in: -10.0...10.0) : nil
-                        
-                        let newCapture = Capture(
-                            image: image,
-                            widthMeters: width,
-                            slopeDegrees: slope,
-                            crossSlopeDegrees: crossSlope
+        }
+        
+        public func onCaptureComplete(captureData: CaptureData) {
+            self.errorMessage = ""
+            self.showImagePicker = false
+            self.isProcessing = true
+
+            // Snapshot all MainActor state before entering the background task.
+            // Task.detached has no actor context, so @StateObject and other
+            // @MainActor-isolated properties cannot be accessed inside it directly.
+            let selectedClasses = self.selectedClasses
+            let isEnhancedAnalysisEnabled = self.sharedBaseSettings.isEnhancedAnalysisEnabled
+            let attributeEstimationPipeline = self.attributeEstimationPipeline
+            let manager = self.manager
+            let segmentationAnnontationPipeline = self.segmentationAnnontationPipeline
+            let sharedAppData = self.sharedAppData
+
+            Task.detached(priority: .userInitiated) {
+                do {
+                    var captureMeshData: (any CaptureMeshDataProtocol)? = nil
+                    if isEnhancedAnalysisEnabled {
+                        guard let captureMeshDataResults = captureData.meshData?.captureMeshDataResults else {
+                            throw NSError(
+                                domain: "CaptureMeshDataErrorDomain", code: -1,
+                                userInfo: [NSLocalizedDescriptionKey: "Mesh data is missing from capture data."]
+                            )
+                        }
+                        captureMeshData = CaptureImageAndMeshData(
+                            captureImageData: CaptureImageData(captureData.imageData),
+                            captureMeshDataResults: captureMeshDataResults
                         )
-                        
-                        self.captures.append(newCapture)
-                        self.tempImage = nil
+                    }
+                    try attributeEstimationPipeline.configure(
+                        captureImageData: captureData.imageData,
+                        captureMeshData: captureMeshData
+                    )
+                    try manager.configure(
+                        selectedClasses: selectedClasses,
+                        segmentationAnnotationPipeline: segmentationAnnontationPipeline,
+                        captureImageData: captureData.imageData,
+                        captureMeshData: captureMeshData,
+                        isEnhancedAnalysisEnabled: isEnhancedAnalysisEnabled
+                    )
+                    let captureDataHistory = Array(await sharedAppData.captureDataQueue.snapshot())
+                    manager.setupAlignedSegmentationLabelImages(captureDataHistory: captureDataHistory)
+
+                    var newCaptures: [Capture] = []
+                    for currentClass in selectedClasses {
+                        let accessibilityFeatures = try manager.updateFeatureClass(accessibilityFeatureClass: currentClass)
+                        for accessibilityFeature in accessibilityFeatures {
+                            try attributeEstimationPipeline.setPrerequisites(accessibilityFeature: accessibilityFeature)
+                            try attributeEstimationPipeline.processAttributeRequest(accessibilityFeature: accessibilityFeature)
+                            attributeEstimationPipeline.clearPrerequisites()
+                        }
+
+                        var tags: [String: String] = [:]
+                        accessibilityFeatures.first?.attributeValues.forEach { attribute, value in
+                            if let tag = Self.osmTagKey(for: attribute) {
+                                tags[tag] = value?.toString() ?? "NA"
+                            }
+                        }
+                        newCaptures.append(Capture(osmTags: tags))
+                    }
+
+                    let completedCaptures = newCaptures
+                    await MainActor.run {
+                        self.captures.append(contentsOf: completedCaptures)
                         self.isProcessing = false
-                        self.showImagePicker = false
-                        
-                        // Update selectedChoice with CSV format
                         self.updateSelectedChoice()
                     }
+                } catch {
+                    print("Error configuring attribute estimation pipeline: \(error)")
+                    await MainActor.run {
+                        self.errorMessage = error.localizedDescription
+                        self.isProcessingError = true
+                        self.isProcessing = false
+                    }
                 }
+            }
+        }
+        
+        public func configure() {
+            // For demonstration purposes, we select only sidewalk class by default
+            guard let sidewalkClass = PointNMapConstants.SelectedAccessibilityFeatureConfig.classes.first(where: { $0.kind == .sidewalk }) else {
+                return
+            }
+            self.sharedBaseSettings.isEnhancedAnalysisEnabled = self.isEnhancedAnalysisEnabled
+            self.selectedClasses = [sidewalkClass]
+            do {
+                try self.sharedAppContext.configure()
+                try segmentationPipeline.configure()
+                try segmentationAnnontationPipeline.configure()
+            } catch {
+                print("Error during setup configuration: \(error)")
             }
         }
         
@@ -549,97 +674,33 @@ private extension QuestOptions {
                 lastSelectedChoiceValue = ""
                 return
             }
-            
-            // Create CSV format for width, slope, and cross-slope values
-            // Use "NA" placeholder for failed measurements
-            let widthCSV = captures.map { $0.widthMeters.map { String(format: "%.2f", $0) } ?? "NA" }.joined(separator: ",")
-            let slopeCSV = captures.map { $0.slopeDegrees.map { String(format: "%.1f", $0) } ?? "NA" }.joined(separator: ",")
-            let crossSlopeCSV = captures.map { $0.crossSlopeDegrees.map { String(format: "%.1f", $0) } ?? "NA" }.joined(separator: ",")
-            
-            let value = "width_m:\(widthCSV)|slope_deg:\(slopeCSV)|cross_slope_deg:\(crossSlopeCSV)"
+
+            // Serialize captures as capture blocks separated by "||".
+            // Within each block, OSM tags are "key=value" pairs separated by "|".
+            let value = captures.map { capture in
+                capture.osmTags.sorted(by: { $0.key < $1.key })
+                    .map { "\($0.key)=\($0.value)" }
+                    .joined(separator: "|")
+            }.joined(separator: "||")
+
             let text = "\(captures.count) capture\(captures.count > 1 ? "s" : "")"
-            
-            let answer = QuestAnswerChoice(
-                value: value,
-                choiceText: text,
-                imageURL: nil,
-                choiceFollowUp: nil
-            )
-            
+            let answer = QuestAnswerChoice(value: value, choiceText: text, imageURL: nil, choiceFollowUp: nil)
             selectedChoice = answer
             lastSelectedChoiceValue = value
         }
-        
+
         private func parseCaptures(from value: String) -> [Capture] {
-            // Parse the CSV format back to Capture objects
-            // Format: "width_m:2.34,NA,3.12|slope_deg:2.31,1.45,NA|cross_slope_deg:1.5,2.3,NA"
-            let components = value.split(separator: "|")
-            var widths: [Double?] = []
-            var slopes: [Double?] = []
-            var crossSlopes: [Double?] = []
-            
-            for component in components {
-                let keyValue = component.split(separator: ":", maxSplits: 1)
-                if keyValue.count == 2 {
-                    let key = String(keyValue[0])
-                    let values = String(keyValue[1]).split(separator: ",").map { valueStr -> Double? in
-                        let trimmed = String(valueStr).trimmingCharacters(in: .whitespaces)
-                        return trimmed == "NA" ? nil : Double(trimmed)
-                    }
-                    
-                    if key == "width_m" {
-                        widths = values
-                    } else if key == "slope_deg" {
-                        slopes = values
-                    } else if key == "cross_slope_deg" {
-                        crossSlopes = values
+            return value.components(separatedBy: "||").compactMap { block in
+                let trimmed = block.trimmingCharacters(in: .whitespaces)
+                guard !trimmed.isEmpty else { return nil }
+                var tags: [String: String] = [:]
+                for pair in trimmed.split(separator: "|") {
+                    let kv = String(pair).split(separator: "=", maxSplits: 1)
+                    if kv.count == 2 {
+                        tags[String(kv[0])] = String(kv[1])
                     }
                 }
-            }
-            
-            // Create placeholder captures with the measurements
-            var reconstructedCaptures: [Capture] = []
-            for (index, width) in widths.enumerated() {
-                let slope = index < slopes.count ? slopes[index] : nil
-                let crossSlope = index < crossSlopes.count ? crossSlopes[index] : nil
-                
-                // Create a placeholder image (solid color)
-                let placeholderImage = createPlaceholderImage()
-                let capture = Capture(
-                    image: placeholderImage,
-                    widthMeters: width,
-                    slopeDegrees: slope,
-                    crossSlopeDegrees: crossSlope
-                )
-                reconstructedCaptures.append(capture)
-            }
-            
-            return reconstructedCaptures
-        }
-        
-        private func createPlaceholderImage() -> UIImage {
-            let size = CGSize(width: 80, height: 80)
-            let renderer = UIGraphicsImageRenderer(size: size)
-            
-            return renderer.image { context in
-                // Draw light gray background
-                UIColor.lightGray.setFill()
-                context.fill(CGRect(origin: .zero, size: size))
-                
-                // Draw camera icon text
-                let text = "📷"
-                let attributes: [NSAttributedString.Key: Any] = [
-                    .font: UIFont.systemFont(ofSize: 32),
-                ]
-                let nsText = text as NSString
-                let textSize = nsText.size(withAttributes: attributes)
-                let textRect = CGRect(
-                    x: (size.width - textSize.width) / 2,
-                    y: (size.height - textSize.height) / 2,
-                    width: textSize.width,
-                    height: textSize.height
-                )
-                nsText.draw(in: textRect, withAttributes: attributes)
+                return tags.isEmpty ? nil : Capture(osmTags: tags)
             }
         }
     }
@@ -647,34 +708,22 @@ private extension QuestOptions {
     // MARK: - CaptureCard (individual capture display)
     struct CaptureCard: View {
         let capture: QuestOptions.AutoCaptureView.Capture
+        let tagDisplayNames: [String: String]
         let onDelete: () -> Void
-        
+
         var body: some View {
             VStack(spacing: 8) {
-                HStack {
-                    Image(uiImage: capture.image)
-                        .resizable()
-                        .scaledToFill()
-                        .frame(width: 80, height: 80)
-                        .cornerRadius(6)
-                        .clipped()
-                    
+                HStack(alignment: .top) {
                     VStack(alignment: .leading, spacing: 4) {
-                        Text(String(format: "Width: %@", capture.widthMeters.map { String(format: "%.2f m", $0) } ?? "NA"))
-                            .font(.system(.subheadline, design: .rounded))
-                            .fontWeight(.semibold)
-                        
-                        Text(String(format: "Slope: %@", capture.slopeDegrees.map { String(format: "%.1f°", $0) } ?? "NA"))
-                            .font(.system(.subheadline, design: .rounded))
-                            .fontWeight(.semibold)
-                        
-                        Text(String(format: "Cross Slope: %@", capture.crossSlopeDegrees.map { String(format: "%.1f°", $0) } ?? "NA"))
-                            .font(.system(.subheadline, design: .rounded))
-                            .fontWeight(.semibold)
+                        ForEach(capture.osmTags.sorted(by: { $0.key < $1.key }), id: \.key) { tag, value in
+                            Text("\(tagDisplayNames[tag] ?? tag): \(value)")
+                                .font(.system(.subheadline, design: .rounded))
+                                .fontWeight(.semibold)
+                        }
                     }
-                    
+
                     Spacer()
-                    
+
                     Button(action: onDelete) {
                         Image(systemName: "xmark.circle.fill")
                             .font(.system(size: 20))
@@ -689,46 +738,6 @@ private extension QuestOptions {
             .padding(.horizontal)
         }
     }
-
-    // MARK: - ImagePickerWrapper
-    struct ImagePickerWrapper: UIViewControllerRepresentable {
-        @Binding var image: UIImage?
-        var sourceType: UIImagePickerController.SourceType = .photoLibrary
-
-        func makeUIViewController(context: Context) -> UIImagePickerController {
-            let picker = UIImagePickerController()
-            picker.sourceType = sourceType
-            picker.delegate = context.coordinator
-            picker.modalPresentationStyle = .fullScreen
-            return picker
-        }
-
-        func updateUIViewController(_ uiViewController: UIImagePickerController, context: Context) {}
-
-        func makeCoordinator() -> Coordinator {
-            Coordinator(image: $image)
-        }
-
-        class Coordinator: NSObject, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
-            @Binding var image: UIImage?
-
-            init(image: Binding<UIImage?>) {
-                self._image = image
-            }
-
-            func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey: Any]) {
-                if let pickedImage = info[.originalImage] as? UIImage {
-                    self.image = pickedImage
-                }
-                picker.dismiss(animated: true)
-            }
-
-            func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
-                picker.dismiss(animated: true)
-            }
-        }
-    }
-
 
     struct NoImageView: View {
         let text: String

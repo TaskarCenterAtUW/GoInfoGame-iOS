@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 56;
+	objectVersion = 77;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -178,6 +178,10 @@
 		C787F3422E9CD34F00BEF0A6 /* ForceUpdateManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C787F3412E9CD34900BEF0A6 /* ForceUpdateManager.swift */; };
 		C78E8BC22EDF20E6002215C0 /* UndoItemConfirmationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C78E8BC12EDF20E6002215C0 /* UndoItemConfirmationView.swift */; };
 		C78E8BC42EDF2D55002215C0 /* EditedTagView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C78E8BC32EDF2D55002215C0 /* EditedTagView.swift */; };
+		C78EEFA62FDAD18A00729240 /* PointNMapShared.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C78EEFA52FDAD18A00729240 /* PointNMapShared.framework */; };
+		C78EEFA72FDAD18A00729240 /* PointNMapShared.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = C78EEFA52FDAD18A00729240 /* PointNMapShared.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		C78EEFA92FDAD19000729240 /* PointNMapShaderTypes.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C78EEFA82FDAD19000729240 /* PointNMapShaderTypes.framework */; };
+		C78EEFAA2FDAD19000729240 /* PointNMapShaderTypes.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = C78EEFA82FDAD19000729240 /* PointNMapShaderTypes.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		C7927B552E42363000A7A34E /* XCAssets+Generated.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7927B532E42363000A7A34E /* XCAssets+Generated.swift */; };
 		C79C3B7A2ED4559500F80364 /* AccessibilityModeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C79C3B792ED4559500F80364 /* AccessibilityModeView.swift */; };
 		C79C3B7C2ED5786100F80364 /* NearestQuestCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = C79C3B7B2ED5786100F80364 /* NearestQuestCard.swift */; };
@@ -334,8 +338,10 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
+				C78EEFAA2FDAD19000729240 /* PointNMapShaderTypes.framework in Embed Frameworks */,
 				A40E72802B5D462A00328848 /* osmapi.framework in Embed Frameworks */,
 				A4AD13282B5E90BD0041A881 /* osmparser.framework in Embed Frameworks */,
+				C78EEFA72FDAD18A00729240 /* PointNMapShared.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -553,6 +559,9 @@
 		C787F3412E9CD34900BEF0A6 /* ForceUpdateManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForceUpdateManager.swift; sourceTree = "<group>"; };
 		C78E8BC12EDF20E6002215C0 /* UndoItemConfirmationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UndoItemConfirmationView.swift; sourceTree = "<group>"; };
 		C78E8BC32EDF2D55002215C0 /* EditedTagView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditedTagView.swift; sourceTree = "<group>"; };
+		C78EEFA52FDAD18A00729240 /* PointNMapShared.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = PointNMapShared.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		C78EEFA82FDAD19000729240 /* PointNMapShaderTypes.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = PointNMapShaderTypes.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		C78EEFAC2FDAD91000729240 /* PointNMap-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "PointNMap-Bridging-Header.h"; sourceTree = "<group>"; };
 		C7927B532E42363000A7A34E /* XCAssets+Generated.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "XCAssets+Generated.swift"; sourceTree = "<group>"; };
 		C79C3B792ED4559500F80364 /* AccessibilityModeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccessibilityModeView.swift; sourceTree = "<group>"; };
 		C79C3B7B2ED5786100F80364 /* NearestQuestCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NearestQuestCard.swift; sourceTree = "<group>"; };
@@ -687,6 +696,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				C77AAC9D2E4463ED006713B2 /* FirebaseAnalytics in Frameworks */,
+				C78EEFA92FDAD19000729240 /* PointNMapShaderTypes.framework in Frameworks */,
 				C75666D02E0D068900D36C41 /* OHHTTPStubs in Frameworks */,
 				C76B637F2E4625D30076A540 /* FirebasePerformance in Frameworks */,
 				C75666D22E0D068900D36C41 /* OHHTTPStubsSwift in Frameworks */,
@@ -694,6 +704,7 @@
 				A4AD13272B5E90BD0041A881 /* osmparser.framework in Frameworks */,
 				C77AAC9F2E4463ED006713B2 /* FirebaseCrashlytics in Frameworks */,
 				C76187DC2E0153D800150201 /* ClusterMap in Frameworks */,
+				C78EEFA62FDAD18A00729240 /* PointNMapShared.framework in Frameworks */,
 				A40E727F2B5D462A00328848 /* osmapi.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -862,6 +873,8 @@
 		416A9A4590B07971607790B0 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				C78EEFA82FDAD19000729240 /* PointNMapShaderTypes.framework */,
+				C78EEFA52FDAD18A00729240 /* PointNMapShared.framework */,
 				97F2FA8D2B0630C4000B9726 /* SwiftOverpassAPI.framework */,
 				66BED441AF03CC04539E8D4A /* Pods_GoInfoGame.framework */,
 				2D539E22EFF6636F8CBA035A /* Pods_GoInfoGame_GoInfoGameUITests.framework */,
@@ -1643,6 +1656,7 @@
 		FAD5C4F12AFCBE700040C61A /* GoInfoGame */ = {
 			isa = PBXGroup;
 			children = (
+				C78EEFAC2FDAD91000729240 /* PointNMap-Bridging-Header.h */,
 				C7F75B3F2F8F6A8B0054E711 /* AutoCaptureSampleJson.json */,
 				C787EF162E9676CC00BEF0A6 /* GoInfoGame.entitlements */,
 				FA18CADE2CC7CD46008247F2 /* Kartaview */,
@@ -1963,7 +1977,7 @@
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
-				LastSwiftUpdateCheck = 1510;
+				LastSwiftUpdateCheck = 2630;
 				LastUpgradeCheck = 1410;
 				TargetAttributes = {
 					A40E72692B5D462A00328848 = {
@@ -1994,7 +2008,6 @@
 				};
 			};
 			buildConfigurationList = FAD5C4EA2AFCBE700040C61A /* Build configuration list for PBXProject "GoInfoGame" */;
-			compatibilityVersion = "Xcode 14.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
@@ -2007,7 +2020,9 @@
 				C76187DA2E0153D800150201 /* XCRemoteSwiftPackageReference "ClusterMap" */,
 				C75666CE2E0D068900D36C41 /* XCRemoteSwiftPackageReference "OHHTTPStubs" */,
 				C77AAC9B2E4463ED006713B2 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
+				C7971A0C2FB5EAB000A8DCE8 /* XCRemoteSwiftPackageReference "swift-collections" */,
 			);
+			preferredProjectObjectVersion = 77;
 			productRefGroup = FAD5C4F02AFCBE700040C61A /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -2715,7 +2730,6 @@
 		A40E72862B5D462A00328848 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
@@ -2739,7 +2753,6 @@
 		A40E72872B5D462A00328848 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
@@ -2839,7 +2852,6 @@
 		A4AD132D2B5E90BD0041A881 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
@@ -3004,7 +3016,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = F008D431593E568E75C48C84 /* Pods-GoInfoGame.debug.xcconfig */;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = GoInfoGame/GoInfoGame.entitlements;
@@ -3015,6 +3026,15 @@
 				DEVELOPMENT_TEAM = G8MQVE5WWW;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GENERATE_INFOPLIST_FILE = YES;
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"${PODS_CONFIGURATION_BUILD_DIR}/HTMLEntities/HTMLEntities.framework/Headers\"",
+					"\"${PODS_CONFIGURATION_BUILD_DIR}/Realm/Realm.framework/Headers\"",
+					"\"${PODS_CONFIGURATION_BUILD_DIR}/RealmSwift/RealmSwift.framework/Headers\"",
+					"\"${PODS_XCFRAMEWORKS_BUILD_DIR}/Realm/Headers\"",
+					"\"$(SRCROOT)/../Frameworks/PointNMap/PointNMapShaderTypes\"",
+					"\"$(SRCROOT)/../Frameworks/PointNMap/PointNMapShared\"",
+				);
 				INFOPLIST_FILE = GoInfoGame/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "AVIV ScoutRoute";
 				INFOPLIST_KEY_NSCameraUsageDescription = "This app requires access to your camera to upload images to Kartaview";
@@ -3034,6 +3054,8 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.2.3;
+				MTL_HEADER_SEARCH_PATHS = "$(SRCROOT)/PointNMap $(SRCROOT)/PointNMapShaderTypes";
+				OTHER_CFLAGS = "-DACCELERATE_NEW_LAPACK";
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-l\"c++\"",
@@ -3061,6 +3083,7 @@
 				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = "../Frameworks/PointNMap/PointNMap/PointNMap-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -3070,7 +3093,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = C96303080D26026265099E0E /* Pods-GoInfoGame.release.xcconfig */;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = GoInfoGame/GoInfoGame.entitlements;
@@ -3080,6 +3102,15 @@
 				DEVELOPMENT_TEAM = G8MQVE5WWW;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GENERATE_INFOPLIST_FILE = YES;
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"${PODS_CONFIGURATION_BUILD_DIR}/HTMLEntities/HTMLEntities.framework/Headers\"",
+					"\"${PODS_CONFIGURATION_BUILD_DIR}/Realm/Realm.framework/Headers\"",
+					"\"${PODS_CONFIGURATION_BUILD_DIR}/RealmSwift/RealmSwift.framework/Headers\"",
+					"\"${PODS_XCFRAMEWORKS_BUILD_DIR}/Realm/Headers\"",
+					"\"$(SRCROOT)/../Frameworks/PointNMap/PointNMapShared\"",
+					"\"$(SRCROOT)/../Frameworks/PointNMap/PointNMapShaderTypes\"",
+				);
 				INFOPLIST_FILE = GoInfoGame/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "AVIV ScoutRoute";
 				INFOPLIST_KEY_NSCameraUsageDescription = "This app requires access to your camera to upload images to Kartaview";
@@ -3099,6 +3130,8 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.2.3;
+				MTL_HEADER_SEARCH_PATHS = "$(SRCROOT)/PointNMap $(SRCROOT)/PointNMapShaderTypes";
+				OTHER_CFLAGS = "-DACCELERATE_NEW_LAPACK";
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-l\"c++\"",
@@ -3126,6 +3159,7 @@
 				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = "../Frameworks/PointNMap/PointNMap/PointNMap-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -3135,7 +3169,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 3D797A45474D6135AFA24613 /* Pods-GoInfoGameTests.debug.xcconfig */;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
@@ -3156,7 +3189,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 89C2A88A7749F031BCDFE226 /* Pods-GoInfoGameTests.release.xcconfig */;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
@@ -3177,7 +3209,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = D76D8E22AC705A38AFEA78B1 /* Pods-GoInfoGame-GoInfoGameUITests.debug.xcconfig */;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = NPCMG529DV;
@@ -3196,7 +3227,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = AE61EC473200AFDA81C2110A /* Pods-GoInfoGame-GoInfoGameUITests.release.xcconfig */;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = G8MQVE5WWW;
@@ -3311,6 +3341,14 @@
 			requirement = {
 				kind = upToNextMajorVersion;
 				minimumVersion = 12.1.0;
+			};
+		};
+		C7971A0C2FB5EAB000A8DCE8 /* XCRemoteSwiftPackageReference "swift-collections" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/apple/swift-collections.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.5.0;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */

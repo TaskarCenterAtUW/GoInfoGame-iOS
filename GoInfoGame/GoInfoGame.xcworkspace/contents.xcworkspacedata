@@ -5,6 +5,9 @@
       location = "group:GoInfoGame.xcodeproj">
    </FileRef>
    <FileRef
+      location = "container:../Frameworks/PointNMap/PointNMap.xcodeproj">
+   </FileRef>
+   <FileRef
       location = "group:Pods/Pods.xcodeproj">
    </FileRef>
    <FileRef

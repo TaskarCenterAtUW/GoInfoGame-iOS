@@ -82,50 +82,42 @@ class LongFormViewModel: ObservableObject {
     }
     
     // MARK: - AutoCapture Helper Methods
-    
+
     private func handleAutoCaptureTags(choice: QuestAnswerChoice, submissionDict: inout [String: String]) {
-        // Parse CSV data from choice.value
-        // Format: "width_m:2.34,1.92|slope_deg:2.31,1.45|cross_slope_deg:1.5,2.3"
-        
-        let widthValues = extractCSVValues(from: choice.value, key: "width_m")
-        let slopeValues = extractCSVValues(from: choice.value, key: "slope_deg")
-        let crossSlopeValues = extractCSVValues(from: choice.value, key: "cross_slope_deg")
-        
-        // Check if any captures were made (array not empty)
-        let hasCaptureAttempts = !widthValues.isEmpty || !slopeValues.isEmpty || !crossSlopeValues.isEmpty
-        
-        if hasCaptureAttempts {
-            // Add AutoCapture tags (including NA values for failed captures)
-            if !widthValues.isEmpty {
-                submissionDict["ext:autoCapture:width"] = widthValues.joined(separator: ",")
-            }
-            if !slopeValues.isEmpty {
-                submissionDict["ext:autoCapture:slope"] = slopeValues.joined(separator: ",")
-            }
-            if !crossSlopeValues.isEmpty {
-                submissionDict["ext:autoCapture:cross-slope"] = crossSlopeValues.joined(separator: ",")
+        // Parse the serialized captures.
+        // Format: "key=value|key=value||key=value|key=value" where "||" separates captures
+        // and "|" separates OSM tags within each capture.
+        let tagValuesByCaptureTag = parseAutoCaptureOSMTags(from: choice.value)
+
+        if tagValuesByCaptureTag.isEmpty {
+            submissionDict["ext:autoCapture:ignored"] = "yes"
+        } else {
+            // For each OSM tag, collect values across all captures as CSV and add to submission.
+            for (osmTag, values) in tagValuesByCaptureTag {
+                submissionDict[osmTag] = values.joined(separator: ",")
             }
             submissionDict["ext:autoCapture:ignored"] = "no"
-        } else {
-            // No capture attempts made at all
-            submissionDict["ext:autoCapture:ignored"] = "yes"
         }
     }
-    
-    private func extractCSVValues(from csvString: String, key: String) -> [String] {
-        // Extract values for a specific key from the CSV format
-        // e.g., key="width_m" from "width_m:2.34,1.92|slope_deg:2.31,1.45"
-        
-        let parts = csvString.split(separator: "|").map(String.init)
-        
-        for part in parts {
-            if part.hasPrefix(key + ":") {
-                let valueString = String(part.dropFirst(key.count + 1))
-                let values = valueString.split(separator: ",").map(String.init)
-                return values
+
+    // Parses the serialized capture string and returns a dict of OSM tag → [value per capture].
+    private func parseAutoCaptureOSMTags(from serialized: String) -> [String: [String]] {
+        var result: [String: [String]] = [:]
+
+        let captureBlocks = serialized.components(separatedBy: "||")
+        for block in captureBlocks {
+            let trimmed = block.trimmingCharacters(in: .whitespaces)
+            guard !trimmed.isEmpty else { continue }
+
+            for pair in trimmed.split(separator: "|") {
+                let kv = String(pair).split(separator: "=", maxSplits: 1)
+                guard kv.count == 2 else { continue }
+                let key = String(kv[0])
+                let value = String(kv[1])
+                result[key, default: []].append(value)
             }
         }
-        
-        return []
+
+        return result
     }
 }
