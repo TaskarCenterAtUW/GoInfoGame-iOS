@@ -175,6 +175,7 @@
 		C77AAC9F2E4463ED006713B2 /* FirebaseCrashlytics in Frameworks */ = {isa = PBXBuildFile; productRef = C77AAC9E2E4463ED006713B2 /* FirebaseCrashlytics */; };
 		C77EEBCF2DE59D3200494CB4 /* UndoMerge.swift in Sources */ = {isa = PBXBuildFile; fileRef = C77EEBCE2DE59D3200494CB4 /* UndoMerge.swift */; };
 		C78737AF2E4C9E3B00289D13 /* FloatingLabelTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = C78737AE2E4C9E3200289D13 /* FloatingLabelTextField.swift */; };
+		C787B2FE2FECE5E80026C40E /* MapLibre in Frameworks */ = {isa = PBXBuildFile; productRef = C787B2FD2FECE5E80026C40E /* MapLibre */; };
 		C787F3422E9CD34F00BEF0A6 /* ForceUpdateManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C787F3412E9CD34900BEF0A6 /* ForceUpdateManager.swift */; };
 		C78E8BC22EDF20E6002215C0 /* UndoItemConfirmationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C78E8BC12EDF20E6002215C0 /* UndoItemConfirmationView.swift */; };
 		C78E8BC42EDF2D55002215C0 /* EditedTagView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C78E8BC32EDF2D55002215C0 /* EditedTagView.swift */; };
@@ -690,6 +691,7 @@
 				C75666D22E0D068900D36C41 /* OHHTTPStubsSwift in Frameworks */,
 				97F2FA8A2B0630A3000B9726 /* Pods_GoInfoGame.framework in Frameworks */,
 				A4AD13272B5E90BD0041A881 /* osmparser.framework in Frameworks */,
+				C787B2FE2FECE5E80026C40E /* MapLibre in Frameworks */,
 				C77AAC9F2E4463ED006713B2 /* FirebaseCrashlytics in Frameworks */,
 				C76187DC2E0153D800150201 /* ClusterMap in Frameworks */,
 				A40E727F2B5D462A00328848 /* osmapi.framework in Frameworks */,
@@ -2004,6 +2006,7 @@
 				C76187DA2E0153D800150201 /* XCRemoteSwiftPackageReference "ClusterMap" */,
 				C75666CE2E0D068900D36C41 /* XCRemoteSwiftPackageReference "OHHTTPStubs" */,
 				C77AAC9B2E4463ED006713B2 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
+				C787B2FC2FECE5E80026C40E /* XCRemoteSwiftPackageReference "maplibre-gl-native-distribution" */,
 			);
 			productRefGroup = FAD5C4F02AFCBE700040C61A /* Products */;
 			projectDirPath = "";
@@ -3309,6 +3312,14 @@
 				minimumVersion = 12.1.0;
 			};
 		};
+		C787B2FC2FECE5E80026C40E /* XCRemoteSwiftPackageReference "maplibre-gl-native-distribution" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/maplibre/maplibre-gl-native-distribution.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 6.27.0;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -3341,6 +3352,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = C77AAC9B2E4463ED006713B2 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
 			productName = FirebaseCrashlytics;
+		};
+		C787B2FD2FECE5E80026C40E /* MapLibre */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = C787B2FC2FECE5E80026C40E /* XCRemoteSwiftPackageReference "maplibre-gl-native-distribution" */;
+			productName = MapLibre;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

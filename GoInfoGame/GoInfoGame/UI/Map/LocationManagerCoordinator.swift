@@ -7,13 +7,12 @@
 
 import Foundation
 import CoreLocation
-import MapKit
 
 final class LocationManagerCoordinator: NSObject, ObservableObject {
-    
+
     private let locationManager = CLLocationManager()
     var currentLocation: CLLocation?
-    @Published var region = MKCoordinateRegion()
+    @Published var centerCoordinate = CLLocationCoordinate2D()
     var locationUpdateHandler: ((CLLocation) -> Void)?
     override init() {
         super.init()

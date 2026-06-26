@@ -6,13 +6,10 @@
 //
 
 import Foundation
-import MapKit
+import CoreLocation
 import osmparser
 import Combine
-
-import Foundation
-
-import ClusterMap
+import MapLibre
 
 struct ApplicableQuest {
     var quest: any Quest
@@ -90,7 +87,7 @@ class QuestsRepository: ObservableObject {
     
 }
 // Probably move somewhere else
-class DisplayUnitAnnotation: NSObject, MKAnnotation, CoordinateIdentifiable, Identifiable {
+class DisplayUnitAnnotation: NSObject, MLNAnnotation, Identifiable {
     var displayUnit: DisplayUnit?
     var coordinate: CLLocationCoordinate2D
     let id: String
@@ -161,7 +158,7 @@ extension QuestsRepository {
 }
 
 class CluserableDisplayUnitAnnotation: DisplayUnitAnnotation  {
-    var memberAnnotations = [MKAnnotation]()
+    var memberAnnotations = [MLNAnnotation]()
     
     override func isEqual(_ object: Any?) -> Bool {
         guard let object = object as? CluserableDisplayUnitAnnotation else { return false }
@@ -178,7 +175,7 @@ class CluserableDisplayUnitAnnotation: DisplayUnitAnnotation  {
             return false
         }
 
-        return memberAnnotations.map(\.coordinate) == object.memberAnnotations.map(\.coordinate)
+        return memberAnnotations.map { $0.coordinate } == object.memberAnnotations.map { $0.coordinate }
     }
     
 }

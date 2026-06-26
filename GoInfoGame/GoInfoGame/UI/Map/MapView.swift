@@ -6,7 +6,8 @@
 //
 
 import SwiftUI
-import MapKit
+import MapKit       // For MapUserTrackingMode
+import MapLibre
 import Combine
 
 struct MapView: View {
@@ -17,100 +18,88 @@ struct MapView: View {
     @AppStorage("isMapFromOnboarding") var isMapFromOnboarding: Bool = false
     @StateObject var viewModel: MapViewModel
     @State private var isPresented = false
-    
+
     @State private var shouldShowPolyline = true
+    @State private var lineCoordinates: [CLLocationCoordinate2D] = []
     @State private var isSyncing = false
     @State private var showAlert = false
     @State private var alertMessage = ""
     @State private var alertIcon = ""
     @StateObject var contextualInfo = ContextualInfo.shared
-    
+
     @State private var selectedDetent: PresentationDetent = .fraction(0.8)
-    
     @State private var showPopover = false
-    
+
     @AppStorage("baseUrl") var baseUrl = ""
-        
+
     @State private var tappedCoordinate: CLLocationCoordinate2D? = nil
-    
     @State private var annotationCoordinate: CLLocationCoordinate2D? = nil
-    
     @State private var showMapLongPressedSheet = false
-    
     @State private var showAddFeatureSheet = false
-    
     @State private var showCreateNoteSheet = false
-    
     @State private var showUserSettingsSheet = false
-    
     @State private var enableAccessibility = false
-    
     @State private var showMultiSelectionBottomSheet = false
-    
-    @State private var mapViewRef: MKMapView?
-    
+
+    @State private var mapViewRef: MLNMapView?
+
     @State private var navigateToProfile = false
-    
     @State private var showManageQuestSheet = false
-    
     @State private var showZoomInAlert = false
-    
-    @State private var shadowOverlay = ShadowOverlay()
-    
+    @State private var shadowRegions: [CoordinateBounds] = []
     @State private var showUndoSidebar = false
     @State private var showFilterQuestsSheet = false
     @State private var showElemntDeletedAlert = false
-    
+
     var body: some View {
         NavigationStack {
             ZStack {
-                
                 NavigationLink(
                     destination: UserProfileView(),
                     isActive: $navigateToProfile
-                ) {
-                    EmptyView() // Empty view as it's handled by isActive binding
-                }
-                
-                
-                CustomMap(region: $viewModel.region,
-                          trackingMode: $trackingMode,
-                          items: $viewModel.items,
-                          selectedQuest: $viewModel.selectedQuest,
-                          shouldShowPolyline: $shouldShowPolyline,
-                          
-                          isPresented: $isPresented,
-                          isUserSettingsPresented: $showUserSettingsSheet,
-                          selectedAnnotations: $viewModel.selectedAnnotaions,
-                          isMultiSelectModeEnabled: $viewModel.isMultiSelectModeEnabled,
-                          selectedAnnotationType: $viewModel.selectedAnnotationType,
-                          showMultiSelectionBottomSheet: $showMultiSelectionBottomSheet ,
-                          selectedSattiliteOption: $viewModel.selectedOption,
-                          onMapViewCreated: { map in
-                    self.mapViewRef = map
-                } ,
-                          contextualInfo: { contextualInfo in
-                    print(contextualInfo)
-                    selectedDetent = .fraction(0.8)
-                    self.setContextualInfo(contextualinfo: contextualInfo)
-                },
-                          tappedCoordinate: $tappedCoordinate,
-                          annotationCoordinate: $annotationCoordinate,
-                          shadowOverlay: shadowOverlay)
-                .accessibilityHidden(enableAccessibility) // Hide map from VoiceOver when accessibility mode is enabled
+                ) { EmptyView() }
+
+                CustomMap(
+                    centerCoordinate: $viewModel.centerCoordinate,
+                    trackingMode: $trackingMode,
+                    items: $viewModel.items,
+                    selectedQuest: $viewModel.selectedQuest,
+                    shouldShowPolyline: $shouldShowPolyline,
+                    isPresented: $isPresented,
+                    isUserSettingsPresented: $showUserSettingsSheet,
+                    selectedAnnotations: $viewModel.selectedAnnotaions,
+                    isMultiSelectModeEnabled: $viewModel.isMultiSelectModeEnabled,
+                    selectedAnnotationType: $viewModel.selectedAnnotationType,
+                    showMultiSelectionBottomSheet: $showMultiSelectionBottomSheet,
+                    selectedSatelliteOption: $viewModel.selectedOption,
+                    lineCoordinates: $lineCoordinates,
+                    onMapViewCreated: { map in
+                        self.mapViewRef = map
+                    },
+                    contextualInfo: { info in
+                        selectedDetent = .fraction(0.8)
+                        setContextualInfo(contextualinfo: info)
+                    },
+                    tappedCoordinate: $tappedCoordinate,
+                    annotationCoordinate: $annotationCoordinate,
+                    shadowRegions: $shadowRegions
+                )
+                .accessibilityHidden(enableAccessibility)
                 .onChange(of: tappedCoordinate) { _ in
                     showMapLongPressedSheet = tappedCoordinate != nil
                 }
                 .onChange(of: viewModel.selectedQuest) { _ in
                     shouldShowPolyline = false
+                    lineCoordinates = []
                 }
                 .id(viewModel.refreshMap)
                 .edgesIgnoringSafeArea(.all)
+
                 if viewModel.isLoading {
-                    Color.black.opacity(0.3)
-                        .edgesIgnoringSafeArea(.all)
+                    Color.black.opacity(0.3).edgesIgnoringSafeArea(.all)
                     ActivityView(activityText: "Looking for quests...")
                 }
+
                 if showAlert {
                     VStack(spacing: 20) {
                         Image(systemName: alertIcon)
@@ -118,18 +107,17 @@ struct MapView: View {
                             .scaledToFit()
                             .frame(width: 40, height: 40)
                             .foregroundColor(Asset.Colors.accentPink.swiftUIColor)
-                        
                         Text(alertMessage)
                             .foregroundColor(.white)
                             .font(.system(size: 16, weight: .medium))
                             .multilineTextAlignment(.center)
                             .padding()
-                            .frame(maxWidth: .infinity) // stretch text inside fixed card
+                            .frame(maxWidth: .infinity)
                             .background(Asset.Colors.huskyPurple.swiftUIColor)
                             .cornerRadius(12)
                     }
                     .padding(24)
-                    .frame(maxWidth: 350) // increased card width
+                    .frame(maxWidth: 350)
                     .background(
                         RoundedRectangle(cornerRadius: 20)
                             .fill(Color.white)
@@ -138,32 +126,26 @@ struct MapView: View {
                     .accessibilityElement(children: .combine)
                     .accessibilityLabel(alertMessage)
                     .onAppear {
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-                            showAlert = false
-                        }
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 2) { showAlert = false }
                     }
                 }
+
                 VStack {
                     Spacer()
                     HStack {
                         VStack(alignment: .leading) {
                             UndoButton(
-                                onPreview: { id, type in
-                                },
-                                onRemovePreview: {
-                                },
-                                onRevert: { id in
-                                    MapUndoManager.shared.undo(for: id)
-                                }
+                                onPreview: { _, _ in },
+                                onRemovePreview: {},
+                                onRevert: { id in MapUndoManager.shared.undo(for: id) }
                             )
                             .accessibilitySortPriority(1)
+
                             if case .wmts(let server) = viewModel.selectedOption,
                                server.attribution.attributionRequired,
                                let url = URL(string: server.attribution.url),
                                UIApplication.shared.canOpenURL(url) {
-                                Button(action: {
-                                    UIApplication.shared.open(url)
-                                }) {
+                                Button(action: { UIApplication.shared.open(url) }) {
                                     Text(server.attribution.text)
                                         .background(.white.opacity(0.6))
                                         .foregroundColor(.black)
@@ -172,42 +154,39 @@ struct MapView: View {
                                         .cornerRadius(8)
                                 }
                             }
-                            
                         }
                         .padding(.bottom, 24)
                         .padding(.leading, 16)
                         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottomLeading)
+
                         Spacer()
-                        VStack(alignment: .trailing, spacing: 10, content: {
+
+                        VStack(alignment: .trailing, spacing: 10) {
                             Spacer()
+
+                            // Zoom out
                             FloatingActionButton(systemName: "minus.magnifyingglass") {
-                                if var region = mapViewRef?.region {
-                                    region.span.latitudeDelta *= 2.0
-                                    region.span.longitudeDelta *= 2.0
-                                    if region.span.latitudeDelta < 170.0 && region.span.longitudeDelta < 350.0 {
-                                        mapViewRef?.setRegion(region, animated: true)
-                                        if let newZoom = mapViewRef?.zoomLevelFor(longitudeDelta: region.span.longitudeDelta) {
-                                            voiceOverAnnounce(message: "Zoomed out to level \(newZoom)")
-                                        }
-                                    }
+                                if let mapView = mapViewRef {
+                                    let newZoom = max(mapView.zoomLevel - 1.0, 0)
+                                    mapView.setZoomLevel(newZoom, animated: true)
+                                    voiceOverAnnounce(message: "Zoomed out to level \(Int(newZoom))")
                                 }
                             }
                             .accessibilityLabel(L10n.Localizable.zoomOutMap)
                             .accessibilitySortPriority(1)
-                            
+
+                            // Zoom in
                             FloatingActionButton(systemName: "plus.magnifyingglass") {
-                                if var region = mapViewRef?.region {
-                                    region.span.latitudeDelta *= 0.5
-                                    region.span.longitudeDelta *= 0.5
-                                    mapViewRef?.setRegion(region, animated: true)
-                                    if let newZoom = mapViewRef?.zoomLevelFor(longitudeDelta: region.span.longitudeDelta) {
-                                        voiceOverAnnounce(message: "Zoomed in to level \(newZoom)")
-                                    }
+                                if let mapView = mapViewRef {
+                                    let newZoom = min(mapView.zoomLevel + 1.0, 22)
+                                    mapView.setZoomLevel(newZoom, animated: true)
+                                    voiceOverAnnounce(message: "Zoomed in to level \(Int(newZoom))")
                                 }
                             }
                             .accessibilityLabel(L10n.Localizable.zoomInMap)
                             .accessibilitySortPriority(1)
-                            
+
+                            // Filter quests
                             FloatingActionButton(systemName: "slider.horizontal.3") {
                                 showFilterQuestsSheet.toggle()
                             }
@@ -221,17 +200,16 @@ struct MapView: View {
                                     .applyPresentationSizingPage()
                                     .focusAccessibilityOnAppear()
                             }
-                        })
+                        }
                         .padding(.bottom, 24)
                         .padding(.trailing, 16)
                         .frame(alignment: .bottomLeading)
                     }
                 }
-                
+
                 if !viewModel.selectedAnnotaions.isEmpty,
                    let selectedAnnotationType = viewModel.selectedAnnotationType,
                    let image = UIImage(named: viewModel.selectedAnnotaions.first?.displayUnit?.parent?.iconName ?? "notes") {
-                    
                     MultiQuestSelectionBottomSheet(
                         selectedAnnotationType: selectedAnnotationType,
                         selectedAnnotationImage: image,
@@ -239,16 +217,12 @@ struct MapView: View {
                         onCancel: {
                             viewModel.selectedAnnotaions.removeAll()
                             viewModel.selectedAnnotationType = nil
-                            //                        DispatchQueue.main.async {
                             viewModel.isMultiSelectModeEnabled = false
                             viewModel.selectedAnnotaions = Set<DisplayUnitAnnotation>()
-                            //                        }
                         },
-                        onAnswerQuests: {
-                            isPresented = true
-                        }
+                        onAnswerQuests: { isPresented = true }
                     )
-                    .transition(.move(edge: .bottom)) // Smooth animation
+                    .transition(.move(edge: .bottom))
                     .animation(.easeInOut, value: viewModel.selectedAnnotaions.count)
                 }
             }
@@ -263,26 +237,30 @@ struct MapView: View {
         .navigationBarItems(leading: EmptyView())
         .toolbar {
             ToolbarItem(placement: .topBarLeading) {
-                HStack(spacing: 10)  {
-                    Button(action: {
-                        navigateToProfile = true
-                    }) {
+                HStack(spacing: 10) {
+                    Button(action: { navigateToProfile = true }) {
                         Image(systemName: "person.fill")
                             .padding(8)
                             .foregroundStyle(Color.white)
                             .background {
-                                LinearGradient(gradient: Gradient(colors: [Asset.Colors._8F57DEProfileIcon.swiftUIColor, Asset.Colors._2D0369ProfileIcon.swiftUIColor,]), startPoint: .top, endPoint: .bottom)
+                                LinearGradient(
+                                    gradient: Gradient(colors: [
+                                        Asset.Colors._8F57DEProfileIcon.swiftUIColor,
+                                        Asset.Colors._2D0369ProfileIcon.swiftUIColor
+                                    ]),
+                                    startPoint: .top, endPoint: .bottom
+                                )
                             }
                             .frame(width: 34, height: 34)
                             .clipShape(Circle())
                             .accessibilityLabel(L10n.Localizable.profile)
                     }
-                    
+
                     Rectangle()
                         .fill(Asset.Colors.ddddddLine.swiftUIColor)
                         .frame(width: 1, height: 24)
                         .cornerRadius(0.5)
-                    
+
                     VStack(alignment: .leading) {
                         ScrollView(showsIndicators: false) {
                             VStack(alignment: .leading) {
@@ -290,7 +268,6 @@ struct MapView: View {
                                     .font(FontFamily.Lato.regular.swiftUIFont(size: 12, relativeTo: .body))
                                     .foregroundStyle(Asset.Colors.huskyPurple.swiftUIColor)
                                     .multilineTextAlignment(.leading)
-                                
                                 Text(selectedWorkspace.title)
                                     .font(FontFamily.Lato.bold.swiftUIFont(size: 14, relativeTo: .body))
                                     .foregroundStyle(Asset.Colors.huskyPurple.swiftUIColor)
@@ -299,37 +276,38 @@ struct MapView: View {
                         }
                         .accessibilityElement(children: .combine)
                         .accessibilityLabel("\(L10n.Localizable.workspace): \(selectedWorkspace.title)")
-                        
                     }
                 }
-                
             }
-            ToolbarItem(placement: .topBarLeading) {
-                
-                
-            }
-            
+            ToolbarItem(placement: .topBarLeading) { }
+
             ToolbarItem(placement: .navigationBarTrailing) {
                 HStack(spacing: 5.0) {
                     accessbilityButton
-                    QuestSyncButton(badgeCount: viewModel.syncFailedElementsCount, isSyncing: isSyncing, action: {
-                        debugPrint("Sync taped")
-                        guard viewModel.syncFailedElementsCount > 0 else {
-                            alertIcon = "info.bubble"
-                            alertMessage = "No elements to sync"
-                            showAlert = true
-                            return
+
+                    QuestSyncButton(
+                        badgeCount: viewModel.syncFailedElementsCount,
+                        isSyncing: isSyncing,
+                        action: {
+                            guard viewModel.syncFailedElementsCount > 0 else {
+                                alertIcon = "info.bubble"
+                                alertMessage = "No elements to sync"
+                                showAlert = true
+                                return
+                            }
+                            isSyncing = true
+                            DatasyncManager.shared.syncDataToOSM(exclude_gig_tags: false) { _ in
+                                isSyncing = false
+                                viewModel.checkSyncStatus()
+                            }
                         }
-                        isSyncing = true
-                        DatasyncManager.shared.syncDataToOSM(exclude_gig_tags: false) { _ in
-                            isSyncing = false
-                            viewModel.checkSyncStatus()
-                        }
-                    })
-                    
+                    )
+
                     Button(action: {
-                        debugPrint("satellite icon tapped")
-                        viewModel.updateOptions(for: mapViewRef?.region.center ?? CLLocationCoordinate2D(latitude: 0.0, longitude: 0.0))
+                        viewModel.updateOptions(
+                            for: mapViewRef?.centerCoordinate
+                                ?? CLLocationCoordinate2D(latitude: 0, longitude: 0)
+                        )
                         viewModel.showSatellitePicker = true
                     }) {
                         Image(systemName: "square.2.layers.3d.bottom.filled")
@@ -341,11 +319,8 @@ struct MapView: View {
                             .clipShape(Circle())
                             .accessibilityLabel(L10n.Localizable.mapModes)
                     }
-                    
-                    Button(action: {
-                        print("Settings icon tapped")
-                        showUserSettingsSheet = true
-                    }) {
+
+                    Button(action: { showUserSettingsSheet = true }) {
                         Image(systemName: "gear")
                             .resizable()
                             .padding(8)
@@ -359,16 +334,11 @@ struct MapView: View {
         }
         .toolbarBackground(.visible, for: .navigationBar)
         .onChange(of: showPopover) { newValue in
-            if !newValue {
-                shouldShowPolyline = false
-            }
+            if !newValue { shouldShowPolyline = false }
         }
         .onChange(of: isPresented) { newValue in
-            if !newValue {
-                shouldShowPolyline = false
-            }
+            if !newValue { shouldShowPolyline = false }
         }
-        
         .sheet(isPresented: $showManageQuestSheet) {
             ManageQuestsView()
                 .presentationDetents([.fraction(0.85)])
@@ -384,12 +354,11 @@ struct MapView: View {
                 onSelect: { selected in
                     viewModel.selectedOption = selected
                     if case .wmts(let wmts) = selected {
-                        mapViewRef?.setCameraZoomRange(MKMapView.CameraZoomRange(minCenterCoordinateDistance: mapViewRef?.distanceForZoom(zoomLevel: wmts.extent.maxZoom) ?? 0.0), animated: true)
+                        mapViewRef?.maximumZoomLevel = Double(wmts.extent.maxZoom)
                     } else {
-                        mapViewRef?.setCameraZoomRange(nil, animated: true)
+                        mapViewRef?.maximumZoomLevel = 22
                     }
                     viewModel.showSatellitePicker = false
-                    addOverlay(selectedSatilliteOption: selected)
                 }
             )
             .background(Color(red: 248/255, green: 248/255, blue: 248/255))
@@ -398,42 +367,49 @@ struct MapView: View {
             .applyPresentationSizingPage()
         }
         .sheet(isPresented: $showUserSettingsSheet) {
-            UserSettingsView(selectedWorkspace: selectedWorkspace.title, options: OptionModel.options, onNavigate: { navigate in
-                showUserSettingsSheet = false
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-                    //   navigateToProfileSettings = true
-                    
-                    switch navigate {
-                    case .profile:
-                        print("Navigate to profile")
-                        // Handle navigation to profile
-                        navigateToProfile = true
-                        
-                    case .manageQuests:
-                        showManageQuestSheet = true
-                        
-                    case .downloadData:
-                        print("Download data here")
-                        
-                        guard let mapView = mapViewRef else { return }
-                        let bbox = viewModel.boundingBoxFromVisibleMapRect(mapView: mapView)
-                        if !isBBoxValid(bbox) {
-                            showZoomInAlert = true
-                            return
+            UserSettingsView(
+                selectedWorkspace: selectedWorkspace.title,
+                options: OptionModel.options,
+                onNavigate: { navigate in
+                    showUserSettingsSheet = false
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                        switch navigate {
+                        case .profile:
+                            navigateToProfile = true
+
+                        case .manageQuests:
+                            showManageQuestSheet = true
+
+                        case .downloadData:
+                            guard let mapView = mapViewRef else { return }
+                            let bbox = viewModel.boundingBoxFromVisibleMapRect(mapView: mapView)
+                            if !isBBoxValid(bbox) {
+                                showZoomInAlert = true
+                                return
+                            }
+                            viewModel.fetchOSMDataFor(from: .visibleRect(mapView: mapView))
+
+                            // Expand the visible bounds slightly and add as a shadow cutout
+                            let bounds = mapView.visibleCoordinateBounds
+                            let latPad = (bounds.ne.latitude  - bounds.sw.latitude)  * 0.25
+                            let lonPad = (bounds.ne.longitude - bounds.sw.longitude) * 0.25
+                            shadowRegions.append(CoordinateBounds(
+                                sw: CLLocationCoordinate2D(
+                                    latitude:  bounds.sw.latitude  - latPad,
+                                    longitude: bounds.sw.longitude - lonPad
+                                ),
+                                ne: CLLocationCoordinate2D(
+                                    latitude:  bounds.ne.latitude  + latPad,
+                                    longitude: bounds.ne.longitude + lonPad
+                                )
+                            ))
+
+                        case .switchWorkspace:
+                            switchToInitialView()
                         }
-                        viewModel.fetchOSMDataFor(from: .visibleRect(mapView: mapView))
-                        let rect = mapView.visibleMapRect
-                        let extendedVisibleRect = rect.insetBy(dx: -rect.size.width * 0.25, dy: -rect.size.height * 0.25)
-                        shadowOverlay.addVisibleRect(extendedVisibleRect)
-                        
-                    case .switchWorkspace:
-                        //navigate to inital view
-                        print("Switch workspace here")
-                        switchToInitialView()
                     }
                 }
-                
-            })
+            )
             .background(Color(red: 248/255, green: 248/255, blue: 248/255))
             .presentationDetents([.fraction(0.38)])
             .interactiveDismissDisabled()
@@ -444,7 +420,6 @@ struct MapView: View {
         .fullScreenCover(isPresented: $enableAccessibility) {
             AccessibilityModeView(mapViewModel: viewModel)
         }
-        
         .sheet(isPresented: $showMapLongPressedSheet) {
             if let _ = tappedCoordinate {
                 VStack(spacing: 12) {
@@ -456,8 +431,7 @@ struct MapView: View {
                     }) {
                         HStack {
                             Image(systemName: "note.text.badge.plus")
-                            Text("Create Note")
-                                .fontWeight(.semibold)
+                            Text("Create Note").fontWeight(.semibold)
                         }
                         .frame(maxWidth: .infinity)
                         .padding()
@@ -465,7 +439,7 @@ struct MapView: View {
                         .cornerRadius(12)
                     }
                     .foregroundColor(.white)
-                    
+
                     Button(action: {
                         showMapLongPressedSheet = false
                         DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
@@ -474,8 +448,7 @@ struct MapView: View {
                     }) {
                         HStack {
                             Image(systemName: "plus.viewfinder")
-                            Text("Add Feature")
-                                .fontWeight(.semibold)
+                            Text("Add Feature").fontWeight(.semibold)
                         }
                         .frame(maxWidth: .infinity)
                         .padding()
@@ -493,64 +466,60 @@ struct MapView: View {
                 .applyPresentationSizingPage()
             }
         }
-        .sheet(isPresented: $showCreateNoteSheet, content: {
-            CreateNoteView(coordinates: tappedCoordinate ?? CLLocationCoordinate2D(latitude: 0.0, longitude: 0.0), showNotesBox: $showCreateNoteSheet, dismissSheet: { message in
-                if message.contains("Error") {
-                    alertIcon = "exclamationmark.triangle.fill"
-                } else {
-                    alertIcon = "checkmark.circle.fill"
+        .sheet(isPresented: $showCreateNoteSheet) {
+            CreateNoteView(
+                coordinates: tappedCoordinate ?? CLLocationCoordinate2D(),
+                showNotesBox: $showCreateNoteSheet,
+                dismissSheet: { message in
+                    alertIcon = message.contains("Error")
+                        ? "exclamationmark.triangle.fill"
+                        : "checkmark.circle.fill"
+                    alertMessage = message
+                    showAlert = true
                 }
-                alertMessage = message
-                showAlert = true
-                
-            })
-            .presentationDetents([.fraction(0.6)])
-            .presentationDragIndicator(.visible)
-            .applyPresentationSizingPage()
-            
-        })
-        .sheet(isPresented: $showAddFeatureSheet) {
-            AddFeatureView(tappedCoordinate: tappedCoordinate ?? CLLocationCoordinate2D(latitude: 0.0, longitude: 0.0), isPresented: $showAddFeatureSheet, dismissSheet: { message in
-                if message.contains("wrong") {
-                    alertIcon = "exclamationmark.triangle.fill"
-                } else {
-                    alertIcon = "checkmark.circle.fill"
-                }
-                alertMessage = message
-                showAlert = true
-            })
+            )
             .presentationDetents([.fraction(0.6)])
             .presentationDragIndicator(.visible)
             .applyPresentationSizingPage()
         }
-        
-        .sheet(isPresented: $isPresented, content: {
-            QuestSheetView(viewModel: viewModel, annotationCoordinate: annotationCoordinate)
-                .onAppear {
-                    shouldShowPolyline = true
+        .sheet(isPresented: $showAddFeatureSheet) {
+            AddFeatureView(
+                tappedCoordinate: tappedCoordinate ?? CLLocationCoordinate2D(),
+                isPresented: $showAddFeatureSheet,
+                dismissSheet: { message in
+                    alertIcon = message.contains("wrong")
+                        ? "exclamationmark.triangle.fill"
+                        : "checkmark.circle.fill"
+                    alertMessage = message
+                    showAlert = true
                 }
-                .presentationDetents([.fraction(0.8), .fraction(0.5), .fraction(0.1)], selection: $selectedDetent)
+            )
+            .presentationDetents([.fraction(0.6)])
+            .presentationDragIndicator(.visible)
+            .applyPresentationSizingPage()
+        }
+        .sheet(isPresented: $isPresented) {
+            QuestSheetView(viewModel: viewModel, annotationCoordinate: annotationCoordinate)
+                .onAppear { shouldShowPolyline = true }
+                .presentationDetents([.fraction(0.8), .fraction(0.5), .fraction(0.1)],
+                                     selection: $selectedDetent)
                 .presentationDragIndicator(.visible)
                 .scrollDisabled(false)
                 .interactiveDismissDisabled()
                 .environmentObject(contextualInfo)
                 .applyPresentationSizingPage()
-            
-        })
+        }
         .onReceive(MapViewPublisher.shared.dismissSheet) { scenario in
-            
             isPresented = false
             switch scenario {
             case .dismissed:
                 shouldShowPolyline = false
             case .syncing:
                 isSyncing = true
-                print("syncing")
             case .synced:
                 isSyncing = false
-                print("synced")
                 viewModel.checkSyncStatus()
-            case .failed(let message):
+            case .failed:
                 isSyncing = false
                 shouldShowPolyline = false
                 viewModel.checkSyncStatus()
@@ -565,35 +534,29 @@ struct MapView: View {
                 viewModel.refreshMapAfterSubmission(elementId: elementID)
             }
         }
-        .onReceive(QuestsPublisher.shared.refreshQuest, perform: { _ in
+        .onReceive(QuestsPublisher.shared.refreshQuest) { _ in
             viewModel.refreshQuests()
-        })
+        }
         .onReceive(
             enableAccessibility
-            ? Empty<Int, Never>().eraseToAnyPublisher()
-            : QuestsPublisher.shared.elementDeleted.eraseToAnyPublisher()
+                ? Empty<Int, Never>().eraseToAnyPublisher()
+                : QuestsPublisher.shared.elementDeleted.eraseToAnyPublisher()
         ) { _ in
             showElemntDeletedAlert = true
         }
         .alert("Element is deleted from the server.", isPresented: $showElemntDeletedAlert) {
             Button("OK", role: .cancel) { }
         }
-        .onAppear(){
+        .onAppear {
             HiddenQuestManager.shared.loadHiddenQuests()
-            print("selected workspace",selectedWorkspace.title)
             QuestsRepository.shared.loadLongQuests(from: "longQuestJson")
-            //            self.baseUrl = "https://osm.workspaces-stage.sidewalks.washington.edu"
-            //            let original = DatabaseConnector.shared.getNode(id: 43)
-            //            let edited = DatabaseConnector.shared.getNode(id: 43)
-            //            print("ORIGINAL --->>>\(original)")
-            //            print("EDITED --->>>\(edited)")
         }
     }
-    
+
+    // MARK: – Helpers
+
     func voiceOverAnnounce(message: String) {
-        guard isVoiceOverOn else {
-            return
-        }
+        guard isVoiceOverOn else { return }
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
             if #available(iOS 17.0, *) {
                 AccessibilityNotification.Announcement(message).post()
@@ -602,20 +565,7 @@ struct MapView: View {
             }
         }
     }
-    
-    func addOverlay(selectedSatilliteOption: SatelliteOption) {
-        // Remove old tile overlays (keep polygons, etc. if needed)
-        let oldTileOverlays = mapViewRef?.overlays.filter { $0 is WMTSSeever }
-        mapViewRef?.removeOverlays(oldTileOverlays ?? [])
-        switch selectedSatilliteOption {
-        case .none:
-            mapViewRef?.mapType = .standard
-        case .wmts(let server):
-            let layer = WMTSSeever(satelliteServer: server)
-            mapViewRef?.addOverlay(layer, level: .aboveLabels)
-        }
-    }
-    
+
     func switchToInitialView() {
         if let scene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
            let window = scene.windows.first {
@@ -623,48 +573,34 @@ struct MapView: View {
             window.makeKeyAndVisible()
         }
     }
-    
+
     private func setContextualInfo(contextualinfo: String) {
         contextualInfo.info = contextualinfo
-        
     }
-    
+
     func isBBoxValid(_ bbox: BBox) -> Bool {
-        return isBBoxValid(minLat: bbox.minLat, minLon: bbox.minLon, maxLat: bbox.maxLat, maxLon: bbox.maxLon)
+        isBBoxValid(minLat: bbox.minLat, minLon: bbox.minLon, maxLat: bbox.maxLat, maxLon: bbox.maxLon)
     }
-    
+
     private func isBBoxValid(minLat: Double, minLon: Double, maxLat: Double, maxLon: Double) -> Bool {
         let latDistanceKm = haversineDistance(lat1: minLat, lon1: minLon, lat2: maxLat, lon2: minLon)
         let lonDistanceKm = haversineDistance(lat1: minLat, lon1: minLon, lat2: minLat, lon2: maxLon)
-        
-        let areaKm2 = latDistanceKm * lonDistanceKm
-        print("Area: \(areaKm2) km²")
-        
-        return areaKm2 < 3.0 // allow small tolerance
+        return latDistanceKm * lonDistanceKm < 3.0
     }
-    
+
     private func haversineDistance(lat1: Double, lon1: Double, lat2: Double, lon2: Double) -> Double {
-        let earthRadiusKm = 6371.0
+        let r = 6371.0
         let dLat = degreesToRadians(lat2 - lat1)
         let dLon = degreesToRadians(lon2 - lon1)
-        
-        let a = sin(dLat / 2) * sin(dLat / 2) +
-        cos(degreesToRadians(lat1)) * cos(degreesToRadians(lat2)) *
-        sin(dLon / 2) * sin(dLon / 2)
-        let c = 2 * atan2(sqrt(a), sqrt(1 - a))
-        
-        return earthRadiusKm * c
+        let a = sin(dLat/2)*sin(dLat/2) +
+            cos(degreesToRadians(lat1))*cos(degreesToRadians(lat2))*sin(dLon/2)*sin(dLon/2)
+        return r * 2 * atan2(sqrt(a), sqrt(1 - a))
     }
-    
-    private func degreesToRadians(_ degrees: Double) -> Double {
-        return degrees * .pi / 180.0
-    }
-    
+
+    private func degreesToRadians(_ d: Double) -> Double { d * .pi / 180.0 }
+
     private var accessbilityButton: some View {
-        Button(action: {
-            print("Accessibility icon tapped")
-            enableAccessibility = true
-        }) {
+        Button(action: { enableAccessibility = true }) {
             Image("accessibility")
                 .resizable()
                 .padding(8)
@@ -678,34 +614,31 @@ struct MapView: View {
     }
 }
 
+// MARK: – Supporting views (unchanged)
+
 struct QuestSheetView: View {
     @ObservedObject var viewModel: MapViewModel
     let annotationCoordinate: CLLocationCoordinate2D?
     @Environment(\.dismiss) var dismiss
-    
+
     init(viewModel: MapViewModel, annotationCoordinate: CLLocationCoordinate2D?) {
         self.viewModel = viewModel
         self.annotationCoordinate = annotationCoordinate
-        
         if let quest = viewModel.getSelectedQuest(),
            let longQuest = quest.parent as? LongElementQuest {
             longQuest.annotationCoordinate = annotationCoordinate
         }
     }
-    
+
     var body: some View {
         Group {
             if let selectedQuest = viewModel.getSelectedQuest() {
-                CustomSheetView {
-                    selectedQuest.parent?.form
-                }
+                CustomSheetView { selectedQuest.parent?.form }
             } else {
                 EmptyView()
             }
         }
-        .onReceive(MapViewPublisher.shared.dismissSheet) { _ in
-            dismiss()
-        }
+        .onReceive(MapViewPublisher.shared.dismissSheet) { _ in dismiss() }
     }
 }
 
@@ -716,8 +649,8 @@ public class MapViewPublisher: ObservableObject {
 }
 
 public class QuestsPublisher: ObservableObject {
-    public let refreshQuest = PassthroughSubject<String, Never>()
-    public let elementDeleted = PassthroughSubject<Int, Never>()
+    public let refreshQuest    = PassthroughSubject<String, Never>()
+    public let elementDeleted  = PassthroughSubject<Int, Never>()
     static let shared = QuestsPublisher()
     private init() {}
 }
@@ -732,58 +665,41 @@ public enum SheetDismissalScenario {
     case syncBackground(Int)
 }
 
-//TODO: Move to a new file
 class ContextualInfo: ObservableObject {
     static let shared = ContextualInfo()
-    
     @Published var info: String = "Contextual info appears here"
-    
     private init() {}
 }
 
-
 struct CustomSheetView<Content: View>: View {
     let content: () -> Content
-    
-    init(@ViewBuilder content: @escaping () -> Content) {
-        self.content = content
-    }
-    
+    init(@ViewBuilder content: @escaping () -> Content) { self.content = content }
     var body: some View {
-        CustomSheetWrapper(content: content)
-            .ignoresSafeArea() // To handle full screen if needed
+        CustomSheetWrapper(content: content).ignoresSafeArea()
     }
 }
 
 struct CustomSheetWrapper<Content: View>: UIViewControllerRepresentable {
     let content: () -> Content
-    
-    init(@ViewBuilder content: @escaping () -> Content) {
-        self.content = content
-    }
-    
+    init(@ViewBuilder content: @escaping () -> Content) { self.content = content }
+
     func makeUIViewController(context: Context) -> UIViewController {
-        let viewController = UIViewController()
-        let hostingController = UIHostingController(rootView: content())
-        hostingController.view.translatesAutoresizingMaskIntoConstraints = false
-        
-        viewController.view.addSubview(hostingController.view)
-        
-        // Pin the content to all edges
+        let vc = UIViewController()
+        let hc = UIHostingController(rootView: content())
+        hc.view.translatesAutoresizingMaskIntoConstraints = false
+        vc.view.addSubview(hc.view)
         NSLayoutConstraint.activate([
-            hostingController.view.topAnchor.constraint(equalTo: viewController.view.topAnchor),
-            hostingController.view.bottomAnchor.constraint(equalTo: viewController.view.bottomAnchor),
-            hostingController.view.leadingAnchor.constraint(equalTo: viewController.view.leadingAnchor),
-            hostingController.view.trailingAnchor.constraint(equalTo: viewController.view.trailingAnchor)
+            hc.view.topAnchor.constraint(equalTo: vc.view.topAnchor),
+            hc.view.bottomAnchor.constraint(equalTo: vc.view.bottomAnchor),
+            hc.view.leadingAnchor.constraint(equalTo: vc.view.leadingAnchor),
+            hc.view.trailingAnchor.constraint(equalTo: vc.view.trailingAnchor)
         ])
-        
-        viewController.view.backgroundColor = .clear
-        return viewController
+        vc.view.backgroundColor = .clear
+        return vc
     }
-    
-    func updateUIViewController(_ uiViewController: UIViewController, context: Context) { }
-    
-    // Add custom UISheetPresentationController configuration
+
+    func updateUIViewController(_ uiViewController: UIViewController, context: Context) {}
+
     static func dismantleUIViewController(_ uiViewController: UIViewController, coordinator: ()) {
         if let sheet = uiViewController.sheetPresentationController {
             sheet.detents = [.medium(), .large()]
@@ -799,23 +715,22 @@ struct MultiQuestSelectionBottomSheet: View {
     var selectedCount: Int
     var onCancel: () -> Void
     var onAnswerQuests: () -> Void
-    
+
     var body: some View {
-        VStack() {
+        VStack {
             HStack {
                 Image(uiImage: selectedAnnotationImage)
                     .resizable()
-                    .frame(width: 20.0, height: 20.0)
+                    .frame(width: 20, height: 20)
                     .foregroundColor(.gray)
-                Text("**Select \(selectedAnnotationType):**")
-                    .font(.headline)
+                Text("**Select \(selectedAnnotationType):**").font(.headline)
                 Text("\(selectedCount) \(selectedAnnotationType.lowercased()) selected")
-                    .font(.subheadline)
-                    .foregroundColor(.gray)
+                    .font(.subheadline).foregroundColor(.gray)
                 Spacer()
             }
             .padding()
-            VStack() {
+
+            VStack {
                 Button(action: onAnswerQuests) {
                     HStack {
                         Image(systemName: "bubble.left.and.bubble.right")
@@ -824,9 +739,7 @@ struct MultiQuestSelectionBottomSheet: View {
                     }
                 }
                 .padding()
-                
                 Divider()
-                
                 Button(action: onCancel) {
                     HStack {
                         Image(systemName: "xmark.circle")
@@ -837,18 +750,18 @@ struct MultiQuestSelectionBottomSheet: View {
                 .padding()
             }
             .background(Color.white)
-            .cornerRadius(20.0)
+            .cornerRadius(20)
             .padding()
         }
         .frame(maxWidth: .infinity)
         .background(.ultraThinMaterial)
         .cornerRadius(20)
         .shadow(radius: 5)
-        .frame(maxHeight: .infinity, alignment: .bottom) // Ensures it stays at the bottom
+        .frame(maxHeight: .infinity, alignment: .bottom)
     }
 }
 
-#Preview(body: {
+#Preview {
     let jsonString = """
         {
             "id": 222,
@@ -872,5 +785,4 @@ struct MultiQuestSelectionBottomSheet: View {
     } else {
         EmptyView()
     }
-})
-
+}
