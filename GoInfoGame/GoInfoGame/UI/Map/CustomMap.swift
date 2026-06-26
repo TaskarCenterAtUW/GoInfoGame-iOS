@@ -285,11 +285,9 @@ struct CustomMap: UIViewRepresentable {
             style.addSource(src)
             let layer = MLNFillStyleLayer(identifier: shadowLayerId, source: src)
             layer.fillColor = NSExpression(forConstantValue: UIColor.black.withAlphaComponent(0.25))
-            if let first = style.layers.first {
-                style.insertLayer(layer, below: first)
-            } else {
-                style.addLayer(layer)
-            }
+            // Add on top so it overlays both the base map tiles and any satellite layer.
+            // MLNAnnotationViews always render above all style layers.
+            style.addLayer(layer)
         }
 
         private func setupPolylineLayer(style: MLNStyle) {
@@ -300,7 +298,12 @@ struct CustomMap: UIViewRepresentable {
             layer.lineWidth = NSExpression(forConstantValue: 5)
             layer.lineCap  = NSExpression(forConstantValue: "round")
             layer.lineJoin = NSExpression(forConstantValue: "round")
-            style.addLayer(layer)
+            // Below shadow so the download-area dimming still applies over the route.
+            if let shadowLayer = style.layer(withIdentifier: shadowLayerId) {
+                style.insertLayer(layer, below: shadowLayer)
+            } else {
+                style.addLayer(layer)
+            }
         }
 
         // MARK: - Quest Annotation Management
@@ -377,18 +380,25 @@ struct CustomMap: UIViewRepresentable {
         }
 
         func updateSatelliteOverlay(option: SatelliteOption) {
-            guard option != appliedSatelliteOption else { return }
+            // Combine guards: only proceed when both the option has changed AND the style is ready.
+            // Separating them caused the option to be consumed (appliedSatelliteOption updated)
+            // before style was available, silently dropping the change.
+            guard option != appliedSatelliteOption,
+                  let style = mapView?.style else { return }
+
             appliedSatelliteOption = option
-            guard let style = mapView?.style else { return }
 
             if let l = style.layer(withIdentifier: wmtsLayerId)  { style.removeLayer(l) }
             if let s = style.source(withIdentifier: wmtsSourceId) { style.removeSource(s) }
 
             guard case .wmts(let server) = option else { return }
 
+            // MapLibre uses {z}/{y}/{x}; ArcGIS WMTS uses {zoom}/{y}/{x}.
+            let mlnURL = server.url.replacingOccurrences(of: "{zoom}", with: "{z}")
+
             let tileSrc = MLNRasterTileSource(
                 identifier: wmtsSourceId,
-                tileURLTemplates: [server.url],
+                tileURLTemplates: [mlnURL],
                 options: [
                     .tileSize: 256,
                     .maximumZoomLevel: NSNumber(value: server.extent.maxZoom)
@@ -397,10 +407,12 @@ struct CustomMap: UIViewRepresentable {
             style.addSource(tileSrc)
 
             let rasterLayer = MLNRasterStyleLayer(identifier: wmtsLayerId, source: tileSrc)
-            if let shadowLayer = style.layer(withIdentifier: shadowLayerId) {
+            // Insert below polyline so the route stays visible over satellite.
+            // Fall back to below shadow, then top of stack.
+            if let polylineLayer = style.layer(withIdentifier: polylineLayerId) {
+                style.insertLayer(rasterLayer, below: polylineLayer)
+            } else if let shadowLayer = style.layer(withIdentifier: shadowLayerId) {
                 style.insertLayer(rasterLayer, below: shadowLayer)
-            } else if let first = style.layers.first {
-                style.insertLayer(rasterLayer, below: first)
             } else {
                 style.addLayer(rasterLayer)
             }
