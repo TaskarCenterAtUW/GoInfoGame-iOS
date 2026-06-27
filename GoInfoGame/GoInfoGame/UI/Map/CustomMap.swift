@@ -16,6 +16,48 @@ import CoreLocation
 struct CoordinateBounds {
     let sw: CLLocationCoordinate2D
     let ne: CLLocationCoordinate2D
+
+    func overlaps(_ other: CoordinateBounds) -> Bool {
+        sw.latitude  < other.ne.latitude  &&
+        ne.latitude  > other.sw.latitude  &&
+        sw.longitude < other.ne.longitude &&
+        ne.longitude > other.sw.longitude
+    }
+
+    func union(_ other: CoordinateBounds) -> CoordinateBounds {
+        CoordinateBounds(
+            sw: CLLocationCoordinate2D(
+                latitude:  min(sw.latitude,  other.sw.latitude),
+                longitude: min(sw.longitude, other.sw.longitude)
+            ),
+            ne: CLLocationCoordinate2D(
+                latitude:  max(ne.latitude,  other.ne.latitude),
+                longitude: max(ne.longitude, other.ne.longitude)
+            )
+        )
+    }
+}
+
+// Merge overlapping axis-aligned rectangles so GeoJSON holes never intersect.
+private func mergeOverlappingBounds(_ regions: [CoordinateBounds]) -> [CoordinateBounds] {
+    var result = regions
+    var changed = true
+    while changed {
+        changed = false
+        outer: for i in 0..<result.count {
+            for j in (i + 1)..<result.count {
+                if result[i].overlaps(result[j]) {
+                    let merged = result[i].union(result[j])
+                    result.remove(at: j)
+                    result.remove(at: i)
+                    result.insert(merged, at: i)
+                    changed = true
+                    break outer
+                }
+            }
+        }
+    }
+    return result
 }
 
 // MARK: - Annotation Views
@@ -456,19 +498,29 @@ struct CustomMap: UIViewRepresentable {
             guard let src = mapView?.style?.source(withIdentifier: shadowSourceId) as? MLNShapeSource,
                   !regions.isEmpty else { return }
 
+            // Merge overlapping rects so interior holes never intersect (invalid GeoJSON).
+            let mergedRegions = mergeOverlappingBounds(regions)
+
+            // Exterior ring — must be counter-clockwise (CCW) per GeoJSON spec.
+            // Use ±85.051129 (Web Mercator limit) instead of ±90 to avoid pole artifacts.
+            // Ring must be closed: first coordinate repeated at end.
             var worldCoords = [
-                CLLocationCoordinate2D(latitude:  90, longitude: -180),
-                CLLocationCoordinate2D(latitude:  90, longitude:  180),
-                CLLocationCoordinate2D(latitude: -90, longitude:  180),
-                CLLocationCoordinate2D(latitude: -90, longitude: -180)
+                CLLocationCoordinate2D(latitude: -85.051129, longitude: -180), // SW
+                CLLocationCoordinate2D(latitude: -85.051129, longitude:  180), // SE
+                CLLocationCoordinate2D(latitude:  85.051129, longitude:  180), // NE
+                CLLocationCoordinate2D(latitude:  85.051129, longitude: -180), // NW
+                CLLocationCoordinate2D(latitude: -85.051129, longitude: -180)  // SW (closed)
             ]
 
-            let holes: [MLNPolygon] = regions.map { b in
+            let holes: [MLNPolygon] = mergedRegions.map { b in
+                // Interior ring (hole) — must be clockwise (CW) per GeoJSON spec.
+                // Ring must be closed: first coordinate repeated at end.
                 var h = [
-                    CLLocationCoordinate2D(latitude: b.sw.latitude, longitude: b.sw.longitude),
-                    CLLocationCoordinate2D(latitude: b.ne.latitude, longitude: b.sw.longitude),
-                    CLLocationCoordinate2D(latitude: b.ne.latitude, longitude: b.ne.longitude),
-                    CLLocationCoordinate2D(latitude: b.sw.latitude, longitude: b.ne.longitude)
+                    CLLocationCoordinate2D(latitude: b.sw.latitude, longitude: b.sw.longitude), // SW
+                    CLLocationCoordinate2D(latitude: b.ne.latitude, longitude: b.sw.longitude), // NW
+                    CLLocationCoordinate2D(latitude: b.ne.latitude, longitude: b.ne.longitude), // NE
+                    CLLocationCoordinate2D(latitude: b.sw.latitude, longitude: b.ne.longitude), // SE
+                    CLLocationCoordinate2D(latitude: b.sw.latitude, longitude: b.sw.longitude)  // SW (closed)
                 ]
                 return MLNPolygon(coordinates: &h, count: UInt(h.count))
             }
