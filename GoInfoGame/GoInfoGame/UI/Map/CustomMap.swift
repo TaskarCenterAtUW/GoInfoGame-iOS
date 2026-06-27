@@ -242,8 +242,15 @@ struct CustomMap: UIViewRepresentable {
             mapView.deselectAnnotation(annotation, animated: false)
 
             if let cluster = annotation as? CluserableDisplayUnitAnnotation {
-                let newZoom = min(mapView.zoomLevel + 2, 18)
-                mapView.setCenter(cluster.coordinate, zoomLevel: newZoom, animated: true)
+                if mapView.zoomLevel < maxClusterZoom {
+                    // Zoom in toward the cluster centre.
+                    mapView.setCenter(cluster.coordinate,
+                                      zoomLevel: min(mapView.zoomLevel + 2, maxClusterZoom),
+                                      animated: true)
+                } else {
+                    // Already past the cluster threshold — force individual pins to show now.
+                    refreshClusters()
+                }
                 return
             }
 
@@ -315,6 +322,9 @@ struct CustomMap: UIViewRepresentable {
             refreshClusters()
         }
 
+        // Zoom level at or above which all pins are shown individually (no clustering).
+        private let maxClusterZoom: Double = 17
+
         func refreshClusters() {
             guard let mapView = mapView, mapView.bounds.width > 0 else { return }
 
@@ -323,7 +333,13 @@ struct CustomMap: UIViewRepresentable {
 
             guard !allQuestAnnotations.isEmpty else { return }
 
-            let toShow = clusterAnnotations(allQuestAnnotations, in: mapView)
+            let toShow: [MLNAnnotation]
+            if mapView.zoomLevel >= maxClusterZoom {
+                // Past the cluster threshold — show every pin individually.
+                toShow = allQuestAnnotations
+            } else {
+                toShow = clusterAnnotations(allQuestAnnotations, in: mapView)
+            }
             mapView.addAnnotations(toShow)
         }
 
@@ -350,7 +366,7 @@ struct CustomMap: UIViewRepresentable {
                 }
 
                 if group.count > 1 {
-                    let clat = group.map { $0.coordinate.latitude  }.reduce(0, +) / Double(group.count)
+                    let clat = group.map { $0.coordinate.latitude }.reduce(0, +) / Double(group.count)
                     let clon = group.map { $0.coordinate.longitude }.reduce(0, +) / Double(group.count)
                     let cluster = CluserableDisplayUnitAnnotation(
                         id: "cluster-\(i)",
@@ -467,8 +483,13 @@ struct CustomMap: UIViewRepresentable {
                 guard let cluster = annotation as? CluserableDisplayUnitAnnotation else { continue }
                 let annotPt = mapView.convert(cluster.coordinate, toPointTo: mapView)
                 if hypot(point.x - annotPt.x, point.y - annotPt.y) < 30 {
-                    let newZoom = min(mapView.zoomLevel + 2, 18)
-                    mapView.setCenter(cluster.coordinate, zoomLevel: newZoom, animated: true)
+                    if mapView.zoomLevel < maxClusterZoom {
+                        mapView.setCenter(cluster.coordinate,
+                                          zoomLevel: min(mapView.zoomLevel + 2, maxClusterZoom),
+                                          animated: true)
+                    } else {
+                        refreshClusters()
+                    }
                     return
                 }
             }
