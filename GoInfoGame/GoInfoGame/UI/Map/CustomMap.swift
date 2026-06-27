@@ -22,10 +22,16 @@ struct CoordinateBounds {
 
 final class QuestAnnotationView: MLNAnnotationView {
     private let imageView = UIImageView()
+    private let checkmark = UIImageView()
+
+    var isChecked: Bool = false {
+        didSet { checkmark.isHidden = !isChecked }
+    }
 
     init(reuseIdentifier: String, iconName: String) {
         super.init(reuseIdentifier: reuseIdentifier)
         frame = CGRect(x: 0, y: 0, width: 40, height: 40)
+
         imageView.frame = bounds
         imageView.contentMode = .scaleAspectFit
         if let raw = UIImage(named: iconName) {
@@ -36,6 +42,17 @@ final class QuestAnnotationView: MLNAnnotationView {
             imageView.clipsToBounds = true
         }
         addSubview(imageView)
+
+        // Checkmark badge in top-right corner
+        let badgeSize: CGFloat = 16
+        checkmark.frame = CGRect(x: bounds.width - badgeSize, y: -2, width: badgeSize, height: badgeSize)
+        checkmark.image = UIImage(systemName: "checkmark.circle.fill")
+        checkmark.tintColor = UIColor.systemGreen
+        checkmark.backgroundColor = UIColor.white
+        checkmark.layer.cornerRadius = badgeSize / 2
+        checkmark.clipsToBounds = true
+        checkmark.isHidden = true
+        addSubview(checkmark)
     }
 
     required init?(coder: NSCoder) { super.init(coder: coder) }
@@ -231,6 +248,7 @@ struct CustomMap: UIViewRepresentable {
                     guard let selected = parent.selectedAnnotationType else { return true }
                     return selected == elementType
                 }()
+                view.isChecked = parent.selectedAnnotations.contains(quest)
                 view.alpha = isSelectable ? 1.0 : 0.4
                 return view
             }
