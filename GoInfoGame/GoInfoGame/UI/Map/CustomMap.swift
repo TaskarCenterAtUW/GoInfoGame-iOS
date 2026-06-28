@@ -732,6 +732,7 @@ struct CustomMap: UIViewRepresentable {
 
                 if let polyline = annotation.displayUnit?.parent?.polylines {
                     self.parent.lineCoordinates = polyline
+                    self.parent.shouldShowPolyline = true
                 } else {
                     self.parent.lineCoordinates = []
                 }

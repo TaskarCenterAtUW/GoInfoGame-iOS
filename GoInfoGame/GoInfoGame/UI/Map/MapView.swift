@@ -90,7 +90,6 @@ struct MapView: View {
                 }
                 .onChange(of: viewModel.selectedQuest) { _ in
                     shouldShowPolyline = false
-                    lineCoordinates = []
                 }
                 .id(viewModel.refreshMap)
                 .edgesIgnoringSafeArea(.all)
