@@ -13,7 +13,7 @@ import MapKit     // For MapUserTrackingMode
 import CoreLocation
 
 // Represents a downloaded-data bounding region for the shadow overlay
-struct CoordinateBounds {
+struct CoordinateBounds: Equatable {
     let sw: CLLocationCoordinate2D
     let ne: CLLocationCoordinate2D
 
@@ -208,16 +208,34 @@ struct CustomMap: UIViewRepresentable {
         let selectionChanged = context.coordinator.previousSelectedAnnotations != selectedAnnotations
         let typeChanged = context.coordinator.previousSelectedAnnotationType != selectedAnnotationType
 
-        if itemsChanged || selectionChanged || typeChanged {
+        if itemsChanged {
+            // Items changed — full rebuild required.
             context.coordinator.previousItems = items
             context.coordinator.previousSelectedAnnotations = selectedAnnotations
             context.coordinator.previousSelectedAnnotationType = selectedAnnotationType
             context.coordinator.updateQuestAnnotations()
+        } else if selectionChanged || typeChanged {
+            // Only visual state changed — update existing annotation views in place.
+            // This avoids a full remove/re-add of all annotations for every tap.
+            context.coordinator.previousSelectedAnnotations = selectedAnnotations
+            context.coordinator.previousSelectedAnnotationType = selectedAnnotationType
+            context.coordinator.updateAnnotationAppearance()
         }
 
-        context.coordinator.updatePolyline(coordinates: shouldShowPolyline ? lineCoordinates : [])
+        // Guard each call with change detection so these don't run on every SwiftUI re-render.
+        let polylineCoords = shouldShowPolyline ? lineCoordinates : []
+        if polylineCoords != context.coordinator.previousLineCoordinates {
+            context.coordinator.previousLineCoordinates = polylineCoords
+            context.coordinator.updatePolyline(coordinates: polylineCoords)
+        }
+
         context.coordinator.updateSatelliteOverlay(option: selectedSatelliteOption)
-        context.coordinator.updateShadowOverlay(regions: shadowRegions)
+
+        if shadowRegions.count != context.coordinator.previousShadowRegions.count ||
+           zip(shadowRegions, context.coordinator.previousShadowRegions).contains(where: { $0 != $1 }) {
+            context.coordinator.previousShadowRegions = shadowRegions
+            context.coordinator.updateShadowOverlay(regions: shadowRegions)
+        }
     }
 
     func makeCoordinator() -> Coordinator { Coordinator(self) }
@@ -234,7 +252,14 @@ struct CustomMap: UIViewRepresentable {
         var previousSelectedAnnotationType: String?
 
         private var allQuestAnnotations: [DisplayUnitAnnotation] = []
+        private var currentlyDisplayedAnnotations: [MLNAnnotation] = []
         private var clusterTimer: Timer?
+        private var clusterGeneration = 0
+        private var lastClusteredZoom: Double = -1
+        private var suppressNextDidSelect = false
+
+        var previousLineCoordinates: [CLLocationCoordinate2D] = []
+        var previousShadowRegions: [CoordinateBounds] = []
 
         let shadowSourceId   = "shadow-source"
         let shadowLayerId    = "shadow-layer"
@@ -285,13 +310,13 @@ struct CustomMap: UIViewRepresentable {
                 let reuseId = "quest-\(iconName)"
                 let view = (mapView.dequeueReusableAnnotationView(withIdentifier: reuseId) as? QuestAnnotationView)
                            ?? QuestAnnotationView(reuseIdentifier: reuseId, iconName: iconName)
+                // Always apply current state — reused views may carry stale state from a
+                // previous annotation that occupied the same reuse slot.
                 let elementType = (quest.displayUnit?.parent as? LongElementQuest)?.elementType ?? ""
-                let isSelectable: Bool = {
-                    guard let selected = parent.selectedAnnotationType else { return true }
-                    return selected == elementType
-                }()
-                view.isChecked = parent.selectedAnnotations.contains(quest)
-                view.alpha = isSelectable ? 1.0 : 0.4
+                let isSelectable = parent.selectedAnnotationType == nil ||
+                                   parent.selectedAnnotationType == elementType
+                view.isChecked = parent.selectedAnnotations.map(\.id).contains(quest.id)
+                view.alpha     = isSelectable ? 1.0 : 0.4
                 return view
             }
 
@@ -300,6 +325,13 @@ struct CustomMap: UIViewRepresentable {
 
         func mapView(_ mapView: MLNMapView, didSelect annotation: MLNAnnotation) {
             mapView.deselectAnnotation(annotation, animated: false)
+
+            // A long press on an annotation already handled the action; skip the
+            // didSelect that MapLibre fires when the finger lifts.
+            if suppressNextDidSelect {
+                suppressNextDidSelect = false
+                return
+            }
 
             if let cluster = annotation as? CluserableDisplayUnitAnnotation {
                 if mapView.zoomLevel < maxClusterZoom {
@@ -324,8 +356,20 @@ struct CustomMap: UIViewRepresentable {
         }
 
         func mapView(_ mapView: MLNMapView, regionDidChangeAnimated animated: Bool) {
+            let zoom = mapView.zoomLevel
+            let wasAbove = lastClusteredZoom >= maxClusterZoom
+            let isAbove  = zoom >= maxClusterZoom
+
+            // Individual-pin view: MapLibre culls off-screen pins internally — no work needed on pan.
+            if isAbove && wasAbove { return }
+
+            // Clustered view: clusters only change when zoom changes, not on pan.
+            // Skip re-cluster if zoom hasn't moved enough to change groupings.
+            if !isAbove && !wasAbove && abs(zoom - lastClusteredZoom) < 0.5 { return }
+
+            // Zoom crossed the cluster threshold, or changed enough — schedule a re-cluster.
             clusterTimer?.invalidate()
-            clusterTimer = Timer.scheduledTimer(withTimeInterval: 0.25, repeats: false) { [weak self] _ in
+            clusterTimer = Timer.scheduledTimer(withTimeInterval: 0.2, repeats: false) { [weak self] _ in
                 self?.refreshClusters()
             }
         }
@@ -375,11 +419,36 @@ struct CustomMap: UIViewRepresentable {
 
         // MARK: - Quest Annotation Management
 
+        // Update checkmarks and opacity on currently-visible annotation views without
+        // touching the annotation list or triggering a re-cluster.
+        func updateAnnotationAppearance() {
+            guard let mapView = mapView else { return }
+            let selectedIds = Set(parent.selectedAnnotations.map { $0.id })
+            let selectedType = parent.selectedAnnotationType
+
+            for annotation in (mapView.annotations ?? []) {
+                guard let quest = annotation as? DisplayUnitAnnotation,
+                      !(quest is CluserableDisplayUnitAnnotation),
+                      let view = mapView.view(for: quest) as? QuestAnnotationView else { continue }
+                let elementType = (quest.displayUnit?.parent as? LongElementQuest)?.elementType ?? ""
+                let isSelectable = selectedType == nil || selectedType == elementType
+                view.isChecked = selectedIds.contains(quest.id)
+                view.alpha     = isSelectable ? 1.0 : 0.4
+            }
+        }
+
         func updateQuestAnnotations() {
             clusterTimer?.invalidate()
-            let visibleItems = parent.items.filter { !$0.isHidden }
-            allQuestAnnotations = visibleItems.map { $0.annotation }
-            refreshClusters()
+            let items = parent.items
+            DispatchQueue.global(qos: .userInitiated).async { [weak self] in
+                guard let self else { return }
+                let annotations = items.filter { !$0.isHidden }.map { $0.annotation }
+                DispatchQueue.main.async {
+                    self.allQuestAnnotations = annotations
+                    self.lastClusteredZoom = -1  // Force re-cluster regardless of zoom
+                    self.refreshClusters()
+                }
+            }
         }
 
         // Zoom level at or above which all pins are shown individually (no clustering).
@@ -388,24 +457,54 @@ struct CustomMap: UIViewRepresentable {
         func refreshClusters() {
             guard let mapView = mapView, mapView.bounds.width > 0 else { return }
 
-            let existing = (mapView.annotations ?? []).filter { $0 is DisplayUnitAnnotation }
-            if !existing.isEmpty { mapView.removeAnnotations(existing) }
+            let annotations = allQuestAnnotations
+            clusterGeneration += 1
+            let generation    = clusterGeneration
+            lastClusteredZoom = mapView.zoomLevel
 
-            guard !allQuestAnnotations.isEmpty else { return }
-
-            let toShow: [MLNAnnotation]
-            if mapView.zoomLevel >= maxClusterZoom {
-                // Past the cluster threshold — show every pin individually.
-                toShow = allQuestAnnotations
-            } else {
-                toShow = clusterAnnotations(allQuestAnnotations, in: mapView)
+            guard !annotations.isEmpty else {
+                applyAnnotations([], to: mapView)
+                return
             }
-            mapView.addAnnotations(toShow)
+
+            // Past the cluster threshold — show all pins individually.
+            // MapLibre culls off-screen pins itself; no background work needed.
+            if mapView.zoomLevel >= maxClusterZoom {
+                applyAnnotations(annotations, to: mapView)
+                return
+            }
+
+            // Convert to screen points on main thread (UIKit requirement), then
+            // run O(n²) grouping on a background thread.
+            let points = annotations.map { mapView.convert($0.coordinate, toPointTo: mapView) }
+
+            DispatchQueue.global(qos: .userInitiated).async { [weak self] in
+                guard let self else { return }
+                let clustered = self.buildClusters(annotations: annotations, points: points, radius: 50)
+                DispatchQueue.main.async { [weak self] in
+                    guard let self, self.clusterGeneration == generation else { return }
+                    self.applyAnnotations(clustered, to: self.mapView)
+                }
+            }
         }
 
-        private func clusterAnnotations(_ annotations: [DisplayUnitAnnotation],
-                                        in mapView: MLNMapView) -> [MLNAnnotation] {
-            let clusterRadius: CGFloat = 50
+        // Uses own tracking instead of mapView.annotations (which iterates MapLibre's
+        // internal spatial index on the main thread and is expensive for large sets).
+        private func applyAnnotations(_ annotations: [MLNAnnotation], to mapView: MLNMapView?) {
+            guard let mapView else { return }
+            if !currentlyDisplayedAnnotations.isEmpty {
+                mapView.removeAnnotations(currentlyDisplayedAnnotations)
+            }
+            currentlyDisplayedAnnotations = annotations
+            if !annotations.isEmpty {
+                mapView.addAnnotations(annotations)
+            }
+        }
+
+        // Pure function — safe to call off the main thread.
+        private func buildClusters(annotations: [DisplayUnitAnnotation],
+                                   points: [CGPoint],
+                                   radius: CGFloat) -> [MLNAnnotation] {
             var result: [MLNAnnotation] = []
             var visited = Set<Int>()
 
@@ -413,20 +512,19 @@ struct CustomMap: UIViewRepresentable {
                 if visited.contains(i) { continue }
                 visited.insert(i)
 
-                let ptI = mapView.convert(annotations[i].coordinate, toPointTo: mapView)
                 var group = [annotations[i]]
+                let ptI = points[i]
 
                 for j in (i + 1)..<annotations.count {
                     if visited.contains(j) { continue }
-                    let ptJ = mapView.convert(annotations[j].coordinate, toPointTo: mapView)
-                    if hypot(ptI.x - ptJ.x, ptI.y - ptJ.y) < clusterRadius {
+                    if hypot(ptI.x - points[j].x, ptI.y - points[j].y) < radius {
                         group.append(annotations[j])
                         visited.insert(j)
                     }
                 }
 
                 if group.count > 1 {
-                    let clat = group.map { $0.coordinate.latitude }.reduce(0, +) / Double(group.count)
+                    let clat = group.map { $0.coordinate.latitude  }.reduce(0, +) / Double(group.count)
                     let clon = group.map { $0.coordinate.longitude }.reduce(0, +) / Double(group.count)
                     let cluster = CluserableDisplayUnitAnnotation(
                         id: "cluster-\(i)",
@@ -447,11 +545,14 @@ struct CustomMap: UIViewRepresentable {
         func updatePolyline(coordinates: [CLLocationCoordinate2D]) {
             guard let src = mapView?.style?.source(withIdentifier: polylineSourceId) as? MLNShapeSource
             else { return }
-            if coordinates.isEmpty {
-                src.shape = nil
-            } else {
-                var coords = coordinates
-                src.shape = MLNPolyline(coordinates: &coords, count: UInt(coords.count))
+            guard !coordinates.isEmpty else { src.shape = nil; return }
+
+            // Build MLNPolyline off the main thread; assign to source on main thread.
+            let coords = coordinates
+            DispatchQueue.global(qos: .userInitiated).async {
+                var mutable = coords
+                let polyline = MLNPolyline(coordinates: &mutable, count: UInt(mutable.count))
+                DispatchQueue.main.async { src.shape = polyline }
             }
         }
 
@@ -498,38 +599,39 @@ struct CustomMap: UIViewRepresentable {
             guard let src = mapView?.style?.source(withIdentifier: shadowSourceId) as? MLNShapeSource,
                   !regions.isEmpty else { return }
 
-            // Merge overlapping rects so interior holes never intersect (invalid GeoJSON).
-            let mergedRegions = mergeOverlappingBounds(regions)
+            // All geometry computation runs on a background thread.
+            // Only the final src.shape assignment touches MapLibre on the main thread.
+            DispatchQueue.global(qos: .userInitiated).async {
+                // Merge overlapping rects so interior holes never intersect (invalid GeoJSON).
+                let merged = mergeOverlappingBounds(regions)
 
-            // Exterior ring — must be counter-clockwise (CCW) per GeoJSON spec.
-            // Use ±85.051129 (Web Mercator limit) instead of ±90 to avoid pole artifacts.
-            // Ring must be closed: first coordinate repeated at end.
-            var worldCoords = [
-                CLLocationCoordinate2D(latitude: -85.051129, longitude: -180), // SW
-                CLLocationCoordinate2D(latitude: -85.051129, longitude:  180), // SE
-                CLLocationCoordinate2D(latitude:  85.051129, longitude:  180), // NE
-                CLLocationCoordinate2D(latitude:  85.051129, longitude: -180), // NW
-                CLLocationCoordinate2D(latitude: -85.051129, longitude: -180)  // SW (closed)
-            ]
-
-            let holes: [MLNPolygon] = mergedRegions.map { b in
-                // Interior ring (hole) — must be clockwise (CW) per GeoJSON spec.
-                // Ring must be closed: first coordinate repeated at end.
-                var h = [
-                    CLLocationCoordinate2D(latitude: b.sw.latitude, longitude: b.sw.longitude), // SW
-                    CLLocationCoordinate2D(latitude: b.ne.latitude, longitude: b.sw.longitude), // NW
-                    CLLocationCoordinate2D(latitude: b.ne.latitude, longitude: b.ne.longitude), // NE
-                    CLLocationCoordinate2D(latitude: b.sw.latitude, longitude: b.ne.longitude), // SE
-                    CLLocationCoordinate2D(latitude: b.sw.latitude, longitude: b.sw.longitude)  // SW (closed)
+                // Exterior ring — CCW per GeoJSON, closed, clamped to Web Mercator limits.
+                var world = [
+                    CLLocationCoordinate2D(latitude: -85.051129, longitude: -180), // SW
+                    CLLocationCoordinate2D(latitude: -85.051129, longitude:  180), // SE
+                    CLLocationCoordinate2D(latitude:  85.051129, longitude:  180), // NE
+                    CLLocationCoordinate2D(latitude:  85.051129, longitude: -180), // NW
+                    CLLocationCoordinate2D(latitude: -85.051129, longitude: -180)  // SW (closed)
                 ]
-                return MLNPolygon(coordinates: &h, count: UInt(h.count))
-            }
 
-            src.shape = MLNPolygon(
-                coordinates: &worldCoords,
-                count: UInt(worldCoords.count),
-                interiorPolygons: holes
-            )
+                let holes: [MLNPolygon] = merged.map { b in
+                    // Interior ring — CW per GeoJSON, closed.
+                    var h = [
+                        CLLocationCoordinate2D(latitude: b.sw.latitude, longitude: b.sw.longitude), // SW
+                        CLLocationCoordinate2D(latitude: b.ne.latitude, longitude: b.sw.longitude), // NW
+                        CLLocationCoordinate2D(latitude: b.ne.latitude, longitude: b.ne.longitude), // NE
+                        CLLocationCoordinate2D(latitude: b.sw.latitude, longitude: b.ne.longitude), // SE
+                        CLLocationCoordinate2D(latitude: b.sw.latitude, longitude: b.sw.longitude)  // SW (closed)
+                    ]
+                    return MLNPolygon(coordinates: &h, count: UInt(h.count))
+                }
+
+                let polygon = MLNPolygon(coordinates: &world,
+                                         count: UInt(world.count),
+                                         interiorPolygons: holes)
+
+                DispatchQueue.main.async { src.shape = polygon }
+            }
         }
 
         func updateUserRegion(_ mapView: MLNMapView) {
@@ -564,12 +666,15 @@ struct CustomMap: UIViewRepresentable {
                 }
             }
 
-            // Long press near a quest annotation → enter multi-select
+            // Long press near a quest annotation → enter multi-select.
+            // Suppress the didSelect that MapLibre fires when the finger lifts
+            // after a long press — otherwise the annotation toggles back off immediately.
             for annotation in (mapView.annotations ?? []) {
                 guard let quest = annotation as? DisplayUnitAnnotation,
                       !(quest is CluserableDisplayUnitAnnotation) else { continue }
                 let annotPt = mapView.convert(quest.coordinate, toPointTo: mapView)
                 if hypot(point.x - annotPt.x, point.y - annotPt.y) < 30 {
+                    suppressNextDidSelect = true
                     DispatchQueue.main.async {
                         self.parent.isMultiSelectModeEnabled = true
                         self.handleMultiSelectAnnotation(quest)
