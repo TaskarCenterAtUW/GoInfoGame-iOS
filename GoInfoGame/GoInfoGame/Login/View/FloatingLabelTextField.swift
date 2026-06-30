@@ -18,7 +18,8 @@ struct FloatingLabelTextField: View {
             RoundedRectangle(cornerRadius: 6)
                 .stroke(Asset.Colors.d5DBE6BorderColorGray.swiftUIColor, lineWidth: 1)
                 .frame(height: 50)
-            
+                .accessibilityHidden(true)
+
             if !text.isEmpty {
                 // Floating label
                 Text(title)
@@ -29,8 +30,8 @@ struct FloatingLabelTextField: View {
                     .lineLimit(nil)
                     .padding(.horizontal, 4)
                     .offset(y: -25)
+                    .accessibilityHidden(true)
             }
-            
             
             // TextField or SecureField
             if isSecure {
@@ -48,10 +49,9 @@ struct FloatingLabelTextField: View {
                     .foregroundStyle(Asset.Colors._42526ETextFieldText.swiftUIColor)
                     .multilineTextAlignment(.leading)
                     .lineLimit(nil)
+                    .accessibilityLabel(title)
             }
         }
-        .accessibilityElement(children: .combine)
-        .accessibilityLabel("Text field with title " + title)
     }
 }
 #Preview {

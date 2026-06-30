@@ -125,6 +125,7 @@ struct PosmLoginView: View {
                             .multilineTextAlignment(.center)
                             .lineLimit(nil)
                             .padding()
+                            .accessibilityLabel("I'm a new user. Tap to learn more.")
                     }
                     
                     Button(action:{
