@@ -6,24 +6,11 @@
 //
 
 import Foundation
-import MapKit
+import CoreLocation
 import RealmSwift
 import ARKit
 import SwiftUI
 import Combine
-
-
-// Extension to check if a polyline intersects with a coordinate
-extension MKPolyline {
-    func intersects(with coordinate: CLLocationCoordinate2D, mapView: MKMapView) -> Bool {
-        let polylineRenderer = MKPolylineRenderer(polyline: self)
-        let tapPoint = mapView.convert(coordinate, toPointTo: mapView)
-        let newCoordinate = mapView.convert(tapPoint, toCoordinateFrom:mapView)
-        let polylinePoint = polylineRenderer.point(for: MKMapPoint(newCoordinate))
-        let polylineBounds = polylineRenderer.path.boundingBox
-        return polylineBounds.contains(polylinePoint)
-    }
-}
 
 extension View {
     func hideKeyboardOnTap() -> some View {
@@ -37,51 +24,6 @@ extension View {
     }
 }
 
-extension MKMapRect {
-    init(_ region: MKCoordinateRegion) {
-        let topLeft = CLLocationCoordinate2D(
-            latitude: region.center.latitude + (region.span.latitudeDelta / 2),
-            longitude: region.center.longitude - (region.span.longitudeDelta / 2)
-        )
-        let bottomRight = CLLocationCoordinate2D(
-            latitude: region.center.latitude - (region.span.latitudeDelta / 2),
-            longitude: region.center.longitude + (region.span.longitudeDelta / 2)
-        )
-
-        let a = MKMapPoint(topLeft)
-        let b = MKMapPoint(bottomRight)
-
-        self = MKMapRect(
-            origin: MKMapPoint(x: min(a.x, b.x), y: min(a.y, b.y)),
-            size: MKMapSize(width: abs(a.x - b.x), height: abs(a.y - b.y))
-        )
-    }
-}
-
-extension MKMapView {
-    func isZoomedIn(maxLatitudeDelta: CLLocationDegrees = 0.005) -> Bool {
-        return self.region.span.latitudeDelta <= maxLatitudeDelta
-    }
-    
-    func distanceForZoom(zoomLevel: Int) -> CLLocationDistance {
-        // Earth's circumference in meters
-        let earthCircumference: Double = 40075016.686
-        // Standard tile size (pixels)
-        let tileSize: Double = 256
-        // Get the width of the map in points and scale by screen
-        let scale = UIScreen.main.scale
-        let mapWidthInPixels = Double(self.frame.size.width) * scale
-        // Calculate meters per pixel at equator for the given zoom
-        let metersPerPixel = earthCircumference / (tileSize * pow(2.0, Double(zoomLevel)))
-        // The distance (in meters) visible in the current map width
-        return metersPerPixel * mapWidthInPixels
-    }
-    
-    func zoomLevelFor(longitudeDelta: Double) -> Int {
-        let zoom = log2(360 / longitudeDelta)
-        return Int(max(0, zoom))
-    }
-}
 
 extension CLLocationCoordinate2D: CustomPersistable {
     

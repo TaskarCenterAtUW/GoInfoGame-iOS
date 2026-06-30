@@ -7,84 +7,73 @@
 
 import Foundation
 import SwiftUI
-import MapKit
+import MapLibre
 import CoreLocation
 import osmapi
 
 enum BBoxSource {
     case currentLocation(location: CLLocationCoordinate2D)
-    case visibleRect(mapView: MKMapView)
+    case visibleRect(mapView: MLNMapView)
 }
-
 
 class MapViewModel: ObservableObject {
 
     let locationManagerDelegate = LocationManagerDelegate()
     @Published var isLoading: Bool = false
-//    var region = MKCoordinateRegion(center: CLLocationCoordinate2D(latitude: 37.3318, longitude: -122.0312), span: MKCoordinateSpan(latitudeDelta: 0.0009 , longitudeDelta: 0.0009))
-    @Published var region = MKCoordinateRegion()
-    private let viewSpanDelta = 0.005 // Delta lat/lng to show to the user
-   // var userlocation =  CLLocationCoordinate2D(latitude: 17.4700, longitude: 78.3534)
+    @Published var centerCoordinate = CLLocationCoordinate2D()
+    private let viewSpanDelta = 0.005
     @Published var refreshMap = UUID()
     @Published var items: [DisplayUnitWithCoordinate] = []
     @Published var selectedQuest: DisplayUnit?
-    let dataSpanDistance: CLLocationDistance = 1000 // Distance from user location to get the data
+    let dataSpanDistance: CLLocationDistance = 1000
     @Published var selectedAnnotaions: Set<DisplayUnitAnnotation> = []
     @Published var selectedAnnotationType: String?
-    
+
     var isMultiSelectModeEnabled = false
-    
-   private let dbInstance = DatabaseConnector.shared
+
+    private let dbInstance = DatabaseConnector.shared
     private var allSattileLayers: [SatelliteServer] = []
-    
+
     @Published var availableOptions: [SatelliteOption] = []
     @Published var selectedOption: SatelliteOption = .none
     @Published var showSatellitePicker: Bool = false
     @Published private(set) var syncFailedElementsCount: Int = 0
     let workspace: Workspace
+
     init(workspace: Workspace) {
         self.workspace = workspace
-           locationManagerDelegate.locationUpdateHandler = { [weak self] location in
-               guard let self = self else { return }
-
-               self.fetchOSMDataFor(from: .currentLocation(location: location))
-           }
-
-           locationManagerDelegate.requestLocationAuthorization()
-           locationManagerDelegate.startUpdatingLocation()
+        locationManagerDelegate.locationUpdateHandler = { [weak self] location in
+            guard let self = self else { return }
+            self.fetchOSMDataFor(from: .currentLocation(location: location))
+        }
+        locationManagerDelegate.requestLocationAuthorization()
+        locationManagerDelegate.startUpdatingLocation()
         self.allSattileLayers = workspace.imageryList ?? []
         checkSyncStatus()
-       }
-    
+    }
+
     func checkSyncStatus() {
         self.syncFailedElementsCount = dbInstance.getChangesets(synced: false).count
     }
-    
+
     func sattiliteServersFor(point: CLLocationCoordinate2D) -> [SatelliteServer] {
-        return allSattileLayers.filter{ $0.extent.isPointInsideBoundary(point)}
+        return allSattileLayers.filter { $0.extent.isPointInsideBoundary(point) }
     }
-    
+
     func updateOptions(for center: CLLocationCoordinate2D) {
-        let supportedLayers = sattiliteServersFor(point: center)
-
-        let wmtsOptions = supportedLayers.map { SatelliteOption.wmts($0) }
-        self.availableOptions = [.none] + wmtsOptions
+        let supported = sattiliteServersFor(point: center)
+        self.availableOptions = [.none] + supported.map { SatelliteOption.wmts($0) }
     }
 
-    
     func getSelectedQuest() -> DisplayUnit? {
         if isMultiSelectModeEnabled {
             let displayUnit = selectedAnnotaions.first?.displayUnit
             if let longElementQuest = displayUnit?.parent as? LongElementQuest {
                 longElementQuest.questAnswersSelected = { [weak self] tags in
-                    guard let self = self else {
-                        return
-                    }
-                    
+                    guard let self = self else { return }
                     for quest in self.selectedAnnotaions {
-                        print("Quest ID: \(quest.id) Tags: \(tags)")
-                        if let longElementQuest = quest.displayUnit?.parent as? LongElementQuest {
-                            longElementQuest.onAnswer(answer: tags)
+                        if let leq = quest.displayUnit?.parent as? LongElementQuest {
+                            leq.onAnswer(answer: tags)
                         }
                     }
                     self.selectedAnnotaions.removeAll()
@@ -97,135 +86,100 @@ class MapViewModel: ObservableObject {
         } else {
             if let longElementQuest = selectedQuest?.parent as? LongElementQuest {
                 longElementQuest.questAnswersSelected = { [weak self] tags in
-                    guard let self = self else {
-                        return
-                    }
+                    guard let self = self else { return }
                     longElementQuest.onAnswer(answer: tags)
                 }
             }
             return selectedQuest
         }
     }
-    
+
     func fetchOSMDataFor(from bboxSource: BBoxSource) {
-        if isLoading {
-            return
-        }
+        guard !isLoading else { return }
         isLoading = true
         let bBox: BBox
-           switch bboxSource {
-           case .currentLocation(let center):
-               self.region = MKCoordinateRegion(center: center, span: MKCoordinateSpan(
-                   latitudeDelta: viewSpanDelta,
-                   longitudeDelta: viewSpanDelta
-               ))
-               bBox = boundingBoxAroundLocation(location: center, distance: dataSpanDistance)
-               
-           case .visibleRect(let mapView):
-               bBox = boundingBoxFromVisibleMapRect(mapView: mapView)
-           }
+        switch bboxSource {
+        case .currentLocation(let center):
+            self.centerCoordinate = center
+            bBox = boundingBoxAroundLocation(location: center, distance: dataSpanDistance)
+        case .visibleRect(let mapView):
+            bBox = boundingBoxFromVisibleMapRect(mapView: mapView)
+        }
 
-        if let workspaceID = KeychainManager.load(key: "workspaceID") {
-            debugPrint("requested: start \(Date())")
-            ApiManager.shared.performRequest(to: .fetchOSMElements(bBox.minLon, bBox.minLat, bBox.maxLon, bBox.maxLat, workspaceID), setupType: .osm, modelType: OSMMapDataResponse.self) { [weak self] result in
-                guard let self = self else {
-                    return
+        guard let workspaceID = KeychainManager.load(key: "workspaceID") else {
+            isLoading = false
+            return
+        }
+
+        ApiManager.shared.performRequest(
+            to: .fetchOSMElements(bBox.minLon, bBox.minLat, bBox.maxLon, bBox.maxLat, workspaceID),
+            setupType: .osm,
+            modelType: OSMMapDataResponse.self
+        ) { [weak self] result in
+            guard let self = self else { return }
+            switch result {
+            case .success(let success):
+                let response = Array(success.getOSMElements().values)
+                self.dbInstance.saveOSMElements(response)
+                let items = AppQuestManager.shared.fetchQuestsFromDB()
+                DispatchQueue.main.async { [weak self, items] in
+                    self?.items = items
+                    self?.isLoading = false
+                    if self?.items.count == 0 { self?.refreshMap = UUID() }
                 }
-                switch result {
-                case .success(let success):
-                    debugPrint("response sucess: start \(Date())")
-                   let osmElements = success.getOSMElements()
-                  //  print("OSM ELEMENTS ??? \(osmElements)")
-                    debugPrint("saveOSMElements: start \(Date())")
-                    let response = Array(osmElements.values)
-                    self.dbInstance.saveOSMElements(response) // Save all where there are tags
-                    debugPrint("saveOSMElements: end \(Date())")
-                    debugPrint("fetchQuestsFromDB: start \(Date())")
-                    let items = AppQuestManager.shared.fetchQuestsFromDB()
-                    debugPrint("fetchQuestsFromDB: end \(Date())")
-                    DispatchQueue.main.async { [weak self, items] in
-                        self?.items = items
-                        self?.isLoading = false
-                        if self?.items.count == 0 {self?.refreshMap = UUID()}
-                    }
-                    debugPrint("response sucess: end \(Date())")
-                case .failure(let failure):
-                    DispatchQueue.main.async { [weak self] in
-                        self?.items = []
-                        self?.isLoading = false
-                        if self?.items.count == 0 {self?.refreshMap = UUID()}
-                    }
-                    
-                    print(failure)
+            case .failure(let failure):
+                DispatchQueue.main.async { [weak self] in
+                    self?.items = []
+                    self?.isLoading = false
+                    if self?.items.count == 0 { self?.refreshMap = UUID() }
                 }
+                print(failure)
             }
         }
     }
-    
+
     func refreshQuests() {
         self.items = AppQuestManager.shared.fetchQuestsFromDB()
     }
-    
+
     func refreshMapAfterSubmission(elementId: Int) {
-        if let index = self.items.firstIndex(where: {$0.id == elementId}) {
+        if let index = self.items.firstIndex(where: { $0.id == elementId }) {
             self.items.remove(at: index)
         }
     }
-    
-    // The item may have been already resolved or changed.
-    // Try and add the item to items
+
     func refreshMapAfterUndoSumbit(storedChangesetId: String) {
-        print("Refreshing map after undo submit")
-        
         if let newItem = AppQuestManager.shared.fetchQuestForChangeset(storedChangesetId: storedChangesetId) {
             self.items.append(newItem)
-        } else {
-            print("No new item got")
         }
-        
     }
-    
+
     func hideQuest(elementId: String, elementName: String) {
-        print(elementId)
         HiddenQuestManager.shared.hideQuest(elementId: elementId, elementName: elementName, items: &items)
     }
-    
-    private func getBBox(from source: BBoxSource) -> BBox {
-        switch source {
-        case .currentLocation(let center):
-            return boundingBoxAroundLocation(location: center, distance: dataSpanDistance)
-        case .visibleRect(let mapView):
-            return boundingBoxFromVisibleMapRect(mapView: mapView)
-        }
+
+    // MARK: – BBox helpers
+
+    func boundingBoxFromVisibleMapRect(mapView: MLNMapView) -> BBox {
+        let bounds = mapView.visibleCoordinateBounds
+        return BBox(
+            minLat: bounds.sw.latitude,
+            maxLat: bounds.ne.latitude,
+            minLon: bounds.sw.longitude,
+            maxLon: bounds.ne.longitude
+        )
     }
 
-    private func boundingBoxAroundLocation(location: CLLocationCoordinate2D, distance: CLLocationDistance) -> BBox {
-        let region = MKCoordinateRegion(center: location, latitudinalMeters: distance, longitudinalMeters: distance)
-        let center = region.center
-        let span = region.span
-        let minLat = center.latitude - span.latitudeDelta / 2
-        let maxLat = center.latitude + span.latitudeDelta / 2
-        let minLon = center.longitude - span.longitudeDelta / 2
-        let maxLon = center.longitude + span.longitudeDelta / 2
-        
-       
-        return BBox(minLat: minLat, maxLat: maxLat, minLon: minLon, maxLon: maxLon)
-    }
-    
-     func boundingBoxFromVisibleMapRect(mapView: MKMapView) -> BBox {
-        let mapRect = mapView.visibleMapRect
-        let topLeft = MKMapPoint(x: mapRect.origin.x, y: mapRect.origin.y)
-        let bottomRight = MKMapPoint(x: mapRect.origin.x + mapRect.size.width,
-                                     y: mapRect.origin.y + mapRect.size.height)
-
-        let topLeftCoord = topLeft.coordinate
-        let bottomRightCoord = bottomRight.coordinate
-
-        let minLat = bottomRightCoord.latitude
-        let maxLat = topLeftCoord.latitude
-        let minLon = topLeftCoord.longitude
-        let maxLon = bottomRightCoord.longitude
-
-        return BBox(minLat: minLat, maxLat: maxLat, minLon: minLon, maxLon: maxLon)
+    private func boundingBoxAroundLocation(location: CLLocationCoordinate2D,
+                                           distance: CLLocationDistance) -> BBox {
+        let earthRadius = 6_371_000.0
+        let latDelta = (distance / earthRadius) * (180.0 / .pi)
+        let lonDelta = (distance / (earthRadius * cos(location.latitude * .pi / 180.0))) * (180.0 / .pi)
+        return BBox(
+            minLat: location.latitude - latDelta,
+            maxLat: location.latitude + latDelta,
+            minLon: location.longitude - lonDelta,
+            maxLon: location.longitude + lonDelta
+        )
     }
 }
