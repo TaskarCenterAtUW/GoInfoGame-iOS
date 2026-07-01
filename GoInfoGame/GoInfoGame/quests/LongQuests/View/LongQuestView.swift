@@ -14,10 +14,6 @@ struct LongQuestView: View {
     @Binding var selectedChoice: QuestAnswerChoice?
 
     var uploadPhoto: (Bool) -> ()
-  
-    var questOptions: [QuestAnswerChoice] {
-        return quest.questAnswerChoices ?? []
-    }
     
     @AppStorage("lowBandwidthMode") private var lowBandwidthMode: Bool = false
     
@@ -52,8 +48,10 @@ struct LongQuestView: View {
                 .foregroundColor(Asset.Colors.huskyPurple.swiftUIColor)
                 .multilineTextAlignment(.leading)
                 .accessibilityLabel(quest.questDescription)
+            if let questType = quest.questType {
+                QuestOptions(quest: quest, selectedChoice: $selectedChoice, questType: questType, uploadPhoto: uploadPhoto)
+            }
             
-            QuestOptions(options: questOptions, selectedChoice: $selectedChoice, questType: quest.questType, uploadPhoto: uploadPhoto)
         }
           .padding(.vertical, 5)
     }
