@@ -67,8 +67,8 @@ class LongFormViewModel: ObservableObject {
                     // Handle AutoCapture quest type
                     if quest.questType == .autoCapture {
                         handleAutoCaptureTags(choice: choice, submissionDict: &submissionDict)
-                    } else {
-                        submissionDict[quest.questTag] = choice.value
+                    } else if let tag = quest.questTag {
+                        submissionDict[tag] = choice.value
                     }
                 }
             } else if isLiDARSupportedDevice,

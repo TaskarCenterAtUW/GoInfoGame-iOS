@@ -10,7 +10,11 @@ import PointNMapShared
 
 struct QuestOptions: View {
     
-    let options: [QuestAnswerChoice]
+    let quest: LongQuest
+    
+    var questOptions: [QuestAnswerChoice] {
+        return quest.questAnswerChoices ?? []
+    }
     
     @Binding var selectedChoice: QuestAnswerChoice?
     
@@ -24,15 +28,14 @@ struct QuestOptions: View {
         switch questType {
         case .exclusiveChoice:
             ExclusiveChoiceView(
-                options: options,
+                options: questOptions,
                 selectedChoice: $selectedChoice,
                 uploadPhoto: uploadPhoto
             )
         case .multipleChoice:
             MultipleChoiceView(
-                options: options,
-                selectedChoice: $selectedChoice,
-                uploadPhoto: uploadPhoto
+                options: questOptions,
+                selectedChoice: $selectedChoice
             )
             
         case .numeric:
@@ -44,7 +47,7 @@ struct QuestOptions: View {
                 selectedChoice: $selectedChoice
             )
         case .autoCapture:
-            AutoCaptureView(selectedChoice: $selectedChoice)
+            AutoCaptureView(tags: quest.questTags ?? [], selectedChoice: $selectedChoice)
         }
     }
 }
@@ -406,6 +409,7 @@ private extension QuestOptions {
 
     // MARK: - AutoCaptureView (Multi-capture version)
     struct AutoCaptureView: View {
+        let tags: [String]
         @Binding var selectedChoice: QuestAnswerChoice?
         
         @State private var selectedClasses: [AccessibilityFeatureClass] = []
@@ -429,19 +433,33 @@ private extension QuestOptions {
         }
 
         // Reverse lookup: OSM tag key → human-readable display name, built from allCases.
-        static let osmTagDisplayNames: [String: String] = Dictionary(
-            uniqueKeysWithValues: AccessibilityFeatureAttribute.allCases.compactMap { attribute in
-                guard let tag = osmTagKey(for: attribute) else { return nil }
-                return (tag, attribute.displayName)
+        func osmTagDisplayNames(tags: [String]) -> [String: String] {
+            var tagDisplayNames: [String: String] = [:]
+            tags.forEach({ tag in
+                    if let attribute = Self.accessibilityFeatureAttributeForOSMTag(tag: tag) {
+                        tagDisplayNames[tag] = attribute.displayName
+                    }
+                })
+            return tagDisplayNames
+        }
+        
+        
+        nonisolated private static func accessibilityFeatureAttributeForOSMTag(tag: String) -> AccessibilityFeatureAttribute? {
+            switch tag {
+            case "width": return .width
+            case "incline": return .runningSlope
+            case "ext:ac:crossing-slope": return .crossSlope
+            default: return nil
             }
-        )
+        }
+            
 
         // Maps each AccessibilityFeatureAttribute to its OSM tag key.
-        nonisolated private static func osmTagKey(for attribute: AccessibilityFeatureAttribute) -> String? {
-            switch attribute {
-            case .width:                return "ext:autocapture-width" // For Sidewalk
-            case .runningSlope:         return "ext:autocapture-running-slope" // For Sidewalk
-            case .crossSlope:           return "ext:autocapture-cross-slope" // For Sidewalk
+//        nonisolated private static func osmTagKey(for attribute: AccessibilityFeatureAttribute) -> String? {
+//            switch attribute {
+//            case .width:                return "width" // For Sidewalk
+//            case .runningSlope:         return "incline" // For Sidewalk
+//            case .crossSlope:           return "ext:ac:crossing-slope" // For Sidewalk
 //            case .surfaceIntegrity:     return "ext:autocapture-surface-integrity"
 //            case .surfaceDisruption:    return "ext:autocapture-surface-disruption" // Got Long press feature
 //            case .heightFromGround:     return "ext:autocapture-height-from-ground" // Got Long press feature
@@ -454,9 +472,9 @@ private extension QuestOptions {
 //            case .widthFromImage:       return "ext:autocapture-width-from-image"
 //            case .runningSlopeFromImage: return "ext:autocapture-running-slope-from-image"
 //            case .crossSlopeFromImage:  return "ext:autocapture-cross-slope-from-image"
-            default: return nil
-            }
-        }
+//            default: return nil
+//            }
+//        }
         
         @State private var captures: [Capture] = []
         @State private var showImagePicker = false
@@ -479,7 +497,7 @@ private extension QuestOptions {
                                 ForEach(captures) { capture in
                                     CaptureCard(
                                         capture: capture,
-                                        tagDisplayNames: AutoCaptureView.osmTagDisplayNames,
+                                        tagDisplayNames: osmTagDisplayNames(tags: tags ?? []),
                                         onDelete: {
                                             captures.removeAll { $0.id == capture.id }
                                             updateSelectedChoice()
@@ -641,9 +659,12 @@ private extension QuestOptions {
                         }
 
                         var tags: [String: String] = [:]
-                        accessibilityFeatures.first?.attributeValues.forEach { attribute, value in
-                            if let tag = Self.osmTagKey(for: attribute) {
-                                tags[tag] = value?.toString() ?? "NA"
+                        for tag in self.tags {
+                            if let accessAttribute = Self.accessibilityFeatureAttributeForOSMTag(tag: tag),
+                               let aa = accessibilityFeatures.first?.attributeValues.first(where: { attribute in
+                                   accessAttribute == attribute.key
+                               }) {
+                                   tags[tag] = aa.value?.toString() ?? "NA"
                             }
                         }
                         newCaptures.append(Capture(osmTags: tags))
@@ -839,12 +860,29 @@ private extension QuestOptions {
 }
 
 #Preview {
-    QuestOptions(options: [QuestAnswerChoice(value: "asphalt", choiceText: "Asphalt", imageURL: "https://raw.githubusercontent.com/TaskarCenterAtUW/tdei-tools/refs/heads/main/images/sidewalk/surface/asphalt_landscape.png", choiceFollowUp: nil),
-                           QuestAnswerChoice(value: "no", choiceText: "No, this roadway is too wide to cross safely.", imageURL: nil, choiceFollowUp: nil)],
-                 selectedChoice: .constant(QuestAnswerChoice(value: "no", choiceText: "No, this roadway is too wide to cross safely.", imageURL: nil, choiceFollowUp: nil)),
-                 questType: GoInfoGame.QuestType.exclusiveChoice) { s in
-        
-    }
+        let jsonString = """
+    {
+                                      "quest_id": 101,
+                                      "quest_title": "What is this sidewalk's surface type?",
+                                      "quest_description": "Choose the primary surface material of the sidewalk.",
+                                      "quest_type": "ExclusiveChoice",
+                                      "quest_tag": "ext:surface",
+    "quest_image_url": "https://raw.githubusercontent.com/TaskarCenterAtUW/tdei-tools/main/images/kerb/lowered_landscape.png",
+                  "quest_answer_choices": [
+                    {
+                      "value": "asphalt",
+                      "choice_text": "Asphalt",
+                      "image_url": "https://raw.githubusercontent.com/TaskarCenterAtUW/tdei-tools/main/images/sidewalk/surface/asphalt_landscape.png"
+                    }]
+                    }
+    """
+        if let longQeust = try? JSONDecoder().decode(LongQuest.self, from: jsonString.data(using: .utf8)!) {
+            QuestOptions(quest: longQeust,
+                         selectedChoice: .constant(QuestAnswerChoice(value: "no", choiceText: "No, this roadway is too wide to cross safely.", imageURL: nil, choiceFollowUp: nil)),
+                         questType: GoInfoGame.QuestType.exclusiveChoice) { s in
+                
+            }
+        }
 }
 
 #Preview {

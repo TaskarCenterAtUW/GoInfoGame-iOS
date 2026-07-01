@@ -397,6 +397,9 @@ struct LongForm: View, QuestForm {
     }
     
     private func canShowQuest(_ quest: LongQuest) -> Bool {
+        guard let questType = quest.questType else {
+            return false
+        }
         if showOnlyLiDARQuests {
             if quest.questType == .autoCapture,
                deviceSupportsLiDAR {
