@@ -64,9 +64,9 @@ private extension QuestOptions {
         var body: some View {
             ZStack {
                 ScrollView {
-                    if let imageUrl = selectedImageURL {
+                    if selectedImageURL != nil || selectedImageText != nil {
                         ExpandedImageView(
-                            imageUrl: imageUrl,
+                            imageUrl: selectedImageURL,
                             imageText: selectedImageText,
                             onClose: {
                                 selectedImageURL = nil
@@ -84,10 +84,8 @@ private extension QuestOptions {
                                     option: option,
                                     selectedChoice: $selectedChoice,
                                     onLongPress: {
-                                        if let imageUrl = option.imageURL, !imageUrl.isEmpty {
-                                            selectedImageURL = imageUrl
-                                            selectedImageText = option.choiceText
-                                        }
+                                        selectedImageURL = option.imageURL
+                                        selectedImageText = option.choiceText
                                     }
                                 )
                                 .accessibilityElement(children: .combine)
@@ -125,9 +123,9 @@ private extension QuestOptions {
         var body: some View {
             ZStack {
                 ScrollView {
-                    if let imageUrl = selectedImageURL {
+                    if selectedImageURL != nil || selectedImageText != nil {
                         ExpandedImageView(
-                            imageUrl: imageUrl,
+                            imageUrl: selectedImageURL,
                             imageText: selectedImageText,
                             onClose: {
                                 selectedImageURL = nil
@@ -148,10 +146,8 @@ private extension QuestOptions {
                                         toggleSelection(for: option)
                                     },
                                     onLongPress: {
-                                        if let imageUrl = option.imageURL, !imageUrl.isEmpty {
-                                            selectedImageURL = imageUrl
-                                            selectedImageText = option.choiceText
-                                        }
+                                        selectedImageURL = option.imageURL
+                                        selectedImageText = option.choiceText
                                     }
                                 )
                                 .accessibilityElement(children: .combine)
@@ -288,20 +284,22 @@ private extension QuestOptions {
     }
 
     struct ExpandedImageView: View {
-        let imageUrl: String
+        let imageUrl: String?
         let imageText: String?
         let onClose: () -> Void
 
         var body: some View {
             VStack {
-                LongFormImageView(
-                    urlString: imageUrl,
-                    width: 300,
-                    height: 300
-                )
+                if let url = imageUrl {
+                    LongFormImageView(
+                        urlString: url,
+                        width: 300,
+                        height: 300
+                    )
+                }
 
                 if let text = imageText {
-                    StrokedText(text: text)
+                    Text(text)
                 }
 
                 Spacer()
@@ -348,7 +346,11 @@ private extension QuestOptions {
                 RoundedRectangle(cornerRadius: 8)
                     .stroke(selectedChoice == option ? Asset.Colors.accentPink.swiftUIColor : Color.clear, lineWidth: 3)
             )
-            .onLongPressGesture(perform: onLongPress)
+            .simultaneousGesture(
+                LongPressGesture(minimumDuration: 0.5).onEnded { _ in
+                    onLongPress()
+                }
+            )
         }
     }
 
@@ -377,7 +379,11 @@ private extension QuestOptions {
                 RoundedRectangle(cornerRadius: 8)
                     .stroke(isSelected ? Asset.Colors.accentPink.swiftUIColor : Color.clear, lineWidth: 3)
             )
-            .onLongPressGesture(perform: onLongPress)
+            .simultaneousGesture(
+                LongPressGesture(minimumDuration: 0.5).onEnded { _ in
+                    onLongPress()
+                }
+            )
         }
     }
 
