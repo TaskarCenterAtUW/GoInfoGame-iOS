@@ -29,7 +29,71 @@ struct PosmLoginView: View {
     var body: some View {
         NavigationStack {
             ZStack {
-                VStack {
+                GeometryReader { geometry in
+                    ScrollView {
+                        loginContent
+                            .padding([.top], 0)
+                            .frame(minHeight: geometry.size.height)
+                    }
+                }
+
+                if viewModel.isLoading {
+                    ActivityView(activityText: "Loading...")
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+                        .background(Color.black.opacity(0.4))
+                        .edgesIgnoringSafeArea(.all)
+                }
+            }
+            .navigationDestination(isPresented: $viewModel.isLoginSuccess) {
+                InitialView()
+            }
+        }
+        .alert(viewModel.errorMessage ?? "Invalid Credentials", isPresented: $viewModel.shouldShowValidationAlert) {
+            Button("OK", role: .cancel) { }
+        }
+        .alert("Enable Biometric Login?", isPresented: $viewModel.showBiometricPrompt) {
+            Button("Enable") {
+                viewModel.enableBiometrics(enable: true)
+            }
+            Button("Not Now", role: .cancel) {
+                viewModel.enableBiometrics(enable: false)
+            }
+        } message: {
+            Text("Would you like to use Face ID or Touch ID for faster logins?")
+        }
+        .alert("Debug mode", isPresented: $showEnableDebugModeAlert) {
+            Button("Enable") {
+                debugMode = true
+            }
+            Button("Not Now", role: .cancel) {
+
+            }
+        } message: {
+            Text("Do you want to enable debug mode?")
+        }
+        .alert("Debug mode", isPresented: $showDisableDebugModeAlert) {
+            Button("Disable") {
+                selectedEnvironment = .production
+                debugMode = false
+            }
+            Button("Not Now", role: .cancel) {
+
+            }
+        } message: {
+            Text("Do you want to disable debug mode?")
+        }
+        .onReceive(NotificationCenter.default.publisher(for: Notification.Name("SessionExpired"))) { notification in
+                    showAlert = true
+                }
+                .alert("Logout", isPresented: $showAlert) {
+                    Button("OK", role: .cancel) {}
+                } message: {
+                    Text("Your session has expired. Please login again")
+                }
+    }
+
+    var loginContent: some View {
+        VStack {
                     ZStack {
                         Asset.Colors.e7E3EELightPurpuleBg.swiftUIColor
                             .ignoresSafeArea(edges: .top)
@@ -239,63 +303,8 @@ struct PosmLoginView: View {
                     .frame(maxWidth: .infinity)
                     
                 }
-                .padding([.top], 0)
-                
-                if viewModel.isLoading {
-                    ActivityView(activityText: "Loading...")
-                        .frame(maxWidth: .infinity, maxHeight: .infinity)
-                        .background(Color.black.opacity(0.4))
-                        .edgesIgnoringSafeArea(.all)
-                }
-            }
-            .navigationDestination(isPresented: $viewModel.isLoginSuccess) {
-                InitialView()
-            }
-        }
-        .alert(viewModel.errorMessage ?? "Invalid Credentials", isPresented: $viewModel.shouldShowValidationAlert) {
-            Button("OK", role: .cancel) { }
-        }
-        .alert("Enable Biometric Login?", isPresented: $viewModel.showBiometricPrompt) {
-            Button("Enable") {
-                viewModel.enableBiometrics(enable: true)
-            }
-            Button("Not Now", role: .cancel) {
-                viewModel.enableBiometrics(enable: false)
-            }
-        } message: {
-            Text("Would you like to use Face ID or Touch ID for faster logins?")
-        }
-        .alert("Debug mode", isPresented: $showEnableDebugModeAlert) {
-            Button("Enable") {
-                debugMode = true
-            }
-            Button("Not Now", role: .cancel) {
-                
-            }
-        } message: {
-            Text("Do you want to enable debug mode?")
-        }
-        .alert("Debug mode", isPresented: $showDisableDebugModeAlert) {
-            Button("Disable") {
-                selectedEnvironment = .production
-                debugMode = false
-            }
-            Button("Not Now", role: .cancel) {
-                
-            }
-        } message: {
-            Text("Do you want to disable debug mode?")
-        }
-        .onReceive(NotificationCenter.default.publisher(for: Notification.Name("SessionExpired"))) { notification in
-                    showAlert = true
-                }
-                .alert("Logout", isPresented: $showAlert) {
-                    Button("OK", role: .cancel) {}
-                } message: {
-                    Text("Your session has expired. Please login again")
-                }
     }
-    
+
     var appVersionText: some View {
         let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "N/A"
         return Text("Version \(version)")
