@@ -30,7 +30,7 @@ struct LongQuestView: View {
                 .foregroundColor(Asset.Colors.huskyPurple.swiftUIColor)
                 .multilineTextAlignment(.leading)
                 .padding([.bottom], 10)
-                .accessibilityLabel(quest.questTitle)
+                .accessibilityLabel(quest.getQuestTitleVoiceOver())
             
             if !lowBandwidthMode, let imageUrl = quest.questImageURL, !imageUrl.isEmpty {
                 LongFormImageView(urlString: imageUrl, width: isImageExpanded ? 300 : 100, height: isImageExpanded ? 300 : 100)
