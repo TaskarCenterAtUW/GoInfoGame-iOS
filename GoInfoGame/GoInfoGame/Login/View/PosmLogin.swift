@@ -72,6 +72,23 @@ struct PosmLoginView: View {
                         .cornerRadius(10)
                         .padding(.horizontal, 40)
                         .textInputAutocapitalization(.never)
+                    HStack {
+                        Spacer()
+                        Button(action: {
+                            if let url = URL(string: "https://portal.tdei.us/ForgotPassword"),
+                               UIApplication.shared.canOpenURL(url) {
+                                UIApplication.shared.open(url)
+                            }
+                        }) {
+                            Text("Forgot password?")
+                                .font(FontFamily.Lato.bold.swiftUIFont(size: 12, relativeTo: .headline))
+                                .foregroundColor(Asset.Colors.huskyPurple.swiftUIColor)
+                                .padding(.horizontal, 46)
+                                .multilineTextAlignment(.center)
+                                .lineLimit(nil)
+                                .accessibilityLabel("Forgot password?")
+                        }
+                    }
                     
                     if debugMode {
                         Menu {
