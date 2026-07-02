@@ -29,7 +29,76 @@ struct PosmLoginView: View {
     var body: some View {
         NavigationStack {
             ZStack {
-                VStack {
+                GeometryReader { geometry in
+                    let scrollView = ScrollView {
+                        loginContent
+                            .padding([.top], 0)
+                            .frame(minHeight: geometry.size.height)
+                    }
+                    if #available(iOS 16.4, *) {
+                        scrollView.scrollBounceBehavior(.basedOnSize)
+                    } else {
+                        scrollView
+                    }
+                }
+
+                if viewModel.isLoading {
+                    ActivityView(activityText: "Loading...")
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+                        .background(Color.black.opacity(0.4))
+                        .edgesIgnoringSafeArea(.all)
+                }
+            }
+            .navigationDestination(isPresented: $viewModel.isLoginSuccess) {
+                InitialView()
+            }
+        }
+        .alert(viewModel.errorMessage ?? "Invalid Credentials", isPresented: $viewModel.shouldShowValidationAlert) {
+            Button("OK", role: .cancel) { }
+        }
+        .alert("Enable Biometric Login?", isPresented: $viewModel.showBiometricPrompt) {
+            Button("Enable") {
+                viewModel.enableBiometrics(enable: true)
+            }
+            Button("Not Now", role: .cancel) {
+                viewModel.enableBiometrics(enable: false)
+            }
+        } message: {
+            Text("Would you like to use Face ID or Touch ID for faster logins?")
+        }
+        .alert("Debug mode", isPresented: $showEnableDebugModeAlert) {
+            Button("Enable") {
+                debugMode = true
+            }
+            Button("Not Now", role: .cancel) {
+
+            }
+        } message: {
+            Text("Do you want to enable debug mode?")
+        }
+        .alert("Debug mode", isPresented: $showDisableDebugModeAlert) {
+            Button("Disable") {
+                selectedEnvironment = .production
+                debugMode = false
+            }
+            Button("Not Now", role: .cancel) {
+
+            }
+        } message: {
+            Text("Do you want to disable debug mode?")
+        }
+        .onReceive(NotificationCenter.default.publisher(for: Notification.Name("SessionExpired"))) { notification in
+                    showAlert = true
+                }
+                .alert("Logout", isPresented: $showAlert) {
+                    Button("OK", role: .cancel) {}
+                } message: {
+                    Text("Your session has expired. Please login again")
+                }
+    }
+
+    var loginContent: some View {
+        VStack {
                     ZStack {
                         Asset.Colors.e7E3EELightPurpuleBg.swiftUIColor
                             .ignoresSafeArea(edges: .top)
@@ -113,51 +182,10 @@ struct PosmLoginView: View {
                     .padding(.top, 20)
                     .padding(.horizontal, 40)
                     
-                    Button(action: {
-                        if let url = URL(string: "http://tinyurl.com/OTP2026Walk"),
-                           UIApplication.shared.canOpenURL(url) {
-                            UIApplication.shared.open(url)
-                        }
-                    }) {
-                        Text("I'm a new user")
-                            .font(FontFamily.Lato.bold.swiftUIFont(size: 16, relativeTo: .headline))
-                            .foregroundColor(Asset.Colors.huskyPurple.swiftUIColor)
-                            .multilineTextAlignment(.center)
-                            .lineLimit(nil)
-                            .padding()
-                            .accessibilityLabel("I'm a new user. Tap to learn more.")
-                    }
-                    
-                    Button(action:{
-                        if let url = URL(string: "mailto:tdei@uw.edu"),
-                           UIApplication.shared.canOpenURL(url) {
-                            UIApplication.shared.open(url)
-                        }
-                    }) {
-                        Text("Questions? Contact Us")
-                            .font(FontFamily.Lato.bold.swiftUIFont(size: 16, relativeTo: .headline))
-                            .foregroundColor(Asset.Colors.huskyPurple.swiftUIColor)
-                            .multilineTextAlignment(.center)
-                            .lineLimit(nil)
-                            .padding()
-                            .accessibilityLabel("Questions? Contact Us. Tap to open email client")
-                    }
-                    
-                    Button(action:{
-                        if let url = URL(string: "https://www.accessmap.app/dir?wp=-122.3346457_47.6059712%27-122.3310313_47.6062336&region=wa.seattle&lon=-122.3331631&lat=47.6070952&z=15.6&sa=1&mu=0.12&md=0.15&ab=1&aps=0"),
-                           UIApplication.shared.canOpenURL(url) {
-                            UIApplication.shared.open(url)
-                        }
-                    }) {
-                        Text("Looking for AccessMap Route?")
-                            .font(FontFamily.Lato.bold.swiftUIFont(size: 16, relativeTo: .headline))
-                            .foregroundColor(Asset.Colors.huskyPurple.swiftUIColor)
-                            .multilineTextAlignment(.center)
-                            .lineLimit(nil)
-                            .padding(.bottom, 5)
-                            .accessibilityLabel("Looking for AccessMap Route? Tap to open AccessMap website")
-                        
-                    }
+            forgotPassword
+            iAmNewUser
+            contactUs
+            accessMapRoute
                     
                     if SessionManager.shared.canUseBiometricLogin(for: selectedEnvironment) {
                         Button(action: {
@@ -222,63 +250,8 @@ struct PosmLoginView: View {
                     .frame(maxWidth: .infinity)
                     
                 }
-                .padding([.top], 0)
-                
-                if viewModel.isLoading {
-                    ActivityView(activityText: "Loading...")
-                        .frame(maxWidth: .infinity, maxHeight: .infinity)
-                        .background(Color.black.opacity(0.4))
-                        .edgesIgnoringSafeArea(.all)
-                }
-            }
-            .navigationDestination(isPresented: $viewModel.isLoginSuccess) {
-                InitialView()
-            }
-        }
-        .alert(viewModel.errorMessage ?? "Invalid Credentials", isPresented: $viewModel.shouldShowValidationAlert) {
-            Button("OK", role: .cancel) { }
-        }
-        .alert("Enable Biometric Login?", isPresented: $viewModel.showBiometricPrompt) {
-            Button("Enable") {
-                viewModel.enableBiometrics(enable: true)
-            }
-            Button("Not Now", role: .cancel) {
-                viewModel.enableBiometrics(enable: false)
-            }
-        } message: {
-            Text("Would you like to use Face ID or Touch ID for faster logins?")
-        }
-        .alert("Debug mode", isPresented: $showEnableDebugModeAlert) {
-            Button("Enable") {
-                debugMode = true
-            }
-            Button("Not Now", role: .cancel) {
-                
-            }
-        } message: {
-            Text("Do you want to enable debug mode?")
-        }
-        .alert("Debug mode", isPresented: $showDisableDebugModeAlert) {
-            Button("Disable") {
-                selectedEnvironment = .production
-                debugMode = false
-            }
-            Button("Not Now", role: .cancel) {
-                
-            }
-        } message: {
-            Text("Do you want to disable debug mode?")
-        }
-        .onReceive(NotificationCenter.default.publisher(for: Notification.Name("SessionExpired"))) { notification in
-                    showAlert = true
-                }
-                .alert("Logout", isPresented: $showAlert) {
-                    Button("OK", role: .cancel) {}
-                } message: {
-                    Text("Your session has expired. Please login again")
-                }
     }
-    
+
     var appVersionText: some View {
         let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "N/A"
         return Text("Version \(version)")
@@ -290,6 +263,70 @@ struct PosmLoginView: View {
             .multilineTextAlignment(.center)
             .lineLimit(nil)
             .accessibilityLabel("App version \(version)")
+    }
+    
+    var forgotPassword: some View {
+        Button(action: {
+            openURL(url: "https://portal.tdei.us/ForgotPassword")
+        }) {
+            Text("Forgot password?")
+                .font(FontFamily.Lato.bold.swiftUIFont(size: 16, relativeTo: .headline))
+                .foregroundColor(Asset.Colors.huskyPurple.swiftUIColor)
+                .frame(minHeight: 44)
+                .multilineTextAlignment(.center)
+                .lineLimit(nil)
+                .accessibilityLabel("Forgot password?")
+        }
+    }
+    
+    var iAmNewUser: some View {
+        Button(action: {
+            openURL(url: "http://tinyurl.com/OTP2026Walk")
+        }) {
+            Text("I'm a new user")
+                .font(FontFamily.Lato.bold.swiftUIFont(size: 16, relativeTo: .headline))
+                .foregroundColor(Asset.Colors.huskyPurple.swiftUIColor)
+                .frame(minHeight: 44)
+                .multilineTextAlignment(.center)
+                .lineLimit(nil)
+                .accessibilityLabel("I'm a new user. Tap to learn more.")
+        }
+    }
+    
+    var contactUs: some View {
+        Button(action:{
+            openURL(url: "mailto:tdei@uw.edu")
+        }) {
+            Text("Questions? Contact Us")
+                .font(FontFamily.Lato.bold.swiftUIFont(size: 16, relativeTo: .headline))
+                .foregroundColor(Asset.Colors.huskyPurple.swiftUIColor)
+                .multilineTextAlignment(.center)
+                .lineLimit(nil)
+                .padding()
+                .accessibilityLabel("Questions? Contact Us. Tap to open email client")
+        }
+    }
+    
+    var accessMapRoute: some View {
+        Button(action:{
+            openURL(url: "https://www.accessmap.app/dir?wp=-122.3346457_47.6059712%27-122.3310313_47.6062336&region=wa.seattle&lon=-122.3331631&lat=47.6070952&z=15.6&sa=1&mu=0.12&md=0.15&ab=1&aps=0")
+        }) {
+            Text("Looking for AccessMap Route?")
+                .font(FontFamily.Lato.bold.swiftUIFont(size: 16, relativeTo: .headline))
+                .foregroundColor(Asset.Colors.huskyPurple.swiftUIColor)
+                .multilineTextAlignment(.center)
+                .lineLimit(nil)
+                .padding(.bottom, 5)
+                .accessibilityLabel("Looking for AccessMap Route? Tap to open AccessMap website")
+            
+        }
+    }
+    
+    private func openURL(url: String) {
+        if let url = URL(string: url),
+           UIApplication.shared.canOpenURL(url) {
+            UIApplication.shared.open(url)
+        }
     }
 }
 
