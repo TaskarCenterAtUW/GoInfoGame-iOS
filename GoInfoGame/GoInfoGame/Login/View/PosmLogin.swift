@@ -30,10 +30,15 @@ struct PosmLoginView: View {
         NavigationStack {
             ZStack {
                 GeometryReader { geometry in
-                    ScrollView {
+                    let scrollView = ScrollView {
                         loginContent
                             .padding([.top], 0)
                             .frame(minHeight: geometry.size.height)
+                    }
+                    if #available(iOS 16.4, *) {
+                        scrollView.scrollBounceBehavior(.basedOnSize)
+                    } else {
+                        scrollView
                     }
                 }
 
