@@ -120,6 +120,16 @@ struct LongQuest: Codable, Identifiable {
         // If one or more is image, send back image
         return self.questType
     }
+    
+    func getQuestTitleVoiceOver() -> String {
+        if questType == .exclusiveChoice {
+            return questTitle + "Only one item can be selected."
+        } else if questType == .multipleChoice {
+            return questTitle + "Multiple items can be selected."
+        } else {
+            return questTitle
+        }
+    }
 }
 
 // MARK: - QuestAnswerChoice
