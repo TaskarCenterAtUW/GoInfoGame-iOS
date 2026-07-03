@@ -67,7 +67,7 @@
             "quest_title": "Do you want to capture width and slope with your device LiDAR?",
             "quest_description": "Your Device is capable of auto-capturing the Sidewalk properties. Give it a try.",
             "quest_type": "AutoCapture",
-            "quest_tags": ["width", "incline", "ext:ac:crossing-slope"]
+            "quest_tags": ["width", "incline", "ext:ac:cross-slope"]
           },
           {
             "quest_id": 106,
