@@ -592,6 +592,25 @@ class DatasyncManager {
         }
     }
 
+    /// Fetches the latest tags for an element from OSM and refreshes the local cache with them.
+    /// Returns nil if the fetch fails (offline/error) so callers can fall back to the existing local-first flow.
+    func fetchLatestTags(id: Int64, isWay: Bool) async -> [String: String]? {
+        do {
+            if isWay {
+                let way = try await fetchway2(wayId: "\(id)")
+                dbInstance.saveOSMElements([way])
+                return way.tags
+            } else {
+                let node = try await fetchNode2(nodeId: "\(id)")
+                dbInstance.saveOSMElements([node])
+                return node.tags
+            }
+        } catch {
+            print("fetchLatestTags failed (offline or error): \(error)")
+            return nil
+        }
+    }
+
     /**
             Syncs the node along with the updated
      */

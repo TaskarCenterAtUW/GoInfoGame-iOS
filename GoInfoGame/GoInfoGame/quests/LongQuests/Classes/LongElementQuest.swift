@@ -10,6 +10,18 @@ import osmparser
 import SwiftUI
 import CoreLocation
 
+struct ConflictingTag: Identifiable {
+    let id = UUID()
+    let key: String
+    let existingValue: String
+    let answeredValue: String
+}
+
+enum ConflictCheckResult {
+    case proceed
+    case conflicts([ConflictingTag])
+}
+
 struct LazyView<Content: View>: View, QuestForm {
     var action: (([String : String]) -> Void)?
     
@@ -116,10 +128,11 @@ class LongElementQuest: QuestBase, Quest {
           self.internalForm = LongForm(
             elementName: elementType, questID: questId, query: _internalQueryString, action: { [self] tags in
                 self.questAnswersSelected?(tags)
-            }, coordinate: annotationCoordinate ?? CLLocationCoordinate2D(latitude: 0, longitude: 0)
+            }, coordinate: annotationCoordinate ?? CLLocationCoordinate2D(latitude: 0, longitude: 0),
+            checkForConflicts: { [self] tags in await self.checkForConflicts(answeredTags: tags) }
           )
       }
-    
+
     init(questId: String, questQuery:String, elementType: String, elementTypeIcon: String?) {
         id = -1
         type = .node
@@ -130,23 +143,36 @@ class LongElementQuest: QuestBase, Quest {
         self.internalForm = LazyView(LongForm(elementName: elementType, questID: questId,query: questQuery, action: { [self] tags in
 //            self.onAnswer(answer: tags)
             self.questAnswersSelected?(tags)
-        }))
+        }, checkForConflicts: { [self] tags in await self.checkForConflicts(answeredTags: tags) }))
     }
-    
+
     override init() {
         id = -1
         type = .node
         super.init()
-        
+
         self.internalForm = LongForm(elementName: elementType, action: { [self] tags in
 //            self.onAnswer(answer: tags)
             self.questAnswersSelected?(tags)
-        })
+        }, checkForConflicts: { [self] tags in await self.checkForConflicts(answeredTags: tags) })
     }
-    
-    
+
+
     func onAnswer(answer: [String : String]) {
         self.updateTags(id: id, questType: elementType, tags: answer, type: type, iconName: iconName)
+    }
+
+    func fetchLatestTagsIfNeeded() async -> [String: String]? {
+        await DatasyncManager.shared.fetchLatestTags(id: id, isWay: type == .way)
+    }
+
+    func checkForConflicts(answeredTags: [String: String]) async -> ConflictCheckResult {
+        guard let latestTags = await fetchLatestTagsIfNeeded() else { return .proceed }
+        let conflicts = answeredTags.compactMap { key, answeredValue -> ConflictingTag? in
+            guard let existingValue = latestTags[key], existingValue != answeredValue else { return nil }
+            return ConflictingTag(key: key, existingValue: existingValue, answeredValue: answeredValue)
+        }
+        return conflicts.isEmpty ? .proceed : .conflicts(conflicts)
     }
         
     var questId: String {

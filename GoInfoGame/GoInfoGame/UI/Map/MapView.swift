@@ -620,6 +620,9 @@ struct QuestSheetView: View {
     let annotationCoordinate: CLLocationCoordinate2D?
     @Environment(\.dismiss) var dismiss
 
+    @State private var isCheckingFreshness = true
+    @State private var alreadyCompletedMessage: String?
+
     init(viewModel: MapViewModel, annotationCoordinate: CLLocationCoordinate2D?) {
         self.viewModel = viewModel
         self.annotationCoordinate = annotationCoordinate
@@ -631,11 +634,44 @@ struct QuestSheetView: View {
 
     var body: some View {
         Group {
-            if let selectedQuest = viewModel.getSelectedQuest() {
+            if isCheckingFreshness {
+                ProgressView("Checking for updates...")
+            } else if let message = alreadyCompletedMessage {
+                VStack(spacing: 16) {
+                    Image(systemName: "checkmark.circle.fill")
+                        .resizable()
+                        .frame(width: 40, height: 40)
+                        .foregroundColor(.green)
+                    Text(message)
+                        .multilineTextAlignment(.center)
+                    Button(action: { dismiss() }) {
+                        Text("OK")
+                            .foregroundColor(.white)
+                            .padding(.vertical, 10)
+                            .padding(.horizontal, 32)
+                            .background(Asset.Colors.huskyPurple.swiftUIColor)
+                            .cornerRadius(12)
+                    }
+                }
+                .padding(24)
+            } else if let selectedQuest = viewModel.getSelectedQuest() {
                 CustomSheetView { selectedQuest.parent?.form }
             } else {
                 EmptyView()
             }
+        }
+        .task(id: viewModel.selectedQuest?.id) {
+            guard !viewModel.isMultiSelectModeEnabled,
+                  let longQuest = viewModel.getSelectedQuest()?.parent as? LongElementQuest else {
+                isCheckingFreshness = false
+                return
+            }
+            if let latestTags = await longQuest.fetchLatestTagsIfNeeded(),
+               latestTags["ext:gig_complete"] == "yes" {
+                alreadyCompletedMessage = "This element has already been answered by another user."
+                viewModel.refreshQuests()
+            }
+            isCheckingFreshness = false
         }
         .onReceive(MapViewPublisher.shared.dismissSheet) { _ in dismiss() }
     }
