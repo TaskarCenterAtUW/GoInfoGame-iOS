@@ -550,16 +550,10 @@ struct MapView: View {
         .onReceive(MapViewPublisher.shared.conflictDetected) { conflict in
             activeConflict = conflict
         }
-        .alert(item: $activeConflict) { conflict in
-            let details = conflict.conflicts
-                .map { "• \($0.key): existing \"\($0.existingValue)\" vs your answer \"\($0.answeredValue)\"" }
-                .joined(separator: "\n")
-            return Alert(
-                title: Text("This element changed since you answered it"),
-                message: Text("\(details)\n\nOverride with your answers?"),
-                primaryButton: .default(Text("Yes, Override")) { conflict.resolve(true) },
-                secondaryButton: .cancel(Text("No")) { conflict.resolve(false) }
-            )
+        .sheet(item: $activeConflict) { conflict in
+            ConflictResolutionSheet(conflict: conflict)
+                .interactiveDismissDisabled()
+                .applyPresentationSizingPage()
         }
         .onAppear {
             HiddenQuestManager.shared.loadHiddenQuests()
@@ -699,11 +693,99 @@ public struct ConflictingTag: Identifiable {
     let answeredValue: String
 }
 
+public enum TagResolutionChoice {
+    case useMine
+    case useServer
+}
+
+public enum ConflictResolutionDecision {
+    case cancelled
+    case resolved([String: TagResolutionChoice])
+}
+
 public struct PendingSyncConflict: Identifiable {
     public let id = UUID()
     let elementId: Int64
+    let elementTypeName: String
+    let iconName: String
     let conflicts: [ConflictingTag]
-    let resolve: (Bool) -> Void
+    let resolve: (ConflictResolutionDecision) -> Void
+}
+
+struct ConflictResolutionSheet: View {
+    let conflict: PendingSyncConflict
+    @Environment(\.dismiss) private var dismiss
+    @State private var choices: [String: TagResolutionChoice]
+
+    init(conflict: PendingSyncConflict) {
+        self.conflict = conflict
+        _choices = State(initialValue: Dictionary(
+            uniqueKeysWithValues: conflict.conflicts.map { ($0.key, .useMine) }
+        ))
+    }
+
+    var body: some View {
+        NavigationView {
+            List {
+                Section {
+                    HStack(spacing: 12) {
+                        Image(uiImage: UIImage(named: conflict.iconName) ?? UIImage(systemName: "mappin.circle")!)
+                            .resizable()
+                            .frame(width: 32, height: 32)
+                            .clipShape(Circle())
+                        VStack(alignment: .leading, spacing: 2) {
+                            Text(conflict.elementTypeName)
+                                .font(.headline)
+                            Text("ID: \(String(conflict.elementId))")
+                                .font(.subheadline)
+                                .foregroundColor(.secondary)
+                        }
+                    }
+                    Text("This element was changed by someone else while you were answering. Choose which value to keep for each tag below.")
+                        .font(.footnote)
+                        .foregroundColor(.secondary)
+                }
+                ForEach(conflict.conflicts) { tag in
+                    Section(questionText(forTagKey: tag.key)) {
+                        Picker(tag.key, selection: Binding(
+                            get: { choices[tag.key] ?? .useMine },
+                            set: { choices[tag.key] = $0 }
+                        )) {
+                            Text("Your answer: \(tag.answeredValue)").tag(TagResolutionChoice.useMine)
+                            Text("Existing value: \(tag.existingValue)").tag(TagResolutionChoice.useServer)
+                        }
+                        .pickerStyle(.inline)
+                        .labelsHidden()
+                    }
+                }
+            }
+            .listStyle(.insetGrouped)
+            .navigationTitle("Resolve Conflicts")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button("Cancel") {
+                        conflict.resolve(.cancelled)
+                        dismiss()
+                    }
+                }
+                ToolbarItem(placement: .confirmationAction) {
+                    Button("Confirm") {
+                        conflict.resolve(.resolved(choices))
+                        dismiss()
+                    }
+                    .foregroundStyle(Asset.Colors.huskyPurple.swiftUIColor)
+                }
+            }
+        }
+    }
+
+    private func questionText(forTagKey key: String) -> String {
+        let quest = QuestsRepository.shared.longQuestModels
+            .first(where: { $0.elementType.lowercased() == conflict.elementTypeName.lowercased() })?
+            .quests.first(where: { $0.questTag == key })
+        return quest?.questTitle ?? key
+    }
 }
 
 public class MapViewPublisher: ObservableObject {

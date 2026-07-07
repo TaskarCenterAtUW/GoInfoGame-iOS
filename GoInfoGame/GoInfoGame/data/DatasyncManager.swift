@@ -87,8 +87,10 @@ class DatasyncManager {
 
         var nodesToSync: [String: OSMNode] = [:]
         var waysToSync: [String: OSMWay] = [:]
+        var changesetMetadata: [String: (elementTypeName: String, iconName: String)] = [:]
 
         for cs in validChangesets {
+            changesetMetadata[cs.id] = (cs.questType ?? "Element", cs.iconName)
             if cs.elementType == .node {
                 nodesToSync[cs.id] = cs.asOSMNode()
             } else if cs.elementType == .way {
@@ -106,8 +108,9 @@ class DatasyncManager {
         for (key, node) in nodesToSync {
 //            print("📤 Syncing node ID: \(node.id)")
             let payload = node
+            let meta = changesetMetadata[key]
             do {
-                let status = try await syncNode(node: payload, exclude_gig_tags: exclude_gig_tags, editedTags: node.tags)
+                let status = try await syncNode(node: payload, exclude_gig_tags: exclude_gig_tags, editedTags: node.tags, elementTypeName: meta?.elementTypeName ?? "Element", iconName: meta?.iconName ?? "notes")
                 if status.result {
                     _ = self.dbInstance.assignChangesetId(obj: key, changesetId: 0, updatedVersion: status.version)
                     print("✅ Node sync finished: \(payload.id)")
@@ -125,8 +128,9 @@ class DatasyncManager {
         for (key, way) in waysToSync {
 //            print("📤 Syncing way ID: \(way.id)")
             let payload = way
+            let meta = changesetMetadata[key]
             do {
-                let status = try await syncWay(way: payload, exclude_gig_tags: exclude_gig_tags, editedTags: way.tags)
+                let status = try await syncWay(way: payload, exclude_gig_tags: exclude_gig_tags, editedTags: way.tags, elementTypeName: meta?.elementTypeName ?? "Element", iconName: meta?.iconName ?? "notes")
                 if status.result {
                     _ = self.dbInstance.assignChangesetId(obj: key, changesetId: 0, updatedVersion: status.version)
                     print("✅ Way sync finished: \(payload.id)")
@@ -612,22 +616,39 @@ class DatasyncManager {
     }
 
     /// Fetches latest tags and, if any answered tag actually conflicts (same key, differing value),
-    /// asks the UI layer to confirm before proceeding. Returns true when it's safe to upload.
-    private func resolveConflictsIfNeeded(id: Int64, isWay: Bool, editedTags: [String: String]) async -> Bool {
+    /// asks the UI layer to resolve each conflicting tag individually before proceeding.
+    /// Returns the tags to actually upload (same keys as `editedTags`, conflicting values replaced
+    /// per the user's per-tag choice), or nil if the user cancelled — in which case this changeset
+    /// should be left unsynced.
+    private func resolveConflictsIfNeeded(id: Int64, isWay: Bool, editedTags: [String: String], elementTypeName: String, iconName: String) async -> [String: String]? {
         guard let latestTags = await fetchLatestTags(id: id, isWay: isWay) else {
-            return true // offline/error: proceed as before; the existing 409 auto-merge remains the safety net
+            return editedTags // offline/error: proceed as before; the existing 409 auto-merge remains the safety net
         }
         let conflicts = editedTags.compactMap { key, answeredValue -> ConflictingTag? in
             guard let existingValue = latestTags[key], existingValue != answeredValue else { return nil }
             return ConflictingTag(key: key, existingValue: existingValue, answeredValue: answeredValue)
         }
-        guard !conflicts.isEmpty else { return true }
+        guard !conflicts.isEmpty else { return editedTags }
 
         return await withCheckedContinuation { continuation in
             DispatchQueue.main.async {
                 MapViewPublisher.shared.conflictDetected.send(
-                    PendingSyncConflict(elementId: id, conflicts: conflicts) { decision in
-                        continuation.resume(returning: decision)
+                    PendingSyncConflict(elementId: id, elementTypeName: elementTypeName, iconName: iconName, conflicts: conflicts) { decision in
+                        switch decision {
+                        case .cancelled:
+                            continuation.resume(returning: nil)
+                        case .resolved(let choices):
+                            var resolvedTags = editedTags
+                            for conflict in conflicts {
+                                switch choices[conflict.key] {
+                                case .useServer:
+                                    resolvedTags[conflict.key] = conflict.existingValue
+                                case .useMine, .none:
+                                    resolvedTags[conflict.key] = conflict.answeredValue
+                                }
+                            }
+                            continuation.resume(returning: resolvedTags)
+                        }
                     }
                 )
             }
@@ -638,12 +659,17 @@ class DatasyncManager {
             Syncs the node along with the updated
      */
     @MainActor
-    func syncNode(node: OSMNode, exclude_gig_tags: Bool, editedTags: [String : String], checkConflicts: Bool = true) async throws -> (result:Bool, version: Int) {
+    func syncNode(node: OSMNode, exclude_gig_tags: Bool, editedTags: [String : String], checkConflicts: Bool = true, elementTypeName: String = "Element", iconName: String = "notes") async throws -> (result:Bool, version: Int) {
         var localNode = node
+        var resolvedEditedTags = editedTags
 
         if checkConflicts {
-            guard await resolveConflictsIfNeeded(id: Int64(localNode.id), isWay: false, editedTags: editedTags) else {
+            guard let resolved = await resolveConflictsIfNeeded(id: Int64(localNode.id), isWay: false, editedTags: editedTags, elementTypeName: elementTypeName, iconName: iconName) else {
                 return (false, localNode.version)
+            }
+            resolvedEditedTags = resolved
+            for (key, value) in resolved {
+                localNode.tags[key] = value
             }
         }
 
@@ -652,12 +678,12 @@ class DatasyncManager {
         // Step 1: Open changeset
         do {
             let changesetID = try await openChangeset()
-            
+
             print("Opened changeset \(changesetID)")
             localNode.changeset = changesetID
-            
+
             //Step 2: Update Node
-            let newVersion = try await updateNode2(node: localNode, exclude_gig_tags: exclude_gig_tags, editedTags: editedTags)
+            let newVersion = try await updateNode2(node: localNode, exclude_gig_tags: exclude_gig_tags, editedTags: resolvedEditedTags)
             localNode.version = newVersion
             _ = self.dbInstance.updateNodeVersion(nodeId: String(localNode.id), version: newVersion)
             
@@ -694,22 +720,27 @@ class DatasyncManager {
     }
     
     @MainActor
-    func syncWay(way: OSMWay, exclude_gig_tags: Bool, editedTags: [String : String], checkConflicts: Bool = true) async throws -> (result: Bool, version: Int) {
+    func syncWay(way: OSMWay, exclude_gig_tags: Bool, editedTags: [String : String], checkConflicts: Bool = true, elementTypeName: String = "Element", iconName: String = "notes") async throws -> (result: Bool, version: Int) {
         var localWay = way
+        var resolvedEditedTags = editedTags
 
         if checkConflicts {
-            guard await resolveConflictsIfNeeded(id: Int64(localWay.id), isWay: true, editedTags: editedTags) else {
+            guard let resolved = await resolveConflictsIfNeeded(id: Int64(localWay.id), isWay: true, editedTags: editedTags, elementTypeName: elementTypeName, iconName: iconName) else {
                 return (false, localWay.version)
+            }
+            resolvedEditedTags = resolved
+            for (key, value) in resolved {
+                localWay.tags[key] = value
             }
         }
 
         do {
 
             let changesetID = try await openChangeset()
-            
+
             localWay.changeset = changesetID
-            
-            let newVersion = try await updateWay2(way: localWay, exclude_gig_tags: exclude_gig_tags, editedTags: editedTags)
+
+            let newVersion = try await updateWay2(way: localWay, exclude_gig_tags: exclude_gig_tags, editedTags: resolvedEditedTags)
             
             localWay.version = newVersion
             
