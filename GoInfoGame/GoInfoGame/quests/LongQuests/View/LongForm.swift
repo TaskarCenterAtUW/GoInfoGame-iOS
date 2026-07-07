@@ -12,7 +12,6 @@ import Combine
 enum LongFormActiveAlert: Identifiable {
     case hideQuestConfirmation
     case submissionError(message: String)
-    case conflict
 
     var id: String {
         // Using a simple string representation for the ID ensures each case is unique.
@@ -35,8 +34,6 @@ struct LongForm: View, QuestForm {
     typealias AnswerClass = [String:String]
 
     var coordinate: CLLocationCoordinate2D?
-
-    var checkForConflicts: (([String: String]) async -> ConflictCheckResult)?
     
     @Environment(\.presentationMode) var presentationMode
     
@@ -70,12 +67,6 @@ struct LongForm: View, QuestForm {
     @State private var activeAlert: LongFormActiveAlert?
     
     @State private var submitStatusMessage: String?
-
-    @State private var isCheckingConflicts = false
-
-    @State private var pendingConflicts: [ConflictingTag] = []
-
-    @State private var pendingAnswers: [String: String] = [:]
     
     var body: some View {
         ZStack {
@@ -238,23 +229,11 @@ struct LongForm: View, QuestForm {
                 Button(action: {
                     var answersToSubmit = viewModel.getAnswersForSubmission()
                     if !answersToSubmit.isEmpty {
-                        if !uploadedPhotos.isEmpty {
-                            answersToSubmit["ext:kartaview_url"] = uploadedPhotos.joined(separator: ", ")
-                        }
-                        pendingAnswers = answersToSubmit
-                        isCheckingConflicts = true
-                        Task {
-                            let result = await checkForConflicts?(answersToSubmit) ?? .proceed
-                            await MainActor.run {
-                                isCheckingConflicts = false
-                                switch result {
-                                case .proceed:
-                                    action?(answersToSubmit)
-                                case .conflicts(let conflicts):
-                                    pendingConflicts = conflicts
-                                    activeAlert = .conflict
-                                }
+                        if let action = action {
+                            if !uploadedPhotos.isEmpty {
+                                answersToSubmit["ext:kartaview_url"] = uploadedPhotos.joined(separator: ", ")
                             }
+                              action(answersToSubmit)
                         }
                     } else {
                         self.submitStatusMessage = "Please answer atleast one quest to submit"
@@ -324,17 +303,6 @@ struct LongForm: View, QuestForm {
                     .shadow(radius: 10)
             }
         }
-
-        if isCheckingConflicts {
-            VStack {
-                ProgressView("Checking for updates...")
-                    .progressViewStyle(CircularProgressViewStyle())
-                    .padding()
-                    .background(Color.white)
-                    .cornerRadius(10)
-                    .shadow(radius: 10)
-            }
-        }
         }
         .alert(item: $activeAlert) { alertType in
             switch alertType {
@@ -351,18 +319,6 @@ struct LongForm: View, QuestForm {
                 )
             case .submissionError(let message):
                 return Alert(title: Text(message), dismissButton: .default(Text("OK")))
-            case .conflict:
-                let details = pendingConflicts
-                    .map { "• \($0.key): existing \"\($0.existingValue)\" vs your answer \"\($0.answeredValue)\"" }
-                    .joined(separator: "\n")
-                return Alert(
-                    title: Text("This element changed since you opened it"),
-                    message: Text("\(details)\n\nOverride with your answers?"),
-                    primaryButton: .default(Text("Yes, Override")) {
-                        action?(pendingAnswers)
-                    },
-                    secondaryButton: .cancel(Text("No"))
-                )
             }
         }
     }

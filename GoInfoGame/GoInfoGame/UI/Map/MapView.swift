@@ -50,6 +50,7 @@ struct MapView: View {
     @State private var showUndoSidebar = false
     @State private var showFilterQuestsSheet = false
     @State private var showElemntDeletedAlert = false
+    @State private var activeConflict: PendingSyncConflict?
 
     var body: some View {
         NavigationStack {
@@ -546,6 +547,20 @@ struct MapView: View {
         .alert("Element is deleted from the server.", isPresented: $showElemntDeletedAlert) {
             Button("OK", role: .cancel) { }
         }
+        .onReceive(MapViewPublisher.shared.conflictDetected) { conflict in
+            activeConflict = conflict
+        }
+        .alert(item: $activeConflict) { conflict in
+            let details = conflict.conflicts
+                .map { "• \($0.key): existing \"\($0.existingValue)\" vs your answer \"\($0.answeredValue)\"" }
+                .joined(separator: "\n")
+            return Alert(
+                title: Text("This element changed since you answered it"),
+                message: Text("\(details)\n\nOverride with your answers?"),
+                primaryButton: .default(Text("Yes, Override")) { conflict.resolve(true) },
+                secondaryButton: .cancel(Text("No")) { conflict.resolve(false) }
+            )
+        }
         .onAppear {
             HiddenQuestManager.shared.loadHiddenQuests()
             QuestsRepository.shared.loadLongQuests(from: "longQuestJson")
@@ -677,8 +692,23 @@ struct QuestSheetView: View {
     }
 }
 
+public struct ConflictingTag: Identifiable {
+    public let id = UUID()
+    let key: String
+    let existingValue: String
+    let answeredValue: String
+}
+
+public struct PendingSyncConflict: Identifiable {
+    public let id = UUID()
+    let elementId: Int64
+    let conflicts: [ConflictingTag]
+    let resolve: (Bool) -> Void
+}
+
 public class MapViewPublisher: ObservableObject {
     public let dismissSheet = PassthroughSubject<SheetDismissalScenario, Never>()
+    public let conflictDetected = PassthroughSubject<PendingSyncConflict, Never>()
     static let shared = MapViewPublisher()
     private init() {}
 }

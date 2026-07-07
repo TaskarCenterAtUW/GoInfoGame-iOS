@@ -611,15 +611,44 @@ class DatasyncManager {
         }
     }
 
+    /// Fetches latest tags and, if any answered tag actually conflicts (same key, differing value),
+    /// asks the UI layer to confirm before proceeding. Returns true when it's safe to upload.
+    private func resolveConflictsIfNeeded(id: Int64, isWay: Bool, editedTags: [String: String]) async -> Bool {
+        guard let latestTags = await fetchLatestTags(id: id, isWay: isWay) else {
+            return true // offline/error: proceed as before; the existing 409 auto-merge remains the safety net
+        }
+        let conflicts = editedTags.compactMap { key, answeredValue -> ConflictingTag? in
+            guard let existingValue = latestTags[key], existingValue != answeredValue else { return nil }
+            return ConflictingTag(key: key, existingValue: existingValue, answeredValue: answeredValue)
+        }
+        guard !conflicts.isEmpty else { return true }
+
+        return await withCheckedContinuation { continuation in
+            DispatchQueue.main.async {
+                MapViewPublisher.shared.conflictDetected.send(
+                    PendingSyncConflict(elementId: id, conflicts: conflicts) { decision in
+                        continuation.resume(returning: decision)
+                    }
+                )
+            }
+        }
+    }
+
     /**
             Syncs the node along with the updated
      */
     @MainActor
-    func syncNode(node: OSMNode, exclude_gig_tags: Bool, editedTags: [String : String]) async throws -> (result:Bool, version: Int) {
+    func syncNode(node: OSMNode, exclude_gig_tags: Bool, editedTags: [String : String], checkConflicts: Bool = true) async throws -> (result:Bool, version: Int) {
         var localNode = node
-        
+
+        if checkConflicts {
+            guard await resolveConflictsIfNeeded(id: Int64(localNode.id), isWay: false, editedTags: editedTags) else {
+                return (false, localNode.version)
+            }
+        }
+
         SyncLogger.shared.logStep("Open Changeset")
-        
+
         // Step 1: Open changeset
         do {
             let changesetID = try await openChangeset()
@@ -665,11 +694,17 @@ class DatasyncManager {
     }
     
     @MainActor
-    func syncWay(way: OSMWay, exclude_gig_tags: Bool, editedTags: [String : String]) async throws -> (result: Bool, version: Int) {
+    func syncWay(way: OSMWay, exclude_gig_tags: Bool, editedTags: [String : String], checkConflicts: Bool = true) async throws -> (result: Bool, version: Int) {
         var localWay = way
-        
+
+        if checkConflicts {
+            guard await resolveConflictsIfNeeded(id: Int64(localWay.id), isWay: true, editedTags: editedTags) else {
+                return (false, localWay.version)
+            }
+        }
+
         do {
-            
+
             let changesetID = try await openChangeset()
             
             localWay.changeset = changesetID
