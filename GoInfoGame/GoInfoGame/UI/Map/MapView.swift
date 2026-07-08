@@ -746,16 +746,30 @@ struct ConflictResolutionSheet: View {
                         .foregroundColor(.secondary)
                 }
                 ForEach(conflict.conflicts) { tag in
-                    Section(questionText(forTagKey: tag.key)) {
+                    Section {
                         Picker(tag.key, selection: Binding(
                             get: { choices[tag.key] ?? .useMine },
                             set: { choices[tag.key] = $0 }
                         )) {
-                            Text("Your answer: \(tag.answeredValue)").tag(TagResolutionChoice.useMine)
-                            Text("Existing value: \(tag.existingValue)").tag(TagResolutionChoice.useServer)
+                            (Text("Your answer: ")
+                                .foregroundColor(Asset.Colors.a2A2A2Gray.swiftUIColor)
+                             + Text(tag.answeredValue)
+                                .foregroundColor(Asset.Colors.huskyPurple.swiftUIColor)
+                                .fontWeight(.semibold))
+                                .tag(TagResolutionChoice.useMine)
+                            (Text("Existing value: ")
+                                .foregroundColor(Asset.Colors.a2A2A2Gray.swiftUIColor)
+                             + Text(tag.existingValue)
+                                .foregroundColor(Asset.Colors.huskyPurple.swiftUIColor)
+                                .fontWeight(.semibold))
+                                .tag(TagResolutionChoice.useServer)
                         }
                         .pickerStyle(.inline)
                         .labelsHidden()
+                    } header: {
+                        Text(questionText(forTagKey: tag.key))
+                            .fontWeight(.semibold)
+                            .foregroundColor(Asset.Colors.huskyPurple.swiftUIColor)
                     }
                 }
             }
