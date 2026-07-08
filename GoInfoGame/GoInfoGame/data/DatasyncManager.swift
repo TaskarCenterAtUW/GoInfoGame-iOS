@@ -364,28 +364,91 @@ class DatasyncManager {
         }
     }
 
-    func updateWay2(way: OSMWay, exclude_gig_tags: Bool, editedTags: [String : String]) async throws -> Int {
-        let localWay = way
-        let wayId = "\(localWay.id)"
-        var updatedResult: Int = -1
-        do {
-            updatedResult = try await updateWay(way: localWay, exclude_gig_tags: exclude_gig_tags)
-            return updatedResult
-        } catch let error as APIError {
-            switch error {
-            case .conflict:
-                do {
-                    let updatedWay = try await fetchway2(wayId: wayId)
-                    if let mergedWay = self.mergeWays(localWay: localWay, latestWay: updatedWay, exclude_gig_tags: exclude_gig_tags, editedTags: editedTags) {
-                        print("Local way")
-                        print(localWay)
-                        print("Merged way")
-                        print(mergedWay)
-                        return try await updateWay(way: mergedWay, exclude_gig_tags: exclude_gig_tags)
-                    } else {
-                        print("Undo operation is not possible")
-                        return updatedWay.version
+    /// Thrown when the user cancels the interactive conflict-resolution prompt raised from
+    /// `updateNode2`/`updateWay2`. Caught in `syncNode`/`syncWay` to leave the changeset unsynced
+    /// without aborting the rest of the sync batch.
+    enum SyncConflictError: Error {
+        case cancelledByUser
+    }
+
+    /// Shows the per-tag conflict-resolution sheet and waits for the user's decision.
+    /// Returns the resolved tag set (same keys as `editedTags`, conflicting values replaced per the
+    /// user's choice), or nil if the user cancelled.
+    private func promptForConflictResolution(elementId: Int64, elementTypeName: String, iconName: String, editedTags: [String: String], conflicts: [ConflictingTag]) async -> [String: String]? {
+        await withCheckedContinuation { continuation in
+            DispatchQueue.main.async {
+                MapViewPublisher.shared.conflictDetected.send(
+                    PendingSyncConflict(elementId: elementId, elementTypeName: elementTypeName, iconName: iconName, conflicts: conflicts) { decision in
+                        switch decision {
+                        case .cancelled:
+                            continuation.resume(returning: nil)
+                        case .resolved(let choices):
+                            var resolvedTags = editedTags
+                            for conflict in conflicts {
+                                switch choices[conflict.key] {
+                                case .useServer:
+                                    resolvedTags[conflict.key] = conflict.existingValue
+                                case .useMine, .none:
+                                    resolvedTags[conflict.key] = conflict.answeredValue
+                                }
+                            }
+                            continuation.resume(returning: resolvedTags)
+                        }
                     }
+                )
+            }
+        }
+    }
+
+    func updateWay2(way: OSMWay, exclude_gig_tags: Bool, editedTags: [String : String], elementTypeName: String = "Element", iconName: String = "notes") async throws -> Int {
+        var localWay = way
+        var currentEditedTags = editedTags
+        let wayId = "\(localWay.id)"
+
+        while true {
+            do {
+                return try await updateWay(way: localWay, exclude_gig_tags: exclude_gig_tags)
+            } catch let error as APIError {
+                guard case .conflict = error else { throw error }
+
+                do {
+                    let latestWay = try await fetchway2(wayId: wayId)
+                    dbInstance.saveOSMElements([latestWay])
+
+                    if exclude_gig_tags {
+                        guard let mergedWay = self.mergeWays(localWay: localWay, latestWay: latestWay, exclude_gig_tags: exclude_gig_tags, editedTags: currentEditedTags) else {
+                            print("Undo operation is not possible")
+                            return latestWay.version
+                        }
+                        return try await updateWay(way: mergedWay, exclude_gig_tags: exclude_gig_tags)
+                    }
+
+                    let conflicts = currentEditedTags.compactMap { key, answeredValue -> ConflictingTag? in
+                        guard let existingValue = latestWay.tags[key], existingValue != answeredValue else { return nil }
+                        return ConflictingTag(key: key, existingValue: existingValue, answeredValue: answeredValue)
+                    }
+
+                    var mergedWay = latestWay
+                    mergedWay.changeset = localWay.changeset
+
+                    if conflicts.isEmpty {
+                        for (key, value) in currentEditedTags { mergedWay.tags[key] = value }
+                        localWay = mergedWay
+                        continue // version moved but nothing we touched actually conflicts; retry on the new version
+                    }
+
+                    guard let resolvedTags = await promptForConflictResolution(
+                        elementId: Int64(localWay.id), elementTypeName: elementTypeName, iconName: iconName,
+                        editedTags: currentEditedTags, conflicts: conflicts
+                    ) else {
+                        throw SyncConflictError.cancelledByUser
+                    }
+
+                    currentEditedTags = resolvedTags
+                    for (key, value) in resolvedTags { mergedWay.tags[key] = value }
+                    localWay = mergedWay
+                    // loop back and retry with the resolved tags on the latest version; if someone edits
+                    // again while the user was deciding, this lands back here and re-prompts with fresh data
                 } catch let error as APIError {
                     if case .deleted = error {
                         dbInstance.deleteChangesets(elementId: way.id)
@@ -396,43 +459,62 @@ class DatasyncManager {
                     }
                     throw error
                 }
-            default:
-                throw error
             }
         }
     }
 
-    func updateNode2(node: OSMNode, exclude_gig_tags: Bool, editedTags: [String : String]) async throws -> Int {
-        let localNode = node
-        
+    func updateNode2(node: OSMNode, exclude_gig_tags: Bool, editedTags: [String : String], elementTypeName: String = "Element", iconName: String = "notes") async throws -> Int {
+        var localNode = node
+        var currentEditedTags = editedTags
         let nodeId = "\(localNode.id)"
         SyncLogger.shared.logStep("Updating node \(nodeId) under new changeset")
 
-        var updatedResult: Int = -1
-        do {
-             updatedResult = try await updateNode(node: localNode, exclude_gig_tags: exclude_gig_tags)
-            return updatedResult
-            
-        } catch let error as APIError {
-            switch error {
-            case .conflict:
+        while true {
+            do {
+                return try await updateNode(node: localNode, exclude_gig_tags: exclude_gig_tags)
+            } catch let error as APIError {
+                guard case .conflict = error else { throw error }
+
                 do {
                     SyncLogger.shared.logStep("Fetching node due to conflict")
-                    let fetchedResult = try await fetchNode2(nodeId: "\(localNode.id)")
-                    
-                    if let mergedNode = self.mergeNodes(localNode: localNode, latestNode: fetchedResult, exclude_gig_tags: exclude_gig_tags, editedTags: editedTags) {
-                        print("Local Node:")
-                        print(localNode)
-                        print("Merged Node:")
-                        print(mergedNode)
+                    let latestNode = try await fetchNode2(nodeId: nodeId)
+                    dbInstance.saveOSMElements([latestNode])
+
+                    if exclude_gig_tags {
+                        guard let mergedNode = self.mergeNodes(localNode: localNode, latestNode: latestNode, exclude_gig_tags: exclude_gig_tags, editedTags: currentEditedTags) else {
+                            print("Undo operation is not possible")
+                            return latestNode.version
+                        }
                         SyncLogger.shared.logStep("Nodes fetched and merged")
                         return try await updateNode(node: mergedNode, exclude_gig_tags: exclude_gig_tags)
-                    } else {
-                        print("Undo operation is not possible")
-                        // update the original node with the server node.
-                        // FIXME: this is not done. Need to do something.
-                        return fetchedResult.version
                     }
+
+                    let conflicts = currentEditedTags.compactMap { key, answeredValue -> ConflictingTag? in
+                        guard let existingValue = latestNode.tags[key], existingValue != answeredValue else { return nil }
+                        return ConflictingTag(key: key, existingValue: existingValue, answeredValue: answeredValue)
+                    }
+
+                    var mergedNode = latestNode
+                    mergedNode.changeset = localNode.changeset
+
+                    if conflicts.isEmpty {
+                        for (key, value) in currentEditedTags { mergedNode.tags[key] = value }
+                        localNode = mergedNode
+                        continue // version moved but nothing we touched actually conflicts; retry on the new version
+                    }
+
+                    guard let resolvedTags = await promptForConflictResolution(
+                        elementId: Int64(localNode.id), elementTypeName: elementTypeName, iconName: iconName,
+                        editedTags: currentEditedTags, conflicts: conflicts
+                    ) else {
+                        throw SyncConflictError.cancelledByUser
+                    }
+
+                    currentEditedTags = resolvedTags
+                    for (key, value) in resolvedTags { mergedNode.tags[key] = value }
+                    localNode = mergedNode
+                    // loop back and retry with the resolved tags on the latest version; if someone edits
+                    // again while the user was deciding, this lands back here and re-prompts with fresh data
                 } catch let error as APIError {
                     if case .deleted = error {
                         dbInstance.deleteChangesets(elementId: localNode.id)
@@ -443,11 +525,7 @@ class DatasyncManager {
                     }
                     throw error
                 }
-                
-            default:
-                throw error
             }
-
         }
     }
 
@@ -615,63 +693,12 @@ class DatasyncManager {
         }
     }
 
-    /// Fetches latest tags and, if any answered tag actually conflicts (same key, differing value),
-    /// asks the UI layer to resolve each conflicting tag individually before proceeding.
-    /// Returns the tags to actually upload (same keys as `editedTags`, conflicting values replaced
-    /// per the user's per-tag choice), or nil if the user cancelled — in which case this changeset
-    /// should be left unsynced.
-    private func resolveConflictsIfNeeded(id: Int64, isWay: Bool, editedTags: [String: String], elementTypeName: String, iconName: String) async -> [String: String]? {
-        guard let latestTags = await fetchLatestTags(id: id, isWay: isWay) else {
-            return editedTags // offline/error: proceed as before; the existing 409 auto-merge remains the safety net
-        }
-        let conflicts = editedTags.compactMap { key, answeredValue -> ConflictingTag? in
-            guard let existingValue = latestTags[key], existingValue != answeredValue else { return nil }
-            return ConflictingTag(key: key, existingValue: existingValue, answeredValue: answeredValue)
-        }
-        guard !conflicts.isEmpty else { return editedTags }
-
-        return await withCheckedContinuation { continuation in
-            DispatchQueue.main.async {
-                MapViewPublisher.shared.conflictDetected.send(
-                    PendingSyncConflict(elementId: id, elementTypeName: elementTypeName, iconName: iconName, conflicts: conflicts) { decision in
-                        switch decision {
-                        case .cancelled:
-                            continuation.resume(returning: nil)
-                        case .resolved(let choices):
-                            var resolvedTags = editedTags
-                            for conflict in conflicts {
-                                switch choices[conflict.key] {
-                                case .useServer:
-                                    resolvedTags[conflict.key] = conflict.existingValue
-                                case .useMine, .none:
-                                    resolvedTags[conflict.key] = conflict.answeredValue
-                                }
-                            }
-                            continuation.resume(returning: resolvedTags)
-                        }
-                    }
-                )
-            }
-        }
-    }
-
     /**
             Syncs the node along with the updated
      */
     @MainActor
-    func syncNode(node: OSMNode, exclude_gig_tags: Bool, editedTags: [String : String], checkConflicts: Bool = true, elementTypeName: String = "Element", iconName: String = "notes") async throws -> (result:Bool, version: Int) {
+    func syncNode(node: OSMNode, exclude_gig_tags: Bool, editedTags: [String : String], elementTypeName: String = "Element", iconName: String = "notes") async throws -> (result:Bool, version: Int) {
         var localNode = node
-        var resolvedEditedTags = editedTags
-
-        if checkConflicts {
-            guard let resolved = await resolveConflictsIfNeeded(id: Int64(localNode.id), isWay: false, editedTags: editedTags, elementTypeName: elementTypeName, iconName: iconName) else {
-                return (false, localNode.version)
-            }
-            resolvedEditedTags = resolved
-            for (key, value) in resolved {
-                localNode.tags[key] = value
-            }
-        }
 
         SyncLogger.shared.logStep("Open Changeset")
 
@@ -683,15 +710,18 @@ class DatasyncManager {
             localNode.changeset = changesetID
 
             //Step 2: Update Node
-            let newVersion = try await updateNode2(node: localNode, exclude_gig_tags: exclude_gig_tags, editedTags: resolvedEditedTags)
+            let newVersion = try await updateNode2(node: localNode, exclude_gig_tags: exclude_gig_tags, editedTags: editedTags, elementTypeName: elementTypeName, iconName: iconName)
             localNode.version = newVersion
             _ = self.dbInstance.updateNodeVersion(nodeId: String(localNode.id), version: newVersion)
-            
+
             //Stepp 3:Close changeset
             SyncLogger.shared.logStep("Close Changeset")
             let result = try await closeChangeset(id: String(changesetID))
             return (result, newVersion)
-        
+
+        } catch SyncConflictError.cancelledByUser {
+            print("User declined conflict resolution for node \(localNode.id); leaving unsynced")
+            return (false, localNode.version)
         } catch {
             print("Failed to open changeset:", error.localizedDescription)
             throw error
@@ -720,19 +750,8 @@ class DatasyncManager {
     }
     
     @MainActor
-    func syncWay(way: OSMWay, exclude_gig_tags: Bool, editedTags: [String : String], checkConflicts: Bool = true, elementTypeName: String = "Element", iconName: String = "notes") async throws -> (result: Bool, version: Int) {
+    func syncWay(way: OSMWay, exclude_gig_tags: Bool, editedTags: [String : String], elementTypeName: String = "Element", iconName: String = "notes") async throws -> (result: Bool, version: Int) {
         var localWay = way
-        var resolvedEditedTags = editedTags
-
-        if checkConflicts {
-            guard let resolved = await resolveConflictsIfNeeded(id: Int64(localWay.id), isWay: true, editedTags: editedTags, elementTypeName: elementTypeName, iconName: iconName) else {
-                return (false, localWay.version)
-            }
-            resolvedEditedTags = resolved
-            for (key, value) in resolved {
-                localWay.tags[key] = value
-            }
-        }
 
         do {
 
@@ -740,14 +759,17 @@ class DatasyncManager {
 
             localWay.changeset = changesetID
 
-            let newVersion = try await updateWay2(way: localWay, exclude_gig_tags: exclude_gig_tags, editedTags: resolvedEditedTags)
-            
+            let newVersion = try await updateWay2(way: localWay, exclude_gig_tags: exclude_gig_tags, editedTags: editedTags, elementTypeName: elementTypeName, iconName: iconName)
+
             localWay.version = newVersion
-            
+
             _ = self.dbInstance.updateWayVersion(wayId: String(localWay.id), version: newVersion)
             let result = try await closeChangeset(id: String(changesetID))
             return  (result, newVersion)
-            
+
+        } catch SyncConflictError.cancelledByUser {
+            print("User declined conflict resolution for way \(localWay.id); leaving unsynced")
+            return (false, localWay.version)
         } catch {
             throw error
         }
