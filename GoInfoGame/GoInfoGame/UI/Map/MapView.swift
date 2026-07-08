@@ -733,6 +733,7 @@ struct ConflictResolutionSheet: View {
                             .resizable()
                             .frame(width: 32, height: 32)
                             .clipShape(Circle())
+                            .accessibilityHidden(true)
                         VStack(alignment: .leading, spacing: 2) {
                             Text(conflict.elementTypeName)
                                 .font(.headline)
@@ -741,11 +742,14 @@ struct ConflictResolutionSheet: View {
                                 .foregroundColor(.secondary)
                         }
                     }
+                    .accessibilityElement(children: .combine)
+
                     Text("This element was changed by someone else while you were answering. Choose which value to keep for each tag below.")
                         .font(.footnote)
                         .foregroundColor(.secondary)
                 }
                 ForEach(conflict.conflicts) { tag in
+                    let question = questionText(forTagKey: tag.key)
                     Section {
                         Picker(tag.key, selection: Binding(
                             get: { choices[tag.key] ?? .useMine },
@@ -757,19 +761,23 @@ struct ConflictResolutionSheet: View {
                                 .foregroundColor(Asset.Colors.huskyPurple.swiftUIColor)
                                 .fontWeight(.semibold))
                                 .tag(TagResolutionChoice.useMine)
+                                .accessibilityLabel("\(question). Your answer: \(tag.answeredValue)")
                             (Text("Existing value: ")
                                 .foregroundColor(Asset.Colors.a2A2A2Gray.swiftUIColor)
                              + Text(tag.existingValue)
                                 .foregroundColor(Asset.Colors.huskyPurple.swiftUIColor)
                                 .fontWeight(.semibold))
                                 .tag(TagResolutionChoice.useServer)
+                                .accessibilityLabel("\(question). Existing value on the server: \(tag.existingValue)")
                         }
                         .pickerStyle(.inline)
                         .labelsHidden()
+                        .accessibilityHint("Choose which value to keep for this tag")
                     } header: {
-                        Text(questionText(forTagKey: tag.key))
+                        Text(question)
                             .fontWeight(.semibold)
                             .foregroundColor(Asset.Colors.huskyPurple.swiftUIColor)
+                            .accessibilityAddTraits(.isHeader)
                     }
                 }
             }
@@ -782,6 +790,7 @@ struct ConflictResolutionSheet: View {
                         conflict.resolve(.cancelled)
                         dismiss()
                     }
+                    .accessibilityHint("Discards your choices and leaves this element unsynced")
                 }
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Confirm") {
@@ -789,6 +798,7 @@ struct ConflictResolutionSheet: View {
                         dismiss()
                     }
                     .foregroundStyle(Asset.Colors.huskyPurple.swiftUIColor)
+                    .accessibilityHint("Applies your chosen values for each tag and continues syncing")
                 }
             }
         }
