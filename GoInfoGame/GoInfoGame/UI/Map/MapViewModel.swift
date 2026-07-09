@@ -128,10 +128,10 @@ class MapViewModel: ObservableObject {
                     if self?.items.count == 0 { self?.refreshMap = UUID() }
                 }
             case .failure(let failure):
+                // Keep whatever annotations are already showing — a failed background
+                // refresh (e.g. no network) doesn't mean the previously loaded data is gone.
                 DispatchQueue.main.async { [weak self] in
-                    self?.items = []
                     self?.isLoading = false
-                    if self?.items.count == 0 { self?.refreshMap = UUID() }
                 }
                 print(failure)
             }
