@@ -21,6 +21,8 @@ class KartaviewViewModel: ObservableObject {
     
     private var location: CLLocationCoordinate2D?
     
+    private let kartaViewAccessToken = "5b7bfc9104ad198bdba4108ed3048f380f118cfb528d750a2bf31041b7266a99"
+    
     init(capturedImage: UIImage) {
         self.capturedImage = capturedImage
         
@@ -42,7 +44,6 @@ class KartaviewViewModel: ObservableObject {
     
     // Step 1: Create Sequence
     func createSequence(completion: @escaping (String, Bool) -> ()) {
-        let kartaViewAccessToken = "96aca5c4b80709fc6d9aced613b51905c0fbc37870640d7bdabede269165bde7"
         let formData: [[String: Any]] =
         [["key": "access_token", "value": kartaViewAccessToken, "type": "text"]]
         
@@ -70,13 +71,12 @@ class KartaviewViewModel: ObservableObject {
             return
         }
         
-        let kartaViewAccessToken = "96aca5c4b80709fc6d9aced613b51905c0fbc37870640d7bdabede269165bde7"
         
         let latitude = location?.latitude.description ?? "0.0"
         let longitude = location?.longitude.description ?? "0.0"
         
         let formData: [[String: Any]] = [
-            ["key": "access_token", "value": "96aca5c4b80709fc6d9aced613b51905c0fbc37870640d7bdabede269165bde7", "type": "text"],
+            ["key": "access_token", "value": kartaViewAccessToken, "type": "text"],
              [
                 "key": "sequenceId",
                 "value": sequenceId,
@@ -94,7 +94,7 @@ class KartaviewViewModel: ObservableObject {
               ],
               [
                 "key": "access_token",
-                "value": "96aca5c4b80709fc6d9aced613b51905c0fbc37870640d7bdabede269165bde7",
+                "value": kartaViewAccessToken,
                 "type": "text"
               ],
               [
@@ -126,7 +126,6 @@ class KartaviewViewModel: ObservableObject {
     }
 
     private func fetchPhotoLthUrl(sequenceId: String, sequenceIndex: String, attempt: Int = 1, maxAttempts: Int = 4, completion: @escaping (String?) -> Void) {
-        let kartaViewAccessToken = "96aca5c4b80709fc6d9aced613b51905c0fbc37870640d7bdabede269165bde7"
         let params: [[String: Any]] = [
             ["key": "access_token", "value": kartaViewAccessToken],
             ["key": "sequenceId", "value": sequenceId],
@@ -161,7 +160,6 @@ class KartaviewViewModel: ObservableObject {
     }
     
     func finishUploading(sequenceId: String, completion: @escaping (String, Bool) -> ()) {
-        let kartaViewAccessToken = "96aca5c4b80709fc6d9aced613b51905c0fbc37870640d7bdabede269165bde7"
 
         let formData: [[String: Any]] = [
              [
@@ -171,7 +169,7 @@ class KartaviewViewModel: ObservableObject {
               ],
               [
                 "key": "access_token",
-                "value": "96aca5c4b80709fc6d9aced613b51905c0fbc37870640d7bdabede269165bde7",
+                "value": kartaViewAccessToken,
                 "type": "text"
               ],
         ]
