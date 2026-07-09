@@ -119,7 +119,7 @@ class LongElementQuest: QuestBase, Quest {
             }, coordinate: annotationCoordinate ?? CLLocationCoordinate2D(latitude: 0, longitude: 0)
           )
       }
-    
+
     init(questId: String, questQuery:String, elementType: String, elementTypeIcon: String?) {
         id = -1
         type = .node
@@ -132,23 +132,27 @@ class LongElementQuest: QuestBase, Quest {
             self.questAnswersSelected?(tags)
         }))
     }
-    
+
     override init() {
         id = -1
         type = .node
         super.init()
-        
+
         self.internalForm = LongForm(elementName: elementType, action: { [self] tags in
 //            self.onAnswer(answer: tags)
             self.questAnswersSelected?(tags)
         })
     }
-    
-    
+
+
     func onAnswer(answer: [String : String]) {
         self.updateTags(id: id, questType: elementType, tags: answer, type: type, iconName: iconName)
     }
-        
+
+    func fetchLatestTagsIfNeeded() async -> [String: String]? {
+        await DatasyncManager.shared.fetchLatestTags(id: id, isWay: type == .way)
+    }
+
     var questId: String {
         return String(self.id)
     }

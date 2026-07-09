@@ -50,6 +50,7 @@ struct MapView: View {
     @State private var showUndoSidebar = false
     @State private var showFilterQuestsSheet = false
     @State private var showElemntDeletedAlert = false
+    @State private var activeConflict: PendingSyncConflict?
 
     var body: some View {
         NavigationStack {
@@ -546,6 +547,14 @@ struct MapView: View {
         .alert("Element is deleted from the server.", isPresented: $showElemntDeletedAlert) {
             Button("OK", role: .cancel) { }
         }
+        .onReceive(MapViewPublisher.shared.conflictDetected) { conflict in
+            activeConflict = conflict
+        }
+        .sheet(item: $activeConflict) { conflict in
+            ConflictResolutionSheet(conflict: conflict)
+                .interactiveDismissDisabled()
+                .applyPresentationSizingPage()
+        }
         .onAppear {
             HiddenQuestManager.shared.loadHiddenQuests()
             QuestsRepository.shared.loadLongQuests(from: "longQuestJson")
@@ -620,6 +629,9 @@ struct QuestSheetView: View {
     let annotationCoordinate: CLLocationCoordinate2D?
     @Environment(\.dismiss) var dismiss
 
+    @State private var isCheckingFreshness = true
+    @State private var alreadyCompletedMessage: String?
+
     init(viewModel: MapViewModel, annotationCoordinate: CLLocationCoordinate2D?) {
         self.viewModel = viewModel
         self.annotationCoordinate = annotationCoordinate
@@ -631,18 +643,178 @@ struct QuestSheetView: View {
 
     var body: some View {
         Group {
-            if let selectedQuest = viewModel.getSelectedQuest() {
+            if isCheckingFreshness {
+                ProgressView("Checking for updates...")
+            } else if let message = alreadyCompletedMessage {
+                VStack(spacing: 16) {
+                    Image(systemName: "checkmark.circle.fill")
+                        .resizable()
+                        .frame(width: 40, height: 40)
+                        .foregroundColor(.green)
+                    Text(message)
+                        .multilineTextAlignment(.center)
+                    Button(action: { dismiss() }) {
+                        Text("OK")
+                            .foregroundColor(.white)
+                            .padding(.vertical, 10)
+                            .padding(.horizontal, 32)
+                            .background(Asset.Colors.huskyPurple.swiftUIColor)
+                            .cornerRadius(12)
+                    }
+                }
+                .padding(24)
+            } else if let selectedQuest = viewModel.getSelectedQuest() {
                 CustomSheetView { selectedQuest.parent?.form }
             } else {
                 EmptyView()
             }
         }
+        .task(id: viewModel.selectedQuest?.id) {
+            guard !viewModel.isMultiSelectModeEnabled,
+                  let longQuest = viewModel.getSelectedQuest()?.parent as? LongElementQuest else {
+                isCheckingFreshness = false
+                return
+            }
+            if let latestTags = await longQuest.fetchLatestTagsIfNeeded(),
+               latestTags["ext:gig_complete"] == "yes" {
+                alreadyCompletedMessage = "This element has already been answered by another user."
+                viewModel.refreshQuests()
+            }
+            isCheckingFreshness = false
+        }
         .onReceive(MapViewPublisher.shared.dismissSheet) { _ in dismiss() }
+    }
+}
+
+public struct ConflictingTag: Identifiable {
+    public let id = UUID()
+    let key: String
+    let existingValue: String
+    let answeredValue: String
+}
+
+public enum TagResolutionChoice {
+    case useMine
+    case useServer
+}
+
+public enum ConflictResolutionDecision {
+    case cancelled
+    case resolved([String: TagResolutionChoice])
+}
+
+public struct PendingSyncConflict: Identifiable {
+    public let id = UUID()
+    let elementId: Int64
+    let elementTypeName: String
+    let iconName: String
+    let conflicts: [ConflictingTag]
+    let resolve: (ConflictResolutionDecision) -> Void
+}
+
+struct ConflictResolutionSheet: View {
+    let conflict: PendingSyncConflict
+    @Environment(\.dismiss) private var dismiss
+    @State private var choices: [String: TagResolutionChoice]
+
+    init(conflict: PendingSyncConflict) {
+        self.conflict = conflict
+        _choices = State(initialValue: Dictionary(
+            uniqueKeysWithValues: conflict.conflicts.map { ($0.key, .useMine) }
+        ))
+    }
+
+    var body: some View {
+        NavigationView {
+            List {
+                Section {
+                    HStack(spacing: 12) {
+                        Image(uiImage: UIImage(named: conflict.iconName) ?? UIImage(systemName: "mappin.circle")!)
+                            .resizable()
+                            .frame(width: 32, height: 32)
+                            .clipShape(Circle())
+                            .accessibilityHidden(true)
+                        VStack(alignment: .leading, spacing: 2) {
+                            Text(conflict.elementTypeName)
+                                .font(.headline)
+                            Text("ID: \(String(conflict.elementId))")
+                                .font(.subheadline)
+                                .foregroundColor(.secondary)
+                        }
+                    }
+                    .accessibilityElement(children: .combine)
+
+                    Text("This element was changed by someone else while you were answering. Choose which value to keep for each tag below.")
+                        .font(.footnote)
+                        .foregroundColor(.secondary)
+                }
+                ForEach(conflict.conflicts) { tag in
+                    let question = questionText(forTagKey: tag.key)
+                    Section {
+                        Picker(tag.key, selection: Binding(
+                            get: { choices[tag.key] ?? .useMine },
+                            set: { choices[tag.key] = $0 }
+                        )) {
+                            (Text("Your answer: ")
+                                .foregroundColor(Asset.Colors.a2A2A2Gray.swiftUIColor)
+                             + Text(tag.answeredValue)
+                                .foregroundColor(Asset.Colors.huskyPurple.swiftUIColor)
+                                .fontWeight(.semibold))
+                                .tag(TagResolutionChoice.useMine)
+                                .accessibilityLabel("\(question). Your answer: \(tag.answeredValue)")
+                            (Text("Existing value: ")
+                                .foregroundColor(Asset.Colors.a2A2A2Gray.swiftUIColor)
+                             + Text(tag.existingValue)
+                                .foregroundColor(Asset.Colors.huskyPurple.swiftUIColor)
+                                .fontWeight(.semibold))
+                                .tag(TagResolutionChoice.useServer)
+                                .accessibilityLabel("\(question). Existing value on the server: \(tag.existingValue)")
+                        }
+                        .pickerStyle(.inline)
+                        .labelsHidden()
+                        .accessibilityHint("Choose which value to keep for this tag")
+                    } header: {
+                        Text(question)
+                            .fontWeight(.semibold)
+                            .foregroundColor(Asset.Colors.huskyPurple.swiftUIColor)
+                            .accessibilityAddTraits(.isHeader)
+                    }
+                }
+            }
+            .listStyle(.insetGrouped)
+            .navigationTitle("Resolve Conflicts")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button("Cancel") {
+                        conflict.resolve(.cancelled)
+                        dismiss()
+                    }
+                    .accessibilityHint("Discards your choices and leaves this element unsynced")
+                }
+                ToolbarItem(placement: .confirmationAction) {
+                    Button("Confirm") {
+                        conflict.resolve(.resolved(choices))
+                        dismiss()
+                    }
+                    .foregroundStyle(Asset.Colors.huskyPurple.swiftUIColor)
+                    .accessibilityHint("Applies your chosen values for each tag and continues syncing")
+                }
+            }
+        }
+    }
+
+    private func questionText(forTagKey key: String) -> String {
+        let quest = QuestsRepository.shared.longQuestModels
+            .first(where: { $0.elementType.lowercased() == conflict.elementTypeName.lowercased() })?
+            .quests.first(where: { $0.questTag == key })
+        return quest?.questTitle ?? key
     }
 }
 
 public class MapViewPublisher: ObservableObject {
     public let dismissSheet = PassthroughSubject<SheetDismissalScenario, Never>()
+    public let conflictDetected = PassthroughSubject<PendingSyncConflict, Never>()
     static let shared = MapViewPublisher()
     private init() {}
 }

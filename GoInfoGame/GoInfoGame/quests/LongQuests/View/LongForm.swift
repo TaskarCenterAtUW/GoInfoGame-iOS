@@ -30,9 +30,9 @@ struct LongForm: View, QuestForm {
     var query: String?
     
     var action: (([String:String]) -> Void)?
-    
+
     typealias AnswerClass = [String:String]
-    
+
     var coordinate: CLLocationCoordinate2D?
     
     @Environment(\.presentationMode) var presentationMode
