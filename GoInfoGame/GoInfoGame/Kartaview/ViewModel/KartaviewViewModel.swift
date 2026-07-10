@@ -21,7 +21,7 @@ class KartaviewViewModel: ObservableObject {
     
     private var location: CLLocationCoordinate2D?
     
-    private let kartaViewAccessToken = "5b7bfc9104ad198bdba4108ed3048f380f118cfb528d750a2bf31041b7266a99"
+    private let kartaViewAccessToken = Bundle.main.object(forInfoDictionaryKey: "KARTAVIEW_ACCESS_TOKEN") as? String ?? ""
     
     init(capturedImage: UIImage) {
         self.capturedImage = capturedImage

@@ -17,6 +17,8 @@
 	</array>
 	<key>APP_FORCE_UPDATE_URL</key>
 	<string>$(APP_FORCE_UPDATE_URL)</string>
+	<key>KARTAVIEW_ACCESS_TOKEN</key>
+	<string>$(KARTAVIEW_ACCESS_TOKEN)</string>
 	<key>AppStpre_URL</key>
 	<string>https://apps.apple.com/app/6749523895</string>
 	<key>TestFlight_URL</key>
