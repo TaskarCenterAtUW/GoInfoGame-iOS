@@ -8,5 +8,8 @@
 // Configuration settings file format documentation can be found at:
 // https://developer.apple.com/documentation/xcode/adding-a-build-configuration-file-to-your-project
 
+// Secrets.xcconfig is gitignored — copy Secrets.xcconfig.example to create it locally.
+#include? "Secrets.xcconfig"
+
 APP_FORCE_UPDATE_URL = https:/${}/raw.githubusercontent.com/TaskarCenterAtUW/asr-config/refs/heads/main/force-update/app-force-update.json
 
