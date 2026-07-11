@@ -142,6 +142,7 @@
 		A4E711A82B57CA4300C9DE08 /* QuestsRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4E711A72B57CA4300C9DE08 /* QuestsRepository.swift */; };
 		B0CCB98C2B8626AE00AA73DE /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0CCB98B2B8626AE00AA73DE /* ProfileView.swift */; };
 		B0CCB98E2B8626C600AA73DE /* ProfileViewVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0CCB98D2B8626C600AA73DE /* ProfileViewVM.swift */; };
+		C714D9542FFFCBB500CA1CB4 /* NotesSubmissionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C714D9532FFFCBB500CA1CB4 /* NotesSubmissionManager.swift */; };
 		C71EB5AC2E2100510009E610 /* WMTSServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = C71EB5AA2E2100510009E610 /* WMTSServer.swift */; };
 		C71EB5AD2E2100510009E610 /* SatellitePickerSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = C71EB5A82E2100510009E610 /* SatellitePickerSheet.swift */; };
 		C71EB5AE2E2100510009E610 /* SatelliteServerResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = C71EB5A92E2100510009E610 /* SatelliteServerResponse.swift */; };
@@ -522,6 +523,7 @@
 		B0CCB98B2B8626AE00AA73DE /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
 		B0CCB98D2B8626C600AA73DE /* ProfileViewVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewVM.swift; sourceTree = "<group>"; };
 		C4F37DA661B22FA87DF8282F /* Pods_osmapi.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_osmapi.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		C714D9532FFFCBB500CA1CB4 /* NotesSubmissionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotesSubmissionManager.swift; sourceTree = "<group>"; };
 		C71EB5A82E2100510009E610 /* SatellitePickerSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SatellitePickerSheet.swift; sourceTree = "<group>"; };
 		C71EB5A92E2100510009E610 /* SatelliteServerResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SatelliteServerResponse.swift; sourceTree = "<group>"; };
 		C71EB5AA2E2100510009E610 /* WMTSServer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WMTSServer.swift; sourceTree = "<group>"; };
@@ -898,6 +900,7 @@
 		971575152B5FFD5F0044797C /* Map */ = {
 			isa = PBXGroup;
 			children = (
+				C714D9532FFFCBB500CA1CB4 /* NotesSubmissionManager.swift */,
 				C79C3B782ED4557400F80364 /* Accessibility Mode */,
 				C71EB5AF2E2100B80009E610 /* MapRepository.swift */,
 				C71EB5AB2E2100510009E610 /* Satellite Server */,
@@ -2480,6 +2483,7 @@
 				C75EAD362E042D4500F75969 /* SideWalkWidth.swift in Sources */,
 				C7E9528D2ED887CC001BFB75 /* NoQuestsNearView.swift in Sources */,
 				C75EAD372E042D4500F75969 /* SideWalkWidthForm.swift in Sources */,
+				C714D9542FFFCBB500CA1CB4 /* NotesSubmissionManager.swift in Sources */,
 				C76B63792E4605570076A540 /* Fonts+Generated.swift in Sources */,
 				FA1992ED2BB1A78C003B4719 /* KeychainManager.swift in Sources */,
 				C78E8BC22EDF20E6002215C0 /* UndoItemConfirmationView.swift in Sources */,

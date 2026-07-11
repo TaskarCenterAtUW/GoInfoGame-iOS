@@ -58,16 +58,20 @@ class KartaviewViewModel: ObservableObject {
                     print("SEQUENCE CREATED ------> PROCEEDING TO UPLOAD PHOTO")
                     // Step 2: Upload Photo after receiving sequenceId
                     self.uploadPhoto(sequenceId: self.sequenceId!, completion: completion)
+                } else {
+                    completion("Failed to create Kartaview sequence", false)
                 }
             case .failure(let error):
                 print("Failed to create sequence: \(error.localizedDescription)")
+                completion(error.localizedDescription, false)
             }
         }
     }
-    
+
     func uploadPhoto(sequenceId: String, completion: @escaping (String, Bool) -> ()) {
         guard let imageData = imageToData(image: capturedImage) else {
             print("NO image found")
+            completion("Failed to process the captured photo", false)
             return
         }
         
@@ -118,9 +122,12 @@ class KartaviewViewModel: ObservableObject {
                 if status == 200 {
                     print("PHOTO UPLOADED ----->>>> FINISHING SEQUENCE")
                     self.finishUploading(sequenceId: sequenceId, completion: completion)
+                } else {
+                    completion("Failed to upload photo to Kartaview", false)
                 }
             case .failure(let failure):
                 print("FAILED")
+                completion(failure.localizedDescription, false)
             }
         }
     }
@@ -189,6 +196,8 @@ class KartaviewViewModel: ObservableObject {
                         print("PHOTO URL FETCHED: \(lthUrl)")
                         completion(lthUrl, true)
                     }
+                } else {
+                    completion("Failed to finish Kartaview upload", false)
                 }
             case .failure(let failure):
                 print("FINISHING FAILED")
@@ -197,8 +206,21 @@ class KartaviewViewModel: ObservableObject {
         }
     }
 
-    
+
     func imageToData(image: UIImage) -> Data? {
         return image.jpegData(compressionQuality: 1.0)
+    }
+
+    /// Runs the full create-sequence → upload-photo → finish → fetch-url chain and returns the hosted photo URL.
+    func uploadAsync() async throws -> String {
+        try await withCheckedThrowingContinuation { continuation in
+            createSequence { result, success in
+                if success {
+                    continuation.resume(returning: result)
+                } else {
+                    continuation.resume(throwing: NSError(domain: "KartaviewUpload", code: 0, userInfo: [NSLocalizedDescriptionKey: result]))
+                }
+            }
+        }
     }
 }

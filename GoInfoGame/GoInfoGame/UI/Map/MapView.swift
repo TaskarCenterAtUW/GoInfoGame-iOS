@@ -51,6 +51,8 @@ struct MapView: View {
     @State private var showFilterQuestsSheet = false
     @State private var showElemntDeletedAlert = false
     @State private var activeConflict: PendingSyncConflict?
+    @State private var failedNoteDraft: NoteDraft?
+    @State private var noteDraftPrefill: NoteDraft?
 
     var body: some View {
         NavigationStack {
@@ -115,6 +117,11 @@ struct MapView: View {
                             .frame(maxWidth: .infinity)
                             .background(Asset.Colors.huskyPurple.swiftUIColor)
                             .cornerRadius(12)
+                        if failedNoteDraft != nil {
+                            Text("Tap to retry")
+                                .foregroundColor(.white.opacity(0.8))
+                                .font(.system(size: 13, weight: .semibold))
+                        }
                     }
                     .padding(24)
                     .frame(maxWidth: 350)
@@ -124,9 +131,17 @@ struct MapView: View {
                             .shadow(color: .black.opacity(0.1), radius: 10, x: 0, y: 4)
                     )
                     .accessibilityElement(children: .combine)
-                    .accessibilityLabel(alertMessage)
+                    .accessibilityLabel(failedNoteDraft != nil ? "\(alertMessage). Tap to retry." : alertMessage)
+                    .onTapGesture {
+                        guard let draft = failedNoteDraft else { return }
+                        failedNoteDraft = nil
+                        showAlert = false
+                        noteDraftPrefill = draft
+                        showCreateNoteSheet = true
+                    }
                     .onAppear {
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 2) { showAlert = false }
+                        let dismissDelay: Double = failedNoteDraft != nil ? 5 : 2
+                        DispatchQueue.main.asyncAfter(deadline: .now() + dismissDelay) { showAlert = false }
                     }
                 }
 
@@ -292,6 +307,7 @@ struct MapView: View {
                             guard viewModel.syncFailedElementsCount > 0 else {
                                 alertIcon = "info.bubble"
                                 alertMessage = "No elements to sync"
+                                failedNoteDraft = nil
                                 showAlert = true
                                 return
                             }
@@ -468,16 +484,11 @@ struct MapView: View {
         }
         .sheet(isPresented: $showCreateNoteSheet) {
             CreateNoteView(
-                coordinates: tappedCoordinate ?? CLLocationCoordinate2D(),
+                coordinates: noteDraftPrefill?.coordinates ?? tappedCoordinate ?? CLLocationCoordinate2D(),
                 showNotesBox: $showCreateNoteSheet,
-                dismissSheet: { message in
-                    alertIcon = message.contains("Error")
-                        ? "exclamationmark.triangle.fill"
-                        : "checkmark.circle.fill"
-                    alertMessage = message
-                    showAlert = true
-                }
+                prefillDraft: noteDraftPrefill
             )
+            .onDisappear { noteDraftPrefill = nil }
             .presentationDetents([.fraction(0.6)])
             .presentationDragIndicator(.visible)
             .applyPresentationSizingPage()
@@ -491,6 +502,7 @@ struct MapView: View {
                         ? "exclamationmark.triangle.fill"
                         : "checkmark.circle.fill"
                     alertMessage = message
+                    failedNoteDraft = nil
                     showAlert = true
                 }
             )
@@ -532,6 +544,16 @@ struct MapView: View {
             case .syncBackground(let elementID):
                 shouldShowPolyline = false
                 viewModel.refreshMapAfterSubmission(elementId: elementID)
+            case .noteSubmitted:
+                alertIcon = "checkmark.circle.fill"
+                alertMessage = "Note submitted successfully"
+                failedNoteDraft = nil
+                showAlert = true
+            case .noteSubmissionFailed(let message, let draft):
+                alertIcon = "exclamationmark.triangle.fill"
+                alertMessage = message
+                failedNoteDraft = draft
+                showAlert = true
             }
         }
         .onReceive(QuestsPublisher.shared.refreshQuest) { _ in
@@ -834,6 +856,8 @@ public enum SheetDismissalScenario {
     case hideElement(String, String)
     case undoDone(String)
     case syncBackground(Int)
+    case noteSubmitted
+    case noteSubmissionFailed(String, NoteDraft)
 }
 
 class ContextualInfo: ObservableObject {

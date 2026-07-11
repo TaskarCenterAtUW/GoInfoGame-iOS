@@ -513,13 +513,19 @@ struct CustomMap: UIViewRepresentable {
                 visited.insert(i)
 
                 var group = [annotations[i]]
-                let ptI = points[i]
+                var sumX = points[i].x
+                var sumY = points[i].y
 
                 for j in (i + 1)..<annotations.count {
                     if visited.contains(j) { continue }
-                    if hypot(ptI.x - points[j].x, ptI.y - points[j].y) < radius {
+                    let n = CGFloat(group.count)
+                    let centroidX = sumX / n
+                    let centroidY = sumY / n
+                    if hypot(centroidX - points[j].x, centroidY - points[j].y) < radius {
                         group.append(annotations[j])
                         visited.insert(j)
+                        sumX += points[j].x
+                        sumY += points[j].y
                     }
                 }
 
