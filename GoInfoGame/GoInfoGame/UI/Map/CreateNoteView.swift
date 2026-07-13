@@ -13,7 +13,6 @@ struct CreateNoteView: View {
     @State var coordinates: CLLocationCoordinate2D
     @State private var noteText = ""
     @Binding var showNotesBox: Bool
-    var prefillDraft: NoteDraft? = nil
 
     @State private var capturedImages: [UIImage] = []
     @State private var pickedImage: UIImage?
@@ -77,12 +76,6 @@ struct CreateNoteView: View {
             .padding(.horizontal, 20)
         }
         .padding(.top, 10)
-        .onAppear {
-            if let draft = prefillDraft {
-                noteText = draft.noteText
-                capturedImages = draft.images
-            }
-        }
         .sheet(isPresented: $isCameraPresented) {
             CameraView(capturedImage: $pickedImage, isPresented: $isCameraPresented)
         }
@@ -140,12 +133,7 @@ struct CreateNoteView: View {
     /// the upload/submit runs in the background and reports back through
     /// MapViewPublisher, so the user isn't blocked waiting on it.
     func submitNote() {
-        let draft = NoteDraft(
-            id: prefillDraft?.id ?? UUID().uuidString,
-            noteText: noteText,
-            images: capturedImages,
-            coordinates: coordinates
-        )
+        let draft = NoteDraft(noteText: noteText, images: capturedImages, coordinates: coordinates)
         NotesSubmissionManager.submit(draft)
         showNotesBox = false
     }

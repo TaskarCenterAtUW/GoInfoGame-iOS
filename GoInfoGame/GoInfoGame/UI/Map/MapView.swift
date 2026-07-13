@@ -35,6 +35,7 @@ struct MapView: View {
 
     @State private var tappedCoordinate: CLLocationCoordinate2D? = nil
     @State private var annotationCoordinate: CLLocationCoordinate2D? = nil
+    @State private var pendingAdditionCoordinate: CLLocationCoordinate2D? = nil
     @State private var showMapLongPressedSheet = false
     @State private var showAddFeatureSheet = false
     @State private var showCreateNoteSheet = false
@@ -52,8 +53,6 @@ struct MapView: View {
     @State private var showFilterQuestsSheet = false
     @State private var showElemntDeletedAlert = false
     @State private var activeConflict: PendingSyncConflict?
-    @State private var failedNoteDraft: NoteDraft?
-    @State private var noteDraftPrefill: NoteDraft?
 
     /// The sync button spins whenever either queue (failed quest elements or
     /// pending notes) is actively being drained, whichever started it.
@@ -90,11 +89,16 @@ struct MapView: View {
                     },
                     tappedCoordinate: $tappedCoordinate,
                     annotationCoordinate: $annotationCoordinate,
-                    shadowRegions: $shadowRegions
+                    shadowRegions: $shadowRegions,
+                    pendingAdditionCoordinate: $pendingAdditionCoordinate
                 )
                 .accessibilityHidden(enableAccessibility)
                 .onChange(of: tappedCoordinate) { _ in
                     showMapLongPressedSheet = tappedCoordinate != nil
+                    pendingAdditionCoordinate = tappedCoordinate
+                    if let coordinate = tappedCoordinate {
+                        ensureCoordinateVisibleAboveSheet(coordinate)
+                    }
                 }
                 .onChange(of: viewModel.selectedQuest) { _ in
                     shouldShowPolyline = false
@@ -122,11 +126,6 @@ struct MapView: View {
                             .frame(maxWidth: .infinity)
                             .background(Asset.Colors.huskyPurple.swiftUIColor)
                             .cornerRadius(12)
-                        if failedNoteDraft != nil {
-                            Text("Tap to retry")
-                                .foregroundColor(.white.opacity(0.8))
-                                .font(.system(size: 13, weight: .semibold))
-                        }
                     }
                     .padding(24)
                     .frame(maxWidth: 350)
@@ -136,17 +135,9 @@ struct MapView: View {
                             .shadow(color: .black.opacity(0.1), radius: 10, x: 0, y: 4)
                     )
                     .accessibilityElement(children: .combine)
-                    .accessibilityLabel(failedNoteDraft != nil ? "\(alertMessage). Tap to retry." : alertMessage)
-                    .onTapGesture {
-                        guard let draft = failedNoteDraft else { return }
-                        failedNoteDraft = nil
-                        showAlert = false
-                        noteDraftPrefill = draft
-                        showCreateNoteSheet = true
-                    }
+                    .accessibilityLabel(alertMessage)
                     .onAppear {
-                        let dismissDelay: Double = failedNoteDraft != nil ? 5 : 2
-                        DispatchQueue.main.asyncAfter(deadline: .now() + dismissDelay) { showAlert = false }
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 2) { showAlert = false }
                     }
                 }
 
@@ -312,7 +303,6 @@ struct MapView: View {
                             guard viewModel.syncFailedElementsCount > 0 || viewModel.pendingNotesCount > 0 else {
                                 alertIcon = "info.bubble"
                                 alertMessage = "No elements to sync"
-                                failedNoteDraft = nil
                                 showAlert = true
                                 return
                             }
@@ -491,15 +481,31 @@ struct MapView: View {
                 .presentationDetents([.fraction(0.2)])
                 .presentationDragIndicator(.visible)
                 .applyPresentationSizingPage()
+                .onDisappear {
+                    // Covers swipe-to-dismiss without picking either option — if neither
+                    // follow-up sheet ends up opening, the pin has nothing left to mark.
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.35) {
+                        if !showCreateNoteSheet && !showAddFeatureSheet {
+                            pendingAdditionCoordinate = nil
+                        }
+                    }
+                }
             }
         }
         .sheet(isPresented: $showCreateNoteSheet) {
             CreateNoteView(
-                coordinates: noteDraftPrefill?.coordinates ?? tappedCoordinate ?? CLLocationCoordinate2D(),
-                showNotesBox: $showCreateNoteSheet,
-                prefillDraft: noteDraftPrefill
+                coordinates: tappedCoordinate ?? CLLocationCoordinate2D(),
+                showNotesBox: $showCreateNoteSheet
             )
-            .onDisappear { noteDraftPrefill = nil }
+            .onAppear {
+                pendingAdditionCoordinate = tappedCoordinate
+                if let coordinate = tappedCoordinate {
+                    ensureCoordinateVisibleAboveSheet(coordinate)
+                }
+            }
+            .onDisappear {
+                pendingAdditionCoordinate = nil
+            }
             .presentationDetents([.fraction(0.6)])
             .presentationDragIndicator(.visible)
             .applyPresentationSizingPage()
@@ -513,10 +519,18 @@ struct MapView: View {
                         ? "exclamationmark.triangle.fill"
                         : "checkmark.circle.fill"
                     alertMessage = message
-                    failedNoteDraft = nil
                     showAlert = true
                 }
             )
+            .onAppear {
+                pendingAdditionCoordinate = tappedCoordinate
+                if let coordinate = tappedCoordinate {
+                    ensureCoordinateVisibleAboveSheet(coordinate)
+                }
+            }
+            .onDisappear {
+                pendingAdditionCoordinate = nil
+            }
             .presentationDetents([.fraction(0.6)])
             .presentationDragIndicator(.visible)
             .applyPresentationSizingPage()
@@ -558,13 +572,6 @@ struct MapView: View {
             case .noteSubmitted:
                 alertIcon = "checkmark.circle.fill"
                 alertMessage = "Note submitted successfully"
-                failedNoteDraft = nil
-                showAlert = true
-                viewModel.checkSyncStatus()
-            case .noteSubmissionFailed(let message, let draft):
-                alertIcon = "exclamationmark.triangle.fill"
-                alertMessage = message
-                failedNoteDraft = draft
                 showAlert = true
                 viewModel.checkSyncStatus()
             case .notesQueueUpdated:
@@ -604,6 +611,30 @@ struct MapView: View {
     }
 
     // MARK: – Helpers
+
+    /// Both the long-press action sheet and the Create Note/Add Feature sheets that
+    /// follow it use a 0.6-fraction bottom sheet at most — panning for that worst case
+    /// up front means the pin never gets covered as the user moves between them.
+    private static let noteSheetHeightFraction: CGFloat = 0.6
+
+    /// If `coordinate` would currently be hidden behind the bottom sheet, pans the map
+    /// just enough to bring it into the remaining visible band above the sheet.
+    func ensureCoordinateVisibleAboveSheet(_ coordinate: CLLocationCoordinate2D) {
+        guard let mapView = mapViewRef else { return }
+        let sheetHeight = mapView.bounds.height * Self.noteSheetHeightFraction
+        let visibleHeight = mapView.bounds.height - sheetHeight
+        guard visibleHeight > 0 else { return }
+
+        let point = mapView.convert(coordinate, toPointTo: mapView)
+        guard point.y > visibleHeight else { return } // already clear of the sheet
+
+        let targetY = visibleHeight / 2
+        let deltaY = point.y - targetY
+        let currentCenterPoint = CGPoint(x: mapView.bounds.midX, y: mapView.bounds.midY)
+        let shiftedPoint = CGPoint(x: currentCenterPoint.x, y: currentCenterPoint.y + deltaY)
+        let newCenter = mapView.convert(shiftedPoint, toCoordinateFrom: mapView)
+        mapView.setCenter(newCenter, animated: true)
+    }
 
     func voiceOverAnnounce(message: String) {
         guard isVoiceOverOn else { return }
@@ -877,7 +908,6 @@ public enum SheetDismissalScenario {
     case undoDone(String)
     case syncBackground(Int)
     case noteSubmitted
-    case noteSubmissionFailed(String, NoteDraft)
     case notesQueueUpdated
     case notesSyncing
     case notesSyncFinished

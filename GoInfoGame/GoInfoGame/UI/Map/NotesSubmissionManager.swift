@@ -7,10 +7,8 @@ import Foundation
 import UIKit
 import CoreLocation
 
-/// Everything needed to (re)attempt a note submission, kept around so a failed
-/// background submission can be handed back to CreateNoteView for a retry.
-/// `id` ties a draft to its persisted StoredNoteDraft row, so resubmitting an
-/// edited retry updates the existing queued note instead of creating a duplicate.
+/// Everything needed to submit a note. `id` ties it to its persisted StoredNoteDraft
+/// row so NotesSubmissionManager can upsert/delete the right queue entry.
 public struct NoteDraft {
     public var id: String = UUID().uuidString
     var noteText: String
@@ -61,6 +59,8 @@ enum NotesSubmissionManager {
         }
     }
 
+    /// A failed attempt is never surfaced to the user — the note stays queued
+    /// (already reflected in the sync badge) and is retried by the next trigger.
     fileprivate static func attempt(_ record: StoredNoteDraftSnapshot) async {
         do {
             let images = record.imagePaths.compactMap { NoteImageStorage.shared.load(path: $0) }
@@ -84,19 +84,10 @@ enum NotesSubmissionManager {
                     MapViewPublisher.shared.dismissSheet.send(.noteSubmitted)
                 }
             } else {
-                await fail(record, images: images, message: "Error submitting note")
+                DatabaseConnector.shared.markNoteDraftFailed(id: record.id, error: "Error submitting note")
             }
         } catch {
-            let images = record.imagePaths.compactMap { NoteImageStorage.shared.load(path: $0) }
-            await fail(record, images: images, message: "Error submitting note: \(error.localizedDescription)")
-        }
-    }
-
-    private static func fail(_ record: StoredNoteDraftSnapshot, images: [UIImage], message: String) async {
-        DatabaseConnector.shared.markNoteDraftFailed(id: record.id, error: message)
-        let draft = NoteDraft(id: record.id, noteText: record.noteText, images: images, coordinates: record.coordinates)
-        await MainActor.run {
-            MapViewPublisher.shared.dismissSheet.send(.noteSubmissionFailed(message, draft))
+            DatabaseConnector.shared.markNoteDraftFailed(id: record.id, error: error.localizedDescription)
         }
     }
 
@@ -105,7 +96,13 @@ enum NotesSubmissionManager {
 
         for (index, image) in images.enumerated() {
             do {
-                let url = try await KartaviewViewModel(capturedImage: image).uploadAsync()
+                // KartaviewViewModel creates a CLLocationManager on init and immediately
+                // calls requestWhenInUseAuthorization()/startUpdating*() — CoreLocation
+                // requires those to happen on a thread with an active run loop (main),
+                // or the app-level authorization handshake stalls. Only construction
+                // needs the hop; the network upload itself is fine off the main thread.
+                let viewModel = await MainActor.run { KartaviewViewModel(capturedImage: image) }
+                let url = try await viewModel.uploadAsync()
                 urls.append(url)
             } catch {
                 throw NSError(
