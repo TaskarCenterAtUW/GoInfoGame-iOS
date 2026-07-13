@@ -21,7 +21,8 @@ struct MapView: View {
 
     @State private var shouldShowPolyline = true
     @State private var lineCoordinates: [CLLocationCoordinate2D] = []
-    @State private var isSyncing = false
+    @State private var isSyncingElements = false
+    @State private var isSyncingNotes = false
     @State private var showAlert = false
     @State private var alertMessage = ""
     @State private var alertIcon = ""
@@ -53,6 +54,10 @@ struct MapView: View {
     @State private var activeConflict: PendingSyncConflict?
     @State private var failedNoteDraft: NoteDraft?
     @State private var noteDraftPrefill: NoteDraft?
+
+    /// The sync button spins whenever either queue (failed quest elements or
+    /// pending notes) is actively being drained, whichever started it.
+    private var isSyncing: Bool { isSyncingElements || isSyncingNotes }
 
     var body: some View {
         NavigationStack {
@@ -301,19 +306,25 @@ struct MapView: View {
                     accessbilityButton
 
                     QuestSyncButton(
-                        badgeCount: viewModel.syncFailedElementsCount,
+                        badgeCount: viewModel.syncFailedElementsCount + viewModel.pendingNotesCount,
                         isSyncing: isSyncing,
                         action: {
-                            guard viewModel.syncFailedElementsCount > 0 else {
+                            guard viewModel.syncFailedElementsCount > 0 || viewModel.pendingNotesCount > 0 else {
                                 alertIcon = "info.bubble"
                                 alertMessage = "No elements to sync"
                                 failedNoteDraft = nil
                                 showAlert = true
                                 return
                             }
-                            isSyncing = true
+
+                            if viewModel.pendingNotesCount > 0 {
+                                NotesSubmissionManager.resumePendingUploads()
+                            }
+
+                            guard viewModel.syncFailedElementsCount > 0 else { return }
+                            isSyncingElements = true
                             DatasyncManager.shared.syncDataToOSM(exclude_gig_tags: false) { _ in
-                                isSyncing = false
+                                isSyncingElements = false
                                 viewModel.checkSyncStatus()
                             }
                         }
@@ -527,12 +538,12 @@ struct MapView: View {
             case .dismissed:
                 shouldShowPolyline = false
             case .syncing:
-                isSyncing = true
+                isSyncingElements = true
             case .synced:
-                isSyncing = false
+                isSyncingElements = false
                 viewModel.checkSyncStatus()
             case .failed:
-                isSyncing = false
+                isSyncingElements = false
                 shouldShowPolyline = false
                 viewModel.checkSyncStatus()
             case .hideElement(let elementId, let elementName):
@@ -549,11 +560,20 @@ struct MapView: View {
                 alertMessage = "Note submitted successfully"
                 failedNoteDraft = nil
                 showAlert = true
+                viewModel.checkSyncStatus()
             case .noteSubmissionFailed(let message, let draft):
                 alertIcon = "exclamationmark.triangle.fill"
                 alertMessage = message
                 failedNoteDraft = draft
                 showAlert = true
+                viewModel.checkSyncStatus()
+            case .notesQueueUpdated:
+                viewModel.checkSyncStatus()
+            case .notesSyncing:
+                isSyncingNotes = true
+            case .notesSyncFinished:
+                isSyncingNotes = false
+                viewModel.checkSyncStatus()
             }
         }
         .onReceive(QuestsPublisher.shared.refreshQuest) { _ in
@@ -858,6 +878,9 @@ public enum SheetDismissalScenario {
     case syncBackground(Int)
     case noteSubmitted
     case noteSubmissionFailed(String, NoteDraft)
+    case notesQueueUpdated
+    case notesSyncing
+    case notesSyncFinished
 }
 
 class ContextualInfo: ObservableObject {

@@ -140,7 +140,12 @@ struct CreateNoteView: View {
     /// the upload/submit runs in the background and reports back through
     /// MapViewPublisher, so the user isn't blocked waiting on it.
     func submitNote() {
-        let draft = NoteDraft(noteText: noteText, images: capturedImages, coordinates: coordinates)
+        let draft = NoteDraft(
+            id: prefillDraft?.id ?? UUID().uuidString,
+            noteText: noteText,
+            images: capturedImages,
+            coordinates: coordinates
+        )
         NotesSubmissionManager.submit(draft)
         showNotesBox = false
     }

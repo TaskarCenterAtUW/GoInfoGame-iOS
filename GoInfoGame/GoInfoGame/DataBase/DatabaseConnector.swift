@@ -452,6 +452,69 @@ class DatabaseConnector {
         return theWay
     }
 
+    // MARK: - Note drafts (offline queue for Create Note)
+
+    /// Creates the pending note draft, or if `id` already exists (a retry of a
+    /// previously failed draft), overwrites its text/photos/coordinates in place.
+    @discardableResult
+    func upsertNoteDraft(id: String, noteText: String, imagePaths: [String], coordinates: CLLocationCoordinate2D) -> StoredNoteDraft {
+        let realm = try! Realm(configuration: RealmConfig.configuration)
+        let draft = StoredNoteDraft()
+        draft.id = id
+        draft.noteText = noteText
+        draft.imagePaths.append(objectsIn: imagePaths)
+        draft.latitude = coordinates.latitude
+        draft.longitude = coordinates.longitude
+        draft.createdAt = Date()
+        try! realm.write {
+            realm.add(draft, update: .modified)
+        }
+        return draft
+    }
+
+    /// All notes still waiting to be uploaded/submitted, oldest first.
+    func pendingNoteDrafts() -> [StoredNoteDraftSnapshot] {
+        let realm = try! Realm(configuration: RealmConfig.configuration)
+        return realm.objects(StoredNoteDraft.self)
+            .sorted(byKeyPath: "createdAt")
+            .map {
+                StoredNoteDraftSnapshot(
+                    id: $0.id,
+                    noteText: $0.noteText,
+                    imagePaths: Array($0.imagePaths),
+                    coordinates: CLLocationCoordinate2D(latitude: $0.latitude, longitude: $0.longitude)
+                )
+            }
+    }
+
+    func pendingNoteDraftsCount() -> Int {
+        let realm = try! Realm(configuration: RealmConfig.configuration)
+        return realm.objects(StoredNoteDraft.self).count
+    }
+
+    func noteDraftImagePaths(id: String) -> [String] {
+        let realm = try! Realm(configuration: RealmConfig.configuration)
+        guard let draft = realm.object(ofType: StoredNoteDraft.self, forPrimaryKey: id) else { return [] }
+        return Array(draft.imagePaths)
+    }
+
+    func deleteNoteDraft(id: String) {
+        let realm = try! Realm(configuration: RealmConfig.configuration)
+        guard let draft = realm.object(ofType: StoredNoteDraft.self, forPrimaryKey: id) else { return }
+        try! realm.write {
+            realm.delete(draft)
+        }
+    }
+
+    func markNoteDraftFailed(id: String, error: String) {
+        let realm = try! Realm(configuration: RealmConfig.configuration)
+        guard let draft = realm.object(ofType: StoredNoteDraft.self, forPrimaryKey: id) else { return }
+        try! realm.write {
+            draft.lastError = error
+            draft.retryCount += 1
+        }
+    }
+
 }
 
 struct RealmConfig {
