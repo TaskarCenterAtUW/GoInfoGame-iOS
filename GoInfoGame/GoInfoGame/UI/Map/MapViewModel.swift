@@ -38,6 +38,7 @@ class MapViewModel: ObservableObject {
     @Published var selectedOption: SatelliteOption = .none
     @Published var showSatellitePicker: Bool = false
     @Published private(set) var syncFailedElementsCount: Int = 0
+    @Published private(set) var pendingNotesCount: Int = 0
     let workspace: Workspace
 
     init(workspace: Workspace) {
@@ -54,6 +55,7 @@ class MapViewModel: ObservableObject {
 
     func checkSyncStatus() {
         self.syncFailedElementsCount = dbInstance.getChangesets(synced: false).count
+        self.pendingNotesCount = dbInstance.pendingNoteDraftsCount()
     }
 
     func sattiliteServersFor(point: CLLocationCoordinate2D) -> [SatelliteServer] {

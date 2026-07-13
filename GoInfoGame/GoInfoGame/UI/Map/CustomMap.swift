@@ -122,6 +122,39 @@ final class QuestClusterAnnotationView: MLNAnnotationView {
     required init?(coder: NSCoder) { super.init(coder: coder) }
 }
 
+/// Marks the coordinate a note or feature is currently being added at. Shown only
+/// while the long-press action sheet or the Create Note/Add Feature sheet that
+/// follows it is open, and removed as soon as that flow closes (submit or cancel).
+final class TemporaryPinAnnotation: NSObject, MLNAnnotation {
+    var coordinate: CLLocationCoordinate2D
+    init(coordinate: CLLocationCoordinate2D) {
+        self.coordinate = coordinate
+    }
+}
+
+final class TemporaryPinAnnotationView: MLNAnnotationView {
+    private let imageView = UIImageView()
+
+    init(reuseIdentifier: String) {
+        super.init(reuseIdentifier: reuseIdentifier)
+        let size = CGSize(width: 32, height: 40)
+        frame = CGRect(origin: .zero, size: size)
+
+        imageView.frame = bounds
+        imageView.contentMode = .scaleAspectFit
+        let config = UIImage.SymbolConfiguration(pointSize: 32, weight: .bold)
+        imageView.image = UIImage(systemName: "mappin", withConfiguration: config)
+        imageView.tintColor = Asset.Colors.ff0041Red.color
+        addSubview(imageView)
+
+        // The symbol's pointed tip sits at the bottom of its bounds — shift the view
+        // up by half its height so the tip (not the center) lands on the coordinate.
+        centerOffset = CGVector(dx: 0, dy: -size.height / 2)
+    }
+
+    required init?(coder: NSCoder) { super.init(coder: coder) }
+}
+
 // MARK: - Icon Helper
 
 private func makeCircularIcon(_ image: UIImage) -> UIImage {
@@ -176,6 +209,7 @@ struct CustomMap: UIViewRepresentable {
     @Binding var tappedCoordinate: CLLocationCoordinate2D?
     @Binding var annotationCoordinate: CLLocationCoordinate2D?
     @Binding var shadowRegions: [CoordinateBounds]
+    @Binding var pendingAdditionCoordinate: CLLocationCoordinate2D?
 
     func makeUIView(context: Context) -> MLNMapView {
         let styleURL = URL(string: "https://tiles.openfreemap.org/styles/liberty")!
@@ -236,6 +270,11 @@ struct CustomMap: UIViewRepresentable {
             context.coordinator.previousShadowRegions = shadowRegions
             context.coordinator.updateShadowOverlay(regions: shadowRegions)
         }
+
+        if pendingAdditionCoordinate != context.coordinator.previousNoteBeingAddedCoordinate {
+            context.coordinator.previousNoteBeingAddedCoordinate = pendingAdditionCoordinate
+            context.coordinator.updateNoteBeingAddedAnnotation(coordinate: pendingAdditionCoordinate)
+        }
     }
 
     func makeCoordinator() -> Coordinator { Coordinator(self) }
@@ -260,6 +299,8 @@ struct CustomMap: UIViewRepresentable {
 
         var previousLineCoordinates: [CLLocationCoordinate2D] = []
         var previousShadowRegions: [CoordinateBounds] = []
+        var previousNoteBeingAddedCoordinate: CLLocationCoordinate2D?
+        private var pendingAdditionAnnotation: TemporaryPinAnnotation?
 
         let shadowSourceId   = "shadow-source"
         let shadowLayerId    = "shadow-layer"
@@ -303,6 +344,12 @@ struct CustomMap: UIViewRepresentable {
                            ?? QuestClusterAnnotationView(reuseIdentifier: "cluster")
                 view.count = cluster.memberAnnotations.count
                 return view
+            }
+
+            if annotation is TemporaryPinAnnotation {
+                let reuseId = "note-being-added"
+                return (mapView.dequeueReusableAnnotationView(withIdentifier: reuseId) as? TemporaryPinAnnotationView)
+                       ?? TemporaryPinAnnotationView(reuseIdentifier: reuseId)
             }
 
             if let quest = annotation as? DisplayUnitAnnotation {
@@ -513,13 +560,19 @@ struct CustomMap: UIViewRepresentable {
                 visited.insert(i)
 
                 var group = [annotations[i]]
-                let ptI = points[i]
+                var sumX = points[i].x
+                var sumY = points[i].y
 
                 for j in (i + 1)..<annotations.count {
                     if visited.contains(j) { continue }
-                    if hypot(ptI.x - points[j].x, ptI.y - points[j].y) < radius {
+                    let n = CGFloat(group.count)
+                    let centroidX = sumX / n
+                    let centroidY = sumY / n
+                    if hypot(centroidX - points[j].x, centroidY - points[j].y) < radius {
                         group.append(annotations[j])
                         visited.insert(j)
+                        sumX += points[j].x
+                        sumY += points[j].y
                     }
                 }
 
@@ -632,6 +685,17 @@ struct CustomMap: UIViewRepresentable {
 
                 DispatchQueue.main.async { src.shape = polygon }
             }
+        }
+
+        func updateNoteBeingAddedAnnotation(coordinate: CLLocationCoordinate2D?) {
+            if let existing = pendingAdditionAnnotation {
+                mapView?.removeAnnotation(existing)
+                pendingAdditionAnnotation = nil
+            }
+            guard let coordinate else { return }
+            let annotation = TemporaryPinAnnotation(coordinate: coordinate)
+            pendingAdditionAnnotation = annotation
+            mapView?.addAnnotation(annotation)
         }
 
         func updateUserRegion(_ mapView: MLNMapView) {

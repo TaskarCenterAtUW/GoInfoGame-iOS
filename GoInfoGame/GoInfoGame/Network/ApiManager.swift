@@ -70,7 +70,12 @@ class ApiManager {
             return
         }
         
-        var request = URLRequest(url: url, timeoutInterval: Double.infinity)
+        // A per-request timeout (rather than none) means a hung connection eventually
+        // surfaces as a failure instead of leaving callers (e.g. MapViewModel.isLoading,
+        // NotesQueueProcessor.isProcessing) stuck waiting on a completion that never fires.
+        // Multipart uploads (photos) get a longer allowance than plain JSON calls.
+        let requestTimeout: TimeInterval = endpoint.formData != nil ? .infinity : 60
+        var request = URLRequest(url: url, timeoutInterval: requestTimeout)
         request.httpMethod = endpoint.method
         debugPrint("URLRequest prepared \(Date())")
         if let formData = endpoint.formData {
