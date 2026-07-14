@@ -222,6 +222,12 @@ struct CustomMap: UIViewRepresentable {
         mapView.compassViewPosition = .bottomRight
         mapView.compassViewMargins = CGPoint(x: 28, y: 218)
 
+        mapView.showsScale = true
+        mapView.scaleBarPosition = .bottomRight
+        mapView.showsLogoView = false
+        mapView.attributionButtonPosition = .bottomLeft
+        mapView.attributionButton.tintColor = Asset.Colors.a2A2A2Gray.color
+
         let longPress = UILongPressGestureRecognizer(
             target: context.coordinator,
             action: #selector(Coordinator.handleLongPress(_:))
