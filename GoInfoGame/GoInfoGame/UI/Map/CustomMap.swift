@@ -218,7 +218,9 @@ struct CustomMap: UIViewRepresentable {
         mapView.showsUserLocation = true
         mapView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         mapView.userTrackingMode = trackingMode.mlnUserTrackingMode
-        mapView.compassView.compassVisibility = .visible
+        mapView.compassView.compassVisibility = .adaptive
+        mapView.compassViewPosition = .bottomRight
+        mapView.compassViewMargins = CGPoint(x: 28, y: 218)
 
         let longPress = UILongPressGestureRecognizer(
             target: context.coordinator,
