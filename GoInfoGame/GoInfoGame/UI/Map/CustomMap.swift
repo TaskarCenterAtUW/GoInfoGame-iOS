@@ -100,6 +100,34 @@ final class QuestAnnotationView: MLNAnnotationView {
     required init?(coder: NSCoder) { super.init(coder: coder) }
 }
 
+// Placeholder marker for a quest hidden behind another pin at the current
+// zoom level because it would otherwise visually overlap it. Sits at that
+// quest's own real coordinate as a small dot; replaced by its own full pin
+// once the user zooms in far enough to separate them on screen.
+final class OverlapDotAnnotation: NSObject, MLNAnnotation {
+    let coordinate: CLLocationCoordinate2D
+    init(coordinate: CLLocationCoordinate2D) {
+        self.coordinate = coordinate
+    }
+}
+
+final class OverlapDotAnnotationView: MLNAnnotationView {
+    override init(reuseIdentifier: String?) {
+        super.init(reuseIdentifier: reuseIdentifier)
+        frame = CGRect(x: 0, y: 0, width: 14, height: 14)
+        layer.cornerRadius = 7
+        layer.borderWidth = 1.5
+        layer.borderColor = UIColor.white.cgColor
+        backgroundColor = Asset.Colors.a2A2A2Gray.color //UIColor(red: 135/255, green: 62/255, blue: 242/255, alpha: 1.0)
+        // Sit behind every other annotation view (pins, clusters, temp pin —
+        // all left at the default zPosition of 0) so a dot never paints over
+        // a real pin that happens to land nearby on screen.
+        layer.zPosition = -1
+    }
+
+    required init?(coder: NSCoder) { super.init(coder: coder) }
+}
+
 final class QuestClusterAnnotationView: MLNAnnotationView {
     private let label = UILabel()
 
@@ -111,7 +139,7 @@ final class QuestClusterAnnotationView: MLNAnnotationView {
         layer.cornerRadius = 22
         layer.borderWidth = 2
         layer.borderColor = UIColor.white.cgColor
-        backgroundColor = UIColor(red: 135/255, green: 62/255, blue: 242/255, alpha: 1.0)
+        backgroundColor = Asset.Colors.a2A2A2Gray.color //UIColor(red: 135/255, green: 62/255, blue: 242/255, alpha: 1.0)
         label.textColor = .white
         label.font = .systemFont(ofSize: 14, weight: .bold)
         label.textAlignment = .center
@@ -182,6 +210,29 @@ private func makeCircularIcon(_ image: UIImage) -> UIImage {
     return UIGraphicsGetImageFromCurrentImageContext() ?? image
 }
 
+// MARK: - Style Loading
+
+// The bundled style ships with a placeholder in the Jawg tile URL (kept out of
+// source control) — swap in the real token from Secrets.xcconfig/Info.plist and
+// write the result to Caches, since the bundle itself isn't writable.
+private func resolvedStyleURL() -> URL {
+    let fallback = URL(string: "asset://map_theme/streetcomplete.json")!
+    guard let bundledURL = Bundle.main.url(forResource: "streetcomplete", withExtension: "json", subdirectory: "map_theme"),
+          var json = try? String(contentsOf: bundledURL, encoding: .utf8) else {
+        return fallback
+    }
+
+    let token = Bundle.main.object(forInfoDictionaryKey: "JAWG_ACCESS_TOKEN") as? String ?? ""
+    json = json.replacingOccurrences(of: "__JAWG_ACCESS_TOKEN__", with: token)
+
+    let cachesURL = FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask)[0]
+    let resolvedURL = cachesURL.appendingPathComponent("streetcomplete.json")
+    guard (try? json.write(to: resolvedURL, atomically: true, encoding: .utf8)) != nil else {
+        return fallback
+    }
+    return resolvedURL
+}
+
 // MARK: - CustomMap
 
 struct CustomMap: UIViewRepresentable {
@@ -212,13 +263,25 @@ struct CustomMap: UIViewRepresentable {
     @Binding var pendingAdditionCoordinate: CLLocationCoordinate2D?
 
     func makeUIView(context: Context) -> MLNMapView {
-        let styleURL = URL(string: "https://tiles.openfreemap.org/styles/liberty")!
+        // Bundled StreetComplete style — shared with the Android app so both
+        // platforms render the same map theme. Glyphs/sprite inside the style
+        // still resolve via "asset://", which maps to the main bundle's resource
+        // path regardless of where the top-level style document itself lives.
+        let styleURL = resolvedStyleURL()
         let mapView = MLNMapView(frame: .zero, styleURL: styleURL)
         mapView.delegate = context.coordinator
         mapView.showsUserLocation = true
         mapView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         mapView.userTrackingMode = trackingMode.mlnUserTrackingMode
-        mapView.compassView.compassVisibility = .visible
+        mapView.compassView.compassVisibility = .adaptive
+        mapView.compassViewPosition = .bottomRight
+        mapView.compassViewMargins = CGPoint(x: 28, y: 218)
+
+        mapView.showsScale = true
+        mapView.scaleBarPosition = .bottomRight
+        mapView.showsLogoView = false
+        mapView.attributionButtonPosition = .bottomLeft
+        mapView.attributionButton.tintColor = Asset.Colors.a2A2A2Gray.color
 
         let longPress = UILongPressGestureRecognizer(
             target: context.coordinator,
@@ -352,6 +415,12 @@ struct CustomMap: UIViewRepresentable {
                        ?? TemporaryPinAnnotationView(reuseIdentifier: reuseId)
             }
 
+            if annotation is OverlapDotAnnotation {
+                let reuseId = "overlap-dot"
+                return (mapView.dequeueReusableAnnotationView(withIdentifier: reuseId) as? OverlapDotAnnotationView)
+                       ?? OverlapDotAnnotationView(reuseIdentifier: reuseId)
+            }
+
             if let quest = annotation as? DisplayUnitAnnotation {
                 let iconName = quest.displayUnit?.parent?.iconName ?? "notes"
                 let reuseId = "quest-\(iconName)"
@@ -393,6 +462,15 @@ struct CustomMap: UIViewRepresentable {
                 return
             }
 
+            if let dot = annotation as? OverlapDotAnnotation {
+                // Zoom in toward the hidden quest so it separates from the pin
+                // it was overlapping and gets its own full pin.
+                mapView.setCenter(dot.coordinate,
+                                  zoomLevel: min(mapView.zoomLevel + 2, mapView.maximumZoomLevel),
+                                  animated: true)
+                return
+            }
+
             if let quest = annotation as? DisplayUnitAnnotation {
                 if parent.isMultiSelectModeEnabled {
                     handleMultiSelectAnnotation(quest)
@@ -404,17 +482,28 @@ struct CustomMap: UIViewRepresentable {
 
         func mapView(_ mapView: MLNMapView, regionDidChangeAnimated animated: Bool) {
             let zoom = mapView.zoomLevel
-            let wasAbove = lastClusteredZoom >= maxClusterZoom
-            let isAbove  = zoom >= maxClusterZoom
+            let previousBucket = clusterBucket(for: lastClusteredZoom, mapView: mapView)
+            let currentBucket  = clusterBucket(for: zoom, mapView: mapView)
 
-            // Individual-pin view: MapLibre culls off-screen pins internally — no work needed on pan.
-            if isAbove && wasAbove { return }
+            // Crossed into a different regime (density / overlap / fully individual)
+            // — always re-run so the transition renders correctly.
+            if previousBucket != currentBucket {
+                scheduleRecluster()
+                return
+            }
 
-            // Clustered view: clusters only change when zoom changes, not on pan.
-            // Skip re-cluster if zoom hasn't moved enough to change groupings.
-            if !isAbove && !wasAbove && abs(zoom - lastClusteredZoom) < 0.5 { return }
+            switch currentBucket {
+            case .individual:
+                // MapLibre culls off-screen pins internally — no work needed on pan.
+                return
+            case .density, .overlap:
+                // Groupings only change when zoom changes, not on pure pan.
+                // Skip re-cluster if zoom hasn't moved enough to change them.
+                if abs(zoom - lastClusteredZoom) >= 0.5 { scheduleRecluster() }
+            }
+        }
 
-            // Zoom crossed the cluster threshold, or changed enough — schedule a re-cluster.
+        private func scheduleRecluster() {
             clusterTimer?.invalidate()
             clusterTimer = Timer.scheduledTimer(withTimeInterval: 0.2, repeats: false) { [weak self] _ in
                 self?.refreshClusters()
@@ -498,8 +587,23 @@ struct CustomMap: UIViewRepresentable {
             }
         }
 
-        // Zoom level at or above which all pins are shown individually (no clustering).
+        // Zoom level at or above which the density-count clustering (large radius,
+        // generic circle+count bubble) stops and individual pins begin.
         private let maxClusterZoom: Double = 17
+
+        // Radius (screen points) below which two individual pins (40x40) are
+        // treated as visually overlapping and one gets replaced by a small dot.
+        private let overlapRadius: CGFloat = 40
+
+        private enum ClusterBucket: Equatable {
+            case density, overlap, individual
+        }
+
+        private func clusterBucket(for zoom: Double, mapView: MLNMapView) -> ClusterBucket {
+            if zoom < maxClusterZoom { return .density }
+            if zoom >= mapView.maximumZoomLevel { return .individual }
+            return .overlap
+        }
 
         func refreshClusters() {
             guard let mapView = mapView, mapView.bounds.width > 0 else { return }
@@ -514,9 +618,8 @@ struct CustomMap: UIViewRepresentable {
                 return
             }
 
-            // Past the cluster threshold — show all pins individually.
-            // MapLibre culls off-screen pins itself; no background work needed.
-            if mapView.zoomLevel >= maxClusterZoom {
+            // Fully zoomed in — always show every pin individually, no matter how close.
+            if clusterBucket(for: mapView.zoomLevel, mapView: mapView) == .individual {
                 applyAnnotations(annotations, to: mapView)
                 return
             }
@@ -525,12 +628,29 @@ struct CustomMap: UIViewRepresentable {
             // run O(n²) grouping on a background thread.
             let points = annotations.map { mapView.convert($0.coordinate, toPointTo: mapView) }
 
+            if mapView.zoomLevel < maxClusterZoom {
+                // Below the cluster threshold — group into density clusters with a count bubble.
+                DispatchQueue.global(qos: .userInitiated).async { [weak self] in
+                    guard let self else { return }
+                    let clustered = self.buildClusters(annotations: annotations, points: points, radius: 50)
+                    DispatchQueue.main.async { [weak self] in
+                        guard let self, self.clusterGeneration == generation else { return }
+                        self.applyAnnotations(clustered, to: self.mapView)
+                    }
+                }
+                return
+            }
+
+            // Between the cluster threshold and max zoom — pins show individually,
+            // but ones that would visually overlap leave just one real pin on
+            // screen; the rest become small dots at their own real coordinate
+            // until the user zooms in far enough to separate them.
             DispatchQueue.global(qos: .userInitiated).async { [weak self] in
                 guard let self else { return }
-                let clustered = self.buildClusters(annotations: annotations, points: points, radius: 50)
+                let resolved = self.resolveOverlaps(annotations: annotations, points: points, radius: self.overlapRadius)
                 DispatchQueue.main.async { [weak self] in
                     guard let self, self.clusterGeneration == generation else { return }
-                    self.applyAnnotations(clustered, to: self.mapView)
+                    self.applyAnnotations(resolved, to: self.mapView)
                 }
             }
         }
@@ -587,6 +707,34 @@ struct CustomMap: UIViewRepresentable {
                     result.append(cluster)
                 } else {
                     result.append(group[0])
+                }
+            }
+
+            return result
+        }
+
+        // Pure function — safe to call off the main thread. Unlike buildClusters,
+        // this doesn't merge overlapping quests into a single generic cluster —
+        // each group keeps its first member as a real, tappable pin at its own
+        // coordinate, and represents every other member with a small dot at
+        // *its* own real coordinate rather than hiding it entirely.
+        private func resolveOverlaps(annotations: [DisplayUnitAnnotation],
+                                      points: [CGPoint],
+                                      radius: CGFloat) -> [MLNAnnotation] {
+            var result: [MLNAnnotation] = []
+            var visited = Set<Int>()
+
+            for i in 0..<annotations.count {
+                if visited.contains(i) { continue }
+                visited.insert(i)
+                result.append(annotations[i])
+
+                for j in (i + 1)..<annotations.count {
+                    if visited.contains(j) { continue }
+                    if hypot(points[i].x - points[j].x, points[i].y - points[j].y) < radius {
+                        visited.insert(j)
+                        result.append(OverlapDotAnnotation(coordinate: annotations[j].coordinate))
+                    }
                 }
             }
 

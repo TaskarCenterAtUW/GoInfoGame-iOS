@@ -14,11 +14,11 @@ public struct OSMMapDataResponse: Codable {
     public let bounds: Bounds
     public let elements: [Element]
     
-   public func getOSMElements() -> [Int:OSMElement]{
-        var newMap :[Int: OSMElement] = [:]
+   public func getOSMElements() -> [String:OSMElement]{
+        var newMap :[String: OSMElement] = [:]
         elements.forEach { ele in
             if let osmElement = ele.toOSMElement() {
-                newMap[osmElement.id] = osmElement
+                newMap["\(ele.type.rawValue)-\(osmElement.id)"] = osmElement
             }
         }
         // Try to see if we can figure out way locations as well.
