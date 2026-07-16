@@ -182,6 +182,29 @@ private func makeCircularIcon(_ image: UIImage) -> UIImage {
     return UIGraphicsGetImageFromCurrentImageContext() ?? image
 }
 
+// MARK: - Style Loading
+
+// The bundled style ships with a placeholder in the Jawg tile URL (kept out of
+// source control) — swap in the real token from Secrets.xcconfig/Info.plist and
+// write the result to Caches, since the bundle itself isn't writable.
+private func resolvedStyleURL() -> URL {
+    let fallback = URL(string: "asset://map_theme/streetcomplete.json")!
+    guard let bundledURL = Bundle.main.url(forResource: "streetcomplete", withExtension: "json", subdirectory: "map_theme"),
+          var json = try? String(contentsOf: bundledURL, encoding: .utf8) else {
+        return fallback
+    }
+
+    let token = Bundle.main.object(forInfoDictionaryKey: "JAWG_ACCESS_TOKEN") as? String ?? ""
+    json = json.replacingOccurrences(of: "__JAWG_ACCESS_TOKEN__", with: token)
+
+    let cachesURL = FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask)[0]
+    let resolvedURL = cachesURL.appendingPathComponent("streetcomplete.json")
+    guard (try? json.write(to: resolvedURL, atomically: true, encoding: .utf8)) != nil else {
+        return fallback
+    }
+    return resolvedURL
+}
+
 // MARK: - CustomMap
 
 struct CustomMap: UIViewRepresentable {
@@ -212,7 +235,11 @@ struct CustomMap: UIViewRepresentable {
     @Binding var pendingAdditionCoordinate: CLLocationCoordinate2D?
 
     func makeUIView(context: Context) -> MLNMapView {
-        let styleURL = URL(string: "https://tiles.openfreemap.org/styles/liberty")!
+        // Bundled StreetComplete style — shared with the Android app so both
+        // platforms render the same map theme. Glyphs/sprite inside the style
+        // still resolve via "asset://", which maps to the main bundle's resource
+        // path regardless of where the top-level style document itself lives.
+        let styleURL = resolvedStyleURL()
         let mapView = MLNMapView(frame: .zero, styleURL: styleURL)
         mapView.delegate = context.coordinator
         mapView.showsUserLocation = true
