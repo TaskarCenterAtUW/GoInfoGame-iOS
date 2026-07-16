@@ -65,9 +65,19 @@ private func mergeOverlappingBounds(_ regions: [CoordinateBounds]) -> [Coordinat
 final class QuestAnnotationView: MLNAnnotationView {
     private let imageView = UIImageView()
     private let checkmark = UIImageView()
+    private let overlapBadge = UILabel()
 
     var isChecked: Bool = false {
         didSet { checkmark.isHidden = !isChecked }
+    }
+
+    // Count of other quests hidden behind this pin because they'd otherwise
+    // visually overlap it at the current zoom level. 0 hides the badge.
+    var hiddenOverlapCount: Int = 0 {
+        didSet {
+            overlapBadge.isHidden = hiddenOverlapCount <= 0
+            overlapBadge.text = "+\(hiddenOverlapCount)"
+        }
     }
 
     init(reuseIdentifier: String, iconName: String) {
@@ -95,6 +105,23 @@ final class QuestAnnotationView: MLNAnnotationView {
         checkmark.clipsToBounds = true
         checkmark.isHidden = true
         addSubview(checkmark)
+
+        // "+N" badge in bottom-right corner — same purple as the density
+        // cluster bubble, indicating quests hidden behind this pin.
+        let overlapBadgeSize: CGFloat = 18
+        overlapBadge.frame = CGRect(x: bounds.width - overlapBadgeSize + 4,
+                                     y: bounds.height - overlapBadgeSize + 4,
+                                     width: overlapBadgeSize, height: overlapBadgeSize)
+        overlapBadge.backgroundColor = UIColor(red: 135/255, green: 62/255, blue: 242/255, alpha: 1.0)
+        overlapBadge.textColor = .white
+        overlapBadge.font = .systemFont(ofSize: 10, weight: .bold)
+        overlapBadge.textAlignment = .center
+        overlapBadge.layer.cornerRadius = overlapBadgeSize / 2
+        overlapBadge.layer.borderWidth = 1.5
+        overlapBadge.layer.borderColor = UIColor.white.cgColor
+        overlapBadge.clipsToBounds = true
+        overlapBadge.isHidden = true
+        addSubview(overlapBadge)
     }
 
     required init?(coder: NSCoder) { super.init(coder: coder) }
@@ -332,6 +359,11 @@ struct CustomMap: UIViewRepresentable {
         private var lastClusteredZoom: Double = -1
         private var suppressNextDidSelect = false
 
+        // Annotation id -> count of other quests hidden behind that pin because
+        // they'd otherwise visually overlap it (zoom levels between
+        // maxClusterZoom and the map's true maximum zoom).
+        private var hiddenOverlapCounts: [String: Int] = [:]
+
         var previousLineCoordinates: [CLLocationCoordinate2D] = []
         var previousShadowRegions: [CoordinateBounds] = []
         var previousNoteBeingAddedCoordinate: CLLocationCoordinate2D?
@@ -399,6 +431,7 @@ struct CustomMap: UIViewRepresentable {
                                    parent.selectedAnnotationType == elementType
                 view.isChecked = parent.selectedAnnotations.map(\.id).contains(quest.id)
                 view.alpha     = isSelectable ? 1.0 : 0.4
+                view.hiddenOverlapCount = hiddenOverlapCounts[quest.id] ?? 0
                 return view
             }
 
@@ -439,17 +472,28 @@ struct CustomMap: UIViewRepresentable {
 
         func mapView(_ mapView: MLNMapView, regionDidChangeAnimated animated: Bool) {
             let zoom = mapView.zoomLevel
-            let wasAbove = lastClusteredZoom >= maxClusterZoom
-            let isAbove  = zoom >= maxClusterZoom
+            let previousBucket = clusterBucket(for: lastClusteredZoom, mapView: mapView)
+            let currentBucket  = clusterBucket(for: zoom, mapView: mapView)
 
-            // Individual-pin view: MapLibre culls off-screen pins internally — no work needed on pan.
-            if isAbove && wasAbove { return }
+            // Crossed into a different regime (density / overlap / fully individual)
+            // — always re-run so the transition renders correctly.
+            if previousBucket != currentBucket {
+                scheduleRecluster()
+                return
+            }
 
-            // Clustered view: clusters only change when zoom changes, not on pan.
-            // Skip re-cluster if zoom hasn't moved enough to change groupings.
-            if !isAbove && !wasAbove && abs(zoom - lastClusteredZoom) < 0.5 { return }
+            switch currentBucket {
+            case .individual:
+                // MapLibre culls off-screen pins internally — no work needed on pan.
+                return
+            case .density, .overlap:
+                // Groupings only change when zoom changes, not on pure pan.
+                // Skip re-cluster if zoom hasn't moved enough to change them.
+                if abs(zoom - lastClusteredZoom) >= 0.5 { scheduleRecluster() }
+            }
+        }
 
-            // Zoom crossed the cluster threshold, or changed enough — schedule a re-cluster.
+        private func scheduleRecluster() {
             clusterTimer?.invalidate()
             clusterTimer = Timer.scheduledTimer(withTimeInterval: 0.2, repeats: false) { [weak self] _ in
                 self?.refreshClusters()
@@ -533,8 +577,23 @@ struct CustomMap: UIViewRepresentable {
             }
         }
 
-        // Zoom level at or above which all pins are shown individually (no clustering).
+        // Zoom level at or above which the density-count clustering (large radius,
+        // generic circle+count bubble) stops and individual pins begin.
         private let maxClusterZoom: Double = 17
+
+        // Radius (screen points) below which two individual pins (40x40) are
+        // treated as visually overlapping and collapsed behind a "+N" badge.
+        private let overlapRadius: CGFloat = 40
+
+        private enum ClusterBucket: Equatable {
+            case density, overlap, individual
+        }
+
+        private func clusterBucket(for zoom: Double, mapView: MLNMapView) -> ClusterBucket {
+            if zoom < maxClusterZoom { return .density }
+            if zoom >= mapView.maximumZoomLevel { return .individual }
+            return .overlap
+        }
 
         func refreshClusters() {
             guard let mapView = mapView, mapView.bounds.width > 0 else { return }
@@ -545,13 +604,14 @@ struct CustomMap: UIViewRepresentable {
             lastClusteredZoom = mapView.zoomLevel
 
             guard !annotations.isEmpty else {
+                hiddenOverlapCounts = [:]
                 applyAnnotations([], to: mapView)
                 return
             }
 
-            // Past the cluster threshold — show all pins individually.
-            // MapLibre culls off-screen pins itself; no background work needed.
-            if mapView.zoomLevel >= maxClusterZoom {
+            // Fully zoomed in — always show every pin individually, no matter how close.
+            if clusterBucket(for: mapView.zoomLevel, mapView: mapView) == .individual {
+                hiddenOverlapCounts = [:]
                 applyAnnotations(annotations, to: mapView)
                 return
             }
@@ -560,12 +620,30 @@ struct CustomMap: UIViewRepresentable {
             // run O(n²) grouping on a background thread.
             let points = annotations.map { mapView.convert($0.coordinate, toPointTo: mapView) }
 
+            if mapView.zoomLevel < maxClusterZoom {
+                // Below the cluster threshold — group into density clusters with a count bubble.
+                DispatchQueue.global(qos: .userInitiated).async { [weak self] in
+                    guard let self else { return }
+                    let clustered = self.buildClusters(annotations: annotations, points: points, radius: 50)
+                    DispatchQueue.main.async { [weak self] in
+                        guard let self, self.clusterGeneration == generation else { return }
+                        self.hiddenOverlapCounts = [:]
+                        self.applyAnnotations(clustered, to: self.mapView)
+                    }
+                }
+                return
+            }
+
+            // Between the cluster threshold and max zoom — pins show individually,
+            // but ones that would visually overlap collapse behind one real pin
+            // with a "+N" badge until the user zooms in far enough to separate them.
             DispatchQueue.global(qos: .userInitiated).async { [weak self] in
                 guard let self else { return }
-                let clustered = self.buildClusters(annotations: annotations, points: points, radius: 50)
+                let (displayed, hiddenCounts) = self.resolveOverlaps(annotations: annotations, points: points, radius: self.overlapRadius)
                 DispatchQueue.main.async { [weak self] in
                     guard let self, self.clusterGeneration == generation else { return }
-                    self.applyAnnotations(clustered, to: self.mapView)
+                    self.hiddenOverlapCounts = hiddenCounts
+                    self.applyAnnotations(displayed, to: self.mapView)
                 }
             }
         }
@@ -626,6 +704,39 @@ struct CustomMap: UIViewRepresentable {
             }
 
             return result
+        }
+
+        // Pure function — safe to call off the main thread. Unlike buildClusters,
+        // this doesn't merge overlapping quests into a single generic cluster —
+        // each group keeps its first member as a real, tappable pin at its own
+        // coordinate, and just reports how many others are hidden behind it.
+        private func resolveOverlaps(annotations: [DisplayUnitAnnotation],
+                                      points: [CGPoint],
+                                      radius: CGFloat) -> (displayed: [DisplayUnitAnnotation], hiddenCounts: [String: Int]) {
+            var displayed: [DisplayUnitAnnotation] = []
+            var hiddenCounts: [String: Int] = [:]
+            var visited = Set<Int>()
+
+            for i in 0..<annotations.count {
+                if visited.contains(i) { continue }
+                visited.insert(i)
+
+                var hiddenCount = 0
+                for j in (i + 1)..<annotations.count {
+                    if visited.contains(j) { continue }
+                    if hypot(points[i].x - points[j].x, points[i].y - points[j].y) < radius {
+                        visited.insert(j)
+                        hiddenCount += 1
+                    }
+                }
+
+                displayed.append(annotations[i])
+                if hiddenCount > 0 {
+                    hiddenCounts[annotations[i].id] = hiddenCount
+                }
+            }
+
+            return (displayed, hiddenCounts)
         }
 
         // MARK: - Other Data Updates
