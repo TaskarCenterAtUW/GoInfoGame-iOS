@@ -28,7 +28,7 @@ struct MapView: View {
     @State private var alertIcon = ""
     @StateObject var contextualInfo = ContextualInfo.shared
 
-    @State private var selectedDetent: PresentationDetent = .fraction(0.8)
+    @State private var selectedDetent: PresentationDetent = .fraction(0.7)
     @State private var showPopover = false
 
     @AppStorage("baseUrl") var baseUrl = ""
@@ -53,6 +53,10 @@ struct MapView: View {
     @State private var showFilterQuestsSheet = false
     @State private var showElemntDeletedAlert = false
     @State private var activeConflict: PendingSyncConflict?
+
+    /// Zoom level captured right before zooming in on a selected quest, so it can be
+    /// restored once the quest sheet is dismissed (cancelled or submitted).
+    @State private var zoomLevelBeforeQuestSelection: Double?
 
     /// The sync button spins whenever either queue (failed quest elements or
     /// pending notes) is actively being drained, whichever started it.
@@ -84,7 +88,7 @@ struct MapView: View {
                         self.mapViewRef = map
                     },
                     contextualInfo: { info in
-                        selectedDetent = .fraction(0.8)
+                        selectedDetent = .fraction(0.7)
                         setContextualInfo(contextualinfo: info)
                     },
                     tappedCoordinate: $tappedCoordinate,
@@ -92,7 +96,11 @@ struct MapView: View {
                     shadowRegions: $shadowRegions,
                     pendingAdditionCoordinate: $pendingAdditionCoordinate,
                     isAnySheetBlockingSelection: isAnySheetBlockingSelection,
-                    dismissOtherSheets: dismissOtherSheets
+                    dismissOtherSheets: dismissOtherSheets,
+                    previousZoomLevel: $zoomLevelBeforeQuestSelection,
+                    ensureQuestVisibleAboveSheet: { coordinate in
+                        ensureCoordinateVisibleAboveSheet(coordinate, sheetHeightFraction: 0.7)
+                    }
                 )
                 .accessibilityHidden(enableAccessibility)
                 .onChange(of: tappedCoordinate) { _ in
@@ -373,7 +381,13 @@ struct MapView: View {
             if !newValue { shouldShowPolyline = false }
         }
         .onChange(of: isPresented) { newValue in
-            if !newValue { shouldShowPolyline = false }
+            if !newValue {
+                shouldShowPolyline = false
+                if let previousZoom = zoomLevelBeforeQuestSelection {
+                    mapViewRef?.setZoomLevel(previousZoom, animated: true)
+                    zoomLevelBeforeQuestSelection = nil
+                }
+            }
         }
         .sheet(isPresented: $showManageQuestSheet) {
             ManageQuestsView()
@@ -562,7 +576,7 @@ struct MapView: View {
         .sheet(isPresented: $isPresented) {
             QuestSheetView(viewModel: viewModel, annotationCoordinate: annotationCoordinate)
                 .onAppear { shouldShowPolyline = true }
-                .presentationDetents([.fraction(0.8), .fraction(0.5), .fraction(0.1)],
+                .presentationDetents([.fraction(0.7), .fraction(0.5), .fraction(0.1)],
                                      selection: $selectedDetent)
                 .presentationDragIndicator(.visible)
                 .scrollDisabled(false)
@@ -663,9 +677,12 @@ struct MapView: View {
 
     /// If `coordinate` would currently be hidden behind the bottom sheet, pans the map
     /// just enough to bring it into the remaining visible band above the sheet.
-    func ensureCoordinateVisibleAboveSheet(_ coordinate: CLLocationCoordinate2D) {
+    func ensureCoordinateVisibleAboveSheet(
+        _ coordinate: CLLocationCoordinate2D,
+        sheetHeightFraction: CGFloat = Self.noteSheetHeightFraction
+    ) {
         guard let mapView = mapViewRef else { return }
-        let sheetHeight = mapView.bounds.height * Self.noteSheetHeightFraction
+        let sheetHeight = mapView.bounds.height * sheetHeightFraction
         let visibleHeight = mapView.bounds.height - sheetHeight
         guard visibleHeight > 0 else { return }
 

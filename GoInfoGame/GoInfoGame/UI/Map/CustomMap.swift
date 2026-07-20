@@ -272,6 +272,13 @@ struct CustomMap: UIViewRepresentable {
     /// quest-answer sheet, which the coordinator dismisses itself via `isPresented`).
     var dismissOtherSheets: (() -> Void)?
 
+    /// Zoom level captured just before zooming in on a selected quest; MapView restores
+    /// it once the quest sheet is dismissed. `nil` when no quest-driven zoom is active.
+    @Binding var previousZoomLevel: Double?
+    /// Nudges the map so `coordinate` clears the quest sheet, called once the
+    /// select-a-quest zoom/pan animation finishes.
+    var ensureQuestVisibleAboveSheet: ((CLLocationCoordinate2D) -> Void)?
+
     func makeUIView(context: Context) -> MLNMapView {
         // Bundled StreetComplete style — shared with the Android app so both
         // platforms render the same map theme. Glyphs/sprite inside the style
@@ -983,13 +990,17 @@ struct CustomMap: UIViewRepresentable {
                 }
 
                 if let mapView = self.mapView {
-                    let bounds = mapView.visibleCoordinateBounds
-                    let latSpan = bounds.ne.latitude - bounds.sw.latitude
-                    let shifted = CLLocationCoordinate2D(
-                        latitude: coordinate.latitude - latSpan * 0.25,
-                        longitude: coordinate.longitude
-                    )
-                    mapView.setCenter(shifted, animated: true)
+                    // Remember the zoom level as it was before this quest was picked —
+                    // MapView restores it once the sheet is cancelled or submitted.
+                    if self.parent.previousZoomLevel == nil {
+                        self.parent.previousZoomLevel = mapView.zoomLevel
+                    }
+                    let targetZoom = min(19, mapView.maximumZoomLevel)
+                    mapView.setCenter(coordinate, zoomLevel: targetZoom, direction: -1, animated: true) {
+                        // Nudge only after the zoom/pan settles — the sheet-clearance
+                        // math needs the post-zoom camera to convert coordinates correctly.
+                        self.parent.ensureQuestVisibleAboveSheet?(coordinate)
+                    }
                 }
 
                 let loc = CLLocation(latitude: coordinate.latitude, longitude: coordinate.longitude)
