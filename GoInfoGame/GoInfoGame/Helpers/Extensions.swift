@@ -173,6 +173,17 @@ extension View {
             self
         }
     }
+
+    /// Lets the presenting view keep receiving touches (pan/zoom/tap) behind a
+    /// non-dismiss-disabled sheet, matching Apple Maps' search-sheet behavior.
+    @ViewBuilder
+    func allowMapInteractionBehindSheet() -> some View {
+        if #available(iOS 16.4, *) {
+            self.presentationBackgroundInteraction(.enabled)
+        } else {
+            self
+        }
+    }
 }
 
 // New: helper to focus the accessibility on a view when it appears.

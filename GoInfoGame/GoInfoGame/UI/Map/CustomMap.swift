@@ -262,6 +262,16 @@ struct CustomMap: UIViewRepresentable {
     @Binding var shadowRegions: [CoordinateBounds]
     @Binding var pendingAdditionCoordinate: CLLocationCoordinate2D?
 
+    /// True while a sheet that keeps the map interactive underneath it (satellite
+    /// picker, long-press action sheet, create note, add feature) is currently open.
+    /// Those sheets let taps reach the map, so a new selection can otherwise try to
+    /// present a second `.sheet()` on MapView while one is still up — SwiftUI can only
+    /// run one such transition at a time, which leaves both stuck.
+    var isAnySheetBlockingSelection: Bool = false
+    /// Closes every sheet covered by `isAnySheetBlockingSelection` (not including the
+    /// quest-answer sheet, which the coordinator dismisses itself via `isPresented`).
+    var dismissOtherSheets: (() -> Void)?
+
     func makeUIView(context: Context) -> MLNMapView {
         // Bundled StreetComplete style — shared with the Android app so both
         // platforms render the same map theme. Glyphs/sprite inside the style
@@ -475,7 +485,9 @@ struct CustomMap: UIViewRepresentable {
                 if parent.isMultiSelectModeEnabled {
                     handleMultiSelectAnnotation(quest)
                 } else {
-                    handleSingleSelect(annotation: quest, coordinate: quest.coordinate)
+                    presentAfterClearingOtherSheets { [weak self] in
+                        self?.handleSingleSelect(annotation: quest, coordinate: quest.coordinate)
+                    }
                 }
             }
         }
@@ -897,7 +909,9 @@ struct CustomMap: UIViewRepresentable {
 
             // Long press on empty area → add note/feature
             let coordinate = mapView.convert(point, toCoordinateFrom: mapView)
-            DispatchQueue.main.async { self.parent.tappedCoordinate = coordinate }
+            presentAfterClearingOtherSheets { [weak self] in
+                self?.parent.tappedCoordinate = coordinate
+            }
         }
 
         // MARK: UIGestureRecognizerDelegate
@@ -932,6 +946,25 @@ struct CustomMap: UIViewRepresentable {
                 } else {
                     self.parent.showMultiSelectionBottomSheet = true
                 }
+            }
+        }
+
+        /// Runs `present` immediately, unless another sheet with map background
+        /// interaction is already up — in which case it closes that sheet first and
+        /// waits out its dismiss animation before presenting. Skipping the wait when
+        /// nothing is open keeps the common case (map tap, nothing else showing) snappy;
+        /// running it when something is open avoids presenting a new `.sheet()` on
+        /// MapView while another is still mid-transition, which otherwise leaves both
+        /// stuck (old one never finishes dismissing, new one never appears).
+        private func presentAfterClearingOtherSheets(_ present: @escaping () -> Void) {
+            guard parent.isAnySheetBlockingSelection else {
+                DispatchQueue.main.async(execute: present)
+                return
+            }
+            DispatchQueue.main.async {
+                self.parent.isPresented = false
+                self.parent.dismissOtherSheets?()
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.3, execute: present)
             }
         }
 
