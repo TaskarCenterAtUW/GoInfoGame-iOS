@@ -28,7 +28,7 @@ struct MapView: View {
     @State private var alertIcon = ""
     @StateObject var contextualInfo = ContextualInfo.shared
 
-    @State private var selectedDetent: PresentationDetent = .fraction(0.8)
+    @State private var selectedDetent: PresentationDetent = .fraction(0.7)
     @State private var showPopover = false
 
     @AppStorage("baseUrl") var baseUrl = ""
@@ -53,6 +53,10 @@ struct MapView: View {
     @State private var showFilterQuestsSheet = false
     @State private var showElemntDeletedAlert = false
     @State private var activeConflict: PendingSyncConflict?
+
+    /// Zoom level captured right before zooming in on a selected quest, so it can be
+    /// restored once the quest sheet is dismissed (cancelled or submitted).
+    @State private var zoomLevelBeforeQuestSelection: Double?
 
     /// The sync button spins whenever either queue (failed quest elements or
     /// pending notes) is actively being drained, whichever started it.
@@ -84,13 +88,19 @@ struct MapView: View {
                         self.mapViewRef = map
                     },
                     contextualInfo: { info in
-                        selectedDetent = .fraction(0.8)
+                        selectedDetent = .fraction(0.7)
                         setContextualInfo(contextualinfo: info)
                     },
                     tappedCoordinate: $tappedCoordinate,
                     annotationCoordinate: $annotationCoordinate,
                     shadowRegions: $shadowRegions,
-                    pendingAdditionCoordinate: $pendingAdditionCoordinate
+                    pendingAdditionCoordinate: $pendingAdditionCoordinate,
+                    isAnySheetBlockingSelection: isAnySheetBlockingSelection,
+                    dismissOtherSheets: dismissOtherSheets,
+                    previousZoomLevel: $zoomLevelBeforeQuestSelection,
+                    ensureQuestVisibleAboveSheet: { coordinate in
+                        ensureCoordinateVisibleAboveSheet(coordinate, sheetHeightFraction: 0.7)
+                    }
                 )
                 .accessibilityHidden(enableAccessibility)
                 .onChange(of: tappedCoordinate) { _ in
@@ -231,7 +241,17 @@ struct MapView: View {
                             viewModel.isMultiSelectModeEnabled = false
                             viewModel.selectedAnnotaions = Set<DisplayUnitAnnotation>()
                         },
-                        onAnswerQuests: { isPresented = true }
+                        onAnswerQuests: {
+                            guard isAnySheetBlockingSelection else {
+                                isPresented = true
+                                return
+                            }
+                            isPresented = false
+                            dismissOtherSheets()
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                                isPresented = true
+                            }
+                        }
                     )
                     .transition(.move(edge: .bottom))
                     .animation(.easeInOut, value: viewModel.selectedAnnotaions.count)
@@ -249,7 +269,10 @@ struct MapView: View {
         .toolbar {
             ToolbarItem(placement: .topBarLeading) {
                 HStack(spacing: 10) {
-                    Button(action: { navigateToProfile = true }) {
+                    Button(action: {
+                        dismissOtherSheets()
+                        navigateToProfile = true
+                    }) {
                         Image(systemName: "person.fill")
                             .padding(8)
                             .foregroundStyle(Color.white)
@@ -321,6 +344,7 @@ struct MapView: View {
                     )
 
                     Button(action: {
+                        dismissOtherSheets()
                         viewModel.updateOptions(
                             for: mapViewRef?.centerCoordinate
                                 ?? CLLocationCoordinate2D(latitude: 0, longitude: 0)
@@ -337,7 +361,10 @@ struct MapView: View {
                             .accessibilityLabel(L10n.Localizable.mapModes)
                     }
 
-                    Button(action: { showUserSettingsSheet = true }) {
+                    Button(action: {
+                        dismissOtherSheets()
+                        showUserSettingsSheet = true
+                    }) {
                         Image(systemName: "gear")
                             .resizable()
                             .padding(8)
@@ -354,7 +381,13 @@ struct MapView: View {
             if !newValue { shouldShowPolyline = false }
         }
         .onChange(of: isPresented) { newValue in
-            if !newValue { shouldShowPolyline = false }
+            if !newValue {
+                shouldShowPolyline = false
+                if let previousZoom = zoomLevelBeforeQuestSelection {
+                    mapViewRef?.setZoomLevel(previousZoom, animated: true)
+                    zoomLevelBeforeQuestSelection = nil
+                }
+            }
         }
         .sheet(isPresented: $showManageQuestSheet) {
             ManageQuestsView()
@@ -382,6 +415,7 @@ struct MapView: View {
             .presentationDetents([.fraction(0.36)])
             .presentationDragIndicator(.visible)
             .applyPresentationSizingPage()
+            .allowMapInteractionBehindSheet()
         }
         .sheet(isPresented: $showUserSettingsSheet) {
             UserSettingsView(
@@ -433,6 +467,7 @@ struct MapView: View {
             .presentationDragIndicator(.hidden)
             .applyPresentationSizingPage()
             .focusAccessibilityOnAppear()
+            .allowMapInteractionBehindSheet()
         }
         .fullScreenCover(isPresented: $enableAccessibility) {
             AccessibilityModeView(mapViewModel: viewModel)
@@ -481,6 +516,7 @@ struct MapView: View {
                 .presentationDetents([.fraction(0.2)])
                 .presentationDragIndicator(.visible)
                 .applyPresentationSizingPage()
+                .allowMapInteractionBehindSheet()
                 .onDisappear {
                     // Covers swipe-to-dismiss without picking either option — if neither
                     // follow-up sheet ends up opening, the pin has nothing left to mark.
@@ -509,6 +545,7 @@ struct MapView: View {
             .presentationDetents([.fraction(0.6)])
             .presentationDragIndicator(.visible)
             .applyPresentationSizingPage()
+            .allowMapInteractionBehindSheet()
         }
         .sheet(isPresented: $showAddFeatureSheet) {
             AddFeatureView(
@@ -534,17 +571,19 @@ struct MapView: View {
             .presentationDetents([.fraction(0.6)])
             .presentationDragIndicator(.visible)
             .applyPresentationSizingPage()
+            .allowMapInteractionBehindSheet()
         }
         .sheet(isPresented: $isPresented) {
             QuestSheetView(viewModel: viewModel, annotationCoordinate: annotationCoordinate)
                 .onAppear { shouldShowPolyline = true }
-                .presentationDetents([.fraction(0.8), .fraction(0.5), .fraction(0.1)],
+                .presentationDetents([.fraction(0.7), .fraction(0.5), .fraction(0.1)],
                                      selection: $selectedDetent)
                 .presentationDragIndicator(.visible)
                 .scrollDisabled(false)
                 .interactiveDismissDisabled()
                 .environmentObject(contextualInfo)
                 .applyPresentationSizingPage()
+                .allowMapInteractionBehindSheet()
         }
         .onReceive(MapViewPublisher.shared.dismissSheet) { scenario in
             isPresented = false
@@ -612,6 +651,25 @@ struct MapView: View {
 
     // MARK: – Helpers
 
+    /// True while a sheet that keeps the map interactive underneath it is open.
+    /// Those sheets let taps reach the map, so CustomMap uses this to avoid presenting
+    /// a second `.sheet()` on this view while one is already mid-presentation.
+    private var isAnySheetBlockingSelection: Bool {
+        isPresented || showMapLongPressedSheet || showCreateNoteSheet ||
+            showAddFeatureSheet || viewModel.showSatellitePicker || showUserSettingsSheet
+    }
+
+    /// Force-closes every sheet tracked by `isAnySheetBlockingSelection`, except the
+    /// quest-answer sheet (`isPresented`), which callers dismiss themselves so they can
+    /// re-present it right after.
+    private func dismissOtherSheets() {
+        showMapLongPressedSheet = false
+        showCreateNoteSheet = false
+        showAddFeatureSheet = false
+        viewModel.showSatellitePicker = false
+        showUserSettingsSheet = false
+    }
+
     /// Both the long-press action sheet and the Create Note/Add Feature sheets that
     /// follow it use a 0.6-fraction bottom sheet at most — panning for that worst case
     /// up front means the pin never gets covered as the user moves between them.
@@ -619,9 +677,12 @@ struct MapView: View {
 
     /// If `coordinate` would currently be hidden behind the bottom sheet, pans the map
     /// just enough to bring it into the remaining visible band above the sheet.
-    func ensureCoordinateVisibleAboveSheet(_ coordinate: CLLocationCoordinate2D) {
+    func ensureCoordinateVisibleAboveSheet(
+        _ coordinate: CLLocationCoordinate2D,
+        sheetHeightFraction: CGFloat = Self.noteSheetHeightFraction
+    ) {
         guard let mapView = mapViewRef else { return }
-        let sheetHeight = mapView.bounds.height * Self.noteSheetHeightFraction
+        let sheetHeight = mapView.bounds.height * sheetHeightFraction
         let visibleHeight = mapView.bounds.height - sheetHeight
         guard visibleHeight > 0 else { return }
 
@@ -681,7 +742,10 @@ struct MapView: View {
     private func degreesToRadians(_ d: Double) -> Double { d * .pi / 180.0 }
 
     private var accessbilityButton: some View {
-        Button(action: { enableAccessibility = true }) {
+        Button(action: {
+            dismissOtherSheets()
+            enableAccessibility = true
+        }) {
             Image("accessibility")
                 .resizable()
                 .padding(8)
