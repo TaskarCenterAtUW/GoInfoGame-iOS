@@ -435,7 +435,17 @@ private extension QuestOptions {
             switch tag {
             case "width": return .width
             case "incline": return .runningSlope
-            case "ext:ac:crossing-slope": return .crossSlope
+            case "ext:ac:cross-slope": return .crossSlope
+            case "ext:ac:surface-integrity": return .surfaceIntegrity
+            case "ext:ac:surface-disruption": return .surfaceDisruption
+            case "ext:ac:height-from-ground": return .heightFromGround
+            case "ext:ac:lidar-depth": return .lidarDepth
+//            case "ext:ac:width-legacy": return .widthLegacy
+//            case "ext:ac:running-slope-legacy": return .runningSlopeLegacy
+//            case "ext:ac:cross-slope-legacy": return .crossSlopeLegacy
+//            case "ext:ac:width-from-image": return .widthFromImage
+//            case "ext:ac:running-slope-from-image": return .runningSlopeFromImage
+//            case "ext:ac:cross-slope-from-image": return .crossSlopeFromImage
             default: return nil
             }
         }
