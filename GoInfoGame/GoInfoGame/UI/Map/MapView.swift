@@ -54,13 +54,26 @@ struct MapView: View {
     @State private var showElemntDeletedAlert = false
     @State private var activeConflict: PendingSyncConflict?
 
-    /// Zoom level captured right before zooming in on a selected quest, so it can be
-    /// restored once the quest sheet is dismissed (cancelled or submitted).
+    /// Zoom level and camera center captured right before zooming in on a selected
+    /// quest, so the whole camera can be restored once the quest sheet is dismissed
+    /// (cancelled or submitted) — not just the zoom.
     @State private var zoomLevelBeforeQuestSelection: Double?
+    @State private var screenWidth: CGFloat = UIScreen.main.bounds.width
+    @State private var centerBeforeQuestSelection: CLLocationCoordinate2D?
 
     /// The sync button spins whenever either queue (failed quest elements or
     /// pending notes) is actively being drained, whichever started it.
     private var isSyncing: Bool { isSyncingElements || isSyncingNotes }
+
+    /// Scales with `screenWidth` so it always leaves room for the fixed-size profile icon/divider
+    /// and the 4 trailing bar buttons, without depending on navigation/transition state.
+    private var workspaceTitleWidth: CGFloat {
+        let leadingFixedWidth: CGFloat = 75   // spacing (20) + profile icon (34) + spacing (10) + divider (1) + spacing (10)
+        let trailingFixedWidth: CGFloat = 151 // 4 icons (34 each) + 3 gaps (5 each)
+        let barPadding: CGFloat = 32          // navigation bar leading/trailing padding
+        let available = screenWidth - leadingFixedWidth - trailingFixedWidth - barPadding
+        return min(max(available, 80), 220)
+    }
 
     var body: some View {
         NavigationStack {
@@ -98,9 +111,11 @@ struct MapView: View {
                     isAnySheetBlockingSelection: isAnySheetBlockingSelection,
                     dismissOtherSheets: dismissOtherSheets,
                     previousZoomLevel: $zoomLevelBeforeQuestSelection,
+                    previousCenter: $centerBeforeQuestSelection,
                     ensureQuestVisibleAboveSheet: { coordinate in
-                        ensureCoordinateVisibleAboveSheet(coordinate, sheetHeightFraction: 0.7)
-                    }
+                        ensureCoordinateVisibleAboveSheet(coordinate, sheetHeightFraction: Self.questSheetHeightFraction)
+                    },
+                    questPathEdgePadding: questPathEdgePadding
                 )
                 .accessibilityHidden(enableAccessibility)
                 .onChange(of: tappedCoordinate) { _ in
@@ -262,6 +277,13 @@ struct MapView: View {
             } message: {
                 Text("The map area is too large. Please zoom in and try again.")
             }
+            .background(
+                GeometryReader { proxy in
+                    Color.clear
+                        .onAppear { screenWidth = proxy.size.width }
+                        .onChange(of: proxy.size.width) { screenWidth = $0 }
+                }
+            )
         }
         .environmentObject(contextualInfo)
         .navigationBarHidden(isPresented)
@@ -308,12 +330,17 @@ struct MapView: View {
                                     .multilineTextAlignment(.leading)
                             }
                         }
+                        // Fixed size so the toolbar measures this item identically on every layout pass
+                        // (an unconstrained ScrollView was sized ambiguously, which is what caused the
+                        // leading toolbar content to shift/wrap differently after returning from Profile).
+                        // Width scales with screen size via `workspaceTitleWidth`; scrolling is preserved
+                        // so the full title stays reachable at larger Dynamic Type sizes.
+                        .frame(width: workspaceTitleWidth, height: 34)
                         .accessibilityElement(children: .combine)
                         .accessibilityLabel("\(L10n.Localizable.workspace): \(selectedWorkspace.title)")
                     }
                 }
             }
-            ToolbarItem(placement: .topBarLeading) { }
 
             ToolbarItem(placement: .navigationBarTrailing) {
                 HStack(spacing: 5.0) {
@@ -384,8 +411,15 @@ struct MapView: View {
             if !newValue {
                 shouldShowPolyline = false
                 if let previousZoom = zoomLevelBeforeQuestSelection {
-                    mapViewRef?.setZoomLevel(previousZoom, animated: true)
+                    if let previousCenter = centerBeforeQuestSelection {
+                        // Animate center and zoom together so the camera eases back to
+                        // exactly where it was, instead of zooming out in place first.
+                        mapViewRef?.setCenter(previousCenter, zoomLevel: previousZoom, animated: true)
+                    } else {
+                        mapViewRef?.setZoomLevel(previousZoom, animated: true)
+                    }
                     zoomLevelBeforeQuestSelection = nil
+                    centerBeforeQuestSelection = nil
                 }
             }
         }
@@ -674,6 +708,19 @@ struct MapView: View {
     /// follow it use a 0.6-fraction bottom sheet at most — panning for that worst case
     /// up front means the pin never gets covered as the user moves between them.
     private static let noteSheetHeightFraction: CGFloat = 0.6
+
+    /// The quest-answer sheet's initial on-screen height (matches its `.fraction(0.7)`
+    /// starting detent) — used to keep a selected element, or its full path, clear of
+    /// the sheet when it's first presented.
+    private static let questSheetHeightFraction: CGFloat = 0.7
+
+    /// Edge padding for fitting a selected way's full path in view: generous enough on
+    /// the sides/top to keep it off the screen edges, with extra bottom room for the
+    /// quest sheet.
+    func questPathEdgePadding() -> UIEdgeInsets {
+        let sheetHeight = (mapViewRef?.bounds.height ?? 0) * Self.questSheetHeightFraction
+        return UIEdgeInsets(top: 60, left: 40, bottom: sheetHeight + 40, right: 40)
+    }
 
     /// If `coordinate` would currently be hidden behind the bottom sheet, pans the map
     /// just enough to bring it into the remaining visible band above the sheet.

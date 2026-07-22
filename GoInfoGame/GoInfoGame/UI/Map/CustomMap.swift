@@ -275,9 +275,16 @@ struct CustomMap: UIViewRepresentable {
     /// Zoom level captured just before zooming in on a selected quest; MapView restores
     /// it once the quest sheet is dismissed. `nil` when no quest-driven zoom is active.
     @Binding var previousZoomLevel: Double?
+    /// Camera center captured alongside `previousZoomLevel`, so MapView can restore the
+    /// whole camera (not just zoom) once the quest sheet is dismissed.
+    @Binding var previousCenter: CLLocationCoordinate2D?
     /// Nudges the map so `coordinate` clears the quest sheet, called once the
     /// select-a-quest zoom/pan animation finishes.
     var ensureQuestVisibleAboveSheet: ((CLLocationCoordinate2D) -> Void)?
+    /// Edge padding to use when fitting a selected way's full path in view — the
+    /// bottom side accounts for the quest sheet, sized by MapView (the single source
+    /// of truth for the sheet's on-screen height).
+    var questPathEdgePadding: (() -> UIEdgeInsets)?
 
     func makeUIView(context: Context) -> MLNMapView {
         // Bundled StreetComplete style — shared with the Android app so both
@@ -975,6 +982,35 @@ struct CustomMap: UIViewRepresentable {
             }
         }
 
+        /// Fits the full path (plus the tapped point, in case it isn't exactly on the
+        /// line) in view with padding, capping the zoom-in at 19 — unless the user was
+        /// already zoomed in past 19 before selecting, in which case their closer zoom
+        /// is respected instead of forcing the view back out to fit the whole path.
+        private func fitPath(_ pathCoordinates: [CLLocationCoordinate2D],
+                             focusCoordinate: CLLocationCoordinate2D,
+                             mapView: MLNMapView,
+                             previousZoom: Double) {
+            var minLat = focusCoordinate.latitude, maxLat = focusCoordinate.latitude
+            var minLon = focusCoordinate.longitude, maxLon = focusCoordinate.longitude
+            for coordinate in pathCoordinates {
+                minLat = min(minLat, coordinate.latitude)
+                maxLat = max(maxLat, coordinate.latitude)
+                minLon = min(minLon, coordinate.longitude)
+                maxLon = max(maxLon, coordinate.longitude)
+            }
+            let bounds = MLNCoordinateBounds(
+                sw: CLLocationCoordinate2D(latitude: minLat, longitude: minLon),
+                ne: CLLocationCoordinate2D(latitude: maxLat, longitude: maxLon)
+            )
+            let padding = parent.questPathEdgePadding?()
+                ?? UIEdgeInsets(top: 60, left: 40, bottom: 40, right: 40)
+
+            mapView.setVisibleCoordinateBounds(bounds, edgePadding: padding, animated: true) {
+                guard previousZoom <= 19, mapView.zoomLevel > 19 else { return }
+                mapView.setZoomLevel(min(19, mapView.maximumZoomLevel), animated: true)
+            }
+        }
+
         private func handleSingleSelect(annotation: DisplayUnitAnnotation,
                                         coordinate: CLLocationCoordinate2D) {
             DispatchQueue.main.async {
@@ -982,7 +1018,8 @@ struct CustomMap: UIViewRepresentable {
                 self.parent.selectedQuest = annotation.displayUnit
                 self.parent.isPresented = true
 
-                if let polyline = annotation.displayUnit?.parent?.polylines {
+                let polyline = annotation.displayUnit?.parent?.polylines
+                if let polyline {
                     self.parent.lineCoordinates = polyline
                     self.parent.shouldShowPolyline = true
                 } else {
@@ -990,16 +1027,24 @@ struct CustomMap: UIViewRepresentable {
                 }
 
                 if let mapView = self.mapView {
-                    // Remember the zoom level as it was before this quest was picked —
+                    // Remember the camera as it was before this quest was picked —
                     // MapView restores it once the sheet is cancelled or submitted.
                     if self.parent.previousZoomLevel == nil {
                         self.parent.previousZoomLevel = mapView.zoomLevel
+                        self.parent.previousCenter = mapView.centerCoordinate
                     }
-                    let targetZoom = min(19, mapView.maximumZoomLevel)
-                    mapView.setCenter(coordinate, zoomLevel: targetZoom, direction: -1, animated: true) {
-                        // Nudge only after the zoom/pan settles — the sheet-clearance
-                        // math needs the post-zoom camera to convert coordinates correctly.
-                        self.parent.ensureQuestVisibleAboveSheet?(coordinate)
+                    let previousZoom = self.parent.previousZoomLevel ?? mapView.zoomLevel
+
+                    if let polyline, polyline.count > 1 {
+                        self.fitPath(polyline, focusCoordinate: coordinate,
+                                    mapView: mapView, previousZoom: previousZoom)
+                    } else {
+                        let targetZoom = min(19, mapView.maximumZoomLevel)
+                        mapView.setCenter(coordinate, zoomLevel: targetZoom, direction: -1, animated: true) {
+                            // Nudge only after the zoom/pan settles — the sheet-clearance
+                            // math needs the post-zoom camera to convert coordinates correctly.
+                            self.parent.ensureQuestVisibleAboveSheet?(coordinate)
+                        }
                     }
                 }
 
