@@ -35,7 +35,8 @@ struct QuestOptions: View {
         case .multipleChoice:
             MultipleChoiceView(
                 options: questOptions,
-                selectedChoice: $selectedChoice
+                selectedChoice: $selectedChoice,
+                uploadPhoto: uploadPhoto
             )
             
         case .numeric:

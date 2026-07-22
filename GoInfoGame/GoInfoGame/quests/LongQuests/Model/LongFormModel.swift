@@ -108,18 +108,6 @@ struct LongQuest: Codable, Identifiable {
         }
     }
     
-    func getQtype() -> QuestType {
-        if (self.questType == .exclusiveChoice) {
-            // Do the choice shit and get the type
-        }
-        else {
-            return self.questType
-        }
-        // loop through choice images . If all are none, send back text type
-        // If one or more is image, send back image
-        return self.questType
-    }
-    
     func getQuestTitleVoiceOver() -> String {
         if questType == .exclusiveChoice {
             return questTitle + "Only one item can be selected."
