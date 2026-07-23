@@ -26,11 +26,11 @@ enum APIEnvironment: String, CaseIterable {
     var loginBaseURL: String {
         switch self {
         case .development:
-            return "https://tdei-api-dev.azurewebsites.net/api/v1"
+            return "https://portal-api-dev.tdei.us/api/v1"
         case .staging:
-            return "https://tdei-gateway-stage.azurewebsites.net/api/v1"
+            return "https://portal-api-stage.tdei.us/api/v1"
         case .production:
-            return "https://tdei-gateway-prod.azurewebsites.net/api/v1"
+            return "https://portal-api.tdei.us/api/v1"
         }
     }
     
