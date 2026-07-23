@@ -29,7 +29,9 @@ struct Workspace: Decodable {
     let externalAppAccess: Int
     let imageryList: SatelliteServers?
     let longFormQuest: LongFormResponse?
-    
+    let tdeiProjectGroupId: String?
+    let createdAt: String?
+
     init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         id = try container.decode(Int.self, forKey: .id)
@@ -38,12 +40,41 @@ struct Workspace: Decodable {
         externalAppAccess = try container.decode(Int.self, forKey: .externalAppAccess)
         imageryList = try container.decodeIfPresent(SatelliteServers.self, forKey: .imageryList)
         longFormQuest = try container.decodeIfPresent(LongFormResponse.self, forKey: .longFormQuest)
+        tdeiProjectGroupId = try container.decodeIfPresent(String.self, forKey: .tdeiProjectGroupId)
+        createdAt = try container.decodeIfPresent(String.self, forKey: .createdAt)
     }
 
     enum CodingKeys: String, CodingKey {
-        case id, title, type, externalAppAccess
+        case id, title, type, externalAppAccess, tdeiProjectGroupId, createdAt
         case imageryList = "imageryListDef"
         case longFormQuest = "longFormQuestDef"
+    }
+
+    private static let iso8601WithFractionalSeconds: ISO8601DateFormatter = {
+        let formatter = ISO8601DateFormatter()
+        formatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
+        return formatter
+    }()
+
+    private static let iso8601: ISO8601DateFormatter = {
+        let formatter = ISO8601DateFormatter()
+        formatter.formatOptions = [.withInternetDateTime]
+        return formatter
+    }()
+
+    private static let displayDateFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.dateStyle = .medium
+        formatter.timeStyle = .none
+        return formatter
+    }()
+
+    // Human-readable creation date shown under the workspace title, e.g. "Sep 12, 2025".
+    var createdDateDisplay: String? {
+        guard let createdAt else { return nil }
+        guard let date = Workspace.iso8601WithFractionalSeconds.date(from: createdAt)
+                ?? Workspace.iso8601.date(from: createdAt) else { return nil }
+        return Workspace.displayDateFormatter.string(from: date)
     }
 }
 

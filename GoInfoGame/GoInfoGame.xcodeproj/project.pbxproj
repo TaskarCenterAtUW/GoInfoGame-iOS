@@ -3,11 +3,10 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 70;
+	objectVersion = 56;
 	objects = {
 
 /* Begin PBXBuildFile section */
-		846A32C3BB81E3C29B621792 /* map_theme in Resources */ = {isa = PBXBuildFile; fileRef = 30877432D1026706D7E805DA /* map_theme */; };
 		0536DD852B0BD11A00B04C4B /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0536DD842B0BD11A00B04C4B /* LoginViewController.swift */; };
 		0536DD8C2B0BD2C200B04C4B /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0536DD8B2B0BD2C200B04C4B /* Constants.swift */; };
 		0536DD922B0BD58800B04C4B /* OAuthService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0536DD912B0BD58800B04C4B /* OAuthService.swift */; };
@@ -28,6 +27,7 @@
 		342561966FC217124BD9CFE7 /* Pods_GoInfoGame_GoInfoGameUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2D539E22EFF6636F8CBA035A /* Pods_GoInfoGame_GoInfoGameUITests.framework */; };
 		70CFF415C62865D5A2F409AD /* NoteImageStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86C5ED636FC6D3C98650F231 /* NoteImageStorage.swift */; };
 		74D8E739AE340D54DEF2E74C /* Pods_GoInfoGameTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 066F85ADCDCE7357368131F8 /* Pods_GoInfoGameTests.framework */; };
+		846A32C3BB81E3C29B621792 /* map_theme in Resources */ = {isa = PBXBuildFile; fileRef = 30877432D1026706D7E805DA /* map_theme */; };
 		94364F3654B754DC7499335C /* StoredNoteDraft.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16DDF6D11556A5A5F2F1C860 /* StoredNoteDraft.swift */; };
 		970D5BD12B62B61300C20BE7 /* MapViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 970D5BD02B62B61300C20BE7 /* MapViewController.swift */; };
 		970D5BD32B67638500C20BE7 /* MapViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 970D5BD22B67638400C20BE7 /* MapViewModel.swift */; };
@@ -181,6 +181,8 @@
 		C78737AF2E4C9E3B00289D13 /* FloatingLabelTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = C78737AE2E4C9E3200289D13 /* FloatingLabelTextField.swift */; };
 		C787B2FE2FECE5E80026C40E /* MapLibre in Frameworks */ = {isa = PBXBuildFile; productRef = C787B2FD2FECE5E80026C40E /* MapLibre */; };
 		C787F3422E9CD34F00BEF0A6 /* ForceUpdateManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C787F3412E9CD34900BEF0A6 /* ForceUpdateManager.swift */; };
+		C78D169830122D8900B177AE /* JWTDecoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = C78D169730122D8900B177AE /* JWTDecoder.swift */; };
+		C78D169A30122DB200B177AE /* ProjectGroupRole.swift in Sources */ = {isa = PBXBuildFile; fileRef = C78D169930122DB200B177AE /* ProjectGroupRole.swift */; };
 		C78E8BC22EDF20E6002215C0 /* UndoItemConfirmationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C78E8BC12EDF20E6002215C0 /* UndoItemConfirmationView.swift */; };
 		C78E8BC42EDF2D55002215C0 /* EditedTagView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C78E8BC32EDF2D55002215C0 /* EditedTagView.swift */; };
 		C7927B552E42363000A7A34E /* XCAssets+Generated.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7927B532E42363000A7A34E /* XCAssets+Generated.swift */; };
@@ -371,6 +373,7 @@
 		18EC425B2B84987200DE05D7 /* TactilePavingCrosswalkForm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TactilePavingCrosswalkForm.swift; sourceTree = "<group>"; };
 		18EC425D2B849FE000DE05D7 /* TactilePavingCrosswalk.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TactilePavingCrosswalk.swift; sourceTree = "<group>"; };
 		2D539E22EFF6636F8CBA035A /* Pods_GoInfoGame_GoInfoGameUITests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_GoInfoGame_GoInfoGameUITests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		30877432D1026706D7E805DA /* map_theme */ = {isa = PBXFileReference; lastKnownFileType = folder; path = map_theme; sourceTree = "<group>"; };
 		3D797A45474D6135AFA24613 /* Pods-GoInfoGameTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-GoInfoGameTests.debug.xcconfig"; path = "Target Support Files/Pods-GoInfoGameTests/Pods-GoInfoGameTests.debug.xcconfig"; sourceTree = "<group>"; };
 		66BED441AF03CC04539E8D4A /* Pods_GoInfoGame.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_GoInfoGame.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		79F024C6DD9B31E354C41ED3 /* Pods-osmapi.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-osmapi.debug.xcconfig"; path = "Target Support Files/Pods-osmapi/Pods-osmapi.debug.xcconfig"; sourceTree = "<group>"; };
@@ -558,6 +561,8 @@
 		C78737AE2E4C9E3200289D13 /* FloatingLabelTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FloatingLabelTextField.swift; sourceTree = "<group>"; };
 		C787EF162E9676CC00BEF0A6 /* GoInfoGame.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = GoInfoGame.entitlements; sourceTree = "<group>"; };
 		C787F3412E9CD34900BEF0A6 /* ForceUpdateManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForceUpdateManager.swift; sourceTree = "<group>"; };
+		C78D169730122D8900B177AE /* JWTDecoder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JWTDecoder.swift; sourceTree = "<group>"; };
+		C78D169930122DB200B177AE /* ProjectGroupRole.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProjectGroupRole.swift; sourceTree = "<group>"; };
 		C78E8BC12EDF20E6002215C0 /* UndoItemConfirmationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UndoItemConfirmationView.swift; sourceTree = "<group>"; };
 		C78E8BC32EDF2D55002215C0 /* EditedTagView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditedTagView.swift; sourceTree = "<group>"; };
 		C7927B532E42363000A7A34E /* XCAssets+Generated.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "XCAssets+Generated.swift"; sourceTree = "<group>"; };
@@ -654,7 +659,6 @@
 		FAFDA20F2C6F592700ECEAE9 /* UserProfileViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfileViewModel.swift; sourceTree = "<group>"; };
 		FAFDA2112C6F64E800ECEAE9 /* UserProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfileView.swift; sourceTree = "<group>"; };
 		FAFDA2132C7351CB00ECEAE9 /* APIError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIError.swift; sourceTree = "<group>"; };
-		30877432D1026706D7E805DA /* map_theme */ = {isa = PBXFileReference; lastKnownFileType = folder; path = map_theme; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -761,6 +765,7 @@
 		0536DD952B0BD91F00B04C4B /* Network */ = {
 			isa = PBXGroup;
 			children = (
+				C78D169730122D8900B177AE /* JWTDecoder.swift */,
 				C71EB5B52E2100E30009E610 /* APIHandler */,
 				A48037342BBA8DCB007EE7E4 /* models */,
 				0536DD962B0BD95100B04C4B /* URLSession+Extension.swift */,
@@ -1152,6 +1157,7 @@
 		A48037342BBA8DCB007EE7E4 /* models */ = {
 			isa = PBXGroup;
 			children = (
+				C78D169930122DB200B177AE /* ProjectGroupRole.swift */,
 				A48037352BBA8DDC007EE7E4 /* WorkspacesResponse.swift */,
 			);
 			path = models;
@@ -2445,6 +2451,7 @@
 				C7BA83542E3C9C3600755BA7 /* QuestSyncButton.swift in Sources */,
 				05CB71E02B0FAFD200DED821 /* GenericUIViewControllerRepresentable.swift in Sources */,
 				FAD5C4F32AFCBE700040C61A /* AppDelegate.swift in Sources */,
+				C78D169830122D8900B177AE /* JWTDecoder.swift in Sources */,
 				05DBBB622B164D9A00B6F110 /* RealOPElement.swift in Sources */,
 				97AC1C0A2B6B7F10004F0BF4 /* CustomVerticalButtonsList.swift in Sources */,
 				FAE258522D3A780F00D2BB12 /* FloatingActionButton.swift in Sources */,
@@ -2470,6 +2477,7 @@
 				FAE481A42DD5F97800149A48 /* PasswordAuthenticationViewModel.swift in Sources */,
 				971342772BBD415600174EBF /* InitialViewController.swift in Sources */,
 				A40004EC2B62338400AF21FB /* AppQuestManager.swift in Sources */,
+				C78D169A30122DB200B177AE /* ProjectGroupRole.swift in Sources */,
 				FA51484E2D76ED6C00C0D35B /* NotesViewModel.swift in Sources */,
 				FAFDA2062C6E8D7A00ECEAE9 /* APIEndPoint.swift in Sources */,
 				C74AC4152EE198B50036E2C5 /* NoEditsView.swift in Sources */,

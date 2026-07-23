@@ -23,7 +23,47 @@ class InitialViewModel: ObservableObject {
     @Published var biometricIDErrorMessage: String?
     private(set) var currentLocation: CLLocationCoordinate2D?
 
-    
+    @Published var searchText: String = ""
+    // nil means "All project groups"
+    @Published var selectedProjectGroupId: String? = nil
+    // tdeiProjectGroupId -> project_group_name, fetched separately from /project-group-roles.
+    @Published var projectGroupNamesById: [String: String] = [:]
+
+    // Workspaces eligible to be shown/selected, before search/project-group filtering.
+    var eligibleWorkspaces: [Workspace] {
+        workspaces?.filter { $0.type == "osw" && $0.externalAppAccess == 1 } ?? []
+    }
+
+    // Unique tdeiProjectGroupIds available for the current workspaces, for the filter dropdown.
+    var projectGroupIds: [String] {
+        Array(Set(eligibleWorkspaces.compactMap { $0.tdeiProjectGroupId })).sorted()
+    }
+
+    // Workspaces after applying the selected project group and search text.
+    var filteredWorkspaces: [Workspace] {
+        var result = eligibleWorkspaces
+        if let selectedProjectGroupId {
+            result = result.filter { $0.tdeiProjectGroupId == selectedProjectGroupId }
+        }
+        let trimmedSearch = searchText.trimmingCharacters(in: .whitespacesAndNewlines)
+        if !trimmedSearch.isEmpty {
+            result = result.filter { $0.title.localizedCaseInsensitiveContains(trimmedSearch) }
+        }
+        return result
+    }
+
+    func clearFilters() {
+        searchText = ""
+        selectedProjectGroupId = nil
+    }
+
+    // Display name for the project group dropdown; falls back to the raw id if the
+    // name hasn't loaded yet (or failed to load) so filtering still works either way.
+    func projectGroupDisplayName(for groupId: String?) -> String {
+        guard let groupId else { return "All" }
+        return projectGroupNamesById[groupId] ?? groupId
+    }
+
     init() {
         locationManagerDelegate.locationUpdateHandler = { [weak self] location in
             guard let self = self else { return }
@@ -31,14 +71,37 @@ class InitialViewModel: ObservableObject {
             fetchWorkspacesList(location: location)
             locationManagerDelegate.stopUpdatingLocation()
         }
-        
+
         locationManagerDelegate.requestLocationAuthorization()
         locationManagerDelegate.startUpdatingLocation()
+        fetchProjectGroupRoles()
+    }
+
+    // Fetches project group names so the dropdown can show human-readable names instead of raw ids.
+    // Non-fatal on failure: the filter dropdown just falls back to showing the raw tdeiProjectGroupId.
+    func fetchProjectGroupRoles() {
+        guard let accessToken = KeychainManager.load(key: "accessToken"),
+              let userId = JWTDecoder.subject(fromToken: accessToken) else {
+            print("Unable to resolve user id from access token; project group filter will show raw ids.")
+            return
+        }
+
+        ApiManager.shared.performRequest(to: .fetchProjectGroupRoles(userId, accessToken), setupType: .login, modelType: [ProjectGroupRole].self) { [weak self] result in
+            DispatchQueue.main.async {
+                switch result {
+                case .success(let roles):
+                    self?.projectGroupNamesById = Dictionary(roles.map { ($0.tdeiProjectGroupId, $0.projectGroupName) }, uniquingKeysWith: { first, _ in first })
+                case .failure(let error):
+                    print("Error fetching project group roles: \(error)")
+                }
+            }
+        }
     }
 
     // fetch workspaces list
     func fetchWorkspacesList(location: CLLocationCoordinate2D) {
         self.isLoading = true
+        self.clearFilters()
         if let accessToken = KeychainManager.load(key: "accessToken") {
             ApiManager.shared.performRequest(to: .fetchWorkspaceList(location, 20000, true, accessToken), setupType: .workspace, modelType: [Workspace].self) { result in
             

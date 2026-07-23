@@ -30,6 +30,13 @@ struct APIEndpoint {
         
     }
     
+    static let fetchProjectGroupRoles = { (userId: String, accessToken: String) in
+        let header = [
+            "Authorization": "Bearer \(accessToken)"
+        ]
+        return APIEndpoint(path: "/project-group-roles/\(userId)?page_size=10000&page_no=1&sort_by=name", method: "GET", body: nil, headers: header, formData: nil)
+    }
+
     static let fetchWorkspaceList = { (location: CLLocationCoordinate2D, radius: Int, gig_only: Bool, accessToken: String) in
            
             let header = [
