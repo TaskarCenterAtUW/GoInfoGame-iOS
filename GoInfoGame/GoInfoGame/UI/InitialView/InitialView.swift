@@ -11,28 +11,79 @@ struct InitialView: View {
     @StateObject private var viewModel = InitialViewModel()
     @State private var shouldNavigateToMapView = false
     @State private var selectedWorkspace: Workspace? = nil
+    @State private var isSearchActive = false
+    @FocusState private var isSearchFieldFocused: Bool
     @AppStorage("loggedIn") private var loggedIn: Bool = false
-    
+
     var body: some View {
         NavigationStack {
             ZStack {
                 VStack {
                     HStack {
-                        NavigationLink(destination: UserProfileView()) {
-                            Image(systemName: "person.fill")
-                                .resizable()
-                                .padding(8)
-                                .foregroundStyle(Color.white)
-                                .background {
-                                    LinearGradient(gradient: Gradient(colors: [Asset.Colors._8F57DEProfileIcon.swiftUIColor, Asset.Colors._2D0369ProfileIcon.swiftUIColor,]), startPoint: .top, endPoint: .bottom)
-                                }
-                                .frame(width: 34, height: 34)
-                                .clipShape(Circle())
-                                .accessibilityLabel(L10n.Localizable.profile)
+                        if !isSearchActive {
+                            NavigationLink(destination: UserProfileView()) {
+                                Image(systemName: "person.fill")
+                                    .resizable()
+                                    .padding(8)
+                                    .foregroundStyle(Color.white)
+                                    .background {
+                                        LinearGradient(gradient: Gradient(colors: [Asset.Colors._8F57DEProfileIcon.swiftUIColor, Asset.Colors._2D0369ProfileIcon.swiftUIColor,]), startPoint: .top, endPoint: .bottom)
+                                    }
+                                    .frame(width: 34, height: 34)
+                                    .clipShape(Circle())
+                                    .accessibilityLabel(L10n.Localizable.profile)
+                            }
                         }
-                        Spacer()
+
+                        if isSearchActive {
+                            HStack {
+                                Image(systemName: "magnifyingglass")
+                                    .foregroundColor(.gray)
+                                TextField("Search workspaces by title", text: $viewModel.searchText)
+                                    .font(.custom("Lato-Regular", size: 16, relativeTo: .body))
+                                    .textInputAutocapitalization(.never)
+                                    .disableAutocorrection(true)
+                                    .focused($isSearchFieldFocused)
+                                    .accessibilityLabel("Search workspaces by title")
+                                if !viewModel.searchText.isEmpty {
+                                    Button {
+                                        viewModel.searchText = ""
+                                    } label: {
+                                        Image(systemName: "xmark.circle.fill")
+                                            .foregroundColor(.gray)
+                                    }
+                                    .accessibilityLabel("Clear search text")
+                                }
+                            }
+                            .padding(8)
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 10)
+                                    .stroke(Color(.systemGray4), lineWidth: 1)
+                            )
+                            .transition(.move(edge: .trailing).combined(with: .opacity))
+                        } else {
+                            Spacer()
+                        }
+
+                        Button {
+                            withAnimation {
+                                isSearchActive.toggle()
+                                if isSearchActive {
+                                    isSearchFieldFocused = true
+                                } else {
+                                    viewModel.searchText = ""
+                                }
+                            }
+                        } label: {
+                            Image(systemName: isSearchActive ? "xmark.circle.fill" : "magnifyingglass")
+                                .resizable()
+                                .scaledToFit()
+                                .frame(width: 20, height: 20)
+                                .foregroundStyle(Asset.Colors.huskyPurple.swiftUIColor)
+                        }
+                        .accessibilityLabel(isSearchActive ? "Close search" : "Search workspaces")
                     }
-                                        
+
                     VStack(spacing: 20) {
                         Asset.workspacesLogo.swiftUIImage
                             .resizable()
@@ -43,7 +94,7 @@ struct InitialView: View {
                             .foregroundStyle(Asset.Colors.huskyPurple.swiftUIColor)
                     }
                     .padding()
-                                        
+
                     WorkspacesListView(viewModel: viewModel, shouldNavigateToMapView: $shouldNavigateToMapView, selectedWorkspace: $selectedWorkspace, isLoading: $viewModel.isLoading)
                 }
                 .padding()
@@ -68,14 +119,14 @@ struct WorkspacesListView: View {
     @ObservedObject var viewModel: InitialViewModel
     @Binding var shouldNavigateToMapView: Bool
     @Binding var selectedWorkspace: Workspace?
-    
+
     @Binding var isLoading: Bool
-    
+
     @State private var showAlert = false
-    
+
     @State private var alertMessage = ""
     @State private var autoRedirectToMapViewError: String?
-    
+
     var body: some View {
         
         if viewModel.workspaces?.count == 1,
@@ -154,30 +205,6 @@ struct WorkspacesListView: View {
                         .font(.system(.body, design: .rounded))
                         .foregroundColor(Asset.Colors.huskyPurple.swiftUIColor)
                         .multilineTextAlignment(.center)
-
-                    HStack {
-                        Image(systemName: "magnifyingglass")
-                            .foregroundColor(.gray)
-                        TextField("Search workspaces by title", text: $viewModel.searchText)
-                            .font(.custom("Lato-Regular", size: 16, relativeTo: .body))
-                            .textInputAutocapitalization(.never)
-                            .disableAutocorrection(true)
-                            .accessibilityLabel("Search workspaces by title")
-                        if !viewModel.searchText.isEmpty {
-                            Button {
-                                viewModel.searchText = ""
-                            } label: {
-                                Image(systemName: "xmark.circle.fill")
-                                    .foregroundColor(.gray)
-                            }
-                            .accessibilityLabel("Clear search")
-                        }
-                    }
-                    .padding(10)
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 10)
-                            .stroke(Color(.systemGray4), lineWidth: 1)
-                    )
 
                     if !viewModel.projectGroupIds.isEmpty {
                         Menu {
