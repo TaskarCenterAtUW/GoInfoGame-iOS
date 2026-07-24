@@ -16,7 +16,7 @@ import RealmSwift
 // Class that handles data handling and display of annotations
 class AppQuestManager {
     
-//    let opManager = OverpassRequestManager()
+    //    let opManager = OverpassRequestManager()
     
     let dbInstance = DatabaseConnector.shared
     
@@ -63,21 +63,79 @@ class AppQuestManager {
         }
         return nil
     }
-
+    
+    // Helper function to check if a quest contains AutoCapture type questions
+    func hasAutoCaptureQuest(quest: ApplicableQuest) -> Bool {
+        // Try to access the quest's elements and check if any have AutoCapture questType
+        // This is a generic check that works with different quest types
+        
+        // Get the display unit to access underlying data
+        let displayUnit = quest.quest.displayUnit
+        
+        // Check if the display unit's parent has quests
+        if let longFormElement = displayUnit.parent as? LongFormElement {
+            // Check all quests in this element
+            for questItem in longFormElement.quests {
+                // Check if questType is AutoCapture
+                if String(describing: questItem.questType).lowercased().contains("autocapture") {
+                    return true
+                }
+            }
+        }
+        
+        // Fallback: Check the description or name
+        let questDescription = String(describing: quest.quest).lowercased()
+        if questDescription.contains("autocapture") {
+            return true
+        }
+        
+        return false
+    }
+    
     // Fetches all the available quests from Database
     func fetchQuestsFromDB() ->  [DisplayUnitWithCoordinate] {
+        // Filter logic:
+        // 1. Show quests where ext:gig_complete != 'yes' (not completed)
+        // 2. If ext:gig_complete == 'yes' (completed):
+        //    - On LiDAR devices: show only if ext:autoCapture:ignored != 'yes' (to allow re-capture)
+        //    - On non-LiDAR devices: hide (already completed)
         
-        let nodesFromStorage = dbInstance.getNodes(NSPredicate(format: """
-                                                            tags.@count != 0 AND 
-                                                            tags['ext:gig_complete'] != 'yes'
-                                                            """))
+        let deviceSupportsLiDAR = LiDARDetection.shared.isLiDARSupported()
+        
+        // Build filter predicate based on device capability
+        let nodePredicate: NSPredicate
+        let wayPredicate: NSPredicate
+        
+        if deviceSupportsLiDAR {
+            // On LiDAR devices: show incomplete quests + completed quests that were ignored (autoCapture)
+            nodePredicate = NSPredicate(format: """
+                tags.@count != 0 AND 
+                (tags['ext:gig_complete'] != 'yes' OR 
+                 (tags['ext:gig_complete'] == 'yes' AND tags['ext:autoCapture:ignored'] == nil))
+                """)
+            wayPredicate = NSPredicate(format: """
+                tags.@count != 0 AND
+                polyline.@count > 0 AND
+                (tags['ext:gig_complete'] != 'yes' OR 
+                 (tags['ext:gig_complete'] == 'yes' AND tags['ext:autoCapture:ignored'] == nil))
+                """)
+        } else {
+            // On non-LiDAR devices: show only incomplete quests
+            nodePredicate = NSPredicate(format: """
+                tags.@count != 0 AND 
+                tags['ext:gig_complete'] != 'yes'
+                """)
+            wayPredicate = NSPredicate(format: """
+                tags.@count != 0 AND
+                polyline.@count > 0 AND
+                tags['ext:gig_complete'] != 'yes'
+                """)
+        }
+        
+        let nodesFromStorage = dbInstance.getNodes(nodePredicate)
         let yetToSyncNodeIDs = Set(dbInstance.getChangesets(synced: false, element: .node).compactMap{ Int64($0.elementId) })
         
-        let waysFromStorage = dbInstance.getWays(NSPredicate(format: """
-                                                            tags.@count != 0 AND
-                                                            polyline.@count > 0 AND
-                                                            tags['ext:gig_complete'] != 'yes' 
-                                                            """ ))
+        let waysFromStorage = dbInstance.getWays(wayPredicate)
         let yetToSyncWayIDs = Set(dbInstance.getChangesets(synced: false, element: .way).compactMap{ Int64($0.elementId) })
         
         debugPrint("converting to nods: start \(Date())")
@@ -96,7 +154,7 @@ class AppQuestManager {
             }
             return way.asWay()
         }
-            
+        
         debugPrint("converting to way: end \(Date())")
         // Get the quests for nodes
         var nodeQuests: [any Quest] = []
@@ -109,16 +167,27 @@ class AppQuestManager {
         for node in nodeElements {
             // Get the quests and try to iterate
             for quest in allQuests {
-                    if quest.quest.filter.isEmpty {continue} // Ignore quest
-                    if quest.quest.isApplicable(element: node){
-                        // Create a duplicate of the quest
-                        // Create a display Unit
-                        let duplicateQuest = quest.quest.copyWithElement(element: node)
-                        let unit = DisplayUnitWithCoordinate(displayUnit: duplicateQuest.displayUnit, coordinateInfo:  CLLocationCoordinate2D(latitude: node.position.latitude, longitude: node.position.longitude), id: node.id, isHidden: false)
-                        displayUnits.append(unit)
-                        nodeQuests.append(duplicateQuest)
-                        break
+                if quest.quest.filter.isEmpty {continue} // Ignore quest
+                if quest.quest.isApplicable(element: node){
+                    // identify is it list to show only LiDAR quest?
+                    var showOnlyLiDARQuest: Bool = false
+                    if deviceSupportsLiDAR &&
+                        node.tags["ext:gig_complete"] == "yes" &&
+                        node.tags["ext:autoCapture:ignored"] == nil {
+                        // This quest is completed but was ignored for auto-capture, so we show it for re-capture
+                        showOnlyLiDARQuest = true
                     }
+                    // Create a duplicate of the quest
+                    // Create a display Unit
+                    let duplicateQuest = quest.quest.copyWithElement(element: node)
+                    if let duplicateQuest = duplicateQuest as? LongElementQuest {
+                        duplicateQuest.showOnlyLiDARQuestion = showOnlyLiDARQuest
+                    }
+                    let unit = DisplayUnitWithCoordinate(displayUnit: duplicateQuest.displayUnit, coordinateInfo:  CLLocationCoordinate2D(latitude: node.position.latitude, longitude: node.position.longitude), id: node.id, isHidden: false, showOnlyLiDARQuest: showOnlyLiDARQuest)
+                    displayUnits.append(unit)
+                    nodeQuests.append(duplicateQuest)
+                    break
+                }
                 
             }
         }
@@ -126,23 +195,35 @@ class AppQuestManager {
         debugPrint("process ways: start: \(Date())")
         for way in wayElements{
             for quest in allQuests {
-                    if quest.quest.filter.isEmpty {continue} // Ignore quest
-                    if quest.quest.isApplicable(element: way){
-                        // Create a duplicate of the quest
-                        // Need to add another here.
-                        let duplicateQuest = quest.quest.copyWithElement(element: way)
-                        let position  = dbInstance.getCenterForWay(id: way.id) ?? CLLocationCoordinate2D()
-                        let unit = DisplayUnitWithCoordinate(displayUnit: duplicateQuest.displayUnit, coordinateInfo: position, id: way.id, isHidden: false)
-                        displayUnits.append(unit)
-                        wayQuests.append(duplicateQuest)
-                        break
+                if quest.quest.filter.isEmpty {continue} // Ignore quest
+                if quest.quest.isApplicable(element: way){
+                    // identify is it list to show only LiDAR quest?
+                    var showOnlyLiDARQuest: Bool = false
+                    if deviceSupportsLiDAR &&
+                        way.tags["ext:gig_complete"] == "yes" &&
+                        way.tags["ext:autoCapture:ignored"] == nil {
+                        // This quest is completed but was ignored for auto-capture, so we show it for re-capture
+                        showOnlyLiDARQuest = true
                     }
+                    
+                    // Create a duplicate of the quest
+                    // Need to add another here.
+                    let duplicateQuest = quest.quest.copyWithElement(element: way)
+                    if let duplicateQuest = duplicateQuest as? LongElementQuest {
+                        duplicateQuest.showOnlyLiDARQuestion = showOnlyLiDARQuest
+                    }
+                    let position  = dbInstance.getCenterForWay(id: way.id) ?? CLLocationCoordinate2D()
+                    let unit = DisplayUnitWithCoordinate(displayUnit: duplicateQuest.displayUnit, coordinateInfo: position, id: way.id, isHidden: false, showOnlyLiDARQuest: showOnlyLiDARQuest)
+                    displayUnits.append(unit)
+                    wayQuests.append(duplicateQuest)
+                    break
+                }
             }
         }
         debugPrint("process ways: end: \(Date())")
         print("Sending back items")
         print(allQuests)
-                
+        
         
         // get hidden ids from hiddenElements
         let hiddenIds = HiddenQuestManager.shared.hiddenQuests.map { $0.id }
@@ -181,7 +262,7 @@ class AppQuestManager {
                                 let unit = DisplayUnitWithCoordinate(displayUnit: duplicateQuest.displayUnit, coordinateInfo:  CLLocationCoordinate2D(latitude: nodObj.position.latitude, longitude: nodObj.position.longitude), id: nodObj.id, isHidden: false)
                                 return unit
                             }
-                          
+                            
                         }
                         else if parserElement.type == .way {
                             let position  = dbInstance.getCenterForWay(id: parserElement.id) ?? CLLocationCoordinate2D()
