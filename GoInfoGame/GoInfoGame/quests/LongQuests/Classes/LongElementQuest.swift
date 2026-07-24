@@ -33,7 +33,6 @@ class LongElementQuest: QuestBase, Quest {
     
     var type: osmparser.ElementType
     
-    
     var iconName: String {
         if let iconName = elementTypeIcon {
             return iconName

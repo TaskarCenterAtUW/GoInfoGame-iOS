@@ -60,14 +60,64 @@ class LongFormViewModel: ObservableObject {
     func getAnswersForSubmission() -> [String: String] {
         var submissionDict: [String: String] = [:]
         guard let quests = longForm?.quests else { return [:] }
-        
+        let isLiDARSupportedDevice = LiDARDetection.shared.isLiDARSupported()
         for quest in quests {
             if let choiceOptional = selectedChoices[quest.questID], let choice = choiceOptional {
                 if shouldShowQuest(quest) {
-                    submissionDict[quest.questTag] = choice.value
+                    // Handle AutoCapture quest type
+                    if quest.questType == .autoCapture {
+                        handleAutoCaptureTags(choice: choice, submissionDict: &submissionDict)
+                    } else if let tag = quest.questTag {
+                        submissionDict[tag] = choice.value
+                    }
                 }
+            } else if isLiDARSupportedDevice,
+                      let quest = quests.first(where: { $0.questID == quest.questID }),
+                      quest.questType == .autoCapture {
+                // AutoCapture quest not answered - mark as ignored
+                submissionDict["ext:autoCapture:ignored"] = "yes"
             }
         }
         return submissionDict
+    }
+    
+    // MARK: - AutoCapture Helper Methods
+
+    private func handleAutoCaptureTags(choice: QuestAnswerChoice, submissionDict: inout [String: String]) {
+        // Parse the serialized captures.
+        // Format: "key=value|key=value||key=value|key=value" where "||" separates captures
+        // and "|" separates OSM tags within each capture.
+        let tagValuesByCaptureTag = parseAutoCaptureOSMTags(from: choice.value)
+
+        if tagValuesByCaptureTag.isEmpty {
+            submissionDict["ext:autoCapture:ignored"] = "yes"
+        } else {
+            // For each OSM tag, collect values across all captures as CSV and add to submission.
+            for (osmTag, values) in tagValuesByCaptureTag {
+                submissionDict[osmTag] = values.joined(separator: ",")
+            }
+            submissionDict["ext:autoCapture:ignored"] = "no"
+        }
+    }
+
+    // Parses the serialized capture string and returns a dict of OSM tag → [value per capture].
+    private func parseAutoCaptureOSMTags(from serialized: String) -> [String: [String]] {
+        var result: [String: [String]] = [:]
+
+        let captureBlocks = serialized.components(separatedBy: "||")
+        for block in captureBlocks {
+            let trimmed = block.trimmingCharacters(in: .whitespaces)
+            guard !trimmed.isEmpty else { continue }
+
+            for pair in trimmed.split(separator: "|") {
+                let kv = String(pair).split(separator: "=", maxSplits: 1)
+                guard kv.count == 2 else { continue }
+                let key = String(kv[0])
+                let value = String(kv[1])
+                result[key, default: []].append(value)
+            }
+        }
+
+        return result
     }
 }

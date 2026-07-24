@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 56;
+	objectVersion = 77;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -154,6 +154,7 @@
 		C71EB5B72E2100E30009E610 /* NetworkManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C71EB5B22E2100E30009E610 /* NetworkManager.swift */; };
 		C71EB5B82E2100E30009E610 /* NetworkMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = C71EB5B32E2100E30009E610 /* NetworkMonitor.swift */; };
 		C71EB5B92E2100E30009E610 /* APIManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C71EB5B12E2100E30009E610 /* APIManager.swift */; };
+		C73D2F792F98A0A800978D89 /* LiDARDetection.swift in Sources */ = {isa = PBXBuildFile; fileRef = C73D2F782F98A0A800978D89 /* LiDARDetection.swift */; };
 		C74AC4152EE198B50036E2C5 /* NoEditsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C74AC4142EE198B50036E2C5 /* NoEditsView.swift */; };
 		C75666D02E0D068900D36C41 /* OHHTTPStubs in Frameworks */ = {isa = PBXBuildFile; productRef = C75666CF2E0D068900D36C41 /* OHHTTPStubs */; };
 		C75666D22E0D068900D36C41 /* OHHTTPStubsSwift in Frameworks */ = {isa = PBXBuildFile; productRef = C75666D12E0D068900D36C41 /* OHHTTPStubsSwift */; };
@@ -178,6 +179,7 @@
 		C77AAC9D2E4463ED006713B2 /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = C77AAC9C2E4463ED006713B2 /* FirebaseAnalytics */; };
 		C77AAC9F2E4463ED006713B2 /* FirebaseCrashlytics in Frameworks */ = {isa = PBXBuildFile; productRef = C77AAC9E2E4463ED006713B2 /* FirebaseCrashlytics */; };
 		C77EEBCF2DE59D3200494CB4 /* UndoMerge.swift in Sources */ = {isa = PBXBuildFile; fileRef = C77EEBCE2DE59D3200494CB4 /* UndoMerge.swift */; };
+		C785DBD43010978800E5EA58 /* MapLibre in Frameworks */ = {isa = PBXBuildFile; productRef = C785DBD33010978800E5EA58 /* MapLibre */; };
 		C78737AF2E4C9E3B00289D13 /* FloatingLabelTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = C78737AE2E4C9E3200289D13 /* FloatingLabelTextField.swift */; };
 		C787B2FE2FECE5E80026C40E /* MapLibre in Frameworks */ = {isa = PBXBuildFile; productRef = C787B2FD2FECE5E80026C40E /* MapLibre */; };
 		C787F3422E9CD34F00BEF0A6 /* ForceUpdateManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C787F3412E9CD34900BEF0A6 /* ForceUpdateManager.swift */; };
@@ -185,6 +187,10 @@
 		C78D169A30122DB200B177AE /* ProjectGroupRole.swift in Sources */ = {isa = PBXBuildFile; fileRef = C78D169930122DB200B177AE /* ProjectGroupRole.swift */; };
 		C78E8BC22EDF20E6002215C0 /* UndoItemConfirmationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C78E8BC12EDF20E6002215C0 /* UndoItemConfirmationView.swift */; };
 		C78E8BC42EDF2D55002215C0 /* EditedTagView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C78E8BC32EDF2D55002215C0 /* EditedTagView.swift */; };
+		C78EEFA62FDAD18A00729240 /* PointNMapShared.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C78EEFA52FDAD18A00729240 /* PointNMapShared.framework */; };
+		C78EEFA72FDAD18A00729240 /* PointNMapShared.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = C78EEFA52FDAD18A00729240 /* PointNMapShared.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		C78EEFA92FDAD19000729240 /* PointNMapShaderTypes.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C78EEFA82FDAD19000729240 /* PointNMapShaderTypes.framework */; };
+		C78EEFAA2FDAD19000729240 /* PointNMapShaderTypes.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = C78EEFA82FDAD19000729240 /* PointNMapShaderTypes.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		C7927B552E42363000A7A34E /* XCAssets+Generated.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7927B532E42363000A7A34E /* XCAssets+Generated.swift */; };
 		C79C3B7A2ED4559500F80364 /* AccessibilityModeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C79C3B792ED4559500F80364 /* AccessibilityModeView.swift */; };
 		C79C3B7C2ED5786100F80364 /* NearestQuestCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = C79C3B7B2ED5786100F80364 /* NearestQuestCard.swift */; };
@@ -340,8 +346,10 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
+				C78EEFAA2FDAD19000729240 /* PointNMapShaderTypes.framework in Embed Frameworks */,
 				A40E72802B5D462A00328848 /* osmapi.framework in Embed Frameworks */,
 				A4AD13282B5E90BD0041A881 /* osmparser.framework in Embed Frameworks */,
+				C78EEFA72FDAD18A00729240 /* PointNMapShared.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -540,6 +548,7 @@
 		C71EB5B22E2100E30009E610 /* NetworkManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkManager.swift; sourceTree = "<group>"; };
 		C71EB5B32E2100E30009E610 /* NetworkMonitor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkMonitor.swift; sourceTree = "<group>"; };
 		C71EB5B42E2100E30009E610 /* ResponseHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResponseHandler.swift; sourceTree = "<group>"; };
+		C73D2F782F98A0A800978D89 /* LiDARDetection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiDARDetection.swift; sourceTree = "<group>"; };
 		C74AC4142EE198B50036E2C5 /* NoEditsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoEditsView.swift; sourceTree = "<group>"; };
 		C75CC5D62E0D22F4008A94A0 /* Workspaces response.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "Workspaces response.json"; sourceTree = "<group>"; };
 		C75CC5D72E0D22F4008A94A0 /* SCLIO Seattle pins response.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "SCLIO Seattle pins response.json"; sourceTree = "<group>"; };
@@ -565,6 +574,9 @@
 		C78D169930122DB200B177AE /* ProjectGroupRole.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProjectGroupRole.swift; sourceTree = "<group>"; };
 		C78E8BC12EDF20E6002215C0 /* UndoItemConfirmationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UndoItemConfirmationView.swift; sourceTree = "<group>"; };
 		C78E8BC32EDF2D55002215C0 /* EditedTagView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditedTagView.swift; sourceTree = "<group>"; };
+		C78EEFA52FDAD18A00729240 /* PointNMapShared.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = PointNMapShared.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		C78EEFA82FDAD19000729240 /* PointNMapShaderTypes.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = PointNMapShaderTypes.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		C78EEFAC2FDAD91000729240 /* PointNMap-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "PointNMap-Bridging-Header.h"; sourceTree = "<group>"; };
 		C7927B532E42363000A7A34E /* XCAssets+Generated.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "XCAssets+Generated.swift"; sourceTree = "<group>"; };
 		C79C3B792ED4559500F80364 /* AccessibilityModeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccessibilityModeView.swift; sourceTree = "<group>"; };
 		C79C3B7B2ED5786100F80364 /* NearestQuestCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NearestQuestCard.swift; sourceTree = "<group>"; };
@@ -698,6 +710,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				C77AAC9D2E4463ED006713B2 /* FirebaseAnalytics in Frameworks */,
+				C78EEFA92FDAD19000729240 /* PointNMapShaderTypes.framework in Frameworks */,
 				C75666D02E0D068900D36C41 /* OHHTTPStubs in Frameworks */,
 				C76B637F2E4625D30076A540 /* FirebasePerformance in Frameworks */,
 				C75666D22E0D068900D36C41 /* OHHTTPStubsSwift in Frameworks */,
@@ -706,6 +719,8 @@
 				C787B2FE2FECE5E80026C40E /* MapLibre in Frameworks */,
 				C77AAC9F2E4463ED006713B2 /* FirebaseCrashlytics in Frameworks */,
 				C76187DC2E0153D800150201 /* ClusterMap in Frameworks */,
+				C785DBD43010978800E5EA58 /* MapLibre in Frameworks */,
+				C78EEFA62FDAD18A00729240 /* PointNMapShared.framework in Frameworks */,
 				A40E727F2B5D462A00328848 /* osmapi.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -741,6 +756,7 @@
 		0536DD8A2B0BD2A900B04C4B /* Helpers */ = {
 			isa = PBXGroup;
 			children = (
+				C73D2F782F98A0A800978D89 /* LiDARDetection.swift */,
 				C7927B542E42363000A7A34E /* Generated */,
 				C75CC5D52E0D22E0008A94A0 /* SampleResponses */,
 				0536DD8B2B0BD2C200B04C4B /* Constants.swift */,
@@ -875,6 +891,8 @@
 		416A9A4590B07971607790B0 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				C78EEFA82FDAD19000729240 /* PointNMapShaderTypes.framework */,
+				C78EEFA52FDAD18A00729240 /* PointNMapShared.framework */,
 				97F2FA8D2B0630C4000B9726 /* SwiftOverpassAPI.framework */,
 				66BED441AF03CC04539E8D4A /* Pods_GoInfoGame.framework */,
 				2D539E22EFF6636F8CBA035A /* Pods_GoInfoGame_GoInfoGameUITests.framework */,
@@ -1660,6 +1678,7 @@
 		FAD5C4F12AFCBE700040C61A /* GoInfoGame */ = {
 			isa = PBXGroup;
 			children = (
+				C78EEFAC2FDAD91000729240 /* PointNMap-Bridging-Header.h */,
 				C787EF162E9676CC00BEF0A6 /* GoInfoGame.entitlements */,
 				FA18CADE2CC7CD46008247F2 /* Kartaview */,
 				FAFDA2092C6F589900ECEAE9 /* UserProfile */,
@@ -1980,7 +1999,7 @@
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
-				LastSwiftUpdateCheck = 1510;
+				LastSwiftUpdateCheck = 2630;
 				LastUpgradeCheck = 1410;
 				TargetAttributes = {
 					A40E72692B5D462A00328848 = {
@@ -2011,7 +2030,6 @@
 				};
 			};
 			buildConfigurationList = FAD5C4EA2AFCBE700040C61A /* Build configuration list for PBXProject "GoInfoGame" */;
-			compatibilityVersion = "Xcode 14.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
@@ -2024,8 +2042,10 @@
 				C76187DA2E0153D800150201 /* XCRemoteSwiftPackageReference "ClusterMap" */,
 				C75666CE2E0D068900D36C41 /* XCRemoteSwiftPackageReference "OHHTTPStubs" */,
 				C77AAC9B2E4463ED006713B2 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
-				C787B2FC2FECE5E80026C40E /* XCRemoteSwiftPackageReference "maplibre-gl-native-distribution" */,
+				C7971A0C2FB5EAB000A8DCE8 /* XCRemoteSwiftPackageReference "swift-collections" */,
+				C785DBD23010978800E5EA58 /* XCRemoteSwiftPackageReference "maplibre-gl-native-distribution" */,
 			);
+			preferredProjectObjectVersion = 77;
 			productRefGroup = FAD5C4F02AFCBE700040C61A /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -2539,6 +2559,7 @@
 				A48037362BBA8DDC007EE7E4 /* WorkspacesResponse.swift in Sources */,
 				171574E02FD1CC4A00AA6603 /* PhotoLookupResponse.swift in Sources */,
 				C769AB552E431EFE00FA810A /* Strings+Generated.swift in Sources */,
+				C73D2F792F98A0A800978D89 /* LiDARDetection.swift in Sources */,
 				0536DD992B0BDBFE00B04C4B /* OAuthManager.swift in Sources */,
 				A4E711A62B57BBCA00C9DE08 /* QuestProtocols.swift in Sources */,
 				FAFDA2122C6F64E800ECEAE9 /* UserProfileView.swift in Sources */,
@@ -2738,7 +2759,6 @@
 		A40E72862B5D462A00328848 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
@@ -2762,7 +2782,6 @@
 		A40E72872B5D462A00328848 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
@@ -2862,7 +2881,6 @@
 		A4AD132D2B5E90BD0041A881 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
@@ -3027,7 +3045,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = F008D431593E568E75C48C84 /* Pods-GoInfoGame.debug.xcconfig */;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = GoInfoGame/GoInfoGame.entitlements;
@@ -3038,6 +3055,15 @@
 				DEVELOPMENT_TEAM = G8MQVE5WWW;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GENERATE_INFOPLIST_FILE = YES;
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"${PODS_CONFIGURATION_BUILD_DIR}/HTMLEntities/HTMLEntities.framework/Headers\"",
+					"\"${PODS_CONFIGURATION_BUILD_DIR}/Realm/Realm.framework/Headers\"",
+					"\"${PODS_CONFIGURATION_BUILD_DIR}/RealmSwift/RealmSwift.framework/Headers\"",
+					"\"${PODS_XCFRAMEWORKS_BUILD_DIR}/Realm/Headers\"",
+					"\"$(SRCROOT)/../Frameworks/PointNMap/PointNMapShaderTypes\"",
+					"\"$(SRCROOT)/../Frameworks/PointNMap/PointNMapShared\"",
+				);
 				INFOPLIST_FILE = GoInfoGame/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "AVIV ScoutRoute";
 				INFOPLIST_KEY_NSCameraUsageDescription = "This app requires access to your camera to upload images to Kartaview";
@@ -3057,6 +3083,8 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.2.7;
+				MTL_HEADER_SEARCH_PATHS = "$(SRCROOT)/PointNMap $(SRCROOT)/PointNMapShaderTypes";
+				OTHER_CFLAGS = "-DACCELERATE_NEW_LAPACK";
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-l\"c++\"",
@@ -3084,6 +3112,7 @@
 				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = "../Frameworks/PointNMap/PointNMap/PointNMap-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -3093,7 +3122,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = C96303080D26026265099E0E /* Pods-GoInfoGame.release.xcconfig */;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = GoInfoGame/GoInfoGame.entitlements;
@@ -3103,6 +3131,15 @@
 				DEVELOPMENT_TEAM = G8MQVE5WWW;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GENERATE_INFOPLIST_FILE = YES;
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"${PODS_CONFIGURATION_BUILD_DIR}/HTMLEntities/HTMLEntities.framework/Headers\"",
+					"\"${PODS_CONFIGURATION_BUILD_DIR}/Realm/Realm.framework/Headers\"",
+					"\"${PODS_CONFIGURATION_BUILD_DIR}/RealmSwift/RealmSwift.framework/Headers\"",
+					"\"${PODS_XCFRAMEWORKS_BUILD_DIR}/Realm/Headers\"",
+					"\"$(SRCROOT)/../Frameworks/PointNMap/PointNMapShared\"",
+					"\"$(SRCROOT)/../Frameworks/PointNMap/PointNMapShaderTypes\"",
+				);
 				INFOPLIST_FILE = GoInfoGame/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "AVIV ScoutRoute";
 				INFOPLIST_KEY_NSCameraUsageDescription = "This app requires access to your camera to upload images to Kartaview";
@@ -3122,6 +3159,8 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.2.7;
+				MTL_HEADER_SEARCH_PATHS = "$(SRCROOT)/PointNMap $(SRCROOT)/PointNMapShaderTypes";
+				OTHER_CFLAGS = "-DACCELERATE_NEW_LAPACK";
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-l\"c++\"",
@@ -3149,6 +3188,7 @@
 				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = "../Frameworks/PointNMap/PointNMap/PointNMap-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -3158,7 +3198,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 3D797A45474D6135AFA24613 /* Pods-GoInfoGameTests.debug.xcconfig */;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
@@ -3179,7 +3218,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 89C2A88A7749F031BCDFE226 /* Pods-GoInfoGameTests.release.xcconfig */;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
@@ -3200,7 +3238,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = D76D8E22AC705A38AFEA78B1 /* Pods-GoInfoGame-GoInfoGameUITests.debug.xcconfig */;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = NPCMG529DV;
@@ -3219,7 +3256,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = AE61EC473200AFDA81C2110A /* Pods-GoInfoGame-GoInfoGameUITests.release.xcconfig */;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = G8MQVE5WWW;
@@ -3336,12 +3372,20 @@
 				minimumVersion = 12.1.0;
 			};
 		};
-		C787B2FC2FECE5E80026C40E /* XCRemoteSwiftPackageReference "maplibre-gl-native-distribution" */ = {
+		C785DBD23010978800E5EA58 /* XCRemoteSwiftPackageReference "maplibre-gl-native-distribution" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/maplibre/maplibre-gl-native-distribution.git";
 			requirement = {
 				kind = upToNextMajorVersion;
 				minimumVersion = 6.27.0;
+			};
+		};
+		C7971A0C2FB5EAB000A8DCE8 /* XCRemoteSwiftPackageReference "swift-collections" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/apple/swift-collections.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.5.0;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
@@ -3377,9 +3421,13 @@
 			package = C77AAC9B2E4463ED006713B2 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
 			productName = FirebaseCrashlytics;
 		};
+		C785DBD33010978800E5EA58 /* MapLibre */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = C785DBD23010978800E5EA58 /* XCRemoteSwiftPackageReference "maplibre-gl-native-distribution" */;
+			productName = MapLibre;
+		};
 		C787B2FD2FECE5E80026C40E /* MapLibre */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = C787B2FC2FECE5E80026C40E /* XCRemoteSwiftPackageReference "maplibre-gl-native-distribution" */;
 			productName = MapLibre;
 		};
 /* End XCSwiftPackageProductDependency section */
