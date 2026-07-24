@@ -32,9 +32,7 @@ class LongElementQuest: QuestBase, Quest {
     var id: Int64
     
     var type: osmparser.ElementType
-    
-    var showOnlyLiDARQuestion: Bool  = false
-    
+        
     var iconName: String {
         if let iconName = elementTypeIcon {
             return iconName
@@ -117,7 +115,7 @@ class LongElementQuest: QuestBase, Quest {
           self.internalForm = LongForm(
             elementName: elementType, questID: questId, query: _internalQueryString, action: { [self] tags in
                 self.questAnswersSelected?(tags)
-            }, coordinate: annotationCoordinate ?? CLLocationCoordinate2D(latitude: 0, longitude: 0), showOnlyLiDARQuests: showOnlyLiDARQuestion
+            }, coordinate: annotationCoordinate ?? CLLocationCoordinate2D(latitude: 0, longitude: 0)
           )
       }
 
@@ -131,7 +129,7 @@ class LongElementQuest: QuestBase, Quest {
         self.internalForm = LazyView(LongForm(elementName: elementType, questID: questId,query: questQuery, action: { [self] tags in
 //            self.onAnswer(answer: tags)
             self.questAnswersSelected?(tags)
-        }, showOnlyLiDARQuests: self.showOnlyLiDARQuestion))
+        }))
     }
 
     override init() {
@@ -142,7 +140,7 @@ class LongElementQuest: QuestBase, Quest {
         self.internalForm = LongForm(elementName: elementType, action: { [self] tags in
 //            self.onAnswer(answer: tags)
             self.questAnswersSelected?(tags)
-        }, showOnlyLiDARQuests: self.showOnlyLiDARQuestion)
+        })
     }
 
 

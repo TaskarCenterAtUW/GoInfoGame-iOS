@@ -34,9 +34,7 @@ struct LongForm: View, QuestForm {
     typealias AnswerClass = [String:String]
 
     var coordinate: CLLocationCoordinate2D?
-    
-    let showOnlyLiDARQuests: Bool
-    
+        
     @Environment(\.presentationMode) var presentationMode
     
     @State private var showKartaviewAlert = false
@@ -400,21 +398,13 @@ struct LongForm: View, QuestForm {
         guard let questType = quest.questType else {
             return false
         }
-        if showOnlyLiDARQuests {
-            if quest.questType == .autoCapture,
-               deviceSupportsLiDAR {
+        if questType == .autoCapture {
+            if deviceSupportsLiDAR {
                 return true
             }
             return false
-        } else {
-            if quest.questType == .autoCapture {
-                if deviceSupportsLiDAR {
-                    return true
-                }
-                return false
-            }
-            return true
         }
+        return true
     }
 }
 
@@ -452,5 +442,5 @@ struct LongForm: View, QuestForm {
         return Text("Error parsing JSON")
     }
     QuestsRepository.shared.longQuestModels.append(quest)
-    return LongForm(elementName: quest.elementType, questID: "questId",query: quest.questQuery, action: nil, showOnlyLiDARQuests: false)
+    return LongForm(elementName: quest.elementType, questID: "questId",query: quest.questQuery, action: nil)
 }
