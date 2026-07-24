@@ -32,7 +32,7 @@ class LongElementQuest: QuestBase, Quest {
     var id: Int64
     
     var type: osmparser.ElementType
-        
+    
     var iconName: String {
         if let iconName = elementTypeIcon {
             return iconName
@@ -89,7 +89,7 @@ class LongElementQuest: QuestBase, Quest {
             var filter = ""
             
             if let longQuestQuery = longQuestQuery {
-                filter = longQuestQuery + ""
+                filter = longQuestQuery + " and !ext:gig_complete"
             } else {
                 filter = " and !ext:gig_complete"
             }
