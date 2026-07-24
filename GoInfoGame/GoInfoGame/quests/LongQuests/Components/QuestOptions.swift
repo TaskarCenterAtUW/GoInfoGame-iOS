@@ -48,7 +48,7 @@ struct QuestOptions: View {
                 selectedChoice: $selectedChoice
             )
         case .autoCapture:
-            AutoCaptureView(tags: quest.questTags ?? [], selectedChoice: $selectedChoice)
+            AutoCaptureView(autoCaptureAttributes: quest.autoCaptureAttributes ?? [:], selectedChoice: $selectedChoice)
         }
     }
 }
@@ -410,7 +410,8 @@ private extension QuestOptions {
 
     // MARK: - AutoCaptureView (Multi-capture version)
     struct AutoCaptureView: View {
-        let tags: [String]
+        // Maps point mapper attribute key (e.g. "ac_width") to the OSM tag to submit (e.g. "width").
+        let autoCaptureAttributes: [String: String]
         @Binding var selectedChoice: QuestAnswerChoice?
         
         @State private var selectedClasses: [AccessibilityFeatureClass] = []
@@ -434,58 +435,35 @@ private extension QuestOptions {
         }
 
         // Reverse lookup: OSM tag key → human-readable display name, built from allCases.
-        func osmTagDisplayNames(tags: [String]) -> [String: String] {
+        func osmTagDisplayNames(autoCaptureAttributes: [String: String]) -> [String: String] {
             var tagDisplayNames: [String: String] = [:]
-            tags.forEach({ tag in
-                    if let attribute = Self.accessibilityFeatureAttributeForOSMTag(tag: tag) {
-                        tagDisplayNames[tag] = attribute.displayName
+            autoCaptureAttributes.forEach({ pointMapperKey, osmTag in
+                    if let attribute = Self.accessibilityFeatureAttribute(forPointMapperKey: pointMapperKey) {
+                        tagDisplayNames[osmTag] = attribute.displayName
                     }
                 })
             return tagDisplayNames
         }
-        
-        
-        nonisolated private static func accessibilityFeatureAttributeForOSMTag(tag: String) -> AccessibilityFeatureAttribute? {
-            switch tag {
-            case "width": return .width
-            case "incline": return .runningSlope
-            case "ext:ac:cross-slope": return .crossSlope
-            case "ext:ac:surface-integrity": return .surfaceIntegrity
-            case "ext:ac:surface-disruption": return .surfaceDisruption
-            case "ext:ac:height-from-ground": return .heightFromGround
-            case "ext:ac:lidar-depth": return .lidarDepth
-//            case "ext:ac:width-legacy": return .widthLegacy
-//            case "ext:ac:running-slope-legacy": return .runningSlopeLegacy
-//            case "ext:ac:cross-slope-legacy": return .crossSlopeLegacy
-//            case "ext:ac:width-from-image": return .widthFromImage
-//            case "ext:ac:running-slope-from-image": return .runningSlopeFromImage
-//            case "ext:ac:cross-slope-from-image": return .crossSlopeFromImage
+
+
+        nonisolated private static func accessibilityFeatureAttribute(forPointMapperKey key: String) -> AccessibilityFeatureAttribute? {
+            switch key {
+            case "ac_width": return .width
+            case "ac_incline": return .runningSlope
+            case "ac_cross_slope": return .crossSlope
+            case "ac_surface_integrity": return .surfaceIntegrity
+            case "ac_surface_disruption": return .surfaceDisruption
+            case "ac_height_from_ground": return .heightFromGround
+            case "ac_lidar_depth": return .lidarDepth
+//            case "ac_width_legacy": return .widthLegacy
+//            case "ac_running_slope_legacy": return .runningSlopeLegacy
+//            case "ac_cross_slope_legacy": return .crossSlopeLegacy
+//            case "ac_width_from_image": return .widthFromImage
+//            case "ac_running_slope_from_image": return .runningSlopeFromImage
+//            case "ac_cross_slope_from_image": return .crossSlopeFromImage
             default: return nil
             }
         }
-            
-
-        // Maps each AccessibilityFeatureAttribute to its OSM tag key.
-//        nonisolated private static func osmTagKey(for attribute: AccessibilityFeatureAttribute) -> String? {
-//            switch attribute {
-//            case .width:                return "width" // For Sidewalk
-//            case .runningSlope:         return "incline" // For Sidewalk
-//            case .crossSlope:           return "ext:ac:crossing-slope" // For Sidewalk
-//            case .surfaceIntegrity:     return "ext:autocapture-surface-integrity"
-//            case .surfaceDisruption:    return "ext:autocapture-surface-disruption" // Got Long press feature
-//            case .heightFromGround:     return "ext:autocapture-height-from-ground" // Got Long press feature
-//            case .lidarDepth:           return "ext:autocapture-lidar-depth"
-//            case .latitudeDelta:        return "ext:autocapture-latitude-delta"
-//            case .longitudeDelta:       return "ext:autocapture-longitude-delta"
-//            case .widthLegacy:          return "ext:autocapture-width-legacy"
-//            case .runningSlopeLegacy:   return "ext:autocapture-running-slope-legacy"
-//            case .crossSlopeLegacy:     return "ext:autocapture-cross-slope-legacy"
-//            case .widthFromImage:       return "ext:autocapture-width-from-image"
-//            case .runningSlopeFromImage: return "ext:autocapture-running-slope-from-image"
-//            case .crossSlopeFromImage:  return "ext:autocapture-cross-slope-from-image"
-//            default: return nil
-//            }
-//        }
         
         @State private var captures: [Capture] = []
         @State private var showImagePicker = false
@@ -508,7 +486,7 @@ private extension QuestOptions {
                                 ForEach(captures) { capture in
                                     CaptureCard(
                                         capture: capture,
-                                        tagDisplayNames: osmTagDisplayNames(tags: tags ?? []),
+                                        tagDisplayNames: osmTagDisplayNames(autoCaptureAttributes: autoCaptureAttributes),
                                         onDelete: {
                                             captures.removeAll { $0.id == capture.id }
                                             updateSelectedChoice()
@@ -670,12 +648,12 @@ private extension QuestOptions {
                         }
 
                         var tags: [String: String] = [:]
-                        for tag in self.tags {
-                            if let accessAttribute = Self.accessibilityFeatureAttributeForOSMTag(tag: tag),
+                        for (pointMapperKey, osmTag) in self.autoCaptureAttributes {
+                            if let accessAttribute = Self.accessibilityFeatureAttribute(forPointMapperKey: pointMapperKey),
                                let aa = accessibilityFeatures.first?.attributeValues.first(where: { attribute in
                                    accessAttribute == attribute.key
                                }) {
-                                   tags[tag] = aa.value?.toString() ?? "NA"
+                                   tags[osmTag] = aa.value?.toString() ?? "NA"
                             }
                         }
                         newCaptures.append(Capture(osmTags: tags))

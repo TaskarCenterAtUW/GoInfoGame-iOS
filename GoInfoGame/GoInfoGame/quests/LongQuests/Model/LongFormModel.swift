@@ -66,7 +66,7 @@ struct LongQuest: Codable, Identifiable {
     var questTitle, questDescription: String
     var questType: QuestType?
     var questTag: String?
-    var questTags: [String]?
+    var autoCaptureAttributes: [String: String]?
     var questAnswerChoices: [QuestAnswerChoice]?
     var questImageURL: String?
     var questAnswerValidation: QuestAnswerValidation?
@@ -79,7 +79,7 @@ struct LongQuest: Codable, Identifiable {
         case questDescription = "quest_description"
         case questType = "quest_type"
         case questTag = "quest_tag"
-        case questTags = "quest_tags"
+        case autoCaptureAttributes = "auto_capture_attributes"
         case questAnswerChoices = "quest_answer_choices"
         case questImageURL = "quest_image_url"
         case questAnswerValidation = "quest_answer_validation"
@@ -93,7 +93,7 @@ struct LongQuest: Codable, Identifiable {
         questDescription = try container.decode(String.self, forKey: .questDescription)
         questType = try? container.decode(QuestType.self, forKey: .questType)
         questTag = try? container.decode(String.self, forKey: .questTag)
-        questTags = try? container.decode([String].self, forKey: .questTags)
+        autoCaptureAttributes = try container.decodeIfPresent([String: String].self, forKey: .autoCaptureAttributes)
         questAnswerChoices = try container.decodeIfPresent([QuestAnswerChoice].self, forKey: .questAnswerChoices)
         questImageURL = try container.decodeIfPresent(String.self, forKey: .questImageURL)
         questAnswerValidation = try container.decodeIfPresent(QuestAnswerValidation.self, forKey: .questAnswerValidation)
