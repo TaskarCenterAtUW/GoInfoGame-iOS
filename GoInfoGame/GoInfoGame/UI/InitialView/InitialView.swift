@@ -11,31 +11,80 @@ struct InitialView: View {
     @StateObject private var viewModel = InitialViewModel()
     @State private var shouldNavigateToMapView = false
     @State private var selectedWorkspace: Workspace? = nil
+    @State private var isSearchActive = false
+    @FocusState private var isSearchFieldFocused: Bool
     @AppStorage("loggedIn") private var loggedIn: Bool = false
-    
+
     var body: some View {
         NavigationStack {
             ZStack {
                 VStack {
                     HStack {
-                        NavigationLink(destination: UserProfileView()) {
-                            Image(systemName: "person.fill")
-                                .resizable()
-                                .padding(8)
-                                .foregroundStyle(Color.white)
-                                .background {
-                                    LinearGradient(gradient: Gradient(colors: [Asset.Colors._8F57DEProfileIcon.swiftUIColor, Asset.Colors._2D0369ProfileIcon.swiftUIColor,]), startPoint: .top, endPoint: .bottom)
-                                }
-                                .frame(width: 34, height: 34)
-                                .clipShape(Circle())
-                                .accessibilityLabel(L10n.Localizable.profile)
+                        if !isSearchActive {
+                            NavigationLink(destination: UserProfileView()) {
+                                Image(systemName: "person.fill")
+                                    .resizable()
+                                    .padding(8)
+                                    .foregroundStyle(Color.white)
+                                    .background {
+                                        LinearGradient(gradient: Gradient(colors: [Asset.Colors._8F57DEProfileIcon.swiftUIColor, Asset.Colors._2D0369ProfileIcon.swiftUIColor,]), startPoint: .top, endPoint: .bottom)
+                                    }
+                                    .frame(width: 34, height: 34)
+                                    .clipShape(Circle())
+                                    .accessibilityLabel(L10n.Localizable.profile)
+                            }
                         }
-                        Spacer()
+
+                        if isSearchActive {
+                            HStack {
+                                Image(systemName: "magnifyingglass")
+                                    .foregroundColor(.gray)
+                                TextField("Search workspaces by title", text: $viewModel.searchText)
+                                    .font(.custom("Lato-Regular", size: 16, relativeTo: .body))
+                                    .textInputAutocapitalization(.never)
+                                    .disableAutocorrection(true)
+                                    .focused($isSearchFieldFocused)
+                                    .accessibilityLabel("Search workspaces by title")
+                                if !viewModel.searchText.isEmpty {
+                                    Button {
+                                        viewModel.searchText = ""
+                                    } label: {
+                                        Image(systemName: "xmark.circle.fill")
+                                            .foregroundColor(.gray)
+                                    }
+                                    .accessibilityLabel("Clear search text")
+                                }
+                            }
+                            .padding(8)
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 10)
+                                    .stroke(Color(.systemGray4), lineWidth: 1)
+                            )
+                            .transition(.move(edge: .trailing).combined(with: .opacity))
+                        } else {
+                            Spacer()
+                        }
+
+                        Button {
+                            withAnimation {
+                                isSearchActive.toggle()
+                                if isSearchActive {
+                                    isSearchFieldFocused = true
+                                } else {
+                                    viewModel.searchText = ""
+                                }
+                            }
+                        } label: {
+                            Image(systemName: isSearchActive ? "xmark.circle.fill" : "magnifyingglass")
+                                .resizable()
+                                .scaledToFit()
+                                .frame(width: 20, height: 20)
+                                .foregroundStyle(Asset.Colors.huskyPurple.swiftUIColor)
+                        }
+                        .accessibilityLabel(isSearchActive ? "Close search" : "Search workspaces")
                     }
-                    
-                    Spacer()
-                    
-                    VStack(spacing: 30) {
+
+                    VStack(spacing: 20) {
                         Asset.workspacesLogo.swiftUIImage
                             .resizable()
                             .frame(width: 100, height: 100)
@@ -45,9 +94,7 @@ struct InitialView: View {
                             .foregroundStyle(Asset.Colors.huskyPurple.swiftUIColor)
                     }
                     .padding()
-                    
-                    Spacer()
-                    
+
                     WorkspacesListView(viewModel: viewModel, shouldNavigateToMapView: $shouldNavigateToMapView, selectedWorkspace: $selectedWorkspace, isLoading: $viewModel.isLoading)
                 }
                 .padding()
@@ -69,17 +116,17 @@ struct InitialView: View {
 
 // WorkspacesListView - View for displaying a list of workspaces
 struct WorkspacesListView: View {
-    var viewModel: InitialViewModel
+    @ObservedObject var viewModel: InitialViewModel
     @Binding var shouldNavigateToMapView: Bool
     @Binding var selectedWorkspace: Workspace?
-    
+
     @Binding var isLoading: Bool
-    
+
     @State private var showAlert = false
-    
+
     @State private var alertMessage = ""
     @State private var autoRedirectToMapViewError: String?
-    
+
     var body: some View {
         
         if viewModel.workspaces?.count == 1,
@@ -153,44 +200,108 @@ struct WorkspacesListView: View {
             
         } else {
             ScrollView {
-                VStack(spacing: 20) {
+                VStack(spacing: 10) {
                     Text("Pick the workspace you want to contribute to")
                         .font(.system(.body, design: .rounded))
                         .foregroundColor(Asset.Colors.huskyPurple.swiftUIColor)
                         .multilineTextAlignment(.center)
-                    
-                    VStack(spacing: 20) {
-                        ForEach(viewModel.workspaces?.filter({$0.type == "osw" && $0.externalAppAccess == 1}) ?? [], id: \.id) { workspace in
+
+                    if !viewModel.projectGroupIds.isEmpty {
+                        Menu {
                             Button {
-                                viewModel.checkAndDeleteWorkspaceDB(workspaceId: "\(workspace.id)")
-                                viewModel.fetchLongQuestsFor(workspaceId: "\(workspace.id)", completion: { success, errorMessage, ws in
-                                    if success {
-                                        shouldNavigateToMapView = true
-                                        selectedWorkspace = ws
-                                        
-                                        let workspaceId = "\(workspace.id)"
-                                        _ = KeychainManager.save(key: "workspaceID", data: workspaceId)
+                                viewModel.selectedProjectGroupId = nil
+                            } label: {
+                                if viewModel.selectedProjectGroupId == nil {
+                                    Label("All Project Groups", systemImage: "checkmark")
+                                } else {
+                                    Text("All Project Groups")
+                                }
+                            }
+                            ForEach(viewModel.projectGroupIds, id: \.self) { groupId in
+                                Button {
+                                    viewModel.selectedProjectGroupId = groupId
+                                } label: {
+                                    if viewModel.selectedProjectGroupId == groupId {
+                                        Label(viewModel.projectGroupDisplayName(for: groupId), systemImage: "checkmark")
                                     } else {
-                                        DispatchQueue.main.async {
-                                            alertMessage = errorMessage ?? "Something went wrong."
-                                            
-                                            showAlert = true
-                                            
-                                            shouldNavigateToMapView = false
+                                        Text(viewModel.projectGroupDisplayName(for: groupId))
+                                    }
+                                }
+                            }
+                        } label: {
+                            HStack {
+                                Text("Project Group: \(viewModel.projectGroupDisplayName(for: viewModel.selectedProjectGroupId))")
+                                    .font(.custom("Lato-Regular", size: 15, relativeTo: .body))
+                                    .lineLimit(1)
+                                    .truncationMode(.middle)
+                                    .foregroundColor(Asset.Colors.huskyPurple.swiftUIColor)
+                                Spacer()
+                                Image(systemName: "chevron.down")
+                                    .foregroundColor(Asset.Colors.huskyPurple.swiftUIColor)
+                            }
+                            .padding(10)
+                            .background(Color(.systemGray6))
+                            .cornerRadius(10)
+                        }
+                        .accessibilityLabel("Filter by project group. Currently: \(viewModel.projectGroupDisplayName(for: viewModel.selectedProjectGroupId))")
+                    }
+
+                    if viewModel.filteredWorkspaces.isEmpty {
+                        VStack(spacing: 12) {
+                            Text("No workspaces match your search or filter.")
+                                .font(.custom("Lato-Bold", size: 17, relativeTo: .body))
+                                .foregroundColor(Asset.Colors.huskyPurple.swiftUIColor)
+                                .multilineTextAlignment(.center)
+                            Button("Clear filters") {
+                                viewModel.clearFilters()
+                            }
+                            .font(.custom("Lato-Bold", size: 15, relativeTo: .body))
+                            .foregroundColor(Asset.Colors.accentPink.swiftUIColor)
+                        }
+                        .padding(.top, 20)
+                    } else {
+                        VStack(spacing: 8) {
+                            ForEach(viewModel.filteredWorkspaces, id: \.id) { workspace in
+                                Button {
+                                    viewModel.checkAndDeleteWorkspaceDB(workspaceId: "\(workspace.id)")
+                                    viewModel.fetchLongQuestsFor(workspaceId: "\(workspace.id)", completion: { success, errorMessage, ws in
+                                        if success {
+                                            shouldNavigateToMapView = true
+                                            selectedWorkspace = ws
+
+                                            let workspaceId = "\(workspace.id)"
+                                            _ = KeychainManager.save(key: "workspaceID", data: workspaceId)
+                                        } else {
+                                            DispatchQueue.main.async {
+                                                alertMessage = errorMessage ?? "Something went wrong."
+
+                                                showAlert = true
+
+                                                shouldNavigateToMapView = false
+                                            }
+                                        }
+                                    })
+                                }  label: {
+                                    VStack(spacing: 4) {
+                                        Text(workspace.title)
+                                            .font(.custom("Lato-Bold", size: 17, relativeTo: .body))
+                                            .foregroundColor(Color.white)
+                                        if let createdDateDisplay = workspace.createdDateDisplay {
+                                            Text("Created \(createdDateDisplay)")
+                                                .font(.custom("Lato-Regular", size: 12, relativeTo: .caption))
+                                                .foregroundColor(Color.white.opacity(0.8))
                                         }
                                     }
-                                })
-                            }  label: {
-                                Text(workspace.title)
-                                    .font(.custom("Lato-Bold", size: 17, relativeTo: .body))
+                                    .multilineTextAlignment(.center)
+                                    .padding(.vertical, 10)
                                     .frame(maxWidth: .infinity, minHeight: 50)
-                                    .foregroundColor(Color.white)
                                     .background(Asset.Colors.huskyPurple.swiftUIColor)
                                     .cornerRadius(9)
+                                }
                             }
                         }
+                        .padding()
                     }
-                    .padding()
                 }
                 .padding([.leading, .trailing])
             }
