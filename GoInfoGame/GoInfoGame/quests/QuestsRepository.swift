@@ -125,14 +125,12 @@ struct DisplayUnitWithCoordinate: Identifiable, Equatable {
     let id: Int64
     var isHidden: Bool
     let location: CLLocation
-    let showOnlyLiDARQuest: Bool
-    init(displayUnit: DisplayUnit, coordinateInfo: CLLocationCoordinate2D, id: Int64, isHidden: Bool, showOnlyLiDARQuest: Bool = false) {
+    init(displayUnit: DisplayUnit, coordinateInfo: CLLocationCoordinate2D, id: Int64, isHidden: Bool) {
         self.displayUnit = displayUnit
         self.coordinateInfo = coordinateInfo
         self.id = id
         self.isHidden = isHidden
         self.location = CLLocation(latitude: coordinateInfo.latitude, longitude: coordinateInfo.longitude)
-        self.showOnlyLiDARQuest = showOnlyLiDARQuest
     }
 
     var annotation: DisplayUnitAnnotation {
