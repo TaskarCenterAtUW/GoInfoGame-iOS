@@ -34,7 +34,7 @@ struct LongForm: View, QuestForm {
     typealias AnswerClass = [String:String]
 
     var coordinate: CLLocationCoordinate2D?
-    
+        
     @Environment(\.presentationMode) var presentationMode
     
     @State private var showKartaviewAlert = false
@@ -67,6 +67,8 @@ struct LongForm: View, QuestForm {
     @State private var activeAlert: LongFormActiveAlert?
     
     @State private var submitStatusMessage: String?
+    
+    @State private var deviceSupportsLiDAR: Bool = false
     
     var body: some View {
         ZStack {
@@ -190,9 +192,11 @@ struct LongForm: View, QuestForm {
                         if let quests = questsForLongForm()?.quests {
                             ForEach(quests, id: \.questID) { quest in
                                 if viewModel.shouldShowQuest(quest) {
-                                    LongQuestView(quest: quest, selectedChoice: binding(for: quest), uploadPhoto:  { result in
-                                        if result { isCameraPresented = true }
-                                    })
+                                    if canShowQuest(quest) {
+                                        LongQuestView(quest: quest, selectedChoice: binding(for: quest), uploadPhoto:  { result in
+                                            if result { isCameraPresented = true }
+                                        })
+                                    }
                                 }
                             }
                             VStack {
@@ -255,6 +259,9 @@ struct LongForm: View, QuestForm {
 
             }
             .padding(.top, 30)
+            .onAppear {
+                deviceSupportsLiDAR = LiDARDetection.shared.isLiDARSupported()
+            }
             .onChange(of: viewModel.selectedChoices) { _ in
                 viewModel.clearAnswersForHiddenQuests()
             }
@@ -386,6 +393,19 @@ struct LongForm: View, QuestForm {
             }
         )
     }
+    
+    private func canShowQuest(_ quest: LongQuest) -> Bool {
+        guard let questType = quest.questType else {
+            return false
+        }
+        if questType == .autoCapture {
+            if deviceSupportsLiDAR {
+                return true
+            }
+            return false
+        }
+        return true
+    }
 }
 
 #Preview {
@@ -422,6 +442,5 @@ struct LongForm: View, QuestForm {
         return Text("Error parsing JSON")
     }
     QuestsRepository.shared.longQuestModels.append(quest)
-    return LongForm(elementName: quest.elementType, questID: "questId",query: quest.questQuery, action: { tags in
-                })
+    return LongForm(elementName: quest.elementType, questID: "questId",query: quest.questQuery, action: nil)
 }

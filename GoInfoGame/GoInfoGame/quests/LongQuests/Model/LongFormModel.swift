@@ -64,17 +64,14 @@ struct LongQuest: Codable, Identifiable {
     let id =  UUID()
     var questID: Int
     var questTitle, questDescription: String
-    var questType: QuestType
-    var questTag: String
+    var questType: QuestType?
+    var questTag: String?
+    var autoCaptureAttributes: [String: String]?
     var questAnswerChoices: [QuestAnswerChoice]?
     var questImageURL: String?
     var questAnswerValidation: QuestAnswerValidation?
     var questAnswerDependency: [QuestAnswerDependency]?
     var questUserAnswer : String?
-    
-    func getFormValue() ->[String:String?] {
-        return [self.questTag:self.questUserAnswer]
-    }
 
     enum CodingKeys: String, CodingKey {
         case questID = "quest_id"
@@ -82,6 +79,7 @@ struct LongQuest: Codable, Identifiable {
         case questDescription = "quest_description"
         case questType = "quest_type"
         case questTag = "quest_tag"
+        case autoCaptureAttributes = "auto_capture_attributes"
         case questAnswerChoices = "quest_answer_choices"
         case questImageURL = "quest_image_url"
         case questAnswerValidation = "quest_answer_validation"
@@ -93,8 +91,9 @@ struct LongQuest: Codable, Identifiable {
         questID = try container.decode(Int.self, forKey: .questID)
         questTitle = try container.decode(String.self, forKey: .questTitle)
         questDescription = try container.decode(String.self, forKey: .questDescription)
-        questType = try container.decode(QuestType.self, forKey: .questType)
-        questTag = try container.decode(String.self, forKey: .questTag)
+        questType = try? container.decode(QuestType.self, forKey: .questType)
+        questTag = try? container.decode(String.self, forKey: .questTag)
+        autoCaptureAttributes = try container.decodeIfPresent([String: String].self, forKey: .autoCaptureAttributes)
         questAnswerChoices = try container.decodeIfPresent([QuestAnswerChoice].self, forKey: .questAnswerChoices)
         questImageURL = try container.decodeIfPresent(String.self, forKey: .questImageURL)
         questAnswerValidation = try container.decodeIfPresent(QuestAnswerValidation.self, forKey: .questAnswerValidation)
@@ -107,18 +106,6 @@ struct LongQuest: Codable, Identifiable {
         } else {
             questAnswerDependency = nil
         }
-    }
-    
-    func getQtype() -> QuestType {
-        if (self.questType == .exclusiveChoice) {
-            // Do the choice shit and get the type
-        }
-        else {
-            return self.questType
-        }
-        // loop through choice images . If all are none, send back text type
-        // If one or more is image, send back image
-        return self.questType
     }
     
     func getQuestTitleVoiceOver() -> String {
@@ -168,6 +155,7 @@ enum QuestType: String, Codable {
     case numeric = "Numeric"
     case multipleChoice = "MultipleChoice"
     case textEntry = "TextEntry"
+    case autoCapture = "AutoCapture"
 //    case excWithImg = "ExclusiveChoiceWithImg"
 }
 
