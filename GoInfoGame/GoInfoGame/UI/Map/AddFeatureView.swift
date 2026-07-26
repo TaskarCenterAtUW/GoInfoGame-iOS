@@ -17,7 +17,9 @@ struct FeatureDetail : Identifiable{
 
 struct AddFeatureView: View {
     @Environment(\.presentationMode) var presentationMode
-    @State var tappedCoordinate: CLLocationCoordinate2D
+    /// A binding (not a one-time value) so it keeps reflecting the pin's position as
+    /// the user drags the map underneath it while this sheet stays open.
+    @Binding var tappedCoordinate: CLLocationCoordinate2D
     @Binding var isPresented: Bool
     @State private var selectedFeature: FeatureDetail? = nil
     @State private var isLoading = false
@@ -160,5 +162,5 @@ struct AddFeatureView: View {
 }
 
 #Preview {
-    AddFeatureView(tappedCoordinate: CLLocationCoordinate2D(latitude: 0, longitude: 0), isPresented: .constant(true), dismissSheet: {_ in })
+    AddFeatureView(tappedCoordinate: .constant(CLLocationCoordinate2D(latitude: 0, longitude: 0)), isPresented: .constant(true), dismissSheet: {_ in })
 }

@@ -262,6 +262,12 @@ struct CustomMap: UIViewRepresentable {
     @Binding var shadowRegions: [CoordinateBounds]
     @Binding var pendingAdditionCoordinate: CLLocationCoordinate2D?
 
+    /// The screen point of the fixed crosshair shown while Create Note/Add Feature is
+    /// open (nil otherwise). While non-nil, the coordinate under it is continuously
+    /// written back to `editedCoordinate` as the user drags the map.
+    @Binding var pinEditAnchor: CGPoint?
+    @Binding var editedCoordinate: CLLocationCoordinate2D?
+
     /// True while a sheet that keeps the map interactive underneath it (satellite
     /// picker, long-press action sheet, create note, add feature) is currently open.
     /// Those sheets let taps reach the map, so a new selection can otherwise try to
@@ -506,7 +512,16 @@ struct CustomMap: UIViewRepresentable {
             }
         }
 
+        /// Fires continuously while the camera is moving (drag, pinch, momentum, or
+        /// programmatic animation) — the cheapest hook for keeping `editedCoordinate` in
+        /// sync with the fixed crosshair while Create Note/Add Feature is open.
+        func mapViewRegionIsChanging(_ mapView: MLNMapView) {
+            updateEditedCoordinateIfNeeded(mapView)
+        }
+
         func mapView(_ mapView: MLNMapView, regionDidChangeAnimated animated: Bool) {
+            updateEditedCoordinateIfNeeded(mapView)
+
             let zoom = mapView.zoomLevel
             let previousBucket = clusterBucket(for: lastClusteredZoom, mapView: mapView)
             let currentBucket  = clusterBucket(for: zoom, mapView: mapView)
@@ -859,6 +874,14 @@ struct CustomMap: UIViewRepresentable {
 
                 DispatchQueue.main.async { src.shape = polygon }
             }
+        }
+
+        /// While `pinEditAnchor` is set (Create Note/Add Feature is open), keeps
+        /// `editedCoordinate` matching whatever coordinate currently sits under that
+        /// fixed on-screen point, so it reflects the map's position at all times.
+        private func updateEditedCoordinateIfNeeded(_ mapView: MLNMapView) {
+            guard let anchor = parent.pinEditAnchor else { return }
+            parent.editedCoordinate = mapView.convert(anchor, toCoordinateFrom: mapView)
         }
 
         func updateNoteBeingAddedAnnotation(coordinate: CLLocationCoordinate2D?) {
