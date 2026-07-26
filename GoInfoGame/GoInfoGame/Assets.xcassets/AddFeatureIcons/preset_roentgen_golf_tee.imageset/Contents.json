@@ -1,0 +1,12 @@
+{
+  "images" : [
+    {
+      "filename" : "preset_roentgen_golf_tee.pdf",
+      "idiom" : "universal"
+    }
+  ],
+  "info" : {
+    "author" : "xcode",
+    "version" : 1
+  }
+}

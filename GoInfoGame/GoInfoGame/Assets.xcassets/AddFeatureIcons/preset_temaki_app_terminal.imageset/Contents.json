@@ -1,0 +1,12 @@
+{
+  "images" : [
+    {
+      "filename" : "preset_temaki_app_terminal.pdf",
+      "idiom" : "universal"
+    }
+  ],
+  "info" : {
+    "author" : "xcode",
+    "version" : 1
+  }
+}
