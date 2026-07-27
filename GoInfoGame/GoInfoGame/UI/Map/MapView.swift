@@ -593,12 +593,21 @@ struct MapView: View {
                     set: { editedCoordinate = $0 }
                 ),
                 isPresented: $showAddFeatureSheet,
-                dismissSheet: { message in
+                dismissSheet: { message, matchedQuestUnit in
                     alertIcon = message.contains("wrong")
                         ? "exclamationmark.triangle.fill"
                         : "checkmark.circle.fill"
                     alertMessage = message
                     showAlert = true
+                    if let matchedQuestUnit {
+                        // Wait for this sheet's own dismiss animation (already started
+                        // just before this closure ran) to clear before presenting the
+                        // quest sheet — same sequenced-transition pattern used
+                        // everywhere else two sheets would otherwise overlap.
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                            openQuestFlow(for: matchedQuestUnit)
+                        }
+                    }
                 }
             )
             .onDisappear {
@@ -798,6 +807,32 @@ struct MapView: View {
         pendingAdditionCoordinate = nil
         editedCoordinate = nil
         setMapGesturesEnabled(true)
+    }
+
+    /// A freshly-created element (from Add Feature) satisfied a LongForm `quest_query` —
+    /// add it as a live pin and open the same quest sheet a tap on an existing pin would,
+    /// so the user can answer it right away instead of having to find and tap it later.
+    /// Mirrors the state `CustomMap.Coordinator.handleSingleSelect` sets on a real tap
+    /// (`CustomMap.swift`), since that's what `QuestSheetView.init`/`getSelectedQuest()`
+    /// expect in order to actually resolve `LongElementQuest.form` (see the class's
+    /// `annotationCoordinate` `didSet`, which swaps in the real `LongForm`).
+    private func openQuestFlow(for unit: DisplayUnitWithCoordinate) {
+        viewModel.items.append(unit)
+        viewModel.selectedQuest = unit.displayUnit
+        annotationCoordinate = unit.coordinateInfo
+
+        if let mapView = mapViewRef {
+            if zoomLevelBeforeQuestSelection == nil {
+                zoomLevelBeforeQuestSelection = mapView.zoomLevel
+                centerBeforeQuestSelection = mapView.centerCoordinate
+            }
+            let targetZoom = min(19, mapView.maximumZoomLevel)
+            mapView.setCenter(unit.coordinateInfo, zoomLevel: targetZoom, direction: -1, animated: true) { [self] in
+                ensureCoordinateVisibleAboveSheet(unit.coordinateInfo, sheetHeightFraction: Self.questSheetHeightFraction)
+            }
+        }
+
+        isPresented = true
     }
 
     /// Both the long-press action sheet and the Create Note/Add Feature sheets that

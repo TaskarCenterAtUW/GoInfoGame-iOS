@@ -48,6 +48,12 @@ class QuestsRepository: ObservableObject {
        }
     
     @Published var longQuestModels: [LongFormElement] = []
+
+    /// Options shown in the "Add Feature" picker, and the remote-icon fallbacks for
+    /// any of their `icon` names not found in the asset catalog. Populated once per
+    /// workspace load from `longFormQuestDef`'s `feature-presets`/`custom-icons`.
+    @Published var featurePresets: [FeaturePreset] = []
+    @Published var customIcons: [CustomIcon] = []
     
     var displayQuests: [DisplayUnit] {
         self.applicableQuests.map { q in

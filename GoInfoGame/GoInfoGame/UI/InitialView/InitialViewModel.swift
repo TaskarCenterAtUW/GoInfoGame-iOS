@@ -162,6 +162,8 @@ class InitialViewModel: ObservableObject {
 
                     self.longQuests = longQuestsResponse.elements
                     self.saveLongQuestsToDefaults(longQuestJson: longQuestsResponse.elements)
+                    QuestsRepository.shared.featurePresets = longQuestsResponse.featurePresets ?? []
+                    QuestsRepository.shared.customIcons = longQuestsResponse.customIcons ?? []
                     
                     // Add one generic form for each longquest
                     QuestsRepository.shared.allQuests.removeAll()

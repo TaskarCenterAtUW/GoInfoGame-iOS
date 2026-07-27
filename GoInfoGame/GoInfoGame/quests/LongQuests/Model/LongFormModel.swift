@@ -24,12 +24,18 @@ import Foundation
 struct LongFormResponse: Decodable {
     let version: String?
     let elements: [LongFormElement]
-    
+    let recencyPeriod: Int?
+    let featurePresets: [FeaturePreset]?
+    let customIcons: [CustomIcon]?
+
     init(from decoder: Decoder) throws {
         // Try top-level array first
         if let topArray = try? [LongFormElement](from: decoder) {
             self.elements = topArray
             self.version = nil
+            self.recencyPeriod = nil
+            self.featurePresets = nil
+            self.customIcons = nil
             return
         }
 
@@ -37,12 +43,45 @@ struct LongFormResponse: Decodable {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         self.elements = try container.decode([LongFormElement].self, forKey: .elements)
         self.version = try container.decodeIfPresent(String.self, forKey: .version)
+        self.recencyPeriod = try container.decodeIfPresent(Int.self, forKey: .recencyPeriod)
+        self.featurePresets = try container.decodeIfPresent([FeaturePreset].self, forKey: .featurePresets)
+        self.customIcons = try container.decodeIfPresent([CustomIcon].self, forKey: .customIcons)
     }
 
     enum CodingKeys: String, CodingKey {
         case elements
         case version
+        case recencyPeriod = "recency_period"
+        case featurePresets = "feature-presets"
+        case customIcons = "custom-icons"
     }
+}
+
+// MARK: - FeaturePreset
+/// One selectable option in the "Add Feature" picker — e.g. Street light, Bench,
+/// Subway. `tags` are applied verbatim to the OSM node created on submission.
+struct FeaturePreset: Codable, Identifiable, Equatable {
+    var id = UUID()
+    let name: String
+    let icon: String
+    let tags: [String: String]
+
+    enum CodingKeys: String, CodingKey {
+        case name, icon, tags
+    }
+
+    static func == (lhs: FeaturePreset, rhs: FeaturePreset) -> Bool {
+        lhs.name == rhs.name && lhs.icon == rhs.icon && lhs.tags == rhs.tags
+    }
+}
+
+// MARK: - CustomIcon
+/// Fallback for a `FeaturePreset.icon` that has no matching entry in the asset
+/// catalog — downloaded from `url` and cached in place of the local image.
+struct CustomIcon: Codable, Equatable {
+    let name: String
+    let url: String
+    let type: String
 }
 
 // MARK: - Element
