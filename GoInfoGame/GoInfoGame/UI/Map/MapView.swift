@@ -59,6 +59,10 @@ struct MapView: View {
     /// nil the rest of the time. See `CustomMap.Coordinator.updateEditedCoordinateIfNeeded`.
     @State private var pinEditAnchor: CGPoint? = nil
     @State private var screenSize: CGSize = .zero
+    /// The feature preset picked in `AddFeatureView`'s grid, if any — drives the fixed
+    /// crosshair's icon (see the `showAddFeatureSheet`/`pinEditAnchor` overlay below) so
+    /// it shows what's about to be added, not just a generic pin.
+    @State private var selectedFeaturePreset: FeaturePreset? = nil
     @State private var showAddFeatureSheet = false
     @State private var showCreateNoteSheet = false
     @State private var showUserSettingsSheet = false
@@ -319,14 +323,23 @@ struct MapView: View {
                     // `.ignoresSafeArea()` keeps this aligned with `mapView.bounds` —
                     // the full-screen frame CustomMap itself renders into (it also
                     // ignores safe area) and the space `anchor` was computed in.
-                    Image(systemName: "mappin")
-                        .font(.system(size: 32, weight: .bold))
-                        .foregroundStyle(Asset.Colors.ff0041Red.swiftUIColor)
-                        .shadow(color: .black.opacity(0.3), radius: 2, y: 1)
-                        .offset(y: -16)
-                        .position(anchor)
-                        .allowsHitTesting(false)
-                        .ignoresSafeArea()
+                    //
+                    // Once a feature preset is picked, its own icon replaces the
+                    // generic pin glyph so the marker previews what's about to be added.
+                    Group {
+                        if let selectedFeaturePreset {
+                            PresetIconView(iconName: selectedFeaturePreset.icon, size: 32)
+                        } else {
+                            Image(systemName: "mappin")
+                                .font(.system(size: 32, weight: .bold))
+                                .foregroundStyle(Asset.Colors.ff0041Red.swiftUIColor)
+                        }
+                    }
+                    .shadow(color: .black.opacity(0.3), radius: 2, y: 1)
+                    .offset(y: -16)
+                    .position(anchor)
+                    .allowsHitTesting(false)
+                    .ignoresSafeArea()
                 }
             }
             .alert("Zoom in to download data", isPresented: $showZoomInAlert) {
@@ -593,6 +606,7 @@ struct MapView: View {
                     set: { editedCoordinate = $0 }
                 ),
                 isPresented: $showAddFeatureSheet,
+                selectedPreset: $selectedFeaturePreset,
                 dismissSheet: { message, matchedQuestUnit in
                     alertIcon = message.contains("wrong")
                         ? "exclamationmark.triangle.fill"
@@ -615,6 +629,7 @@ struct MapView: View {
                 tappedCoordinate = nil
                 editedCoordinate = nil
                 pinEditAnchor = nil
+                selectedFeaturePreset = nil
             }
             .presentationDetents([.fraction(0.6)])
             .presentationDragIndicator(.visible)

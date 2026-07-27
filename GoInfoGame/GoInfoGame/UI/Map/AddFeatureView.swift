@@ -16,7 +16,9 @@ struct AddFeatureView: View {
     @Binding var tappedCoordinate: CLLocationCoordinate2D
     @Binding var isPresented: Bool
     @ObservedObject private var questsRepository = QuestsRepository.shared
-    @State private var selectedPreset: FeaturePreset?
+    /// A binding (not local @State) so MapView can swap the on-screen pin's icon to
+    /// match as soon as a preset is picked.
+    @Binding var selectedPreset: FeaturePreset?
 
     /// Called once the submission sheet finishes — the message for the result alert,
     /// plus (if the newly created element satisfies a LongForm `quest_query`) the pin
@@ -350,5 +352,5 @@ struct FeatureSubmissionView: View {
 }
 
 #Preview {
-    AddFeatureView(tappedCoordinate: .constant(CLLocationCoordinate2D(latitude: 0, longitude: 0)), isPresented: .constant(true), dismissSheet: {_,_  in })
+    AddFeatureView(tappedCoordinate: .constant(CLLocationCoordinate2D(latitude: 0, longitude: 0)), isPresented: .constant(true), selectedPreset: .constant(nil), dismissSheet: {_,_  in })
 }
