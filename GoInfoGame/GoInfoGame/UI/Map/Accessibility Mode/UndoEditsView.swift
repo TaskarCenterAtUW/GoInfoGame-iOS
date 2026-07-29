@@ -109,8 +109,11 @@ struct UndoEditsView: View {
             .applyPresentationSizingPage()
         }
         .onReceive(MapViewPublisher.shared.dismissSheet) { scenario in
-            if case .undoDone(_) = scenario {
+            switch scenario {
+            case .undoDone, .elementRemoved:
                 viewModel.loadUndoItems()
+            default:
+                break
             }
         }
     }

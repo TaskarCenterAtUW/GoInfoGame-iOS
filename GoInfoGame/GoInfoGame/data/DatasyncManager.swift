@@ -781,7 +781,45 @@ class DatasyncManager {
             throw error;
         }
     }
-    
+
+    /// Permanently deletes a node from the OSM server — used only to undo a
+    /// just-created feature (see `AddFeatureView`/`StoredChangeset.isCreatedElement`).
+    /// Never used to revert a tag edit on a pre-existing element; that stays a
+    /// `<modify>` via `syncNode`/`updateNode`.
+    func deleteNode(node: OSMNode) async throws -> Bool {
+        var localNode = node
+
+        do {
+            let changesetID = try await openChangeset()
+            localNode.changeset = changesetID
+
+            let deleteBody = "<osmChange version=\"0.6\" generator=\"GIG Change generator\">" + localNode.toDeletePayload() + "</osmChange>"
+            guard let bodyData = deleteBody.data(using: .utf8) else {
+                throw APIError.decodingFailed("Invalid Node Body")
+            }
+            let workspaceId = KeychainManager.load(key: "workspaceID")
+            guard let accessToken = KeychainManager.load(key: "accessToken") else {
+                throw APIError.unauthorized
+            }
+
+            _ = try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<String, Error>) in
+                ApiManager.shared.performRequest(to: .uploadChangeset(accessToken, "\(changesetID)", workspaceId ?? "", bodyData), setupType: .osm, modelType: String.self, useJSON: false) { result in
+                    switch result {
+                    case .success(let response):
+                        continuation.resume(returning: response)
+                    case .failure(let failure):
+                        continuation.resume(throwing: failure)
+                    }
+                }
+            }
+
+            return try await closeChangeset(id: String(changesetID))
+        } catch {
+            print("deleteNode error: \(error)")
+            throw error
+        }
+    }
+
     @MainActor
     func syncWay(way: OSMWay, exclude_gig_tags: Bool, editedTags: [String : String], elementTypeName: String = "Element", iconName: String = "notes") async throws -> (result: Bool, version: Int) {
         var localWay = way

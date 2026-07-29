@@ -321,6 +321,44 @@ class DatabaseConnector {
 
     
     
+    /// Records a brand-new node (created via Add Feature) as an already-"synced"
+    /// changeset — there's nothing pending to upload since `createNode` already
+    /// completed the real create synchronously — purely so it immediately appears in
+    /// `MapUndoManager.getUndoItems()`. `originalTags` is intentionally left empty
+    /// (nothing existed before this element), and `isCreatedElement` is what
+    /// `QuestBase.updateUndoTags` checks to delete the node on undo instead of
+    /// restoring old tags. Deliberately separate from `createChangeset` below, which
+    /// backs the unrelated "pending edit to an existing element" queue that
+    /// `DatasyncManager.syncData()` drains — a create must never end up in that queue.
+    func createChangesetForNewElement(id: Int, questType: String, tags: [String: String], version: Int, iconName: String, point: CLLocationCoordinate2D) -> StoredChangeset? {
+        let realm = try! Realm(configuration: RealmConfig.configuration)
+        let storedChangeset = StoredChangeset()
+        storedChangeset.elementId = id
+        storedChangeset.elementType = .node
+        storedChangeset.version = version
+        storedChangeset.updatedVersion = version // already synced — nothing for syncData() to do
+        storedChangeset.changesetId = 0          // matches the "synced, undoable" sentinel getUndoItems() checks for
+        storedChangeset.questType = questType
+        storedChangeset.iconName = iconName
+        storedChangeset.point = point
+        storedChangeset.isCreatedElement = true
+        storedChangeset.timestamp = String(Date().timeIntervalSince1970)
+        for tag in tags {
+            storedChangeset.tags.setValue(tag.value, forKey: tag.key)
+        }
+        // originalTags left empty — nothing existed before this element was created.
+
+        do {
+            try realm.write {
+                realm.add(storedChangeset)
+            }
+        } catch {
+            print("Error while writing the create changeset")
+            return nil
+        }
+        return storedChangeset
+    }
+
     /**
      Creates a changeset for an element with specific ID. This does not store the updated nodes. That is to be done separately
      - parameter id: String id of the changed element
@@ -518,7 +556,7 @@ class DatabaseConnector {
 }
 
 struct RealmConfig {
-    static let configuration = Realm.Configuration(schemaVersion: 2) { migration, oldSchemaVersion in
+    static let configuration = Realm.Configuration(schemaVersion: 3) { migration, oldSchemaVersion in
         if oldSchemaVersion < 1 {
             let formatter = DateFormatter()
             formatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
@@ -546,6 +584,13 @@ struct RealmConfig {
             migration.enumerateObjects(ofType: StoredChangeset.className()) { oldObject, newObject in
                 newObject?["questType"] = nil
                 newObject?["iconName"] = "notes"
+            }
+        }
+        if oldSchemaVersion < 3 {
+            // Every changeset that existed before this field was added is, by
+            // definition, an edit to an already-existing element — never a create.
+            migration.enumerateObjects(ofType: StoredChangeset.className()) { _, newObject in
+                newObject?["isCreatedElement"] = false
             }
         }
     }

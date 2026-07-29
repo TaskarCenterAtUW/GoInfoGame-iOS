@@ -120,7 +120,9 @@ struct UndoItemConfirmationView: View {
             onRevertChanges()
         } label: {
             ZStack {
-                Text(L10n.Localizable.revertChanges)
+                // A created feature has no prior tags to revert to — undoing it
+                // deletes the element outright (see StoredChangeset.isCreatedElement).
+                Text(undoItem.isCreatedElement ? "Delete Feature" : L10n.Localizable.revertChanges)
                     .foregroundStyle(.white)
                     .frame(maxWidth: .infinity)
                     .padding()
@@ -129,7 +131,7 @@ struct UndoItemConfirmationView: View {
                     .cornerRadius(25)
                     .multilineTextAlignment(.center)
                     .lineLimit(nil)
-                    .accessibilityLabel(Text(L10n.Localizable.revertChanges))
+                    .accessibilityLabel(Text(undoItem.isCreatedElement ? "Delete Feature" : L10n.Localizable.revertChanges))
             }
         }
     }

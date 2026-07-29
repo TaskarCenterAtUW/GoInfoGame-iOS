@@ -671,6 +671,8 @@ struct MapView: View {
             case .syncBackground(let elementID):
                 shouldShowPolyline = false
                 viewModel.refreshMapAfterSubmission(elementId: elementID)
+            case .elementRemoved(let elementID):
+                viewModel.refreshMapAfterSubmission(elementId: elementID)
             case .noteSubmitted:
                 alertIcon = "checkmark.circle.fill"
                 alertMessage = "Note submitted successfully"
@@ -1164,6 +1166,8 @@ public enum SheetDismissalScenario {
     case hideElement(String, String)
     case undoDone(String)
     case syncBackground(Int)
+    /// A created element was deleted via undo — remove its pin, if it has one.
+    case elementRemoved(Int)
     case noteSubmitted
     case notesQueueUpdated
     case notesSyncing

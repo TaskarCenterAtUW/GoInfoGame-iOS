@@ -322,6 +322,17 @@ struct FeatureSubmissionView: View {
             )
             DatabaseConnector.shared.saveOSMElements([persistedNode])
             matchedQuestUnit = AppQuestManager.shared.getUpdatedQuest(elementId: "\(created.id)")
+
+            // Makes this creation undoable — shows up in the Undo sidebar right away,
+            // and deletes the node (rather than reverting tags) if the user undoes it.
+            _ = DatabaseConnector.shared.createChangesetForNewElement(
+                id: created.id,
+                questType: preset.name,
+                tags: tags,
+                version: created.version,
+                iconName: preset.icon,
+                point: coordinate
+            )
         } catch {
             print("ERROR IN CREATING FEATURE ---->>> \(error)")
             resultMessage = "Something went wrong. Try again"
