@@ -62,9 +62,11 @@ class LongElementQuest: QuestBase, Quest {
     var wikiLink: String = ""
     
     private(set) var elementType: String = ""
-    
+
     private(set) var elementTypeIcon: String?
-    
+
+    var tags: [String: String]?
+
     
     var changesetComment: String = ""
     
@@ -183,7 +185,7 @@ class LongElementQuest: QuestBase, Quest {
     
     private func updateForm() {
           self.internalForm = LongForm(
-            elementName: elementType, questID: questId, query: _internalQueryString, action: { [self] tags in
+            elementName: elementType, questID: questId, query: _internalQueryString, tags: tags, action: { [self] tags in
                 self.questAnswersSelected?(tags)
             }, coordinate: annotationCoordinate ?? CLLocationCoordinate2D(latitude: 0, longitude: 0)
           )
@@ -196,7 +198,7 @@ class LongElementQuest: QuestBase, Quest {
         self._internalQueryString = questQuery
         self.elementType = elementType
         self.elementTypeIcon = elementTypeIcon
-        self.internalForm = LazyView(LongForm(elementName: elementType, questID: questId,query: questQuery, action: { [self] tags in
+        self.internalForm = LazyView(LongForm(elementName: elementType, questID: questId,query: questQuery, tags: self.tags, action: { [self] tags in
 //            self.onAnswer(answer: tags)
             self.questAnswersSelected?(tags)
         }))
@@ -207,7 +209,7 @@ class LongElementQuest: QuestBase, Quest {
         type = .node
         super.init()
 
-        self.internalForm = LongForm(elementName: elementType, action: { [self] tags in
+        self.internalForm = LongForm(elementName: elementType, tags: tags, action: { [self] tags in
 //            self.onAnswer(answer: tags)
             self.questAnswersSelected?(tags)
         })
@@ -235,6 +237,7 @@ class LongElementQuest: QuestBase, Quest {
         }
         quest.id = element.id
         quest.type = element.type
+        quest.tags = element.tags
         return quest
     }
 }
