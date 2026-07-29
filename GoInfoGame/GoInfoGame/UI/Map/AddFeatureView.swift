@@ -166,6 +166,9 @@ struct FeatureSubmissionView: View {
     @State private var isCameraPresented = false
     @State private var isSubmitting = false
 
+    /// `ext:notes` is capped at this length server-side.
+    private static let maxNoteLength = 255
+
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
             HStack {
@@ -201,6 +204,17 @@ struct FeatureSubmissionView: View {
                         .padding(.leading, 5)
                 }
             }
+            .onChange(of: noteText) { newValue in
+                if newValue.count > Self.maxNoteLength {
+                    noteText = String(newValue.prefix(Self.maxNoteLength))
+                }
+            }
+
+            Text("\(noteText.count)/\(Self.maxNoteLength)")
+                .font(FontFamily.Lato.regular.swiftUIFont(size: 12))
+                .foregroundColor(Asset.Colors._83879BTextFiledTitle.swiftUIColor)
+                .frame(maxWidth: .infinity, alignment: .trailing)
+                .padding(.horizontal)
 
             photosSection
 
@@ -282,9 +296,9 @@ struct FeatureSubmissionView: View {
         }
     }
 
-    /// Builds the node from the preset's tags — plus the note as `ext:description` and
-    /// any uploaded photo URLs as `ext:kartaview_url`, the same convention `LongForm`
-    /// already uses for quest-answer photos — then creates it at the current coordinate.
+    /// Builds the node from the preset's tags — plus the note as `ext:notes` (capped at
+    /// `maxNoteLength`) and each uploaded photo as its own `ext:image_N` tag — then
+    /// creates it at the current coordinate.
     ///
     /// If creation succeeds, the node is also persisted locally under the server's real
     /// id/version (never returned any other way — see `DatasyncManager.uploadNode`) and
@@ -295,13 +309,13 @@ struct FeatureSubmissionView: View {
         isSubmitting = true
 
         var tags = preset.tags
-        let trimmedNote = noteText.trimmingCharacters(in: .whitespacesAndNewlines)
+        let trimmedNote = String(noteText.trimmingCharacters(in: .whitespacesAndNewlines).prefix(Self.maxNoteLength))
         if !trimmedNote.isEmpty {
-            tags["ext:description"] = trimmedNote
+            tags["ext:notes"] = trimmedNote
         }
         let photoURLs = await uploadPhotos()
-        if !photoURLs.isEmpty {
-            tags["ext:kartaview_url"] = photoURLs.joined(separator: ", ")
+        for (index, url) in photoURLs.enumerated() {
+            tags["ext:image_\(index + 1)"] = url
         }
 
         let node = UserNodesHelper.getPowerPole(
