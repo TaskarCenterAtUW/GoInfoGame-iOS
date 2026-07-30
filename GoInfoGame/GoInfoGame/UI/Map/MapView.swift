@@ -30,6 +30,7 @@ struct MapView: View {
     @State private var lineCoordinates: [CLLocationCoordinate2D] = []
     @State private var isSyncingElements = false
     @State private var isSyncingNotes = false
+    @State private var isSyncingFeatures = false
     @State private var showAlert = false
     @State private var alertMessage = ""
     @State private var alertIcon = ""
@@ -87,9 +88,9 @@ struct MapView: View {
     @State private var screenWidth: CGFloat = UIScreen.main.bounds.width
     @State private var centerBeforeQuestSelection: CLLocationCoordinate2D?
 
-    /// The sync button spins whenever either queue (failed quest elements or
-    /// pending notes) is actively being drained, whichever started it.
-    private var isSyncing: Bool { isSyncingElements || isSyncingNotes }
+    /// The sync button spins whenever any queue (failed quest elements, pending
+    /// notes, or pending features) is actively being drained, whichever started it.
+    private var isSyncing: Bool { isSyncingElements || isSyncingNotes || isSyncingFeatures }
 
     /// Scales with `screenWidth` so it always leaves room for the fixed-size profile icon/divider
     /// and the 4 trailing bar buttons, without depending on navigation/transition state.
@@ -421,10 +422,10 @@ struct MapView: View {
                     accessbilityButton
 
                     QuestSyncButton(
-                        badgeCount: viewModel.syncFailedElementsCount + viewModel.pendingNotesCount,
+                        badgeCount: viewModel.syncFailedElementsCount + viewModel.pendingNotesCount + viewModel.pendingFeaturesCount,
                         isSyncing: isSyncing,
                         action: {
-                            guard viewModel.syncFailedElementsCount > 0 || viewModel.pendingNotesCount > 0 else {
+                            guard viewModel.syncFailedElementsCount > 0 || viewModel.pendingNotesCount > 0 || viewModel.pendingFeaturesCount > 0 else {
                                 alertIcon = "info.bubble"
                                 alertMessage = "No elements to sync"
                                 showAlert = true
@@ -433,6 +434,10 @@ struct MapView: View {
 
                             if viewModel.pendingNotesCount > 0 {
                                 NotesSubmissionManager.resumePendingUploads()
+                            }
+
+                            if viewModel.pendingFeaturesCount > 0 {
+                                FeatureSubmissionManager.resumePendingUploads()
                             }
 
                             guard viewModel.syncFailedElementsCount > 0 else { return }
@@ -606,23 +611,7 @@ struct MapView: View {
                     set: { editedCoordinate = $0 }
                 ),
                 isPresented: $showAddFeatureSheet,
-                selectedPreset: $selectedFeaturePreset,
-                dismissSheet: { message, matchedQuestUnit in
-                    alertIcon = message.contains("wrong")
-                        ? "exclamationmark.triangle.fill"
-                        : "checkmark.circle.fill"
-                    alertMessage = message
-                    showAlert = true
-                    if let matchedQuestUnit {
-                        // Wait for this sheet's own dismiss animation (already started
-                        // just before this closure ran) to clear before presenting the
-                        // quest sheet — same sequenced-transition pattern used
-                        // everywhere else two sheets would otherwise overlap.
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-                            openQuestFlow(for: matchedQuestUnit)
-                        }
-                    }
-                }
+                selectedPreset: $selectedFeaturePreset
             )
             .onDisappear {
                 pendingAdditionCoordinate = nil
@@ -684,6 +673,21 @@ struct MapView: View {
                 isSyncingNotes = true
             case .notesSyncFinished:
                 isSyncingNotes = false
+                viewModel.checkSyncStatus()
+            case .featureSubmitted(let presetName, let matchedQuestUnit):
+                alertIcon = "checkmark.circle.fill"
+                alertMessage = "\(presetName) added successfully"
+                showAlert = true
+                if let matchedQuestUnit {
+                    viewModel.items.append(matchedQuestUnit)
+                }
+                viewModel.checkSyncStatus()
+            case .featuresQueueUpdated:
+                viewModel.checkSyncStatus()
+            case .featuresSyncing:
+                isSyncingFeatures = true
+            case .featuresSyncFinished:
+                isSyncingFeatures = false
                 viewModel.checkSyncStatus()
             }
         }
@@ -824,32 +828,6 @@ struct MapView: View {
         pendingAdditionCoordinate = nil
         editedCoordinate = nil
         setMapGesturesEnabled(true)
-    }
-
-    /// A freshly-created element (from Add Feature) satisfied a LongForm `quest_query` —
-    /// add it as a live pin and open the same quest sheet a tap on an existing pin would,
-    /// so the user can answer it right away instead of having to find and tap it later.
-    /// Mirrors the state `CustomMap.Coordinator.handleSingleSelect` sets on a real tap
-    /// (`CustomMap.swift`), since that's what `QuestSheetView.init`/`getSelectedQuest()`
-    /// expect in order to actually resolve `LongElementQuest.form` (see the class's
-    /// `annotationCoordinate` `didSet`, which swaps in the real `LongForm`).
-    private func openQuestFlow(for unit: DisplayUnitWithCoordinate) {
-        viewModel.items.append(unit)
-        viewModel.selectedQuest = unit.displayUnit
-        annotationCoordinate = unit.coordinateInfo
-
-        if let mapView = mapViewRef {
-            if zoomLevelBeforeQuestSelection == nil {
-                zoomLevelBeforeQuestSelection = mapView.zoomLevel
-                centerBeforeQuestSelection = mapView.centerCoordinate
-            }
-            let targetZoom = min(19, mapView.maximumZoomLevel)
-            mapView.setCenter(unit.coordinateInfo, zoomLevel: targetZoom, direction: -1, animated: true) { [self] in
-                ensureCoordinateVisibleAboveSheet(unit.coordinateInfo, sheetHeightFraction: Self.questSheetHeightFraction)
-            }
-        }
-
-        isPresented = true
     }
 
     /// Both the long-press action sheet and the Create Note/Add Feature sheets that
@@ -1172,6 +1150,14 @@ public enum SheetDismissalScenario {
     case notesQueueUpdated
     case notesSyncing
     case notesSyncFinished
+    /// A queued feature was created (possibly well after Submit was tapped, if it had
+    /// to wait offline) — the preset name for the confirmation, plus a quest pin to
+    /// add quietly if the new element satisfies a LongForm quest_query. Never opens
+    /// the quest sheet itself; by the time this fires the user may be doing anything.
+    case featureSubmitted(String, DisplayUnitWithCoordinate?)
+    case featuresQueueUpdated
+    case featuresSyncing
+    case featuresSyncFinished
 }
 
 class ContextualInfo: ObservableObject {

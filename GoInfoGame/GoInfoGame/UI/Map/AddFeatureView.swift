@@ -7,7 +7,6 @@
 
 import SwiftUI
 import CoreLocation
-import osmapi
 
 struct AddFeatureView: View {
     @Environment(\.presentationMode) var presentationMode
@@ -19,11 +18,6 @@ struct AddFeatureView: View {
     /// A binding (not local @State) so MapView can swap the on-screen pin's icon to
     /// match as soon as a preset is picked.
     @Binding var selectedPreset: FeaturePreset?
-
-    /// Called once the submission sheet finishes — the message for the result alert,
-    /// plus (if the newly created element satisfies a LongForm `quest_query`) the pin
-    /// to add to the map and immediately open the quest flow for.
-    @State var dismissSheet: (String, DisplayUnitWithCoordinate?) -> ()
 
     var body: some View {
         VStack(alignment: .leading) {
@@ -83,14 +77,16 @@ struct AddFeatureView: View {
             FeatureSubmissionView(
                 preset: preset,
                 coordinate: $tappedCoordinate,
-                onSubmit: { message, matchedQuestUnit in
-                    // Dismiss the (inner) submission sheet first, then the (outer) picker
-                    // sheet once its close animation clears — mirrors the same
+                onSubmit: {
+                    // Dismiss the (inner) submission sheet first, then the (outer)
+                    // picker sheet once its close animation clears — mirrors the same
                     // sequenced-sheet-transition pattern MapView uses elsewhere.
+                    // Submission itself has already been handed off to
+                    // FeatureSubmissionManager by this point — dismissing here doesn't
+                    // wait on the network, same as Create Note.
                     selectedPreset = nil
                     DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
                         isPresented = false
-                        dismissSheet(message, matchedQuestUnit)
                     }
                 }
             )
@@ -150,21 +146,20 @@ struct PresetIconView: View {
 }
 
 /// Shown after picking a preset from `AddFeatureView`'s grid — mirrors
-/// `CreateNoteView`'s shape (notes text + photo capture) but submits an OSM node
-/// tagged with the preset's `tags` instead of an OSM note.
+/// `CreateNoteView`'s shape (notes text + photo capture) but hands off to
+/// `FeatureSubmissionManager` instead of `NotesSubmissionManager` on submit.
 struct FeatureSubmissionView: View {
     @Environment(\.presentationMode) var presentationMode
     let preset: FeaturePreset
     /// Live — reflects wherever the pin currently sits if the user drags the map
     /// underneath it (see `MapView.pinEditAnchor`/`editedCoordinate`) while this stays open.
     @Binding var coordinate: CLLocationCoordinate2D
-    var onSubmit: (String, DisplayUnitWithCoordinate?) -> Void
+    var onSubmit: () -> Void
 
     @State private var noteText = ""
     @State private var capturedImages: [UIImage] = []
     @State private var pickedImage: UIImage?
     @State private var isCameraPresented = false
-    @State private var isSubmitting = false
 
     /// `ext:notes` is capped at this length server-side.
     private static let maxNoteLength = 255
@@ -220,24 +215,15 @@ struct FeatureSubmissionView: View {
 
             HStack {
                 Spacer()
-                Button(action: { Task { await submit() } }) {
-                    if isSubmitting {
-                        ProgressView()
-                            .tint(.white)
-                            .frame(width: 156, height: 46)
-                            .background(Asset.Colors.huskyPurple.swiftUIColor)
-                            .cornerRadius(23)
-                    } else {
-                        Text("Submit")
-                            .font(FontFamily.Lato.bold.swiftUIFont(size: 20))
-                            .foregroundColor(.white)
-                            .padding()
-                            .frame(width: 156, height: 46)
-                            .background(Asset.Colors.huskyPurple.swiftUIColor)
-                            .cornerRadius(23)
-                    }
+                Button(action: submit) {
+                    Text("Submit")
+                        .font(FontFamily.Lato.bold.swiftUIFont(size: 20))
+                        .foregroundColor(.white)
+                        .padding()
+                        .frame(width: 156, height: 46)
+                        .background(Asset.Colors.huskyPurple.swiftUIColor)
+                        .cornerRadius(23)
                 }
-                .disabled(isSubmitting)
                 Spacer()
             }
             .padding(.horizontal, 20)
@@ -296,86 +282,32 @@ struct FeatureSubmissionView: View {
         }
     }
 
-    /// Builds the node from the preset's tags — plus the note as `ext:notes` (capped at
-    /// `maxNoteLength`) and each uploaded photo as its own `ext:image_N` tag — then
-    /// creates it at the current coordinate.
-    ///
-    /// If creation succeeds, the node is also persisted locally under the server's real
-    /// id/version (never returned any other way — see `DatasyncManager.uploadNode`) and
-    /// checked against the LongForm `quest_query` filters: if it satisfies one, the
-    /// caller gets back a ready-to-show quest pin so it can drop straight into that
-    /// quest's flow instead of just sitting there unanswered.
-    private func submit() async {
-        isSubmitting = true
-
+    /// Builds the draft (preset tags + `ext:notes`, capped at `maxNoteLength`) and hands
+    /// it straight to `FeatureSubmissionManager` — the actual photo upload and node
+    /// creation happen in the background from here on, so this returns immediately and
+    /// the sheet closes right away, exactly like `CreateNoteView.submitNote()` does.
+    /// A draft captured offline (or interrupted mid-upload) is persisted before any
+    /// network call and stays queued until it's retried automatically or via the sync
+    /// button — nothing here blocks on the network succeeding or even being reachable.
+    private func submit() {
         var tags = preset.tags
         let trimmedNote = String(noteText.trimmingCharacters(in: .whitespacesAndNewlines).prefix(Self.maxNoteLength))
         if !trimmedNote.isEmpty {
             tags["ext:notes"] = trimmedNote
         }
-        let photoURLs = await uploadPhotos()
-        for (index, url) in photoURLs.enumerated() {
-            tags["ext:image_\(index + 1)"] = url
-        }
 
-        let node = UserNodesHelper.getPowerPole(
-            lat: coordinate.latitude,
-            lon: coordinate.longitude,
-            changeset: 1,
-            tags: tags
+        let draft = FeatureDraft(
+            presetName: preset.name,
+            iconName: preset.icon,
+            tags: tags,
+            images: capturedImages,
+            coordinates: coordinate
         )
-
-        var resultMessage = "\(preset.name) added successfully"
-        var matchedQuestUnit: DisplayUnitWithCoordinate?
-        do {
-            let created = try await DatasyncManager.shared.createNode(node: node)
-
-            let persistedNode = OSMNode(
-                type: "node", id: created.id, lat: coordinate.latitude, lon: coordinate.longitude,
-                timestamp: Date(), version: created.version, changeset: 0, user: "", uid: 0, tags: tags
-            )
-            DatabaseConnector.shared.saveOSMElements([persistedNode])
-            matchedQuestUnit = AppQuestManager.shared.getUpdatedQuest(elementId: "\(created.id)")
-
-            // Makes this creation undoable — shows up in the Undo sidebar right away,
-            // and deletes the node (rather than reverting tags) if the user undoes it.
-            _ = DatabaseConnector.shared.createChangesetForNewElement(
-                id: created.id,
-                questType: preset.name,
-                tags: tags,
-                version: created.version,
-                iconName: preset.icon,
-                point: coordinate
-            )
-        } catch {
-            print("ERROR IN CREATING FEATURE ---->>> \(error)")
-            resultMessage = "Something went wrong. Try again"
-        }
-
-        await MainActor.run {
-            isSubmitting = false
-            onSubmit(resultMessage, matchedQuestUnit)
-        }
-    }
-
-    private func uploadPhotos() async -> [String] {
-        guard !capturedImages.isEmpty else { return [] }
-        var urls: [String] = []
-        for image in capturedImages {
-            let kartaviewViewModel = KartaviewViewModel(capturedImage: image)
-            let (path, success) = await withCheckedContinuation { continuation in
-                kartaviewViewModel.createSequence { path, success in
-                    continuation.resume(returning: (path, success))
-                }
-            }
-            if success {
-                urls.append(path)
-            }
-        }
-        return urls
+        FeatureSubmissionManager.submit(draft)
+        onSubmit()
     }
 }
 
 #Preview {
-    AddFeatureView(tappedCoordinate: .constant(CLLocationCoordinate2D(latitude: 0, longitude: 0)), isPresented: .constant(true), selectedPreset: .constant(nil), dismissSheet: {_,_  in })
+    AddFeatureView(tappedCoordinate: .constant(CLLocationCoordinate2D(latitude: 0, longitude: 0)), isPresented: .constant(true), selectedPreset: .constant(nil))
 }

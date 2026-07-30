@@ -553,6 +553,75 @@ class DatabaseConnector {
         }
     }
 
+    // MARK: - Feature drafts (offline queue for Add Feature)
+
+    /// Creates the pending feature draft, or if `id` already exists (a retry of a
+    /// previously failed draft), overwrites its tags/photos/coordinates in place.
+    @discardableResult
+    func upsertFeatureDraft(id: String, presetName: String, iconName: String, tags: [String: String], imagePaths: [String], coordinates: CLLocationCoordinate2D) -> StoredFeatureDraft {
+        let realm = try! Realm(configuration: RealmConfig.configuration)
+        let draft = StoredFeatureDraft()
+        draft.id = id
+        draft.presetName = presetName
+        draft.iconName = iconName
+        for (key, value) in tags {
+            draft.tags.setValue(value, forKey: key)
+        }
+        draft.imagePaths.append(objectsIn: imagePaths)
+        draft.latitude = coordinates.latitude
+        draft.longitude = coordinates.longitude
+        draft.createdAt = Date()
+        try! realm.write {
+            realm.add(draft, update: .modified)
+        }
+        return draft
+    }
+
+    /// All features still waiting to be uploaded/created, oldest first.
+    func pendingFeatureDrafts() -> [StoredFeatureDraftSnapshot] {
+        let realm = try! Realm(configuration: RealmConfig.configuration)
+        return realm.objects(StoredFeatureDraft.self)
+            .sorted(byKeyPath: "createdAt")
+            .map {
+                StoredFeatureDraftSnapshot(
+                    id: $0.id,
+                    presetName: $0.presetName,
+                    iconName: $0.iconName,
+                    tags: $0.tags.toDictionary(),
+                    imagePaths: Array($0.imagePaths),
+                    coordinates: CLLocationCoordinate2D(latitude: $0.latitude, longitude: $0.longitude)
+                )
+            }
+    }
+
+    func pendingFeatureDraftsCount() -> Int {
+        let realm = try! Realm(configuration: RealmConfig.configuration)
+        return realm.objects(StoredFeatureDraft.self).count
+    }
+
+    func featureDraftImagePaths(id: String) -> [String] {
+        let realm = try! Realm(configuration: RealmConfig.configuration)
+        guard let draft = realm.object(ofType: StoredFeatureDraft.self, forPrimaryKey: id) else { return [] }
+        return Array(draft.imagePaths)
+    }
+
+    func deleteFeatureDraft(id: String) {
+        let realm = try! Realm(configuration: RealmConfig.configuration)
+        guard let draft = realm.object(ofType: StoredFeatureDraft.self, forPrimaryKey: id) else { return }
+        try! realm.write {
+            realm.delete(draft)
+        }
+    }
+
+    func markFeatureDraftFailed(id: String, error: String) {
+        let realm = try! Realm(configuration: RealmConfig.configuration)
+        guard let draft = realm.object(ofType: StoredFeatureDraft.self, forPrimaryKey: id) else { return }
+        try! realm.write {
+            draft.lastError = error
+            draft.retryCount += 1
+        }
+    }
+
 }
 
 struct RealmConfig {

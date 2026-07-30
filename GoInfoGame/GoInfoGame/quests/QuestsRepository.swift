@@ -125,10 +125,10 @@ class DisplayUnitAnnotation: NSObject, MLNAnnotation, Identifiable {
        }
 }
 
-struct DisplayUnitWithCoordinate: Identifiable, Equatable {
+public struct DisplayUnitWithCoordinate: Identifiable, Equatable {
     let displayUnit: DisplayUnit
     let coordinateInfo: CLLocationCoordinate2D
-    let id: Int64
+    public let id: Int64
     var isHidden: Bool
     let location: CLLocation
     init(displayUnit: DisplayUnit, coordinateInfo: CLLocationCoordinate2D, id: Int64, isHidden: Bool) {
@@ -145,7 +145,7 @@ struct DisplayUnitWithCoordinate: Identifiable, Equatable {
         return annotation
     }
     
-    static func == (lhs: Self, rhs: Self) -> Bool {
+    public static func == (lhs: Self, rhs: Self) -> Bool {
         lhs.id == rhs.id &&
         lhs.isHidden == rhs.isHidden &&
         lhs.coordinateInfo.latitude == rhs.coordinateInfo.latitude &&
