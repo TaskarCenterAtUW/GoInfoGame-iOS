@@ -11,8 +11,8 @@ import osmapi
 /// Everything needed to submit a feature. `id` ties it to its persisted
 /// StoredFeatureDraft row so FeatureSubmissionManager can upsert/delete the right
 /// queue entry. `tags` already includes the preset's tags plus `ext:notes` (if any) —
-/// only `ext:image_N` for uploaded photos is added later, once each photo is actually
-/// uploaded.
+/// only `ext:image_urlN` for uploaded photos is added later, once each photo is
+/// actually uploaded.
 struct FeatureDraft {
     var id: String = UUID().uuidString
     var presetName: String
@@ -80,7 +80,7 @@ enum FeatureSubmissionManager {
             if !images.isEmpty {
                 let photoURLs = try await uploadPhotos(images)
                 for (index, url) in photoURLs.enumerated() {
-                    tags["ext:image_\(index + 1)"] = url
+                    tags["ext:image_url\(index + 1)"] = url
                 }
             }
 
