@@ -274,7 +274,7 @@ struct MapView: View {
 
                 if !viewModel.selectedAnnotaions.isEmpty,
                    let selectedAnnotationType = viewModel.selectedAnnotationType,
-                   let image = UIImage(named: viewModel.selectedAnnotaions.first?.displayUnit?.parent?.iconName ?? "notes") {
+                   let image = UIImage(named: viewModel.selectedAnnotaions.first?.displayUnit?.parent?.iconName ?? "notes") ?? UIImage(named: "notes") {
                     MultiQuestSelectionBottomSheet(
                         selectedAnnotationType: selectedAnnotationType,
                         selectedAnnotationImage: image,

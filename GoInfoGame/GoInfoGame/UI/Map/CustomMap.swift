@@ -76,7 +76,7 @@ final class QuestAnnotationView: MLNAnnotationView {
 
         imageView.frame = bounds
         imageView.contentMode = .scaleAspectFit
-        if let raw = UIImage(named: iconName) {
+        if let raw = UIImage(named: iconName) ?? UIImage(named: "notes") {
             imageView.image = makeCircularIcon(raw)
         } else {
             imageView.backgroundColor = UIColor.systemBlue
