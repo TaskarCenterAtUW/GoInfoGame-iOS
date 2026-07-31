@@ -26,8 +26,10 @@ struct LongForm: View, QuestForm {
     var elementName: String?
     
     var questID: String?
-    
+
     var query: String?
+
+    var tags: [String: String]?
     
     var action: (([String:String]) -> Void)?
 
@@ -96,6 +98,17 @@ struct LongForm: View, QuestForm {
                     .multilineTextAlignment(.leading)
                     .layoutPriority(1)
                     .accessibilityLabel("ID: \(questID ?? "0")")
+
+                if let intersectionAt = tags?["ext:intersection_at"] {
+                    Text("Intersection: \(intersectionAt)")
+                        .font(.custom("Lato-Regular", size: 14, relativeTo: .headline))
+                        .padding([.leading], 20)
+                        .padding([.top], 5)
+                        .foregroundStyle(Asset.Colors.huskyPurple.swiftUIColor)
+                        .multilineTextAlignment(.leading)
+                        .layoutPriority(1)
+                        .accessibilityLabel("Intersection: \(intersectionAt)")
+                }
                 HStack {
                     Button {
                         showNotesBox = true
