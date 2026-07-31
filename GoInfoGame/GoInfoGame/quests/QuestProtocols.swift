@@ -31,8 +31,16 @@ protocol Quest {
     var filterExpression : ElementFilterExpression? { get  }
     var questId: String { get }
     var polylines: [CLLocationCoordinate2D]? { get }
-    
+
     func copyWithElement(element: Element) -> any Quest // Not sure.
+
+    /// A genuine protocol requirement (not just an extension method) so a
+    /// conformer can override the default filter-expression-based match — e.g.
+    /// LongElementQuest does, to let a completed element qualify again once past
+    /// its recency period. Without this being a requirement, an override placed
+    /// directly on the conforming type would never be reached through `any Quest`
+    /// call sites (extension methods use static, not witness-table, dispatch).
+    func isApplicable(element: Element) -> Bool
 }
 
 class QuestBase {
@@ -49,6 +57,14 @@ class QuestBase {
     }
     
     func updateUndoTags(changeSet: StoredChangeset) {
+        // A created-but-undone element never existed before, so there are no
+        // "original tags" to restore — undoing it means deleting it outright.
+        // This never touches the modify-undo path below, which is unchanged.
+        if changeSet.isCreatedElement {
+            undoCreatedElement(changeSet: changeSet)
+            return
+        }
+
         // Convert from ElementType enum to StoredElementEnum
         Task.detached(operation: { @MainActor in
             MapViewPublisher.shared.dismissSheet.send(.syncing)
@@ -76,7 +92,32 @@ class QuestBase {
             }
         })
     }
-    
+
+    /// Deletes a feature that was created via Add Feature — only ever reached for
+    /// `changeSet.isCreatedElement == true` (nodes only; `AddFeatureView` never
+    /// creates ways). Mirrors the local Realm cleanup already used elsewhere when the
+    /// server reports an element gone (`DatasyncManager.updateNode2`/`updateWay2`'s
+    /// `.deleted` handling): drop the local `StoredNode`, keep the changeset row for
+    /// history (marked completed, same as a modify-undo), and tell the map to remove
+    /// the pin via the existing `refreshMapAfterSubmission` removal path.
+    private func undoCreatedElement(changeSet: StoredChangeset) {
+        Task.detached(operation: { @MainActor in
+            MapViewPublisher.shared.dismissSheet.send(.syncing)
+            let changesetId = changeSet.id
+            let elementId = changeSet.elementId
+            do {
+                _ = try await DatasyncManager.shared.deleteNode(node: changeSet.asOSMNode(isUndo: true))
+                DatabaseConnector.shared.deleteNode(id: elementId)
+                _ = DatabaseConnector.shared.updateChangesetWithUndoResultSuccess(obj: changesetId)
+                MapViewPublisher.shared.dismissSheet.send(.synced)
+                MapViewPublisher.shared.dismissSheet.send(.elementRemoved(elementId))
+            } catch {
+                print("❌ Undo (delete) failed: \(error)")
+                MapViewPublisher.shared.dismissSheet.send(.failed("Failed to delete feature. Please try again"))
+            }
+        })
+    }
+
     // Add a custom implementation
     
     public func updateTags(id: Int64, questType: String, tags:[String:String], type: ElementType, iconName: String, exclude_gig_tags: Bool = false) {

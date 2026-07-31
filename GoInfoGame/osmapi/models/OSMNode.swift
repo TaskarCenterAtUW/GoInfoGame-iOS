@@ -50,9 +50,26 @@ public struct OSMNode: Codable, OSMPayload, OSMElement, OSMCreatePayload {
         osmNode.append(builtString)
         osmNode.append("</create>")
         return osmNode
-         
+
     }
-    
+
+    /// Builds an osmChange `<delete>` fragment for this node — used to undo a
+    /// just-created feature outright, never for reverting a tag edit on a
+    /// pre-existing element (that stays a `<modify>`, via `toPayload`).
+    public func toDeletePayload() -> String {
+        var osmNode = "<delete>"
+        let xmlBuilder = OSMXMLBuilder(rootName: "node")
+        xmlBuilder.addAttribute(name: "id", value: "\(id)")
+        xmlBuilder.addAttribute(name: "lat", value: "\(lat)")
+        xmlBuilder.addAttribute(name: "lon", value: "\(lon)")
+        xmlBuilder.addAttribute(name: "version", value: "\(version)")
+        xmlBuilder.addAttribute(name: "changeset", value: "\(changeset)")
+        let builtString = xmlBuilder.buildXML(exclude_gig_tags: true)
+        osmNode.append(builtString)
+        osmNode.append("</delete>")
+        return osmNode
+    }
+
     public func fetchInternalGigTags() -> [String:String] {
         
         var internalTags:[String:String] = [:]

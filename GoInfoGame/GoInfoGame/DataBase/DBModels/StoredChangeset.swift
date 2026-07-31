@@ -47,6 +47,10 @@ class StoredChangeset: Object {
     @Persisted var undoOn: Date? = nil
     @Persisted var questType: String?
     @Persisted var iconName: String
+    /// True for a changeset representing a brand-new element (Add Feature), rather
+    /// than an edit to one that already existed. `QuestBase.updateUndoTags` checks
+    /// this to delete the element on undo instead of restoring `originalTags`.
+    @Persisted var isCreatedElement: Bool = false
     
     public func asOSMWay(isUndo: Bool = false) -> OSMWay {
         var storage = originalTags.toDictionary()

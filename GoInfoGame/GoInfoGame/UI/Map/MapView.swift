@@ -10,6 +10,13 @@ import MapKit       // For MapUserTrackingMode
 import MapLibre
 import Combine
 
+/// Which follow-up flow the user picked from the pin-choice card, before the actual
+/// Create Note / Add Feature sheet opens.
+enum PinCreationFlow {
+    case createNote
+    case addFeature
+}
+
 struct MapView: View {
     let selectedWorkspace: Workspace
     @State var trackingMode: MapUserTrackingMode = MapUserTrackingMode.follow
@@ -23,6 +30,7 @@ struct MapView: View {
     @State private var lineCoordinates: [CLLocationCoordinate2D] = []
     @State private var isSyncingElements = false
     @State private var isSyncingNotes = false
+    @State private var isSyncingFeatures = false
     @State private var showAlert = false
     @State private var alertMessage = ""
     @State private var alertIcon = ""
@@ -36,7 +44,26 @@ struct MapView: View {
     @State private var tappedCoordinate: CLLocationCoordinate2D? = nil
     @State private var annotationCoordinate: CLLocationCoordinate2D? = nil
     @State private var pendingAdditionCoordinate: CLLocationCoordinate2D? = nil
-    @State private var showMapLongPressedSheet = false
+    /// The small "Create Note"/"Add Feature" card anchored next to the freshly-dropped
+    /// pin, shown in place of a bottom sheet. Cleared once one of the two is picked.
+    @State private var showPinChoiceOverlay = false
+    /// Screen-space anchor for `showPinChoiceOverlay`'s card, computed once when the
+    /// pin drops. Map gestures are frozen while the card is up (see `setMapGesturesEnabled`)
+    /// so the pin — and this anchor — can't drift out from under it.
+    @State private var pinChoiceScreenPoint: CGPoint = .zero
+    /// The coordinate actually submitted — `tappedCoordinate` as adjusted live by
+    /// dragging the map underneath the fixed crosshair while Create Note/Add Feature
+    /// is open. Bound directly into those views so their submit action always reads
+    /// the current position, not a stale one captured at sheet-open time.
+    @State private var editedCoordinate: CLLocationCoordinate2D? = nil
+    /// Screen point of the fixed crosshair shown while Create Note/Add Feature is open;
+    /// nil the rest of the time. See `CustomMap.Coordinator.updateEditedCoordinateIfNeeded`.
+    @State private var pinEditAnchor: CGPoint? = nil
+    @State private var screenSize: CGSize = .zero
+    /// The feature preset picked in `AddFeatureView`'s grid, if any — drives the fixed
+    /// crosshair's icon (see the `showAddFeatureSheet`/`pinEditAnchor` overlay below) so
+    /// it shows what's about to be added, not just a generic pin.
+    @State private var selectedFeaturePreset: FeaturePreset? = nil
     @State private var showAddFeatureSheet = false
     @State private var showCreateNoteSheet = false
     @State private var showUserSettingsSheet = false
@@ -61,9 +88,9 @@ struct MapView: View {
     @State private var screenWidth: CGFloat = UIScreen.main.bounds.width
     @State private var centerBeforeQuestSelection: CLLocationCoordinate2D?
 
-    /// The sync button spins whenever either queue (failed quest elements or
-    /// pending notes) is actively being drained, whichever started it.
-    private var isSyncing: Bool { isSyncingElements || isSyncingNotes }
+    /// The sync button spins whenever any queue (failed quest elements, pending
+    /// notes, or pending features) is actively being drained, whichever started it.
+    private var isSyncing: Bool { isSyncingElements || isSyncingNotes || isSyncingFeatures }
 
     /// Scales with `screenWidth` so it always leaves room for the fixed-size profile icon/divider
     /// and the 4 trailing bar buttons, without depending on navigation/transition state.
@@ -108,6 +135,8 @@ struct MapView: View {
                     annotationCoordinate: $annotationCoordinate,
                     shadowRegions: $shadowRegions,
                     pendingAdditionCoordinate: $pendingAdditionCoordinate,
+                    pinEditAnchor: $pinEditAnchor,
+                    editedCoordinate: $editedCoordinate,
                     isAnySheetBlockingSelection: isAnySheetBlockingSelection,
                     dismissOtherSheets: dismissOtherSheets,
                     previousZoomLevel: $zoomLevelBeforeQuestSelection,
@@ -119,11 +148,11 @@ struct MapView: View {
                 )
                 .accessibilityHidden(enableAccessibility)
                 .onChange(of: tappedCoordinate) { _ in
-                    showMapLongPressedSheet = tappedCoordinate != nil
-                    pendingAdditionCoordinate = tappedCoordinate
-                    if let coordinate = tappedCoordinate {
-                        ensureCoordinateVisibleAboveSheet(coordinate)
-                    }
+                    guard let coordinate = tappedCoordinate else { return }
+                    pendingAdditionCoordinate = coordinate
+                    pinChoiceScreenPoint = pinCardAnchor(for: coordinate)
+                    showPinChoiceOverlay = true
+                    setMapGesturesEnabled(false)
                 }
                 .onChange(of: viewModel.selectedQuest) { _ in
                     shouldShowPolyline = false
@@ -245,7 +274,7 @@ struct MapView: View {
 
                 if !viewModel.selectedAnnotaions.isEmpty,
                    let selectedAnnotationType = viewModel.selectedAnnotationType,
-                   let image = UIImage(named: viewModel.selectedAnnotaions.first?.displayUnit?.parent?.iconName ?? "notes") {
+                   let image = UIImage(named: viewModel.selectedAnnotaions.first?.displayUnit?.parent?.iconName ?? "notes") ?? UIImage(named: "notes") {
                     MultiQuestSelectionBottomSheet(
                         selectedAnnotationType: selectedAnnotationType,
                         selectedAnnotationImage: image,
@@ -271,6 +300,48 @@ struct MapView: View {
                     .transition(.move(edge: .bottom))
                     .animation(.easeInOut, value: viewModel.selectedAnnotaions.count)
                 }
+
+                if showPinChoiceOverlay {
+                    Color.black.opacity(0.0001)
+                        .contentShape(Rectangle())
+                        .edgesIgnoringSafeArea(.all)
+                        .onTapGesture { cancelPinCreation() }
+
+                    PinChoiceCard(
+                        onCreateNote: { choosePinFlow(.createNote) },
+                        onAddFeature: { choosePinFlow(.addFeature) }
+                    )
+                    .position(pinChoiceScreenPoint)
+                    .ignoresSafeArea()
+                    .transition(.opacity.combined(with: .scale(scale: 0.9, anchor: .top)))
+                    .animation(.easeOut(duration: 0.15), value: showPinChoiceOverlay)
+                }
+
+                if showCreateNoteSheet || showAddFeatureSheet, let anchor = pinEditAnchor {
+                    // Fixed in screen space — dragging the map underneath it is what
+                    // moves the pin; `editedCoordinate` tracks whatever coordinate
+                    // currently sits under this point (see CustomMap.Coordinator).
+                    // `.ignoresSafeArea()` keeps this aligned with `mapView.bounds` —
+                    // the full-screen frame CustomMap itself renders into (it also
+                    // ignores safe area) and the space `anchor` was computed in.
+                    //
+                    // Once a feature preset is picked, its own icon replaces the
+                    // generic pin glyph so the marker previews what's about to be added.
+                    Group {
+                        if let selectedFeaturePreset {
+                            PresetIconView(iconName: selectedFeaturePreset.icon, size: 32)
+                        } else {
+                            Image(systemName: "mappin")
+                                .font(.system(size: 32, weight: .bold))
+                                .foregroundStyle(Asset.Colors.ff0041Red.swiftUIColor)
+                        }
+                    }
+                    .shadow(color: .black.opacity(0.3), radius: 2, y: 1)
+                    .offset(y: -16)
+                    .position(anchor)
+                    .allowsHitTesting(false)
+                    .ignoresSafeArea()
+                }
             }
             .alert("Zoom in to download data", isPresented: $showZoomInAlert) {
                 Button("OK", role: .cancel) { }
@@ -280,8 +351,12 @@ struct MapView: View {
             .background(
                 GeometryReader { proxy in
                     Color.clear
-                        .onAppear { screenWidth = proxy.size.width }
+                        .onAppear {
+                            screenWidth = proxy.size.width
+                            screenSize = proxy.size
+                        }
                         .onChange(of: proxy.size.width) { screenWidth = $0 }
+                        .onChange(of: proxy.size) { screenSize = $0 }
                 }
             )
         }
@@ -347,10 +422,10 @@ struct MapView: View {
                     accessbilityButton
 
                     QuestSyncButton(
-                        badgeCount: viewModel.syncFailedElementsCount + viewModel.pendingNotesCount,
+                        badgeCount: viewModel.syncFailedElementsCount + viewModel.pendingNotesCount + viewModel.pendingFeaturesCount,
                         isSyncing: isSyncing,
                         action: {
-                            guard viewModel.syncFailedElementsCount > 0 || viewModel.pendingNotesCount > 0 else {
+                            guard viewModel.syncFailedElementsCount > 0 || viewModel.pendingNotesCount > 0 || viewModel.pendingFeaturesCount > 0 else {
                                 alertIcon = "info.bubble"
                                 alertMessage = "No elements to sync"
                                 showAlert = true
@@ -359,6 +434,10 @@ struct MapView: View {
 
                             if viewModel.pendingNotesCount > 0 {
                                 NotesSubmissionManager.resumePendingUploads()
+                            }
+
+                            if viewModel.pendingFeaturesCount > 0 {
+                                FeatureSubmissionManager.resumePendingUploads()
                             }
 
                             guard viewModel.syncFailedElementsCount > 0 else { return }
@@ -506,75 +585,19 @@ struct MapView: View {
         .fullScreenCover(isPresented: $enableAccessibility) {
             AccessibilityModeView(mapViewModel: viewModel)
         }
-        .sheet(isPresented: $showMapLongPressedSheet) {
-            if let _ = tappedCoordinate {
-                VStack(spacing: 12) {
-                    Button(action: {
-                        showMapLongPressedSheet = false
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-                            showCreateNoteSheet = true
-                        }
-                    }) {
-                        HStack {
-                            Image(systemName: "note.text.badge.plus")
-                            Text("Create Note").fontWeight(.semibold)
-                        }
-                        .frame(maxWidth: .infinity)
-                        .padding()
-                        .background(Asset.Colors.huskyPurple.swiftUIColor)
-                        .cornerRadius(12)
-                    }
-                    .foregroundColor(.white)
-
-                    Button(action: {
-                        showMapLongPressedSheet = false
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-                            showAddFeatureSheet = true
-                        }
-                    }) {
-                        HStack {
-                            Image(systemName: "plus.viewfinder")
-                            Text("Add Feature").fontWeight(.semibold)
-                        }
-                        .frame(maxWidth: .infinity)
-                        .padding()
-                        .background(Asset.Colors.accentPink.swiftUIColor)
-                        .cornerRadius(12)
-                    }
-                    .foregroundColor(.white)
-                }
-                .padding()
-                .background(Color(.systemBackground))
-                .cornerRadius(16)
-                .shadow(radius: 5)
-                .presentationDetents([.fraction(0.2)])
-                .presentationDragIndicator(.visible)
-                .applyPresentationSizingPage()
-                .allowMapInteractionBehindSheet()
-                .onDisappear {
-                    // Covers swipe-to-dismiss without picking either option — if neither
-                    // follow-up sheet ends up opening, the pin has nothing left to mark.
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.35) {
-                        if !showCreateNoteSheet && !showAddFeatureSheet {
-                            pendingAdditionCoordinate = nil
-                        }
-                    }
-                }
-            }
-        }
         .sheet(isPresented: $showCreateNoteSheet) {
             CreateNoteView(
-                coordinates: tappedCoordinate ?? CLLocationCoordinate2D(),
+                coordinates: Binding(
+                    get: { editedCoordinate ?? tappedCoordinate ?? CLLocationCoordinate2D() },
+                    set: { editedCoordinate = $0 }
+                ),
                 showNotesBox: $showCreateNoteSheet
             )
-            .onAppear {
-                pendingAdditionCoordinate = tappedCoordinate
-                if let coordinate = tappedCoordinate {
-                    ensureCoordinateVisibleAboveSheet(coordinate)
-                }
-            }
             .onDisappear {
                 pendingAdditionCoordinate = nil
+                tappedCoordinate = nil
+                editedCoordinate = nil
+                pinEditAnchor = nil
             }
             .presentationDetents([.fraction(0.6)])
             .presentationDragIndicator(.visible)
@@ -583,24 +606,19 @@ struct MapView: View {
         }
         .sheet(isPresented: $showAddFeatureSheet) {
             AddFeatureView(
-                tappedCoordinate: tappedCoordinate ?? CLLocationCoordinate2D(),
+                tappedCoordinate: Binding(
+                    get: { editedCoordinate ?? tappedCoordinate ?? CLLocationCoordinate2D() },
+                    set: { editedCoordinate = $0 }
+                ),
                 isPresented: $showAddFeatureSheet,
-                dismissSheet: { message in
-                    alertIcon = message.contains("wrong")
-                        ? "exclamationmark.triangle.fill"
-                        : "checkmark.circle.fill"
-                    alertMessage = message
-                    showAlert = true
-                }
+                selectedPreset: $selectedFeaturePreset
             )
-            .onAppear {
-                pendingAdditionCoordinate = tappedCoordinate
-                if let coordinate = tappedCoordinate {
-                    ensureCoordinateVisibleAboveSheet(coordinate)
-                }
-            }
             .onDisappear {
                 pendingAdditionCoordinate = nil
+                tappedCoordinate = nil
+                editedCoordinate = nil
+                pinEditAnchor = nil
+                selectedFeaturePreset = nil
             }
             .presentationDetents([.fraction(0.6)])
             .presentationDragIndicator(.visible)
@@ -642,6 +660,8 @@ struct MapView: View {
             case .syncBackground(let elementID):
                 shouldShowPolyline = false
                 viewModel.refreshMapAfterSubmission(elementId: elementID)
+            case .elementRemoved(let elementID):
+                viewModel.refreshMapAfterSubmission(elementId: elementID)
             case .noteSubmitted:
                 alertIcon = "checkmark.circle.fill"
                 alertMessage = "Note submitted successfully"
@@ -653,6 +673,21 @@ struct MapView: View {
                 isSyncingNotes = true
             case .notesSyncFinished:
                 isSyncingNotes = false
+                viewModel.checkSyncStatus()
+            case .featureSubmitted(let presetName, let matchedQuestUnit):
+                alertIcon = "checkmark.circle.fill"
+                alertMessage = "\(presetName) added successfully"
+                showAlert = true
+                if let matchedQuestUnit {
+                    viewModel.items.append(matchedQuestUnit)
+                }
+                viewModel.checkSyncStatus()
+            case .featuresQueueUpdated:
+                viewModel.checkSyncStatus()
+            case .featuresSyncing:
+                isSyncingFeatures = true
+            case .featuresSyncFinished:
+                isSyncingFeatures = false
                 viewModel.checkSyncStatus()
             }
         }
@@ -689,7 +724,7 @@ struct MapView: View {
     /// Those sheets let taps reach the map, so CustomMap uses this to avoid presenting
     /// a second `.sheet()` on this view while one is already mid-presentation.
     private var isAnySheetBlockingSelection: Bool {
-        isPresented || showMapLongPressedSheet || showCreateNoteSheet ||
+        isPresented || showPinChoiceOverlay || showCreateNoteSheet ||
             showAddFeatureSheet || viewModel.showSatellitePicker || showUserSettingsSheet
     }
 
@@ -697,11 +732,102 @@ struct MapView: View {
     /// quest-answer sheet (`isPresented`), which callers dismiss themselves so they can
     /// re-present it right after.
     private func dismissOtherSheets() {
-        showMapLongPressedSheet = false
+        if showPinChoiceOverlay {
+            showPinChoiceOverlay = false
+            tappedCoordinate = nil
+            pendingAdditionCoordinate = nil
+            editedCoordinate = nil
+            setMapGesturesEnabled(true)
+        }
         showCreateNoteSheet = false
         showAddFeatureSheet = false
         viewModel.showSatellitePicker = false
         showUserSettingsSheet = false
+    }
+
+    /// Enables/disables map pan, pinch-zoom, rotate, and pitch. Frozen while the
+    /// pin-choice card is up so the pin (and the card anchored to it) can't drift.
+    private func setMapGesturesEnabled(_ enabled: Bool) {
+        mapViewRef?.isScrollEnabled = enabled
+        mapViewRef?.isZoomEnabled = enabled
+        mapViewRef?.isRotateEnabled = enabled
+        mapViewRef?.isPitchEnabled = enabled
+    }
+
+    /// Screen-space anchor (card center) for the pin-choice card: just below the pin
+    /// tip by default, flipped above and clamped horizontally when there isn't room
+    /// below, so the card always stays fully on screen.
+    private func pinCardAnchor(for coordinate: CLLocationCoordinate2D) -> CGPoint {
+        let cardSize = CGSize(width: 220, height: 100)
+        let margin: CGFloat = 12
+        guard let mapView = mapViewRef, screenSize != .zero else {
+            return CGPoint(x: screenSize.width / 2, y: screenSize.height / 2)
+        }
+        let pinTip = mapView.convert(coordinate, toPointTo: mapView)
+        let spaceBelow = screenSize.height - pinTip.y
+        let showBelow = spaceBelow > cardSize.height + margin + 24
+        let y = showBelow
+            ? pinTip.y + margin + cardSize.height / 2
+            : pinTip.y - margin - cardSize.height / 2 - 40
+        let minX = cardSize.width / 2 + margin
+        let maxX = screenSize.width - cardSize.width / 2 - margin
+        let x = min(max(pinTip.x, minX), maxX)
+        return CGPoint(x: x, y: y)
+    }
+
+    /// Recenters the map (both axes) so `coordinate` lands at the center of the map's
+    /// visible area above the Create Note/Add Feature sheet, and returns that anchor
+    /// point for the fixed crosshair. Deliberately uses `mapView.bounds` throughout
+    /// (never the SwiftUI-measured `screenSize`) since that's the exact coordinate
+    /// space `mapView.convert` operates in — mixing the two was what made the pin land
+    /// in the wrong spot before.
+    private func computePinEditAnchor(for coordinate: CLLocationCoordinate2D) -> CGPoint {
+        guard let mapView = mapViewRef else {
+            return CGPoint(x: screenSize.width / 2, y: screenSize.height / 2)
+        }
+        let visibleHeight = mapView.bounds.height * (1 - Self.noteSheetHeightFraction)
+        let anchor = CGPoint(x: mapView.bounds.midX, y: visibleHeight / 2)
+
+        let currentPoint = mapView.convert(coordinate, toPointTo: mapView)
+        let currentCenterPoint = CGPoint(x: mapView.bounds.midX, y: mapView.bounds.midY)
+        let shiftedPoint = CGPoint(
+            x: currentCenterPoint.x + (currentPoint.x - anchor.x),
+            y: currentCenterPoint.y + (currentPoint.y - anchor.y)
+        )
+        let newCenter = mapView.convert(shiftedPoint, toCoordinateFrom: mapView)
+        mapView.setCenter(newCenter, animated: true)
+        return anchor
+    }
+
+    /// User picked "Create Note" or "Add Feature" from the pin-choice card — closes the
+    /// card, swaps the map-annotation pin for the fixed on-screen crosshair, recenters
+    /// the map so the tapped coordinate sits in the middle of the visible area above
+    /// the sheet, and opens the sheet directly. The user can then drag the map
+    /// underneath the crosshair to adjust the location for as long as the sheet stays
+    /// open — `editedCoordinate` (bound straight into the sheet) tracks it live.
+    private func choosePinFlow(_ flow: PinCreationFlow) {
+        showPinChoiceOverlay = false
+        editedCoordinate = tappedCoordinate
+        pendingAdditionCoordinate = nil
+        setMapGesturesEnabled(true)
+        if let coordinate = tappedCoordinate {
+            pinEditAnchor = computePinEditAnchor(for: coordinate)
+        }
+        switch flow {
+        case .createNote:
+            showCreateNoteSheet = true
+        case .addFeature:
+            showAddFeatureSheet = true
+        }
+    }
+
+    /// User tapped outside the pin-choice card without picking either option.
+    private func cancelPinCreation() {
+        showPinChoiceOverlay = false
+        tappedCoordinate = nil
+        pendingAdditionCoordinate = nil
+        editedCoordinate = nil
+        setMapGesturesEnabled(true)
     }
 
     /// Both the long-press action sheet and the Create Note/Add Feature sheets that
@@ -860,7 +986,7 @@ struct QuestSheetView: View {
                 return
             }
             if let latestTags = await longQuest.fetchLatestTagsIfNeeded(),
-               latestTags["ext:gig_complete"] == "yes" {
+               LongElementQuest.isStillConsideredComplete(tags: latestTags) {
                 alreadyCompletedMessage = "This element has already been answered by another user."
                 viewModel.refreshQuests()
             }
@@ -1018,10 +1144,20 @@ public enum SheetDismissalScenario {
     case hideElement(String, String)
     case undoDone(String)
     case syncBackground(Int)
+    /// A created element was deleted via undo — remove its pin, if it has one.
+    case elementRemoved(Int)
     case noteSubmitted
     case notesQueueUpdated
     case notesSyncing
     case notesSyncFinished
+    /// A queued feature was created (possibly well after Submit was tapped, if it had
+    /// to wait offline) — the preset name for the confirmation, plus a quest pin to
+    /// add quietly if the new element satisfies a LongForm quest_query. Never opens
+    /// the quest sheet itself; by the time this fires the user may be doing anything.
+    case featureSubmitted(String, DisplayUnitWithCoordinate?)
+    case featuresQueueUpdated
+    case featuresSyncing
+    case featuresSyncFinished
 }
 
 class ContextualInfo: ObservableObject {
@@ -1117,6 +1253,42 @@ struct MultiQuestSelectionBottomSheet: View {
         .cornerRadius(20)
         .shadow(radius: 5)
         .frame(maxHeight: .infinity, alignment: .bottom)
+    }
+}
+
+/// Small card anchored next to a freshly-dropped pin, offering "Create Note" or
+/// "Add Feature" — replaces the old bottom sheet so the choice reads as belonging
+/// to the pin itself rather than as a separate modal.
+struct PinChoiceCard: View {
+    var onCreateNote: () -> Void
+    var onAddFeature: () -> Void
+
+    var body: some View {
+        VStack(spacing: 0) {
+            Button(action: onCreateNote) {
+                Text("Create Note")
+                    .font(FontFamily.Lato.regular.swiftUIFont(fixedSize: 16))
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding(.horizontal, 16)
+                    .padding(.vertical, 14)
+            }
+            .foregroundStyle(Asset.Colors._42526ETextFieldText.swiftUIColor)
+
+            Divider()
+
+            Button(action: onAddFeature) {
+                Text("Add Feature")
+                    .font(FontFamily.Lato.regular.swiftUIFont(fixedSize: 16))
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding(.horizontal, 16)
+                    .padding(.vertical, 14)
+            }
+            .foregroundStyle(Asset.Colors._42526ETextFieldText.swiftUIColor)
+        }
+        .frame(width: 220)
+        .background(Color(.systemBackground))
+        .cornerRadius(14)
+        .shadow(color: .black.opacity(0.2), radius: 8, y: 4)
     }
 }
 

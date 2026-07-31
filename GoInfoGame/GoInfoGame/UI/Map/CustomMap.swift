@@ -63,6 +63,11 @@ private func mergeOverlappingBounds(_ regions: [CoordinateBounds]) -> [Coordinat
 // MARK: - Annotation Views
 
 final class QuestAnnotationView: MLNAnnotationView {
+    // Rendered pin images are identical for a given iconName (size never varies),
+    // so cache them once per process instead of re-running Core Graphics on every
+    // fresh view instance MapLibre creates when a reuse pool needs to grow.
+    private static let pinIconCache = NSCache<NSString, UIImage>()
+
     private let imageView = UIImageView()
     private let checkmark = UIImageView()
 
@@ -72,18 +77,31 @@ final class QuestAnnotationView: MLNAnnotationView {
 
     init(reuseIdentifier: String, iconName: String) {
         super.init(reuseIdentifier: reuseIdentifier)
-        frame = CGRect(x: 0, y: 0, width: 40, height: 40)
+        let size = CGSize(width: 36, height: 46)
+        frame = CGRect(origin: .zero, size: size)
 
         imageView.frame = bounds
         imageView.contentMode = .scaleAspectFit
-        if let raw = UIImage(named: iconName) {
-            imageView.image = makeCircularIcon(raw)
+        if let raw = UIImage(named: iconName) ?? UIImage(named: "notes") {
+            let cacheKey = iconName as NSString
+            if let cached = QuestAnnotationView.pinIconCache.object(forKey: cacheKey) {
+                imageView.image = cached
+            } else {
+                let pin = makePinIcon(raw, size: size)
+                QuestAnnotationView.pinIconCache.setObject(pin, forKey: cacheKey)
+                imageView.image = pin
+            }
         } else {
+            imageView.frame = CGRect(x: 0, y: 0, width: 40, height: 40)
             imageView.backgroundColor = UIColor.systemBlue
             imageView.layer.cornerRadius = 20
             imageView.clipsToBounds = true
         }
         addSubview(imageView)
+
+        // The pin's sharp tip sits at the bottom of its bounds — shift the view up
+        // by half its height so the tip (not the center) lands on the coordinate.
+        centerOffset = CGVector(dx: 0, dy: -size.height / 2)
 
         // Checkmark badge in top-right corner
         let badgeSize: CGFloat = 16
@@ -185,27 +203,55 @@ final class TemporaryPinAnnotationView: MLNAnnotationView {
 
 // MARK: - Icon Helper
 
-private func makeCircularIcon(_ image: UIImage) -> UIImage {
-    let size = CGSize(width: 40, height: 40)
+// Draws a map-pin silhouette (round head + pointed tail, à la the "mapPoint"
+// asset) with `image` clipped into a circle inside the head. The tail's tip
+// lands at the bottom-center of `size` — callers anchor the view there via
+// `centerOffset` so the tip, not the shape's center, marks the coordinate.
+private func makePinIcon(_ image: UIImage, size: CGSize) -> UIImage {
+    let borderWidth: CGFloat = 2.0
+    let margin: CGFloat = borderWidth + 1
+    let headRadius = (size.width - margin * 2) / 2
+    let center = CGPoint(x: size.width / 2, y: margin + headRadius)
+    let tipPoint = CGPoint(x: center.x, y: size.height - margin)
+
+    // The tail attaches to the head 30° either side of straight down, and the
+    // head's arc sweeps the long way around (through the top) between those
+    // two points so the tail reads as a natural extension of the circle.
+    let tailAngle: CGFloat = .pi / 6
+    let leftAngle = CGFloat.pi / 2 + tailAngle
+    let rightAngle = CGFloat.pi / 2 - tailAngle
+    let leftPoint = CGPoint(x: center.x + headRadius * cos(leftAngle), y: center.y + headRadius * sin(leftAngle))
+    let rightPoint = CGPoint(x: center.x + headRadius * cos(rightAngle), y: center.y + headRadius * sin(rightAngle))
+
+    let pinPath = UIBezierPath()
+    pinPath.move(to: leftPoint)
+    pinPath.addArc(withCenter: center, radius: headRadius, startAngle: leftAngle, endAngle: rightAngle, clockwise: true)
+    pinPath.addLine(to: tipPoint)
+    pinPath.close()
+
     UIGraphicsBeginImageContextWithOptions(size, false, 0.0)
     defer { UIGraphicsEndImageContext() }
     guard let ctx = UIGraphicsGetCurrentContext() else { return image }
 
-    let rect = CGRect(origin: .zero, size: size)
-    let borderWidth: CGFloat = 2.0
-
-    ctx.setFillColor(UIColor.white.cgColor)
-    ctx.fillEllipse(in: rect)
-
-    let imageRect = rect.insetBy(dx: borderWidth + 2, dy: borderWidth + 2)
     ctx.saveGState()
+    pinPath.addClip()
+    ctx.setFillColor(UIColor.white.cgColor)
+    ctx.fill(CGRect(origin: .zero, size: size))
+
+    let iconInset = headRadius * 0.15
+    let imageRect = CGRect(
+        x: center.x - headRadius + iconInset,
+        y: center.y - headRadius + iconInset,
+        width: (headRadius - iconInset) * 2,
+        height: (headRadius - iconInset) * 2
+    )
     UIBezierPath(ovalIn: imageRect).addClip()
     image.draw(in: imageRect)
     ctx.restoreGState()
 
     ctx.setStrokeColor(UIColor.white.cgColor)
-    ctx.setLineWidth(borderWidth)
-    ctx.strokeEllipse(in: rect.insetBy(dx: borderWidth / 2, dy: borderWidth / 2))
+    pinPath.lineWidth = borderWidth
+    pinPath.stroke()
 
     return UIGraphicsGetImageFromCurrentImageContext() ?? image
 }
@@ -261,6 +307,12 @@ struct CustomMap: UIViewRepresentable {
     @Binding var annotationCoordinate: CLLocationCoordinate2D?
     @Binding var shadowRegions: [CoordinateBounds]
     @Binding var pendingAdditionCoordinate: CLLocationCoordinate2D?
+
+    /// The screen point of the fixed crosshair shown while Create Note/Add Feature is
+    /// open (nil otherwise). While non-nil, the coordinate under it is continuously
+    /// written back to `editedCoordinate` as the user drags the map.
+    @Binding var pinEditAnchor: CGPoint?
+    @Binding var editedCoordinate: CLLocationCoordinate2D?
 
     /// True while a sheet that keeps the map interactive underneath it (satellite
     /// picker, long-press action sheet, create note, add feature) is currently open.
@@ -506,7 +558,16 @@ struct CustomMap: UIViewRepresentable {
             }
         }
 
+        /// Fires continuously while the camera is moving (drag, pinch, momentum, or
+        /// programmatic animation) — the cheapest hook for keeping `editedCoordinate` in
+        /// sync with the fixed crosshair while Create Note/Add Feature is open.
+        func mapViewRegionIsChanging(_ mapView: MLNMapView) {
+            updateEditedCoordinateIfNeeded(mapView)
+        }
+
         func mapView(_ mapView: MLNMapView, regionDidChangeAnimated animated: Bool) {
+            updateEditedCoordinateIfNeeded(mapView)
+
             let zoom = mapView.zoomLevel
             let previousBucket = clusterBucket(for: lastClusteredZoom, mapView: mapView)
             let currentBucket  = clusterBucket(for: zoom, mapView: mapView)
@@ -859,6 +920,14 @@ struct CustomMap: UIViewRepresentable {
 
                 DispatchQueue.main.async { src.shape = polygon }
             }
+        }
+
+        /// While `pinEditAnchor` is set (Create Note/Add Feature is open), keeps
+        /// `editedCoordinate` matching whatever coordinate currently sits under that
+        /// fixed on-screen point, so it reflects the map's position at all times.
+        private func updateEditedCoordinateIfNeeded(_ mapView: MLNMapView) {
+            guard let anchor = parent.pinEditAnchor else { return }
+            parent.editedCoordinate = mapView.convert(anchor, toCoordinateFrom: mapView)
         }
 
         func updateNoteBeingAddedAnnotation(coordinate: CLLocationCoordinate2D?) {

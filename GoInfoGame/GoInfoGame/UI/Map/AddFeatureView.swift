@@ -8,157 +8,306 @@
 import SwiftUI
 import CoreLocation
 
-struct FeatureDetail : Identifiable{
-    var id = UUID()
-    var name: String
-    var description: String
-    var tags: [String: String]
-}
-
 struct AddFeatureView: View {
     @Environment(\.presentationMode) var presentationMode
-    @State var tappedCoordinate: CLLocationCoordinate2D
+    /// A binding (not a one-time value) so it keeps reflecting the pin's position as
+    /// the user drags the map underneath it while this sheet stays open.
+    @Binding var tappedCoordinate: CLLocationCoordinate2D
     @Binding var isPresented: Bool
-    @State private var selectedFeature: FeatureDetail? = nil
-    @State private var isLoading = false
-    let features = ["Power Pole:", "Fire hydrant:", "Bench", "Bollard", "Manhole", "Street Lamp", "Waste Basket"]
-    
-    let featureDetails: [FeatureDetail] = [
-        FeatureDetail(name: "Power Pole", description: "A power pole. Often made of wood or metal, they hold power lines.", tags: ["power": "pole"]),
-        FeatureDetail(name: "Fire Hydrant", description: "A fire hydrant - where fire response teams connect high-pressure hoses.", tags: ["emergency": "fire_hydrant"]),
-        FeatureDetail(name: "Bench", description: "A place for people to sit; allows room for several people.", tags: ["amenity": "bench"]),
-        FeatureDetail(name: "Bollard", description: "A solid pillar or pillars made of concrete, metal, plastic, etc., used to control traffic.", tags: ["barrier": "bollard"]),
-        FeatureDetail(name: "Manhole", description: "A hole with a cover that allows access to an underground service location, just large enough for a human to climb through.", tags: ["man_made": "manhole"]),
-        FeatureDetail(name: "Street Lamp", description: "A raised source of light above a road, which is turned on or lit at night.", tags: ["highway": "street_lamp"]),
-        FeatureDetail(name: "Waste Basket", description: "A single small container for depositing garbage that is easily accessible for pedestrians.", tags: ["amenity": "waste_basket"])
-    ]
-    
-    @State var dismissSheet: (String) -> ()
-
-    @State private var alertMessage = ""
+    @ObservedObject private var questsRepository = QuestsRepository.shared
+    /// A binding (not local @State) so MapView can swap the on-screen pin's icon to
+    /// match as soon as a preset is picked.
+    @Binding var selectedPreset: FeaturePreset?
 
     var body: some View {
-            ZStack {
-                VStack(alignment: .leading) {
-                    
-                    HStack {
-                        Text("Select a feature to add")
-                            .font(FontFamily.Lato.bold.swiftUIFont(fixedSize: 18))
-                            .foregroundStyle(Asset.Colors._42526ETextFieldText.swiftUIColor)
-                            .padding()
-                        
-                        Spacer()
-                        
-                        Button {
-                            presentationMode.wrappedValue.dismiss()
-                        } label: {
-                            Image(systemName: "xmark.circle")
-                                .font(FontFamily.Lato.bold.swiftUIFont(size: 24))
-                                .foregroundStyle(Asset.Colors._83879BTextFiledTitle.swiftUIColor)
-                                .padding()
-                        }
+        VStack(alignment: .leading) {
+            HStack {
+                Text("Select a feature to add")
+                    .font(FontFamily.Lato.bold.swiftUIFont(fixedSize: 18))
+                    .foregroundStyle(Asset.Colors._42526ETextFieldText.swiftUIColor)
+                    .padding()
 
-                    }
-                    
-                    ScrollView {
-                        VStack {
-                            ForEach(featureDetails, id: \.id) { feature in
-                                Button(action: {
-                                    selectedFeature = feature
-                                }) {
-                                    HStack(spacing: 5) {
-                                        VStack(alignment: .leading) {
-                                            Text(feature.name)
-                                                .frame(maxWidth: .infinity, alignment: .leading)
-                                                .foregroundColor(Asset.Colors._42526ETextFieldText.swiftUIColor)
-                                                .font(FontFamily.Lato.bold.swiftUIFont(size: 16))
-                                            
-                                            Text(feature.description)
-                                                .frame(maxWidth: .infinity, alignment: .leading)
-                                                .foregroundColor(Asset.Colors._83879BTextFiledTitle.swiftUIColor)
-                                                .font(FontFamily.Lato.regular.swiftUIFont(size: 12))
-                                                .multilineTextAlignment(.leading)
-                                        }
-                                        
-                                        if selectedFeature?.name == feature.name {
-                                            Image(systemName: "checkmark.circle.fill")
-                                                .foregroundColor(Asset.Colors.d74BA827Pink.swiftUIColor)
-                                        } else {
-                                            Image(systemName: "circle")
-                                                .foregroundColor(Asset.Colors._83879BTextFiledTitle.swiftUIColor)
-                                        }
-                                    }
-                                    .padding()
-                                    .background(selectedFeature?.name == feature.name ? Asset.Colors.d74BA827Pink.swiftUIColor.opacity(0.1) : Color.clear)
-                                    .border(Asset.Colors.ddddddLine.swiftUIColor, width: 1)
-                                    .cornerRadius(5)
-                                }
-                            }
-                        }
+                Spacer()
+
+                Button {
+                    presentationMode.wrappedValue.dismiss()
+                } label: {
+                    Image(systemName: "xmark.circle")
+                        .font(FontFamily.Lato.bold.swiftUIFont(size: 24))
+                        .foregroundStyle(Asset.Colors._83879BTextFiledTitle.swiftUIColor)
                         .padding()
-                    }
-                    
-                    Spacer()
-                    
-                    HStack {
-                        Spacer()
-                        Button(action: {
-                            Task {
-                                do {
-                                    await addFeature()
-                                } catch {
-                                    print("Error adding feature: \(error)")
-                                }
-                            }
-                        }) {
-                            if isLoading {
-                                ProgressView()
-                            } else {
-                                Text("Add feature")
-                                    .font(FontFamily.Lato.bold.swiftUIFont(size: 20))
-                                    .foregroundColor(.white)
-                                    .padding()
-                                    .frame(width: 155, height: 46)
-                                    .background(selectedFeature?.name != nil ? Asset.Colors.huskyPurple.swiftUIColor : Color.gray)
-                                    .cornerRadius(23)
-                            }
-                        }
-                        .disabled(selectedFeature?.name == nil)
-                        .padding()
-                        
-                        Spacer()
-                    }
                 }
             }
+
+            if questsRepository.featurePresets.isEmpty {
+                Spacer()
+                Text("No feature presets are configured for this workspace.")
+                    .font(FontFamily.Lato.regular.swiftUIFont(size: 14))
+                    .foregroundColor(Asset.Colors._83879BTextFiledTitle.swiftUIColor)
+                    .multilineTextAlignment(.center)
+                    .padding()
+                Spacer()
+            } else {
+                ScrollView {
+                    LazyVGrid(columns: [GridItem(.adaptive(minimum: 96), spacing: 12)], spacing: 12) {
+                        ForEach(questsRepository.featurePresets) { preset in
+                            Button(action: { selectedPreset = preset }) {
+                                VStack(spacing: 8) {
+                                    PresetIconView(iconName: preset.icon, size: 36)
+                                    Text(preset.name)
+                                        .font(FontFamily.Lato.bold.swiftUIFont(size: 13))
+                                        .foregroundColor(Asset.Colors._42526ETextFieldText.swiftUIColor)
+                                        .multilineTextAlignment(.center)
+                                        .lineLimit(2)
+                                }
+                                .frame(maxWidth: .infinity)
+                                .padding(.vertical, 12)
+                                .padding(.horizontal, 6)
+                                .border(Asset.Colors.ddddddLine.swiftUIColor, width: 1)
+                                .cornerRadius(5)
+                            }
+                            .accessibilityLabel(preset.name)
+                        }
+                    }
+                    .padding()
+                }
+            }
+        }
+        .sheet(item: $selectedPreset) { preset in
+            FeatureSubmissionView(
+                preset: preset,
+                coordinate: $tappedCoordinate,
+                onSubmit: {
+                    // Dismiss the (inner) submission sheet first, then the (outer)
+                    // picker sheet once its close animation clears — mirrors the same
+                    // sequenced-sheet-transition pattern MapView uses elsewhere.
+                    // Submission itself has already been handed off to
+                    // FeatureSubmissionManager by this point — dismissing here doesn't
+                    // wait on the network, same as Create Note.
+                    selectedPreset = nil
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                        isPresented = false
+                    }
+                }
+            )
+            .presentationDetents([.fraction(0.6)])
+            .presentationDragIndicator(.visible)
+            .applyPresentationSizingPage()
+        }
+    }
+}
+
+/// Icon for a feature preset — tries the asset catalog first (e.g. the OSM/iD preset
+/// icon set under `AddFeatureIcons`), and falls back to downloading whichever
+/// `CustomIcon` in `QuestsRepository.shared.customIcons` matches by name, caching the
+/// result the same way `LongFormImageView` does for in-quest illustration images.
+struct PresetIconView: View {
+    let iconName: String
+    var size: CGFloat = 28
+
+    @State private var remoteImage: UIImage?
+
+    var body: some View {
+        Group {
+            if let localImage = UIImage(named: iconName) {
+                Image(uiImage: localImage)
+                    .resizable()
+                    .renderingMode(.template)
+                    .foregroundStyle(Asset.Colors.huskyPurple.swiftUIColor)
+            } else if let remoteImage {
+                Image(uiImage: remoteImage)
+                    .resizable()
+            } else {
+                Image(systemName: "mappin.circle")
+                    .resizable()
+                    .foregroundStyle(Asset.Colors._83879BTextFiledTitle.swiftUIColor)
+                    .onAppear(perform: loadRemoteIconIfNeeded)
+            }
+        }
+        .scaledToFit()
+        .frame(width: size, height: size)
     }
 
-    func addFeature() async {
-        guard let feature = selectedFeature else { return }
-        isLoading = true
+    private func loadRemoteIconIfNeeded() {
+        guard remoteImage == nil,
+              let urlString = QuestsRepository.shared.customIcons.first(where: { $0.name == iconName })?.url,
+              let url = URL(string: urlString) else { return }
 
-        let powerpole = UserNodesHelper.getPowerPole(
-            lat: tappedCoordinate.latitude,
-            lon: tappedCoordinate.longitude,
-            changeset: 1,
-            tags: feature.tags
+        if let cached = ImageCache.shared.image(forKey: urlString) {
+            remoteImage = cached
+            return
+        }
+        URLSession.shared.dataTask(with: url) { data, _, _ in
+            guard let data, let image = UIImage(data: data) else { return }
+            ImageCache.shared.set(image: image, forKey: urlString)
+            DispatchQueue.main.async { remoteImage = image }
+        }.resume()
+    }
+}
+
+/// Shown after picking a preset from `AddFeatureView`'s grid — mirrors
+/// `CreateNoteView`'s shape (notes text + photo capture) but hands off to
+/// `FeatureSubmissionManager` instead of `NotesSubmissionManager` on submit.
+struct FeatureSubmissionView: View {
+    @Environment(\.presentationMode) var presentationMode
+    let preset: FeaturePreset
+    /// Live — reflects wherever the pin currently sits if the user drags the map
+    /// underneath it (see `MapView.pinEditAnchor`/`editedCoordinate`) while this stays open.
+    @Binding var coordinate: CLLocationCoordinate2D
+    var onSubmit: () -> Void
+
+    @State private var noteText = ""
+    @State private var capturedImages: [UIImage] = []
+    @State private var pickedImage: UIImage?
+    @State private var isCameraPresented = false
+
+    /// `ext:notes` is capped at this length server-side.
+    private static let maxNoteLength = 255
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            HStack {
+                PresetIconView(iconName: preset.icon, size: 28)
+                Text(preset.name)
+                    .font(FontFamily.Lato.bold.swiftUIFont(fixedSize: 18))
+                    .foregroundStyle(Asset.Colors._42526ETextFieldText.swiftUIColor)
+
+                Spacer()
+
+                Button {
+                    presentationMode.wrappedValue.dismiss()
+                } label: {
+                    Image(systemName: "xmark.circle")
+                        .font(FontFamily.Lato.bold.swiftUIFont(size: 24))
+                        .foregroundStyle(Asset.Colors._83879BTextFiledTitle.swiftUIColor)
+                }
+            }
+            .padding()
+
+            ZStack(alignment: .topLeading) {
+                TextEditor(text: $noteText)
+                    .padding(2)
+                    .background(Asset.Colors.f5F5F5LightGrayBackground.swiftUIColor)
+                    .cornerRadius(8)
+                    .padding()
+
+                if noteText.isEmpty {
+                    Text("Add any notes about this feature (optional)")
+                        .foregroundColor(Asset.Colors._83879BTextFiledTitle.swiftUIColor)
+                        .padding()
+                        .padding(.top, 10)
+                        .padding(.leading, 5)
+                }
+            }
+            .onChange(of: noteText) { newValue in
+                if newValue.count > Self.maxNoteLength {
+                    noteText = String(newValue.prefix(Self.maxNoteLength))
+                }
+            }
+
+            Text("\(noteText.count)/\(Self.maxNoteLength)")
+                .font(FontFamily.Lato.regular.swiftUIFont(size: 12))
+                .foregroundColor(Asset.Colors._83879BTextFiledTitle.swiftUIColor)
+                .frame(maxWidth: .infinity, alignment: .trailing)
+                .padding(.horizontal)
+
+            photosSection
+
+            HStack {
+                Spacer()
+                Button(action: submit) {
+                    Text("Submit")
+                        .font(FontFamily.Lato.bold.swiftUIFont(size: 20))
+                        .foregroundColor(.white)
+                        .padding()
+                        .frame(width: 156, height: 46)
+                        .background(Asset.Colors.huskyPurple.swiftUIColor)
+                        .cornerRadius(23)
+                }
+                Spacer()
+            }
+            .padding(.horizontal, 20)
+        }
+        .padding(.top, 10)
+        .sheet(isPresented: $isCameraPresented) {
+            CameraView(capturedImage: $pickedImage, isPresented: $isCameraPresented)
+        }
+        .onChange(of: pickedImage) { newValue in
+            if let image = newValue {
+                capturedImages.append(image)
+                pickedImage = nil
+            }
+        }
+    }
+
+    private var photosSection: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            Button {
+                isCameraPresented = true
+            } label: {
+                HStack {
+                    Image(systemName: "camera")
+                    Text(capturedImages.isEmpty ? "Add Photo" : "Add Another Photo")
+                }
+                .font(FontFamily.Lato.bold.swiftUIFont(size: 16))
+                .foregroundStyle(Asset.Colors.huskyPurple.swiftUIColor)
+            }
+            .padding(.horizontal)
+
+            if !capturedImages.isEmpty {
+                ScrollView(.horizontal, showsIndicators: false) {
+                    HStack(spacing: 10) {
+                        ForEach(Array(capturedImages.enumerated()), id: \.offset) { index, image in
+                            ZStack(alignment: .topTrailing) {
+                                Image(uiImage: image)
+                                    .resizable()
+                                    .scaledToFill()
+                                    .frame(width: 70, height: 70)
+                                    .clipShape(RoundedRectangle(cornerRadius: 8))
+                                    .clipped()
+
+                                Button {
+                                    capturedImages.remove(at: index)
+                                } label: {
+                                    Image(systemName: "xmark.circle.fill")
+                                        .foregroundStyle(.white, .black.opacity(0.6))
+                                }
+                                .offset(x: 6, y: -6)
+                            }
+                        }
+                    }
+                    .padding(.horizontal)
+                }
+            }
+        }
+    }
+
+    /// Builds the draft (preset tags + `ext:notes`, capped at `maxNoteLength`) and hands
+    /// it straight to `FeatureSubmissionManager` — the actual photo upload and node
+    /// creation happen in the background from here on, so this returns immediately and
+    /// the sheet closes right away, exactly like `CreateNoteView.submitNote()` does.
+    /// A draft captured offline (or interrupted mid-upload) is persisted before any
+    /// network call and stays queued until it's retried automatically or via the sync
+    /// button — nothing here blocks on the network succeeding or even being reachable.
+    private func submit() {
+        var tags = preset.tags
+        let trimmedNote = String(noteText.trimmingCharacters(in: .whitespacesAndNewlines).prefix(Self.maxNoteLength))
+        if !trimmedNote.isEmpty {
+            tags["ext:notes"] = trimmedNote
+        }
+
+        let draft = FeatureDraft(
+            presetName: preset.name,
+            iconName: preset.icon,
+            tags: tags,
+            images: capturedImages,
+            coordinates: coordinate
         )
-
-        do {
-            let _ = try await DatasyncManager.shared.createNode(node: powerpole)
-            alertMessage = "Feature added successfully"
-        } catch {
-            print("ERROR IN CREATING FEATURE ---->>> \(error)")
-            alertMessage = "Something went wrong. Try again"
-        }
-
-        await MainActor.run {
-            isLoading = false
-            isPresented = false
-            dismissSheet(alertMessage)
-        }
+        FeatureSubmissionManager.submit(draft)
+        onSubmit()
     }
 }
 
 #Preview {
-    AddFeatureView(tappedCoordinate: CLLocationCoordinate2D(latitude: 0, longitude: 0), isPresented: .constant(true), dismissSheet: {_ in })
+    AddFeatureView(tappedCoordinate: .constant(CLLocationCoordinate2D(latitude: 0, longitude: 0)), isPresented: .constant(true), selectedPreset: .constant(nil))
 }

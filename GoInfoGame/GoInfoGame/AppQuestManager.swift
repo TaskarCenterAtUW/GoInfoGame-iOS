@@ -66,18 +66,24 @@ class AppQuestManager {
     
     // Fetches all the available quests from Database
     func fetchQuestsFromDB() ->  [DisplayUnitWithCoordinate] {
-        
-        let nodesFromStorage = dbInstance.getNodes(NSPredicate(format: """
-                                                                    tags.@count != 0 AND 
-                                                                    tags['ext:gig_complete'] != 'yes'
-                                                                    """))
+
+        // Excluding ext:gig_complete='yes' at the query level is a cheap win when
+        // nothing can ever re-answer a completed element — but with a recency_period
+        // configured, a completed element can become applicable again once it goes
+        // stale (see LongElementQuest.isApplicable), so it has to be fetched here and
+        // left to that per-element check instead of being filtered out up front.
+        let excludeCompleted = QuestsRepository.shared.recencyPeriodDays == nil
+        let nodePredicateFormat = excludeCompleted
+            ? "tags.@count != 0 AND tags['ext:gig_complete'] != 'yes'"
+            : "tags.@count != 0"
+        let wayPredicateFormat = excludeCompleted
+            ? "tags.@count != 0 AND polyline.@count > 0 AND tags['ext:gig_complete'] != 'yes'"
+            : "tags.@count != 0 AND polyline.@count > 0"
+
+        let nodesFromStorage = dbInstance.getNodes(NSPredicate(format: nodePredicateFormat))
         let yetToSyncNodeIDs = Set(dbInstance.getChangesets(synced: false, element: .node).compactMap{ Int64($0.elementId) })
-        
-        let waysFromStorage = dbInstance.getWays(NSPredicate(format: """
-                                                                    tags.@count != 0 AND
-                                                                    polyline.@count > 0 AND
-                                                                    tags['ext:gig_complete'] != 'yes' 
-                                                                    """ ))
+
+        let waysFromStorage = dbInstance.getWays(NSPredicate(format: wayPredicateFormat))
         let yetToSyncWayIDs = Set(dbInstance.getChangesets(synced: false, element: .way).compactMap{ Int64($0.elementId) })
         
         debugPrint("converting to nods: start \(Date())")

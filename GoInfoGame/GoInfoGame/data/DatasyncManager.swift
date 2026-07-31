@@ -338,7 +338,40 @@ class DatasyncManager {
         }
     }
 
-    func uploadNode(node: OSMNode, exclude_gig_tags: Bool = false) async throws -> Bool {
+    /// The server-assigned id/version for a node just created via `uploadNode`/`createNode` —
+    /// the OSM API never echoes these back except inside the changeset upload's diffResult
+    /// XML, so they have to be parsed out of it explicitly.
+    struct CreatedElementResult {
+        let id: Int
+        let version: Int
+    }
+
+    /// Reads `<node old_id="-1" new_id="…" new_version="…"/>` out of a changeset upload's
+    /// diffResult response. The client always uploads new nodes under the placeholder
+    /// id "-1" (`OSMNode.toCreatePayload`), so `new_id`/`new_version` are the only way to
+    /// learn the real id/version the server assigned.
+    private final class CreateNodeDiffResultParser: NSObject, XMLParserDelegate {
+        private(set) var result: CreatedElementResult?
+
+        func parse(_ xmlString: String) -> CreatedElementResult? {
+            guard let data = xmlString.data(using: .utf8) else { return nil }
+            let parser = XMLParser(data: data)
+            parser.delegate = self
+            parser.parse()
+            return result
+        }
+
+        func parser(_ parser: XMLParser, didStartElement elementName: String, namespaceURI: String?,
+                    qualifiedName qName: String?, attributes attributeDict: [String: String] = [:]) {
+            guard elementName == "node",
+                  let newIdString = attributeDict["new_id"], let newId = Int(newIdString),
+                  let newVersionString = attributeDict["new_version"], let newVersion = Int(newVersionString)
+            else { return }
+            result = CreatedElementResult(id: newId, version: newVersion)
+        }
+    }
+
+    func uploadNode(node: OSMNode, exclude_gig_tags: Bool = false) async throws -> CreatedElementResult {
         let localNode = node
         let nodeBodyString = localNode.toCreatePayload(exclude_gig_tags: exclude_gig_tags)
         let changesetUploadBody = "<osmChange version=\"0.6\" generator=\"GIG Change generator\">" + nodeBodyString + "</osmChange>"
@@ -351,12 +384,16 @@ class DatasyncManager {
         guard let accessToken = KeychainManager.load(key: "accessToken") else {
             throw APIError.unauthorized
         }
-        
+
         return try await withCheckedThrowingContinuation { continuation in
             ApiManager.shared.performRequest(to: .uploadChangeset(accessToken, "\(node.changeset)", workspaceId ?? "", nodeBody), setupType: .osm, modelType: String.self, useJSON: false) { result in
                 switch result {
-                case .success:
-                    continuation.resume(returning: true)
+                case .success(let diffResultXML):
+                    guard let created = CreateNodeDiffResultParser().parse(diffResultXML) else {
+                        continuation.resume(throwing: APIError.decodingFailed("Could not read the new node's id from the server response"))
+                        return
+                    }
+                    continuation.resume(returning: created)
                 case .failure(let failure):
                     continuation.resume(throwing: failure)
                 }
@@ -728,7 +765,7 @@ class DatasyncManager {
         }
     }
         
-    func createNode(node: OSMNode) async throws -> Bool {
+    func createNode(node: OSMNode) async throws -> CreatedElementResult {
         var localNode = node
 
         do {
@@ -736,19 +773,53 @@ class DatasyncManager {
 
             localNode.changeset = changesetID
 
-            let uploadResult = try await uploadNode(node: localNode)
-
-            if uploadResult {
-                return try await closeChangeset(id: String(changesetID))
-            } else {
-                throw NSError(domain: "Upload Failed", code: 0, userInfo: nil)
-            }
+            let created = try await uploadNode(node: localNode)
+            _ = try await closeChangeset(id: String(changesetID))
+            return created
         } catch {
             print("createNode error: \(error)")
             throw error;
         }
     }
-    
+
+    /// Permanently deletes a node from the OSM server — used only to undo a
+    /// just-created feature (see `AddFeatureView`/`StoredChangeset.isCreatedElement`).
+    /// Never used to revert a tag edit on a pre-existing element; that stays a
+    /// `<modify>` via `syncNode`/`updateNode`.
+    func deleteNode(node: OSMNode) async throws -> Bool {
+        var localNode = node
+
+        do {
+            let changesetID = try await openChangeset()
+            localNode.changeset = changesetID
+
+            let deleteBody = "<osmChange version=\"0.6\" generator=\"GIG Change generator\">" + localNode.toDeletePayload() + "</osmChange>"
+            guard let bodyData = deleteBody.data(using: .utf8) else {
+                throw APIError.decodingFailed("Invalid Node Body")
+            }
+            let workspaceId = KeychainManager.load(key: "workspaceID")
+            guard let accessToken = KeychainManager.load(key: "accessToken") else {
+                throw APIError.unauthorized
+            }
+
+            _ = try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<String, Error>) in
+                ApiManager.shared.performRequest(to: .uploadChangeset(accessToken, "\(changesetID)", workspaceId ?? "", bodyData), setupType: .osm, modelType: String.self, useJSON: false) { result in
+                    switch result {
+                    case .success(let response):
+                        continuation.resume(returning: response)
+                    case .failure(let failure):
+                        continuation.resume(throwing: failure)
+                    }
+                }
+            }
+
+            return try await closeChangeset(id: String(changesetID))
+        } catch {
+            print("deleteNode error: \(error)")
+            throw error
+        }
+    }
+
     @MainActor
     func syncWay(way: OSMWay, exclude_gig_tags: Bool, editedTags: [String : String], elementTypeName: String = "Element", iconName: String = "notes") async throws -> (result: Bool, version: Int) {
         var localWay = way

@@ -62,6 +62,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             try? await self.forceUpdateManager.checkForceUpdate()
         }
         NotesSubmissionManager.resumePendingUploads()
+        FeatureSubmissionManager.resumePendingUploads()
     }
 
     func sceneWillResignActive(_ scene: UIScene) {

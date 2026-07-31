@@ -321,6 +321,44 @@ class DatabaseConnector {
 
     
     
+    /// Records a brand-new node (created via Add Feature) as an already-"synced"
+    /// changeset — there's nothing pending to upload since `createNode` already
+    /// completed the real create synchronously — purely so it immediately appears in
+    /// `MapUndoManager.getUndoItems()`. `originalTags` is intentionally left empty
+    /// (nothing existed before this element), and `isCreatedElement` is what
+    /// `QuestBase.updateUndoTags` checks to delete the node on undo instead of
+    /// restoring old tags. Deliberately separate from `createChangeset` below, which
+    /// backs the unrelated "pending edit to an existing element" queue that
+    /// `DatasyncManager.syncData()` drains — a create must never end up in that queue.
+    func createChangesetForNewElement(id: Int, questType: String, tags: [String: String], version: Int, iconName: String, point: CLLocationCoordinate2D) -> StoredChangeset? {
+        let realm = try! Realm(configuration: RealmConfig.configuration)
+        let storedChangeset = StoredChangeset()
+        storedChangeset.elementId = id
+        storedChangeset.elementType = .node
+        storedChangeset.version = version
+        storedChangeset.updatedVersion = version // already synced — nothing for syncData() to do
+        storedChangeset.changesetId = 0          // matches the "synced, undoable" sentinel getUndoItems() checks for
+        storedChangeset.questType = questType
+        storedChangeset.iconName = iconName
+        storedChangeset.point = point
+        storedChangeset.isCreatedElement = true
+        storedChangeset.timestamp = String(Date().timeIntervalSince1970)
+        for tag in tags {
+            storedChangeset.tags.setValue(tag.value, forKey: tag.key)
+        }
+        // originalTags left empty — nothing existed before this element was created.
+
+        do {
+            try realm.write {
+                realm.add(storedChangeset)
+            }
+        } catch {
+            print("Error while writing the create changeset")
+            return nil
+        }
+        return storedChangeset
+    }
+
     /**
      Creates a changeset for an element with specific ID. This does not store the updated nodes. That is to be done separately
      - parameter id: String id of the changed element
@@ -515,10 +553,79 @@ class DatabaseConnector {
         }
     }
 
+    // MARK: - Feature drafts (offline queue for Add Feature)
+
+    /// Creates the pending feature draft, or if `id` already exists (a retry of a
+    /// previously failed draft), overwrites its tags/photos/coordinates in place.
+    @discardableResult
+    func upsertFeatureDraft(id: String, presetName: String, iconName: String, tags: [String: String], imagePaths: [String], coordinates: CLLocationCoordinate2D) -> StoredFeatureDraft {
+        let realm = try! Realm(configuration: RealmConfig.configuration)
+        let draft = StoredFeatureDraft()
+        draft.id = id
+        draft.presetName = presetName
+        draft.iconName = iconName
+        for (key, value) in tags {
+            draft.tags.setValue(value, forKey: key)
+        }
+        draft.imagePaths.append(objectsIn: imagePaths)
+        draft.latitude = coordinates.latitude
+        draft.longitude = coordinates.longitude
+        draft.createdAt = Date()
+        try! realm.write {
+            realm.add(draft, update: .modified)
+        }
+        return draft
+    }
+
+    /// All features still waiting to be uploaded/created, oldest first.
+    func pendingFeatureDrafts() -> [StoredFeatureDraftSnapshot] {
+        let realm = try! Realm(configuration: RealmConfig.configuration)
+        return realm.objects(StoredFeatureDraft.self)
+            .sorted(byKeyPath: "createdAt")
+            .map {
+                StoredFeatureDraftSnapshot(
+                    id: $0.id,
+                    presetName: $0.presetName,
+                    iconName: $0.iconName,
+                    tags: $0.tags.toDictionary(),
+                    imagePaths: Array($0.imagePaths),
+                    coordinates: CLLocationCoordinate2D(latitude: $0.latitude, longitude: $0.longitude)
+                )
+            }
+    }
+
+    func pendingFeatureDraftsCount() -> Int {
+        let realm = try! Realm(configuration: RealmConfig.configuration)
+        return realm.objects(StoredFeatureDraft.self).count
+    }
+
+    func featureDraftImagePaths(id: String) -> [String] {
+        let realm = try! Realm(configuration: RealmConfig.configuration)
+        guard let draft = realm.object(ofType: StoredFeatureDraft.self, forPrimaryKey: id) else { return [] }
+        return Array(draft.imagePaths)
+    }
+
+    func deleteFeatureDraft(id: String) {
+        let realm = try! Realm(configuration: RealmConfig.configuration)
+        guard let draft = realm.object(ofType: StoredFeatureDraft.self, forPrimaryKey: id) else { return }
+        try! realm.write {
+            realm.delete(draft)
+        }
+    }
+
+    func markFeatureDraftFailed(id: String, error: String) {
+        let realm = try! Realm(configuration: RealmConfig.configuration)
+        guard let draft = realm.object(ofType: StoredFeatureDraft.self, forPrimaryKey: id) else { return }
+        try! realm.write {
+            draft.lastError = error
+            draft.retryCount += 1
+        }
+    }
+
 }
 
 struct RealmConfig {
-    static let configuration = Realm.Configuration(schemaVersion: 2) { migration, oldSchemaVersion in
+    static let configuration = Realm.Configuration(schemaVersion: 3) { migration, oldSchemaVersion in
         if oldSchemaVersion < 1 {
             let formatter = DateFormatter()
             formatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
@@ -546,6 +653,13 @@ struct RealmConfig {
             migration.enumerateObjects(ofType: StoredChangeset.className()) { oldObject, newObject in
                 newObject?["questType"] = nil
                 newObject?["iconName"] = "notes"
+            }
+        }
+        if oldSchemaVersion < 3 {
+            // Every changeset that existed before this field was added is, by
+            // definition, an edit to an already-existing element — never a create.
+            migration.enumerateObjects(ofType: StoredChangeset.className()) { _, newObject in
+                newObject?["isCreatedElement"] = false
             }
         }
     }

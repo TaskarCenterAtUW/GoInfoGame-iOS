@@ -70,7 +70,12 @@ struct UndoButton: View {
                     Text("\(item.type == .way ? "Way" : "Node") #\(String(item.elementId))")
                         .font(.headline)
 
-                    if !item.changedKeys.isEmpty {
+                    if item.isCreatedElement {
+                        Text("This feature will be permanently deleted.")
+                            .font(.subheadline)
+                            .foregroundColor(.gray)
+                            .multilineTextAlignment(.center)
+                    } else if !item.changedKeys.isEmpty {
                         VStack(alignment: .leading, spacing: 4) {
                             Text("Changed keys:")
                                 .font(.subheadline)
@@ -90,7 +95,7 @@ struct UndoButton: View {
 
                         Spacer()
 
-                        Button("Revert") {
+                        Button(item.isCreatedElement ? "Delete" : "Revert") {
                             onRevert(item.id)
                             showUndoPopup = false
                             showSidebar = false

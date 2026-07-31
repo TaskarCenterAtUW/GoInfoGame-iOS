@@ -48,6 +48,18 @@ class QuestsRepository: ObservableObject {
        }
     
     @Published var longQuestModels: [LongFormElement] = []
+
+    /// Options shown in the "Add Feature" picker, and the remote-icon fallbacks for
+    /// any of their `icon` names not found in the asset catalog. Populated once per
+    /// workspace load from `longFormQuestDef`'s `feature-presets`/`custom-icons`.
+    @Published var featurePresets: [FeaturePreset] = []
+    @Published var customIcons: [CustomIcon] = []
+
+    /// Days after which a completed element (`ext:gig_complete=yes`) becomes
+    /// answerable again, from `longFormQuestDef`'s `recency_period`. `nil` when the
+    /// workspace doesn't set one — `LongElementQuest.filterExpression` then falls
+    /// back to the original behavior of never re-surfacing completed elements.
+    @Published var recencyPeriodDays: Int? = nil
     
     var displayQuests: [DisplayUnit] {
         self.applicableQuests.map { q in
@@ -119,10 +131,10 @@ class DisplayUnitAnnotation: NSObject, MLNAnnotation, Identifiable {
        }
 }
 
-struct DisplayUnitWithCoordinate: Identifiable, Equatable {
+public struct DisplayUnitWithCoordinate: Identifiable, Equatable {
     let displayUnit: DisplayUnit
     let coordinateInfo: CLLocationCoordinate2D
-    let id: Int64
+    public let id: Int64
     var isHidden: Bool
     let location: CLLocation
     init(displayUnit: DisplayUnit, coordinateInfo: CLLocationCoordinate2D, id: Int64, isHidden: Bool) {
@@ -139,7 +151,7 @@ struct DisplayUnitWithCoordinate: Identifiable, Equatable {
         return annotation
     }
     
-    static func == (lhs: Self, rhs: Self) -> Bool {
+    public static func == (lhs: Self, rhs: Self) -> Bool {
         lhs.id == rhs.id &&
         lhs.isHidden == rhs.isHidden &&
         lhs.coordinateInfo.latitude == rhs.coordinateInfo.latitude &&

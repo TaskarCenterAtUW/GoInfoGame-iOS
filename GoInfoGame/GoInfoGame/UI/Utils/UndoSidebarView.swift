@@ -17,6 +17,10 @@ struct UndoItem: Identifiable {
     let questType: String?
     let tags: [(action: TagAction, key: String, value: String)]
     let iconName: String
+    /// True for a feature created via Add Feature — undoing it deletes the element
+    /// outright rather than reverting a tag edit, so the UI offers "Delete" instead
+    /// of "Revert".
+    var isCreatedElement: Bool = false
 }
 
 struct UndoSidebarView: View {
@@ -57,7 +61,7 @@ struct UndoSidebarView: View {
                                 .foregroundColor(Asset.Colors.huskyPurple.swiftUIColor)
 
                             if !item.changedKeys.isEmpty {
-                                Text("Tap to view changes")
+                                Text(item.isCreatedElement ? "New feature — tap to delete" : "Tap to view changes")
                                     .font(.caption)
                                     .foregroundColor(Asset.Colors.huskyPurple.swiftUIColor)
                             }

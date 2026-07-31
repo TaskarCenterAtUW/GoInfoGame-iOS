@@ -10,7 +10,9 @@ import CoreLocation
 
 struct CreateNoteView: View {
     @Environment(\.presentationMode) var presentationMode
-    @State var coordinates: CLLocationCoordinate2D
+    /// A binding (not a one-time value) so it keeps reflecting the pin's position as
+    /// the user drags the map underneath it while this sheet stays open.
+    @Binding var coordinates: CLLocationCoordinate2D
     @State private var noteText = ""
     @Binding var showNotesBox: Bool
 
@@ -141,5 +143,5 @@ struct CreateNoteView: View {
 
 
 #Preview {
-    CreateNoteView(coordinates: CLLocationCoordinate2D(latitude: 0.0, longitude: 0.0), showNotesBox: .constant(true))
+    CreateNoteView(coordinates: .constant(CLLocationCoordinate2D(latitude: 0.0, longitude: 0.0)), showNotesBox: .constant(true))
 }

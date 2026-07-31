@@ -47,7 +47,7 @@ class MapUndoManager {
                         tagActions.append((.added, key, edited.tags[key] ?? ""))
                     }
                 }
-                items.append(UndoItem(elementId: edited.elementId, type: edited.elementType.elementType(), changedKeys: keys, id: edited.id, timestamp: date, questType: edited.questType, tags: tagActions, iconName: edited.iconName))
+                items.append(UndoItem(elementId: edited.elementId, type: edited.elementType.elementType(), changedKeys: keys, id: edited.id, timestamp: date, questType: edited.questType, tags: tagActions, iconName: edited.iconName, isCreatedElement: edited.isCreatedElement))
             }
         }
 
