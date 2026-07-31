@@ -24,7 +24,7 @@ import Foundation
 struct LongFormResponse: Decodable {
     let version: String?
     let elements: [LongFormElement]
-    let recencyPeriod: Int?
+    let recencyPeriod: Int
     let featurePresets: [FeaturePreset]?
     let customIcons: [CustomIcon]?
 
@@ -33,7 +33,7 @@ struct LongFormResponse: Decodable {
         if let topArray = try? [LongFormElement](from: decoder) {
             self.elements = topArray
             self.version = nil
-            self.recencyPeriod = nil
+            self.recencyPeriod = 90
             self.featurePresets = nil
             self.customIcons = nil
             return
@@ -43,7 +43,7 @@ struct LongFormResponse: Decodable {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         self.elements = try container.decode([LongFormElement].self, forKey: .elements)
         self.version = try container.decodeIfPresent(String.self, forKey: .version)
-        self.recencyPeriod = try container.decodeIfPresent(Int.self, forKey: .recencyPeriod)
+        self.recencyPeriod = try container.decodeIfPresent(Int.self, forKey: .recencyPeriod) ?? 90
         self.featurePresets = try container.decodeIfPresent([FeaturePreset].self, forKey: .featurePresets)
         self.customIcons = try container.decodeIfPresent([CustomIcon].self, forKey: .customIcons)
     }
