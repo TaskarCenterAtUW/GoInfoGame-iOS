@@ -31,8 +31,16 @@ protocol Quest {
     var filterExpression : ElementFilterExpression? { get  }
     var questId: String { get }
     var polylines: [CLLocationCoordinate2D]? { get }
-    
+
     func copyWithElement(element: Element) -> any Quest // Not sure.
+
+    /// A genuine protocol requirement (not just an extension method) so a
+    /// conformer can override the default filter-expression-based match — e.g.
+    /// LongElementQuest does, to let a completed element qualify again once past
+    /// its recency period. Without this being a requirement, an override placed
+    /// directly on the conforming type would never be reached through `any Quest`
+    /// call sites (extension methods use static, not witness-table, dispatch).
+    func isApplicable(element: Element) -> Bool
 }
 
 class QuestBase {

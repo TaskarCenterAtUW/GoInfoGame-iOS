@@ -54,6 +54,12 @@ class QuestsRepository: ObservableObject {
     /// workspace load from `longFormQuestDef`'s `feature-presets`/`custom-icons`.
     @Published var featurePresets: [FeaturePreset] = []
     @Published var customIcons: [CustomIcon] = []
+
+    /// Days after which a completed element (`ext:gig_complete=yes`) becomes
+    /// answerable again, from `longFormQuestDef`'s `recency_period`. `nil` when the
+    /// workspace doesn't set one — `LongElementQuest.filterExpression` then falls
+    /// back to the original behavior of never re-surfacing completed elements.
+    @Published var recencyPeriodDays: Int? = nil
     
     var displayQuests: [DisplayUnit] {
         self.applicableQuests.map { q in

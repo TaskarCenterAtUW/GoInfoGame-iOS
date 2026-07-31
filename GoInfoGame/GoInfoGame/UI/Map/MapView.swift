@@ -986,7 +986,7 @@ struct QuestSheetView: View {
                 return
             }
             if let latestTags = await longQuest.fetchLatestTagsIfNeeded(),
-               latestTags["ext:gig_complete"] == "yes" {
+               LongElementQuest.isStillConsideredComplete(tags: latestTags) {
                 alreadyCompletedMessage = "This element has already been answered by another user."
                 viewModel.refreshQuests()
             }
