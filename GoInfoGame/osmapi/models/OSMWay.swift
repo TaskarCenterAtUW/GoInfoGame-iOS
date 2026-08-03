@@ -51,27 +51,28 @@ public struct OSMWay: Codable, OSMPayload, OSMElement  {
         xmlBuilder.addAttribute(name: "version", value: "\(version)")
         xmlBuilder.addAttribute(name: "changeset", value: "\(changeset)")
        
-       // Add the gig payload tags.
+       // Add the gig payload tags. ext:gig_complete/ext:gig_last_updated are held
+       // back here (not added to xmlBuilder yet) rather than added-then-"updated" —
+       // TagPayload is a struct, so addChild(element:) below would otherwise copy
+       // its value in at that moment; mutating a *different* local copy afterwards
+       // (as this used to do) never reaches the copy already sitting in the
+       // builder, so a re-answered element's date silently kept its original value.
        var existingGigComplete: TagPayload? = nil
-       var existingGigUpdate: TagPayload? = nil
         tags.forEach { (key: String, value: String) in
-            
-            let tagNode = TagPayload(key: key, value: value)
             if !exclude_gig_tags {
                 if (key == "ext:gig_complete"){
-                    existingGigComplete = tagNode
+                    existingGigComplete = TagPayload(key: key, value: value)
+                    return
                 }
                 if (key == "ext:gig_last_updated"){
-                    existingGigUpdate = tagNode
+                    return // always replaced with today's date below — the old value is never needed
                 }
             }
-            xmlBuilder.addChild(element: tagNode)
+            xmlBuilder.addChild(element: TagPayload(key: key, value: value))
         }
         if !exclude_gig_tags {
-            if existingGigComplete == nil {
-                let gigCompleteTag = TagPayload(key: "ext:gig_complete", value: "yes")
-                xmlBuilder.addChild(element: gigCompleteTag)
-            }
+            let gigCompleteTag = TagPayload(key: "ext:gig_complete", value: existingGigComplete?.value ?? "yes")
+            xmlBuilder.addChild(element: gigCompleteTag)
         }
 
        // Today date
@@ -89,12 +90,8 @@ public struct OSMWay: Codable, OSMPayload, OSMElement  {
        let formattedDate = dateFormatter.string(from: currentDate)
        
         if !exclude_gig_tags {
-            if existingGigUpdate == nil{
-                let gigLastUpdated = TagPayload(key: "ext:gig_last_updated", value: formattedDate)
-                xmlBuilder.addChild(element: gigLastUpdated)
-            }  else {
-                existingGigUpdate!.value = formattedDate
-            }
+            let gigLastUpdated = TagPayload(key: "ext:gig_last_updated", value: formattedDate)
+            xmlBuilder.addChild(element: gigLastUpdated)
         }
 
 
