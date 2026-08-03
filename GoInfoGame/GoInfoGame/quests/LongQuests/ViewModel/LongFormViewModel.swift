@@ -57,6 +57,38 @@ class LongFormViewModel: ObservableObject {
         }
     }
     
+    // Checks each answered quest's value against its quest_answer_validation, if present.
+    // Returns a user-facing error message for the first violation found, or nil if all answers are valid.
+    func validationErrorMessage() -> String? {
+        guard let quests = longForm?.quests else { return nil }
+        for quest in quests {
+            guard shouldShowQuest(quest),
+                  let validation = quest.questAnswerValidation,
+                  let choiceOptional = selectedChoices[quest.questID],
+                  let choice = choiceOptional else { continue }
+
+            guard let value = Double(choice.value) else {
+                return "\(quest.questTitle): please enter a valid number."
+            }
+            let tooLow = validation.min.map { value < Double($0) } ?? false
+            let tooHigh = validation.max.map { value > Double($0) } ?? false
+            if tooLow || tooHigh {
+                let rangeDescription: String
+                if let min = validation.min, let max = validation.max {
+                    rangeDescription = "between \(min) and \(max)"
+                } else if let min = validation.min {
+                    rangeDescription = "at least \(min)"
+                } else if let max = validation.max {
+                    rangeDescription = "at most \(max)"
+                } else {
+                    rangeDescription = ""
+                }
+                return "\(quest.questTitle): value must be \(rangeDescription)."
+            }
+        }
+        return nil
+    }
+
     func getAnswersForSubmission() -> [String: String] {
         var submissionDict: [String: String] = [:]
         guard let quests = longForm?.quests else { return [:] }

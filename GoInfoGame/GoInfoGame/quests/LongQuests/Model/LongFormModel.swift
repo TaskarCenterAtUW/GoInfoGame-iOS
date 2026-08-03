@@ -175,7 +175,8 @@ struct QuestAnswerChoice: Codable, Identifiable, Equatable {
 
 // MARK: - QuestAnswerValidation
 struct QuestAnswerValidation: Codable {
-    let min: Int
+    let min: Int?
+    let max: Int?
 }
 
 // MARK: - QuestAnswerDependency

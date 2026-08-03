@@ -246,7 +246,10 @@ struct LongForm: View, QuestForm {
                 Button(action: {
                     var answersToSubmit = viewModel.getAnswersForSubmission()
                     if !answersToSubmit.isEmpty {
-                        if let action = action {
+                        if let validationError = viewModel.validationErrorMessage() {
+                            self.submitStatusMessage = validationError
+                            self.activeAlert = .submissionError(message: validationError)
+                        } else if let action = action {
                             if !uploadedPhotos.isEmpty {
                                 answersToSubmit["ext:kartaview_url"] = uploadedPhotos.joined(separator: ", ")
                             }
