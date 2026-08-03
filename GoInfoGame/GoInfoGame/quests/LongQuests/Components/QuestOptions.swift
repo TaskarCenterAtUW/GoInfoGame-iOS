@@ -41,7 +41,8 @@ struct QuestOptions: View {
             
         case .numeric:
             NumericInputView(
-                selectedChoice: $selectedChoice
+                selectedChoice: $selectedChoice,
+                validation: quest.questAnswerValidation
             )
         case .textEntry:
             TextEntryView(
@@ -215,34 +216,49 @@ private extension QuestOptions {
 
     struct NumericInputView: View {
         @Binding var selectedChoice: QuestAnswerChoice?
+        var validation: QuestAnswerValidation?
+
+        private var errorMessage: String? {
+            validation?.errorMessage(forRawValue: selectedChoice?.value ?? "")
+        }
 
         var body: some View {
-            HStack {
-                TextField("Enter value", text: Binding(
-                    get: { selectedChoice?.value ?? "" },
-                    set: { newValue in
-                        if newValue.isEmpty {
-                            selectedChoice = nil
-                        } else {
-                            if selectedChoice?.value != newValue {
-                                let answer = QuestAnswerChoice(value: newValue, choiceText: newValue, imageURL: nil, choiceFollowUp: nil)
-                                selectedChoice = answer
+            VStack(alignment: .leading, spacing: 4) {
+                HStack {
+                    TextField("Enter value", text: Binding(
+                        get: { selectedChoice?.value ?? "" },
+                        set: { newValue in
+                            if newValue.isEmpty {
+                                selectedChoice = nil
+                            } else {
+                                if selectedChoice?.value != newValue {
+                                    let answer = QuestAnswerChoice(value: newValue, choiceText: newValue, imageURL: nil, choiceFollowUp: nil)
+                                    selectedChoice = answer
+                                }
                             }
                         }
-                    }
-                ))
-                .font(FontFamily.Lato.regular.swiftUIFont(size: 14, relativeTo: .body))
-                .textFieldStyle(PlainTextFieldStyle())
-                .keyboardType(.decimalPad)
-                .padding(.vertical, 12) // Adds internal space
-                .padding(.horizontal, 10)
-                .frame(minWidth: 100, minHeight: 44) // Meets accessibility minimums
-                .background(Color.clear) // Helps define the tappable area
-                .contentShape(Rectangle()) // Makes the entire frame hit-testable
-                .fixedSize(horizontal: false, vertical: true)
-                .multilineTextAlignment(.leading)
-                .lineLimit(nil)
-                .accessibilityLabel("Numeric input field. Current value: \(selectedChoice?.value ?? "empty").")
+                    ))
+                    .font(FontFamily.Lato.regular.swiftUIFont(size: 14, relativeTo: .body))
+                    .textFieldStyle(PlainTextFieldStyle())
+                    .keyboardType(.decimalPad)
+                    .padding(.vertical, 12) // Adds internal space
+                    .padding(.horizontal, 10)
+                    .frame(minWidth: 100, minHeight: 44) // Meets accessibility minimums
+                    .background(Color.clear) // Helps define the tappable area
+                    .contentShape(Rectangle()) // Makes the entire frame hit-testable
+                    .fixedSize(horizontal: false, vertical: true)
+                    .multilineTextAlignment(.leading)
+                    .lineLimit(nil)
+                    .accessibilityLabel("Numeric input field. Current value: \(selectedChoice?.value ?? "empty").")
+                }
+
+                if let errorMessage {
+                    Text(errorMessage)
+                        .font(FontFamily.Lato.regular.swiftUIFont(size: 12, relativeTo: .caption))
+                        .foregroundColor(.red)
+                        .padding(.horizontal, 10)
+                        .accessibilityLabel(errorMessage)
+                }
             }
         }
     }

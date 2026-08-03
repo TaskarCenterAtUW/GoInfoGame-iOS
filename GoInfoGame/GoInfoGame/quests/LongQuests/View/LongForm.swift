@@ -266,11 +266,12 @@ struct LongForm: View, QuestForm {
                         .foregroundColor(.white)
                         .padding(.vertical, 14)
                         .padding(.horizontal, 40)
-                        .background(Asset.Colors.huskyPurple.swiftUIColor)
+                        .background(viewModel.validationErrorMessage() != nil ? Color.gray : Asset.Colors.huskyPurple.swiftUIColor)
                         .multilineTextAlignment(.center)
                         .cornerRadius(20)
                         .accessibilityLabel("Submit Answers")
                 }
+                .disabled(viewModel.validationErrorMessage() != nil)
                 .frame(maxWidth: .infinity)
 
             }
