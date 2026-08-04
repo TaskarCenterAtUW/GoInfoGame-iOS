@@ -57,6 +57,21 @@ class LongFormViewModel: ObservableObject {
         }
     }
     
+    // Checks each answered quest's value against its quest_answer_validation, if present.
+    // Returns a user-facing error message for the first violation found, or nil if all answers are valid.
+    func validationErrorMessage() -> String? {
+        guard let quests = longForm?.quests else { return nil }
+        for quest in quests {
+            guard shouldShowQuest(quest),
+                  let validation = quest.questAnswerValidation,
+                  let choiceOptional = selectedChoices[quest.questID],
+                  let choice = choiceOptional,
+                  let message = validation.errorMessage(forRawValue: choice.value) else { continue }
+            return "\(quest.questTitle): \(message)"
+        }
+        return nil
+    }
+
     func getAnswersForSubmission() -> [String: String] {
         var submissionDict: [String: String] = [:]
         guard let quests = longForm?.quests else { return [:] }

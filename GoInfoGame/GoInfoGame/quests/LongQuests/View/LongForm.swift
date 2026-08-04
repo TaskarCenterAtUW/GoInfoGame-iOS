@@ -246,7 +246,10 @@ struct LongForm: View, QuestForm {
                 Button(action: {
                     var answersToSubmit = viewModel.getAnswersForSubmission()
                     if !answersToSubmit.isEmpty {
-                        if let action = action {
+                        if let validationError = viewModel.validationErrorMessage() {
+                            self.submitStatusMessage = validationError
+                            self.activeAlert = .submissionError(message: validationError)
+                        } else if let action = action {
                             if !uploadedPhotos.isEmpty {
                                 answersToSubmit["ext:kartaview_url"] = uploadedPhotos.joined(separator: ", ")
                             }
@@ -263,11 +266,12 @@ struct LongForm: View, QuestForm {
                         .foregroundColor(.white)
                         .padding(.vertical, 14)
                         .padding(.horizontal, 40)
-                        .background(Asset.Colors.huskyPurple.swiftUIColor)
+                        .background(viewModel.validationErrorMessage() != nil ? Color.gray : Asset.Colors.huskyPurple.swiftUIColor)
                         .multilineTextAlignment(.center)
                         .cornerRadius(20)
                         .accessibilityLabel("Submit Answers")
                 }
+                .disabled(viewModel.validationErrorMessage() != nil)
                 .frame(maxWidth: .infinity)
 
             }

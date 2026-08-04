@@ -175,7 +175,29 @@ struct QuestAnswerChoice: Codable, Identifiable, Equatable {
 
 // MARK: - QuestAnswerValidation
 struct QuestAnswerValidation: Codable {
-    let min: Int
+    let min: Int?
+    let max: Int?
+
+    /// Validates a raw numeric answer against the min/max bounds. Returns a user-facing
+    /// message describing the problem, or nil if the value is empty (unanswered isn't
+    /// itself invalid) or satisfies the bounds.
+    func errorMessage(forRawValue rawValue: String) -> String? {
+        guard !rawValue.isEmpty else { return nil }
+        guard let value = Double(rawValue) else {
+            return "Please enter a valid number."
+        }
+        let tooLow = min.map { value < Double($0) } ?? false
+        let tooHigh = max.map { value > Double($0) } ?? false
+        guard tooLow || tooHigh else { return nil }
+        if let min = min, let max = max {
+            return "Value must be between \(min) and \(max)."
+        } else if let min = min {
+            return "Value must be at least \(min)."
+        } else if let max = max {
+            return "Value must be at most \(max)."
+        }
+        return nil
+    }
 }
 
 // MARK: - QuestAnswerDependency
