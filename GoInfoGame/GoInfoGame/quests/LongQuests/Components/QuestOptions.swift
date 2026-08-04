@@ -224,33 +224,17 @@ private extension QuestOptions {
 
         var body: some View {
             VStack(alignment: .leading, spacing: 4) {
-                HStack {
-                    TextField("Enter value", text: Binding(
+                SignedDecimalTextField(
+                    text: Binding(
                         get: { selectedChoice?.value ?? "" },
-                        set: { newValue in
-                            if newValue.isEmpty {
-                                selectedChoice = nil
-                            } else {
-                                if selectedChoice?.value != newValue {
-                                    let answer = QuestAnswerChoice(value: newValue, choiceText: newValue, imageURL: nil, choiceFollowUp: nil)
-                                    selectedChoice = answer
-                                }
-                            }
-                        }
-                    ))
-                    .font(FontFamily.Lato.regular.swiftUIFont(size: 14, relativeTo: .body))
-                    .textFieldStyle(PlainTextFieldStyle())
-                    .keyboardType(.decimalPad)
-                    .padding(.vertical, 12) // Adds internal space
-                    .padding(.horizontal, 10)
-                    .frame(minWidth: 100, minHeight: 44) // Meets accessibility minimums
-                    .background(Color.clear) // Helps define the tappable area
-                    .contentShape(Rectangle()) // Makes the entire frame hit-testable
-                    .fixedSize(horizontal: false, vertical: true)
-                    .multilineTextAlignment(.leading)
-                    .lineLimit(nil)
-                    .accessibilityLabel("Numeric input field. Current value: \(selectedChoice?.value ?? "empty").")
-                }
+                        set: { newValue in updateValue(sanitized(newValue)) }
+                    ),
+                    placeholder: "Enter value",
+                    accessibilityLabel: "Numeric input field. Current value: \(selectedChoice?.value ?? "empty")."
+                )
+                .padding(.vertical, 4) // Adds internal space
+                .padding(.horizontal, 10)
+                .frame(minWidth: 100, minHeight: 44) // Meets accessibility minimums
 
                 if let errorMessage {
                     Text(errorMessage)
@@ -259,6 +243,107 @@ private extension QuestOptions {
                         .padding(.horizontal, 10)
                         .accessibilityLabel(errorMessage)
                 }
+            }
+        }
+
+        // Keeps only digits, a single leading "-", and a single "." so pasted
+        // or oddly-cursored input can't produce a malformed number.
+        private func sanitized(_ input: String) -> String {
+            let isNegative = input.hasPrefix("-")
+            var digitsAndDot = input.filter { $0.isASCII && ($0.isNumber || $0 == ".") }
+            if let firstDot = digitsAndDot.firstIndex(of: ".") {
+                let afterDot = digitsAndDot.index(after: firstDot)
+                let remainder = digitsAndDot[afterDot...].filter { $0 != "." }
+                digitsAndDot = String(digitsAndDot[..<afterDot]) + remainder
+            }
+            return isNegative ? "-" + digitsAndDot : digitsAndDot
+        }
+
+        private func updateValue(_ newValue: String) {
+            if newValue.isEmpty {
+                selectedChoice = nil
+            } else if selectedChoice?.value != newValue {
+                let answer = QuestAnswerChoice(value: newValue, choiceText: newValue, imageURL: nil, choiceFollowUp: nil)
+                selectedChoice = answer
+            }
+        }
+    }
+
+    // A UIKit-backed text field so the +/- accessory view is a real UITextField.inputAccessoryView,
+    // guaranteed to appear regardless of how deeply this view is nested (List -> sheet -> NavigationStack),
+    // unlike SwiftUI's `.toolbar(placement: .keyboard)` which isn't reliable in that situation.
+    private struct SignedDecimalTextField: UIViewRepresentable {
+        @Binding var text: String
+        var placeholder: String
+        var accessibilityLabel: String
+
+        func makeUIView(context: Context) -> UITextField {
+            let textField = UITextField()
+            textField.delegate = context.coordinator
+            textField.keyboardType = .decimalPad
+            textField.font = FontFamily.Lato.regular.font(size: 14)
+            textField.placeholder = placeholder
+            textField.borderStyle = .none
+            textField.addTarget(context.coordinator, action: #selector(Coordinator.editingChanged(_:)), for: .editingChanged)
+            textField.inputAccessoryView = context.coordinator.makeAccessoryView(for: textField)
+            return textField
+        }
+
+        func updateUIView(_ uiView: UITextField, context: Context) {
+            if uiView.text != text {
+                uiView.text = text
+            }
+            uiView.accessibilityLabel = accessibilityLabel
+        }
+
+        func makeCoordinator() -> Coordinator {
+            Coordinator(text: $text)
+        }
+
+        final class Coordinator: NSObject, UITextFieldDelegate {
+            private let text: Binding<String>
+            private weak var textField: UITextField?
+
+            init(text: Binding<String>) {
+                self.text = text
+            }
+
+            @objc func editingChanged(_ sender: UITextField) {
+                text.wrappedValue = sender.text ?? ""
+            }
+
+            func makeAccessoryView(for textField: UITextField) -> UIView {
+                self.textField = textField
+                let toolbar = UIToolbar()
+                toolbar.sizeToFit()
+                let plus = UIBarButtonItem(title: "+", style: .plain, target: self, action: #selector(setPositive))
+                let minus = UIBarButtonItem(title: "\u{2212}", style: .plain, target: self, action: #selector(setNegative))
+                let flexible = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
+                let done = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(dismissKeyboard))
+                plus.accessibilityLabel = "Set positive value"
+                minus.accessibilityLabel = "Set negative value"
+                toolbar.items = [plus, minus, flexible, done]
+                return toolbar
+            }
+
+            @objc private func setPositive() {
+                applySign(negative: false)
+            }
+
+            @objc private func setNegative() {
+                applySign(negative: true)
+            }
+
+            private func applySign(negative: Bool) {
+                var value = text.wrappedValue
+                if value.hasPrefix("-") { value.removeFirst() }
+                if negative { value = "-" + value }
+                text.wrappedValue = value
+                textField?.text = value
+            }
+
+            @objc private func dismissKeyboard() {
+                textField?.resignFirstResponder()
             }
         }
     }
