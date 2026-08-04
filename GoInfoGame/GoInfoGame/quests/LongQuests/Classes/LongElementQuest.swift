@@ -146,7 +146,12 @@ class LongElementQuest: QuestBase, Quest {
     /// up as a pin (via `isApplicable`) but still get rejected as "already
     /// answered" the instant it's tapped.
     static func isStillConsideredComplete(tags: [String: String]) -> Bool {
-        guard tags["ext:gig_complete"] == "yes" else { return false }
+        // Key presence only — matches the original `!ext:gig_complete` filter
+        // (NotHasKey), which never looked at the tag's value either. Checking for
+        // an exact "yes" here would incorrectly treat any element completed with a
+        // different value (a legacy write, another app version/platform) as never
+        // answered at all.
+        guard tags.keys.contains("ext:gig_complete") else { return false }
         guard let recencyDays = QuestsRepository.shared.recencyPeriodDays else { return true }
         guard let lastUpdatedString = tags["ext:gig_last_updated"],
               let lastUpdatedDate = parseGigDate(lastUpdatedString)
