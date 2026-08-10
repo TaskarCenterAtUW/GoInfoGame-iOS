@@ -29,8 +29,10 @@ struct BiometricToggleView: View {
             }
         )) {
             Text(biometricToggleText)
-                .font(FontFamily.Lato.regular.swiftUIFont(size: 16))
+                .font(FontFamily.Lato.regular.swiftUIFont(size: 16, relativeTo: .headline))
                 .foregroundStyle(Asset.Colors._42526ETextFieldText.swiftUIColor)
+                .multilineTextAlignment(.leading)
+                .lineLimit(nil)
         }
         .tint(Asset.Colors.accentPink.swiftUIColor)
     }
