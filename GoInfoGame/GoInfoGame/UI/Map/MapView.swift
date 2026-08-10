@@ -1267,7 +1267,7 @@ struct PinChoiceCard: View {
         VStack(spacing: 0) {
             Button(action: onCreateNote) {
                 Text("Create Note")
-                    .font(FontFamily.Lato.regular.swiftUIFont(fixedSize: 16))
+                    .font(FontFamily.Lato.regular.swiftUIFont(size: 16, relativeTo: .headline))
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .padding(.horizontal, 16)
                     .padding(.vertical, 14)
@@ -1278,7 +1278,7 @@ struct PinChoiceCard: View {
 
             Button(action: onAddFeature) {
                 Text("Add Feature")
-                    .font(FontFamily.Lato.regular.swiftUIFont(fixedSize: 16))
+                    .font(FontFamily.Lato.regular.swiftUIFont(size: 16, relativeTo: .headline))
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .padding(.horizontal, 16)
                     .padding(.vertical, 14)

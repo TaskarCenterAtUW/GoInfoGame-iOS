@@ -20,10 +20,13 @@ struct ActivityView: View {
             Text(activityText)
                 .foregroundColor(.gray)
                 .font(.headline)
+                .multilineTextAlignment(.center)
+                .lineLimit(nil)
+                .padding(.horizontal, 12)
                 .padding(.bottom, 10)
 
         }
-        .frame(width: 150, height: 150)
+        .frame(minWidth: 150, minHeight: 150)
         .background(RoundedRectangle(cornerRadius: 20).fill(Color.white).shadow(radius: 5))
     }
 }
