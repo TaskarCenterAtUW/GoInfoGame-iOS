@@ -251,6 +251,7 @@ struct WorkspacesListView: View {
                                     .foregroundColor(Asset.Colors.huskyPurple.swiftUIColor)
                             }
                             .padding(10)
+                            .frame(minHeight: 44)
                             .background(Color(.systemGray6))
                             .cornerRadius(10)
                         }
@@ -268,6 +269,7 @@ struct WorkspacesListView: View {
                             }
                             .font(.custom("Lato-Bold", size: 15, relativeTo: .body))
                             .foregroundColor(Asset.Colors.accentPink.swiftUIColor)
+                            .frame(minHeight: 44)
                         }
                         .padding(.top, 20)
                     } else {

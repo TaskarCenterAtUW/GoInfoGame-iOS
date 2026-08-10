@@ -122,6 +122,7 @@ struct PosmLoginView: View {
                             }
                             .multilineTextAlignment(.leading)
                             .lineLimit(nil)
+                            .minimumScaleFactor(0.5) // "ScoutRoute" has no space to wrap on; shrink rather than truncate if it's ever too wide
                             .foregroundColor(Asset.Colors.huskyPurple.swiftUIColor)
                         }
                         .accessibilityElement(children: .combine)
@@ -308,6 +309,7 @@ struct PosmLoginView: View {
             Text("Questions? Contact Us")
                 .font(FontFamily.Lato.bold.swiftUIFont(size: 16, relativeTo: .headline))
                 .foregroundColor(Asset.Colors.huskyPurple.swiftUIColor)
+                .frame(minHeight: 44)
                 .multilineTextAlignment(.center)
                 .lineLimit(nil)
                 .padding()
@@ -322,6 +324,7 @@ struct PosmLoginView: View {
             Text("Looking for AccessMap Route?")
                 .font(FontFamily.Lato.bold.swiftUIFont(size: 16, relativeTo: .headline))
                 .foregroundColor(Asset.Colors.huskyPurple.swiftUIColor)
+                .frame(minHeight: 44)
                 .multilineTextAlignment(.center)
                 .lineLimit(nil)
                 .padding(.bottom, 5)
