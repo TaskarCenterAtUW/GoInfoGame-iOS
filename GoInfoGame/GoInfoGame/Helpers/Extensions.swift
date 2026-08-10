@@ -186,6 +186,68 @@ extension View {
     }
 }
 
+private struct ContentHeightPreferenceKey: PreferenceKey {
+    static var defaultValue: CGFloat = 0
+    static func reduce(value: inout CGFloat, nextValue: () -> CGFloat) {
+        value += nextValue()
+    }
+}
+
+private struct SizedToFitContentModifier: ViewModifier {
+    @State private var measuredHeight: CGFloat
+    @State private var selectedDetent: PresentationDetent
+
+    init(fallbackHeight: CGFloat) {
+        _measuredHeight = State(initialValue: fallbackHeight)
+        _selectedDetent = State(initialValue: .height(fallbackHeight))
+    }
+
+    func body(content: Content) -> some View {
+        content
+            .background(
+                GeometryReader { proxy in
+                    Color.clear.preference(key: ContentHeightPreferenceKey.self, value: proxy.size.height)
+                }
+            )
+            .onPreferenceChange(ContentHeightPreferenceKey.self) { newHeight in
+                // A Set<PresentationDetent> only tells iOS which sizes are *allowed* — it
+                // doesn't resize an already-open sheet on its own, so the actual detent has
+                // to be driven explicitly via `selection`, or the sheet stays wherever it
+                // started (which, before the first measurement lands, would otherwise be a
+                // full-screen flash instead of shrinking to fit).
+                guard newHeight > 0, abs(newHeight - measuredHeight) > 0.5 else { return }
+                measuredHeight = newHeight
+                selectedDetent = .height(newHeight)
+            }
+            .presentationDetents([.height(measuredHeight), .large], selection: $selectedDetent)
+    }
+}
+
+extension View {
+    /// Sizes this view's sheet to fit its own rendered content height, instead of a fixed
+    /// `.presentationDetents([.fraction(_:)])` — a screen-height percentage under- or
+    /// over-shoots depending on device size, and doesn't grow at larger Dynamic Type sizes,
+    /// which is what caused sheet content to get clipped by the sheet boundary before.
+    /// Starts at `fallbackHeight` (pass a rough estimate of the content's height at default
+    /// text size) so the sheet opens at roughly the right size immediately instead of full
+    /// screen, then snaps to the exact measured height as soon as it's available (typically
+    /// the same frame). `.large` stays available afterwards as a drag-up option, in case
+    /// content grows further (e.g. a live Dynamic Type change) than what was first measured.
+    ///
+    /// Apply to the content passed to `.sheet { ... }`, after any other modifiers that
+    /// affect its size. If the content needs to support more rows/text than reliably fits
+    /// on screen, wrap it in `ViewThatFits` with a `ScrollView` fallback branch *before*
+    /// applying this — `ViewThatFits` reports whichever branch it actually renders, so this
+    /// still measures correctly whether that's the content-hugging branch or, for content
+    /// too tall for even a full-screen sheet, the scrolling one. Don't apply this directly
+    /// to a bare `ScrollView` with no such fallback: an unconstrained `ScrollView` always
+    /// expands to fill whatever height it's offered, so the "measurement" would just be
+    /// however much space happened to be on offer, not what the content actually needs.
+    func sizedToFitContent(fallbackHeight: CGFloat = 300) -> some View {
+        modifier(SizedToFitContentModifier(fallbackHeight: fallbackHeight))
+    }
+}
+
 // New: helper to focus the accessibility on a view when it appears.
 extension View {
     /// Requests VoiceOver focus to this view when it appears (only if VoiceOver is enabled).
