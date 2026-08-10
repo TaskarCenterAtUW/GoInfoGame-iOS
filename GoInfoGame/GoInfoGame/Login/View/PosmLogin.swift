@@ -128,7 +128,7 @@ struct PosmLoginView: View {
                         .accessibilityLabel("AVIV ScoutRoute logo")
                         .padding([.bottom], 50)
                     }
-                    .frame(height: 250)
+                    .frame(minHeight: 250)
                                     
                     FloatingLabelTextField(title: "Username", text: $viewModel.username)
                         .padding(10)
@@ -172,8 +172,10 @@ struct PosmLoginView: View {
                         }
                     }) {
                         Text("Login")
-                            .font(FontFamily.Lato.bold.swiftUIFont(size: 20))
+                            .font(FontFamily.Lato.bold.swiftUIFont(size: 20, relativeTo: .headline))
                             .foregroundColor(Color.white)
+                            .multilineTextAlignment(.center)
+                            .lineLimit(nil)
                             .frame(maxWidth: .infinity)
                             .padding()
                             .background(Asset.Colors.huskyPurple.swiftUIColor)
@@ -214,8 +216,10 @@ struct PosmLoginView: View {
                             }
                         }) {
                             Label(BiometricAuthManager.biometricLabelText(), systemImage: BiometricAuthManager.biometricIcon())
-                                .font(FontFamily.Lato.bold.swiftUIFont(fixedSize: 18))
+                                .font(FontFamily.Lato.bold.swiftUIFont(size: 18, relativeTo: .headline))
                                 .foregroundColor(.blue)
+                                .multilineTextAlignment(.center)
+                                .lineLimit(nil)
                         }
                         .padding(.top, 10)
                     }
@@ -224,7 +228,9 @@ struct PosmLoginView: View {
                         Text(viewModel.loginFailedMessage ??  "Invalid Credentials")
                             .foregroundColor(.red)
                             .padding(.top, 10)
-                            .font(FontFamily.Lato.medium.swiftUIFont(fixedSize: 18))
+                            .font(FontFamily.Lato.medium.swiftUIFont(size: 18, relativeTo: .headline))
+                            .multilineTextAlignment(.center)
+                            .lineLimit(nil)
                     }
                     
                     Spacer()
@@ -233,8 +239,10 @@ struct PosmLoginView: View {
                             showDisableDebugModeAlert = true
                         } label: {
                             Text("Exit debug mode")
-                                .font(FontFamily.Lato.bold.swiftUIFont(size: 16))
+                                .font(FontFamily.Lato.bold.swiftUIFont(size: 16, relativeTo: .headline))
                                 .foregroundColor(Asset.Colors.d74BA827Pink.swiftUIColor)
+                                .multilineTextAlignment(.center)
+                                .lineLimit(nil)
                         }
                         .padding(.bottom, 5)
                     }
