@@ -41,10 +41,12 @@ struct DismissButtonView: View {
             Button(action: {
                 dismissAction()
                 MapViewPublisher.shared.dismissSheet.send(.dismissed)
-                
+
             }, label: {
                 Text("Dismiss")
                     .foregroundStyle(.orange)
+                    .frame(minHeight: 44)
+                    .contentShape(Rectangle())
             })
             .padding([.top], 30)
             .padding([.trailing], 15)
@@ -62,15 +64,17 @@ struct LongFormDismissButtonView: View {
             Button(action: {
                 dismissAction()
                 MapViewPublisher.shared.dismissSheet.send(.dismissed)
-                
+
             }, label: {
                 Image(systemName: "xmark.circle")
                     .resizable()
                     .aspectRatio(contentMode: .fit)
                     .frame(width: 25, height: 25)
                     .foregroundStyle(Asset.Colors.accentPink.swiftUIColor)
+                    .frame(minWidth: 44, minHeight: 44)
+                    .contentShape(Rectangle())
             })
-            
+            .accessibilityLabel("Dismiss")
         }
     }
 }

@@ -240,6 +240,9 @@ private extension QuestOptions {
                     Text(errorMessage)
                         .font(FontFamily.Lato.regular.swiftUIFont(size: 12, relativeTo: .caption))
                         .foregroundColor(.red)
+                        .multilineTextAlignment(.leading)
+                        .lineLimit(nil)
+                        .fixedSize(horizontal: false, vertical: true)
                         .padding(.horizontal, 10)
                         .accessibilityLabel(errorMessage)
                 }
@@ -410,6 +413,10 @@ private extension QuestOptions {
 
                 if let text = imageText {
                     Text(text)
+                        .multilineTextAlignment(.center)
+                        .lineLimit(nil)
+                        .fixedSize(horizontal: false, vertical: true)
+                        .padding(.horizontal)
                 }
 
                 Spacer()
@@ -648,6 +655,9 @@ private extension QuestOptions {
                         if isProcessingError {
                             Text(errorMessage)
                                 .foregroundColor(Color.red)
+                                .multilineTextAlignment(.leading)
+                                .lineLimit(nil)
+                                .fixedSize(horizontal: false, vertical: true)
                                 .padding(.horizontal, 20)
                                 .onAppear {
                                     DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
@@ -853,6 +863,8 @@ private extension QuestOptions {
                         Image(systemName: "xmark.circle.fill")
                             .font(.system(size: 20))
                             .foregroundColor(.red)
+                            .frame(minWidth: 44, minHeight: 44)
+                            .contentShape(Rectangle())
                     }
                     .accessibilityLabel("Delete this capture")
                 }
@@ -871,6 +883,13 @@ private extension QuestOptions {
             ZStack {
                 Text(text)
                     .foregroundStyle(Color.black)
+                    .multilineTextAlignment(.center)
+                    // Fixed compact size so the answer grid stays visually consistent
+                    // (no uneven row heights when one option's text is longer than its
+                    // neighbors). minimumScaleFactor shrinks text to fit this box; if it's
+                    // still too long even at 4 lines, it truncates here — long-pressing the
+                    // option shows the full, untruncated text (see ExpandedImageView).
+                    .lineLimit(4)
                     .frame(width: 100, height: 100)
                     .minimumScaleFactor(0.67)
                     .bold()
@@ -904,9 +923,10 @@ private extension QuestOptions {
                             .foregroundColor(.white)
 
                         Text(followUp)
-                            .font(.custom("Lato-Regular", size: 13))
+                            .font(.custom("Lato-Regular", size: 13, relativeTo: .caption))
                             .foregroundColor(.white)
                             .multilineTextAlignment(.leading)
+                            .lineLimit(nil)
                     }
                     .padding(.horizontal, 12)
                     .padding(.vertical, 6)

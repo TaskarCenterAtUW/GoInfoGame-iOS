@@ -20,188 +20,126 @@ enum LongFormActiveAlert: Identifiable {
 }
 
 struct LongForm: View, QuestForm {
-    
+
     @ObservedObject private var viewModel = LongFormViewModel()
-        
+
     var elementName: String?
-    
+
     var questID: String?
 
     var query: String?
 
     var tags: [String: String]?
-    
+
     var action: (([String:String]) -> Void)?
 
     typealias AnswerClass = [String:String]
 
     var coordinate: CLLocationCoordinate2D?
-        
+
     @Environment(\.presentationMode) var presentationMode
-    
+
     @State private var showKartaviewAlert = false
-    
+
     @State private var kartaViewAlert = ""
-    
+
     @State private var isCameraPresented = false
     @State private var capturedImage: UIImage?
-    
+
     @State private var isLoading = false
-    
+
     @State private var showImagePath = false
-    
+
     @State private var imagePath = ""
-    
+
     @State private var uploadedPhotos: [String] = []
-    
+
     @State private var showNotesBox = false
-    
+
     @State private var noteText = ""
-    
+
     @State private var alertMessage = ""
-    
+
     @State private var showCreateNoteMessage = false
-    
+
     @StateObject private var noteViewModel = NotesViewModel()
 
     @State private var keyboardHeight: CGFloat = 0
-    
+
     @State private var activeAlert: LongFormActiveAlert?
-    
+
     @State private var submitStatusMessage: String?
-    
+
     @State private var deviceSupportsLiDAR: Bool = false
-    
+
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+
     var body: some View {
         ZStack {
-            VStack(alignment: .leading, spacing: 0) {
-                    HStack {
-                        Text(elementName ?? "")
-                            .font(.custom("Lato-Bold", size: 16, relativeTo: .headline))
+            // Title/dismiss stay pinned outside the List so dismiss is always reachable
+            // without scrolling. Everything else — ID, intersection, note composition,
+            // the quest list, and Submit — lives inside one continuous List (as sections),
+            // so it all shares space and scrolls together, instead of the previous design
+            // where those fixed elements sat outside the list and could squeeze its
+            // available height down to almost nothing at large accessibility text sizes
+            // (this sheet has a fixed maximum height with no way to grow further).
+            VStack(spacing: 0) {
+                header
+
+                List {
+                    Section {
+                        Text("ID: \(questID ?? "0")")
+                            .font(.custom("Lato-Regular", size: 14, relativeTo: .headline))
                             .foregroundStyle(Asset.Colors.huskyPurple.swiftUIColor)
                             .multilineTextAlignment(.leading)
-                            .lineLimit(nil)
-                            .accessibilityLabel(elementName ?? "")
-                        Spacer()
-                        LongFormDismissButtonView {
-                            withAnimation {
-                                presentationMode.wrappedValue.dismiss()
-                            }
-                        }
-                    }.padding(EdgeInsets(top: 20, leading: 20, bottom: 10, trailing: 20))
-                    .layoutPriority(1)
-                
-                Text("ID: \(questID ?? "0")")
-                    .font(.custom("Lato-Regular", size: 14, relativeTo: .headline))
-                    .padding([.leading], 20)
-                    .foregroundStyle(Asset.Colors.huskyPurple.swiftUIColor)
-                    .multilineTextAlignment(.leading)
-                    .layoutPriority(1)
-                    .accessibilityLabel("ID: \(questID ?? "0")")
+                            .accessibilityLabel("ID: \(questID ?? "0")")
 
-                if let intersectionAt = tags?["ext:intersection_at"] {
-                    Text("Intersection: \(intersectionAt)")
-                        .font(.custom("Lato-Regular", size: 14, relativeTo: .headline))
-                        .padding([.leading], 20)
-                        .padding([.top], 5)
-                        .foregroundStyle(Asset.Colors.huskyPurple.swiftUIColor)
-                        .multilineTextAlignment(.leading)
-                        .layoutPriority(1)
-                        .accessibilityLabel("Intersection: \(intersectionAt)")
-                }
-                HStack {
-                    Button {
-                        showNotesBox = true
-                    } label: {
-                        Text(" Compose Note")
-                            .font(.custom("Lato-Bold", size: 14, relativeTo: .headline))
-                            .foregroundStyle(Asset.Colors.huskyPurple.swiftUIColor)
-                            .multilineTextAlignment(.center)
-                            .padding(.vertical, 10)
-                            .accessibilityLabel("Compose Note")
-                    }
-                    .padding(EdgeInsets(top: 0, leading: 14, bottom: 0, trailing: 20))
-                    Spacer()
-                    Button {
-                        activeAlert = .hideQuestConfirmation
-                    } label: {
-                        Text("Ignore this quest")
-                            .font(.custom("Lato-Bold", size: 14, relativeTo: .headline))
-                            .foregroundStyle(Asset.Colors.huskyPurple.swiftUIColor)
-                            .multilineTextAlignment(.center)
-                            .padding(.vertical, 10)
-                            .accessibilityLabel("Ignore this quest")
-                    }
-                    .padding(.trailing, 20)
-                }
-                .layoutPriority(1)
-                
-                if showCreateNoteMessage {
-                    Text(alertMessage)
-                        .foregroundColor(alertMessage == "Note submitted successfully" ? Color.green : Color.red)
-                        .padding(.horizontal, 20)
-                        .onAppear {
-                            DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
-                                showCreateNoteMessage = false
+                        if let intersectionAt = tags?["ext:intersection_at"] {
+                            Text("Intersection: \(intersectionAt)")
+                                .font(.custom("Lato-Regular", size: 14, relativeTo: .headline))
+                                .foregroundStyle(Asset.Colors.huskyPurple.swiftUIColor)
+                                .multilineTextAlignment(.leading)
+                                .accessibilityLabel("Intersection: \(intersectionAt)")
+                        }
+
+                        // Side by side, neither button has enough width at large
+                        // accessibility text sizes to fit its label as a whole word, so
+                        // both wrap mid-word. Stacking them instead gives each the full
+                        // row width.
+                        Group {
+                            if dynamicTypeSize.isAccessibilitySize {
+                                VStack(alignment: .leading, spacing: 8) {
+                                    composeNoteButton
+                                    ignoreQuestButton
+                                }
+                            } else {
+                                HStack {
+                                    composeNoteButton
+                                    Spacer()
+                                    ignoreQuestButton
+                                }
                             }
                         }
-                }
-        
-                if showNotesBox {
-                    VStack(alignment: .leading, spacing: 10) {
-                        TextEditor(text: $noteText)
-                            .textFieldStyle(RoundedBorderTextFieldStyle())
-                            .padding(.horizontal, 20)
-                            .border(Asset.Colors.huskyPurple.swiftUIColor)
-                            .accessibilityLabel("Note text editor")
-                        
-                        HStack {
-                            Button(action: {
-                                Task {
-                                    do {
-                                        try await submitNote()
-                                    } catch {
-                                       showCreateNoteMessage = true
-                                        showNotesBox = false
-                                        
+
+                        if showCreateNoteMessage {
+                            Text(alertMessage)
+                                .foregroundColor(alertMessage == "Note submitted successfully" ? Color.green : Color.red)
+                                .onAppear {
+                                    DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
+                                        showCreateNoteMessage = false
                                     }
                                 }
-                            }) {
-                                if noteViewModel.isLoading {
-                                    ProgressView()
-                                } else {
-                                    Text("Submit")
-                                        .font(.custom("Lato-Bold", size: 16))
-                                        .foregroundColor(.white)
-                                        .padding()
-                                        .frame(maxWidth: .infinity)
-                                        .background(noteText != "" ? Asset.Colors.huskyPurple.swiftUIColor : Color.gray)
-                                        .cornerRadius(9)
-                                        .accessibilityLabel("Submit this note")
-                                }
-                            }
-                            .disabled(noteText == "")
-                
-                            Button (action: {
-                                showNotesBox = false
-                            }) {
-                                Text("Cancel")
-                                    .font(.custom("Lato-Bold", size: 16))
-                                    .foregroundColor(.white)
-                                    .padding()
-                                    .frame(maxWidth: .infinity)
-                                    .background(Asset.Colors.accentPink.swiftUIColor)
-                                    .cornerRadius(9)
-                                    .accessibilityLabel("Cancel note composition")
-                            }
                         }
-                        .padding(.horizontal, 20)
+
+                        if showNotesBox {
+                            notesBoxContent
+                        }
                     }
-                    .padding(.top, 10)
-                }
-                
-                VStack {
-                    List {
+                    .listRowInsets(EdgeInsets(top: 4, leading: 20, bottom: 4, trailing: 20))
+                    .listRowBackground(Color.clear)
+                    .listRowSeparator(.hidden)
+
+                    Section {
                         if let quests = questsForLongForm()?.quests {
                             ForEach(quests, id: \.questID) { quest in
                                 if viewModel.shouldShowQuest(quest) {
@@ -212,70 +150,41 @@ struct LongForm: View, QuestForm {
                                     }
                                 }
                             }
-                            VStack {
-                                if let statusMessage = submitStatusMessage {
-                                    Text(statusMessage)
-                                        .font(.custom("Lato-Bold", size: 16, relativeTo: .headline))
-                                        .foregroundColor(.red)
-                                        .background(Color.white)
-                                        .multilineTextAlignment(.center)
-                                        .lineLimit(nil)
-                                        .onAppear {
-                                            DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-                                                submitStatusMessage = nil
-                                            }
+                            if let statusMessage = submitStatusMessage {
+                                Text(statusMessage)
+                                    .font(.custom("Lato-Bold", size: 16, relativeTo: .headline))
+                                    .foregroundColor(.red)
+                                    .background(Color.white)
+                                    .multilineTextAlignment(.center)
+                                    .lineLimit(nil)
+                                    .onAppear {
+                                        DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                                            submitStatusMessage = nil
                                         }
-                                        .accessibilityHidden(true)
-                                }
+                                    }
+                                    .accessibilityHidden(true)
                             }
-                            .frame(maxWidth: .infinity)
                         } else {
                             Text("No Quests available")
                         }
                     }
-                    .padding(.bottom, keyboardHeight)
-                    .onReceive(Publishers.keyboardHeight) { height in
-                        let safeAreaBottom = UIApplication.shared.safeAreaBottomInset
-                        withAnimation {
-                            keyboardHeight = max(0, height - safeAreaBottom)
-                        }
+
+                    Section {
+                        submitButton
+                    }
+                    .listRowInsets(EdgeInsets(top: 12, leading: 20, bottom: 12, trailing: 20))
+                    .listRowBackground(Color.clear)
+                    .listRowSeparator(.hidden)
+                }
+                .padding(.bottom, keyboardHeight)
+                .onReceive(Publishers.keyboardHeight) { height in
+                    let safeAreaBottom = UIApplication.shared.safeAreaBottomInset
+                    withAnimation {
+                        keyboardHeight = max(0, height - safeAreaBottom)
                     }
                 }
                 .hideKeyboardOnTap()
-                
-                Button(action: {
-                    var answersToSubmit = viewModel.getAnswersForSubmission()
-                    if !answersToSubmit.isEmpty {
-                        if let validationError = viewModel.validationErrorMessage() {
-                            self.submitStatusMessage = validationError
-                            self.activeAlert = .submissionError(message: validationError)
-                        } else if let action = action {
-                            if !uploadedPhotos.isEmpty {
-                                answersToSubmit["ext:kartaview_url"] = uploadedPhotos.joined(separator: ", ")
-                            }
-                              action(answersToSubmit)
-                        }
-                    } else {
-                        self.submitStatusMessage = "Please answer atleast one quest to submit"
-                        self.activeAlert = .submissionError(message: "Please answer atleast one quest to submit")
-                    }
-
-                }) {
-                    Text("Submit")
-                        .font(.custom("Lato-Bold", size: 16, relativeTo: .title))
-                        .foregroundColor(.white)
-                        .padding(.vertical, 14)
-                        .padding(.horizontal, 40)
-                        .background(viewModel.validationErrorMessage() != nil ? Color.gray : Asset.Colors.huskyPurple.swiftUIColor)
-                        .multilineTextAlignment(.center)
-                        .cornerRadius(20)
-                        .accessibilityLabel("Submit Answers")
-                }
-                .disabled(viewModel.validationErrorMessage() != nil)
-                .frame(maxWidth: .infinity)
-
             }
-            .padding(.top, 30)
             .onAppear {
                 deviceSupportsLiDAR = LiDARDetection.shared.isLiDARSupported()
             }
@@ -291,7 +200,7 @@ struct LongForm: View, QuestForm {
                 CameraView(capturedImage: $capturedImage, isPresented: $isCameraPresented)
                     .applyPresentationSizingPage()
                    }
-        
+
         if showKartaviewAlert {
             VStack {
                 Image(systemName: "checkmark.circle.fill")
@@ -316,7 +225,7 @@ struct LongForm: View, QuestForm {
                 }
             }
         }
-        
+
         if isLoading {
             VStack {
                 ProgressView("Uploading...")
@@ -346,25 +255,25 @@ struct LongForm: View, QuestForm {
             }
         }
     }
-    
+
     func submitNote() async throws {
         print("Note to be submitted: \(noteText.htmlEscape())")
-        
+
         do {
             //gt lat long from coordinate
             let lat = coordinate?.latitude ?? 0.0
             let long = coordinate?.longitude ?? 0.0
             print("Latitude: \(lat), Longitude: \(long)")
-            
+
             let noteToBeSubmitted = noteText.htmlEscape()
-            
+
             let notesResult = try await noteViewModel.createNote(note: noteToBeSubmitted, lat: lat, long: long)
-            
+
             if notesResult {
                 print("Notes composed successfully")
                 alertMessage = "Note submitted successfully"
                 showCreateNoteMessage = true
-                
+
             } else {
                 alertMessage = "Error creating note"
                 showCreateNoteMessage = true
@@ -374,13 +283,13 @@ struct LongForm: View, QuestForm {
             print("Error creating note: \(error.localizedDescription)")
             throw error
         }
-        
+
         await MainActor.run {
             noteViewModel.isLoading = false
             showNotesBox = false
         }
     }
-    
+
     func uploadImageToKartaView() {
         isLoading = true
         let kvViewModel = KartaviewViewModel(capturedImage: capturedImage!)
@@ -395,13 +304,13 @@ struct LongForm: View, QuestForm {
             print(uploadedPhotos)
         })
     }
-    
+
     func questsForLongForm() -> LongFormElement? {
         let element = QuestsRepository.shared.questElementForQuery(query ?? "")
         viewModel.longForm = element
         return element
     }
-    
+
     private func binding(for quest: LongQuest) -> Binding<QuestAnswerChoice?> {
         return Binding(
             get: { viewModel.selectedChoices[quest.questID, default: nil] },
@@ -410,7 +319,7 @@ struct LongForm: View, QuestForm {
             }
         )
     }
-    
+
     private func canShowQuest(_ quest: LongQuest) -> Bool {
         guard let questType = quest.questType else {
             return false
@@ -422,6 +331,175 @@ struct LongForm: View, QuestForm {
             return false
         }
         return true
+    }
+
+    private var header: some View {
+        // Side by side, the title has to share its row with the close button; at large
+        // accessibility text a single-word element name can need more width than that
+        // leaves it, so it wraps mid-word. Stacking them instead gives the title the
+        // full row width. `.fixedSize(vertical: true)` on the title forces it to always
+        // render at its true (possibly multi-line) height rather than being squeezed
+        // into its old single-line allocation, which caused the row below to overlap it.
+        Group {
+            if dynamicTypeSize.isAccessibilitySize {
+                VStack(alignment: .leading, spacing: 8) {
+                    HStack {
+                        Spacer()
+                        dismissButton
+                    }
+                    titleText
+                }
+            } else {
+                HStack {
+                    titleText
+                    Spacer()
+                    dismissButton
+                }
+            }
+        }
+        .padding(EdgeInsets(top: 20, leading: 20, bottom: 10, trailing: 20))
+        .background(Color.white)
+    }
+
+    private var titleText: some View {
+        Text(elementName ?? "")
+            .font(.custom("Lato-Bold", size: 16, relativeTo: .headline))
+            .foregroundStyle(Asset.Colors.huskyPurple.swiftUIColor)
+            .multilineTextAlignment(.leading)
+            .lineLimit(nil)
+            .fixedSize(horizontal: false, vertical: true)
+            .accessibilityLabel(elementName ?? "")
+    }
+
+    private var dismissButton: some View {
+        LongFormDismissButtonView {
+            withAnimation {
+                presentationMode.wrappedValue.dismiss()
+            }
+        }
+    }
+
+    private var composeNoteButton: some View {
+        Button {
+            showNotesBox = true
+        } label: {
+            Text(" Compose Note")
+                .font(.custom("Lato-Bold", size: 14, relativeTo: .headline))
+                .foregroundStyle(Asset.Colors.huskyPurple.swiftUIColor)
+                .multilineTextAlignment(.center)
+                .frame(minHeight: 44)
+                .contentShape(Rectangle())
+                .accessibilityLabel("Compose Note")
+        }
+        // Without this, List rows apply their own default button/selection styling —
+        // with two buttons sharing one row (this + ignoreQuestButton below) that made
+        // taps land on the wrong button or not register at all.
+        .buttonStyle(.plain)
+    }
+
+    private var ignoreQuestButton: some View {
+        Button {
+            activeAlert = .hideQuestConfirmation
+        } label: {
+            Text("Ignore this quest")
+                .font(.custom("Lato-Bold", size: 14, relativeTo: .headline))
+                .foregroundStyle(Asset.Colors.huskyPurple.swiftUIColor)
+                .multilineTextAlignment(.center)
+                .frame(minHeight: 44)
+                .contentShape(Rectangle())
+                .accessibilityLabel("Ignore this quest")
+        }
+        .buttonStyle(.plain)
+    }
+
+    private var notesBoxContent: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            TextEditor(text: $noteText)
+                .textFieldStyle(RoundedBorderTextFieldStyle())
+                // TextEditor has no intrinsic size the way Text does — as a row inside a
+                // List Section it was collapsing to near-zero height, making it invisible.
+                .frame(minHeight: 100)
+                .border(Asset.Colors.huskyPurple.swiftUIColor)
+                .accessibilityLabel("Note text editor")
+
+            HStack {
+                Button(action: {
+                    Task {
+                        do {
+                            try await submitNote()
+                        } catch {
+                           showCreateNoteMessage = true
+                            showNotesBox = false
+
+                        }
+                    }
+                }) {
+                    if noteViewModel.isLoading {
+                        ProgressView()
+                    } else {
+                        Text("Submit")
+                            .font(.custom("Lato-Bold", size: 16, relativeTo: .headline))
+                            .foregroundColor(.white)
+                            .padding()
+                            .frame(maxWidth: .infinity)
+                            .background(noteText != "" ? Asset.Colors.huskyPurple.swiftUIColor : Color.gray)
+                            .cornerRadius(9)
+                            .accessibilityLabel("Submit this note")
+                    }
+                }
+                .buttonStyle(.plain)
+                .disabled(noteText == "")
+
+                Button (action: {
+                    showNotesBox = false
+                }) {
+                    Text("Cancel")
+                        .font(.custom("Lato-Bold", size: 16, relativeTo: .headline))
+                        .foregroundColor(.white)
+                        .padding()
+                        .frame(maxWidth: .infinity)
+                        .background(Asset.Colors.accentPink.swiftUIColor)
+                        .cornerRadius(9)
+                        .accessibilityLabel("Cancel note composition")
+                }
+                .buttonStyle(.plain)
+            }
+        }
+        .padding(.top, 10)
+    }
+
+    private var submitButton: some View {
+        Button(action: {
+            var answersToSubmit = viewModel.getAnswersForSubmission()
+            if !answersToSubmit.isEmpty {
+                if let validationError = viewModel.validationErrorMessage() {
+                    self.submitStatusMessage = validationError
+                    self.activeAlert = .submissionError(message: validationError)
+                } else if let action = action {
+                    if !uploadedPhotos.isEmpty {
+                        answersToSubmit["ext:kartaview_url"] = uploadedPhotos.joined(separator: ", ")
+                    }
+                      action(answersToSubmit)
+                }
+            } else {
+                self.submitStatusMessage = "Please answer atleast one quest to submit"
+                self.activeAlert = .submissionError(message: "Please answer atleast one quest to submit")
+            }
+
+        }) {
+            Text("Submit")
+                .font(.custom("Lato-Bold", size: 16, relativeTo: .title))
+                .foregroundColor(.white)
+                .padding(.vertical, 14)
+                .padding(.horizontal, 40)
+                .background(viewModel.validationErrorMessage() != nil ? Color.gray : Asset.Colors.huskyPurple.swiftUIColor)
+                .multilineTextAlignment(.center)
+                .cornerRadius(20)
+                .accessibilityLabel("Submit Answers")
+        }
+        .buttonStyle(.plain)
+        .disabled(viewModel.validationErrorMessage() != nil)
+        .frame(maxWidth: .infinity)
     }
 }
 
@@ -454,7 +532,7 @@ struct LongForm: View, QuestForm {
               ]
             }
         """
-    
+
     guard let quest = try? JSONDecoder().decode(LongFormElement.self, from: jsonString.data(using: .utf8)!) else {
         return Text("Error parsing JSON")
     }

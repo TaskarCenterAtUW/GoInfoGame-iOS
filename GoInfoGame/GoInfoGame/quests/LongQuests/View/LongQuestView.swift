@@ -25,6 +25,8 @@ struct LongQuestView: View {
                 .font(.custom("Lato-Bold", size: 16, relativeTo: .headline))
                 .foregroundColor(Asset.Colors.huskyPurple.swiftUIColor)
                 .multilineTextAlignment(.leading)
+                .lineLimit(nil)
+                .fixedSize(horizontal: false, vertical: true)
                 .padding([.bottom], 10)
                 .accessibilityLabel(quest.getQuestTitleVoiceOver())
             
@@ -47,6 +49,8 @@ struct LongQuestView: View {
                 .font(.custom("Lato-Regular", size: 12, relativeTo: .body))
                 .foregroundColor(Asset.Colors.huskyPurple.swiftUIColor)
                 .multilineTextAlignment(.leading)
+                .lineLimit(nil)
+                .fixedSize(horizontal: false, vertical: true)
                 .accessibilityLabel(quest.questDescription)
             if let questType = quest.questType {
                 QuestOptions(quest: quest, selectedChoice: $selectedChoice, questType: questType, uploadPhoto: uploadPhoto)
