@@ -81,10 +81,11 @@ struct UndoEditsView: View {
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
                     Text(L10n.Localizable.undoEdits)
-                        .font(FontFamily.Lato.bold.swiftUIFont(size: 16))
+                        .font(FontFamily.Lato.bold.swiftUIFont(size: 16, relativeTo: .headline))
                         .foregroundStyle(Asset.Colors.huskyPurple.swiftUIColor)
                         .multilineTextAlignment(.leading)
                         .lineLimit(nil)
+                        .fixedSize(horizontal: false, vertical: true)
                         .accessibilityLabel(L10n.Localizable.undoEdits)
                 }
                 
@@ -103,7 +104,7 @@ struct UndoEditsView: View {
             } onClose: {
                 self.selectedItem = nil
             }
-            .presentationDetents([.fraction(0.7)])
+            // Sized to its own content by UndoItemConfirmationView itself.
             .interactiveDismissDisabled()
             .presentationDragIndicator(.hidden)
             .applyPresentationSizingPage()
@@ -125,13 +126,15 @@ struct UndoEditsView: View {
                 .foregroundColor(Asset.Colors._42526ETextFieldText.swiftUIColor)
                 .multilineTextAlignment(.leading)
                 .lineLimit(nil)
+                .fixedSize(horizontal: false, vertical: true)
                 .accessibilityLabel(L10n.Localizable.undoYourRecentChanges)
-            
+
             Text(L10n.Localizable.selectTheQuestBasedOnDateAndTimeForPreviewRevert)
                 .font(FontFamily.Lato.medium.swiftUIFont(size: 14, relativeTo: .body))
                 .foregroundColor(Asset.Colors._42526ETextFieldText.swiftUIColor)
                 .multilineTextAlignment(.leading)
                 .lineLimit(nil)
+                .fixedSize(horizontal: false, vertical: true)
                 .accessibilityLabel(L10n.Localizable.selectTheQuestBasedOnDateAndTimeForPreviewRevert)
         })
     }
@@ -146,10 +149,12 @@ struct UndoEditsView: View {
                     .font(FontFamily.Lato.bold.swiftUIFont(size: 16, relativeTo: .headline))
                     .multilineTextAlignment(.leading)
                     .lineLimit(nil)
+                    .fixedSize(horizontal: false, vertical: true)
                     .accessibilityLabel(L10n.Localizable.goBackToPreviousScreen)
             }
             .foregroundStyle(Asset.Colors.huskyPurple.swiftUIColor)
             .padding(10)
+            .frame(minHeight: 44)
         }
         .overlay(
             RoundedRectangle(cornerRadius: 20)

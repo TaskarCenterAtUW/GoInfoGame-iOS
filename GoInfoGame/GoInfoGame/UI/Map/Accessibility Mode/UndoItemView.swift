@@ -12,14 +12,16 @@ struct UndoItemView: View {
     var body: some View {
         VStack(alignment: .leading, content: {
             Text(undoItem.timestamp.formatted(date: .omitted, time: .shortened))
-                .font(FontFamily.Lato.medium.swiftUIFont(fixedSize: 14))
+                .font(FontFamily.Lato.medium.swiftUIFont(size: 14, relativeTo: .subheadline))
                 .multilineTextAlignment(.leading)
                 .lineLimit(nil)
+                .fixedSize(horizontal: false, vertical: true)
                 .accessibilityLabel(undoItem.timestamp.formatted(date: .omitted, time: .shortened))
             Text(L10n.Localizable.type + ": " + (undoItem.questType ?? "Not Avilable"))
-                .font(FontFamily.Lato.bold.swiftUIFont(fixedSize: 16))
+                .font(FontFamily.Lato.bold.swiftUIFont(size: 16, relativeTo: .headline))
                 .multilineTextAlignment(.leading)
                 .lineLimit(nil)
+                .fixedSize(horizontal: false, vertical: true)
                 .accessibilityLabel(L10n.Localizable.type + ": " + (undoItem.questType ?? "Not Avilable"))
         })
         .foregroundStyle(Asset.Colors._42526ETextFieldText.swiftUIColor)

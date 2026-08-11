@@ -24,6 +24,18 @@ struct QuestSelectionConfirmationView: View {
     }
     
     var body: some View {
+        // Content-sized as long as it fits (measured accurately, since nothing here is
+        // greedy); falls back to a scrolling version only if the "you've arrived" image
+        // plus both text blocks plus all 3 buttons don't fit even in a maxed-out sheet —
+        // this view has no scroll of its own otherwise, unlike UserSettingsView/etc.
+        ViewThatFits(in: .vertical) {
+            content
+            ScrollView { content }
+        }
+        .sizedToFitContent(fallbackHeight: UIScreen.main.bounds.height * (isAutoSelected ? 0.6 : 0.36))
+    }
+
+    private var content: some View {
         VStack(alignment: .center, spacing: 20, content: {
             HStack(alignment: .center, content: {
                 if isAutoSelected {
@@ -32,6 +44,7 @@ struct QuestSelectionConfirmationView: View {
                         .foregroundStyle(Asset.Colors._42526ETextFieldText.swiftUIColor)
                         .multilineTextAlignment(.leading)
                         .lineLimit(nil)
+                        .fixedSize(horizontal: false, vertical: true)
                         .accessibilityLabel(L10n.Localizable.youVeArrived)
                 } else {
                     (
@@ -44,32 +57,34 @@ struct QuestSelectionConfirmationView: View {
                     .foregroundStyle(Asset.Colors._42526ETextFieldText.swiftUIColor)
                     .multilineTextAlignment(.leading)
                     .lineLimit(nil)
+                    .fixedSize(horizontal: false, vertical: true)
                     .accessibilityLabel("\(L10n.Localizable.selectedType) \(questType)")
                 }
-                
+
                 Spacer()
-                
+
                 CrossMarkButton(onDismiss: {
                     dismiss()
                     onClose()
                 })
             })
             .padding(.top, 20)
-            
+
             DottedLine()
                 .padding(.bottom)
-            
+
             if isAutoSelected {
                 VStack(alignment: .center, spacing: 30) {
                     Asset.reached.swiftUIImage
-                    
+
                     Text(L10n.Localizable.youVeArrivedAtTheQuestLocation)
                         .font(FontFamily.Lato.bold.swiftUIFont(size: 24, relativeTo: .headline))
                         .foregroundStyle(Asset.Colors._42526ETextFieldText.swiftUIColor)
                         .multilineTextAlignment(.center)
                         .lineLimit(nil)
+                        .fixedSize(horizontal: false, vertical: true)
                         .accessibilityLabel(L10n.Localizable.youVeArrivedAtTheQuestLocation)
-                    
+
                     HStack {
                         (
                             Text(L10n.Localizable.questType)
@@ -81,21 +96,22 @@ struct QuestSelectionConfirmationView: View {
                         .foregroundStyle(Asset.Colors._42526ETextFieldText.swiftUIColor)
                         .multilineTextAlignment(.leading)
                         .lineLimit(nil)
+                        .fixedSize(horizontal: false, vertical: true)
                         .accessibilityLabel("\(L10n.Localizable.questType): \(questType)")
                     }
                 }
                 .padding(.bottom)
             }
-                        
+
             startAnswerButton
-            
+
             hideQuestButton
-            
+
             notNowButton
         })
         .padding()
     }
-    
+
     private var startAnswerButton: some View {
         Button {
             dismiss()
@@ -107,9 +123,10 @@ struct QuestSelectionConfirmationView: View {
                 .background(Asset.Colors.huskyPurple.swiftUIColor)
                 .foregroundStyle(.white)
                 .cornerRadius(25)
-                .font(FontFamily.Lato.bold.swiftUIFont(size: 16))
+                .font(FontFamily.Lato.bold.swiftUIFont(size: 16, relativeTo: .headline))
                 .multilineTextAlignment(.center)
                 .lineLimit(nil)
+                .fixedSize(horizontal: false, vertical: true)
                 .accessibilityLabel(Text(L10n.Localizable.startAnsweringTheQuestions))
         }
     }
@@ -125,6 +142,7 @@ struct QuestSelectionConfirmationView: View {
                 .font(FontFamily.Lato.bold.swiftUIFont(size: 16, relativeTo: .headline))
                 .multilineTextAlignment(.center)
                 .lineLimit(nil)
+                .fixedSize(horizontal: false, vertical: true)
                 .foregroundStyle(Asset.Colors.huskyPurple.swiftUIColor)
                 .overlay {
                     RoundedRectangle(cornerRadius: 25)
@@ -133,7 +151,7 @@ struct QuestSelectionConfirmationView: View {
                 .accessibilityLabel(Text(L10n.Localizable.hideThisQuest))
         }
     }
-    
+
     private var notNowButton: some View {
         Button {
             dismiss()
@@ -144,6 +162,9 @@ struct QuestSelectionConfirmationView: View {
                 .foregroundStyle(Asset.Colors.huskyPurple.swiftUIColor)
                 .multilineTextAlignment(.center)
                 .lineLimit(nil)
+                .fixedSize(horizontal: false, vertical: true)
+                .frame(minHeight: 44)
+                .contentShape(Rectangle())
                 .accessibilityLabel(Text(L10n.Localizable.notNow))
         }
     }
