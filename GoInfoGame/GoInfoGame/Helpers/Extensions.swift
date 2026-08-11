@@ -246,6 +246,23 @@ extension View {
     func sizedToFitContent(fallbackHeight: CGFloat = 300) -> some View {
         modifier(SizedToFitContentModifier(fallbackHeight: fallbackHeight))
     }
+
+    /// Reports this view's rendered height via `onChange` whenever it changes. Lower-level
+    /// building block behind `sizedToFitContent()` — use this directly when only *part* of
+    /// a sheet's content should be measured (e.g. everything except an unboundedly-long
+    /// list), so that part can be combined with your own sizing logic instead of measuring
+    /// (and being thrown off by) the whole thing. See `ManageQuestsView` for an example: it
+    /// measures its fixed header/text content this way, then sizes the sheet to that
+    /// measured height plus a reserved minimum for its list — so the list always gets at
+    /// least that much room, no matter how tall the fixed content above it grows.
+    func readHeight(_ onChange: @escaping (CGFloat) -> Void) -> some View {
+        background(
+            GeometryReader { proxy in
+                Color.clear.preference(key: ContentHeightPreferenceKey.self, value: proxy.size.height)
+            }
+        )
+        .onPreferenceChange(ContentHeightPreferenceKey.self, perform: onChange)
+    }
 }
 
 // New: helper to focus the accessibility on a view when it appears.

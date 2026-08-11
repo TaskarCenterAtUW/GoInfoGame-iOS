@@ -259,7 +259,7 @@ struct MapView: View {
                             .accessibilitySortPriority(1)
                             .sheet(isPresented: $showFilterQuestsSheet) {
                                 ManageQuestsView()
-                                    .presentationDetents([.fraction(0.85)])
+                                    // Sized to its own content by ManageQuestsView itself.
                                     .interactiveDismissDisabled()
                                     .presentationDragIndicator(.hidden)
                                     .applyPresentationSizingPage()
@@ -504,7 +504,7 @@ struct MapView: View {
         }
         .sheet(isPresented: $showManageQuestSheet) {
             ManageQuestsView()
-                .presentationDetents([.fraction(0.85)])
+                // Sized to its own content by ManageQuestsView itself.
                 .interactiveDismissDisabled()
                 .presentationDragIndicator(.hidden)
                 .applyPresentationSizingPage()
