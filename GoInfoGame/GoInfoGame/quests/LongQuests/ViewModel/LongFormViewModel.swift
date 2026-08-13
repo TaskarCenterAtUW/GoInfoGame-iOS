@@ -46,6 +46,33 @@ class LongFormViewModel: ObservableObject {
         return false
     }
     
+    /// Seeds `selectedChoices` from an element's existing OSM tags, so a
+    /// partially-answered element opens showing what's already been answered
+    /// instead of a blank form. AutoCapture is skipped — its completeness is
+    /// driven entirely by the tag-based check in `LongFormElement+Completion`,
+    /// independent of any in-session selection, and its capture UI always starts
+    /// fresh.
+    func prefillAnswers(tags: [String: String]) {
+        guard let quests = longForm?.quests else { return }
+        for quest in quests {
+            guard quest.questType != .autoCapture,
+                  let tag = quest.questTag,
+                  let value = tags[tag], !value.isEmpty else { continue }
+            if quest.questType == .exclusiveChoice {
+                // Reuse the exact object from questAnswerChoices rather than
+                // constructing a new one — QuestAnswerChoice's synthesized
+                // Equatable includes its per-instance UUID, so a freshly built
+                // struct would silently fail the selection-highlight `==` check
+                // even with a matching value.
+                if let match = quest.questAnswerChoices?.first(where: { $0.value == value }) {
+                    selectedChoices[quest.questID] = match
+                }
+            } else {
+                selectedChoices[quest.questID] = QuestAnswerChoice(value: value, choiceText: value, imageURL: nil, choiceFollowUp: nil)
+            }
+        }
+    }
+
     func clearAnswersForHiddenQuests() {
         guard let quests = longForm?.quests else { return }
         for quest in quests {

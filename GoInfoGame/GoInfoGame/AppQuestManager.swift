@@ -67,18 +67,14 @@ class AppQuestManager {
     // Fetches all the available quests from Database
     func fetchQuestsFromDB() ->  [DisplayUnitWithCoordinate] {
 
-        // Excluding ext:gig_complete='yes' at the query level is a cheap win when
-        // nothing can ever re-answer a completed element — but with a recency_period
-        // configured, a completed element can become applicable again once it goes
-        // stale (see LongElementQuest.isApplicable), so it has to be fetched here and
-        // left to that per-element check instead of being filtered out up front.
-        let excludeCompleted = QuestsRepository.shared.recencyPeriodDays == nil
-        let nodePredicateFormat = excludeCompleted
-            ? "tags.@count != 0 AND tags['ext:gig_complete'] != 'yes'"
-            : "tags.@count != 0"
-        let wayPredicateFormat = excludeCompleted
-            ? "tags.@count != 0 AND polyline.@count > 0 AND tags['ext:gig_complete'] != 'yes'"
-            : "tags.@count != 0 AND polyline.@count > 0"
+        // Completeness is no longer determined by ext:gig_complete — the long form's
+        // question set is configurable from the web and can change over time, so a
+        // stamped tag from a past submission can't be trusted as a query-level
+        // shortcut. The real check (LongElementQuest.isApplicable, via
+        // LongFormElement.isFullyAnswered) always runs against the element's actual
+        // current tags below.
+        let nodePredicateFormat = "tags.@count != 0"
+        let wayPredicateFormat = "tags.@count != 0 AND polyline.@count > 0"
 
         let nodesFromStorage = dbInstance.getNodes(NSPredicate(format: nodePredicateFormat))
         let yetToSyncNodeIDs = Set(dbInstance.getChangesets(synced: false, element: .node).compactMap{ Int64($0.elementId) })

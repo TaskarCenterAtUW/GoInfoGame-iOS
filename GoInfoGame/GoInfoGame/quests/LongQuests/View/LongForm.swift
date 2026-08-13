@@ -72,6 +72,8 @@ struct LongForm: View, QuestForm {
 
     @State private var deviceSupportsLiDAR: Bool = false
 
+    @State private var hasPrefilled = false
+
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
     var body: some View {
@@ -187,6 +189,10 @@ struct LongForm: View, QuestForm {
             }
             .onAppear {
                 deviceSupportsLiDAR = LiDARDetection.shared.isLiDARSupported()
+                if !hasPrefilled {
+                    hasPrefilled = true
+                    viewModel.prefillAnswers(tags: tags ?? [:])
+                }
             }
             .onChange(of: viewModel.selectedChoices) { _ in
                 viewModel.clearAnswersForHiddenQuests()

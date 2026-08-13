@@ -21,7 +21,7 @@ public struct OSMWay: Codable, OSMPayload, OSMElement  {
     public var isSkippable: Bool? = false
     
     public func fetchInternalGigTags() -> [String:String] {
-        
+
         var internalTags:[String:String] = [:]
         let dateFormatter = DateFormatter()
 
@@ -36,12 +36,14 @@ public struct OSMWay: Codable, OSMPayload, OSMElement  {
         let formattedDate = dateFormatter.string(from: currentDate)
         //"ext:gig_last_updated"
         internalTags["ext:gig_last_updated"] = formattedDate
-        internalTags["ext:gig_complete"] = "yes"
-        
+        // ext:gig_complete is intentionally not managed by the app — the long
+        // form's question set is configurable from the web and can change over
+        // time, so a stamped completion flag can't be trusted to stay accurate.
+
         return internalTags
     }
-    
-    
+
+
     public func toPayload(exclude_gig_tags: Bool = false) -> String {
         var osmNode = "<modify>"
         let xmlBuilder = OSMXMLBuilder(rootName: "way")
@@ -50,29 +52,22 @@ public struct OSMWay: Codable, OSMPayload, OSMElement  {
         //        xmlBuilder.addAttribute(name: "lon", value: "\(lon)")
         xmlBuilder.addAttribute(name: "version", value: "\(version)")
         xmlBuilder.addAttribute(name: "changeset", value: "\(changeset)")
-       
-       // Add the gig payload tags. ext:gig_complete/ext:gig_last_updated are held
-       // back here (not added to xmlBuilder yet) rather than added-then-"updated" —
-       // TagPayload is a struct, so addChild(element:) below would otherwise copy
-       // its value in at that moment; mutating a *different* local copy afterwards
-       // (as this used to do) never reaches the copy already sitting in the
-       // builder, so a re-answered element's date silently kept its original value.
-       var existingGigComplete: TagPayload? = nil
+
+       // Add the gig payload tags. ext:gig_last_updated is held back here (not
+       // added to xmlBuilder yet) rather than added-then-"updated" — TagPayload
+       // is a struct, so addChild(element:) below would otherwise copy its value
+       // in at that moment; mutating a *different* local copy afterwards (as this
+       // used to do) never reaches the copy already sitting in the builder, so a
+       // re-answered element's date silently kept its original value.
+       // ext:gig_complete is left alone entirely — the app doesn't write or strip
+       // it, so any existing value simply passes through like any other tag.
         tags.forEach { (key: String, value: String) in
             if !exclude_gig_tags {
-                if (key == "ext:gig_complete"){
-                    existingGigComplete = TagPayload(key: key, value: value)
-                    return
-                }
                 if (key == "ext:gig_last_updated"){
                     return // always replaced with today's date below — the old value is never needed
                 }
             }
             xmlBuilder.addChild(element: TagPayload(key: key, value: value))
-        }
-        if !exclude_gig_tags {
-            let gigCompleteTag = TagPayload(key: "ext:gig_complete", value: existingGigComplete?.value ?? "yes")
-            xmlBuilder.addChild(element: gigCompleteTag)
         }
 
        // Today date

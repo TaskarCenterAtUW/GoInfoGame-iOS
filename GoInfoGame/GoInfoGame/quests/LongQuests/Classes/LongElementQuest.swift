@@ -138,24 +138,26 @@ class LongElementQuest: QuestBase, Quest {
     }
 
     /// True when `tags` represents an element that should still be treated as
-    /// "answered, nothing to do" — i.e. not just marked `ext:gig_complete=yes`, but
-    /// also still within its `recency_period` freshness window (if one is
-    /// configured at all). Shared by `isApplicable` (bulk quest matching) and
+    /// "answered, nothing to do" — i.e. every currently-applicable question in
+    /// this element's long form already has an answer reflected in `tags`, and
+    /// (if a `recency_period` is configured) that answer is still within its
+    /// freshness window. Shared by `isApplicable` (bulk quest matching) and
     /// MapView's tap-to-open freshness re-check, so both agree on the same element
     /// at the same moment — without this, a stale-but-complete element could show
     /// up as a pin (via `isApplicable`) but still get rejected as "already
     /// answered" the instant it's tapped.
-    static func isStillConsideredComplete(tags: [String: String]) -> Bool {
-        // Key presence only — matches the original `!ext:gig_complete` filter
-        // (NotHasKey), which never looked at the tag's value either. Checking for
-        // an exact "yes" here would incorrectly treat any element completed with a
-        // different value (a legacy write, another app version/platform) as never
-        // answered at all.
-        guard tags.keys.contains("ext:gig_complete") else { return false }
+    func isStillConsideredComplete(tags: [String: String]) -> Bool {
+        guard let longFormElement = QuestsRepository.shared.questElementForQuery(_internalQueryString ?? "") else {
+            // No quest definition resolvable for this query — there's no way to
+            // verify completeness, so don't claim it. The app no longer treats
+            // ext:gig_complete as meaningful in either direction.
+            return false
+        }
+        guard longFormElement.isFullyAnswered(tags: tags) else { return false }
         guard let recencyDays = QuestsRepository.shared.recencyPeriodDays else { return true }
         guard let lastUpdatedString = tags["ext:gig_last_updated"],
-              let lastUpdatedDate = parseGigDate(lastUpdatedString)
-        else { return true } // marked complete but undated/unparseable — stay conservative
+              let lastUpdatedDate = Self.parseGigDate(lastUpdatedString)
+        else { return true } // fully answered but undated/unparseable — stay conservative
 
         let daysSinceUpdate = Calendar.current.dateComponents([.day], from: lastUpdatedDate, to: Date()).day ?? 0
         return daysSinceUpdate <= recencyDays
@@ -172,7 +174,7 @@ class LongElementQuest: QuestBase, Quest {
               baseFilterExpression.matches(element: element)
         else { return false }
 
-        return !Self.isStillConsideredComplete(tags: element.tags)
+        return !isStillConsideredComplete(tags: element.tags)
     }
     
     var displayUnit: DisplayUnit {

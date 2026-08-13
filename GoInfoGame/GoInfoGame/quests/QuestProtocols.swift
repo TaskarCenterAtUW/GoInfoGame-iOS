@@ -121,10 +121,10 @@ class QuestBase {
     // Add a custom implementation
     
     public func updateTags(id: Int64, questType: String, tags:[String:String], type: ElementType, iconName: String, exclude_gig_tags: Bool = false) {
-       
+
        // Convert from ElementType enum to StoredElementEnum
        let storedElementType: StoredElementEnum = type == .way ? .way : .node
-       
+
        switch (storedElementType){
        case .way:
            elementSubmittingToPOSM = .way
