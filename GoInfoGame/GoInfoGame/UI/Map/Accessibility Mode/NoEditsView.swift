@@ -28,13 +28,15 @@ struct NoEditsView: View {
                 .foregroundStyle(Asset.Colors._42526ETextFieldText.swiftUIColor)
                 .multilineTextAlignment(.center)
                 .lineLimit(nil)
+                .fixedSize(horizontal: false, vertical: true)
                 .accessibilityLabel(L10n.Localizable.noEditsFound)
-            
+
             Text(L10n.Localizable.newEditsWillAppearHereWhenAQuestIsAnswered)
                 .font(FontFamily.Lato.medium.swiftUIFont(size: 18, relativeTo: .body))
                 .foregroundStyle(Asset.Colors._42526ETextFieldText.swiftUIColor)
                 .multilineTextAlignment(.center)
                 .lineLimit(nil)
+                .fixedSize(horizontal: false, vertical: true)
                 .accessibilityLabel(L10n.Localizable.newEditsWillAppearHereWhenAQuestIsAnswered)
         })
     }

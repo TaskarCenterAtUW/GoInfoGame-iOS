@@ -42,11 +42,13 @@ struct UserProfileView: View {
                                         .multilineTextAlignment(.center)
                                         .fixedSize(horizontal: false, vertical: true)
                                         .lineLimit(nil)
+                                        .minimumScaleFactor(0.5) // safety net for names with no space to wrap on
                                     Text(viewModel.user?.email ?? " ")
                                         .font(FontFamily.Lato.regular.swiftUIFont(size: 16, relativeTo: .body))
                                         .multilineTextAlignment(.center)
                                         .fixedSize(horizontal: false, vertical: true)
                                         .lineLimit(nil)
+                                        .minimumScaleFactor(0.5) // safety net for emails with no space to wrap on
                                 }
                                 .foregroundStyle(Asset.Colors._42526ETextFieldText.swiftUIColor)
                                 // Make header content win layout space and be treated as one accessibility element
@@ -62,7 +64,7 @@ struct UserProfileView: View {
                             Color.white
                             VStack(alignment: .leading, spacing: 25) {
                                 Text(L10n.Localizable.preferences.uppercased())
-                                    .font(FontFamily.Lato.bold.swiftUIFont(size: 14))
+                                    .font(FontFamily.Lato.bold.swiftUIFont(size: 14, relativeTo: .caption))
                                     .foregroundStyle(Asset.Colors.huskyPurple.swiftUIColor)
                                 
                                 if BiometricAuthManager.canEvaluateBiometrics() {
@@ -93,6 +95,7 @@ struct UserProfileView: View {
                                     .stroke(style: .init(dash: [4]))
                                     .foregroundStyle(Asset.Colors.ddddddLine.swiftUIColor)
                                     .frame(height: 1)
+                                    .accessibilityHidden(true)
                                 
                                 HStack {
                                     Spacer()
@@ -120,7 +123,11 @@ struct UserProfileView: View {
                         }) {
                             Image(systemName: "arrow.left")
                                 .resizable()
+                                .scaledToFit()
+                                .frame(width: 20, height: 20)
                                 .foregroundStyle(Asset.Colors.huskyPurple.swiftUIColor)
+                                .frame(minWidth: 44, minHeight: 44)
+                                .contentShape(Rectangle())
                                 .accessibilityLabel(L10n.Localizable.back)
                         }
                     }

@@ -18,7 +18,9 @@ struct AccessibilityModeView: View {
     @State var navigateToUndo: Bool = false
     @State private var showBottomSheet = false
     @State private var showElemntDeletedAlert: Bool = false
-    
+
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+
     init (mapViewModel: MapViewModel) {
         self.mapViewModel = mapViewModel
         _viewModel = StateObject(wrappedValue: AccessibilityModeViewModel(mapViewModel: mapViewModel))
@@ -30,18 +32,26 @@ struct AccessibilityModeView: View {
                 if viewModel.nearestQuest.isEmpty {
                     NoQuestsNearView()
                 } else {
-                    VStack(alignment: .leading, content: {
-                        HStack(alignment: .center, content: {
-                            numberOfQuestsView
-                            Spacer()
-                            refreshListButton
-                            
-                        })
-                        .padding(.bottom)
-                        
-                        DottedLine()
-                        
-                        List {
+                    // Everything lives inside one continuous List (as sections), so it
+                    // all scrolls together — the quest-count header and the bottom bar
+                    // used to be fixed, non-scrolling content around the List, which at
+                    // large accessibility text could grow tall enough to push the List
+                    // (and the bottom buttons) off-screen with nothing to scroll to
+                    // reach them.
+                    List {
+                        Section {
+                            HStack(alignment: .center, content: {
+                                numberOfQuestsView
+                                Spacer()
+                                refreshListButton
+                            })
+                            DottedLine()
+                        }
+                        .listRowBackground(Color.clear)
+                        .listRowSeparator(.hidden)
+                        .listRowInsets(EdgeInsets(top: 10, leading: 0, bottom: 10, trailing: 0))
+
+                        Section {
                             ForEach(viewModel.nearestQuest, id: \.self) { item in
                                 Button {
                                     viewModel.selectedQuest = item.quest
@@ -53,19 +63,22 @@ struct AccessibilityModeView: View {
                                 .buttonStyle(PlainButtonStyle())
                                 .listRowInsets(EdgeInsets())
                             }
-                            
                         }
-                        .listStyle(.plain)
-                        .scrollContentBackground(.hidden)
-                        .background(Color.clear)
-                        .listRowSpacing(20)
-                        .padding(.top, 20)
-                        .padding(.bottom, 20)
-                        
-                        DottedLine()
-                        
-                        bottomBar
-                    })
+                        .listRowSeparator(.hidden)
+                        .listRowBackground(Color.clear)
+
+                        Section {
+                            DottedLine()
+                            bottomBar
+                        }
+                        .listRowBackground(Color.clear)
+                        .listRowSeparator(.hidden)
+                        .listRowInsets(EdgeInsets(top: 10, leading: 0, bottom: 10, trailing: 0))
+                    }
+                    .listStyle(.plain)
+                    .scrollContentBackground(.hidden)
+                    .background(Color.clear)
+                    .listRowSpacing(20)
                 }
             }
             .padding()
@@ -145,7 +158,7 @@ struct AccessibilityModeView: View {
                     }
                 }
                 .background(Color(red: 248/255, green: 248/255, blue: 248/255))
-                .presentationDetents([.fraction(viewModel.isQuestAutoSelected ? 0.6 : 0.36)])
+                // Sized to its own content by QuestSelectionConfirmationView itself.
                 .interactiveDismissDisabled()
                 .presentationDragIndicator(.hidden)
                 .applyPresentationSizingPage()
@@ -173,7 +186,7 @@ struct AccessibilityModeView: View {
                     .font(FontFamily.Lato.semibold.swiftUIFont(size: 12, relativeTo: .body))
                     .multilineTextAlignment(.leading)
                     .lineLimit(nil)
-                    .fixedSize(horizontal: false, vertical: false)
+                    .fixedSize(horizontal: false, vertical: true)
                     .accessibilityLabel(L10n.Localizable.refreshList)
                 
             }
@@ -181,9 +194,13 @@ struct AccessibilityModeView: View {
             .padding(.leading, 4)
             .padding(.trailing, 4)
             .padding(10)
+            .frame(minHeight: 44)
             .background(Asset.Colors.huskyPurple.swiftUIColor)
             .cornerRadius(10)
         }
+        // Now inside a List row — without this, List applies its own default
+        // button/selection styling, which can make taps unreliable.
+        .buttonStyle(.plain)
     }
     
     private var numberOfQuestsView: some View {
@@ -201,7 +218,7 @@ struct AccessibilityModeView: View {
                 .multilineTextAlignment(.leading)
                 .lineLimit(nil)
                 .fixedSize(horizontal: false, vertical: true)
-                .accessibilityLabel(L10n.Localizable.closeScreenReaderModeScreen)
+                .accessibilityLabel(L10n.Localizable.selectTheQuestToStartAnswering)
         }
     }
     
@@ -223,7 +240,7 @@ struct AccessibilityModeView: View {
         }
         .sheet(isPresented: $showBottomSheet) {
             ManageQuestsView()
-                .presentationDetents([.fraction(0.85)])
+                // Sized to its own content by ManageQuestsView itself.
                 .interactiveDismissDisabled()
                 .presentationDragIndicator(.hidden)
                 .applyPresentationSizingPage()
@@ -245,13 +262,18 @@ struct AccessibilityModeView: View {
             }
             .foregroundStyle(Asset.Colors.huskyPurple.swiftUIColor)
             .padding(10)
+            .frame(minHeight: 44)
         }
         .overlay(
             RoundedRectangle(cornerRadius: 20)
                 .stroke(Asset.Colors.huskyPurple.swiftUIColor, lineWidth: 2)
         )
+        // These two share a row (or a stack at accessibility sizes) inside a List
+        // Section — without this, List's default button styling makes taps on either
+        // one unreliable.
+        .buttonStyle(.plain)
     }
-    
+
     private var goToMapView: some View {
         Button {
             dismiss()
@@ -267,18 +289,32 @@ struct AccessibilityModeView: View {
             }
             .foregroundStyle(Asset.Colors.huskyPurple.swiftUIColor)
             .padding(10)
+            .frame(minHeight: 44)
         }
         .overlay(
             RoundedRectangle(cornerRadius: 20)
                 .stroke(Asset.Colors.huskyPurple.swiftUIColor, lineWidth: 2)
         )
+        .buttonStyle(.plain)
     }
-    
+
     private var bottomBar: some View {
-        HStack {
-            undoEditButton
-            Spacer()
-            goToMapView
+        // Side by side, neither button has enough width at large accessibility text
+        // sizes to fit its label as a whole word, so both wrap mid-word. Stacking them
+        // instead gives each the full row width.
+        Group {
+            if dynamicTypeSize.isAccessibilitySize {
+                VStack(spacing: 12) {
+                    undoEditButton
+                    goToMapView
+                }
+            } else {
+                HStack {
+                    undoEditButton
+                    Spacer()
+                    goToMapView
+                }
+            }
         }
         .padding(.leading)
         .padding(.trailing)

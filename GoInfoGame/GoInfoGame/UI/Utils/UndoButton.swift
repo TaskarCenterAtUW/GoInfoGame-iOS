@@ -66,49 +66,14 @@ struct UndoButton: View {
                         onRemovePreview()
                     }
 
-                VStack(spacing: 16) {
-                    Text("\(item.type == .way ? "Way" : "Node") #\(String(item.elementId))")
-                        .font(.headline)
-
-                    if item.isCreatedElement {
-                        Text("This feature will be permanently deleted.")
-                            .font(.subheadline)
-                            .foregroundColor(.gray)
-                            .multilineTextAlignment(.center)
-                    } else if !item.changedKeys.isEmpty {
-                        VStack(alignment: .leading, spacing: 4) {
-                            Text("Changed keys:")
-                                .font(.subheadline)
-                                .foregroundColor(.gray)
-                            ForEach(item.changedKeys, id: \.self) { key in
-                                Text("• \(key)")
-                                    .font(.caption)
-                            }
-                        }
-                    }
-
-                    HStack {
-                        Button("Cancel") {
-                            showUndoPopup = false
-                            onRemovePreview()
-                        }
-
-                        Spacer()
-
-                        Button(item.isCreatedElement ? "Delete" : "Revert") {
-                            onRevert(item.id)
-                            showUndoPopup = false
-                            showSidebar = false
-                        }
-                        .foregroundColor(.white)
-                        .padding(.horizontal, 12)
-                        .padding(.vertical, 6)
-                        .background(Color.red)
-                        .cornerRadius(8)
-//                        .frame(width: 200)
+                // Content-sized as long as it fits; falls back to scrolling only if large
+                // accessibility text plus a long "Changed keys" list make it too tall.
+                ViewThatFits(in: .vertical) {
+                    undoPopupContent(for: item)
+                    ScrollView {
+                        undoPopupContent(for: item)
                     }
                 }
-                .padding()
                 .frame(maxWidth: 300)
                 .background(Color.white)
                 .cornerRadius(12)
@@ -116,6 +81,56 @@ struct UndoButton: View {
                 .focusAccessibilityOnAppear()
             }
         }
+    }
+
+    private func undoPopupContent(for item: UndoItem) -> some View {
+        VStack(spacing: 16) {
+            Text("\(item.type == .way ? "Way" : "Node") #\(String(item.elementId))")
+                .font(.headline)
+                .multilineTextAlignment(.center)
+                .lineLimit(nil)
+
+            if item.isCreatedElement {
+                Text("This feature will be permanently deleted.")
+                    .font(.subheadline)
+                    .foregroundColor(.gray)
+                    .multilineTextAlignment(.center)
+                    .lineLimit(nil)
+            } else if !item.changedKeys.isEmpty {
+                VStack(alignment: .leading, spacing: 4) {
+                    Text("Changed keys:")
+                        .font(.subheadline)
+                        .foregroundColor(.gray)
+                    ForEach(item.changedKeys, id: \.self) { key in
+                        Text("• \(key)")
+                            .font(.caption)
+                            .lineLimit(nil)
+                    }
+                }
+            }
+
+            HStack {
+                Button("Cancel") {
+                    showUndoPopup = false
+                    onRemovePreview()
+                }
+                .frame(minHeight: 44)
+
+                Spacer()
+
+                Button(item.isCreatedElement ? "Delete" : "Revert") {
+                    onRevert(item.id)
+                    showUndoPopup = false
+                    showSidebar = false
+                }
+                .foregroundColor(.white)
+                .padding(.horizontal, 12)
+                .frame(minHeight: 44)
+                .background(Color.red)
+                .cornerRadius(8)
+            }
+        }
+        .padding()
     }
 }
 

@@ -259,7 +259,7 @@ struct MapView: View {
                             .accessibilitySortPriority(1)
                             .sheet(isPresented: $showFilterQuestsSheet) {
                                 ManageQuestsView()
-                                    .presentationDetents([.fraction(0.85)])
+                                    // Sized to its own content by ManageQuestsView itself.
                                     .interactiveDismissDisabled()
                                     .presentationDragIndicator(.hidden)
                                     .applyPresentationSizingPage()
@@ -504,7 +504,7 @@ struct MapView: View {
         }
         .sheet(isPresented: $showManageQuestSheet) {
             ManageQuestsView()
-                .presentationDetents([.fraction(0.85)])
+                // Sized to its own content by ManageQuestsView itself.
                 .interactiveDismissDisabled()
                 .presentationDragIndicator(.hidden)
                 .applyPresentationSizingPage()
@@ -575,7 +575,6 @@ struct MapView: View {
                 }
             )
             .background(Color(red: 248/255, green: 248/255, blue: 248/255))
-            .presentationDetents([.fraction(0.38)])
             .interactiveDismissDisabled()
             .presentationDragIndicator(.hidden)
             .applyPresentationSizingPage()
@@ -1267,7 +1266,7 @@ struct PinChoiceCard: View {
         VStack(spacing: 0) {
             Button(action: onCreateNote) {
                 Text("Create Note")
-                    .font(FontFamily.Lato.regular.swiftUIFont(fixedSize: 16))
+                    .font(FontFamily.Lato.regular.swiftUIFont(size: 16, relativeTo: .headline))
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .padding(.horizontal, 16)
                     .padding(.vertical, 14)
@@ -1278,7 +1277,7 @@ struct PinChoiceCard: View {
 
             Button(action: onAddFeature) {
                 Text("Add Feature")
-                    .font(FontFamily.Lato.regular.swiftUIFont(fixedSize: 16))
+                    .font(FontFamily.Lato.regular.swiftUIFont(size: 16, relativeTo: .headline))
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .padding(.horizontal, 16)
                     .padding(.vertical, 14)

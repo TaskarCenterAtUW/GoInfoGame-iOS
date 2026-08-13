@@ -19,14 +19,6 @@ struct SecureInputView: View {
     
     var body: some View {
         ZStack(alignment: .trailing) {
-            Button(action: {
-                isSecured.toggle()
-            }) {
-                Image(systemName: self.isSecured ? "eye.slash" : "eye")
-                    .accentColor(.gray)
-            }
-            .accessibilityLabel("Toggle password visibility. " + ( isSecured ? "Show password" : "Hide password" ))
-            
             Group {
                 if isSecured {
                     SecureField(placeholder, text: $text)
@@ -35,9 +27,19 @@ struct SecureInputView: View {
                 }
             }
             .padding(.trailing, 32)
-            .font(FontFamily.Lato.bold.swiftUIFont(size: 16))
-            .foregroundStyle(Asset.Colors._42526ETextFieldText.swiftUIColor)
+            .multilineTextAlignment(.leading)
+            .lineLimit(nil)
             .accessibilityLabel(placeholder)
+
+            Button(action: {
+                isSecured.toggle()
+            }) {
+                Image(systemName: self.isSecured ? "eye.slash" : "eye")
+                    .accentColor(.gray)
+                    .frame(minWidth: 44, minHeight: 44)
+                    .contentShape(Rectangle())
+            }
+            .accessibilityLabel("Toggle password visibility. " + ( isSecured ? "Show password" : "Hide password" ))
         }
     }
 }

@@ -31,6 +31,8 @@ struct InitialView: View {
                                     }
                                     .frame(width: 34, height: 34)
                                     .clipShape(Circle())
+                                    .frame(minWidth: 44, minHeight: 44) // Explicitly meet accessibility tap target standards
+                                    .contentShape(Rectangle())
                                     .accessibilityLabel(L10n.Localizable.profile)
                             }
                         }
@@ -51,6 +53,8 @@ struct InitialView: View {
                                     } label: {
                                         Image(systemName: "xmark.circle.fill")
                                             .foregroundColor(.gray)
+                                            .frame(minWidth: 44, minHeight: 44)
+                                            .contentShape(Rectangle())
                                     }
                                     .accessibilityLabel("Clear search text")
                                 }
@@ -80,6 +84,8 @@ struct InitialView: View {
                                 .scaledToFit()
                                 .frame(width: 20, height: 20)
                                 .foregroundStyle(Asset.Colors.huskyPurple.swiftUIColor)
+                                .frame(minWidth: 44, minHeight: 44)
+                                .contentShape(Rectangle())
                         }
                         .accessibilityLabel(isSearchActive ? "Close search" : "Search workspaces")
                     }
@@ -92,6 +98,9 @@ struct InitialView: View {
                         Text(L10n.Localizable.appName)
                             .font(.system(.title, design: .rounded))
                             .foregroundStyle(Asset.Colors.huskyPurple.swiftUIColor)
+                            .multilineTextAlignment(.center)
+                            .lineLimit(nil)
+                            .minimumScaleFactor(0.5) // "ScoutRoute" has no space to wrap on; shrink rather than truncate if it's ever too wide
                     }
                     .padding()
 
@@ -161,43 +170,45 @@ struct WorkspacesListView: View {
                     .frame(maxWidth: .infinity)
                 }
             } else {
-                VStack {
-                    Text(viewModel.errorMessage ?? "Something went wrong. Please try again later.")
-                        .font(.custom("Lato-Bold", size: 20, relativeTo: .body))
-                        .foregroundColor((Asset.Colors.huskyPurple.swiftUIColor))
-                        .multilineTextAlignment(.center)
-                        .padding(.top, 20)
-                    Spacer()
-                    Button {
-                        if let location = viewModel.currentLocation {
-                            viewModel.fetchWorkspacesList(location: location)
-                        }
-                    } label: {
-                        Group {
-                            VStack {
-                                Image(systemName: "arrow.clockwise")
-                                    .resizable()
-                                    .frame(width: 50, height: 50)
-                                Text("Try again")
-                                    .font(.custom("Lato-Bold", size: 20, relativeTo: .body))
+                ScrollView {
+                    VStack {
+                        Text(viewModel.errorMessage ?? "Something went wrong. Please try again later.")
+                            .font(.custom("Lato-Bold", size: 20, relativeTo: .body))
+                            .foregroundColor((Asset.Colors.huskyPurple.swiftUIColor))
+                            .multilineTextAlignment(.center)
+                            .padding(.top, 20)
+                        Button {
+                            if let location = viewModel.currentLocation {
+                                viewModel.fetchWorkspacesList(location: location)
                             }
+                        } label: {
+                            Group {
+                                VStack {
+                                    Image(systemName: "arrow.clockwise")
+                                        .resizable()
+                                        .frame(width: 50, height: 50)
+                                    Text("Try again")
+                                        .font(.custom("Lato-Bold", size: 20, relativeTo: .body))
+                                }
+                            }
+                            .foregroundStyle(Asset.Colors.accentPink.swiftUIColor)
                         }
-                        .foregroundStyle(Asset.Colors.accentPink.swiftUIColor)
-                        
-                        
+                        .padding(.top, 20)
                     }
-                    Spacer()
+                    .frame(maxWidth: .infinity)
                 }
             }
         } else if viewModel.workspaces?.count == 0 {
-            VStack {
-                Text("No workspaces available for you to work on.")
-                    .font(.custom("Lato-Bold", size: 20, relativeTo: .body))
-                    .foregroundColor((Asset.Colors.huskyPurple.swiftUIColor))
-                    .multilineTextAlignment(.center)
-                Spacer()
+            ScrollView {
+                VStack {
+                    Text("No workspaces available for you to work on.")
+                        .font(.custom("Lato-Bold", size: 20, relativeTo: .body))
+                        .foregroundColor((Asset.Colors.huskyPurple.swiftUIColor))
+                        .multilineTextAlignment(.center)
+                }
+                .frame(maxWidth: .infinity)
             }
-            
+
         } else {
             ScrollView {
                 VStack(spacing: 10) {
@@ -232,14 +243,15 @@ struct WorkspacesListView: View {
                             HStack {
                                 Text("Project Group: \(viewModel.projectGroupDisplayName(for: viewModel.selectedProjectGroupId))")
                                     .font(.custom("Lato-Regular", size: 15, relativeTo: .body))
-                                    .lineLimit(1)
-                                    .truncationMode(.middle)
+                                    .lineLimit(nil)
+                                    .multilineTextAlignment(.leading)
                                     .foregroundColor(Asset.Colors.huskyPurple.swiftUIColor)
                                 Spacer()
                                 Image(systemName: "chevron.down")
                                     .foregroundColor(Asset.Colors.huskyPurple.swiftUIColor)
                             }
                             .padding(10)
+                            .frame(minHeight: 44)
                             .background(Color(.systemGray6))
                             .cornerRadius(10)
                         }
@@ -257,6 +269,7 @@ struct WorkspacesListView: View {
                             }
                             .font(.custom("Lato-Bold", size: 15, relativeTo: .body))
                             .foregroundColor(Asset.Colors.accentPink.swiftUIColor)
+                            .frame(minHeight: 44)
                         }
                         .padding(.top, 20)
                     } else {

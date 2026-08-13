@@ -43,10 +43,14 @@ struct QuestSyncButton: View {
                         .foregroundColor(.white)
                         .clipShape(Circle())
                         .offset(x: 10, y: -10)
+                        .accessibilityHidden(true)
                 }
             }
         }
         .buttonStyle(.plain)
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel(isSyncing ? "Syncing" : "Sync")
+        .accessibilityValue(badgeCount > 0 ? "\(badgeCount) pending" : "")
     }
 
     private func startRotating() {

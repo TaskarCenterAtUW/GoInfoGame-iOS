@@ -36,14 +36,15 @@ struct NoQuestsNearView: View {
                 .foregroundStyle(Asset.Colors._42526ETextFieldText.swiftUIColor)
                 .multilineTextAlignment(.center)
                 .lineLimit(nil)
-                .fixedSize(horizontal: false, vertical: false)
+                .fixedSize(horizontal: false, vertical: true)
                 .accessibilityLabel(L10n.Localizable.noQuestsFound)
-            
+
             Text(L10n.Localizable.tryMovingToADifferentLocationToDiscoverMoreQuests)
                 .font(FontFamily.Lato.medium.swiftUIFont(size: 18, relativeTo: .subheadline))
                 .foregroundStyle(Asset.Colors._42526ETextFieldText.swiftUIColor)
                 .multilineTextAlignment(.center)
                 .lineLimit(nil)
+                .fixedSize(horizontal: false, vertical: true)
                 .accessibilityLabel(L10n.Localizable.tryMovingToADifferentLocationToDiscoverMoreQuests)
         })
     }
