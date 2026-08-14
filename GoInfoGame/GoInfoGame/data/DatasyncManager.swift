@@ -264,16 +264,13 @@ class DatasyncManager {
                         localWay.tags[key] = value
                     }
                     let id = localWay.id
-                    var tags = localWay.tags
-                    // The gig tags are not added into the db when pushing directly
-                    // Adding them forcibly here.
-                    if (!exclude_gig_tags) {
-                        let gig_internal_tags = localWay.fetchInternalGigTags()
-                        gig_internal_tags.forEach { (key: String, value: String) in
-                            tags[key] = value
-                        }
-                    }
-                    _ = DatabaseConnector.shared.addWayTags(id: id, tags: tags, version: newVersion)
+                    let tags = localWay.tags
+                    // The OSM API's changeset-upload response doesn't echo back a
+                    // fresh server timestamp for a <modify>, so stamp local "now" —
+                    // it's overwritten with the real server value on the next full
+                    // fetch/sync of this element, and this keeps a just-answered
+                    // element from looking stale in the meantime.
+                    _ = DatabaseConnector.shared.addWayTags(id: id, tags: tags, version: newVersion, timestamp: Date())
                     continuation.resume(returning: newVersion)
 
                 case .failure(let error):
@@ -316,18 +313,11 @@ class DatasyncManager {
                         updatedNode.tags[key] = value
                     }
                     updatedNode.version = newVersion
-                    
-                    // Gig tags are not added to DB when pushing changes
-                    // those are added manually here
-                    if (!exclude_gig_tags) {
-                        let gig_internal_tags = updatedNode.fetchInternalGigTags()
-                        gig_internal_tags.forEach { (key: String, value: String) in
-                            updatedNode.tags[key] = value
-                        }
-                    }
                     SyncLogger.shared.logStep("Node Updated ----\(updatedNode.tags)")
-                        
-                    _ = DatabaseConnector.shared.addNodeTags(id: updatedNode.id, tags: updatedNode.tags, version: newVersion)
+
+                    // See the equivalent comment in updateWay: no fresh server
+                    // timestamp comes back from a <modify>, so stamp local "now".
+                    _ = DatabaseConnector.shared.addNodeTags(id: updatedNode.id, tags: updatedNode.tags, version: newVersion, timestamp: Date())
                     continuation.resume(returning: newVersion)
                 case .failure(let error):
                     print(error)
@@ -711,18 +701,19 @@ class DatasyncManager {
         }
     }
 
-    /// Fetches the latest tags for an element from OSM and refreshes the local cache with them.
-    /// Returns nil if the fetch fails (offline/error) so callers can fall back to the existing local-first flow.
-    func fetchLatestTags(id: Int64, isWay: Bool) async -> [String: String]? {
+    /// Fetches the latest tags and edit timestamp for an element from OSM and
+    /// refreshes the local cache with them. Returns nil if the fetch fails
+    /// (offline/error) so callers can fall back to the existing local-first flow.
+    func fetchLatestTags(id: Int64, isWay: Bool) async -> (tags: [String: String], timestamp: Date)? {
         do {
             if isWay {
                 let way = try await fetchway2(wayId: "\(id)")
                 dbInstance.saveOSMElements([way])
-                return way.tags
+                return (way.tags, way.timestamp)
             } else {
                 let node = try await fetchNode2(nodeId: "\(id)")
                 dbInstance.saveOSMElements([node])
-                return node.tags
+                return (node.tags, node.timestamp)
             }
         } catch {
             print("fetchLatestTags failed (offline or error): \(error)")

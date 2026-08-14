@@ -270,7 +270,7 @@ class DatabaseConnector {
      @param tags `[String:String]` map of the added tags
      @return `StoredWay`
      */    
-    func addWayTags(id: Int, tags: [String: String], version: Int) -> StoredWay? {
+    func addWayTags(id: Int, tags: [String: String], version: Int, timestamp: Date? = nil) -> StoredWay? {
         let realm = try! Realm(configuration: RealmConfig.configuration)
         // Step 1: Try to get the editable copy first
         if let editable = getWay(id: id) {
@@ -280,6 +280,9 @@ class DatabaseConnector {
                     editable.tags.removeAll()
                     tags.forEach { editable.tags[$0.key] = $0.value }
                     editable.version = version
+                    if let timestamp {
+                        editable.timestamp = timestamp
+                    }
                 }
             } catch {
                 print("Error while writing tags")
@@ -296,7 +299,7 @@ class DatabaseConnector {
      @param tags [String:String] map of the added tags
      @return StoredNode
      */
-    func addNodeTags(id: Int, tags: [String: String], version: Int) -> StoredNode? {
+    func addNodeTags(id: Int, tags: [String: String], version: Int, timestamp: Date? = nil) -> StoredNode? {
         print("🟣 addNodeTags called for id: \(id) with tags: \(tags)")
         let realm = try! Realm(configuration: RealmConfig.configuration)
         if let editable = getNode(id: id) {
@@ -306,6 +309,9 @@ class DatabaseConnector {
                     editable.tags.removeAll()
                     tags.forEach { editable.tags[$0.key] = $0.value }
                     editable.version = version
+                    if let timestamp {
+                        editable.timestamp = timestamp
+                    }
                 }
                 print("✅ Updated editable node.")
             } catch {

@@ -1009,8 +1009,8 @@ struct QuestSheetView: View {
                 isCheckingFreshness = false
                 return
             }
-            if let latestTags = await longQuest.fetchLatestTagsIfNeeded(),
-               longQuest.isStillConsideredComplete(tags: latestTags) {
+            if let latest = await longQuest.fetchLatestTagsIfNeeded(),
+               longQuest.isStillConsideredComplete(tags: latest.tags, lastEditedAt: latest.timestamp) {
                 alreadyCompletedMessage = "This element has already been answered by another user."
                 viewModel.refreshQuests()
             }

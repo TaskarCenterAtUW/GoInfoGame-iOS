@@ -29,7 +29,7 @@ class StoredNode : Object {
         for (key,value) in tags{
             theTags[key] = value
         }
-        let n = Node(id: id, version: version, tags: theTags, timestampEdited: 0, position: position)
+        let n = Node(id: id, version: version, tags: theTags, timestampEdited: Int64(timestamp.timeIntervalSince1970), position: position)
         return n
     }
 }
