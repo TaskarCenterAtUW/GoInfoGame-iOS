@@ -266,6 +266,8 @@ internal enum L10n {
     internal static let selectOne = L10n.tr("Localizable", "select_one", fallback: "Select One:")
     /// Selected Type:
     internal static let selectedType = L10n.tr("Localizable", "Selected Type:", fallback: "Selected Type:")
+    /// Settings
+    internal static let settings = L10n.tr("Localizable", "Settings", fallback: "Settings")
     /// Start answering the questions
     internal static let startAnsweringTheQuestions = L10n.tr("Localizable", "Start answering the questions", fallback: "Start answering the questions")
     /// Try moving to a different location to discover more quests.

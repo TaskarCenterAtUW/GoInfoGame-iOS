@@ -103,7 +103,6 @@ struct MapView: View {
     }
 
     var body: some View {
-        NavigationStack {
             ZStack {
                 NavigationLink(
                     destination: UserProfileView(),
@@ -359,7 +358,6 @@ struct MapView: View {
                         .onChange(of: proxy.size) { screenSize = $0 }
                 }
             )
-        }
         .environmentObject(contextualInfo)
         .navigationBarHidden(isPresented)
         .navigationBarItems(leading: EmptyView())
@@ -417,46 +415,52 @@ struct MapView: View {
                 }
             }
 
-            ToolbarItem(placement: .navigationBarTrailing) {
-                HStack(spacing: 5.0) {
-                    accessbilityButton
+            ToolbarItem(placement: .topBarTrailing) {
+                accessbilityButton
+            }
 
-                    QuestSyncButton(
-                        badgeCount: viewModel.syncFailedElementsCount + viewModel.pendingNotesCount + viewModel.pendingFeaturesCount,
-                        isSyncing: isSyncing,
-                        action: {
-                            guard viewModel.syncFailedElementsCount > 0 || viewModel.pendingNotesCount > 0 || viewModel.pendingFeaturesCount > 0 else {
-                                alertIcon = "info.bubble"
-                                alertMessage = "No elements to sync"
-                                showAlert = true
-                                return
-                            }
-
-                            if viewModel.pendingNotesCount > 0 {
-                                NotesSubmissionManager.resumePendingUploads()
-                            }
-
-                            if viewModel.pendingFeaturesCount > 0 {
-                                FeatureSubmissionManager.resumePendingUploads()
-                            }
-
-                            guard viewModel.syncFailedElementsCount > 0 else { return }
-                            isSyncingElements = true
-                            DatasyncManager.shared.syncDataToOSM(exclude_gig_tags: false) { _ in
-                                isSyncingElements = false
-                                viewModel.checkSyncStatus()
-                            }
+            ToolbarItem(placement: .topBarTrailing) {
+                QuestSyncButton(
+                    badgeCount: viewModel.syncFailedElementsCount + viewModel.pendingNotesCount + viewModel.pendingFeaturesCount,
+                    isSyncing: isSyncing,
+                    action: {
+                        guard viewModel.syncFailedElementsCount > 0 || viewModel.pendingNotesCount > 0 || viewModel.pendingFeaturesCount > 0 else {
+                            alertIcon = "info.bubble"
+                            alertMessage = "No elements to sync"
+                            showAlert = true
+                            return
                         }
-                    )
 
-                    Button(action: {
-                        dismissOtherSheets()
-                        viewModel.updateOptions(
-                            for: mapViewRef?.centerCoordinate
-                                ?? CLLocationCoordinate2D(latitude: 0, longitude: 0)
-                        )
-                        viewModel.showSatellitePicker = true
-                    }) {
+                        if viewModel.pendingNotesCount > 0 {
+                            NotesSubmissionManager.resumePendingUploads()
+                        }
+
+                        if viewModel.pendingFeaturesCount > 0 {
+                            FeatureSubmissionManager.resumePendingUploads()
+                        }
+
+                        guard viewModel.syncFailedElementsCount > 0 else { return }
+                        isSyncingElements = true
+                        DatasyncManager.shared.syncDataToOSM(exclude_gig_tags: false) { _ in
+                            isSyncingElements = false
+                            viewModel.checkSyncStatus()
+                        }
+                    }
+                )
+            }
+
+            ToolbarItem(placement: .topBarTrailing) {
+                Button(action: {
+                    dismissOtherSheets()
+                    viewModel.updateOptions(
+                        for: mapViewRef?.centerCoordinate
+                            ?? CLLocationCoordinate2D(latitude: 0, longitude: 0)
+                    )
+                    viewModel.showSatellitePicker = true
+                }) {
+                    Label {
+                        Text(L10n.Localizable.mapModes)
+                    } icon: {
                         Image(systemName: "square.2.layers.3d.bottom.filled")
                             .resizable()
                             .padding(8)
@@ -464,13 +468,22 @@ struct MapView: View {
                             .background(Asset.Colors.e7E3EELightPurpuleBg.swiftUIColor)
                             .frame(width: 34, height: 34)
                             .clipShape(Circle())
-                            .accessibilityLabel(L10n.Localizable.mapModes)
                     }
+                }
+                .buttonStyle(.plain)
+                .labelStyle(.iconOnly)
+                .accessibilityLabel(L10n.Localizable.mapModes)
+            }
 
-                    Button(action: {
-                        dismissOtherSheets()
-                        showUserSettingsSheet = true
-                    }) {
+            ToolbarItem(placement: .topBarTrailing) {
+                Button(action: {
+                    dismissOtherSheets()
+                    showUserSettingsSheet = true
+                }) {
+                    Label {
+                        Text(L10n.Localizable.settings)
+                            .foregroundStyle(.red)
+                    } icon: {
                         Image(systemName: "gear")
                             .resizable()
                             .padding(8)
@@ -480,6 +493,8 @@ struct MapView: View {
                             .clipShape(Circle())
                     }
                 }
+                .buttonStyle(.plain)
+                .labelStyle(.iconOnly)
             }
         }
         .toolbarBackground(.visible, for: .navigationBar)
@@ -918,15 +933,22 @@ struct MapView: View {
             dismissOtherSheets()
             enableAccessibility = true
         }) {
-            Image("accessibility")
-                .resizable()
-                .padding(8)
-                .foregroundStyle(Asset.Colors.huskyPurple.swiftUIColor)
-                .background(Asset.Colors.e7E3EELightPurpuleBg.swiftUIColor)
-                .aspectRatio(1.0, contentMode: .fit)
-                .frame(width: 34, height: 34)
-                .clipShape(Circle())
+            Label {
+                Text(L10n.Localizable.screenReaderMode)
+                    .foregroundStyle(.red)
+            } icon: {
+                Image("accessibility")
+                    .resizable()
+                    .padding(8)
+                    .foregroundStyle(Asset.Colors.huskyPurple.swiftUIColor)
+                    .background(Asset.Colors.e7E3EELightPurpuleBg.swiftUIColor)
+                    .aspectRatio(1.0, contentMode: .fit)
+                    .frame(width: 34, height: 34)
+                    .clipShape(Circle())
+            }
         }
+        .buttonStyle(.plain)
+        .labelStyle(.iconOnly)
         .accessibilityLabel(L10n.Localizable.screenReaderMode)
     }
 }
