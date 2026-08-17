@@ -79,7 +79,7 @@ struct UndoEditsView: View {
                 viewModel.loadUndoItems()
             }
             .toolbar {
-                ToolbarItem(placement: .topBarLeading) {
+                ToolbarItem(placement: .principal) {
                     Text(L10n.Localizable.undoEdits)
                         .font(FontFamily.Lato.bold.swiftUIFont(size: 16, relativeTo: .headline))
                         .foregroundStyle(Asset.Colors.huskyPurple.swiftUIColor)

@@ -83,7 +83,7 @@ struct AccessibilityModeView: View {
             }
             .padding()
             .toolbar {
-                ToolbarItem(placement: .topBarLeading) {
+                ToolbarItem(placement: .principal) {
                     Text(L10n.Localizable.screenReaderMode)
                         .font(FontFamily.Lato.bold.swiftUIFont(size: 16, relativeTo: .headline))
                         .foregroundStyle(Asset.Colors.huskyPurple.swiftUIColor)
