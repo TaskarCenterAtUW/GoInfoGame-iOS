@@ -415,10 +415,9 @@ struct MapView: View {
                 }
             }
 
-            ToolbarItem(placement: .topBarTrailing) {
-                accessbilityButton
-            }
-
+            // Declared first so iOS 26's toolbar overflow (which collapses trailing-most
+            // items first when everything doesn't fit) is least likely to push this one
+            // into the "..." menu — its badge/spin animation don't render there.
             ToolbarItem(placement: .topBarTrailing) {
                 QuestSyncButton(
                     badgeCount: viewModel.syncFailedElementsCount + viewModel.pendingNotesCount + viewModel.pendingFeaturesCount,
@@ -447,6 +446,10 @@ struct MapView: View {
                         }
                     }
                 )
+            }
+
+            ToolbarItem(placement: .topBarTrailing) {
+                accessbilityButton
             }
 
             ToolbarItem(placement: .topBarTrailing) {
