@@ -67,7 +67,15 @@ class LongElementQuest: QuestBase, Quest {
 
     var tags: [String: String]?
 
-    
+    /// Set by `QuestSheetView.init` before opening the form. A multi-select batch
+    /// can contain elements with different existing answers for the same question,
+    /// and this element's own `tags` (used for prefill) can't represent that — so
+    /// the form must start blank rather than misleadingly show only the first
+    /// selected element's state, which the user could then unintentionally apply
+    /// to every other element in the batch by leaving it untouched.
+    var isMultiSelectMode: Bool = false
+
+
     var changesetComment: String = ""
     
     typealias AnswerClass = [String:String]
@@ -177,11 +185,25 @@ class LongElementQuest: QuestBase, Quest {
     
     private func updateForm() {
           self.internalForm = LongForm(
-            elementName: elementType, questID: questId, query: _internalQueryString, tags: tags, action: { [self] tags in
+            elementName: elementType, questID: questId, query: _internalQueryString, tags: tags,
+            isMultiSelectMode: isMultiSelectMode,
+            action: { [self] tags in
                 self.questAnswersSelected?(tags)
             }, coordinate: annotationCoordinate ?? CLLocationCoordinate2D(latitude: 0, longitude: 0)
           )
       }
+
+    /// Replaces `tags` with a freshly-fetched set (e.g. from `fetchLatestTagsIfNeeded`)
+    /// and rebuilds `form` from them. `annotationCoordinate` is set synchronously when
+    /// the sheet opens, capturing whatever `tags` held at that moment — for a partially
+    /// answered element that's still applicable, the live server fetch that follows
+    /// needs this to actually reach the form, otherwise the prefill silently shows
+    /// whatever (possibly stale) tags the element had before the sheet's freshness
+    /// check ran.
+    func refreshTags(_ tags: [String: String]) {
+        self.tags = tags
+        updateForm()
+    }
 
     init(questId: String, questQuery:String, elementType: String, elementTypeIcon: String?) {
         id = -1

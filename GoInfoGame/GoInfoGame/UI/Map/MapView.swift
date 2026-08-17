@@ -443,6 +443,17 @@ struct MapView: View {
                         DatasyncManager.shared.syncDataToOSM(exclude_gig_tags: false) { _ in
                             isSyncingElements = false
                             viewModel.checkSyncStatus()
+                            // This path (unlike a normal answer submission through
+                            // QuestProtocols.updateTags) retries whatever changesets
+                            // were left pending from an earlier offline/failed sync —
+                            // it never sends .answerSynced, so pins for elements that
+                            // just got their answers merged (or that are still
+                            // excluded as pending) would otherwise sit stale until an
+                            // unrelated map pan triggered a refetch. A full refresh
+                            // re-evaluates everything against current DB state,
+                            // whether this attempt fully succeeded, partially
+                            // succeeded, or failed again.
+                            viewModel.refreshQuests()
                         }
                     }
                 )
@@ -674,11 +685,18 @@ struct MapView: View {
             case .undoDone(let changesetId):
                 shouldShowPolyline = false
                 viewModel.refreshMapAfterUndoSumbit(storedChangesetId: changesetId)
-            case .syncBackground(let elementID):
+            case .syncBackground:
+                // Fires synchronously the moment a submission starts, before the
+                // sync has even reached the server — just a "something is
+                // uploading" visual cue. It must NOT touch `items`: the element's
+                // merged tags aren't in the local DB yet at this point, so any
+                // completeness check here would be against stale, pre-submission
+                // data. See .answerSynced for the actual post-sync recheck.
                 shouldShowPolyline = false
-                viewModel.refreshMapAfterSubmission(elementId: elementID)
             case .elementRemoved(let elementID):
                 viewModel.refreshMapAfterSubmission(elementId: elementID)
+            case .answerSynced(let elementID):
+                viewModel.refreshMapAfterAnswerSync(elementId: elementID)
             case .noteSubmitted:
                 alertIcon = "checkmark.circle.fill"
                 alertMessage = "Note submitted successfully"
@@ -971,6 +989,8 @@ struct QuestSheetView: View {
         self.annotationCoordinate = annotationCoordinate
         if let quest = viewModel.getSelectedQuest(),
            let longQuest = quest.parent as? LongElementQuest {
+            // Must be set before annotationCoordinate, whose didSet builds the form.
+            longQuest.isMultiSelectMode = viewModel.isMultiSelectModeEnabled
             longQuest.annotationCoordinate = annotationCoordinate
         }
     }
@@ -1009,10 +1029,16 @@ struct QuestSheetView: View {
                 isCheckingFreshness = false
                 return
             }
-            if let latest = await longQuest.fetchLatestTagsIfNeeded(),
-               longQuest.isStillConsideredComplete(tags: latest.tags, lastEditedAt: latest.timestamp) {
-                alreadyCompletedMessage = "This element has already been answered by another user."
-                viewModel.refreshQuests()
+            if let latest = await longQuest.fetchLatestTagsIfNeeded() {
+                if longQuest.isStillConsideredComplete(tags: latest.tags, lastEditedAt: latest.timestamp) {
+                    alreadyCompletedMessage = "This element has already been answered by another user."
+                    viewModel.refreshQuests()
+                } else {
+                    // Not complete — the form is about to be shown, so make sure it's
+                    // built from the tags we just fetched live, not whatever `tags`
+                    // held when the sheet opened (init() runs before this fetch).
+                    longQuest.refreshTags(latest.tags)
+                }
             }
             isCheckingFreshness = false
         }
@@ -1170,6 +1196,10 @@ public enum SheetDismissalScenario {
     case syncBackground(Int)
     /// A created element was deleted via undo — remove its pin, if it has one.
     case elementRemoved(Int)
+    /// An element's answers were successfully synced to the server (local tags
+    /// are now merged and persisted) — re-check whether it should still show a
+    /// pin, rather than assuming any submission means "done, hide it".
+    case answerSynced(Int)
     case noteSubmitted
     case notesQueueUpdated
     case notesSyncing

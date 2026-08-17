@@ -36,6 +36,10 @@ public struct OSMWay: Codable, OSMPayload, OSMElement  {
         xmlBuilder.addAttribute(name: "changeset", value: "\(changeset)")
 
         tags.forEach { (key: String, value: String) in
+            // See the equivalent comment in OSMNode.toPayload: an empty value means
+            // "this tag was cleared, remove it" — omitting it from the <modify> is
+            // the only valid way to signal a tag removal to the OSM API.
+            guard !value.isEmpty else { return }
             xmlBuilder.addChild(element: TagPayload(key: key, value: value))
         }
 

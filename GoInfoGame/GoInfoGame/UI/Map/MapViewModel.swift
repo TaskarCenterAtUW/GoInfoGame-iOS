@@ -152,6 +152,24 @@ class MapViewModel: ObservableObject {
         }
     }
 
+    /// Re-checks a single element against the just-merged local tags after its
+    /// answers have actually synced, instead of assuming any submission means
+    /// "fully answered, hide it". `getUpdatedQuest` re-runs `isApplicable` (and
+    /// so `LongFormElement.isFullyAnswered`) — it returns nil once every
+    /// currently-applicable question has an answer, non-nil (with fresh tags/
+    /// coordinate) if the element still needs more answers.
+    func refreshMapAfterAnswerSync(elementId: Int) {
+        if let updated = AppQuestManager.shared.getUpdatedQuest(elementId: String(elementId)) {
+            if let index = self.items.firstIndex(where: { $0.id == elementId }) {
+                self.items[index] = updated
+            } else {
+                self.items.append(updated)
+            }
+        } else if let index = self.items.firstIndex(where: { $0.id == elementId }) {
+            self.items.remove(at: index)
+        }
+    }
+
     func refreshMapAfterUndoSumbit(storedChangesetId: String) {
         if let newItem = AppQuestManager.shared.fetchQuestForChangeset(storedChangesetId: storedChangesetId) {
             self.items.append(newItem)

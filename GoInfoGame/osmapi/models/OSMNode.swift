@@ -86,6 +86,13 @@ public struct OSMNode: Codable, OSMPayload, OSMElement, OSMCreatePayload {
          xmlBuilder.addAttribute(name: "changeset", value: "\(changeset)")
 
          tags.forEach { (key: String, value: String) in
+             // An empty value is the app's internal signal for "this tag was cleared,
+             // remove it" (produced when a user deselects/clears a previously-answered
+             // long-form question) — OSM itself has no concept of an empty-valued tag
+             // (the API rejects one outright), so the only valid way to remove a tag is
+             // to omit it from the <modify> entirely, which is what leaving it out here
+             // does.
+             guard !value.isEmpty else { return }
              xmlBuilder.addChild(element: TagPayload(key: key, value: value))
          }
 

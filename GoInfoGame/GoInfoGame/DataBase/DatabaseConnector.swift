@@ -278,7 +278,13 @@ class DatabaseConnector {
             do {
                 try realm.write {
                     editable.tags.removeAll()
-                    tags.forEach { editable.tags[$0.key] = $0.value }
+                    // An empty value means the tag was cleared/removed this submission
+                    // (see OSMWay.toPayload) — the local cache should reflect that the
+                    // tag no longer exists at all, not carry a phantom empty entry.
+                    tags.forEach { key, value in
+                        guard !value.isEmpty else { return }
+                        editable.tags[key] = value
+                    }
                     editable.version = version
                     if let timestamp {
                         editable.timestamp = timestamp
@@ -307,7 +313,13 @@ class DatabaseConnector {
             do {
                 try realm.write {
                     editable.tags.removeAll()
-                    tags.forEach { editable.tags[$0.key] = $0.value }
+                    // See the equivalent comment in addWayTags: an empty value means
+                    // the tag was cleared this submission — drop it from the local
+                    // cache entirely rather than storing a phantom empty entry.
+                    tags.forEach { key, value in
+                        guard !value.isEmpty else { return }
+                        editable.tags[key] = value
+                    }
                     editable.version = version
                     if let timestamp {
                         editable.timestamp = timestamp

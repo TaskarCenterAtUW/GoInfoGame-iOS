@@ -104,13 +104,22 @@ class LongFormViewModel: ObservableObject {
         guard let quests = longForm?.quests else { return [:] }
         let isLiDARSupportedDevice = LiDARDetection.shared.isLiDARSupported()
         for quest in quests {
-            if let choiceOptional = selectedChoices[quest.questID], let choice = choiceOptional {
+            // `selectedChoices[quest.questID]` being present (even with a nil payload)
+            // means the user touched this question this session — either answering it
+            // or explicitly clearing/deselecting a previous answer. Both must reach the
+            // server: leaving a cleared question out of submissionDict entirely would
+            // silently keep whatever value the tag already had.
+            if let choiceOptional = selectedChoices[quest.questID] {
                 if shouldShowQuest(quest) {
-                    // Handle AutoCapture quest type
                     if quest.questType == .autoCapture {
-                        handleAutoCaptureTags(choice: choice, submissionDict: &submissionDict)
+                        if let choice = choiceOptional {
+                            handleAutoCaptureTags(choice: choice, submissionDict: &submissionDict)
+                        }
                     } else if let tag = quest.questTag {
-                        submissionDict[tag] = choice.value
+                        // An empty string is the signal the merge/payload layer uses to
+                        // actually remove the tag — OSM itself rejects empty tag values,
+                        // so it can never be mistaken for a real answer.
+                        submissionDict[tag] = choiceOptional?.value ?? ""
                     }
                 }
             } else if isLiDARSupportedDevice,
