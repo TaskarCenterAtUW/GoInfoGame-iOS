@@ -17,36 +17,41 @@ struct QuestSyncButton: View {
 
     var body: some View {
         Button(action: action) {
-            ZStack(alignment: .topTrailing) {
-                Asset.sync.swiftUIImage
-                    .rotationEffect(.degrees(rotationAngle))
-                    .padding(8)
-                    .background(Asset.Colors.e7E3EELightPurpuleBg.swiftUIColor)
-                    .foregroundStyle(Asset.Colors.huskyPurple.swiftUIColor)
-                    .frame(width: 34, height: 34)
-                    .clipShape(Circle())
-                    .animation(isRotating ? .linear(duration: 1).repeatForever(autoreverses: false) : .default , value: isRotating)
-                    .onChange(of: isSyncing) { newValue in
-                        if newValue {
-                            rotationAngle = 360
-                            isRotating = true
-                        } else {
-                            rotationAngle = 0
-                            isRotating = false
-                        }
-                    }
-                if badgeCount > 0 {
-                    Text("\(badgeCount)")
-                        .font(.caption2)
-                        .padding(5)
-                        .background(Color.red)
-                        .foregroundColor(.white)
+            Label {
+                Text(isSyncing ? "Syncing" : "Sync")
+            } icon: {
+                ZStack(alignment: .topTrailing) {
+                    Asset.sync.swiftUIImage
+                        .rotationEffect(.degrees(rotationAngle))
+                        .padding(8)
+                        .background(Asset.Colors.e7E3EELightPurpuleBg.swiftUIColor)
+                        .foregroundStyle(Asset.Colors.huskyPurple.swiftUIColor)
+                        .frame(width: 34, height: 34)
                         .clipShape(Circle())
-                        .offset(x: 10, y: -10)
-                        .accessibilityHidden(true)
+                        .animation(isRotating ? .linear(duration: 1).repeatForever(autoreverses: false) : .default , value: isRotating)
+                        .onChange(of: isSyncing) { newValue in
+                            if newValue {
+                                rotationAngle = 360
+                                isRotating = true
+                            } else {
+                                rotationAngle = 0
+                                isRotating = false
+                            }
+                        }
+                    if badgeCount > 0 {
+                        Text("\(badgeCount)")
+                            .font(.caption2)
+                            .padding(5)
+                            .background(Color.red)
+                            .foregroundColor(.white)
+                            .clipShape(Circle())
+                            .offset(x: 10, y: -10)
+                            .accessibilityHidden(true)
+                    }
                 }
             }
         }
+        .labelStyle(.iconOnly)
         .buttonStyle(.plain)
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(isSyncing ? "Syncing" : "Sync")

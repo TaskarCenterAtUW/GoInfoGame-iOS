@@ -84,8 +84,14 @@ struct UndoEditsView: View {
                         .font(FontFamily.Lato.bold.swiftUIFont(size: 16, relativeTo: .headline))
                         .foregroundStyle(Asset.Colors.huskyPurple.swiftUIColor)
                         .multilineTextAlignment(.leading)
-                        .lineLimit(nil)
-                        .fixedSize(horizontal: false, vertical: true)
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.6)
+                        // .principal centers relative to the leading/trailing group widths, so its
+                        // apparent alignment shifted depending on how many trailing items existed —
+                        // fragile (this screen has only 1 trailing item vs. AccessibilityModeView's
+                        // 2, which is why the two titles ended up looking differently aligned). An
+                        // explicit leading frame keeps this stable regardless of that.
+                        .frame(width: 130, alignment: .leading)
                         .accessibilityLabel(L10n.Localizable.undoEdits)
                 }
                 
