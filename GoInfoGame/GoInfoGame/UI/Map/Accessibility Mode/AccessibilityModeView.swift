@@ -83,12 +83,16 @@ struct AccessibilityModeView: View {
             }
             .padding()
             .toolbar {
-                ToolbarItem(placement: .principal) {
+                ToolbarItem(placement: .topBarLeading) {
                     Text(L10n.Localizable.screenReaderMode)
                         .font(FontFamily.Lato.bold.swiftUIFont(size: 16, relativeTo: .headline))
                         .foregroundStyle(Asset.Colors.huskyPurple.swiftUIColor)
-                        .lineLimit(nil)
-                        .fixedSize(horizontal: false, vertical: true)
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.6)
+                        // .principal centers relative to the leading/trailing group widths, so its
+                        // apparent alignment shifted depending on how many trailing items existed —
+                        // fragile. An explicit leading frame keeps this stable regardless of that.
+                        .frame(width: 190, alignment: .leading)
                         .accessibilityLabel(L10n.Localizable.screenReaderMode)
                 }
                 
