@@ -76,11 +76,20 @@ class LongFormViewModel: ObservableObject {
     func clearAnswersForHiddenQuests() {
         guard let quests = longForm?.quests else { return }
         for quest in quests {
-            if !shouldShowQuest(quest) {
-                if selectedChoices[quest.questID] != nil {
-                    selectedChoices[quest.questID] = nil
-                }
-            }
+            guard !shouldShowQuest(quest) else { continue }
+            // Unwrap the outer optional (is this quest ID present at all?) then
+            // check the inner one (does it hold a real answer?). Only a real
+            // answer needs clearing — skipping when it's already nil keeps this
+            // self-terminating, since `updateValue` below deliberately keeps the
+            // key present rather than removing it.
+            guard let existing = selectedChoices[quest.questID], existing != nil else { continue }
+            // Plain subscript assignment (`selectedChoices[id] = nil`) would
+            // remove the key entirely — indistinguishable from "never answered" —
+            // so a hidden question's stale answer would silently never reach
+            // getAnswersForSubmission as a tag removal. updateValue keeps the key
+            // present with a nil payload, the same "touched, explicitly cleared"
+            // signal the answer bindings use.
+            selectedChoices.updateValue(nil, forKey: quest.questID)
         }
     }
     
@@ -110,7 +119,14 @@ class LongFormViewModel: ObservableObject {
             // server: leaving a cleared question out of submissionDict entirely would
             // silently keep whatever value the tag already had.
             if let choiceOptional = selectedChoices[quest.questID] {
-                if shouldShowQuest(quest) {
+                // A hidden question whose answer is nil got there via
+                // clearAnswersForHiddenQuests (its dependency is no longer met, e.g.
+                // the parent question's answer changed) — that's still a real removal
+                // that must reach the server, or the now-inapplicable answer would be
+                // left on the element forever. A hidden question that still holds a
+                // real (non-nil) answer is the normal "not currently applicable, don't
+                // submit it" case and stays excluded.
+                if shouldShowQuest(quest) || choiceOptional == nil {
                     if quest.questType == .autoCapture {
                         if let choice = choiceOptional {
                             handleAutoCaptureTags(choice: choice, submissionDict: &submissionDict)
