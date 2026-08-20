@@ -175,6 +175,7 @@
 		C76B63792E4605570076A540 /* Fonts+Generated.swift in Sources */ = {isa = PBXBuildFile; fileRef = C76B63772E4604000076A540 /* Fonts+Generated.swift */; };
 		C76B637F2E4625D30076A540 /* FirebasePerformance in Frameworks */ = {isa = PBXBuildFile; productRef = C76B637E2E4625D30076A540 /* FirebasePerformance */; };
 		C76DA1A12DF0679F00451E63 /* LongFormModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA8C74C32C4FDE1000D28220 /* LongFormModel.swift */; };
+		98E6B86BDDC74537ACA56927 /* LongFormElement+Completion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9111A9602D6348DD884AB010 /* LongFormElement+Completion.swift */; };
 		C76FAAE52ED76509009E0B4F /* gachibowli circle_path.gpx in Resources */ = {isa = PBXBuildFile; fileRef = C76FAAE42ED76509009E0B4F /* gachibowli circle_path.gpx */; };
 		C778A50F2EDD9C6D0014B9C5 /* UndoEditsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C778A50E2EDD9C6D0014B9C5 /* UndoEditsViewModel.swift */; };
 		C77A4A262DF2AF3100DED8B0 /* SecureInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C77A4A252DF2AF3100DED8B0 /* SecureInputView.swift */; };
@@ -628,6 +629,7 @@
 		FA87A81A2B6B042E000A6BEA /* SideWalkWidthTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SideWalkWidthTests.swift; sourceTree = "<group>"; };
 		FA8C74C12C4E89C800D28220 /* LongForm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LongForm.swift; sourceTree = "<group>"; };
 		FA8C74C32C4FDE1000D28220 /* LongFormModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LongFormModel.swift; sourceTree = "<group>"; };
+		9111A9602D6348DD884AB010 /* LongFormElement+Completion.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "LongFormElement+Completion.swift"; sourceTree = "<group>"; };
 		FA8C74C62C4FE2E900D28220 /* LongFormWidthView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LongFormWidthView.swift; sourceTree = "<group>"; };
 		FA8C74C82C57B9AE00D28220 /* LongQuestView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LongQuestView.swift; sourceTree = "<group>"; };
 		FA8C74D02C598F9D00D28220 /* Lato-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Lato-Regular.ttf"; sourceTree = "<group>"; };
@@ -1596,6 +1598,7 @@
 			isa = PBXGroup;
 			children = (
 				FA8C74C32C4FDE1000D28220 /* LongFormModel.swift */,
+				9111A9602D6348DD884AB010 /* LongFormElement+Completion.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -2454,6 +2457,7 @@
 				C79EDA8B2ED96B4500D2B100 /* CrossMarkButton.swift in Sources */,
 				FABF3D002B8607D80080EAC9 /* MeasureSidewalkView.swift in Sources */,
 				C76DA1A12DF0679F00451E63 /* LongFormModel.swift in Sources */,
+				98E6B86BDDC74537ACA56927 /* LongFormElement+Completion.swift in Sources */,
 				C79EDA8F2ED9977700D2B100 /* DottedLineView.swift in Sources */,
 				C78E8BC42EDF2D55002215C0 /* EditedTagView.swift in Sources */,
 				FA18CAE72CC80A34008247F2 /* UploadPhotoModel.swift in Sources */,

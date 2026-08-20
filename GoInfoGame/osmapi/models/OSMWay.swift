@@ -20,28 +20,12 @@ public struct OSMWay: Codable, OSMPayload, OSMElement  {
     public var isInteresting: Bool? = false
     public var isSkippable: Bool? = false
     
-    public func fetchInternalGigTags() -> [String:String] {
-        
-        var internalTags:[String:String] = [:]
-        let dateFormatter = DateFormatter()
-
-        // Set the date format to "yyyy-MM-dd"
-        dateFormatter.dateFormat = "yyyy-MM-ddXXX"
-        dateFormatter.timeZone = TimeZone(secondsFromGMT: 0)
-
-        // Create a Date object (for example, the current date)
-        let currentDate = Date()
-
-        // Convert the Date object to a formatted string
-        let formattedDate = dateFormatter.string(from: currentDate)
-        //"ext:gig_last_updated"
-        internalTags["ext:gig_last_updated"] = formattedDate
-        internalTags["ext:gig_complete"] = "yes"
-        
-        return internalTags
-    }
-    
-    
+    /// Neither ext:gig_complete nor ext:gig_last_updated is managed by the app —
+    /// completeness and recency are both computed live (from actual answers and
+    /// the OSM element's own native `timestamp`, respectively) rather than cached
+    /// in a tag, since the long form's question set is configurable from the web
+    /// and can change over time. Any pre-existing value for either tag simply
+    /// passes through unchanged, like any other tag.
     public func toPayload(exclude_gig_tags: Bool = false) -> String {
         var osmNode = "<modify>"
         let xmlBuilder = OSMXMLBuilder(rootName: "way")
@@ -50,50 +34,14 @@ public struct OSMWay: Codable, OSMPayload, OSMElement  {
         //        xmlBuilder.addAttribute(name: "lon", value: "\(lon)")
         xmlBuilder.addAttribute(name: "version", value: "\(version)")
         xmlBuilder.addAttribute(name: "changeset", value: "\(changeset)")
-       
-       // Add the gig payload tags. ext:gig_complete/ext:gig_last_updated are held
-       // back here (not added to xmlBuilder yet) rather than added-then-"updated" —
-       // TagPayload is a struct, so addChild(element:) below would otherwise copy
-       // its value in at that moment; mutating a *different* local copy afterwards
-       // (as this used to do) never reaches the copy already sitting in the
-       // builder, so a re-answered element's date silently kept its original value.
-       var existingGigComplete: TagPayload? = nil
+
         tags.forEach { (key: String, value: String) in
-            if !exclude_gig_tags {
-                if (key == "ext:gig_complete"){
-                    existingGigComplete = TagPayload(key: key, value: value)
-                    return
-                }
-                if (key == "ext:gig_last_updated"){
-                    return // always replaced with today's date below — the old value is never needed
-                }
-            }
+            // See the equivalent comment in OSMNode.toPayload: an empty value means
+            // "this tag was cleared, remove it" — omitting it from the <modify> is
+            // the only valid way to signal a tag removal to the OSM API.
+            guard !value.isEmpty else { return }
             xmlBuilder.addChild(element: TagPayload(key: key, value: value))
         }
-        if !exclude_gig_tags {
-            let gigCompleteTag = TagPayload(key: "ext:gig_complete", value: existingGigComplete?.value ?? "yes")
-            xmlBuilder.addChild(element: gigCompleteTag)
-        }
-
-       // Today date
-       // Create a DateFormatter instance
-       let dateFormatter = DateFormatter()
-
-       // Set the date format to "yyyy-MM-dd"
-       dateFormatter.dateFormat = "yyyy-MM-ddXXX"
-        dateFormatter.timeZone = TimeZone(secondsFromGMT: 0)
-
-       // Create a Date object (for example, the current date)
-       let currentDate = Date()
-
-       // Convert the Date object to a formatted string
-       let formattedDate = dateFormatter.string(from: currentDate)
-       
-        if !exclude_gig_tags {
-            let gigLastUpdated = TagPayload(key: "ext:gig_last_updated", value: formattedDate)
-            xmlBuilder.addChild(element: gigLastUpdated)
-        }
-
 
        nodes.forEach { nodeId in
            let wayNode = WayNodePayload(nodeId: nodeId)

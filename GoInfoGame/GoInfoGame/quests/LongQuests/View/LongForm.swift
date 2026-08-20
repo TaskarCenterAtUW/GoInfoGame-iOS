@@ -31,6 +31,12 @@ struct LongForm: View, QuestForm {
 
     var tags: [String: String]?
 
+    /// When true, this form is answering a multi-select batch of elements at once
+    /// (see `LongElementQuest.isMultiSelectMode`) — `tags` reflects only the first
+    /// selected element's state, which can't represent the whole batch, so prefill
+    /// is skipped and the form always starts blank.
+    var isMultiSelectMode: Bool = false
+
     var action: (([String:String]) -> Void)?
 
     typealias AnswerClass = [String:String]
@@ -71,6 +77,8 @@ struct LongForm: View, QuestForm {
     @State private var submitStatusMessage: String?
 
     @State private var deviceSupportsLiDAR: Bool = false
+
+    @State private var hasPrefilled = false
 
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
@@ -187,6 +195,12 @@ struct LongForm: View, QuestForm {
             }
             .onAppear {
                 deviceSupportsLiDAR = LiDARDetection.shared.isLiDARSupported()
+                if !hasPrefilled {
+                    hasPrefilled = true
+                    if !isMultiSelectMode {
+                        viewModel.prefillAnswers(tags: tags ?? [:])
+                    }
+                }
             }
             .onChange(of: viewModel.selectedChoices) { _ in
                 viewModel.clearAnswersForHiddenQuests()
@@ -315,7 +329,13 @@ struct LongForm: View, QuestForm {
         return Binding(
             get: { viewModel.selectedChoices[quest.questID, default: nil] },
             set: {
-                viewModel.selectedChoices[quest.questID] = $0
+                // `selectedChoices[quest.questID] = $0` would, when $0 is nil, remove
+                // the key entirely (Swift's subscript-assign-nil-removes-key rule) —
+                // indistinguishable from "never touched this session". updateValue
+                // stores an explicit nil instead, so getAnswersForSubmission can tell
+                // "deselected/cleared" (must remove the tag) apart from "untouched"
+                // (leave the tag alone).
+                viewModel.selectedChoices.updateValue($0, forKey: quest.questID)
             }
         )
     }

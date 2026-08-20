@@ -67,7 +67,15 @@ class LongElementQuest: QuestBase, Quest {
 
     var tags: [String: String]?
 
-    
+    /// Set by `QuestSheetView.init` before opening the form. A multi-select batch
+    /// can contain elements with different existing answers for the same question,
+    /// and this element's own `tags` (used for prefill) can't represent that — so
+    /// the form must start blank rather than misleadingly show only the first
+    /// selected element's state, which the user could then unintentionally apply
+    /// to every other element in the batch by leaving it untouched.
+    var isMultiSelectMode: Bool = false
+
+
     var changesetComment: String = ""
     
     typealias AnswerClass = [String:String]
@@ -102,10 +110,6 @@ class LongElementQuest: QuestBase, Quest {
 
     /// The quest_query alone, without the `!ext:gig_complete` exclusion — used only
     /// by `isApplicable` to re-check a completed element against the recency period.
-    /// `ext:gig_last_updated` is written as "yyyy-MM-ddXXX" (a timezone suffix), which
-    /// the shared filter DSL's date parser can't read (it requires a whole-string
-    /// "yyyy-MM-dd" match), so that comparison is done here in Swift instead of by
-    /// folding it into `filterExpression`'s query string.
     private var _internalBaseExpression: ElementFilterExpression?
     private var baseFilterExpression: ElementFilterExpression? {
         if let _internalBaseExpression { return _internalBaseExpression }
@@ -113,51 +117,41 @@ class LongElementQuest: QuestBase, Quest {
         return _internalBaseExpression
     }
 
-    private static let gigDateFormatter: DateFormatter = {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "yyyy-MM-ddXXX"
-        formatter.timeZone = TimeZone(secondsFromGMT: 0)
-        return formatter
-    }()
-
-    /// Before the "XXX" timezone suffix was added, `ext:gig_last_updated` was
-    /// written as a bare "yyyy-MM-dd" — kept so elements completed by older app
-    /// versions still parse.
-    private static let legacyGigDateFormatter: DateFormatter = {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "yyyy-MM-dd"
-        formatter.timeZone = TimeZone(secondsFromGMT: 0)
-        return formatter
-    }()
-
-    /// `DateFormatter.date(from:)` requires the whole string to match its pattern,
-    /// so trying the current format first and falling back to the legacy one is
-    /// unambiguous — a value can only ever satisfy one of the two.
-    private static func parseGigDate(_ value: String) -> Date? {
-        gigDateFormatter.date(from: value) ?? legacyGigDateFormatter.date(from: value)
-    }
-
-    /// True when `tags` represents an element that should still be treated as
-    /// "answered, nothing to do" — i.e. not just marked `ext:gig_complete=yes`, but
-    /// also still within its `recency_period` freshness window (if one is
-    /// configured at all). Shared by `isApplicable` (bulk quest matching) and
-    /// MapView's tap-to-open freshness re-check, so both agree on the same element
-    /// at the same moment — without this, a stale-but-complete element could show
-    /// up as a pin (via `isApplicable`) but still get rejected as "already
-    /// answered" the instant it's tapped.
-    static func isStillConsideredComplete(tags: [String: String]) -> Bool {
-        // Key presence only — matches the original `!ext:gig_complete` filter
-        // (NotHasKey), which never looked at the tag's value either. Checking for
-        // an exact "yes" here would incorrectly treat any element completed with a
-        // different value (a legacy write, another app version/platform) as never
-        // answered at all.
-        guard tags.keys.contains("ext:gig_complete") else { return false }
+    /// True when `tags`/`lastEditedAt` represent an element that should still be
+    /// treated as "answered, nothing to do" — i.e. every currently-applicable
+    /// question in this element's long form already has an answer reflected in
+    /// `tags`, and (if a `recency_period` is configured) the element's native OSM
+    /// edit timestamp is still within its freshness window. Using the element's
+    /// own `timestamp` (rather than a app-managed tag) means an edit made by
+    /// anyone, through any tool, counts toward freshness — not just an edit made
+    /// through this app's long form. Shared by `isApplicable` (bulk quest
+    /// matching) and MapView's tap-to-open freshness re-check, so both agree on
+    /// the same element at the same moment — without this, a stale-but-complete
+    /// element could show up as a pin (via `isApplicable`) but still get rejected
+    /// as "already answered" the instant it's tapped.
+    func isStillConsideredComplete(tags: [String: String], lastEditedAt: Date) -> Bool {
+        guard let longFormElement = QuestsRepository.shared.questElementForQuery(_internalQueryString ?? "") else {
+            // No quest definition resolvable for this query — there's no way to
+            // verify completeness, so don't claim it. The app no longer treats
+            // ext:gig_complete as meaningful in either direction.
+            return false
+        }
+        guard longFormElement.isFullyAnswered(tags: tags) else { return false }
         guard let recencyDays = QuestsRepository.shared.recencyPeriodDays else { return true }
-        guard let lastUpdatedString = tags["ext:gig_last_updated"],
-              let lastUpdatedDate = parseGigDate(lastUpdatedString)
-        else { return true } // marked complete but undated/unparseable — stay conservative
 
-        let daysSinceUpdate = Calendar.current.dateComponents([.day], from: lastUpdatedDate, to: Date()).day ?? 0
+        // Calendar-day difference, not elapsed-hours: dateComponents([.day], from:to:)
+        // anchors to lastEditedAt's exact time-of-day, so an edit from yesterday
+        // evening checked this morning (< 24 elapsed hours) would otherwise compute
+        // 0 days, not 1 — silently keeping a stale element hidden under a small
+        // recency_period. Diffing start-of-day for both sides gives a true calendar-
+        // date difference, matching the old ext:gig_last_updated tag's semantics
+        // (it stored a date-only string, with no time-of-day component at all).
+        let calendar = Calendar.current
+        let daysSinceUpdate = calendar.dateComponents(
+            [.day],
+            from: calendar.startOfDay(for: lastEditedAt),
+            to: calendar.startOfDay(for: Date())
+        ).day ?? 0
         return daysSinceUpdate <= recencyDays
     }
 
@@ -172,9 +166,10 @@ class LongElementQuest: QuestBase, Quest {
               baseFilterExpression.matches(element: element)
         else { return false }
 
-        return !Self.isStillConsideredComplete(tags: element.tags)
+        let lastEditedAt = Date(timeIntervalSince1970: TimeInterval(element.timestampEdited))
+        return !isStillConsideredComplete(tags: element.tags, lastEditedAt: lastEditedAt)
     }
-    
+
     var displayUnit: DisplayUnit {
         let uid = String(self.id)
         return DisplayUnit(title: self.title, description: "", id: "\(uid)-\(questId)",parent: self,sheetSize: .LONGFORM)
@@ -190,11 +185,25 @@ class LongElementQuest: QuestBase, Quest {
     
     private func updateForm() {
           self.internalForm = LongForm(
-            elementName: elementType, questID: questId, query: _internalQueryString, tags: tags, action: { [self] tags in
+            elementName: elementType, questID: questId, query: _internalQueryString, tags: tags,
+            isMultiSelectMode: isMultiSelectMode,
+            action: { [self] tags in
                 self.questAnswersSelected?(tags)
             }, coordinate: annotationCoordinate ?? CLLocationCoordinate2D(latitude: 0, longitude: 0)
           )
       }
+
+    /// Replaces `tags` with a freshly-fetched set (e.g. from `fetchLatestTagsIfNeeded`)
+    /// and rebuilds `form` from them. `annotationCoordinate` is set synchronously when
+    /// the sheet opens, capturing whatever `tags` held at that moment — for a partially
+    /// answered element that's still applicable, the live server fetch that follows
+    /// needs this to actually reach the form, otherwise the prefill silently shows
+    /// whatever (possibly stale) tags the element had before the sheet's freshness
+    /// check ran.
+    func refreshTags(_ tags: [String: String]) {
+        self.tags = tags
+        updateForm()
+    }
 
     init(questId: String, questQuery:String, elementType: String, elementTypeIcon: String?) {
         id = -1
@@ -225,7 +234,7 @@ class LongElementQuest: QuestBase, Quest {
         self.updateTags(id: id, questType: elementType, tags: answer, type: type, iconName: iconName)
     }
 
-    func fetchLatestTagsIfNeeded() async -> [String: String]? {
+    func fetchLatestTagsIfNeeded() async -> (tags: [String: String], timestamp: Date)? {
         await DatasyncManager.shared.fetchLatestTags(id: id, isWay: type == .way)
     }
 

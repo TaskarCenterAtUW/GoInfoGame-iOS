@@ -121,10 +121,10 @@ class QuestBase {
     // Add a custom implementation
     
     public func updateTags(id: Int64, questType: String, tags:[String:String], type: ElementType, iconName: String, exclude_gig_tags: Bool = false) {
-       
+
        // Convert from ElementType enum to StoredElementEnum
        let storedElementType: StoredElementEnum = type == .way ? .way : .node
-       
+
        switch (storedElementType){
        case .way:
            elementSubmittingToPOSM = .way
@@ -150,10 +150,14 @@ class QuestBase {
        DatasyncManager.shared.syncDataToOSM(exclude_gig_tags: exclude_gig_tags) { success in
            DispatchQueue.main.async {
                MapViewPublisher.shared.dismissSheet.send(.synced)
-               
+
                switch success {
                case .success(let success):
-                   if !success {
+                   if success {
+                       // Only now are the merged tags actually persisted locally —
+                       // safe to re-check whether this element still needs answers.
+                       MapViewPublisher.shared.dismissSheet.send(.answerSynced(Int(id)))
+                   } else {
                        print("Sync failed. Handle accordingly.")
                        MapViewPublisher.shared.dismissSheet.send(.failed("Submission failed. Please try again."))
                    }

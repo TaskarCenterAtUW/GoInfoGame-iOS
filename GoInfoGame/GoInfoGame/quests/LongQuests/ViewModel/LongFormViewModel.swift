@@ -46,14 +46,50 @@ class LongFormViewModel: ObservableObject {
         return false
     }
     
+    /// Seeds `selectedChoices` from an element's existing OSM tags, so a
+    /// partially-answered element opens showing what's already been answered
+    /// instead of a blank form. AutoCapture is skipped — its completeness is
+    /// driven entirely by the tag-based check in `LongFormElement+Completion`,
+    /// independent of any in-session selection, and its capture UI always starts
+    /// fresh.
+    func prefillAnswers(tags: [String: String]) {
+        guard let quests = longForm?.quests else { return }
+        for quest in quests {
+            guard quest.questType != .autoCapture,
+                  let tag = quest.questTag,
+                  let value = tags[tag], !value.isEmpty else { continue }
+            if quest.questType == .exclusiveChoice {
+                // Reuse the exact object from questAnswerChoices rather than
+                // constructing a new one — QuestAnswerChoice's synthesized
+                // Equatable includes its per-instance UUID, so a freshly built
+                // struct would silently fail the selection-highlight `==` check
+                // even with a matching value.
+                if let match = quest.questAnswerChoices?.first(where: { $0.value == value }) {
+                    selectedChoices[quest.questID] = match
+                }
+            } else {
+                selectedChoices[quest.questID] = QuestAnswerChoice(value: value, choiceText: value, imageURL: nil, choiceFollowUp: nil)
+            }
+        }
+    }
+
     func clearAnswersForHiddenQuests() {
         guard let quests = longForm?.quests else { return }
         for quest in quests {
-            if !shouldShowQuest(quest) {
-                if selectedChoices[quest.questID] != nil {
-                    selectedChoices[quest.questID] = nil
-                }
-            }
+            guard !shouldShowQuest(quest) else { continue }
+            // Unwrap the outer optional (is this quest ID present at all?) then
+            // check the inner one (does it hold a real answer?). Only a real
+            // answer needs clearing — skipping when it's already nil keeps this
+            // self-terminating, since `updateValue` below deliberately keeps the
+            // key present rather than removing it.
+            guard let existing = selectedChoices[quest.questID], existing != nil else { continue }
+            // Plain subscript assignment (`selectedChoices[id] = nil`) would
+            // remove the key entirely — indistinguishable from "never answered" —
+            // so a hidden question's stale answer would silently never reach
+            // getAnswersForSubmission as a tag removal. updateValue keeps the key
+            // present with a nil payload, the same "touched, explicitly cleared"
+            // signal the answer bindings use.
+            selectedChoices.updateValue(nil, forKey: quest.questID)
         }
     }
     
@@ -77,13 +113,29 @@ class LongFormViewModel: ObservableObject {
         guard let quests = longForm?.quests else { return [:] }
         let isLiDARSupportedDevice = LiDARDetection.shared.isLiDARSupported()
         for quest in quests {
-            if let choiceOptional = selectedChoices[quest.questID], let choice = choiceOptional {
-                if shouldShowQuest(quest) {
-                    // Handle AutoCapture quest type
+            // `selectedChoices[quest.questID]` being present (even with a nil payload)
+            // means the user touched this question this session — either answering it
+            // or explicitly clearing/deselecting a previous answer. Both must reach the
+            // server: leaving a cleared question out of submissionDict entirely would
+            // silently keep whatever value the tag already had.
+            if let choiceOptional = selectedChoices[quest.questID] {
+                // A hidden question whose answer is nil got there via
+                // clearAnswersForHiddenQuests (its dependency is no longer met, e.g.
+                // the parent question's answer changed) — that's still a real removal
+                // that must reach the server, or the now-inapplicable answer would be
+                // left on the element forever. A hidden question that still holds a
+                // real (non-nil) answer is the normal "not currently applicable, don't
+                // submit it" case and stays excluded.
+                if shouldShowQuest(quest) || choiceOptional == nil {
                     if quest.questType == .autoCapture {
-                        handleAutoCaptureTags(choice: choice, submissionDict: &submissionDict)
+                        if let choice = choiceOptional {
+                            handleAutoCaptureTags(choice: choice, submissionDict: &submissionDict)
+                        }
                     } else if let tag = quest.questTag {
-                        submissionDict[tag] = choice.value
+                        // An empty string is the signal the merge/payload layer uses to
+                        // actually remove the tag — OSM itself rejects empty tag values,
+                        // so it can never be mistaken for a real answer.
+                        submissionDict[tag] = choiceOptional?.value ?? ""
                     }
                 }
             } else if isLiDARSupportedDevice,
