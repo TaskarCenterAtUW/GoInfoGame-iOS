@@ -29,6 +29,8 @@ internal enum L10n {
     internal static let composeANote = L10n.tr("Localizable", "Compose a note", fallback: "Compose a note")
     /// Compose message
     internal static let composeMessage = L10n.tr("Localizable", "Compose message", fallback: "Compose message")
+    /// Current Location
+    internal static let currentLocation = L10n.tr("Localizable", "Current Location", fallback: "Current Location")
     /// Date & Time
     internal static let dateTime = L10n.tr("Localizable", "Date & Time", fallback: "Date & Time")
     /// Disable quest images to save data

@@ -9,16 +9,17 @@ import SwiftUI
 
 struct FloatingActionButton: View {
     let systemName: String
+    var iconSize: CGFloat = 25
     let action: () -> Void
-    
+
     var body: some View {
         Button(action: {
             action()
         }) {
             Image(systemName: systemName)
-                .font(.system(size: 25))
+                .font(.system(size: iconSize))
                 .foregroundColor(Asset.Colors.huskyPurple.swiftUIColor)
-                .frame(width: 54, height: 54)
+                .frame(width: 44, height: 44)
                 .background(.white)
                 .clipShape(Circle())
                 .shadow(radius: 10)

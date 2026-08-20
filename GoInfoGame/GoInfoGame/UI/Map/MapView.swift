@@ -195,6 +195,28 @@ struct MapView: View {
                 }
 
                 VStack {
+                    HStack {
+                        Spacer()
+                        // Filter quests
+                        FloatingActionButton(systemName: "slider.horizontal.3") {
+                            showFilterQuestsSheet.toggle()
+                        }
+                        .accessibilityLabel(L10n.Localizable.filterQuestTypes)
+                        .accessibilitySortPriority(1)
+                        .sheet(isPresented: $showFilterQuestsSheet) {
+                            ManageQuestsView()
+                                // Sized to its own content by ManageQuestsView itself.
+                                .interactiveDismissDisabled()
+                                .presentationDragIndicator(.hidden)
+                                .applyPresentationSizingPage()
+                                .focusAccessibilityOnAppear()
+                        }
+                    }
+                    .padding(.top, 24)
+                    .padding(.trailing, 16)
+                    .frame(alignment: .topTrailing)
+                    
+                    
                     Spacer()
                     HStack {
                         VStack(alignment: .leading) {
@@ -220,7 +242,7 @@ struct MapView: View {
                             }
                         }
                         .padding(.bottom, 24)
-                        .padding(.leading, 16)
+                        .padding(.leading, 8)
                         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottomLeading)
 
                         Spacer()
@@ -228,45 +250,38 @@ struct MapView: View {
                         VStack(alignment: .trailing, spacing: 10) {
                             Spacer()
 
-                            // Zoom out
-                            FloatingActionButton(systemName: "minus.magnifyingglass") {
-                                if let mapView = mapViewRef {
-                                    let newZoom = max(mapView.zoomLevel - 1.0, 0)
-                                    mapView.setZoomLevel(newZoom, animated: true)
-                                    voiceOverAnnounce(message: "Zoomed out to level \(Int(newZoom))")
+                            // Zoom in / out — grouped pill
+                            ZoomControlView(
+                                onZoomIn: {
+                                    if let mapView = mapViewRef {
+                                        let newZoom = min(mapView.zoomLevel + 1.0, 22)
+                                        mapView.setZoomLevel(newZoom, animated: true)
+                                        voiceOverAnnounce(message: "Zoomed in to level \(Int(newZoom))")
+                                    }
+                                },
+                                onZoomOut: {
+                                    if let mapView = mapViewRef {
+                                        let newZoom = max(mapView.zoomLevel - 1.0, 0)
+                                        mapView.setZoomLevel(newZoom, animated: true)
+                                        voiceOverAnnounce(message: "Zoomed out to level \(Int(newZoom))")
+                                    }
+                                }
+                            )
+
+                            // Current location
+                            FloatingActionButton(systemName: "location.fill", iconSize: 20) {
+                                if let mapView = mapViewRef,
+                                   let coordinate = mapView.userLocation?.coordinate,
+                                   CLLocationCoordinate2DIsValid(coordinate) {
+                                    mapView.setCenter(coordinate, zoomLevel: max(mapView.zoomLevel, 15), animated: true)
+                                    voiceOverAnnounce(message: "Centered on current location")
                                 }
                             }
-                            .accessibilityLabel(L10n.Localizable.zoomOutMap)
+                            .accessibilityLabel(L10n.Localizable.currentLocation)
                             .accessibilitySortPriority(1)
-
-                            // Zoom in
-                            FloatingActionButton(systemName: "plus.magnifyingglass") {
-                                if let mapView = mapViewRef {
-                                    let newZoom = min(mapView.zoomLevel + 1.0, 22)
-                                    mapView.setZoomLevel(newZoom, animated: true)
-                                    voiceOverAnnounce(message: "Zoomed in to level \(Int(newZoom))")
-                                }
-                            }
-                            .accessibilityLabel(L10n.Localizable.zoomInMap)
-                            .accessibilitySortPriority(1)
-
-                            // Filter quests
-                            FloatingActionButton(systemName: "slider.horizontal.3") {
-                                showFilterQuestsSheet.toggle()
-                            }
-                            .accessibilityLabel(L10n.Localizable.filterQuestTypes)
-                            .accessibilitySortPriority(1)
-                            .sheet(isPresented: $showFilterQuestsSheet) {
-                                ManageQuestsView()
-                                    // Sized to its own content by ManageQuestsView itself.
-                                    .interactiveDismissDisabled()
-                                    .presentationDragIndicator(.hidden)
-                                    .applyPresentationSizingPage()
-                                    .focusAccessibilityOnAppear()
-                            }
                         }
                         .padding(.bottom, 24)
-                        .padding(.trailing, 16)
+                        .padding(.trailing, 8)
                         .frame(alignment: .bottomLeading)
                     }
                 }

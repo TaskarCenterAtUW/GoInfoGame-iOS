@@ -57,6 +57,7 @@
 		97AC1C0C2B6B843C004F0BF4 /* CustomAlert.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97AC1C0B2B6B843C004F0BF4 /* CustomAlert.swift */; };
 		97AC1C132B70EF0A004F0BF4 /* Surfaces.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97AC1C122B70EF0A004F0BF4 /* Surfaces.swift */; };
 		97F2FA8A2B0630A3000B9726 /* Pods_GoInfoGame.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 66BED441AF03CC04539E8D4A /* Pods_GoInfoGame.framework */; };
+		98E6B86BDDC74537ACA56927 /* LongFormElement+Completion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9111A9602D6348DD884AB010 /* LongFormElement+Completion.swift */; };
 		A40004EC2B62338400AF21FB /* AppQuestManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A40004EB2B62338400AF21FB /* AppQuestManager.swift */; };
 		A40E72642B5CD65000328848 /* OverpassRequestManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A40E72632B5CD65000328848 /* OverpassRequestManagerTests.swift */; };
 		A40E726E2B5D462A00328848 /* osmapi.docc in Sources */ = {isa = PBXBuildFile; fileRef = A40E726D2B5D462A00328848 /* osmapi.docc */; };
@@ -175,12 +176,12 @@
 		C76B63792E4605570076A540 /* Fonts+Generated.swift in Sources */ = {isa = PBXBuildFile; fileRef = C76B63772E4604000076A540 /* Fonts+Generated.swift */; };
 		C76B637F2E4625D30076A540 /* FirebasePerformance in Frameworks */ = {isa = PBXBuildFile; productRef = C76B637E2E4625D30076A540 /* FirebasePerformance */; };
 		C76DA1A12DF0679F00451E63 /* LongFormModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA8C74C32C4FDE1000D28220 /* LongFormModel.swift */; };
-		98E6B86BDDC74537ACA56927 /* LongFormElement+Completion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9111A9602D6348DD884AB010 /* LongFormElement+Completion.swift */; };
 		C76FAAE52ED76509009E0B4F /* gachibowli circle_path.gpx in Resources */ = {isa = PBXBuildFile; fileRef = C76FAAE42ED76509009E0B4F /* gachibowli circle_path.gpx */; };
 		C778A50F2EDD9C6D0014B9C5 /* UndoEditsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C778A50E2EDD9C6D0014B9C5 /* UndoEditsViewModel.swift */; };
 		C77A4A262DF2AF3100DED8B0 /* SecureInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C77A4A252DF2AF3100DED8B0 /* SecureInputView.swift */; };
 		C77AAC9D2E4463ED006713B2 /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = C77AAC9C2E4463ED006713B2 /* FirebaseAnalytics */; };
 		C77AAC9F2E4463ED006713B2 /* FirebaseCrashlytics in Frameworks */ = {isa = PBXBuildFile; productRef = C77AAC9E2E4463ED006713B2 /* FirebaseCrashlytics */; };
+		C77D48AA3036C434009E61F7 /* ZoomControlView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C77D48A93036C434009E61F7 /* ZoomControlView.swift */; };
 		C77EEBCF2DE59D3200494CB4 /* UndoMerge.swift in Sources */ = {isa = PBXBuildFile; fileRef = C77EEBCE2DE59D3200494CB4 /* UndoMerge.swift */; };
 		C785DBD43010978800E5EA58 /* MapLibre in Frameworks */ = {isa = PBXBuildFile; productRef = C785DBD33010978800E5EA58 /* MapLibre */; };
 		C78737AF2E4C9E3B00289D13 /* FloatingLabelTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = C78737AE2E4C9E3200289D13 /* FloatingLabelTextField.swift */; };
@@ -393,6 +394,7 @@
 		86C5ED636FC6D3C98650F231 /* NoteImageStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoteImageStorage.swift; sourceTree = "<group>"; };
 		89C2A88A7749F031BCDFE226 /* Pods-GoInfoGameTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-GoInfoGameTests.release.xcconfig"; path = "Target Support Files/Pods-GoInfoGameTests/Pods-GoInfoGameTests.release.xcconfig"; sourceTree = "<group>"; };
 		8AF3DE0241AC4BAB9C051601 /* FeatureImageStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeatureImageStorage.swift; sourceTree = "<group>"; };
+		9111A9602D6348DD884AB010 /* LongFormElement+Completion.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "LongFormElement+Completion.swift"; sourceTree = "<group>"; };
 		970D5BD02B62B61300C20BE7 /* MapViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapViewController.swift; sourceTree = "<group>"; };
 		970D5BD22B67638400C20BE7 /* MapViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapViewModel.swift; sourceTree = "<group>"; };
 		970D5BD42B677CC500C20BE7 /* OSMUserData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OSMUserData.swift; sourceTree = "<group>"; };
@@ -573,6 +575,7 @@
 		C77A4A252DF2AF3100DED8B0 /* SecureInputView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecureInputView.swift; sourceTree = "<group>"; };
 		C77AAC992E446376006713B2 /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		C77AACA52E447364006713B2 /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		C77D48A93036C434009E61F7 /* ZoomControlView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZoomControlView.swift; sourceTree = "<group>"; };
 		C77EEBCE2DE59D3200494CB4 /* UndoMerge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UndoMerge.swift; sourceTree = "<group>"; };
 		C78737AE2E4C9E3200289D13 /* FloatingLabelTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FloatingLabelTextField.swift; sourceTree = "<group>"; };
 		C787EF162E9676CC00BEF0A6 /* GoInfoGame.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = GoInfoGame.entitlements; sourceTree = "<group>"; };
@@ -629,7 +632,6 @@
 		FA87A81A2B6B042E000A6BEA /* SideWalkWidthTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SideWalkWidthTests.swift; sourceTree = "<group>"; };
 		FA8C74C12C4E89C800D28220 /* LongForm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LongForm.swift; sourceTree = "<group>"; };
 		FA8C74C32C4FDE1000D28220 /* LongFormModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LongFormModel.swift; sourceTree = "<group>"; };
-		9111A9602D6348DD884AB010 /* LongFormElement+Completion.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "LongFormElement+Completion.swift"; sourceTree = "<group>"; };
 		FA8C74C62C4FE2E900D28220 /* LongFormWidthView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LongFormWidthView.swift; sourceTree = "<group>"; };
 		FA8C74C82C57B9AE00D28220 /* LongQuestView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LongQuestView.swift; sourceTree = "<group>"; };
 		FA8C74D02C598F9D00D28220 /* Lato-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Lato-Regular.ttf"; sourceTree = "<group>"; };
@@ -1555,6 +1557,7 @@
 		FA87A80E2B681416000A6BEA /* Utils */ = {
 			isa = PBXGroup;
 			children = (
+				C77D48A93036C434009E61F7 /* ZoomControlView.swift */,
 				FA87A80F2B68142F000A6BEA /* LoadingView.swift */,
 				FAE258512D3A780F00D2BB12 /* FloatingActionButton.swift */,
 				FA9F38212DC93F3D00D7AABF /* UndoSidebarView.swift */,
@@ -2567,6 +2570,7 @@
 				C79C3B7C2ED5786100F80364 /* NearestQuestCard.swift in Sources */,
 				971342732BBD242400174EBF /* InitialView.swift in Sources */,
 				97AC1C132B70EF0A004F0BF4 /* Surfaces.swift in Sources */,
+				C77D48AA3036C434009E61F7 /* ZoomControlView.swift in Sources */,
 				972454152B14A49A0036B91A /* Extensions.swift in Sources */,
 				0536DD8C2B0BD2C200B04C4B /* Constants.swift in Sources */,
 				970D5BD32B67638500C20BE7 /* MapViewModel.swift in Sources */,
