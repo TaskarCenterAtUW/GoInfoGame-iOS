@@ -304,7 +304,7 @@ struct PosmLoginView: View {
     
     var contactUs: some View {
         Button(action:{
-            openURL(url: "mailto:tdei@uw.edu")
+            openURL(url: "mailto:helpdesk@tdei.us")
         }) {
             Text("Questions? Contact Us")
                 .font(FontFamily.Lato.bold.swiftUIFont(size: 16, relativeTo: .headline))
