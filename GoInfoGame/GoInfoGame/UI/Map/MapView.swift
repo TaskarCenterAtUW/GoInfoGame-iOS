@@ -71,6 +71,9 @@ struct MapView: View {
     @State private var showMultiSelectionBottomSheet = false
 
     @State private var mapViewRef: MLNMapView?
+    /// Meters represented by one screen point at the map's current center/zoom —
+    /// drives `ScaleBarView`. See `CustomMap.onMetersPerPointChanged`.
+    @State private var metersPerPoint: Double = 0
 
     @State private var navigateToProfile = false
     @State private var showManageQuestSheet = false
@@ -130,6 +133,7 @@ struct MapView: View {
                         selectedDetent = .fraction(0.7)
                         setContextualInfo(contextualinfo: info)
                     },
+                    onMetersPerPointChanged: { metersPerPoint = $0 },
                     tappedCoordinate: $tappedCoordinate,
                     annotationCoordinate: $annotationCoordinate,
                     shadowRegions: $shadowRegions,
@@ -269,7 +273,7 @@ struct MapView: View {
                             )
 
                             // Current location
-                            FloatingActionButton(systemName: "location.fill", iconSize: 20) {
+                            FloatingActionButton(name: "my_location", iconSize: 20) {
                                 if let mapView = mapViewRef,
                                    let coordinate = mapView.userLocation?.coordinate,
                                    CLLocationCoordinate2DIsValid(coordinate) {
@@ -279,6 +283,8 @@ struct MapView: View {
                             }
                             .accessibilityLabel(L10n.Localizable.currentLocation)
                             .accessibilitySortPriority(1)
+                            
+                            ScaleBarView(metersPerPoint: metersPerPoint)
                         }
                         .padding(.bottom, 24)
                         .padding(.trailing, 8)

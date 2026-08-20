@@ -302,6 +302,11 @@ struct CustomMap: UIViewRepresentable {
 
     var onMapViewCreated: ((MLNMapView) -> Void)?
     var contextualInfo: ((String) -> Void)?
+    /// Reports meters-per-point at the map's current center/zoom whenever the camera
+    /// settles, so a custom SwiftUI scale bar (see `ScaleBarView`) can stay in sync —
+    /// MapLibre's built-in `MLNScaleBar` only supports one unit system at a time, so
+    /// it's disabled in favor of this.
+    var onMetersPerPointChanged: ((Double) -> Void)?
 
     @Binding var tappedCoordinate: CLLocationCoordinate2D?
     @Binding var annotationCoordinate: CLLocationCoordinate2D?
@@ -353,8 +358,9 @@ struct CustomMap: UIViewRepresentable {
         mapView.compassViewPosition = .bottomRight
         mapView.compassViewMargins = CGPoint(x: 28, y: 218)
 
-        mapView.showsScale = true
-        mapView.scaleBarPosition = .bottomRight
+        // Replaced by ScaleBarView (SwiftUI) — MLNScaleBar only shows one unit
+        // system at a time and can't match the dual ft/m bracket style.
+        mapView.showsScale = false
         mapView.showsLogoView = false
         mapView.attributionButtonPosition = .bottomLeft
         mapView.attributionButton.tintColor = Asset.Colors.a2A2A2Gray.color
@@ -464,6 +470,7 @@ struct CustomMap: UIViewRepresentable {
             updateSatelliteOverlay(option: parent.selectedSatelliteOption)
             refreshClusters()
             updateShadowOverlay(regions: parent.shadowRegions)
+            reportMetersPerPoint(mapView)
         }
 
         // MARK: MLNMapViewDelegate — Annotation Views
@@ -567,6 +574,7 @@ struct CustomMap: UIViewRepresentable {
 
         func mapView(_ mapView: MLNMapView, regionDidChangeAnimated animated: Bool) {
             updateEditedCoordinateIfNeeded(mapView)
+            reportMetersPerPoint(mapView)
 
             let zoom = mapView.zoomLevel
             let previousBucket = clusterBucket(for: lastClusteredZoom, mapView: mapView)
@@ -610,6 +618,10 @@ struct CustomMap: UIViewRepresentable {
                 )
                 DispatchQueue.main.async { self.parent.shadowRegions.append(bounds) }
             }
+        }
+
+        private func reportMetersPerPoint(_ mapView: MLNMapView) {
+            parent.onMetersPerPointChanged?(mapView.metersPerPoint(atLatitude: mapView.centerCoordinate.latitude))
         }
 
         // MARK: - Layer Setup

@@ -1106,6 +1106,7 @@ internal enum Asset {
   internal static let logo = ImageAsset(name: "logo")
   internal static let mapPoint = ImageAsset(name: "mapPoint")
   internal static let mapicon = ImageAsset(name: "mapicon")
+  internal static let myLocation = ImageAsset(name: "my_location")
   internal static let navigation = ImageAsset(name: "navigation")
   internal static let noImage = ImageAsset(name: "no_image")
   internal static let osmlogo = ImageAsset(name: "osmlogo")
