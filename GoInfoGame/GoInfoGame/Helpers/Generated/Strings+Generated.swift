@@ -254,6 +254,8 @@ internal enum L10n {
     internal static let questionsList = L10n.tr("Localizable", "questions_list", fallback: "Questions List")
     /// Refresh list
     internal static let refreshList = L10n.tr("Localizable", "Refresh list", fallback: "Refresh list")
+    /// Reset Map Orientation To North
+    internal static let resetMapOrientationToNorth = L10n.tr("Localizable", "Reset Map Orientation To North", fallback: "Reset Map Orientation To North")
     /// Revert Changes
     internal static let revertChanges = L10n.tr("Localizable", "Revert Changes", fallback: "Revert Changes")
     /// Screen Reader Mode

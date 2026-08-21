@@ -74,6 +74,9 @@ struct MapView: View {
     /// Meters represented by one screen point at the map's current center/zoom —
     /// drives `ScaleBarView`. See `CustomMap.onMetersPerPointChanged`.
     @State private var metersPerPoint: Double = 0
+    /// Map rotation in degrees clockwise from north — drives `CompassButtonView`.
+    /// See `CustomMap.onHeadingChanged`.
+    @State private var heading: Double = 0
 
     @State private var navigateToProfile = false
     @State private var showManageQuestSheet = false
@@ -134,6 +137,7 @@ struct MapView: View {
                         setContextualInfo(contextualinfo: info)
                     },
                     onMetersPerPointChanged: { metersPerPoint = $0 },
+                    onHeadingChanged: { heading = $0 },
                     tappedCoordinate: $tappedCoordinate,
                     annotationCoordinate: $annotationCoordinate,
                     shadowRegions: $shadowRegions,
@@ -253,6 +257,10 @@ struct MapView: View {
 
                         VStack(alignment: .trailing, spacing: 10) {
                             Spacer()
+
+                            CompassButtonView(heading: heading) {
+                                mapViewRef?.resetNorth()
+                            }
 
                             // Zoom in / out — grouped pill
                             ZoomControlView(

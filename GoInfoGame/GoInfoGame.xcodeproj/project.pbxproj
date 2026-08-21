@@ -183,6 +183,7 @@
 		C77AAC9F2E4463ED006713B2 /* FirebaseCrashlytics in Frameworks */ = {isa = PBXBuildFile; productRef = C77AAC9E2E4463ED006713B2 /* FirebaseCrashlytics */; };
 		C77D48AA3036C434009E61F7 /* ZoomControlView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C77D48A93036C434009E61F7 /* ZoomControlView.swift */; };
 		C77D48AC3036DF84009E61F7 /* ScaleBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C77D48AB3036DF84009E61F7 /* ScaleBarView.swift */; };
+		2E71655C971839F8DAF42E67 /* CompassButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61CD36AA62170BAF936749E0 /* CompassButtonView.swift */; };
 		C77EEBCF2DE59D3200494CB4 /* UndoMerge.swift in Sources */ = {isa = PBXBuildFile; fileRef = C77EEBCE2DE59D3200494CB4 /* UndoMerge.swift */; };
 		C785DBD43010978800E5EA58 /* MapLibre in Frameworks */ = {isa = PBXBuildFile; productRef = C785DBD33010978800E5EA58 /* MapLibre */; };
 		C78737AF2E4C9E3B00289D13 /* FloatingLabelTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = C78737AE2E4C9E3200289D13 /* FloatingLabelTextField.swift */; };
@@ -578,6 +579,7 @@
 		C77AACA52E447364006713B2 /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		C77D48A93036C434009E61F7 /* ZoomControlView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZoomControlView.swift; sourceTree = "<group>"; };
 		C77D48AB3036DF84009E61F7 /* ScaleBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScaleBarView.swift; sourceTree = "<group>"; };
+		61CD36AA62170BAF936749E0 /* CompassButtonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompassButtonView.swift; sourceTree = "<group>"; };
 		C77EEBCE2DE59D3200494CB4 /* UndoMerge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UndoMerge.swift; sourceTree = "<group>"; };
 		C78737AE2E4C9E3200289D13 /* FloatingLabelTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FloatingLabelTextField.swift; sourceTree = "<group>"; };
 		C787EF162E9676CC00BEF0A6 /* GoInfoGame.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = GoInfoGame.entitlements; sourceTree = "<group>"; };
@@ -1561,6 +1563,7 @@
 			children = (
 				C77D48AB3036DF84009E61F7 /* ScaleBarView.swift */,
 				C77D48A93036C434009E61F7 /* ZoomControlView.swift */,
+				61CD36AA62170BAF936749E0 /* CompassButtonView.swift */,
 				FA87A80F2B68142F000A6BEA /* LoadingView.swift */,
 				FAE258512D3A780F00D2BB12 /* FloatingActionButton.swift */,
 				FA9F38212DC93F3D00D7AABF /* UndoSidebarView.swift */,
@@ -2471,6 +2474,7 @@
 				70CFF415C62865D5A2F409AD /* NoteImageStorage.swift in Sources */,
 				4A89C70038014808B0E110A0 /* FeatureImageStorage.swift in Sources */,
 				C77D48AC3036DF84009E61F7 /* ScaleBarView.swift in Sources */,
+				2E71655C971839F8DAF42E67 /* CompassButtonView.swift in Sources */,
 				FAEE21DB2DCA1963002F9BEC /* UndoButton.swift in Sources */,
 				A4834A3F2B67737500D4F0AA /* StoredChangeset.swift in Sources */,
 				94364F3654B754DC7499335C /* StoredNoteDraft.swift in Sources */,
