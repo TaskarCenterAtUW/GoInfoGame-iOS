@@ -66,7 +66,6 @@ struct MapView: View {
     @State private var selectedFeaturePreset: FeaturePreset? = nil
     @State private var showAddFeatureSheet = false
     @State private var showCreateNoteSheet = false
-    @State private var showUserSettingsSheet = false
     @State private var enableAccessibility = false
     @State private var showMultiSelectionBottomSheet = false
 
@@ -79,7 +78,6 @@ struct MapView: View {
     @State private var heading: Double = 0
 
     @State private var navigateToProfile = false
-    @State private var showManageQuestSheet = false
     @State private var showZoomInAlert = false
     @State private var showChangeWorkspaceConfirmation = false
     @State private var shadowRegions: [CoordinateBounds] = []
@@ -123,7 +121,6 @@ struct MapView: View {
                     selectedQuest: $viewModel.selectedQuest,
                     shouldShowPolyline: $shouldShowPolyline,
                     isPresented: $isPresented,
-                    isUserSettingsPresented: $showUserSettingsSheet,
                     selectedAnnotations: $viewModel.selectedAnnotaions,
                     isMultiSelectModeEnabled: $viewModel.isMultiSelectModeEnabled,
                     selectedAnnotationType: $viewModel.selectedAnnotationType,
@@ -225,21 +222,6 @@ struct MapView: View {
                             }
                             .accessibilityLabel(L10n.Localizable.downloadData)
                             .accessibilitySortPriority(1)
-
-                            // Filter quests
-                            FloatingActionButton(systemName: "slider.horizontal.3") {
-                                showFilterQuestsSheet.toggle()
-                            }
-                            .accessibilityLabel(L10n.Localizable.filterQuestTypes)
-                            .accessibilitySortPriority(1)
-                            .sheet(isPresented: $showFilterQuestsSheet) {
-                                ManageQuestsView()
-                                    // Sized to its own content by ManageQuestsView itself.
-                                    .interactiveDismissDisabled()
-                                    .presentationDragIndicator(.hidden)
-                                    .applyPresentationSizingPage()
-                                    .focusAccessibilityOnAppear()
-                            }
                         }
                     }
                     .padding(.top, 24)
@@ -524,13 +506,12 @@ struct MapView: View {
             ToolbarItem(placement: .topBarTrailing) {
                 Button(action: {
                     dismissOtherSheets()
-                    showUserSettingsSheet = true
+                    showFilterQuestsSheet.toggle()
                 }) {
                     Label {
-                        Text(L10n.Localizable.settings)
-                            .foregroundStyle(.red)
+                        Text(L10n.Localizable.manageQuests)
                     } icon: {
-                        Image(systemName: "gear")
+                        Image("tune")
                             .resizable()
                             .padding(8)
                             .foregroundStyle(Asset.Colors.huskyPurple.swiftUIColor)
@@ -541,6 +522,15 @@ struct MapView: View {
                 }
                 .buttonStyle(.plain)
                 .labelStyle(.iconOnly)
+                .accessibilityLabel(L10n.Localizable.manageQuests)
+                .sheet(isPresented: $showFilterQuestsSheet) {
+                    ManageQuestsView()
+                        // Sized to its own content by ManageQuestsView itself.
+                        .interactiveDismissDisabled()
+                        .presentationDragIndicator(.hidden)
+                        .applyPresentationSizingPage()
+                        .focusAccessibilityOnAppear()
+                }
             }
         }
         .toolbarBackground(.visible, for: .navigationBar)
@@ -563,14 +553,6 @@ struct MapView: View {
                 }
             }
         }
-        .sheet(isPresented: $showManageQuestSheet) {
-            ManageQuestsView()
-                // Sized to its own content by ManageQuestsView itself.
-                .interactiveDismissDisabled()
-                .presentationDragIndicator(.hidden)
-                .applyPresentationSizingPage()
-                .focusAccessibilityOnAppear()
-        }
         .sheet(isPresented: $viewModel.showSatellitePicker) {
             SatellitePickerSheet(
                 options: $viewModel.availableOptions,
@@ -589,33 +571,6 @@ struct MapView: View {
             .presentationDetents([.fraction(0.36)])
             .presentationDragIndicator(.visible)
             .applyPresentationSizingPage()
-            .allowMapInteractionBehindSheet()
-        }
-        .sheet(isPresented: $showUserSettingsSheet) {
-            UserSettingsView(
-                selectedWorkspace: selectedWorkspace.title,
-                options: OptionModel.options,
-                onNavigate: { navigate in
-                    showUserSettingsSheet = false
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-                        switch navigate {
-                        case .profile:
-                            navigateToProfile = true
-
-                        case .manageQuests:
-                            showManageQuestSheet = true
-
-                        case .switchWorkspace:
-                            switchToInitialView()
-                        }
-                    }
-                }
-            )
-            .background(Color(red: 248/255, green: 248/255, blue: 248/255))
-            .interactiveDismissDisabled()
-            .presentationDragIndicator(.hidden)
-            .applyPresentationSizingPage()
-            .focusAccessibilityOnAppear()
             .allowMapInteractionBehindSheet()
         }
         .fullScreenCover(isPresented: $enableAccessibility) {
@@ -768,7 +723,7 @@ struct MapView: View {
     /// a second `.sheet()` on this view while one is already mid-presentation.
     private var isAnySheetBlockingSelection: Bool {
         isPresented || showPinChoiceOverlay || showCreateNoteSheet ||
-            showAddFeatureSheet || viewModel.showSatellitePicker || showUserSettingsSheet
+            showAddFeatureSheet || viewModel.showSatellitePicker
     }
 
     /// Force-closes every sheet tracked by `isAnySheetBlockingSelection`, except the
@@ -785,7 +740,6 @@ struct MapView: View {
         showCreateNoteSheet = false
         showAddFeatureSheet = false
         viewModel.showSatellitePicker = false
-        showUserSettingsSheet = false
     }
 
     /// Enables/disables map pan, pinch-zoom, rotate, and pitch. Frozen while the

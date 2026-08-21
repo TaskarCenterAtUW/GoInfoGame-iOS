@@ -1115,6 +1115,7 @@ internal enum Asset {
   internal static let osmlogo = ImageAsset(name: "osmlogo")
   internal static let reached = ImageAsset(name: "reached")
   internal static let sync = ImageAsset(name: "sync")
+  internal static let tune = ImageAsset(name: "tune")
   internal static let workspacesLogo = ImageAsset(name: "workspaces_logo")
 }
 // swiftlint:enable identifier_name line_length nesting type_body_length type_name

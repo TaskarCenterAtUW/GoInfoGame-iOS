@@ -39,8 +39,6 @@ internal enum L10n {
     internal static let dontShowAgain = L10n.tr("Localizable", "dont_show_again", fallback: "Don't show again for this session")
     /// Download Data
     internal static let downloadData = L10n.tr("Localizable", "Download Data", fallback: "Download Data")
-    /// Filter Quest Types
-    internal static let filterQuestTypes = L10n.tr("Localizable", "Filter Quest Types", fallback: "Filter Quest Types")
     /// Go back to map view
     internal static let goBackToMapView = L10n.tr("Localizable", "Go back to map view", fallback: "Go back to map view")
     /// Go back to previous screen
@@ -51,6 +49,8 @@ internal enum L10n {
     internal static let invalidCredentials = L10n.tr("Localizable", "Invalid credentials", fallback: "Invalid credentials")
     /// Low Bandwidth Mode
     internal static let lowBandwidthMode = L10n.tr("Localizable", "Low Bandwidth Mode", fallback: "Low Bandwidth Mode")
+    /// Manage Quests
+    internal static let manageQuests = L10n.tr("Localizable", "Manage Quests", fallback: "Manage Quests")
     /// Map Modes.
     internal static let mapModes = L10n.tr("Localizable", "Map Modes.", fallback: "Map Modes.")
     /// My Profile

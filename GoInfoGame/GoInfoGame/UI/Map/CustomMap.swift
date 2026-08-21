@@ -289,7 +289,6 @@ struct CustomMap: UIViewRepresentable {
     @Binding var selectedQuest: DisplayUnit?
     @Binding var shouldShowPolyline: Bool
     @Binding var isPresented: Bool
-    @Binding var isUserSettingsPresented: Bool
     var locationManagerDelegate = LocationManagerDelegate()
 
     @Binding var selectedAnnotations: Set<DisplayUnitAnnotation>
