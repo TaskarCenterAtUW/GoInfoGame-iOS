@@ -22,9 +22,11 @@ struct CompassButtonView: View {
         if isRotated {
             Button(action: onTap) {
                 Image("compass_needle")
+                    .renderingMode(.template)
                     .resizable()
                     .scaledToFit()
                     .frame(width: 22, height: 22)
+                    .foregroundColor(Asset.Colors.huskyPurple.swiftUIColor)
                     .rotationEffect(.degrees(-heading))
                     .frame(width: 44, height: 44)
                     .background(.white)

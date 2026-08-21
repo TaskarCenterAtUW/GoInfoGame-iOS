@@ -19,7 +19,11 @@ struct FloatingActionButton: View {
         }) {
             Group {
                 if let name = name {
+                    // Custom asset-catalog icons render in their authored (black)
+                    // color by default — force template mode so foregroundColor
+                    // below actually tints them, matching SF Symbol behavior.
                     Image(name)
+                        .renderingMode(.template)
                 } else if let systemName = systemName {
                     Image(systemName: systemName)
                 } else {

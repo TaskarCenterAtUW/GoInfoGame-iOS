@@ -512,6 +512,7 @@ struct MapView: View {
                         Text(L10n.Localizable.manageQuests)
                     } icon: {
                         Image("tune")
+                            .renderingMode(.template)
                             .resizable()
                             .padding(8)
                             .foregroundStyle(Asset.Colors.huskyPurple.swiftUIColor)
