@@ -632,11 +632,13 @@ struct CustomMap: UIViewRepresentable {
         }
 
         private func reportMetersPerPoint(_ mapView: MLNMapView) {
-            parent.onMetersPerPointChanged?(mapView.metersPerPoint(atLatitude: mapView.centerCoordinate.latitude))
+            let metersPerPoint = mapView.metersPerPoint(atLatitude: mapView.centerCoordinate.latitude)
+            DispatchQueue.main.async { self.parent.onMetersPerPointChanged?(metersPerPoint) }
         }
 
         private func reportHeading(_ mapView: MLNMapView) {
-            parent.onHeadingChanged?(mapView.direction)
+            let heading = mapView.direction
+            DispatchQueue.main.async { self.parent.onHeadingChanged?(heading) }
         }
 
         // MARK: - Layer Setup
