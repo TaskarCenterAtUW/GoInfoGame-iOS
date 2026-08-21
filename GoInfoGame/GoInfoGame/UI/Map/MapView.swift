@@ -431,11 +431,11 @@ struct MapView: View {
                         ScrollView(showsIndicators: false) {
                             VStack(alignment: .leading) {
                                 Text(L10n.Localizable.workspace)
-                                    .font(FontFamily.Lato.regular.swiftUIFont(size: 12, relativeTo: .body))
+                                    .font(FontFamily.Lato.regular.swiftUIFont(size: 10, relativeTo: .body))
                                     .foregroundStyle(Asset.Colors.huskyPurple.swiftUIColor)
                                     .multilineTextAlignment(.leading)
                                 Text(selectedWorkspace.title)
-                                    .font(FontFamily.Lato.bold.swiftUIFont(size: 14, relativeTo: .body))
+                                    .font(FontFamily.Lato.bold.swiftUIFont(size: 12, relativeTo: .body))
                                     .foregroundStyle(Asset.Colors.huskyPurple.swiftUIColor)
                                     .multilineTextAlignment(.leading)
                             }
