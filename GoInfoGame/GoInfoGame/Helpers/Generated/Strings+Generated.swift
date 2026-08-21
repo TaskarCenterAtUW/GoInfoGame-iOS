@@ -29,14 +29,16 @@ internal enum L10n {
     internal static let composeANote = L10n.tr("Localizable", "Compose a note", fallback: "Compose a note")
     /// Compose message
     internal static let composeMessage = L10n.tr("Localizable", "Compose message", fallback: "Compose message")
+    /// Current Location
+    internal static let currentLocation = L10n.tr("Localizable", "Current Location", fallback: "Current Location")
     /// Date & Time
     internal static let dateTime = L10n.tr("Localizable", "Date & Time", fallback: "Date & Time")
     /// Disable quest images to save data
     internal static let disableQuestImagesToSaveData = L10n.tr("Localizable", "Disable quest images to save data", fallback: "Disable quest images to save data")
     /// Don't show again for this session
     internal static let dontShowAgain = L10n.tr("Localizable", "dont_show_again", fallback: "Don't show again for this session")
-    /// Filter Quest Types
-    internal static let filterQuestTypes = L10n.tr("Localizable", "Filter Quest Types", fallback: "Filter Quest Types")
+    /// Download Data
+    internal static let downloadData = L10n.tr("Localizable", "Download Data", fallback: "Download Data")
     /// Go back to map view
     internal static let goBackToMapView = L10n.tr("Localizable", "Go back to map view", fallback: "Go back to map view")
     /// Go back to previous screen
@@ -47,6 +49,8 @@ internal enum L10n {
     internal static let invalidCredentials = L10n.tr("Localizable", "Invalid credentials", fallback: "Invalid credentials")
     /// Low Bandwidth Mode
     internal static let lowBandwidthMode = L10n.tr("Localizable", "Low Bandwidth Mode", fallback: "Low Bandwidth Mode")
+    /// Manage Quests
+    internal static let manageQuests = L10n.tr("Localizable", "Manage Quests", fallback: "Manage Quests")
     /// Map Modes.
     internal static let mapModes = L10n.tr("Localizable", "Map Modes.", fallback: "Map Modes.")
     /// My Profile
@@ -252,6 +256,8 @@ internal enum L10n {
     internal static let questionsList = L10n.tr("Localizable", "questions_list", fallback: "Questions List")
     /// Refresh list
     internal static let refreshList = L10n.tr("Localizable", "Refresh list", fallback: "Refresh list")
+    /// Reset Map Orientation To North
+    internal static let resetMapOrientationToNorth = L10n.tr("Localizable", "Reset Map Orientation To North", fallback: "Reset Map Orientation To North")
     /// Revert Changes
     internal static let revertChanges = L10n.tr("Localizable", "Revert Changes", fallback: "Revert Changes")
     /// Screen Reader Mode

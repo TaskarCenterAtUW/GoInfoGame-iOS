@@ -289,7 +289,6 @@ struct CustomMap: UIViewRepresentable {
     @Binding var selectedQuest: DisplayUnit?
     @Binding var shouldShowPolyline: Bool
     @Binding var isPresented: Bool
-    @Binding var isUserSettingsPresented: Bool
     var locationManagerDelegate = LocationManagerDelegate()
 
     @Binding var selectedAnnotations: Set<DisplayUnitAnnotation>
@@ -302,6 +301,17 @@ struct CustomMap: UIViewRepresentable {
 
     var onMapViewCreated: ((MLNMapView) -> Void)?
     var contextualInfo: ((String) -> Void)?
+    /// Reports meters-per-point at the map's current center/zoom whenever the camera
+    /// settles, so a custom SwiftUI scale bar (see `ScaleBarView`) can stay in sync —
+    /// MapLibre's built-in `MLNScaleBar` only supports one unit system at a time, so
+    /// it's disabled in favor of this.
+    var onMetersPerPointChanged: ((Double) -> Void)?
+    /// Reports the map's current rotation (degrees clockwise from north) as the
+    /// camera moves, so a custom SwiftUI compass button (see `CompassButtonView`)
+    /// can rotate to match — replaces MapLibre's built-in compass, which is a
+    /// bare `UIImageView` with no background chip and is pinned by UIKit
+    /// margins rather than laid out inline in the SwiftUI bottom-right stack.
+    var onHeadingChanged: ((Double) -> Void)?
 
     @Binding var tappedCoordinate: CLLocationCoordinate2D?
     @Binding var annotationCoordinate: CLLocationCoordinate2D?
@@ -349,12 +359,15 @@ struct CustomMap: UIViewRepresentable {
         mapView.showsUserLocation = true
         mapView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         mapView.userTrackingMode = trackingMode.mlnUserTrackingMode
-        mapView.compassView.compassVisibility = .adaptive
-        mapView.compassViewPosition = .bottomRight
-        mapView.compassViewMargins = CGPoint(x: 28, y: 218)
+        // Replaced by CompassButtonView (SwiftUI) so it can render as a proper
+        // white circular button (matching the zoom/locate buttons) and sit
+        // inline in the bottom-right control stack, above the zoom pill.
+        // MLNCompassButton is a bare UIImageView with no background chip.
+        mapView.compassView.compassVisibility = .hidden
 
-        mapView.showsScale = true
-        mapView.scaleBarPosition = .bottomRight
+        // Replaced by ScaleBarView (SwiftUI) — MLNScaleBar only shows one unit
+        // system at a time and can't match the dual ft/m bracket style.
+        mapView.showsScale = false
         mapView.showsLogoView = false
         mapView.attributionButtonPosition = .bottomLeft
         mapView.attributionButton.tintColor = Asset.Colors.a2A2A2Gray.color
@@ -464,6 +477,8 @@ struct CustomMap: UIViewRepresentable {
             updateSatelliteOverlay(option: parent.selectedSatelliteOption)
             refreshClusters()
             updateShadowOverlay(regions: parent.shadowRegions)
+            reportMetersPerPoint(mapView)
+            reportHeading(mapView)
         }
 
         // MARK: MLNMapViewDelegate — Annotation Views
@@ -563,10 +578,14 @@ struct CustomMap: UIViewRepresentable {
         /// sync with the fixed crosshair while Create Note/Add Feature is open.
         func mapViewRegionIsChanging(_ mapView: MLNMapView) {
             updateEditedCoordinateIfNeeded(mapView)
+            reportMetersPerPoint(mapView)
+            reportHeading(mapView)
         }
 
         func mapView(_ mapView: MLNMapView, regionDidChangeAnimated animated: Bool) {
             updateEditedCoordinateIfNeeded(mapView)
+            reportMetersPerPoint(mapView)
+            reportHeading(mapView)
 
             let zoom = mapView.zoomLevel
             let previousBucket = clusterBucket(for: lastClusteredZoom, mapView: mapView)
@@ -610,6 +629,16 @@ struct CustomMap: UIViewRepresentable {
                 )
                 DispatchQueue.main.async { self.parent.shadowRegions.append(bounds) }
             }
+        }
+
+        private func reportMetersPerPoint(_ mapView: MLNMapView) {
+            let metersPerPoint = mapView.metersPerPoint(atLatitude: mapView.centerCoordinate.latitude)
+            DispatchQueue.main.async { self.parent.onMetersPerPointChanged?(metersPerPoint) }
+        }
+
+        private func reportHeading(_ mapView: MLNMapView) {
+            let heading = mapView.direction
+            DispatchQueue.main.async { self.parent.onHeadingChanged?(heading) }
         }
 
         // MARK: - Layer Setup

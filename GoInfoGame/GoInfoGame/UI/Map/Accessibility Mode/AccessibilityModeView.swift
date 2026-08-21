@@ -237,10 +237,10 @@ struct AccessibilityModeView: View {
         Button(action: {
             showBottomSheet.toggle()
         }) {
-            Image(systemName: "slider.horizontal.3")
+            Image("tune")
                 .font(.title3)
                 .foregroundColor(Asset.Colors.huskyPurple.swiftUIColor)
-                .accessibilityLabel(L10n.Localizable.filterQuestTypes)
+                .accessibilityLabel(L10n.Localizable.manageQuests)
         }
         .sheet(isPresented: $showBottomSheet) {
             ManageQuestsView()

@@ -44,13 +44,22 @@ struct FloatingLabelTextField: View {
 
     private var standardLayout: some View {
         ZStack(alignment: .topLeading) {
-            // Border box - grows to fit the field instead of clipping at large text sizes
-            RoundedRectangle(cornerRadius: 6)
-                .stroke(Asset.Colors.d5DBE6BorderColorGray.swiftUIColor, lineWidth: 1)
-                .frame(minHeight: 50)
-                .accessibilityHidden(true)
-
+            // The border is a `.background()` on the field itself, not an independent
+            // Shape sibling — a bare Shape always greedily fills whatever height it's
+            // offered (unlike Text/TextField, which size to their own content), so on
+            // screens with extra vertical space to hand out (e.g. iPad, where the login
+            // form is stretched to fill a much taller screen) it was ballooning the
+            // whole box far past 50pt. A background always matches its content's actual
+            // size instead, so it can only grow when the field's own content needs more
+            // room (e.g. at large accessibility text), not because space happens to be
+            // available elsewhere in the layout.
             fieldContent
+                .frame(minHeight: 50)
+                .background(
+                    RoundedRectangle(cornerRadius: 6)
+                        .stroke(Asset.Colors.d5DBE6BorderColorGray.swiftUIColor, lineWidth: 1)
+                        .accessibilityHidden(true)
+                )
 
             if !text.isEmpty {
                 // Floating label - anchored to the top edge so it stays put as the field grows

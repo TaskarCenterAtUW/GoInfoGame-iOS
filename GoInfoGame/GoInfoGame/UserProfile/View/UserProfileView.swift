@@ -208,7 +208,7 @@ struct UserProfileView: View {
                     
             }
             .padding()
-            .background(Asset.Colors.accentPink.swiftUIColor)
+            .background(Asset.Colors.huskyPurple.swiftUIColor)
             .cornerRadius(25)
         }
     }

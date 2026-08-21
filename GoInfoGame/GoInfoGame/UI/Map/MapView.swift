@@ -66,15 +66,20 @@ struct MapView: View {
     @State private var selectedFeaturePreset: FeaturePreset? = nil
     @State private var showAddFeatureSheet = false
     @State private var showCreateNoteSheet = false
-    @State private var showUserSettingsSheet = false
     @State private var enableAccessibility = false
     @State private var showMultiSelectionBottomSheet = false
 
     @State private var mapViewRef: MLNMapView?
+    /// Meters represented by one screen point at the map's current center/zoom —
+    /// drives `ScaleBarView`. See `CustomMap.onMetersPerPointChanged`.
+    @State private var metersPerPoint: Double = 0
+    /// Map rotation in degrees clockwise from north — drives `CompassButtonView`.
+    /// See `CustomMap.onHeadingChanged`.
+    @State private var heading: Double = 0
 
     @State private var navigateToProfile = false
-    @State private var showManageQuestSheet = false
     @State private var showZoomInAlert = false
+    @State private var showChangeWorkspaceConfirmation = false
     @State private var shadowRegions: [CoordinateBounds] = []
     @State private var showUndoSidebar = false
     @State private var showFilterQuestsSheet = false
@@ -116,7 +121,6 @@ struct MapView: View {
                     selectedQuest: $viewModel.selectedQuest,
                     shouldShowPolyline: $shouldShowPolyline,
                     isPresented: $isPresented,
-                    isUserSettingsPresented: $showUserSettingsSheet,
                     selectedAnnotations: $viewModel.selectedAnnotaions,
                     isMultiSelectModeEnabled: $viewModel.isMultiSelectModeEnabled,
                     selectedAnnotationType: $viewModel.selectedAnnotationType,
@@ -130,6 +134,8 @@ struct MapView: View {
                         selectedDetent = .fraction(0.7)
                         setContextualInfo(contextualinfo: info)
                     },
+                    onMetersPerPointChanged: { metersPerPoint = $0 },
+                    onHeadingChanged: { heading = $0 },
                     tappedCoordinate: $tappedCoordinate,
                     annotationCoordinate: $annotationCoordinate,
                     shadowRegions: $shadowRegions,
@@ -195,6 +201,34 @@ struct MapView: View {
                 }
 
                 VStack {
+                    HStack {
+                        Spacer()
+                        VStack(spacing: 10) {
+                            // Map modes
+                            FloatingActionButton(name: "layers", iconSize: 20) {
+                                dismissOtherSheets()
+                                viewModel.updateOptions(
+                                    for: mapViewRef?.centerCoordinate
+                                        ?? CLLocationCoordinate2D(latitude: 0, longitude: 0)
+                                )
+                                viewModel.showSatellitePicker = true
+                            }
+                            .accessibilityLabel(L10n.Localizable.mapModes)
+                            .accessibilitySortPriority(1)
+
+                            // Download data
+                            FloatingActionButton(name: "download", iconSize: 20) {
+                                downloadVisibleAreaData()
+                            }
+                            .accessibilityLabel(L10n.Localizable.downloadData)
+                            .accessibilitySortPriority(1)
+                        }
+                    }
+                    .padding(.top, 24)
+                    .padding(.trailing, 8)
+                    .frame(alignment: .topTrailing)
+                    
+                    
                     Spacer()
                     HStack {
                         VStack(alignment: .leading) {
@@ -220,7 +254,7 @@ struct MapView: View {
                             }
                         }
                         .padding(.bottom, 24)
-                        .padding(.leading, 16)
+                        .padding(.leading, 8)
                         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottomLeading)
 
                         Spacer()
@@ -228,45 +262,44 @@ struct MapView: View {
                         VStack(alignment: .trailing, spacing: 10) {
                             Spacer()
 
-                            // Zoom out
-                            FloatingActionButton(systemName: "minus.magnifyingglass") {
-                                if let mapView = mapViewRef {
-                                    let newZoom = max(mapView.zoomLevel - 1.0, 0)
-                                    mapView.setZoomLevel(newZoom, animated: true)
-                                    voiceOverAnnounce(message: "Zoomed out to level \(Int(newZoom))")
+                            CompassButtonView(heading: heading) {
+                                mapViewRef?.resetNorth()
+                            }
+
+                            // Zoom in / out — grouped pill
+                            ZoomControlView(
+                                onZoomIn: {
+                                    if let mapView = mapViewRef {
+                                        let newZoom = min(mapView.zoomLevel + 1.0, 22)
+                                        mapView.setZoomLevel(newZoom, animated: true)
+                                        voiceOverAnnounce(message: "Zoomed in to level \(Int(newZoom))")
+                                    }
+                                },
+                                onZoomOut: {
+                                    if let mapView = mapViewRef {
+                                        let newZoom = max(mapView.zoomLevel - 1.0, 0)
+                                        mapView.setZoomLevel(newZoom, animated: true)
+                                        voiceOverAnnounce(message: "Zoomed out to level \(Int(newZoom))")
+                                    }
+                                }
+                            )
+
+                            // Current location
+                            FloatingActionButton(name: "my_location", iconSize: 20) {
+                                if let mapView = mapViewRef,
+                                   let coordinate = mapView.userLocation?.coordinate,
+                                   CLLocationCoordinate2DIsValid(coordinate) {
+                                    mapView.setCenter(coordinate, zoomLevel: max(mapView.zoomLevel, 15), animated: true)
+                                    voiceOverAnnounce(message: "Centered on current location")
                                 }
                             }
-                            .accessibilityLabel(L10n.Localizable.zoomOutMap)
+                            .accessibilityLabel(L10n.Localizable.currentLocation)
                             .accessibilitySortPriority(1)
-
-                            // Zoom in
-                            FloatingActionButton(systemName: "plus.magnifyingglass") {
-                                if let mapView = mapViewRef {
-                                    let newZoom = min(mapView.zoomLevel + 1.0, 22)
-                                    mapView.setZoomLevel(newZoom, animated: true)
-                                    voiceOverAnnounce(message: "Zoomed in to level \(Int(newZoom))")
-                                }
-                            }
-                            .accessibilityLabel(L10n.Localizable.zoomInMap)
-                            .accessibilitySortPriority(1)
-
-                            // Filter quests
-                            FloatingActionButton(systemName: "slider.horizontal.3") {
-                                showFilterQuestsSheet.toggle()
-                            }
-                            .accessibilityLabel(L10n.Localizable.filterQuestTypes)
-                            .accessibilitySortPriority(1)
-                            .sheet(isPresented: $showFilterQuestsSheet) {
-                                ManageQuestsView()
-                                    // Sized to its own content by ManageQuestsView itself.
-                                    .interactiveDismissDisabled()
-                                    .presentationDragIndicator(.hidden)
-                                    .applyPresentationSizingPage()
-                                    .focusAccessibilityOnAppear()
-                            }
+                            
+                            ScaleBarView(metersPerPoint: metersPerPoint)
                         }
                         .padding(.bottom, 24)
-                        .padding(.trailing, 16)
+                        .padding(.trailing, 8)
                         .frame(alignment: .bottomLeading)
                     }
                 }
@@ -347,6 +380,10 @@ struct MapView: View {
             } message: {
                 Text("The map area is too large. Please zoom in and try again.")
             }
+            .alert("Do you want to change the workspace?", isPresented: $showChangeWorkspaceConfirmation) {
+                Button("Cancel", role: .cancel) { }
+                Button("Yes") { switchToInitialView() }
+            }
             .background(
                 GeometryReader { proxy in
                     Color.clear
@@ -394,11 +431,11 @@ struct MapView: View {
                         ScrollView(showsIndicators: false) {
                             VStack(alignment: .leading) {
                                 Text(L10n.Localizable.workspace)
-                                    .font(FontFamily.Lato.regular.swiftUIFont(size: 12, relativeTo: .body))
+                                    .font(FontFamily.Lato.regular.swiftUIFont(size: 10, relativeTo: .body))
                                     .foregroundStyle(Asset.Colors.huskyPurple.swiftUIColor)
                                     .multilineTextAlignment(.leading)
                                 Text(selectedWorkspace.title)
-                                    .font(FontFamily.Lato.bold.swiftUIFont(size: 14, relativeTo: .body))
+                                    .font(FontFamily.Lato.bold.swiftUIFont(size: 12, relativeTo: .body))
                                     .foregroundStyle(Asset.Colors.huskyPurple.swiftUIColor)
                                     .multilineTextAlignment(.leading)
                             }
@@ -409,8 +446,11 @@ struct MapView: View {
                         // Width scales with screen size via `workspaceTitleWidth`; scrolling is preserved
                         // so the full title stays reachable at larger Dynamic Type sizes.
                         .frame(width: workspaceTitleWidth, height: 34)
+                        .contentShape(Rectangle())
+                        .onTapGesture { showChangeWorkspaceConfirmation = true }
                         .accessibilityElement(children: .combine)
                         .accessibilityLabel("\(L10n.Localizable.workspace): \(selectedWorkspace.title)")
+                        .accessibilityAddTraits(.isButton)
                     }
                 }
             }
@@ -466,16 +506,13 @@ struct MapView: View {
             ToolbarItem(placement: .topBarTrailing) {
                 Button(action: {
                     dismissOtherSheets()
-                    viewModel.updateOptions(
-                        for: mapViewRef?.centerCoordinate
-                            ?? CLLocationCoordinate2D(latitude: 0, longitude: 0)
-                    )
-                    viewModel.showSatellitePicker = true
+                    showFilterQuestsSheet.toggle()
                 }) {
                     Label {
-                        Text(L10n.Localizable.mapModes)
+                        Text(L10n.Localizable.manageQuests)
                     } icon: {
-                        Image(systemName: "square.2.layers.3d.bottom.filled")
+                        Image("tune")
+                            .renderingMode(.template)
                             .resizable()
                             .padding(8)
                             .foregroundStyle(Asset.Colors.huskyPurple.swiftUIColor)
@@ -486,29 +523,15 @@ struct MapView: View {
                 }
                 .buttonStyle(.plain)
                 .labelStyle(.iconOnly)
-                .accessibilityLabel(L10n.Localizable.mapModes)
-            }
-
-            ToolbarItem(placement: .topBarTrailing) {
-                Button(action: {
-                    dismissOtherSheets()
-                    showUserSettingsSheet = true
-                }) {
-                    Label {
-                        Text(L10n.Localizable.settings)
-                            .foregroundStyle(.red)
-                    } icon: {
-                        Image(systemName: "gear")
-                            .resizable()
-                            .padding(8)
-                            .foregroundStyle(Asset.Colors.huskyPurple.swiftUIColor)
-                            .background(Asset.Colors.e7E3EELightPurpuleBg.swiftUIColor)
-                            .frame(width: 34, height: 34)
-                            .clipShape(Circle())
-                    }
+                .accessibilityLabel(L10n.Localizable.manageQuests)
+                .sheet(isPresented: $showFilterQuestsSheet) {
+                    ManageQuestsView()
+                        // Sized to its own content by ManageQuestsView itself.
+                        .interactiveDismissDisabled()
+                        .presentationDragIndicator(.hidden)
+                        .applyPresentationSizingPage()
+                        .focusAccessibilityOnAppear()
                 }
-                .buttonStyle(.plain)
-                .labelStyle(.iconOnly)
             }
         }
         .toolbarBackground(.visible, for: .navigationBar)
@@ -531,14 +554,6 @@ struct MapView: View {
                 }
             }
         }
-        .sheet(isPresented: $showManageQuestSheet) {
-            ManageQuestsView()
-                // Sized to its own content by ManageQuestsView itself.
-                .interactiveDismissDisabled()
-                .presentationDragIndicator(.hidden)
-                .applyPresentationSizingPage()
-                .focusAccessibilityOnAppear()
-        }
         .sheet(isPresented: $viewModel.showSatellitePicker) {
             SatellitePickerSheet(
                 options: $viewModel.availableOptions,
@@ -557,57 +572,6 @@ struct MapView: View {
             .presentationDetents([.fraction(0.36)])
             .presentationDragIndicator(.visible)
             .applyPresentationSizingPage()
-            .allowMapInteractionBehindSheet()
-        }
-        .sheet(isPresented: $showUserSettingsSheet) {
-            UserSettingsView(
-                selectedWorkspace: selectedWorkspace.title,
-                options: OptionModel.options,
-                onNavigate: { navigate in
-                    showUserSettingsSheet = false
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-                        switch navigate {
-                        case .profile:
-                            navigateToProfile = true
-
-                        case .manageQuests:
-                            showManageQuestSheet = true
-
-                        case .downloadData:
-                            guard let mapView = mapViewRef else { return }
-                            let bbox = viewModel.boundingBoxFromVisibleMapRect(mapView: mapView)
-                            if !isBBoxValid(bbox) {
-                                showZoomInAlert = true
-                                return
-                            }
-                            viewModel.fetchOSMDataFor(from: .visibleRect(mapView: mapView))
-
-                            // Expand the visible bounds slightly and add as a shadow cutout
-                            let bounds = mapView.visibleCoordinateBounds
-                            let latPad = (bounds.ne.latitude  - bounds.sw.latitude)  * 0.25
-                            let lonPad = (bounds.ne.longitude - bounds.sw.longitude) * 0.25
-                            shadowRegions.append(CoordinateBounds(
-                                sw: CLLocationCoordinate2D(
-                                    latitude:  bounds.sw.latitude  - latPad,
-                                    longitude: bounds.sw.longitude - lonPad
-                                ),
-                                ne: CLLocationCoordinate2D(
-                                    latitude:  bounds.ne.latitude  + latPad,
-                                    longitude: bounds.ne.longitude + lonPad
-                                )
-                            ))
-
-                        case .switchWorkspace:
-                            switchToInitialView()
-                        }
-                    }
-                }
-            )
-            .background(Color(red: 248/255, green: 248/255, blue: 248/255))
-            .interactiveDismissDisabled()
-            .presentationDragIndicator(.hidden)
-            .applyPresentationSizingPage()
-            .focusAccessibilityOnAppear()
             .allowMapInteractionBehindSheet()
         }
         .fullScreenCover(isPresented: $enableAccessibility) {
@@ -760,7 +724,7 @@ struct MapView: View {
     /// a second `.sheet()` on this view while one is already mid-presentation.
     private var isAnySheetBlockingSelection: Bool {
         isPresented || showPinChoiceOverlay || showCreateNoteSheet ||
-            showAddFeatureSheet || viewModel.showSatellitePicker || showUserSettingsSheet
+            showAddFeatureSheet || viewModel.showSatellitePicker
     }
 
     /// Force-closes every sheet tracked by `isAnySheetBlockingSelection`, except the
@@ -777,7 +741,6 @@ struct MapView: View {
         showCreateNoteSheet = false
         showAddFeatureSheet = false
         viewModel.showSatellitePicker = false
-        showUserSettingsSheet = false
     }
 
     /// Enables/disables map pan, pinch-zoom, rotate, and pitch. Frozen while the
@@ -926,6 +889,34 @@ struct MapView: View {
 
     private func setContextualInfo(contextualinfo: String) {
         contextualInfo.info = contextualinfo
+    }
+
+    /// Fetches OSM data for the currently visible map area and adds it as a
+    /// shadow-overlay cutout. Bails out with `showZoomInAlert` if the visible
+    /// area is too large to download.
+    private func downloadVisibleAreaData() {
+        guard let mapView = mapViewRef else { return }
+        let bbox = viewModel.boundingBoxFromVisibleMapRect(mapView: mapView)
+        if !isBBoxValid(bbox) {
+            showZoomInAlert = true
+            return
+        }
+        viewModel.fetchOSMDataFor(from: .visibleRect(mapView: mapView))
+
+        // Expand the visible bounds slightly and add as a shadow cutout
+        let bounds = mapView.visibleCoordinateBounds
+        let latPad = (bounds.ne.latitude  - bounds.sw.latitude)  * 0.25
+        let lonPad = (bounds.ne.longitude - bounds.sw.longitude) * 0.25
+        shadowRegions.append(CoordinateBounds(
+            sw: CLLocationCoordinate2D(
+                latitude:  bounds.sw.latitude  - latPad,
+                longitude: bounds.sw.longitude - lonPad
+            ),
+            ne: CLLocationCoordinate2D(
+                latitude:  bounds.ne.latitude  + latPad,
+                longitude: bounds.ne.longitude + lonPad
+            )
+        ))
     }
 
     func isBBoxValid(_ bbox: BBox) -> Bool {

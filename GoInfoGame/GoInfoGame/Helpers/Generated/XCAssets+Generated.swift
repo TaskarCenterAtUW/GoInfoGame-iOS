@@ -1103,14 +1103,19 @@ internal enum Asset {
     internal static let tactilePavingIllustration = ImageAsset(name: "tactile_paving_illustration")
   }
   internal static let accessibility = ImageAsset(name: "accessibility")
+  internal static let compassNeedle = ImageAsset(name: "compass_needle")
+  internal static let download = ImageAsset(name: "download")
+  internal static let layers = ImageAsset(name: "layers")
   internal static let logo = ImageAsset(name: "logo")
   internal static let mapPoint = ImageAsset(name: "mapPoint")
   internal static let mapicon = ImageAsset(name: "mapicon")
+  internal static let myLocation = ImageAsset(name: "my_location")
   internal static let navigation = ImageAsset(name: "navigation")
   internal static let noImage = ImageAsset(name: "no_image")
   internal static let osmlogo = ImageAsset(name: "osmlogo")
   internal static let reached = ImageAsset(name: "reached")
   internal static let sync = ImageAsset(name: "sync")
+  internal static let tune = ImageAsset(name: "tune")
   internal static let workspacesLogo = ImageAsset(name: "workspaces_logo")
 }
 // swiftlint:enable identifier_name line_length nesting type_body_length type_name

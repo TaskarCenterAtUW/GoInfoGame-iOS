@@ -149,10 +149,13 @@
 "Back" = "Back";
 "Map Modes." = "Map Modes.";
 "Settings" = "Settings";
-"Filter Quest Types" = "Filter Quest Types";
+"Manage Quests" = "Manage Quests";
 "option selected" = "option selected";
 "option unselected" = "option unselected";
 "Zoom In Map" = "Zoom In Map";
 "Zoom Out Map" = "Zoom Out Map";
+"Current Location" = "Current Location";
+"Download Data" = "Download Data";
+"Reset Map Orientation To North" = "Reset Map Orientation To North";
 "Low Bandwidth Mode" = "Low Bandwidth Mode";
 "Disable quest images to save data" = "Disable quest images to save data";
