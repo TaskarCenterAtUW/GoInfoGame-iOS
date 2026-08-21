@@ -37,6 +37,8 @@ internal enum L10n {
     internal static let disableQuestImagesToSaveData = L10n.tr("Localizable", "Disable quest images to save data", fallback: "Disable quest images to save data")
     /// Don't show again for this session
     internal static let dontShowAgain = L10n.tr("Localizable", "dont_show_again", fallback: "Don't show again for this session")
+    /// Download Data
+    internal static let downloadData = L10n.tr("Localizable", "Download Data", fallback: "Download Data")
     /// Filter Quest Types
     internal static let filterQuestTypes = L10n.tr("Localizable", "Filter Quest Types", fallback: "Filter Quest Types")
     /// Go back to map view

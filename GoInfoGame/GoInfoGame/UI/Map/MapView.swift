@@ -218,6 +218,13 @@ struct MapView: View {
                             .accessibilityLabel(L10n.Localizable.mapModes)
                             .accessibilitySortPriority(1)
 
+                            // Download data
+                            FloatingActionButton(name: "download", iconSize: 20) {
+                                downloadVisibleAreaData()
+                            }
+                            .accessibilityLabel(L10n.Localizable.downloadData)
+                            .accessibilitySortPriority(1)
+
                             // Filter quests
                             FloatingActionButton(systemName: "slider.horizontal.3") {
                                 showFilterQuestsSheet.toggle()
@@ -590,30 +597,6 @@ struct MapView: View {
                         case .manageQuests:
                             showManageQuestSheet = true
 
-                        case .downloadData:
-                            guard let mapView = mapViewRef else { return }
-                            let bbox = viewModel.boundingBoxFromVisibleMapRect(mapView: mapView)
-                            if !isBBoxValid(bbox) {
-                                showZoomInAlert = true
-                                return
-                            }
-                            viewModel.fetchOSMDataFor(from: .visibleRect(mapView: mapView))
-
-                            // Expand the visible bounds slightly and add as a shadow cutout
-                            let bounds = mapView.visibleCoordinateBounds
-                            let latPad = (bounds.ne.latitude  - bounds.sw.latitude)  * 0.25
-                            let lonPad = (bounds.ne.longitude - bounds.sw.longitude) * 0.25
-                            shadowRegions.append(CoordinateBounds(
-                                sw: CLLocationCoordinate2D(
-                                    latitude:  bounds.sw.latitude  - latPad,
-                                    longitude: bounds.sw.longitude - lonPad
-                                ),
-                                ne: CLLocationCoordinate2D(
-                                    latitude:  bounds.ne.latitude  + latPad,
-                                    longitude: bounds.ne.longitude + lonPad
-                                )
-                            ))
-
                         case .switchWorkspace:
                             switchToInitialView()
                         }
@@ -943,6 +926,34 @@ struct MapView: View {
 
     private func setContextualInfo(contextualinfo: String) {
         contextualInfo.info = contextualinfo
+    }
+
+    /// Fetches OSM data for the currently visible map area and adds it as a
+    /// shadow-overlay cutout. Bails out with `showZoomInAlert` if the visible
+    /// area is too large to download.
+    private func downloadVisibleAreaData() {
+        guard let mapView = mapViewRef else { return }
+        let bbox = viewModel.boundingBoxFromVisibleMapRect(mapView: mapView)
+        if !isBBoxValid(bbox) {
+            showZoomInAlert = true
+            return
+        }
+        viewModel.fetchOSMDataFor(from: .visibleRect(mapView: mapView))
+
+        // Expand the visible bounds slightly and add as a shadow cutout
+        let bounds = mapView.visibleCoordinateBounds
+        let latPad = (bounds.ne.latitude  - bounds.sw.latitude)  * 0.25
+        let lonPad = (bounds.ne.longitude - bounds.sw.longitude) * 0.25
+        shadowRegions.append(CoordinateBounds(
+            sw: CLLocationCoordinate2D(
+                latitude:  bounds.sw.latitude  - latPad,
+                longitude: bounds.sw.longitude - lonPad
+            ),
+            ne: CLLocationCoordinate2D(
+                latitude:  bounds.ne.latitude  + latPad,
+                longitude: bounds.ne.longitude + lonPad
+            )
+        ))
     }
 
     func isBBoxValid(_ bbox: BBox) -> Bool {

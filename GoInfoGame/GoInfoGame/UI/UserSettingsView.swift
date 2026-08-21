@@ -18,7 +18,6 @@ struct OptionModel: Identifiable, Hashable {
     static let options: [OptionModel] = [
            OptionModel(title: "User Profile", icon: "person.crop.circle.fill", destination: .profile),
            OptionModel(title: "Manage Quests", icon: "slider.horizontal.3", destination: .manageQuests),
-           OptionModel(title: "Download Data", icon: "arrow.down.circle.fill", destination: .downloadData),
            OptionModel(title: "Switch Workspace", icon: "arrow.right.arrow.left.circle.fill", destination: .switchWorkspace)
        ]
 }
@@ -26,7 +25,6 @@ struct OptionModel: Identifiable, Hashable {
 enum SettingsDestination: Hashable {
     case profile
     case manageQuests
-    case downloadData
     case switchWorkspace
 
 }
