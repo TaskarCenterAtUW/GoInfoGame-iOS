@@ -578,6 +578,7 @@ struct CustomMap: UIViewRepresentable {
         /// sync with the fixed crosshair while Create Note/Add Feature is open.
         func mapViewRegionIsChanging(_ mapView: MLNMapView) {
             updateEditedCoordinateIfNeeded(mapView)
+            reportMetersPerPoint(mapView)
             reportHeading(mapView)
         }
 

@@ -46,39 +46,16 @@ private struct ScaleBarMeasure {
             stop >= 5_280 ? formatted(stop / 5_280, symbol: "mi") : formatted(stop, symbol: "ft")
         }
     )
-
-    static let yardsAndMiles = ScaleBarMeasure(
-        unitInMeters: 0.9144,
-        stops: Array(buildStops(exponents: -1...3).dropLast(2))
-            + buildStops(exponents: 0...4).map { $0 * 1_760 },
-        label: { stop in
-            stop >= 1_760 ? formatted(stop / 1_760, symbol: "mi") : formatted(stop, symbol: "yd")
-        }
-    )
 }
 
-// Regions that default to non-metric units — same lists as the Android app.
-private let regionsUsingFeetAndMiles: Set<String> = [
-    "US", "AS", "GU", "MP", "PR", "VI", "FM", "MH", "PW", "LR"
-]
-private let regionsUsingYardsAndMiles: Set<String> = [
-    "GB", "AI", "BM", "FK", "GG", "GI", "GS", "IM", "IO", "JE", "KY", "MS", "PN", "SH", "TC", "VG",
-    "BS", "BZ", "GD", "KN", "VC", "MM"
-]
-
-/// Which measure(s) to show — a lone primary, or primary+secondary stacked.
-/// Mirrors the Android app's region-based defaulting: non-metric regions show
-/// their local unit on top with metric underneath; metric regions show metric
-/// only (no second unit), unless the two lists above disagree with the device.
+/// Which measure(s) to show — always feet/miles on top with meters/kilometers
+/// underneath, matching the shared app's scale bar reference regardless of the
+/// device's own region. (The Android source this was ported from derives this
+/// from the device's locale — non-metric regions show their local unit with
+/// metric underneath, metric regions show metric only — but that would hide
+/// the second line entirely on a metric-region device like this one's.)
 private func defaultScaleBarMeasures() -> (primary: ScaleBarMeasure, secondary: ScaleBarMeasure?) {
-    let region = Locale.current.region?.identifier ?? ""
-    if regionsUsingFeetAndMiles.contains(region) {
-        return (.feetAndMiles, .metric)
-    } else if regionsUsingYardsAndMiles.contains(region) {
-        return (.yardsAndMiles, .metric)
-    } else {
-        return (.metric, nil)
-    }
+    (.feetAndMiles, .metric)
 }
 
 /// Dual-unit map scale bar — a bracket line with tick marks at both ends (plus a
@@ -120,12 +97,11 @@ struct ScaleBarView: View {
 
             VStack(alignment: .trailing, spacing: 1) {
                 Text(primary.label)
-                if let secondary {
-                    Text(secondary.label)
-                }
 
+                // The bracket sits between the two labels — primary's ticks hang
+                // down to it, secondary's hang up to it — rather than below both.
                 Canvas { context, size in
-                    let baselineY = size.height - lineWidth / 2
+                    let baselineY = size.height / 2
                     var baseline = Path()
                     baseline.move(to: CGPoint(x: 0, y: baselineY))
                     baseline.addLine(to: CGPoint(x: fullWidth, y: baselineY))
@@ -135,12 +111,16 @@ struct ScaleBarView: View {
                     if let shortWidth { ticks.append(shortWidth) }
                     for x in ticks {
                         var tick = Path()
-                        tick.move(to: CGPoint(x: x, y: size.height))
-                        tick.addLine(to: CGPoint(x: x, y: size.height - tickHeight))
+                        tick.move(to: CGPoint(x: x, y: baselineY - tickHeight / 2))
+                        tick.addLine(to: CGPoint(x: x, y: baselineY + tickHeight / 2))
                         context.stroke(tick, with: .color(.black), lineWidth: lineWidth)
                     }
                 }
                 .frame(width: fullWidth, height: tickHeight + lineWidth)
+
+                if let secondary {
+                    Text(secondary.label)
+                }
             }
             .font(.system(size: 12, weight: .medium))
             .foregroundColor(.black)
