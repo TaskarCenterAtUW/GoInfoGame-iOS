@@ -205,23 +205,37 @@ struct MapView: View {
                 VStack {
                     HStack {
                         Spacer()
-                        // Filter quests
-                        FloatingActionButton(systemName: "slider.horizontal.3") {
-                            showFilterQuestsSheet.toggle()
-                        }
-                        .accessibilityLabel(L10n.Localizable.filterQuestTypes)
-                        .accessibilitySortPriority(1)
-                        .sheet(isPresented: $showFilterQuestsSheet) {
-                            ManageQuestsView()
-                                // Sized to its own content by ManageQuestsView itself.
-                                .interactiveDismissDisabled()
-                                .presentationDragIndicator(.hidden)
-                                .applyPresentationSizingPage()
-                                .focusAccessibilityOnAppear()
+                        VStack(spacing: 10) {
+                            // Map modes
+                            FloatingActionButton(name: "layers", iconSize: 20) {
+                                dismissOtherSheets()
+                                viewModel.updateOptions(
+                                    for: mapViewRef?.centerCoordinate
+                                        ?? CLLocationCoordinate2D(latitude: 0, longitude: 0)
+                                )
+                                viewModel.showSatellitePicker = true
+                            }
+                            .accessibilityLabel(L10n.Localizable.mapModes)
+                            .accessibilitySortPriority(1)
+
+                            // Filter quests
+                            FloatingActionButton(systemName: "slider.horizontal.3") {
+                                showFilterQuestsSheet.toggle()
+                            }
+                            .accessibilityLabel(L10n.Localizable.filterQuestTypes)
+                            .accessibilitySortPriority(1)
+                            .sheet(isPresented: $showFilterQuestsSheet) {
+                                ManageQuestsView()
+                                    // Sized to its own content by ManageQuestsView itself.
+                                    .interactiveDismissDisabled()
+                                    .presentationDragIndicator(.hidden)
+                                    .applyPresentationSizingPage()
+                                    .focusAccessibilityOnAppear()
+                            }
                         }
                     }
                     .padding(.top, 24)
-                    .padding(.trailing, 16)
+                    .padding(.trailing, 8)
                     .frame(alignment: .topTrailing)
                     
                     
@@ -490,32 +504,6 @@ struct MapView: View {
 
             ToolbarItem(placement: .topBarTrailing) {
                 accessbilityButton
-            }
-
-            ToolbarItem(placement: .topBarTrailing) {
-                Button(action: {
-                    dismissOtherSheets()
-                    viewModel.updateOptions(
-                        for: mapViewRef?.centerCoordinate
-                            ?? CLLocationCoordinate2D(latitude: 0, longitude: 0)
-                    )
-                    viewModel.showSatellitePicker = true
-                }) {
-                    Label {
-                        Text(L10n.Localizable.mapModes)
-                    } icon: {
-                        Image(systemName: "square.2.layers.3d.bottom.filled")
-                            .resizable()
-                            .padding(8)
-                            .foregroundStyle(Asset.Colors.huskyPurple.swiftUIColor)
-                            .background(Asset.Colors.e7E3EELightPurpuleBg.swiftUIColor)
-                            .frame(width: 34, height: 34)
-                            .clipShape(Circle())
-                    }
-                }
-                .buttonStyle(.plain)
-                .labelStyle(.iconOnly)
-                .accessibilityLabel(L10n.Localizable.mapModes)
             }
 
             ToolbarItem(placement: .topBarTrailing) {
