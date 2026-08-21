@@ -81,6 +81,7 @@ struct MapView: View {
     @State private var navigateToProfile = false
     @State private var showManageQuestSheet = false
     @State private var showZoomInAlert = false
+    @State private var showChangeWorkspaceConfirmation = false
     @State private var shadowRegions: [CoordinateBounds] = []
     @State private var showUndoSidebar = false
     @State private var showFilterQuestsSheet = false
@@ -397,6 +398,10 @@ struct MapView: View {
             } message: {
                 Text("The map area is too large. Please zoom in and try again.")
             }
+            .alert("Do you want to change the workspace?", isPresented: $showChangeWorkspaceConfirmation) {
+                Button("Cancel", role: .cancel) { }
+                Button("Yes") { switchToInitialView() }
+            }
             .background(
                 GeometryReader { proxy in
                     Color.clear
@@ -459,8 +464,11 @@ struct MapView: View {
                         // Width scales with screen size via `workspaceTitleWidth`; scrolling is preserved
                         // so the full title stays reachable at larger Dynamic Type sizes.
                         .frame(width: workspaceTitleWidth, height: 34)
+                        .contentShape(Rectangle())
+                        .onTapGesture { showChangeWorkspaceConfirmation = true }
                         .accessibilityElement(children: .combine)
                         .accessibilityLabel("\(L10n.Localizable.workspace): \(selectedWorkspace.title)")
+                        .accessibilityAddTraits(.isButton)
                     }
                 }
             }
