@@ -21,7 +21,7 @@ enum SatelliteOption: Identifiable, Hashable {
 
     var name: String {
         switch self {
-        case .none: return "None"
+        case .none: return "Default Imagery"
         case .wmts(let layer): return layer.name
         }
     }
