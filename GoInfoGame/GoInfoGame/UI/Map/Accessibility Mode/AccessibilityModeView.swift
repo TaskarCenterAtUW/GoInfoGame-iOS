@@ -123,7 +123,7 @@ struct AccessibilityModeView: View {
         }
         .sheet(isPresented: $showLongFrom) {
             QuestSheetView(viewModel: mapViewModel, annotationCoordinate: viewModel.selectedQuest?.coordinateInfo)
-                .presentationDetents([.fraction(0.8), .fraction(0.5), .fraction(0.1)], selection: $selectedDetent)
+                .presentationDetents([.fraction(0.1), .fraction(0.5), .fraction(0.8), .large], selection: $selectedDetent)
                 .presentationDragIndicator(.visible)
                 .scrollDisabled(false)
                 .interactiveDismissDisabled()

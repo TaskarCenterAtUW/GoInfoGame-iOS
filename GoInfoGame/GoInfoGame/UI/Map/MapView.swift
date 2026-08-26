@@ -620,7 +620,7 @@ struct MapView: View {
         .sheet(isPresented: $isPresented) {
             QuestSheetView(viewModel: viewModel, annotationCoordinate: annotationCoordinate)
                 .onAppear { shouldShowPolyline = true }
-                .presentationDetents([.fraction(0.7), .fraction(0.5), .fraction(0.1)],
+                .presentationDetents([.fraction(0.1), .fraction(0.5), .fraction(0.7), .large],
                                      selection: $selectedDetent)
                 .presentationDragIndicator(.visible)
                 .scrollDisabled(false)
@@ -1009,7 +1009,13 @@ struct QuestSheetView: View {
                 }
                 .padding(24)
             } else if let selectedQuest = viewModel.getSelectedQuest() {
-                CustomSheetView { selectedQuest.parent?.form }
+                // Rendered directly (not through the old CustomSheetView/CustomSheetWrapper
+                // UIViewControllerRepresentable) so the sheet's native drag-vs-scroll
+                // gesture coordination can see LongForm's List directly and let it scroll
+                // before resizing the sheet — that extra UIKit hosting boundary was
+                // breaking that coordination, so any drag on the list moved the whole
+                // sheet instead of scrolling its content.
+                selectedQuest.parent?.form
             } else {
                 EmptyView()
             }
@@ -1209,44 +1215,6 @@ class ContextualInfo: ObservableObject {
     static let shared = ContextualInfo()
     @Published var info: String = "Contextual info appears here"
     private init() {}
-}
-
-struct CustomSheetView<Content: View>: View {
-    let content: () -> Content
-    init(@ViewBuilder content: @escaping () -> Content) { self.content = content }
-    var body: some View {
-        CustomSheetWrapper(content: content).ignoresSafeArea()
-    }
-}
-
-struct CustomSheetWrapper<Content: View>: UIViewControllerRepresentable {
-    let content: () -> Content
-    init(@ViewBuilder content: @escaping () -> Content) { self.content = content }
-
-    func makeUIViewController(context: Context) -> UIViewController {
-        let vc = UIViewController()
-        let hc = UIHostingController(rootView: content())
-        hc.view.translatesAutoresizingMaskIntoConstraints = false
-        vc.view.addSubview(hc.view)
-        NSLayoutConstraint.activate([
-            hc.view.topAnchor.constraint(equalTo: vc.view.topAnchor),
-            hc.view.bottomAnchor.constraint(equalTo: vc.view.bottomAnchor),
-            hc.view.leadingAnchor.constraint(equalTo: vc.view.leadingAnchor),
-            hc.view.trailingAnchor.constraint(equalTo: vc.view.trailingAnchor)
-        ])
-        vc.view.backgroundColor = .clear
-        return vc
-    }
-
-    func updateUIViewController(_ uiViewController: UIViewController, context: Context) {}
-
-    static func dismantleUIViewController(_ uiViewController: UIViewController, coordinator: ()) {
-        if let sheet = uiViewController.sheetPresentationController {
-            sheet.detents = [.medium(), .large()]
-            sheet.prefersGrabberVisible = true
-            sheet.prefersScrollingExpandsWhenScrolledToEdge = false
-        }
-    }
 }
 
 struct MultiQuestSelectionBottomSheet: View {
