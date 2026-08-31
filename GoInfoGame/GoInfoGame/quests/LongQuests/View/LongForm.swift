@@ -176,6 +176,9 @@ struct LongForm: View, QuestForm {
                             Text("No Quests available")
                         }
                     }
+                    .listRowInsets(EdgeInsets(top: 4, leading: 20, bottom: 4, trailing: 20))
+                    .listRowBackground(Color.clear)
+                    .listRowSeparator(.hidden)
 
                     Section {
                         submitButton
@@ -184,6 +187,7 @@ struct LongForm: View, QuestForm {
                     .listRowBackground(Color.clear)
                     .listRowSeparator(.hidden)
                 }
+                .scrollContentBackground(.hidden)
                 .padding(.bottom, keyboardHeight)
                 .onReceive(Publishers.keyboardHeight) { height in
                     let safeAreaBottom = UIApplication.shared.safeAreaBottomInset
@@ -251,6 +255,11 @@ struct LongForm: View, QuestForm {
             }
         }
         }
+        // Matches the background used everywhere else in the app (ManageQuestsView,
+        // UserSettingsView, AccessibilityModeView, etc.) instead of the system's default
+        // sheet background, so it looks consistent whether this sheet is a small preview
+        // or expanded to full screen.
+        .background(Color(red: 248 / 255, green: 248 / 255, blue: 248 / 255))
         .alert(item: $activeAlert) { alertType in
             switch alertType {
             case .hideQuestConfirmation:
