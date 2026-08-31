@@ -523,6 +523,7 @@ private extension QuestOptions {
         @Binding var selectedChoice: QuestAnswerChoice?
         
         @State private var selectedClasses: [AccessibilityFeatureClass] = []
+        @State private var selectedAttributesByClass: [AccessibilityFeatureClass: Set<AccessibilityFeatureAttribute>] = [:]
         @StateObject private var sharedAppData: SharedBaseData = SharedBaseData()
         @StateObject private var sharedAppContext: SharedBaseContext = SharedBaseContext()
         @StateObject private var segmentationPipeline: SegmentationARPipeline = SegmentationARPipeline()
@@ -697,7 +698,7 @@ private extension QuestOptions {
                 }
             }
             .sheet(isPresented: $showImagePicker) {
-                ARCameraViewBase(selectedClasses: self.selectedClasses.sorted(), onCaptureComplete: onCaptureComplete)
+                ARCameraViewBase(selectedClasses: self.selectedClasses.sorted(), selectedAttributesByClass: self.selectedAttributesByClass, onCaptureComplete: onCaptureComplete)
                 .environmentObject(self.sharedAppData)
                 .environmentObject(self.sharedAppContext)
                 .environmentObject(self.segmentationPipeline)
@@ -753,8 +754,8 @@ private extension QuestOptions {
                     for currentClass in selectedClasses {
                         let accessibilityFeatures = try manager.updateFeatureClass(accessibilityFeatureClass: currentClass)
                         for accessibilityFeature in accessibilityFeatures {
-                            try attributeEstimationPipeline.setPrerequisites(accessibilityFeature: accessibilityFeature)
-                            try attributeEstimationPipeline.processAttributeRequest(accessibilityFeature: accessibilityFeature)
+//                            try attributeEstimationPipeline.setPrerequisites(accessibilityFeature: accessibilityFeature)
+                            try attributeEstimationPipeline.processAttributeRequest(accessibilityFeature: accessibilityFeature, attributes: Set(currentClass.kind.attributes))
                             attributeEstimationPipeline.clearPrerequisites()
                         }
 
@@ -794,6 +795,7 @@ private extension QuestOptions {
             }
             self.sharedBaseSettings.isEnhancedAnalysisEnabled = self.isEnhancedAnalysisEnabled
             self.selectedClasses = [sidewalkClass]
+            self.selectedAttributesByClass[sidewalkClass] = Set(sidewalkClass.kind.attributes)
             do {
                 try self.sharedAppContext.configure()
                 try segmentationPipeline.configure()
