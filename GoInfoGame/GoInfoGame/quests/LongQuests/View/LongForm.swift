@@ -21,7 +21,16 @@ enum LongFormActiveAlert: Identifiable {
 
 struct LongForm: View, QuestForm {
 
-    @ObservedObject private var viewModel = LongFormViewModel()
+    // @StateObject (not @ObservedObject): LongForm is reconstructed as a fresh struct
+    // value on every incidental parent re-render (e.g. QuestSheetView.init runs again
+    // on each MapView.body re-evaluation while this sheet is open — including from
+    // unrelated GPS/location updates during a photo capture+upload). @ObservedObject's
+    // default-initializer expression re-runs on every such reconstruction, silently
+    // replacing this view model — and with it, selectedChoices — while other @State
+    // here (isLoading, uploadedPhotos, ...) survives because it's identity-keyed by
+    // SwiftUI rather than owned by the struct. @StateObject ties the instance to the
+    // view's identity instead, so it survives those re-inits.
+    @StateObject private var viewModel = LongFormViewModel()
 
     var elementName: String?
 
@@ -59,6 +68,10 @@ struct LongForm: View, QuestForm {
     @State private var imagePath = ""
 
     @State private var uploadedPhotos: [String] = []
+
+    /// Tracks the in-flight KartaView upload so Submit can await it instead of
+    /// racing ahead and submitting before `uploadedPhotos` is populated.
+    @State private var uploadTask: Task<Void, Never>?
 
     @State private var showNotesBox = false
 
@@ -316,16 +329,24 @@ struct LongForm: View, QuestForm {
     func uploadImageToKartaView() {
         isLoading = true
         let kvViewModel = KartaviewViewModel(capturedImage: capturedImage!)
-        kvViewModel.createSequence(completion: { (path,result) in
-            isLoading = false
-            kartaViewAlert = result ? "Upload Successful" : "Upload Failed"
-            showKartaviewAlert = true
-            showImagePath = true
-            imagePath = path
-            print("KARTAVIEW IMAGE PATH --->>>\(path)")
-            uploadedPhotos.append(path)
-            print(uploadedPhotos)
-        })
+        uploadTask = Task { @MainActor in
+            do {
+                let path = try await kvViewModel.uploadAsync()
+                isLoading = false
+                kartaViewAlert = "Upload Successful"
+                showKartaviewAlert = true
+                showImagePath = true
+                imagePath = path
+                print("KARTAVIEW IMAGE PATH --->>>\(path)")
+                uploadedPhotos.append(path)
+                print(uploadedPhotos)
+            } catch {
+                isLoading = false
+                kartaViewAlert = "Upload Failed"
+                showKartaviewAlert = true
+                print("KARTAVIEW UPLOAD FAILED --->>>\(error.localizedDescription)")
+            }
+        }
     }
 
     func questsForLongForm() -> LongFormElement? {
@@ -499,22 +520,28 @@ struct LongForm: View, QuestForm {
 
     private var submitButton: some View {
         Button(action: {
-            var answersToSubmit = viewModel.getAnswersForSubmission()
-            if !answersToSubmit.isEmpty {
-                if let validationError = viewModel.validationErrorMessage() {
-                    self.submitStatusMessage = validationError
-                    self.activeAlert = .submissionError(message: validationError)
-                } else if let action = action {
-                    if !uploadedPhotos.isEmpty {
-                        answersToSubmit["ext:kartaview_url"] = uploadedPhotos.joined(separator: ", ")
-                    }
-                      action(answersToSubmit)
-                }
-            } else {
-                self.submitStatusMessage = "Please answer atleast one quest to submit"
-                self.activeAlert = .submissionError(message: "Please answer atleast one quest to submit")
-            }
+            Task {
+                // If a photo upload is still in flight, wait for it to finish so
+                // the resulting URL makes it into uploadedPhotos before we read it —
+                // otherwise the ext:kartaview_url tag can be silently dropped.
+                await uploadTask?.value
 
+                var answersToSubmit = viewModel.getAnswersForSubmission()
+                if !answersToSubmit.isEmpty {
+                    if let validationError = viewModel.validationErrorMessage() {
+                        self.submitStatusMessage = validationError
+                        self.activeAlert = .submissionError(message: validationError)
+                    } else if let action = action {
+                        if !uploadedPhotos.isEmpty {
+                            answersToSubmit["ext:kartaview_url"] = uploadedPhotos.last //joined(separator: ", ")
+                        }
+                        action(answersToSubmit)
+                    }
+                } else {
+                    self.submitStatusMessage = "Please answer atleast one quest to submit"
+                    self.activeAlert = .submissionError(message: "Please answer atleast one quest to submit")
+                }
+            }
         }) {
             Text("Submit")
                 .font(.custom("Lato-Bold", size: 16, relativeTo: .title))
