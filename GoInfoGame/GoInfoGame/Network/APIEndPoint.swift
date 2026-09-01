@@ -125,15 +125,11 @@ struct APIEndpoint {
         return APIEndpoint(path: "/photo/", method: "POST", body: nil, headers: nil, formData: formData)
     }
     
-    static let fetchPhotoUrlFromKartaview = { (formData: [[String: Any]]) in
-        let queryItems: [URLQueryItem] = formData.compactMap { entry in
-            guard let key = entry["key"] as? String, let value = entry["value"] else { return nil }
-            return URLQueryItem(name: key, value: "\(value)")
-        }
+    static let fetchPhotoUrlFromKartaview = { (photoId: String, accessToken: String) in
         var components = URLComponents()
-        components.queryItems = queryItems
+        components.queryItems = [URLQueryItem(name: "access_token", value: accessToken)]
         let query = components.percentEncodedQuery.map { "?\($0)" } ?? ""
-        return APIEndpoint(path: "/photo/" + query, method: "GET", body: nil, headers: nil, formData: nil)
+        return APIEndpoint(path: "/photo/\(photoId)" + query, method: "GET", body: nil, headers: nil, formData: nil)
     }
     
     static let finshedUploadingToKartaview = { (formData: [[String: Any]]) in

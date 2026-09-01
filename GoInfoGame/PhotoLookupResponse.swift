@@ -12,7 +12,7 @@ struct PhotoLookupResponse: Codable {
 
 // MARK: - Result
 struct PhotoLookupResult: Codable {
-    let data: [PhotoLookupData]?
+    let data: PhotoLookupData?
 }
 
 // MARK: - Data
