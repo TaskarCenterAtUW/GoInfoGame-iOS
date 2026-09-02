@@ -179,6 +179,15 @@ class LongElementQuest: QuestBase, Quest {
     
     var annotationCoordinate: CLLocationCoordinate2D? {
           didSet {
+              // QuestSheetView.init re-runs and re-assigns this on every MapView body
+              // re-evaluation — notably when dragging/scrolling the sheet changes the
+              // selected presentation detent. Rebuilding internalForm on an unchanged
+              // coordinate throws away the live LongForm and its LongFormViewModel,
+              // wiping every answer the user entered or that was prefilled. Only rebuild
+              // when the coordinate actually changed. (refreshTags calls updateForm()
+              // directly, so the live-tag refresh path is unaffected.)
+              guard oldValue?.latitude != annotationCoordinate?.latitude
+                      || oldValue?.longitude != annotationCoordinate?.longitude else { return }
               updateForm()
           }
       }
