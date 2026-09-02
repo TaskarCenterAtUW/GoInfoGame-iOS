@@ -19,6 +19,14 @@ class DatasyncManager {
     
     private let dbInstance = DatabaseConnector.shared
     private let barrierQueue: DispatchQueue = DispatchQueue(label: "com.goinfogame.DatasyncManager.barrierQueue", attributes: .concurrent)
+
+    /// Mirrors the selected workspace's `overrideConflicts` flag (persisted by
+    /// `InitialViewModel.fetchLongQuestsFor` from the workspace-details API).
+    /// When true, tag conflicts on sync are auto-resolved with local values
+    /// winning instead of showing the `ConflictResolutionSheet`.
+    private var overrideConflicts: Bool {
+        UserDefaults.standard.bool(forKey: "workspace_overrideConflicts")
+    }
     
     func syncDataToOSM(exclude_gig_tags: Bool, completionHandler: @escaping (Result<Bool, APIError>)  -> Void) {
         let currentQueue = OperationQueue.current?.underlyingQueue ?? .main
@@ -450,13 +458,22 @@ class DatasyncManager {
                         return try await updateWay(way: mergedWay, exclude_gig_tags: exclude_gig_tags)
                     }
 
+                    var mergedWay = latestWay
+                    mergedWay.changeset = localWay.changeset
+
+                    if overrideConflicts {
+                        // Workspace opted out of interactive conflict resolution: reinstate the
+                        // pre-ConflictResolutionSheet behaviour — union the tags with every local
+                        // value overriding the server, then retry on the fresh version.
+                        for (key, value) in localWay.tags { mergedWay.tags[key] = value }
+                        localWay = mergedWay
+                        continue
+                    }
+
                     let conflicts = currentEditedTags.compactMap { key, answeredValue -> ConflictingTag? in
                         guard let existingValue = latestWay.tags[key], existingValue != answeredValue else { return nil }
                         return ConflictingTag(key: key, existingValue: existingValue, answeredValue: answeredValue)
                     }
-
-                    var mergedWay = latestWay
-                    mergedWay.changeset = localWay.changeset
 
                     if conflicts.isEmpty {
                         for (key, value) in currentEditedTags { mergedWay.tags[key] = value }
@@ -516,13 +533,22 @@ class DatasyncManager {
                         return try await updateNode(node: mergedNode, exclude_gig_tags: exclude_gig_tags)
                     }
 
+                    var mergedNode = latestNode
+                    mergedNode.changeset = localNode.changeset
+
+                    if overrideConflicts {
+                        // Workspace opted out of interactive conflict resolution: reinstate the
+                        // pre-ConflictResolutionSheet behaviour — union the tags with every local
+                        // value overriding the server, then retry on the fresh version.
+                        for (key, value) in localNode.tags { mergedNode.tags[key] = value }
+                        localNode = mergedNode
+                        continue
+                    }
+
                     let conflicts = currentEditedTags.compactMap { key, answeredValue -> ConflictingTag? in
                         guard let existingValue = latestNode.tags[key], existingValue != answeredValue else { return nil }
                         return ConflictingTag(key: key, existingValue: existingValue, answeredValue: answeredValue)
                     }
-
-                    var mergedNode = latestNode
-                    mergedNode.changeset = localNode.changeset
 
                     if conflicts.isEmpty {
                         for (key, value) in currentEditedTags { mergedNode.tags[key] = value }

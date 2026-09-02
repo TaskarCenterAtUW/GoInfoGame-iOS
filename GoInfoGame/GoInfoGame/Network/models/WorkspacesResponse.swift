@@ -31,6 +31,7 @@ struct Workspace: Decodable {
     let longFormQuest: LongFormResponse?
     let tdeiProjectGroupId: String?
     let createdAt: String?
+    let overrideConflicts: Bool
 
     init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
@@ -42,10 +43,11 @@ struct Workspace: Decodable {
         longFormQuest = try container.decodeIfPresent(LongFormResponse.self, forKey: .longFormQuest)
         tdeiProjectGroupId = try container.decodeIfPresent(String.self, forKey: .tdeiProjectGroupId)
         createdAt = try container.decodeIfPresent(String.self, forKey: .createdAt)
+        overrideConflicts = try container.decodeIfPresent(Bool.self, forKey: .overrideConflicts) ?? false
     }
 
     enum CodingKeys: String, CodingKey {
-        case id, title, type, externalAppAccess, tdeiProjectGroupId, createdAt
+        case id, title, type, externalAppAccess, tdeiProjectGroupId, createdAt, overrideConflicts
         case imageryList = "imageryListDef"
         case longFormQuest = "longFormQuestDef"
     }

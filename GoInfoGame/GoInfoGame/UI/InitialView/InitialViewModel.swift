@@ -142,7 +142,11 @@ class InitialViewModel: ObservableObject {
             DispatchQueue.main.async { [unowned self] in
                 switch result {
                 case .success(let workspaces):
-                    
+
+                    // Persist the workspace's conflict-handling preference so DatasyncManager
+                    // (a singleton with no Workspace reference) can honour it during sync.
+                    UserDefaults.standard.set(workspaces.overrideConflicts, forKey: "workspace_overrideConflicts")
+
                     guard let longQuestsResponse = workspaces.longFormQuest else {
                         self.isLoading = false
                         completion(false, "Please configure longform.", nil )
