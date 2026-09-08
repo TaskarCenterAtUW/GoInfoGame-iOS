@@ -23,6 +23,13 @@
         "identifier" : "FAD5C5042AFCBE720040C61A",
         "name" : "GoInfoGameTests"
       }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:GoInfoGame.xcodeproj",
+        "identifier" : "FAD5C50E2AFCBE720040C61A",
+        "name" : "GoInfoGameUITests"
+      }
     }
   ],
   "version" : 1
