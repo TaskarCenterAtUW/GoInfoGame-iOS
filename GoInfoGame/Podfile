@@ -32,6 +32,10 @@ target 'GoInfoGame' do
     inherit! :search_paths
     # Pods for testing
   end
+  
+  target 'osmapiTests' do
+    inherit! :search_paths
+  end
 
   target 'GoInfoGameUITests' do
     # Pods for testing
