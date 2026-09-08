@@ -74,7 +74,10 @@ final class UserFlowTests: XCTestCase {
     
     func testPerformanceDBFetch() throws {
         self.measure {
-            let nodesFromStorage = dbInstance.getNodes()
+            let nodePredicateFormat = "tags.@count != 0"
+            let wayPredicateFormat = "tags.@count != 0 AND polyline.@count > 0"
+
+            let nodesFromStorage = dbInstance.getNodes(NSPredicate(format: nodePredicateFormat))
             let nodeElements = nodesFromStorage.map({$0.asNode()})
         }
         
@@ -82,9 +85,12 @@ final class UserFlowTests: XCTestCase {
     
     // Fetches and generates the quests out of the database
     func testUserQuestsGeneration() throws {
-        let nodesFromStorage = dbInstance.getNodes()
+        let nodePredicateFormat = "tags.@count != 0"
+        let wayPredicateFormat = "tags.@count != 0 AND polyline.@count > 0"
+        
+        let nodesFromStorage = dbInstance.getNodes(NSPredicate(format: nodePredicateFormat))
         print(nodesFromStorage.count)
-        let waysFromStorage = dbInstance.getWays()
+        let waysFromStorage = dbInstance.getWays(NSPredicate(format: wayPredicateFormat))
         
         let nodeElements = nodesFromStorage.map({$0.asNode()})
         let wayElements = waysFromStorage.map({$0.asWay()})
@@ -266,10 +272,15 @@ final class UserFlowTests: XCTestCase {
                         _ = GoInfoGame.KeychainManager.save(key: "workspaceID", data: workspaceId)
                         
                         // 4. get the node tages
-                        initialViewModel.fetchLongQuestsFor(workspaceId: "\(workspaceID)") { result, string in
+                        initialViewModel.fetchLongQuestsFor(workspaceId: "\(workspaceID)") { result, string, workspace  in
                             XCTAssert(result)
-                            
-                            let mapViewModel = MapViewModel()
+                            guard let ws = workspace else {
+                                XCTFail("Workspace not available")
+                                expectation.fulfill()
+                                return
+                            }
+
+                            let mapViewModel = MapViewModel(workspace: ws)
                             let location = CLLocationCoordinate2D(latitude: 47.62619, longitude: -122.24255)
                             mapViewModel.$isLoading
                                 .dropFirst(2)
@@ -288,7 +299,7 @@ final class UserFlowTests: XCTestCase {
                                         // 4. update node tags
                                         let newTestingTags = [testingTagKey: testingTagValue]
                                         if let lognFormQuest = node.displayUnit.parent as? LongElementQuest {
-                                            lognFormQuest.updateTags(id: node.id, tags: newTestingTags, type: .node)
+                                            lognFormQuest.updateTags(id: node.id, questType: lognFormQuest.elementType, tags: newTestingTags, type: .node, iconName: lognFormQuest.iconName)
                                             DispatchQueue.main.asyncAfter(deadline: .now() + 5) { [weak self] in
                                                 // 9. get the node tags and compare
                                                 self?.getNodeTags(id: nodeID, workspaceId: workspaceID, completion: { result in
@@ -302,7 +313,8 @@ final class UserFlowTests: XCTestCase {
 
                                                         // 10. undo the node tags
                                                         DispatchQueue.main.async {
-                                                            let undoItem = MapUndoManager.shared.getUndoItems().first { item in
+                                                            let undoItems: [UndoItem] = MapUndoManager.shared.getUndoItems()
+                                                            let undoItem = undoItems.first { (item: UndoItem) -> Bool in
                                                                 item.elementId == nodeID && item.type == .node
                                                             }
                                                             if let undoItem = undoItem  {
@@ -342,7 +354,8 @@ final class UserFlowTests: XCTestCase {
                     }
                     .store(in: &cancellables)
                 
-                initialViewModel.fetchWorkspacesList()
+                let workspacesLocation = CLLocationCoordinate2D(latitude: 47.62619, longitude: -122.24255)
+                initialViewModel.fetchWorkspacesList(location: workspacesLocation)
             }
             .store(in: &cancellables)
         loginViewModel.performLogin(for: .development)
@@ -401,11 +414,16 @@ final class UserFlowTests: XCTestCase {
                         _ = GoInfoGame.KeychainManager.save(key: "workspaceID", data: workspaceId)
                         
                         // 4. get the node tages
-                        initialViewModel.fetchLongQuestsFor(workspaceId: "\(workspaceID)") { result, string in
+                        initialViewModel.fetchLongQuestsFor(workspaceId: "\(workspaceID)") { result, string, workspace in
                             XCTAssert(result)
-                            
+                            guard let ws = workspace else {
+                                XCTFail("Workspace not available")
+                                expectation.fulfill()
+                                return
+                            }
+
                             // 5. Loading elements
-                            let mapViewModel = MapViewModel()
+                            let mapViewModel = MapViewModel(workspace: ws)
                             mapViewModel.isMultiSelectModeEnabled = true
                             let location = CLLocationCoordinate2D(latitude: 47.62619, longitude: -122.24255)
                             mapViewModel.$isLoading
@@ -467,9 +485,11 @@ final class UserFlowTests: XCTestCase {
                                         group.notify(queue: .main) {
                                             // 10. undo the node tags
                                             let undogroup = DispatchGroup()
-                                            
-                                            let undoItem1 = MapUndoManager.shared.getUndoItems().first { item in
-                                                item.elementId == nodeIDs.first && item.type == .node
+
+                                            let firstNodeID: Int = nodeIDs.first ?? 0
+                                            let undoItems1: [UndoItem] = MapUndoManager.shared.getUndoItems()
+                                            let undoItem1 = undoItems1.first { (item: UndoItem) -> Bool in
+                                                item.elementId == firstNodeID && item.type == .node
                                             }
                                             if let undoItem = undoItem1  {
                                                 undogroup.enter()
@@ -490,8 +510,10 @@ final class UserFlowTests: XCTestCase {
                                                 }
                                             }
                                             
-                                            let undoItem2 = MapUndoManager.shared.getUndoItems().first { item in
-                                                item.elementId == nodeIDs.last && item.type == .node
+                                            let lastNodeID: Int = nodeIDs.last ?? 0
+                                            let undoItems2: [UndoItem] = MapUndoManager.shared.getUndoItems()
+                                            let undoItem2 = undoItems2.first { (item: UndoItem) -> Bool in
+                                                item.elementId == lastNodeID && item.type == .node
                                             }
                                             if let undoItem = undoItem2  {
                                                 undogroup.enter()
@@ -523,7 +545,8 @@ final class UserFlowTests: XCTestCase {
                         }
                     }
                     .store(in: &cancellables)
-                initialViewModel.fetchWorkspacesList()
+                let workspacesLocation = CLLocationCoordinate2D(latitude: 47.62619, longitude: -122.24255)
+                initialViewModel.fetchWorkspacesList(location: workspacesLocation)
             }
             .store(in: &cancellables)
         loginViewModel.performLogin(for: .development)
