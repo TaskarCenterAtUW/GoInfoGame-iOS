@@ -7,7 +7,7 @@ on: push
 
 jobs:
   build:
-    runs-on: [self-hosted, macmini]
+    runs-on: [self-hosted, Vindagos-Mac-Mini]
     steps:
       - name: validating env
         run: |
