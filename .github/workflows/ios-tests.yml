@@ -365,6 +365,16 @@ jobs:
             if-no-files-found: warn
             overwrite: true
 
+      - name: Upload .xcresult bundle
+        uses: actions/upload-artifact@v4
+        if: always()
+        continue-on-error: true   # large/optional - keep it from blocking the run
+        with:
+          name: xcresult
+          path: build/TestResults.xcresult.zip
+          retention-days: 7
+          if-no-files-found: ignore
+
       - name: Clean up simulators
         if: always()
         run: xcrun simctl shutdown all || true
