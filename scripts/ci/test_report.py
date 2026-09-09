@@ -341,8 +341,13 @@ def main() -> int:
         with open(summary, "a") as f:
             f.write(md + "\n")
 
+    # The report always "succeeds" once written - pass/fail gating is the
+    # test step's job, not this one.
     failed = sum(s.count("failed") for s in suites)
-    return 1 if failed else 0
+    total = sum(len(s.cases) for s in suites)
+    print(f"report: {total - failed}/{total} passed"
+          + (f", {failed} failed" if failed else ""))
+    return 0
 
 
 if __name__ == "__main__":

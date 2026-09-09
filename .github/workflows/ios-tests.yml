@@ -144,6 +144,11 @@ jobs:
           include_passed: true
           require_tests: true
 
+      - name: Ensure a PDF engine (weasyprint)
+        if: always()
+        continue-on-error: true   # PDF is optional; MD/HTML are produced regardless
+        run: command -v weasyprint >/dev/null || brew install --quiet weasyprint
+
       - name: Generate test report (MD / HTML / PDF)
         if: always()
         continue-on-error: true
