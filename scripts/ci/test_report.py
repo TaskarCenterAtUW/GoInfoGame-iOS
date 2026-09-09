@@ -31,12 +31,6 @@ from dataclasses import dataclass
 from datetime import datetime, timezone
 
 
-@dataclass
-class Case:
-    run: str
-    suite: str
-    name: str
-    time: float
     status: str  # "passed" | "failed" | "skipped"
     message: str = ""
     detail: str = ""
