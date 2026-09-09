@@ -160,20 +160,39 @@ jobs:
             --xcresult build/TestResults.xcresult \
             --out-dir build/report
 
-      - name: Upload results + reports
+      - name: Zip the .xcresult bundle
+        if: always()
+        continue-on-error: true
+        run: |
+          if [ -d build/TestResults.xcresult ]; then
+            ditto -c -k --sequesterRsrc --keepParent \
+              build/TestResults.xcresult build/TestResults.xcresult.zip
+          fi
+
+      - name: Upload report + logs
         uses: actions/upload-artifact@v4
         if: always()
+        continue-on-error: true   # a runner<->GitHub network blip here must not fail the job
         with:
-          name: test-results
+          name: test-report
           path: |
             build/report/test-report.md
             build/report/test-report.html
             build/report/test-report.pdf
-            build/TestResults.xcresult
             build/reports/junit.xml
             build/xcodebuild.log
           retention-days: 14
           if-no-files-found: warn
+
+      - name: Upload .xcresult bundle
+        uses: actions/upload-artifact@v4
+        if: always()
+        continue-on-error: true   # large/optional - keep it from blocking the run
+        with:
+          name: xcresult
+          path: build/TestResults.xcresult.zip
+          retention-days: 7
+          if-no-files-found: ignore
 
       - name: Clean up simulators
         if: always()
