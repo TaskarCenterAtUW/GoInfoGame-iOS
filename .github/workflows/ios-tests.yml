@@ -13,6 +13,12 @@
 #   already exist on the runner*. If neither the file nor the secrets are
 #   present the build still succeeds (Config.xcconfig uses `#include?`), but
 #   map / Kartaview code gets empty tokens.
+#
+# Reports produced (uploaded as the `test-results` artifact + posted to the run summary):
+#   test-report.md / .html   - always
+#   test-report.pdf          - only if the runner has an HTML->PDF converter on PATH
+#                              (Google Chrome, pandoc, wkhtmltopdf, or weasyprint)
+#   TestResults.xcresult, junit.xml, xcodebuild.log
 
 name: iOS Tests
 
@@ -129,7 +135,7 @@ jobs:
             | tee build/xcodebuild.log \
             | xcbeautify --report junit --report-path build/reports
 
-      - name: Publish test report
+      - name: Publish test report (checks/PR annotations)
         uses: mikepenz/action-junit-report@v5
         if: always()
         with:
@@ -138,25 +144,26 @@ jobs:
           include_passed: true
           require_tests: true
 
-      - name: Code-coverage summary
+      - name: Generate test report (MD / HTML / PDF)
         if: always()
+        continue-on-error: true
+        env:
+          GIT_COMMIT_MESSAGE: ${{ github.event.head_commit.message }}
         run: |
-          set -euo pipefail
-          if [ -d build/TestResults.xcresult ]; then
-            {
-              echo "## Code coverage"
-              echo '```'
-              xcrun xccov view --report --only-targets build/TestResults.xcresult 2>/dev/null || echo "xccov: no coverage data"
-              echo '```'
-            } >> "$GITHUB_STEP_SUMMARY"
-          fi
+          python3 scripts/ci/test_report.py \
+            --junit build/reports/junit.xml \
+            --xcresult build/TestResults.xcresult \
+            --out-dir build/report
 
-      - name: Upload result bundle + logs
+      - name: Upload results + reports
         uses: actions/upload-artifact@v4
         if: always()
         with:
           name: test-results
           path: |
+            build/report/test-report.md
+            build/report/test-report.html
+            build/report/test-report.pdf
             build/TestResults.xcresult
             build/reports/junit.xml
             build/xcodebuild.log
