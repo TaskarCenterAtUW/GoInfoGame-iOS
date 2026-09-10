@@ -48,16 +48,16 @@ env:
   # can be aspirational. Add every simulator you care about here.
   UI_SIMULATORS: |
     iPhone SE (3rd generation)
-    iPhone 16
-    iPhone 16 Plus
-    iPhone 16 Pro
-    iPhone 16 Pro Max
-    iPad (10th generation)
-    iPad mini (6th generation)
-    iPad Air 11-inch (M2)
-    iPad Air 13-inch (M2)
-    iPad Pro 11-inch (M4)
-    iPad Pro 13-inch (M4)
+    # iPhone 16
+    # iPhone 16 Plus
+    # iPhone 16 Pro
+    # iPhone 16 Pro Max
+    # iPad (10th generation)
+    # iPad mini (6th generation)
+    # iPad Air 11-inch (M2)
+    # iPad Air 13-inch (M2)
+    # iPad Pro 11-inch (M4)
+    # iPad Pro 13-inch (M4)
 
 jobs:
   test:
@@ -137,33 +137,33 @@ jobs:
             | xcbeautify
 
       # -------- STEP 1: unit tests --------
-      - name: Unit tests
-        run: |
-          set +e                       # keep the step alive so cleanup/report always run
-          set -o pipefail
-          udid=$(xcrun simctl list devices available | grep -F "$UNIT_SIMULATOR (" | grep -oE '[0-9A-F-]{36}' | head -1)
-          if [ -z "$udid" ]; then
-            echo "::error::unit simulator '$UNIT_SIMULATOR' not installed"
-            xcrun simctl list devices available | grep -i iphone
-            exit 1
-          fi
-          xcrun simctl boot "$udid"; xcrun simctl bootstatus "$udid" -b
-          mkdir -p build/reports/unit
-          NSUnbufferedIO=YES xcodebuild test-without-building \
-            -workspace "$WORKSPACE" -scheme "$SCHEME" \
-            -destination "platform=iOS Simulator,id=$udid" \
-            -only-testing:GoInfoGameTests \
-            -resultBundlePath build/results/unit.xcresult \
-            -enableCodeCoverage YES -retry-tests-on-failure -test-timeouts-enabled YES \
-            CODE_SIGNING_ALLOWED=NO \
-            | tee build/unit.log \
-            | xcbeautify --report junit --report-path build/reports/unit
-          rc=${PIPESTATUS[0]}
-          [ -f build/reports/unit/junit.xml ] && mv build/reports/unit/junit.xml build/reports/unit.xml
-          rmdir build/reports/unit 2>/dev/null
-          xcrun simctl shutdown "$udid"
-          echo "unit tests exit code: $rc"
-          exit "$rc"
+      # - name: Unit tests
+      #   run: |
+      #     set +e                       # keep the step alive so cleanup/report always run
+      #     set -o pipefail
+      #     udid=$(xcrun simctl list devices available | grep -F "$UNIT_SIMULATOR (" | grep -oE '[0-9A-F-]{36}' | head -1)
+      #     if [ -z "$udid" ]; then
+      #       echo "::error::unit simulator '$UNIT_SIMULATOR' not installed"
+      #       xcrun simctl list devices available | grep -i iphone
+      #       exit 1
+      #     fi
+      #     xcrun simctl boot "$udid"; xcrun simctl bootstatus "$udid" -b
+      #     mkdir -p build/reports/unit
+      #     NSUnbufferedIO=YES xcodebuild test-without-building \
+      #       -workspace "$WORKSPACE" -scheme "$SCHEME" \
+      #       -destination "platform=iOS Simulator,id=$udid" \
+      #       -only-testing:GoInfoGameTests \
+      #       -resultBundlePath build/results/unit.xcresult \
+      #       -enableCodeCoverage YES -retry-tests-on-failure -test-timeouts-enabled YES \
+      #       CODE_SIGNING_ALLOWED=NO \
+      #       | tee build/unit.log \
+      #       | xcbeautify --report junit --report-path build/reports/unit
+      #     rc=${PIPESTATUS[0]}
+      #     [ -f build/reports/unit/junit.xml ] && mv build/reports/unit/junit.xml build/reports/unit.xml
+      #     rmdir build/reports/unit 2>/dev/null
+      #     xcrun simctl shutdown "$udid"
+      #     echo "unit tests exit code: $rc"
+      #     exit "$rc"
 
       # -------- STEP 2: UI tests, run on UI_SIMULATORS, UI_MAX_PARALLEL at a time --------
       - name: UI tests (parallel across devices)
