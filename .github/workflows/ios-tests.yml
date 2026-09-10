@@ -7,8 +7,10 @@
 # xcbeautify, CocoaPods and the iOS simulators installed.
 #
 # Knobs - env: block below:
-#   UNIT_SIMULATOR  - one device to run the unit tests on
-#   UI_SIMULATORS   - newline-separated device list for the UI tests
+#   UNIT_SIMULATOR    - one device to run the unit tests on
+#   UI_SIMULATORS     - newline-separated device list for the UI tests
+#   UI_MAX_PARALLEL   - how many simulators to run UI tests on at the same time
+#                       (1 = serial. 2-4 is sane on one Mac; more will thrash RAM.)
 #
 # Optional repo secrets (Settings > Secrets and variables > Actions):
 #   KARTAVIEW_ACCESS_TOKEN, JAWG_ACCESS_TOKEN  -> written to Secrets.xcconfig if it
@@ -34,6 +36,7 @@ env:
   WORKSPACE: GoInfoGame/GoInfoGame.xcworkspace
   SCHEME: GoInfoGame
   UNIT_SIMULATOR: "iPhone 16 Pro"
+  UI_MAX_PARALLEL: "2"
   # One device name per line. Unknown names are skipped (warning), so this list
   # can be aspirational. Add every simulator you care about here.
   UI_SIMULATORS: |
@@ -155,13 +158,37 @@ jobs:
           echo "unit tests exit code: $rc"
           exit "$rc"
 
-      # -------- STEP 2: UI tests, once per device in UI_SIMULATORS --------
-      - name: UI tests (all devices)
+      # -------- STEP 2: UI tests, run on UI_SIMULATORS, UI_MAX_PARALLEL at a time --------
+      - name: UI tests (parallel across devices)
         if: always()      # still run UI tests even if a unit test failed
         run: |
-          set +e                       # a failing device must NOT abort the loop
-          set -o pipefail
-          failed=""; ran=0
+          set +e            # a failing device must NOT abort the step
+          max_par="${UI_MAX_PARALLEL:-2}"
+          echo "Running UI tests, up to $max_par simulator(s) at once."
+
+          # runs one device end-to-end; writes build/results/.rc-<slug> as "<rc>\t<device>"
+          run_device() {
+            _dev="$1"; _udid="$2"; _slug="$3"; _log="build/ui-$_slug.log"
+            xcrun simctl boot "$_udid" >/dev/null 2>&1
+            xcrun simctl bootstatus "$_udid" -b >/dev/null 2>&1
+            NSUnbufferedIO=YES xcodebuild test-without-building \
+              -workspace "$WORKSPACE" -scheme "$SCHEME" \
+              -destination "platform=iOS Simulator,id=$_udid" \
+              -only-testing:GoInfoGameUITests \
+              -resultBundlePath "build/results/ui-$_slug.xcresult" \
+              -retry-tests-on-failure -test-timeouts-enabled YES \
+              CODE_SIGNING_ALLOWED=NO > "$_log" 2>&1
+            _rc=$?
+            mkdir -p "build/reports/ui-$_slug"
+            xcbeautify --report junit --report-path "build/reports/ui-$_slug" < "$_log" >/dev/null 2>&1 || true
+            [ -f "build/reports/ui-$_slug/junit.xml" ] && mv "build/reports/ui-$_slug/junit.xml" "build/reports/ui-$_slug.xml"
+            rmdir "build/reports/ui-$_slug" 2>/dev/null
+            xcrun simctl shutdown "$_udid" >/dev/null 2>&1
+            printf '%s\t%s\n' "$_rc" "$_dev" > "build/results/.rc-$_slug"
+            if [ "$_rc" -eq 0 ]; then echo "[done] $_dev — passed"; else echo "[done] $_dev — FAILED (exit $_rc), see build/ui-$_slug.log"; fi
+          }
+
+          pids=""; running=0
           while IFS= read -r device; do
             device="$(printf '%s' "$device" | sed 's/^[[:space:]]*//; s/[[:space:]]*$//')"
             [ -z "$device" ] && continue
@@ -171,29 +198,32 @@ jobs:
               continue
             fi
             slug=$(echo "$device" | tr -cs '[:alnum:]' '-' | sed 's/^-*//; s/-*$//')
-            echo "::group::UI tests · $device ($udid)"
-            xcrun simctl boot "$udid"; xcrun simctl bootstatus "$udid" -b
-            mkdir -p "build/reports/ui-$slug"
-            NSUnbufferedIO=YES xcodebuild test-without-building \
-              -workspace "$WORKSPACE" -scheme "$SCHEME" \
-              -destination "platform=iOS Simulator,id=$udid" \
-              -only-testing:GoInfoGameUITests \
-              -resultBundlePath "build/results/ui-$slug.xcresult" \
-              -retry-tests-on-failure -test-timeouts-enabled YES \
-              CODE_SIGNING_ALLOWED=NO \
-              | tee "build/ui-$slug.log" \
-              | xcbeautify --report junit --report-path "build/reports/ui-$slug"
-            rc=${PIPESTATUS[0]}
-            [ -f "build/reports/ui-$slug/junit.xml" ] && mv "build/reports/ui-$slug/junit.xml" "build/reports/ui-$slug.xml"
-            rmdir "build/reports/ui-$slug" 2>/dev/null
-            xcrun simctl shutdown "$udid"
-            ran=$((ran + 1))
-            [ "$rc" -ne 0 ] && failed="${failed}"$'\n'"  - ${device} (exit $rc)"
-            echo "::endgroup::"
+            echo "[start] $device ($udid)"
+            run_device "$device" "$udid" "$slug" &
+            pids="$pids $!"; running=$((running + 1))
+            if [ "$running" -ge "$max_par" ]; then
+              set -- $pids; wait "$1"; shift; pids="$*"; running=$((running - 1))
+            fi
           done <<< "$UI_SIMULATORS"
+          wait   # let the last batch finish
+
+          # tally results from the .rc-* files
+          ran=0; failed=""
+          for f in build/results/.rc-*; do
+            [ -e "$f" ] || continue
+            ran=$((ran + 1))
+            rc=$(cut -f1 < "$f"); dev=$(cut -f2- < "$f")
+            if [ "$rc" != "0" ]; then
+              failed="${failed}"$'\n'"  - ${dev} (exit $rc)"
+              slug=$(echo "$dev" | tr -cs '[:alnum:]' '-' | sed 's/^-*//; s/-*$//')
+              echo "::group::FAILED: $dev — tail of build/ui-$slug.log"
+              tail -n 60 "build/ui-$slug.log" 2>/dev/null || true
+              echo "::endgroup::"
+            fi
+          done
           echo "Ran UI tests on $ran device(s)."
-          if [ "$ran" -eq 0 ]; then echo "::error::no UI simulators from the list are installed - nothing ran"; exit 1; fi
-          if [ -n "$failed" ]; then printf '::error::UI tests failed on:%s\n' "$failed"; exit 1; fi
+          [ "$ran" -eq 0 ] && { echo "::error::no UI simulators from the list are installed - nothing ran"; exit 1; }
+          [ -n "$failed" ] && { printf '::error::UI tests failed on:%s\n' "$failed"; exit 1; }
           echo "All UI device runs passed."
 
       # -------- reporting --------
