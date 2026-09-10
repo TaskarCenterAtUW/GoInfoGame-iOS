@@ -365,13 +365,13 @@ jobs:
             if-no-files-found: warn
             overwrite: true
 
-      - name: Upload .xcresult bundle
+      - name: Upload .xcresult bundles
         uses: actions/upload-artifact@v4
         if: always()
-        continue-on-error: true   # large/optional - keep it from blocking the run
+        continue-on-error: true
         with:
-          name: xcresult
-          path: build/TestResults.xcresult.zip
+          name: xcresults
+          path: build/results.zip
           retention-days: 7
           if-no-files-found: ignore
 
