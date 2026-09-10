@@ -82,6 +82,36 @@ def parse_junit(path: str, run: str) -> list[Case]:
     return cases
 
 
+_IMG_EXT = (".png", ".jpg", ".jpeg", ".heic")
+
+
+def _run_slug(run: str) -> str:
+    body = run[5:] if run.startswith("UI · ") else ("unit" if run == "Unit tests" else run)
+    return re.sub(r"[^A-Za-z0-9]+", "-", body).strip("-")
+
+
+def find_screenshot(base: str, case: Case) -> str | None:
+    """Best failure screenshot for `case` under `base` (xcparse output tree)."""
+    if not base or not os.path.isdir(base):
+        return None
+    roots = [base]
+    sub = os.path.join(base, f"ui-{_run_slug(case.run)}") if case.run.startswith("UI · ") \
+        else os.path.join(base, "unit")
+    if os.path.isdir(sub):
+        roots = [sub]
+    method = case.name.rstrip("()")
+    hits: list[str] = []
+    for r in roots:
+        for dirpath, _, files in os.walk(r):
+            for fn in files:
+                if fn.lower().endswith(_IMG_EXT) and (method in dirpath or method in fn):
+                    hits.append(os.path.join(dirpath, fn))
+    if not hits:
+        return None
+    hits.sort(key=os.path.getmtime)          # newest == moment of failure
+    return hits[-1]
+
+
 def coverage_from_xcresult(xcresult: str) -> dict | None:
     if not xcresult or not os.path.isdir(xcresult):
         return None
@@ -105,8 +135,8 @@ def _n(cases: list[Case], status: str) -> int:
     return sum(1 for c in cases if c.status == status)
 
 
-def build_markdown(cases: list[Case], run_order: list[str],
-                   cov: dict | None, meta: dict) -> str:
+def build_markdown(cases: list[Case], run_order: list[str], cov: dict | None,
+                   meta: dict, screens_dir: str = "", out_dir: str = "") -> str:
     total = len(cases)
     passed, failed, skipped = _n(cases, "passed"), _n(cases, "failed"), _n(cases, "skipped")
     duration = sum(c.time for c in cases)
@@ -146,6 +176,11 @@ def build_markdown(cases: list[Case], run_order: list[str],
                 L += [f"> {c.message}", ""]
             if c.detail and c.detail != c.message:
                 L += ["```", "\n".join(c.detail.splitlines()[:20]), "```", ""]
+            shot = find_screenshot(screens_dir, c)
+            if shot:
+                rel = os.path.relpath(shot, out_dir) if out_dir else shot
+                L += [f"![Failure screenshot — {c.run}]({rel})",
+                      f"_Screenshot captured at the moment of failure ({os.path.basename(shot)})_", ""]
 
     # ---- per-suite table (only meaningful when there's a single run)
     if len(by_run) == 1:
@@ -199,10 +234,32 @@ def _inline(text: str) -> str:
     return esc
 
 
-def markdown_to_html(md: str, title: str) -> str:
+def _img_tag(alt: str, src: str, base_dir: str) -> str:
+    style = ("max-width:480px;border:1px solid #d1d1d6;border-radius:6px;margin:.4rem 0;"
+             "display:block")
+    p = src
+    if base_dir and not src.startswith(("http://", "https://", "data:")):
+        p = os.path.join(base_dir, src)
+    if os.path.isfile(p):
+        import base64
+        import mimetypes
+        mt = mimetypes.guess_type(p)[0] or "image/png"
+        data = base64.b64encode(open(p, "rb").read()).decode("ascii")
+        return f'<img alt="{html.escape(alt)}" style="{style}" src="data:{mt};base64,{data}">'
+    return f'<img alt="{html.escape(alt)}" style="{style}" src="{html.escape(src)}">'
+
+
+def markdown_to_html(md: str, title: str, base_dir: str = "") -> str:
     out: list[str] = []
     in_code = in_table = False
     for line in md.splitlines():
+        m_img = re.match(r"^!\[([^\]]*)\]\((.+)\)\s*$", line)  # greedy: path may contain ()
+        if m_img and not in_code:
+            if in_table:
+                out.append("</table>")
+                in_table = False
+            out.append(_img_tag(m_img.group(1), m_img.group(2), base_dir))
+            continue
         if line.startswith("```"):
             out.append("</pre>" if in_code else "<pre>")
             in_code = not in_code
@@ -316,6 +373,8 @@ def main() -> int:
     ap.add_argument("--junit", nargs="+", required=True,
                     help='One or more "LABEL=path" or "path" (globs ok).')
     ap.add_argument("--xcresult", default="")
+    ap.add_argument("--screenshots-dir", default="",
+                    help="xcparse screenshots output tree; failure screenshots get embedded")
     ap.add_argument("--out-dir", default="build/report")
     args = ap.parse_args()
 
@@ -337,7 +396,8 @@ def main() -> int:
         cases += got
 
     os.makedirs(args.out_dir, exist_ok=True)
-    md = build_markdown(cases, run_order, coverage_from_xcresult(args.xcresult), collect_meta())
+    md = build_markdown(cases, run_order, coverage_from_xcresult(args.xcresult),
+                        collect_meta(), args.screenshots_dir, args.out_dir)
 
     md_path = os.path.join(args.out_dir, "test-report.md")
     html_path = os.path.join(args.out_dir, "test-report.html")
@@ -345,7 +405,7 @@ def main() -> int:
     with open(md_path, "w") as f:
         f.write(md)
     with open(html_path, "w") as f:
-        f.write(markdown_to_html(md, "Test Report"))
+        f.write(markdown_to_html(md, "Test Report", base_dir=args.out_dir))
     print(f"wrote {md_path}\nwrote {html_path}")
 
     engine = try_pdf(html_path, pdf_path)
