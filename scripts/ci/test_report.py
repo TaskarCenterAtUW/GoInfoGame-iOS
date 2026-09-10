@@ -53,6 +53,11 @@ def label_from_path(path: str) -> str:
     return stem.replace("-", " ").replace("_", " ").strip() or path
 
 
+def ui_label(device: str) -> str:
+    """Same label a ran UI device gets, derived straight from its name."""
+    return "UI · " + re.sub(r"[^A-Za-z0-9]+", " ", device).strip()
+
+
 def parse_junit(path: str, run: str) -> list[Case]:
     if not os.path.isfile(path):
         return []
@@ -136,7 +141,9 @@ def _n(cases: list[Case], status: str) -> int:
 
 
 def build_markdown(cases: list[Case], run_order: list[str], cov: dict | None,
-                   meta: dict, screens_dir: str = "", out_dir: str = "") -> str:
+                   meta: dict, screens_dir: str = "", out_dir: str = "",
+                   skipped_devices: list[str] | None = None) -> str:
+    skipped_devices = skipped_devices or []
     total = len(cases)
     passed, failed, skipped = _n(cases, "passed"), _n(cases, "failed"), _n(cases, "skipped")
     duration = sum(c.time for c in cases)
@@ -153,8 +160,11 @@ def build_markdown(cases: list[Case], run_order: list[str], cov: dict | None,
             if meta.get(k):
                 L.append(f"| **{k}** | {meta[k]} |")
         L.append("")
-    L += [f"**{passed} passed**, **{failed} failed**, **{skipped} skipped** "
-          f"— {total} tests across {len(by_run)} run(s) in {duration:.0f}s", ""]
+    summary = (f"**{passed} passed**, **{failed} failed**, **{skipped} skipped** "
+               f"— {total} tests across {len(by_run)} run(s) in {duration:.0f}s")
+    if skipped_devices:
+        summary += f" · ⚠️ {len(skipped_devices)} device(s) not installed"
+    L += [summary, ""]
 
     # ---- per-run / per-device table
     L += ["## Runs", "", "| Run | Result | Tests | ✅ | ❌ | ⏭️ | Time |",
@@ -164,7 +174,12 @@ def build_markdown(cases: list[Case], run_order: list[str], cov: dict | None,
         res = "✅" if f == 0 and cs else ("❌" if f else "—")
         L.append(f"| {run} | {res} | {len(cs)} | {_n(cs,'passed')} | "
                  f"{f} | {_n(cs,'skipped')} | {sum(c.time for c in cs):.0f}s |")
+    for dev in skipped_devices:
+        L.append(f"| {ui_label(dev)} | ⚠️ not installed | 0 | — | — | — | — |")
     L.append("")
+    if skipped_devices:
+        L += ["> ⚠️ Requested but **not installed** on the runner — no tests ran: "
+              + ", ".join(f"`{d}`" for d in skipped_devices), ""]
 
     # ---- failures
     fails = [c for c in cases if c.status == "failed"]
@@ -375,8 +390,14 @@ def main() -> int:
     ap.add_argument("--xcresult", default="")
     ap.add_argument("--screenshots-dir", default="",
                     help="xcparse screenshots output tree; failure screenshots get embedded")
+    ap.add_argument("--skipped-file", default="",
+                    help="file with one device name per line that was requested but not installed")
     ap.add_argument("--out-dir", default="build/report")
     args = ap.parse_args()
+
+    skipped_devices: list[str] = []
+    if args.skipped_file and os.path.isfile(args.skipped_file):
+        skipped_devices = [ln.strip() for ln in open(args.skipped_file) if ln.strip()]
 
     # Expand each --junit arg into (label, path) pairs.
     pairs: list[tuple[str, str]] = []
@@ -397,7 +418,7 @@ def main() -> int:
 
     os.makedirs(args.out_dir, exist_ok=True)
     md = build_markdown(cases, run_order, coverage_from_xcresult(args.xcresult),
-                        collect_meta(), args.screenshots_dir, args.out_dir)
+                        collect_meta(), args.screenshots_dir, args.out_dir, skipped_devices)
 
     md_path = os.path.join(args.out_dir, "test-report.md")
     html_path = os.path.join(args.out_dir, "test-report.html")
