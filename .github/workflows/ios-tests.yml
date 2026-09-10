@@ -191,13 +191,15 @@ jobs:
             if [ "$_rc" -eq 0 ]; then echo "[done] $_dev — passed"; else echo "[done] $_dev — FAILED (exit $_rc), see build/ui-$_slug.log"; fi
           }
 
+          : > build/results/skipped.txt      # devices requested but not installed
           pids=""; running=0
           while IFS= read -r device; do
             device="$(printf '%s' "$device" | sed 's/^[[:space:]]*//; s/[[:space:]]*$//')"
             [ -z "$device" ] && continue
             udid=$(xcrun simctl list devices available | grep -F "$device (" | grep -oE '[0-9A-F-]{36}' | head -1)
             if [ -z "$udid" ]; then
-              echo "::warning::simulator '$device' not installed on this runner - skipping"
+              echo "::warning::simulator '$device' not installed on this runner - recorded as skipped"
+              printf '%s\n' "$device" >> build/results/skipped.txt
               continue
             fi
             slug=$(echo "$device" | tr -cs '[:alnum:]' '-' | sed 's/^-*//; s/-*$//')
@@ -224,7 +226,8 @@ jobs:
               echo "::endgroup::"
             fi
           done
-          echo "Ran UI tests on $ran device(s)."
+          skipped=$(grep -c . build/results/skipped.txt 2>/dev/null || echo 0)
+          echo "Ran UI tests on $ran device(s); $skipped requested device(s) not installed."
           [ "$ran" -eq 0 ] && { echo "::error::no UI simulators from the list are installed - nothing ran"; exit 1; }
           [ -n "$failed" ] && { printf '::error::UI tests failed on:%s\n' "$failed"; exit 1; }
           echo "All UI device runs passed."
@@ -269,6 +272,7 @@ jobs:
             --junit build/reports/unit.xml build/reports/ui-*.xml \
             --xcresult build/results/unit.xcresult \
             --screenshots-dir build/report/screenshots \
+            --skipped-file build/results/skipped.txt \
             --out-dir build/report
 
       - name: Upload report (md / html / pdf + failure screenshots)
