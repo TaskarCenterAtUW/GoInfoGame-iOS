@@ -95,26 +95,34 @@ def _run_slug(run: str) -> str:
     return re.sub(r"[^A-Za-z0-9]+", "-", body).strip("-")
 
 
-def find_screenshot(base: str, case: Case) -> str | None:
-    """Best failure screenshot for `case` under `base` (xcparse output tree)."""
+def _images_under(root: str) -> list[str]:
+    out: list[str] = []
+    for dirpath, _, files in os.walk(root):
+        for fn in files:
+            if fn.lower().endswith(_IMG_EXT):
+                out.append(os.path.join(dirpath, fn))
+    return out
+
+
+def collect_screenshots(base: str, case: Case, limit: int = 8) -> list[str]:
+    """Screenshots for a failed `case` from the xcparse tree under `base`.
+
+    xcparse --test lays files out as  <base>/ui-<slug>/<TestClass>/<testMethod>/<img>.
+    Prefer files whose path names the failing method; if none match (layout varies
+    by xcparse version) fall back to every image for that run - only failed runs
+    are extracted, so that is still just failure context.
+    """
     if not base or not os.path.isdir(base):
-        return None
-    roots = [base]
-    sub = os.path.join(base, f"ui-{_run_slug(case.run)}") if case.run.startswith("UI · ") \
-        else os.path.join(base, "unit")
-    if os.path.isdir(sub):
-        roots = [sub]
+        return []
+    run_root = os.path.join(base, f"ui-{_run_slug(case.run)}")
+    if not os.path.isdir(run_root):
+        run_root = base
     method = case.name.rstrip("()")
-    hits: list[str] = []
-    for r in roots:
-        for dirpath, _, files in os.walk(r):
-            for fn in files:
-                if fn.lower().endswith(_IMG_EXT) and (method in dirpath or method in fn):
-                    hits.append(os.path.join(dirpath, fn))
-    if not hits:
-        return None
-    hits.sort(key=os.path.getmtime)          # newest == moment of failure
-    return hits[-1]
+    everything = _images_under(run_root)
+    matched = [p for p in everything if method and (f"/{method}/" in p + "/" or method in os.path.basename(p))]
+    hits = matched or everything
+    hits = sorted(set(hits), key=os.path.getmtime)   # oldest -> newest (failure moment last)
+    return hits[-limit:]
 
 
 def coverage_from_xcresult(xcresult: str) -> dict | None:
@@ -191,11 +199,15 @@ def build_markdown(cases: list[Case], run_order: list[str], cov: dict | None,
                 L += [f"> {c.message}", ""]
             if c.detail and c.detail != c.message:
                 L += ["```", "\n".join(c.detail.splitlines()[:20]), "```", ""]
-            shot = find_screenshot(screens_dir, c)
-            if shot:
-                rel = os.path.relpath(shot, out_dir) if out_dir else shot
-                L += [f"![Failure screenshot — {c.run}]({rel})",
-                      f"_Screenshot captured at the moment of failure ({os.path.basename(shot)})_", ""]
+            shots = collect_screenshots(screens_dir, c)
+            print(f"screenshots for {c.suite}.{c.name}: {len(shots)} "
+                  f"({', '.join(os.path.basename(s) for s in shots) or 'none'})", file=sys.stderr)
+            if shots:
+                from urllib.parse import quote
+                L += ["**Screenshots** (oldest → moment of failure):", ""]
+                for s in shots:
+                    rel = os.path.relpath(s, out_dir) if out_dir else s
+                    L += [f"![{c.suite}.{c.name} — {os.path.basename(s)}]({quote(rel)})", ""]
 
     # ---- per-suite table (only meaningful when there's a single run)
     if len(by_run) == 1:
@@ -250,18 +262,19 @@ def _inline(text: str) -> str:
 
 
 def _img_tag(alt: str, src: str, base_dir: str) -> str:
-    style = ("max-width:480px;border:1px solid #d1d1d6;border-radius:6px;margin:.4rem 0;"
-             "display:block")
+    style = ("max-width:520px;width:100%;height:auto;border:1px solid #d1d1d6;"
+             "border-radius:6px;margin:.4rem 0;display:block;page-break-inside:avoid")
+    from urllib.parse import unquote
     p = src
     if base_dir and not src.startswith(("http://", "https://", "data:")):
-        p = os.path.join(base_dir, src)
+        p = os.path.join(base_dir, unquote(src))
     if os.path.isfile(p):
         import base64
         import mimetypes
         mt = mimetypes.guess_type(p)[0] or "image/png"
         data = base64.b64encode(open(p, "rb").read()).decode("ascii")
         return f'<img alt="{html.escape(alt)}" style="{style}" src="data:{mt};base64,{data}">'
-    return f'<img alt="{html.escape(alt)}" style="{style}" src="{html.escape(src)}">'
+    return (f'<p><em>[screenshot not found: {html.escape(unquote(src))}]</em></p>')
 
 
 def markdown_to_html(md: str, title: str, base_dir: str = "") -> str:
