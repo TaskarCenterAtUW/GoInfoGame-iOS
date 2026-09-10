@@ -14,7 +14,9 @@
       "containerPath" : "container:GoInfoGame.xcodeproj",
       "identifier" : "FAD5C4EE2AFCBE700040C61A",
       "name" : "GoInfoGame"
-    }
+    },
+    "uiTestingScreenshotsLifetime" : "deleteOnSuccess",
+    "userAttachmentLifetime" : "deleteOnSuccess"
   },
   "testTargets" : [
     {
