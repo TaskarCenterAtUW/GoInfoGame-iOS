@@ -38,4 +38,18 @@ final class GoInfoGameUITests: XCTestCase {
             }
         }
     }
+    
+    func testFaildLogin() throws {
+        let app = XCUIApplication()
+        app.launch()
+        app/*@START_MENU_TOKEN@*/.textFields["Username"]/*[[".otherElements.textFields[\"Username\"]",".textFields",".textFields[\"Username\"]"],[[[-1,2],[-1,1],[-1,0]]],[0]]@END_MENU_TOKEN@*/.firstMatch.tap()
+        
+        let element = app/*@START_MENU_TOKEN@*/.secureTextFields["Password"]/*[[".otherElements.secureTextFields[\"Password\"]",".secureTextFields",".secureTextFields[\"Password\"]"],[[[-1,2],[-1,1],[-1,0]]],[0]]@END_MENU_TOKEN@*/.firstMatch
+        element.tap()
+        element.tap()
+        app/*@START_MENU_TOKEN@*/.buttons["Login"]/*[[".otherElements.buttons[\"Login\"]",".buttons[\"Login\"]"],[[[-1,1],[-1,0]]],[0]]@END_MENU_TOKEN@*/.firstMatch.tap()
+        app/*@START_MENU_TOKEN@*/.buttons["Forgot password?"]/*[[".otherElements.buttons[\"Forgot password?\"]",".buttons[\"Forgot password?\"]"],[[[-1,1],[-1,0]]],[0]]@END_MENU_TOKEN@*/.firstMatch.swipeUp()
+        XCTAssert(false, "Testing failed case with screenshot.")
+        
+    }
 }
