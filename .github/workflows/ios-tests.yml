@@ -239,6 +239,21 @@ jobs:
           include_passed: true
           require_tests: true
 
+      - name: Extract failure screenshots
+        if: always()
+        continue-on-error: true
+        run: |
+          command -v xcparse >/dev/null || brew install --quiet chargepoint/xcparse/xcparse
+          mkdir -p build/report/screenshots
+          for x in build/results/*.xcresult; do
+            [ -d "$x" ] || continue
+            name=$(basename "$x" .xcresult)
+            # test plan keeps auto screenshots only for failing tests (deleteOnSuccess),
+            # so --test naturally yields just the failure shots.
+            xcparse screenshots --test "$x" "build/report/screenshots/$name" >/dev/null 2>&1 || true
+          done
+          find build/report/screenshots -type f \( -name '*.png' -o -name '*.jpg' -o -name '*.jpeg' \) -print || true
+
       - name: Ensure a PDF engine (weasyprint)
         if: always()
         continue-on-error: true
@@ -253,9 +268,10 @@ jobs:
           python3 scripts/ci/test_report.py \
             --junit build/reports/unit.xml build/reports/ui-*.xml \
             --xcresult build/results/unit.xcresult \
+            --screenshots-dir build/report/screenshots \
             --out-dir build/report
 
-      - name: Upload report (md / html / pdf)
+      - name: Upload report (md / html / pdf + failure screenshots)
         uses: actions/upload-artifact@v4
         if: always()
         continue-on-error: true   # runner<->GitHub artifact-service blip must not fail the job
@@ -265,12 +281,14 @@ jobs:
             build/report/test-report.md
             build/report/test-report.html
             build/report/test-report.pdf
+            build/report/screenshots/**
           retention-days: 14
           if-no-files-found: warn
 
-      # JUnit XML, per-device xcodebuild logs and the .xcresult bundles are left
-      # under ./build on the runner for local inspection; they are not uploaded.
-      # The full Markdown report is also written to the run summary each run.
+      # The HTML and PDF embed the failure screenshots inline (base64), so they are
+      # self-contained. The .md links to files under build/report/screenshots/ .
+      # JUnit XML, per-device xcodebuild logs and .xcresult bundles stay under ./build
+      # on the runner (not uploaded). The full Markdown also goes to the run summary.
 
       - name: Clean up simulators
         if: always()
