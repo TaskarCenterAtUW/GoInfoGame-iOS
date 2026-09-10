@@ -1,7 +1,10 @@
 # Builds the app once, then runs UNIT tests and UI tests as two separate steps.
 # UI tests run on every device in UI_SIMULATORS (one per line); any device not
-# installed on the runner is skipped with a warning. A combined report (MD / HTML /
-# best-effort PDF) plus the raw .xcresult bundles are attached as artifacts.
+# installed on the runner is skipped with a warning.
+#
+# Output: a combined report (MD / HTML / best-effort PDF) is the ONLY artifact, and
+# the same Markdown is written to the run summary. JUnit XML, per-device xcodebuild
+# logs and .xcresult bundles stay under ./build on the runner (not uploaded).
 #
 # Runs on a SELF-HOSTED runner (label: self-hosted) that already has Xcode,
 # xcbeautify, CocoaPods and the iOS simulators installed.
@@ -252,38 +255,22 @@ jobs:
             --xcresult build/results/unit.xcresult \
             --out-dir build/report
 
-      - name: Zip .xcresult bundles
-        if: always()
-        continue-on-error: true
-        run: |
-          if [ -d build/results ]; then
-            ditto -c -k --sequesterRsrc --keepParent build/results build/results.zip
-          fi
-
-      - name: Upload report + logs
+      - name: Upload report (md / html / pdf)
         uses: actions/upload-artifact@v4
         if: always()
-        continue-on-error: true
+        continue-on-error: true   # runner<->GitHub artifact-service blip must not fail the job
         with:
           name: test-report
           path: |
             build/report/test-report.md
             build/report/test-report.html
             build/report/test-report.pdf
-            build/reports/*.xml
-            build/*.log
           retention-days: 14
           if-no-files-found: warn
 
-      - name: Upload .xcresult bundles
-        uses: actions/upload-artifact@v4
-        if: always()
-        continue-on-error: true
-        with:
-          name: xcresults
-          path: build/results.zip
-          retention-days: 7
-          if-no-files-found: ignore
+      # JUnit XML, per-device xcodebuild logs and the .xcresult bundles are left
+      # under ./build on the runner for local inspection; they are not uploaded.
+      # The full Markdown report is also written to the run summary each run.
 
       - name: Clean up simulators
         if: always()
