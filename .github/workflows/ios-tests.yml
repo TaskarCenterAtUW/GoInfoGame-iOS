@@ -31,11 +31,15 @@ concurrency:
   cancel-in-progress: true
 
 permissions:
-  contents: read
+  contents: write        # push the report to the ci-reports branch
   checks: write          # mikepenz/action-junit-report posts a check run
   pull-requests: write   # ...and annotates the PR
 
 env:
+  # Run bundled Node-20 actions (e.g. upload-artifact) on Node 20 instead of the
+  # runner's forced Node 24 - Node 24's fetch stack has caused CreateArtifact hangs
+  # on some self-hosted macOS runners.
+  ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION: "true"
   WORKSPACE: GoInfoGame/GoInfoGame.xcworkspace
   SCHEME: GoInfoGame
   UNIT_SIMULATOR: "iPhone 16 Pro"
@@ -275,7 +279,16 @@ jobs:
             --skipped-file build/results/skipped.txt \
             --out-dir build/report
 
-      - name: Upload report (md / html / pdf + failure screenshots)
+      - name: Debug artifact backend (temporary)
+        if: always()
+        continue-on-error: true
+        run: |
+          echo "results url : ${ACTIONS_RESULTS_URL:-<unset>}"
+          echo "runtime url : ${ACTIONS_RUNTIME_URL:-<unset>}"
+          env | grep -iE 'proxy|^ACTIONS_' | sed 's/\(TOKEN\)=.*/\1=***/' || true
+          [ -n "${ACTIONS_RESULTS_URL:-}" ] && curl -sv -o /dev/null --max-time 20 "${ACTIONS_RESULTS_URL%/}/" 2>&1 | tail -15 || true
+
+      - name: Upload report artifact (md / html / pdf + failure screenshots)
         uses: actions/upload-artifact@v4
         if: always()
         continue-on-error: true   # runner<->GitHub artifact-service blip must not fail the job
@@ -288,6 +301,58 @@ jobs:
             build/report/screenshots/**
           retention-days: 14
           if-no-files-found: warn
+
+      # Fallback that does NOT touch the artifact backend: publish the report onto a
+      # dedicated `ci-reports` branch (github.com is reachable from the runner).
+      - name: Publish report to ci-reports branch
+        if: always() && github.event_name != 'pull_request'
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -e
+          ws="$PWD"
+          [ -d build/report ] || { echo "no build/report - nothing to publish"; exit 0; }
+          run_dir="runs/${GITHUB_RUN_NUMBER}-${GITHUB_SHA:0:7}"
+          repo_url="https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
+          work="$(mktemp -d)"
+
+          if git clone --depth 1 --branch ci-reports "$repo_url" "$work" 2>/dev/null; then
+            echo "updating existing ci-reports branch"
+          else
+            echo "creating ci-reports branch"
+            git clone --depth 1 "$repo_url" "$work"
+            ( cd "$work" && git checkout --orphan ci-reports && git rm -rf . >/dev/null 2>&1 || true )
+          fi
+
+          cd "$work"
+          rm -rf latest; mkdir -p latest "$run_dir"
+          cp -R "$ws/build/report/." "latest/"
+          cp -R "$ws/build/report/." "$run_dir/"
+
+          # keep only the 40 most recent run folders
+          count=$(ls -1d runs/*/ 2>/dev/null | wc -l | tr -d ' ')
+          if [ "${count:-0}" -gt 40 ]; then
+            ls -1d runs/*/ | sed 's#^runs/##; s#/$##' | sort -t- -k1,1n | head -n "$((count - 40))" \
+              | while read -r d; do rm -rf "runs/$d"; done
+          fi
+
+          git add -A
+          git -c user.name="github-actions[bot]" \
+              -c user.email="41898282+github-actions[bot]@users.noreply.github.com" \
+              commit -m "report: run ${GITHUB_RUN_NUMBER} (${GITHUB_SHA})" || { echo "no changes"; exit 0; }
+
+          for i in 1 2 3; do
+            if git push origin HEAD:ci-reports; then break; fi
+            echo "push rejected, rebasing (attempt $i)"
+            git pull --rebase origin ci-reports || true
+          done
+
+          base="https://github.com/${GITHUB_REPOSITORY}"
+          echo "### Test report published" >> "$GITHUB_STEP_SUMMARY"
+          echo "- Browse: ${base}/tree/ci-reports/${run_dir}" >> "$GITHUB_STEP_SUMMARY"
+          echo "- HTML (raw): https://raw.githubusercontent.com/${GITHUB_REPOSITORY}/ci-reports/${run_dir}/test-report.html" >> "$GITHUB_STEP_SUMMARY"
+          echo "- PDF: ${base}/raw/ci-reports/${run_dir}/test-report.pdf" >> "$GITHUB_STEP_SUMMARY"
 
       # The HTML and PDF embed the failure screenshots inline (base64), so they are
       # self-contained. The .md links to files under build/report/screenshots/ .
