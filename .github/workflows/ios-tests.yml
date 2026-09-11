@@ -379,20 +379,31 @@ jobs:
           if [ "${#present[@]}" -eq 0 ]; then
             echo "::warning::no report files found under build/report - nothing to zip"
           else
-            rm -f build/test-report.zip
-            ( cd build/report && zip -q "$ws/build/test-report.zip" "${present[@]}" )
-            echo "zipped: ${present[*]}"
+            rm -f build/test-report.tar.gz
+            ( cd build/report && tar -czf "$ws/build/test-report.tar.gz" "${present[@]}" )
+            echo "bundled: ${present[*]}"
           fi
 
-      - name: Upload report artifact (zip)
-        uses: actions/upload-artifact@v4
+      # Wrapped in a retry (whole action, not just the request) - the Actions
+      # artifact backend has intermittently timed out on CreateArtifact/
+      # FinalizeArtifact from self-hosted runners regardless of payload size
+      # (actions/upload-artifact#531, #623; no fix from GitHub yet), and upload-
+      # artifact's own internal backoff (~30s across 5 tries) hasn't been enough
+      # here. continue-on-error so exhausting retries doesn't fail the job -
+      # pass/fail is already reported independently via the JUnit check above.
+      - name: Upload report artifact (tar.gz)
+        uses: Wandalen/wretry.action@v3.8.0
         if: always()
-        continue-on-error: true   # runner<->GitHub artifact-service blip must not fail the job
+        continue-on-error: true
         with:
-          name: test-report
-          path: build/test-report.zip
-          retention-days: 14
-          if-no-files-found: warn
+          action: actions/upload-artifact@v4
+          attempt_limit: 3
+          attempt_delay: 15000
+          with: |
+            name: test-report
+            path: build/test-report.tar.gz
+            retention-days: 14
+            if-no-files-found: warn
 
       - name: Clean up simulators
         if: always()
