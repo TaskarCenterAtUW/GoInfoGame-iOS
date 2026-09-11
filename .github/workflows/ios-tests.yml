@@ -259,6 +259,24 @@ jobs:
           had_fail=0
           ensure_xcparse() { command -v xcparse >/dev/null || brew install --quiet chargepoint/xcparse/xcparse; }
 
+          # `screenshots` only picks up explicit XCTAttachment screenshots (e.g. a test
+          # that calls add(XCTAttachment(screenshot:))). It has been seen to find NONE
+          # of XCUITest's automatic on-failure screenshots. `attachments` pulls every
+          # attachment regardless of how it was produced, so try both and keep whatever
+          # either finds; our own image-extension filter downstream ignores non-images.
+          # Errors are shown (not swallowed) so a real xcparse/xcresult problem is visible
+          # in the log instead of silently producing zero screenshots.
+          extract_for() {
+            local xcresult="$1" outdir="$2"
+            mkdir -p "$outdir"
+            echo "-- xcparse attachments: $xcresult"
+            xcparse attachments --test "$xcresult" "$outdir" 2>&1 | tail -10
+            echo "-- xcparse screenshots: $xcresult"
+            xcparse screenshots --test "$xcresult" "$outdir" 2>&1 | tail -10
+            n=$(find "$outdir" -type f \( -name '*.png' -o -name '*.jpg' -o -name '*.jpeg' \) | wc -l | tr -d ' ')
+            echo "-- $outdir: $n image file(s) extracted"
+          }
+
           # UI: only pull screenshots from device runs that FAILED
           for f in build/results/.rc-*; do
             [ -e "$f" ] || continue
@@ -267,19 +285,20 @@ jobs:
             x="build/results/ui-$slug.xcresult"
             [ -d "$x" ] || continue
             ensure_xcparse
-            xcparse screenshots --test "$x" "build/report/screenshots/ui-$slug" >/dev/null 2>&1 || true
+            extract_for "$x" "build/report/screenshots/ui-$slug"
             had_fail=1
           done
 
           # unit: only if it produced failures
           if [ -d build/results/unit.xcresult ] && grep -q '<failure' build/reports/unit.xml 2>/dev/null; then
             ensure_xcparse
-            xcparse screenshots --test build/results/unit.xcresult build/report/screenshots/unit >/dev/null 2>&1 || true
+            extract_for build/results/unit.xcresult build/report/screenshots/unit
             had_fail=1
           fi
 
           [ "$had_fail" = 0 ] && echo "no failing runs - no screenshots to extract"
-          find build/report/screenshots -type f \( -name '*.png' -o -name '*.jpg' -o -name '*.jpeg' \) -print 2>/dev/null || true
+          echo "== full extracted tree =="
+          find build/report/screenshots -type f 2>/dev/null || true
 
       - name: Ensure a PDF engine (weasyprint)
         if: always()
