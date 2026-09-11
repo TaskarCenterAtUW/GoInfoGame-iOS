@@ -3,15 +3,15 @@
 # is recorded as "not installed", not silently dropped) -> extract a screenshot
 # for each failing UI test -> render one combined report (HTML + best-effort PDF,
 # plus Markdown) with a results summary and, per failure, the assertion detail and
-# screenshot -> zip test-report.{md,html,pdf} into one file and upload it as a
-# GitHub Actions artifact.
+# screenshot -> bundle test-report.{md,html,pdf} into one tar.gz and upload it as
+# a GitHub Actions artifact (retried via Wandalen/wretry.action - see that step).
 #
-# NOTE: this runner's service context has so far been unable to reach the Actions
-# artifact backend - CreateArtifact times out identically whether the upload is
-# 1256 files, 26 files, or 1 zip, so it is a network/proxy issue on the runner
-# service, not a payload-size one. The upload step is continue-on-error so a
-# repeat of that timeout does not fail the job; the Markdown is also always
-# written to the run summary as a fallback view.
+# NOTE: this runner has intermittently been unable to reach the Actions artifact
+# backend regardless of payload size (1256 files, 26 files, 1 archive all hit the
+# same CreateArtifact/FinalizeArtifact timeout on some runs) - a known class of
+# issue on some self-hosted runners (actions/upload-artifact#531, #623). The
+# upload is continue-on-error so a repeat timeout does not fail the job; the
+# Markdown is also always written to the run summary as a fallback view.
 # JUnit XML, per-device xcodebuild logs and .xcresult bundles stay under ./build.
 #
 # Runs on a SELF-HOSTED runner (label: self-hosted) that already has Xcode,
@@ -299,10 +299,15 @@ jobs:
             --skipped-file build/results/skipped.txt \
             --out-dir build/report
 
-      # Zip the report into one file. HTML/PDF embed the failure screenshots inline
-      # (base64), so this zip is fully self-contained - no separate screenshots folder
-      # needed.
-      - name: Zip report
+      # Bundle the report into one file. HTML/PDF embed the failure screenshots inline
+      # (base64), so this archive is fully self-contained - no separate screenshots
+      # folder needed.
+      # tar.gz, not zip - actions/upload-artifact always wraps whatever it uploads in
+      # its own container zip on download, so a raw .zip here would become a
+      # same-named "test-report.zip" nested inside GitHub's own wrapper zip -
+      # indistinguishable from a corrupt file to anyone extracting it without
+      # realizing there's a second layer. tar.gz doesn't collide with that outer zip.
+      - name: Bundle report
         if: always()
         continue-on-error: true
         run: |
@@ -312,22 +317,33 @@ jobs:
             [ -f "build/report/$f" ] && present+=("$f")
           done
           if [ "${#present[@]}" -eq 0 ]; then
-            echo "::warning::no report files found under build/report - nothing to zip"
+            echo "::warning::no report files found under build/report - nothing to bundle"
           else
-            rm -f build/test-report.zip
-            ( cd build/report && zip -q "$ws/build/test-report.zip" "${present[@]}" )
-            echo "zipped: ${present[*]}"
+            rm -f build/test-report.tar.gz
+            ( cd build/report && tar -czf "$ws/build/test-report.tar.gz" "${present[@]}" )
+            echo "bundled: ${present[*]}"
           fi
 
-      - name: Upload report artifact (zip)
-        uses: actions/upload-artifact@v4
+      # Wrapped in a retry (whole action, not just the request) - the Actions
+      # artifact backend has intermittently timed out on CreateArtifact/
+      # FinalizeArtifact from self-hosted runners regardless of payload size
+      # (actions/upload-artifact#531, #623; no fix from GitHub yet), and upload-
+      # artifact's own internal backoff (~30s across 5 tries) hasn't been enough
+      # here. continue-on-error so exhausting retries doesn't fail the job -
+      # pass/fail is already reported independently via the JUnit check above.
+      - name: Upload report artifact (tar.gz)
+        uses: Wandalen/wretry.action@v3.8.0
         if: always()
-        continue-on-error: true   # runner<->GitHub artifact-service blip must not fail the job
+        continue-on-error: true
         with:
-          name: test-report
-          path: build/test-report.zip
-          retention-days: 14
-          if-no-files-found: warn
+          action: actions/upload-artifact@v4
+          attempt_limit: 3
+          attempt_delay: 15000
+          with: |
+            name: test-report
+            path: build/test-report.tar.gz
+            retention-days: 14
+            if-no-files-found: warn
 
       - name: Clean up simulators
         if: always()
