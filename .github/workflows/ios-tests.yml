@@ -350,6 +350,7 @@ jobs:
             path: build/test-report.tar.gz
             retention-days: 14
             if-no-files-found: warn
+            overwrite: true
 
       - name: Clean up simulators
         if: always()
