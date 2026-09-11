@@ -50,21 +50,18 @@ env:
   UI_MAX_PARALLEL: "2"
   # One device name per line. Unknown names are skipped (warning), so this list
   # can be aspirational. Add every simulator you care about here.
-  # >>> TEMP: trimmed to 2 confirmed-installed devices to save CI time while
-  # iterating on the runner-side artifact-upload fix. Revert by un-commenting
-  # the rest (comment lines are genuinely ignored - see the loop below).
   UI_SIMULATORS: |
     iPhone SE (3rd generation)
+    iPhone 16
+    iPhone 16 Plus
+    iPhone 16 Pro
+    iPhone 16 Pro Max
+    iPad (10th generation)
+    iPad mini (6th generation)
+    iPad Air 11-inch (M2)
     iPad Air 13-inch (M2)
-    # iPhone 16
-    # iPhone 16 Plus
-    # iPhone 16 Pro
-    # iPhone 16 Pro Max
-    # iPad (10th generation)
-    # iPad mini (6th generation)
-    # iPad Air 11-inch (M2)
-    # iPad Pro 11-inch (M4)
-    # iPad Pro 13-inch (M4)
+    iPad Pro 11-inch (M4)
+    iPad Pro 13-inch (M4)
 
 jobs:
   test:
@@ -144,10 +141,7 @@ jobs:
             | xcbeautify
 
       # -------- STEP 1: unit tests --------
-      # >>> TEMP: disabled to save CI time while iterating on the runner-side
-      # artifact-upload fix. Revert by deleting the `if: false` line below.
       - name: Unit tests
-        if: false
         run: |
           set +e                       # keep the step alive so cleanup/report always run
           set -o pipefail
