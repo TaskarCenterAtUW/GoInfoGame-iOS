@@ -323,7 +323,11 @@ def markdown_to_html(md: str, title: str, base_dir: str = "") -> str:
     out: list[str] = []
     in_code = in_table = False
     for line in md.splitlines():
-        m_img = re.match(r"^!\[([^\]]*)\]\((.+)\)\s*$", line)  # greedy: path may contain ()
+        # Greedy on both groups: the alt text can itself contain "]" (e.g. an
+        # Objective-C-style test name like "-[Class testMethod]") and the path can
+        # contain "(" ")", so anchor on the LAST "](" and the LAST ")" instead of
+        # the first "]".
+        m_img = re.match(r"^!\[(.*)\]\((.+)\)\s*$", line)
         if m_img and not in_code:
             if in_table:
                 out.append("</table>")
