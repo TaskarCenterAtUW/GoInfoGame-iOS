@@ -107,22 +107,57 @@ def _images_under(root: str) -> list[str]:
 def collect_screenshots(base: str, case: Case, limit: int = 8) -> list[str]:
     """Screenshots for a failed `case` from the xcparse tree under `base`.
 
-    xcparse --test lays files out as  <base>/ui-<slug>/<TestClass>/<testMethod>/<img>.
-    Prefer files whose path names the failing method; if none match (layout varies
-    by xcparse version) fall back to every image for that run - only failed runs
-    are extracted, so that is still just failure context.
+    xcparse --test lays files out as <base>/ui-<slug>/<TestClass>/<testMethod>/<img>
+    (unit failures under <base>/unit/...). Only ever return images whose path names
+    BOTH this test's class and method - never fall back to "some image in this run",
+    since that silently attributes another test's (e.g. a passing test's kept
+    launch-screen shot) screenshot to this failure, which is worse than showing none.
     """
     if not base or not os.path.isdir(base):
         return []
-    run_root = os.path.join(base, f"ui-{_run_slug(case.run)}")
+    if case.run.startswith("UI · "):
+        run_root = os.path.join(base, f"ui-{_run_slug(case.run)}")
+    elif case.run == "Unit tests":
+        run_root = os.path.join(base, "unit")
+    else:
+        run_root = os.path.join(base, _run_slug(case.run))
     if not os.path.isdir(run_root):
-        run_root = base
+        return []
     method = case.name.rstrip("()")
+    klass = case.suite.split(".")[-1]
     everything = _images_under(run_root)
-    matched = [p for p in everything if method and (f"/{method}/" in p + "/" or method in os.path.basename(p))]
-    hits = matched or everything
-    hits = sorted(set(hits), key=os.path.getmtime)   # oldest -> newest (failure moment last)
-    return hits[-limit:]
+
+    def is_own(p: str) -> bool:
+        norm = p.replace(os.sep, "/")
+        return f"/{klass}/{method}/" in norm or f"/{klass}/{method}." in norm
+
+    hits = sorted(set(p for p in everything if is_own(p)), key=os.path.getmtime)
+    return hits[-limit:]   # oldest -> newest (failure moment last)
+
+
+def dedupe_retries(cases: list[Case]) -> list[Case]:
+    """-retry-tests-on-failure re-runs a failing test up to a few times, and each
+    attempt lands in the JUnit XML as its own <testcase> with the same name - so a
+    single flaky/always-failing test can look like 3 separate failed tests. Collapse
+    same (run, suite, name) attempts into one: passed if any attempt passed
+    (Xcode's own "eventually passed" semantics), else the last (fullest) failure
+    detail; time is summed across attempts.
+    """
+    groups: "OrderedDict[tuple[str, str, str], list[Case]]" = OrderedDict()
+    for c in cases:
+        groups.setdefault((c.run, c.suite, c.name), []).append(c)
+    out: list[Case] = []
+    for attempts in groups.values():
+        if len(attempts) == 1:
+            out.append(attempts[0])
+            continue
+        passed = [a for a in attempts if a.status == "passed"]
+        failed = [a for a in attempts if a.status == "failed"]
+        final = passed[-1] if passed else (failed[-1] if failed else attempts[-1])
+        out.append(Case(final.run, final.suite, final.name,
+                        sum(a.time for a in attempts), final.status,
+                        final.message, final.detail))
+    return out
 
 
 def coverage_from_xcresult(xcresult: str) -> dict | None:
@@ -428,6 +463,12 @@ def main() -> int:
         if not got:
             print(f"::warning::no test cases parsed from {path}", file=sys.stderr)
         cases += got
+
+    before = len(cases)
+    cases = dedupe_retries(cases)
+    if before != len(cases):
+        print(f"collapsed {before - len(cases)} retry attempt(s) into their parent test(s)",
+              file=sys.stderr)
 
     os.makedirs(args.out_dir, exist_ok=True)
     md = build_markdown(cases, run_order, coverage_from_xcresult(args.xcresult),
