@@ -1,11 +1,17 @@
-# Builds the app once, then runs UNIT tests and UI tests as two separate steps.
-# UI tests run on every device in UI_SIMULATORS (one per line); any device not
-# installed on the runner is skipped with a warning.
+# Pipeline: checkout -> build once -> run unit tests -> run UI tests on every
+# device in UI_SIMULATORS (one per line; any device not installed on the runner
+# is recorded as "not installed", not silently dropped) -> extract a screenshot
+# for each failing UI test -> render one combined report (HTML + best-effort PDF,
+# plus Markdown) with a results summary and, per failure, the assertion detail and
+# screenshot -> zip test-report.{md,html,pdf} into one file and upload it as a
+# GitHub Actions artifact.
 #
-# Output: a combined report (MD / HTML / best-effort PDF, failure screenshots
-# embedded) is pushed to the `ci-reports` branch (under latest/ and runs/<n>-<sha>/)
-# and the Markdown is written to the run summary. This runner's service context
-# can't reach the Actions artifact backend, so upload-artifact is not used.
+# NOTE: this runner's service context has so far been unable to reach the Actions
+# artifact backend - CreateArtifact times out identically whether the upload is
+# 1256 files, 26 files, or 1 zip, so it is a network/proxy issue on the runner
+# service, not a payload-size one. The upload step is continue-on-error so a
+# repeat of that timeout does not fail the job; the Markdown is also always
+# written to the run summary as a fallback view.
 # JUnit XML, per-device xcodebuild logs and .xcresult bundles stay under ./build.
 #
 # Runs on a SELF-HOSTED runner (label: self-hosted) that already has Xcode,
@@ -33,7 +39,7 @@ concurrency:
   cancel-in-progress: true
 
 permissions:
-  contents: write        # push the report to the ci-reports branch
+  contents: read
   checks: write          # mikepenz/action-junit-report posts a check run
   pull-requests: write   # ...and annotates the PR
 
@@ -46,16 +52,16 @@ env:
   # can be aspirational. Add every simulator you care about here.
   UI_SIMULATORS: |
     iPhone SE (3rd generation)
-    # iPhone 16
-    # iPhone 16 Plus
-    # iPhone 16 Pro
-    # iPhone 16 Pro Max
-    # iPad (10th generation)
-    # iPad mini (6th generation)
-    # iPad Air 11-inch (M2)
-    # iPad Air 13-inch (M2)
-    # iPad Pro 11-inch (M4)
-    # iPad Pro 13-inch (M4)
+    iPhone 16
+    iPhone 16 Plus
+    iPhone 16 Pro
+    iPhone 16 Pro Max
+    iPad (10th generation)
+    iPad mini (6th generation)
+    iPad Air 11-inch (M2)
+    iPad Air 13-inch (M2)
+    iPad Pro 11-inch (M4)
+    iPad Pro 13-inch (M4)
 
 jobs:
   test:
@@ -135,33 +141,33 @@ jobs:
             | xcbeautify
 
       # -------- STEP 1: unit tests --------
-      # - name: Unit tests
-      #   run: |
-      #     set +e                       # keep the step alive so cleanup/report always run
-      #     set -o pipefail
-      #     udid=$(xcrun simctl list devices available | grep -F "$UNIT_SIMULATOR (" | grep -oE '[0-9A-F-]{36}' | head -1)
-      #     if [ -z "$udid" ]; then
-      #       echo "::error::unit simulator '$UNIT_SIMULATOR' not installed"
-      #       xcrun simctl list devices available | grep -i iphone
-      #       exit 1
-      #     fi
-      #     xcrun simctl boot "$udid"; xcrun simctl bootstatus "$udid" -b
-      #     mkdir -p build/reports/unit
-      #     NSUnbufferedIO=YES xcodebuild test-without-building \
-      #       -workspace "$WORKSPACE" -scheme "$SCHEME" \
-      #       -destination "platform=iOS Simulator,id=$udid" \
-      #       -only-testing:GoInfoGameTests \
-      #       -resultBundlePath build/results/unit.xcresult \
-      #       -enableCodeCoverage YES -retry-tests-on-failure -test-timeouts-enabled YES \
-      #       CODE_SIGNING_ALLOWED=NO \
-      #       | tee build/unit.log \
-      #       | xcbeautify --report junit --report-path build/reports/unit
-      #     rc=${PIPESTATUS[0]}
-      #     [ -f build/reports/unit/junit.xml ] && mv build/reports/unit/junit.xml build/reports/unit.xml
-      #     rmdir build/reports/unit 2>/dev/null
-      #     xcrun simctl shutdown "$udid"
-      #     echo "unit tests exit code: $rc"
-      #     exit "$rc"
+      - name: Unit tests
+        run: |
+          set +e                       # keep the step alive so cleanup/report always run
+          set -o pipefail
+          udid=$(xcrun simctl list devices available | grep -F "$UNIT_SIMULATOR (" | grep -oE '[0-9A-F-]{36}' | head -1)
+          if [ -z "$udid" ]; then
+            echo "::error::unit simulator '$UNIT_SIMULATOR' not installed"
+            xcrun simctl list devices available | grep -i iphone
+            exit 1
+          fi
+          xcrun simctl boot "$udid"; xcrun simctl bootstatus "$udid" -b
+          mkdir -p build/reports/unit
+          NSUnbufferedIO=YES xcodebuild test-without-building \
+            -workspace "$WORKSPACE" -scheme "$SCHEME" \
+            -destination "platform=iOS Simulator,id=$udid" \
+            -only-testing:GoInfoGameTests \
+            -resultBundlePath build/results/unit.xcresult \
+            -enableCodeCoverage YES -retry-tests-on-failure -test-timeouts-enabled YES \
+            CODE_SIGNING_ALLOWED=NO \
+            | tee build/unit.log \
+            | xcbeautify --report junit --report-path build/reports/unit
+          rc=${PIPESTATUS[0]}
+          [ -f build/reports/unit/junit.xml ] && mv build/reports/unit/junit.xml build/reports/unit.xml
+          rmdir build/reports/unit 2>/dev/null
+          xcrun simctl shutdown "$udid"
+          echo "unit tests exit code: $rc"
+          exit "$rc"
 
       # -------- STEP 2: UI tests, run on UI_SIMULATORS, UI_MAX_PARALLEL at a time --------
       - name: UI tests (parallel across devices)
@@ -293,65 +299,35 @@ jobs:
             --skipped-file build/results/skipped.txt \
             --out-dir build/report
 
-      # Publish the report onto a dedicated `ci-reports` branch. Does NOT use the
-      # Actions artifact backend (unreachable from this runner's service context);
-      # plain git over github.com works.
-      - name: Publish report to ci-reports branch
-        if: always() && github.event_name != 'pull_request'
+      # Zip the report into one file. HTML/PDF embed the failure screenshots inline
+      # (base64), so this zip is fully self-contained - no separate screenshots folder
+      # needed.
+      - name: Zip report
+        if: always()
         continue-on-error: true
-        env:
-          GH_TOKEN: ${{ github.token }}
-          GIT_TERMINAL_PROMPT: "0"
         run: |
-          set -e
           ws="$PWD"
-          [ -d build/report ] || { echo "no build/report - nothing to publish"; exit 0; }
-          run_dir="runs/${GITHUB_RUN_NUMBER}-${GITHUB_SHA:0:7}"
-          repo_url="https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
-          work="$(mktemp -d)"
-          GIT="git -c credential.helper= -c credential.interactive=never"   # no macOS keychain in a service session
-
-          if $GIT clone --depth 1 --branch ci-reports "$repo_url" "$work" 2>/dev/null; then
-            echo "updating existing ci-reports branch"
-          else
-            echo "creating ci-reports branch"
-            $GIT clone --depth 1 "$repo_url" "$work"
-            ( cd "$work" && git checkout --orphan ci-reports && git rm -rf . >/dev/null 2>&1 || true )
-          fi
-
-          cd "$work"
-          rm -rf latest; mkdir -p latest "$run_dir"
-          cp -R "$ws/build/report/." "latest/"
-          cp -R "$ws/build/report/." "$run_dir/"
-
-          # keep only the 40 most recent run folders
-          count=$(ls -1d runs/*/ 2>/dev/null | wc -l | tr -d ' ')
-          if [ "${count:-0}" -gt 40 ]; then
-            ls -1d runs/*/ | sed 's#^runs/##; s#/$##' | sort -t- -k1,1n | head -n "$((count - 40))" \
-              | while read -r d; do rm -rf "runs/$d"; done
-          fi
-
-          $GIT add -A
-          $GIT -c user.name="github-actions[bot]" \
-               -c user.email="41898282+github-actions[bot]@users.noreply.github.com" \
-               commit -m "report: run ${GITHUB_RUN_NUMBER} (${GITHUB_SHA})" || { echo "no changes"; exit 0; }
-
-          for i in 1 2 3; do
-            if $GIT push origin HEAD:ci-reports; then break; fi
-            echo "push rejected, rebasing (attempt $i)"
-            $GIT pull --rebase origin ci-reports || true
+          present=()
+          for f in test-report.md test-report.html test-report.pdf; do
+            [ -f "build/report/$f" ] && present+=("$f")
           done
+          if [ "${#present[@]}" -eq 0 ]; then
+            echo "::warning::no report files found under build/report - nothing to zip"
+          else
+            rm -f build/test-report.zip
+            ( cd build/report && zip -q "$ws/build/test-report.zip" "${present[@]}" )
+            echo "zipped: ${present[*]}"
+          fi
 
-          base="https://github.com/${GITHUB_REPOSITORY}"
-          echo "### Test report published" >> "$GITHUB_STEP_SUMMARY"
-          echo "- Browse: ${base}/tree/ci-reports/${run_dir}" >> "$GITHUB_STEP_SUMMARY"
-          echo "- HTML (raw): https://raw.githubusercontent.com/${GITHUB_REPOSITORY}/ci-reports/${run_dir}/test-report.html" >> "$GITHUB_STEP_SUMMARY"
-          echo "- PDF: ${base}/raw/ci-reports/${run_dir}/test-report.pdf" >> "$GITHUB_STEP_SUMMARY"
-
-      # The HTML and PDF embed the failure screenshots inline (base64), so they are
-      # self-contained. The .md links to files under build/report/screenshots/ .
-      # JUnit XML, per-device xcodebuild logs and .xcresult bundles stay under ./build
-      # on the runner (not uploaded). The full Markdown also goes to the run summary.
+      - name: Upload report artifact (zip)
+        uses: actions/upload-artifact@v4
+        if: always()
+        continue-on-error: true   # runner<->GitHub artifact-service blip must not fail the job
+        with:
+          name: test-report
+          path: build/test-report.zip
+          retention-days: 14
+          if-no-files-found: warn
 
       - name: Clean up simulators
         if: always()
