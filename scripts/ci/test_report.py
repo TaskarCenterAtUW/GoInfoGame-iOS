@@ -128,8 +128,15 @@ def collect_screenshots(base: str, case: Case, limit: int = 8) -> list[str]:
     everything = _images_under(run_root)
 
     def is_own(p: str) -> bool:
+        # Directory layout: .../<class>/<method>/<file> (any nesting after method).
         norm = p.replace(os.sep, "/")
-        return f"/{klass}/{method}/" in norm or f"/{klass}/{method}." in norm
+        if f"/{klass}/{method}/" in norm or f"/{klass}/{method}." in norm:
+            return True
+        # Flat-naming layout: some xcparse commands encode "Class_method" or
+        # "Class.method" straight into the filename instead of nesting folders.
+        base_name = os.path.basename(p)
+        return any(f"{klass}{sep}{method}" in base_name or f"{method}{sep}{klass}" in base_name
+                  for sep in ("_", ".", "-", " "))
 
     hits = sorted(set(p for p in everything if is_own(p)), key=os.path.getmtime)
     return hits[-limit:]   # oldest -> newest (failure moment last)
