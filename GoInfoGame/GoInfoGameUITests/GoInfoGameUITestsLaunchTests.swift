@@ -7,7 +7,7 @@
 
 import XCTest
 
-final class GoInfoGameUITestsLaunchTests: XCTestCase {
+final class GoInfoGameUITestsLaunchTests: ScreenshotOnFailureUITestCase {
 
     override class var runsForEachTargetApplicationUIConfiguration: Bool {
         true
