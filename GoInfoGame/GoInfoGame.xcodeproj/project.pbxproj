@@ -259,6 +259,7 @@
 		FAD5C4FF2AFCBE720040C61A /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FAD5C4FD2AFCBE720040C61A /* LaunchScreen.storyboard */; };
 		FAD5C50A2AFCBE720040C61A /* GoInfoGameTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAD5C5092AFCBE720040C61A /* GoInfoGameTests.swift */; };
 		FAD5C5142AFCBE720040C61A /* GoInfoGameUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAD5C5132AFCBE720040C61A /* GoInfoGameUITests.swift */; };
+		DD224EE7B5FC852AF5637C95 /* ScreenshotOnFailureUITestCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = E70058F06D4E69B2E0669A8B /* ScreenshotOnFailureUITestCase.swift */; };
 		FAD5C5162AFCBE720040C61A /* GoInfoGameUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAD5C5152AFCBE720040C61A /* GoInfoGameUITestsLaunchTests.swift */; };
 		FAE2584F2D39819300D2BB12 /* ManageQuestsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAE2584E2D39819300D2BB12 /* ManageQuestsView.swift */; };
 		FAE258522D3A780F00D2BB12 /* FloatingActionButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAE258512D3A780F00D2BB12 /* FloatingActionButton.swift */; };
@@ -661,6 +662,7 @@
 		FAD5C5092AFCBE720040C61A /* GoInfoGameTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoInfoGameTests.swift; sourceTree = "<group>"; };
 		FAD5C50F2AFCBE720040C61A /* GoInfoGameUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = GoInfoGameUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		FAD5C5132AFCBE720040C61A /* GoInfoGameUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoInfoGameUITests.swift; sourceTree = "<group>"; };
+		E70058F06D4E69B2E0669A8B /* ScreenshotOnFailureUITestCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenshotOnFailureUITestCase.swift; sourceTree = "<group>"; };
 		FAD5C5152AFCBE720040C61A /* GoInfoGameUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoInfoGameUITestsLaunchTests.swift; sourceTree = "<group>"; };
 		FAE2584E2D39819300D2BB12 /* ManageQuestsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManageQuestsView.swift; sourceTree = "<group>"; };
 		FAE258512D3A780F00D2BB12 /* FloatingActionButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FloatingActionButton.swift; sourceTree = "<group>"; };
@@ -1756,6 +1758,7 @@
 			children = (
 				FAD5C5132AFCBE720040C61A /* GoInfoGameUITests.swift */,
 				FAD5C5152AFCBE720040C61A /* GoInfoGameUITestsLaunchTests.swift */,
+				E70058F06D4E69B2E0669A8B /* ScreenshotOnFailureUITestCase.swift */,
 			);
 			path = GoInfoGameUITests;
 			sourceTree = "<group>";
@@ -2665,6 +2668,7 @@
 			files = (
 				FAD5C5162AFCBE720040C61A /* GoInfoGameUITestsLaunchTests.swift in Sources */,
 				FAD5C5142AFCBE720040C61A /* GoInfoGameUITests.swift in Sources */,
+				DD224EE7B5FC852AF5637C95 /* ScreenshotOnFailureUITestCase.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
