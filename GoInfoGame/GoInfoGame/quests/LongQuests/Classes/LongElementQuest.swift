@@ -10,22 +10,6 @@ import osmparser
 import SwiftUI
 import CoreLocation
 
-struct LazyView<Content: View>: View, QuestForm {
-    var action: (([String : String]) -> Void)?
-    
-    typealias AnswerClass = [String: String]
-    
-    let build: () -> Content
-
-    init(_ build: @autoclosure @escaping () -> Content) {
-        self.build = build
-    }
-
-    var body: Content {
-        build()
-    }
-}
-
 class LongElementQuest: QuestBase, Quest {
     var polylines: [CLLocationCoordinate2D]?
     
@@ -221,10 +205,10 @@ class LongElementQuest: QuestBase, Quest {
         self._internalQueryString = questQuery
         self.elementType = elementType
         self.elementTypeIcon = elementTypeIcon
-        self.internalForm = LazyView(LongForm(elementName: elementType, questID: questId,query: questQuery, tags: self.tags, action: { [self] tags in
+        self.internalForm = LongForm(elementName: elementType, questID: questId, query: questQuery, tags: self.tags, action: { [self] tags in
 //            self.onAnswer(answer: tags)
             self.questAnswersSelected?(tags)
-        }))
+        })
     }
 
     override init() {
