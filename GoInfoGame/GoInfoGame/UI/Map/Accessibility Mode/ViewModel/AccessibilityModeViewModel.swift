@@ -12,11 +12,8 @@ class AccessibilityModeViewModel: ObservableObject {
     private(set) var locationManager: LocationManagerDelegate
     private(set) var mapViewModel: MapViewModel
     @Published private(set) var nearestQuest: [AccessibilityQuest] = []
-    var autoSelectionCanceledIDs: Set<Int64> = []
-    var isQuestAutoSelected: Bool = false
     @Published var selectedQuest: DisplayUnitWithCoordinate?
     let distanceThreshold: Double = 250 // 250 meters
-    let locationAccuracy: CLLocationAccuracy = 30 // 30 meters
     var lastKnownLocation: CLLocationCoordinate2D?
     init(mapViewModel: MapViewModel, locationManager: LocationManagerDelegate = LocationManagerDelegate()) {
         self.locationManager = locationManager
@@ -55,20 +52,6 @@ class AccessibilityModeViewModel: ObservableObject {
         var sortedquests = nearestQuests.sorted { $0.distance < $1.distance }
         if sortedquests.count > 5 {
             sortedquests = Array(sortedquests[0..<5])
-        }
-        
-        if let nearestQuest =  sortedquests.first,
-           autoSelectionCanceledIDs.contains(nearestQuest.quest.id) == false,
-           nearestQuest.distance <= locationAccuracy {
-            if self.isQuestAutoSelected == false {
-                self.selectedQuest = nearestQuest.quest
-                self.mapViewModel.selectedQuest = nearestQuest.quest.displayUnit
-                self.isQuestAutoSelected = true
-            }
-        } else if self.isQuestAutoSelected == true {
-            self.selectedQuest = nil
-            self.mapViewModel.selectedQuest = nil
-            self.isQuestAutoSelected = false
         }
         
         self.nearestQuest = sortedquests

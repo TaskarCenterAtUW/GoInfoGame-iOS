@@ -298,10 +298,6 @@ internal enum L10n {
     internal static let usuallyLooksLikeThis = L10n.tr("Localizable", "usually_looks_like_this", fallback: "Usually looks like this?")
     /// Workspace
     internal static let workspace = L10n.tr("Localizable", "Workspace", fallback: "Workspace")
-    /// You’ve arrived at the quest location!
-    internal static let youVeArrivedAtTheQuestLocation = L10n.tr("Localizable", "You’ve arrived at the quest location!", fallback: "You’ve arrived at the quest location!")
-    /// You’ve Arrived!
-    internal static let youVeArrived = L10n.tr("Localizable", "You’ve Arrived!", fallback: "You’ve Arrived!")
     /// Zoom In Map
     internal static let zoomInMap = L10n.tr("Localizable", "Zoom In Map", fallback: "Zoom In Map")
     /// Zoom Out Map

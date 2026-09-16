@@ -143,23 +143,11 @@ struct AccessibilityModeView: View {
         }
         .sheet(item: $viewModel.selectedQuest) { _ in
             if let quest = viewModel.selectedQuest {
-                QuestSelectionConfirmationView(questType: quest.displayUnit.parent?.elementType ?? "", isAutoSelected: viewModel.isQuestAutoSelected) {
-                    if viewModel.isQuestAutoSelected {
-                        viewModel.autoSelectionCanceledIDs.insert(quest.id)
-                        viewModel.isQuestAutoSelected = false
-                    }
+                QuestSelectionConfirmationView(questType: quest.displayUnit.parent?.elementType ?? "") {
                     self.showLongFrom = true
                 } onHideQuest: {
-                    if viewModel.isQuestAutoSelected {
-                        viewModel.autoSelectionCanceledIDs.insert(quest.id)
-                        viewModel.isQuestAutoSelected = false
-                    }
                     mapViewModel.hideQuest(elementId: String(quest.id), elementName: quest.displayUnit.parent?.elementType ?? "")
                 } onClose: {
-                    if viewModel.isQuestAutoSelected {
-                        viewModel.autoSelectionCanceledIDs.insert(quest.id)
-                        viewModel.isQuestAutoSelected = false
-                    }
                 }
                 .background(Color(red: 248/255, green: 248/255, blue: 248/255))
                 // Sized to its own content by QuestSelectionConfirmationView itself.
