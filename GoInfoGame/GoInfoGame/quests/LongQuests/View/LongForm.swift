@@ -109,19 +109,11 @@ struct LongForm: View, QuestForm {
 
                 List {
                     Section {
-                        Text("ID: \(questID ?? "0")")
-                            .font(.custom("Lato-Regular", size: 14, relativeTo: .headline))
-                            .foregroundStyle(Asset.Colors.huskyPurple.swiftUIColor)
-                            .multilineTextAlignment(.leading)
-                            .accessibilityLabel("ID: \(questID ?? "0")")
+                        tagInfoRow(label: "ID", value: questID ?? "0")
 
-                        if let intersectionAt = tags?["ext:intersection_at"] {
-                            Text("Intersection: \(intersectionAt)")
-                                .font(.custom("Lato-Regular", size: 14, relativeTo: .headline))
-                                .foregroundStyle(Asset.Colors.huskyPurple.swiftUIColor)
-                                .multilineTextAlignment(.leading)
-                                .accessibilityLabel("Intersection: \(intersectionAt)")
-                        }
+                        tagInfoRow(label: "Intersection", value: tags?["ext:intersection_at"])
+
+                        tagInfoRow(label: "Name", value: tags?["name"])
 
                         // Side by side, neither button has enough width at large
                         // accessibility text sizes to fit its label as a whole word, so
@@ -381,6 +373,17 @@ struct LongForm: View, QuestForm {
             return false
         }
         return true
+    }
+
+    @ViewBuilder
+    private func tagInfoRow(label: String, value: String?) -> some View {
+        if let value {
+            Text("\(label): \(value)")
+                .font(.custom("Lato-Regular", size: 14, relativeTo: .headline))
+                .foregroundStyle(Asset.Colors.huskyPurple.swiftUIColor)
+                .multilineTextAlignment(.leading)
+                .accessibilityLabel("\(label): \(value)")
+        }
     }
 
     private var header: some View {
