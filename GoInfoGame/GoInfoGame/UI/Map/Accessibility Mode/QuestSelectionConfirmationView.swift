@@ -13,53 +13,41 @@ struct QuestSelectionConfirmationView: View {
     private var onStartAnswer: () -> Void = { }
     private var onHideQuest: () -> Void = { }
     private var onClose: () -> Void = { }
-    private var isAutoSelected: Bool = false
-    
-    init(questType: String, isAutoSelected: Bool, onStartAnswer: @escaping () -> Void, onHideQuest: @escaping () -> Void, onClose: @escaping () -> Void) {
+
+    init(questType: String, onStartAnswer: @escaping () -> Void, onHideQuest: @escaping () -> Void, onClose: @escaping () -> Void) {
         self.questType = questType
         self.onStartAnswer = onStartAnswer
         self.onHideQuest = onHideQuest
         self.onClose = onClose
-        self.isAutoSelected = isAutoSelected
     }
-    
+
     var body: some View {
         // Content-sized as long as it fits (measured accurately, since nothing here is
-        // greedy); falls back to a scrolling version only if the "you've arrived" image
-        // plus both text blocks plus all 3 buttons don't fit even in a maxed-out sheet —
-        // this view has no scroll of its own otherwise, unlike UserSettingsView/etc.
+        // greedy); falls back to a scrolling version only if the text blocks plus all
+        // 3 buttons don't fit even in a maxed-out sheet — this view has no scroll of
+        // its own otherwise, unlike UserSettingsView/etc.
         ViewThatFits(in: .vertical) {
             content
             ScrollView { content }
         }
-        .sizedToFitContent(fallbackHeight: UIScreen.main.bounds.height * (isAutoSelected ? 0.6 : 0.36))
+        .sizedToFitContent(fallbackHeight: UIScreen.main.bounds.height * 0.36)
     }
 
     private var content: some View {
         VStack(alignment: .center, spacing: 20, content: {
             HStack(alignment: .center, content: {
-                if isAutoSelected {
-                    Text(L10n.Localizable.youVeArrived)
+                (
+                    Text(L10n.Localizable.selectedType)
                         .font(FontFamily.Lato.bold.swiftUIFont(size: 18, relativeTo: .headline))
-                        .foregroundStyle(Asset.Colors._42526ETextFieldText.swiftUIColor)
-                        .multilineTextAlignment(.leading)
-                        .lineLimit(nil)
-                        .fixedSize(horizontal: false, vertical: true)
-                        .accessibilityLabel(L10n.Localizable.youVeArrived)
-                } else {
-                    (
-                        Text(L10n.Localizable.selectedType)
-                            .font(FontFamily.Lato.bold.swiftUIFont(size: 18, relativeTo: .headline))
-                        +
-                        Text(" " + questType)
-                            .font(FontFamily.Lato.regular.swiftUIFont(size: 18, relativeTo: .headline))
-                    )
-                    .foregroundStyle(Asset.Colors._42526ETextFieldText.swiftUIColor)
-                    .multilineTextAlignment(.leading)
-                    .lineLimit(nil)
-                    .fixedSize(horizontal: false, vertical: true)
-                    .accessibilityLabel("\(L10n.Localizable.selectedType) \(questType)")
-                }
+                    +
+                    Text(" " + questType)
+                        .font(FontFamily.Lato.regular.swiftUIFont(size: 18, relativeTo: .headline))
+                )
+                .foregroundStyle(Asset.Colors._42526ETextFieldText.swiftUIColor)
+                .multilineTextAlignment(.leading)
+                .lineLimit(nil)
+                .fixedSize(horizontal: false, vertical: true)
+                .accessibilityLabel("\(L10n.Localizable.selectedType) \(questType)")
 
                 Spacer()
 
@@ -72,36 +60,6 @@ struct QuestSelectionConfirmationView: View {
 
             DottedLine()
                 .padding(.bottom)
-
-            if isAutoSelected {
-                VStack(alignment: .center, spacing: 30) {
-                    Asset.reached.swiftUIImage
-
-                    Text(L10n.Localizable.youVeArrivedAtTheQuestLocation)
-                        .font(FontFamily.Lato.bold.swiftUIFont(size: 24, relativeTo: .headline))
-                        .foregroundStyle(Asset.Colors._42526ETextFieldText.swiftUIColor)
-                        .multilineTextAlignment(.center)
-                        .lineLimit(nil)
-                        .fixedSize(horizontal: false, vertical: true)
-                        .accessibilityLabel(L10n.Localizable.youVeArrivedAtTheQuestLocation)
-
-                    HStack {
-                        (
-                            Text(L10n.Localizable.questType)
-                                .font(FontFamily.Lato.bold.swiftUIFont(size: 18, relativeTo: .headline))
-                            +
-                            Text(": \(questType)")
-                                .font(FontFamily.Lato.regular.swiftUIFont(size: 18, relativeTo: .headline))
-                        )
-                        .foregroundStyle(Asset.Colors._42526ETextFieldText.swiftUIColor)
-                        .multilineTextAlignment(.leading)
-                        .lineLimit(nil)
-                        .fixedSize(horizontal: false, vertical: true)
-                        .accessibilityLabel("\(L10n.Localizable.questType): \(questType)")
-                    }
-                }
-                .padding(.bottom)
-            }
 
             startAnswerButton
 
@@ -171,7 +129,7 @@ struct QuestSelectionConfirmationView: View {
 }
 
 #Preview {
-    QuestSelectionConfirmationView(questType: "Sidewalk", isAutoSelected: true) {
+    QuestSelectionConfirmationView(questType: "Sidewalk") {
         
     } onHideQuest: {
         
