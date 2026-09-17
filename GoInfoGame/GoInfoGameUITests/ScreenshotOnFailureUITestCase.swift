@@ -18,14 +18,15 @@ class ScreenshotOnFailureUITestCase: XCTestCase {
     override func setUpWithError() throws {
         continueAfterFailure = false
 
-        // The simulator's iCloud Keychain can offer "Sign in with Apple ID" as an
-        // AutoFill suggestion over any screen with an adjacent username/password field,
-        // whenever the Mac/simulator has an Apple ID signed in. `.textContentType` on the
-        // fields (see FloatingLabelTextField/SecureInputView) makes this rare, but it is a
-        // simulator-account-state condition, not something the app can guarantee against -
-        // XCTest's own default handler has been observed spending 60+ seconds fighting it
-        // when it does appear. This monitor dismisses it in one step instead.
-        addUIInterruptionMonitor(withDescription: "Sign in with Apple ID") { alert in
+        // SpringBoard's account sign-in nag ("Sign in with Apple ID" on older OS versions,
+        // "Sign in to Apple Account" on newer ones - Apple has renamed it, so this does not
+        // match on title) can appear on a fresh simulator independent of any app: on the
+        // Home Screen before anything is launched, mid-test, or after backgrounding.
+        // XCTest's own default handler has been observed spending 60+ seconds fighting a
+        // respawning instance of it. This monitor dismisses it in one step instead; the
+        // description string is only a debug label, not a match filter, so it fires for
+        // whatever system alert is actually showing.
+        addUIInterruptionMonitor(withDescription: "System account sign-in nag") { alert in
             let cancel = alert.buttons["Cancel"]
             guard cancel.exists else { return false }
             cancel.tap()
@@ -75,7 +76,7 @@ class ScreenshotOnFailureUITestCase: XCTestCase {
     func launchApp(scenario: String? = nil, resetState: Bool = true) -> XCUIApplication {
         let app = XCUIApplication()
         if let scenario {
-            app.launchEnvironment["UITEST_SCENARIO"] = scenario
+            app.launchEnvironment[UITestScenario.environmentKey] = scenario
         }
         if resetState {
             // Defaults to on: a test that logs in successfully leaves `loggedIn = true`

@@ -13,16 +13,25 @@ final class GoInfoGameUITestsLaunchTests: ScreenshotOnFailureUITestCase {
         true
     }
 
-    override func setUpWithError() throws {
-        continueAfterFailure = false
-    }
+    // No setUpWithError override here on purpose: the base class's registers the
+    // system-alert interruption monitor, and a prior version of this override replaced it
+    // without calling super, silently losing that monitor for this test class alone.
 
     func testLaunch() throws {
-        let app = XCUIApplication()
-        app.launch()
+        // launchApp(...), not XCUIApplication().launch(): the raw call skips network
+        // stubbing, state reset, and - critically for this screenshot - leaves
+        // UITestRuntime.isActive false, so the real AppTransaction.shared call in
+        // ForceUpdateManager fires and can show a SpringBoard "Sign in to Apple Account"
+        // sandbox sheet over the freshly launched screen with nothing registered to
+        // dismiss it, which is what an unscoped `app.screenshot()` right after launch
+        // was capturing instead of the actual login screen.
+        let app = launchApp(scenario: UITestScenario.loginInvalidCredentials)
 
-        // Insert steps here to perform after app launch but before taking a screenshot,
-        // such as logging into a test account or navigating somewhere in the app
+        // Give the real screen a moment to settle (and any system alert a moment to be
+        // caught by the interruption monitor) before capturing what launch actually looks
+        // like, rather than whatever transient state exists in the instant after launch().
+        XCTAssertTrue(app.buttons[A11yID.Login.loginButton].waitForExistence(timeout: 15),
+                      "App did not reach the login screen before the launch screenshot")
 
         let attachment = XCTAttachment(screenshot: app.screenshot())
         attachment.name = "Launch Screen"

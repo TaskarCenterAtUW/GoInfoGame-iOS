@@ -24,11 +24,7 @@ import OHHTTPStubsSwift
 
 enum UITestStubs {
 
-    /// Launch-environment key the UI tests set to pick a scenario.
-    static let scenarioKey = "UITEST_SCENARIO"
 
-    /// Launch argument that wipes persisted state before the first screen is built.
-    static let resetStateArgument = "-UITestResetState"
 
     // MARK: - State reset
 
@@ -39,7 +35,7 @@ enum UITestStubs {
     /// successfully leaves `loggedIn = true` behind and every later test launches straight
     /// into InitialView instead of the login screen.
     static func resetStateIfNeeded() {
-        guard ProcessInfo.processInfo.arguments.contains(resetStateArgument) else { return }
+        guard ProcessInfo.processInfo.arguments.contains(UITestScenario.resetStateArgument) else { return }
 
         if let domain = Bundle.main.bundleIdentifier {
             UserDefaults.standard.removePersistentDomain(forName: domain)
@@ -74,7 +70,7 @@ enum UITestStubs {
     /// lazily-created singleton, so anything that fires a request before this runs would
     /// escape to the real network.
     static func installIfNeeded() {
-        guard let scenario = ProcessInfo.processInfo.environment[scenarioKey] else { return }
+        guard let scenario = ProcessInfo.processInfo.environment[UITestScenario.environmentKey] else { return }
 
         HTTPStubs.removeAllStubs()
 
