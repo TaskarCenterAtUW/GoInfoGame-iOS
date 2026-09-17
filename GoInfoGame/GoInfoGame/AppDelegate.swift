@@ -7,6 +7,7 @@
 
 import SwiftUI
 import FirebaseCore
+import RealmSwift
 
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -15,6 +16,27 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
+
+        // Absolute first thing, before anything else on this or any other thread has a
+        // chance to run: force Realm's schema to be computed once, synchronously, here.
+        // RLMSchema.sharedSchema (a process-wide singleton, cached for the rest of the
+        // process once computed) discovers Realm's model classes by walking every
+        // Objective-C class currently loaded via RLMRegisterClassLocalNames. If that walk
+        // races with something else registering a class on another thread - which is
+        // routine seconds later, once Firebase/StoreKit/etc. are initializing and
+        // SceneDelegate.sceneDidBecomeActive fires NotesSubmissionManager and
+        // FeatureSubmissionManager's resumePendingUploads(), each opening its own
+        // Task.detached that can independently trigger this same first-ever Realm access -
+        // class_getSuperclass can read a pointer the runtime is mutating out from under it
+        // and crash with EXC_BAD_ACCESS (seen as a crash inside
+        // RLMRegisterClassLocalNames/RLMIsObjectSubclass). Doing it here, alone, before any
+        // of that concurrent activity starts, means every later access - including the ones
+        // from those detached tasks - just reuses the cached schema and never repeats the
+        // race. Intermittent, because it depends on how the OS scheduler happens to
+        // interleave threads on a given launch; far more likely to surface under a UI test
+        // suite, which launches a fresh process (and so re-triggers this one-time
+        // computation) dozens of times in a row.
+        _ = try? Realm(configuration: RealmConfig.configuration)
 
         // Before anything else: a UI test run needs its stubs registered ahead of the
         // first request, and ApiManager.shared is created lazily by whoever asks first.

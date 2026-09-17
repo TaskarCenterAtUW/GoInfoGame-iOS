@@ -48,6 +48,11 @@ enum A11yID {
 /// on the test side would mean a typo produces a run with only the catch-all installed
 /// (every request failing) instead of a compile error.
 enum UITestScenario {
+    /// Launch-environment key the UI tests set to pick a scenario; the app reads it in
+    /// UITestStubs.installIfNeeded(). Centralized here (rather than duplicated as a raw
+    /// string on both sides) so a typo on either end is a compile error.
+    static let environmentKey = "UITEST_SCENARIO"
+
     static let loginInvalidCredentials = "login_invalid_credentials"
     static let loginSuccess = "login_success"
     static let loginServerError = "login_server_error"
@@ -56,4 +61,12 @@ enum UITestScenario {
 
     /// Launch argument (not environment) that clears UserDefaults and the Keychain.
     static let resetStateArgument = "-UITestResetState"
+}
+
+/// True only when the app was launched by a UI test (any UITEST_SCENARIO value set).
+/// Always safe to check in Release too - the key is never present outside a test launch.
+enum UITestRuntime {
+    static var isActive: Bool {
+        ProcessInfo.processInfo.environment[UITestScenario.environmentKey] != nil
+    }
 }

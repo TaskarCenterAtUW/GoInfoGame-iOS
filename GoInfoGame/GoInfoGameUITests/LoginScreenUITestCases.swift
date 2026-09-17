@@ -76,7 +76,7 @@ final class LoginScreenUITestCases: ScreenshotOnFailureUITestCase {
     func testLoginWithWrongCredentials() throws {
         let app = launchApp(scenario: UITestScenario.loginInvalidCredentials)
 
-        enterCredentials(app, username: "test@email.com", password: "wrong-password")
+        enterCredentials(app, username: "test@email.com", password: "wrong-password\n")
         tapLogin(app)
         assertLoginErrorShown(app)
 
@@ -95,7 +95,7 @@ final class LoginScreenUITestCases: ScreenshotOnFailureUITestCase {
     func testLoginWhenServerReturnsError() throws {
         let app = launchApp(scenario: UITestScenario.loginServerError)
 
-        enterCredentials(app, username: "test@email.com", password: "any-password")
+        enterCredentials(app, username: "test@email.com", password: "any-password\n")
         tapLogin(app)
 
         // A 500 is not a credentials problem, but the app must still surface something and
@@ -108,7 +108,7 @@ final class LoginScreenUITestCases: ScreenshotOnFailureUITestCase {
     func testLoginWhenNetworkIsUnavailable() throws {
         let app = launchApp(scenario: UITestScenario.loginNetworkDown)
 
-        enterCredentials(app, username: "test@email.com", password: "any-password")
+        enterCredentials(app, username: "test@email.com", password: "any-password\n")
         tapLogin(app)
 
         assertLoginErrorShown(app)
@@ -121,7 +121,7 @@ final class LoginScreenUITestCases: ScreenshotOnFailureUITestCase {
     func testLoginWithValidCredentialsNavigatesToWorkspaces() throws {
         let app = launchApp(scenario: UITestScenario.loginSuccess)
 
-        enterCredentials(app, username: "test@email.com", password: "correct-password")
+        enterCredentials(app, username: "test@email.com", password: "correct-password\n")
         tapLogin(app)
 
         XCTAssertTrue(app.staticTexts[A11yID.Workspaces.title].waitForExistence(timeout: 20),
@@ -135,7 +135,7 @@ final class LoginScreenUITestCases: ScreenshotOnFailureUITestCase {
     func testLoginWithEmptyUsernameShowsValidationAlert() throws {
         let app = launchApp(scenario: UITestScenario.loginInvalidCredentials)
 
-        enterCredentials(app, username: nil, password: "some-password")
+        enterCredentials(app, username: nil, password: "some-password\n")
         tapLogin(app)
 
         let alert = app.alerts.firstMatch
@@ -148,7 +148,7 @@ final class LoginScreenUITestCases: ScreenshotOnFailureUITestCase {
     func testLoginWithEmptyPasswordShowsValidationAlert() throws {
         let app = launchApp(scenario: UITestScenario.loginInvalidCredentials)
 
-        enterCredentials(app, username: "test@email.com", password: nil)
+        enterCredentials(app, username: "test@email.com\n", password: nil)
         tapLogin(app)
 
         let alert = app.alerts.firstMatch
@@ -180,7 +180,7 @@ final class LoginScreenUITestCases: ScreenshotOnFailureUITestCase {
         // would come and go faster than XCUITest could ever observe it.
         let app = launchApp(scenario: UITestScenario.loginSlowResponse)
 
-        enterCredentials(app, username: "test@email.com", password: "wrong-password")
+        enterCredentials(app, username: "test@email.com\n", password: "wrong-password\n")
         tapLogin(app)
 
         let spinner = element(app, id: A11yID.Login.loadingIndicator)
