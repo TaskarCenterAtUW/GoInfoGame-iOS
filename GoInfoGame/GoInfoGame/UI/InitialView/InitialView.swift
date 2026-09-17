@@ -96,6 +96,7 @@ struct InitialView: View {
                             .frame(width: 100, height: 100)
                             .accessibilityHidden(true)
                         Text(L10n.Localizable.appName)
+                            .accessibilityIdentifier(A11yID.Workspaces.title)
                             .font(.system(.title, design: .rounded))
                             .foregroundStyle(Asset.Colors.huskyPurple.swiftUIColor)
                             .multilineTextAlignment(.center)

@@ -36,14 +36,18 @@ struct PosmLoginView: View {
                             .frame(minHeight: geometry.size.height)
                     }
                     if #available(iOS 16.4, *) {
-                        scrollView.scrollBounceBehavior(.basedOnSize)
+                        scrollView
+                            .scrollBounceBehavior(.basedOnSize)
+                            .accessibilityIdentifier(A11yID.Login.scrollView)
                     } else {
                         scrollView
+                            .accessibilityIdentifier(A11yID.Login.scrollView)
                     }
                 }
 
                 if viewModel.isLoading {
                     ActivityView(activityText: "Loading...")
+                        .accessibilityIdentifier(A11yID.Login.loadingIndicator)
                         .frame(maxWidth: .infinity, maxHeight: .infinity)
                         .background(Color.black.opacity(0.4))
                         .edgesIgnoringSafeArea(.all)
@@ -131,13 +135,15 @@ struct PosmLoginView: View {
                     }
                     .frame(minHeight: 250)
                                     
-                    FloatingLabelTextField(title: "Username", text: $viewModel.username)
+                    FloatingLabelTextField(title: "Username", text: $viewModel.username,
+                                           accessibilityID: A11yID.Login.usernameField)
                         .padding(10)
                         .cornerRadius(10)
                         .padding(.horizontal, 40)
                         .textInputAutocapitalization(.never)
                     
-                    FloatingLabelTextField(title: "Password", text: $viewModel.password, isSecure:  true)
+                    FloatingLabelTextField(title: "Password", text: $viewModel.password, isSecure:  true,
+                                           accessibilityID: A11yID.Login.passwordField)
                         .padding(10)
                         .cornerRadius(10)
                         .padding(.horizontal, 40)
@@ -182,6 +188,7 @@ struct PosmLoginView: View {
                             .background(Asset.Colors.huskyPurple.swiftUIColor)
                             .cornerRadius(25)
                     }
+                    .accessibilityIdentifier(A11yID.Login.loginButton)
                     .padding(.top, 20)
                     .padding(.horizontal, 40)
                     
@@ -227,6 +234,7 @@ struct PosmLoginView: View {
                     
                     if viewModel.hasLoginFailed {
                         Text(viewModel.loginFailedMessage ??  "Invalid Credentials")
+                            .accessibilityIdentifier(A11yID.Login.errorMessage)
                             .foregroundColor(.red)
                             .padding(.top, 10)
                             .font(FontFamily.Lato.medium.swiftUIFont(size: 18, relativeTo: .headline))
@@ -286,6 +294,7 @@ struct PosmLoginView: View {
                 .lineLimit(nil)
                 .accessibilityLabel("Forgot password?")
         }
+        .accessibilityIdentifier(A11yID.Login.forgotPasswordButton)
     }
     
     var iAmNewUser: some View {
@@ -300,6 +309,7 @@ struct PosmLoginView: View {
                 .lineLimit(nil)
                 .accessibilityLabel("I'm a new user. Tap to learn more.")
         }
+        .accessibilityIdentifier(A11yID.Login.newUserButton)
     }
     
     var contactUs: some View {
@@ -315,6 +325,7 @@ struct PosmLoginView: View {
                 .padding()
                 .accessibilityLabel("Questions? Contact Us. Tap to open email client")
         }
+        .accessibilityIdentifier(A11yID.Login.contactUsButton)
     }
     
     var accessMapRoute: some View {
@@ -331,6 +342,7 @@ struct PosmLoginView: View {
                 .accessibilityLabel("Looking for AccessMap Route? Tap to open AccessMap website")
             
         }
+        .accessibilityIdentifier(A11yID.Login.accessMapButton)
     }
     
     private func openURL(url: String) {
