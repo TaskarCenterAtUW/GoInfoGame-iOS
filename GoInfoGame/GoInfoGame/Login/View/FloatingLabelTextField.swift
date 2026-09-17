@@ -11,6 +11,9 @@ struct FloatingLabelTextField: View {
     var title: String
     @Binding var text: String
     var isSecure: Bool = false
+    /// Stable identifier for UI tests. Kept separate from `title`, which is the visible
+    /// (and localized) label and so must never be what a test matches on.
+    var accessibilityID: String? = nil
 
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
@@ -28,10 +31,12 @@ struct FloatingLabelTextField: View {
     private var fieldContent: some View {
         Group {
             if isSecure {
-                SecureInputView(title, text: $text)
+                SecureInputView(title, text: $text, accessibilityID: accessibilityID)
             } else {
                 TextField(title, text: $text)
+                    .textContentType(.username)
                     .accessibilityLabel(title)
+                    .accessibilityIdentifier(ifPresent: accessibilityID)
             }
         }
         .font(FontFamily.Lato.bold.swiftUIFont(size: 16, relativeTo: .headline))
@@ -94,6 +99,19 @@ struct FloatingLabelTextField: View {
         }
     }
 }
+extension View {
+    /// Applies an accessibility identifier only when one was supplied, so views that
+    /// opt out are left exactly as they were rather than carrying an empty identifier.
+    @ViewBuilder
+    func accessibilityIdentifier(ifPresent id: String?) -> some View {
+        if let id {
+            self.accessibilityIdentifier(id)
+        } else {
+            self
+        }
+    }
+}
+
 #Preview {
     FloatingLabelTextField(title: "Email", text: .constant(""))
 }

@@ -28,6 +28,10 @@ struct ActivityView: View {
         }
         .frame(minWidth: 150, minHeight: 150)
         .background(RoundedRectangle(cornerRadius: 20).fill(Color.white).shadow(radius: 5))
+        // A spinner and its caption are one thing to a VoiceOver user, and combining them
+        // also gives the overlay a single element for an accessibilityIdentifier applied
+        // at the call site to attach to - a bare VStack surfaces no element at all.
+        .accessibilityElement(children: .combine)
     }
 }
 

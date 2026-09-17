@@ -15,7 +15,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
-        
+
+        // Before anything else: a UI test run needs its stubs registered ahead of the
+        // first request, and ApiManager.shared is created lazily by whoever asks first.
+        // Reset first: SceneDelegate picks its root view from `loggedIn`, so stale state
+        // has to be gone before the scene connects.
+        #if DEBUG
+        UITestStubs.resetStateIfNeeded()
+        UITestStubs.installIfNeeded()
+        #endif
+
         //clear DB to avoid overlap of data after workspace selection
        // DatabaseConnector.shared.clearDB()
         validateAccessToken()
