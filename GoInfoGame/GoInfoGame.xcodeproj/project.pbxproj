@@ -207,9 +207,21 @@
 		C79EDA932EDA0BBD00D2B100 /* UndoItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C79EDA922EDA0BBD00D2B100 /* UndoItemView.swift */; };
 		C7A357462EA22A120033F6FB /* Config.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = C7A357452EA22A120033F6FB /* Config.xcconfig */; };
 		C7A922252E45C36D00705E21 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = C7A922242E45C36D00705E21 /* PrivacyInfo.xcprivacy */; };
+		C7AFA179305AF8E800C539F7 /* OHHTTPStubs in Frameworks */ = {isa = PBXBuildFile; productRef = C7AFA178305AF8E800C539F7 /* OHHTTPStubs */; };
+		C7AFA17B305AF8E800C539F7 /* OHHTTPStubsSwift in Frameworks */ = {isa = PBXBuildFile; productRef = C7AFA17A305AF8E800C539F7 /* OHHTTPStubsSwift */; };
+		C7AFA17D305AFC1500C539F7 /* LoginScreenUITestCases.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7AFA17C305AFC1500C539F7 /* LoginScreenUITestCases.swift */; };
+		C7AFA182305B085E00C539F7 /* ScreenshotOnFailureUITestCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7AFA181305B085E00C539F7 /* ScreenshotOnFailureUITestCase.swift */; };
 		C7BA83542E3C9C3600755BA7 /* QuestSyncButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7BA83532E3C9C3600755BA7 /* QuestSyncButton.swift */; };
 		C7D3103E2EA0B3BB00CA10A9 /* ForceUpdateViewModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7D3103D2EA0B3BB00CA10A9 /* ForceUpdateViewModifier.swift */; };
 		C7D310412EA1302500CA10A9 /* StoreKit.storekit in Resources */ = {isa = PBXBuildFile; fileRef = C7D310402EA1302500CA10A9 /* StoreKit.storekit */; };
+		C7DBG00000000000000000A6 /* UITestStubs.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7DBG00000000000000000A3 /* UITestStubs.swift */; };
+		C7DBG00000000000000000A7 /* A11yID.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7DBG00000000000000000A4 /* A11yID.swift */; };
+		C7DBG00000000000000000A8 /* A11yID.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7DBG00000000000000000A4 /* A11yID.swift */; };
+		C7DBG0000000000000000150 /* LoginSuccess.json in Resources */ = {isa = PBXBuildFile; fileRef = C7DBG0000000000000000100 /* LoginSuccess.json */; };
+		C7DBG0000000000000000151 /* LoginServerError.json in Resources */ = {isa = PBXBuildFile; fileRef = C7DBG0000000000000000101 /* LoginServerError.json */; };
+		C7DBG0000000000000000152 /* EmptyList.json in Resources */ = {isa = PBXBuildFile; fileRef = C7DBG0000000000000000102 /* EmptyList.json */; };
+		C7DBG0000000000000000153 /* ForceUpdateNone.json in Resources */ = {isa = PBXBuildFile; fileRef = C7DBG0000000000000000103 /* ForceUpdateNone.json */; };
+		C7DBG00000000000000000A9 /* LoginFailure.json in Resources */ = {isa = PBXBuildFile; fileRef = C7DBG00000000000000000A5 /* LoginFailure.json */; };
 		C7DD04152F7E7A5800307026 /* Lato-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FA8C74D12C598F9D00D28220 /* Lato-Bold.ttf */; };
 		C7DD04162F7E7A6100307026 /* Lato-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FA8C74D02C598F9D00D28220 /* Lato-Regular.ttf */; };
 		C7DD04172F7E7A6100307026 /* Lato-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FA8C74D22C5998D600D28220 /* Lato-Medium.ttf */; };
@@ -217,6 +229,7 @@
 		C7E9528F2ED88B00001BFB75 /* lato-heavy.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C7E9528E2ED88B00001BFB75 /* lato-heavy.ttf */; };
 		C7ED070F2D70E2EC001FFFE2 /* TokenRefresher.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7ED070E2D70E2EC001FFFE2 /* TokenRefresher.swift */; };
 		CFECB318461BB876B1621890 /* Pods_osmapi.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C4F37DA661B22FA87DF8282F /* Pods_osmapi.framework */; };
+		DD224EE7B5FC852AF5637C95 /* ScreenshotOnFailureUITestCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = E70058F06D4E69B2E0669A8B /* ScreenshotOnFailureUITestCase.swift */; };
 		F45BA2B5418942E3B4C91667 /* StoredFeatureDraft.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C9C135AD8A342A1A94E757C /* StoredFeatureDraft.swift */; };
 		FA18CAE22CC7CD89008247F2 /* KartaviewViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA18CAE12CC7CD89008247F2 /* KartaviewViewModel.swift */; };
 		FA18CAE52CC7D0DD008247F2 /* SequenceModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA18CAE42CC7D0DD008247F2 /* SequenceModel.swift */; };
@@ -259,7 +272,6 @@
 		FAD5C4FF2AFCBE720040C61A /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FAD5C4FD2AFCBE720040C61A /* LaunchScreen.storyboard */; };
 		FAD5C50A2AFCBE720040C61A /* GoInfoGameTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAD5C5092AFCBE720040C61A /* GoInfoGameTests.swift */; };
 		FAD5C5142AFCBE720040C61A /* GoInfoGameUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAD5C5132AFCBE720040C61A /* GoInfoGameUITests.swift */; };
-		DD224EE7B5FC852AF5637C95 /* ScreenshotOnFailureUITestCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = E70058F06D4E69B2E0669A8B /* ScreenshotOnFailureUITestCase.swift */; };
 		FAD5C5162AFCBE720040C61A /* GoInfoGameUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAD5C5152AFCBE720040C61A /* GoInfoGameUITestsLaunchTests.swift */; };
 		FAE2584F2D39819300D2BB12 /* ManageQuestsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAE2584E2D39819300D2BB12 /* ManageQuestsView.swift */; };
 		FAE258522D3A780F00D2BB12 /* FloatingActionButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAE258512D3A780F00D2BB12 /* FloatingActionButton.swift */; };
@@ -599,14 +611,24 @@
 		C79EDA922EDA0BBD00D2B100 /* UndoItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UndoItemView.swift; sourceTree = "<group>"; };
 		C7A357452EA22A120033F6FB /* Config.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Config.xcconfig; sourceTree = "<group>"; };
 		C7A922242E45C36D00705E21 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
+		C7AFA17C305AFC1500C539F7 /* LoginScreenUITestCases.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginScreenUITestCases.swift; sourceTree = "<group>"; };
+		C7AFA181305B085E00C539F7 /* ScreenshotOnFailureUITestCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenshotOnFailureUITestCase.swift; sourceTree = "<group>"; };
 		C7BA83532E3C9C3600755BA7 /* QuestSyncButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = QuestSyncButton.swift; path = GoInfoGame/UI/Map/QuestSyncButton.swift; sourceTree = SOURCE_ROOT; };
 		C7D3103D2EA0B3BB00CA10A9 /* ForceUpdateViewModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForceUpdateViewModifier.swift; sourceTree = "<group>"; };
 		C7D310402EA1302500CA10A9 /* StoreKit.storekit */ = {isa = PBXFileReference; lastKnownFileType = text; path = StoreKit.storekit; sourceTree = "<group>"; };
+		C7DBG00000000000000000A3 /* UITestStubs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UITestStubs.swift; sourceTree = "<group>"; };
+		C7DBG00000000000000000A4 /* A11yID.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = A11yID.swift; sourceTree = "<group>"; };
+		C7DBG0000000000000000100 /* LoginSuccess.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = LoginSuccess.json; sourceTree = "<group>"; };
+		C7DBG0000000000000000101 /* LoginServerError.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = LoginServerError.json; sourceTree = "<group>"; };
+		C7DBG0000000000000000102 /* EmptyList.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = EmptyList.json; sourceTree = "<group>"; };
+		C7DBG0000000000000000103 /* ForceUpdateNone.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = ForceUpdateNone.json; sourceTree = "<group>"; };
+		C7DBG00000000000000000A5 /* LoginFailure.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = LoginFailure.json; sourceTree = "<group>"; };
 		C7E9528C2ED887CC001BFB75 /* NoQuestsNearView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoQuestsNearView.swift; sourceTree = "<group>"; };
 		C7E9528E2ED88B00001BFB75 /* lato-heavy.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "lato-heavy.ttf"; sourceTree = "<group>"; };
 		C7ED070E2D70E2EC001FFFE2 /* TokenRefresher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenRefresher.swift; sourceTree = "<group>"; };
 		C96303080D26026265099E0E /* Pods-GoInfoGame.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-GoInfoGame.release.xcconfig"; path = "Target Support Files/Pods-GoInfoGame/Pods-GoInfoGame.release.xcconfig"; sourceTree = "<group>"; };
 		D76D8E22AC705A38AFEA78B1 /* Pods-GoInfoGame-GoInfoGameUITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-GoInfoGame-GoInfoGameUITests.debug.xcconfig"; path = "Target Support Files/Pods-GoInfoGame-GoInfoGameUITests/Pods-GoInfoGame-GoInfoGameUITests.debug.xcconfig"; sourceTree = "<group>"; };
+		E70058F06D4E69B2E0669A8B /* ScreenshotOnFailureUITestCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenshotOnFailureUITestCase.swift; sourceTree = "<group>"; };
 		E82B8736511C2D879C41EDA1 /* Pods-osmapiTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-osmapiTests.release.xcconfig"; path = "Target Support Files/Pods-osmapiTests/Pods-osmapiTests.release.xcconfig"; sourceTree = "<group>"; };
 		F008D431593E568E75C48C84 /* Pods-GoInfoGame.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-GoInfoGame.debug.xcconfig"; path = "Target Support Files/Pods-GoInfoGame/Pods-GoInfoGame.debug.xcconfig"; sourceTree = "<group>"; };
 		FA18CAE12CC7CD89008247F2 /* KartaviewViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KartaviewViewModel.swift; sourceTree = "<group>"; };
@@ -662,7 +684,6 @@
 		FAD5C5092AFCBE720040C61A /* GoInfoGameTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoInfoGameTests.swift; sourceTree = "<group>"; };
 		FAD5C50F2AFCBE720040C61A /* GoInfoGameUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = GoInfoGameUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		FAD5C5132AFCBE720040C61A /* GoInfoGameUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoInfoGameUITests.swift; sourceTree = "<group>"; };
-		E70058F06D4E69B2E0669A8B /* ScreenshotOnFailureUITestCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenshotOnFailureUITestCase.swift; sourceTree = "<group>"; };
 		FAD5C5152AFCBE720040C61A /* GoInfoGameUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoInfoGameUITestsLaunchTests.swift; sourceTree = "<group>"; };
 		FAE2584E2D39819300D2BB12 /* ManageQuestsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManageQuestsView.swift; sourceTree = "<group>"; };
 		FAE258512D3A780F00D2BB12 /* FloatingActionButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FloatingActionButton.swift; sourceTree = "<group>"; };
@@ -751,6 +772,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				342561966FC217124BD9CFE7 /* Pods_GoInfoGame_GoInfoGameUITests.framework in Frameworks */,
+				C7AFA17B305AF8E800C539F7 /* OHHTTPStubsSwift in Frameworks */,
+				C7AFA179305AF8E800C539F7 /* OHHTTPStubs in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1512,6 +1535,28 @@
 			path = "Accessibility Mode";
 			sourceTree = "<group>";
 		};
+		C7DBG00000000000000000A1 /* DebugSupport */ = {
+			isa = PBXGroup;
+			children = (
+				C7DBG00000000000000000A4 /* A11yID.swift */,
+				C7DBG00000000000000000A3 /* UITestStubs.swift */,
+				C7DBG00000000000000000A2 /* MockResponses */,
+			);
+			path = DebugSupport;
+			sourceTree = "<group>";
+		};
+		C7DBG00000000000000000A2 /* MockResponses */ = {
+			isa = PBXGroup;
+			children = (
+				C7DBG00000000000000000A5 /* LoginFailure.json */,
+				C7DBG0000000000000000100 /* LoginSuccess.json */,
+				C7DBG0000000000000000101 /* LoginServerError.json */,
+				C7DBG0000000000000000102 /* EmptyList.json */,
+				C7DBG0000000000000000103 /* ForceUpdateNone.json */,
+			);
+			path = MockResponses;
+			sourceTree = "<group>";
+		};
 		FA18CADE2CC7CD46008247F2 /* Kartaview */ = {
 			isa = PBXGroup;
 			children = (
@@ -1699,6 +1744,7 @@
 		FAD5C4F12AFCBE700040C61A /* GoInfoGame */ = {
 			isa = PBXGroup;
 			children = (
+				C7DBG00000000000000000A1 /* DebugSupport */,
 				C78EEFAC2FDAD91000729240 /* PointNMap-Bridging-Header.h */,
 				C787EF162E9676CC00BEF0A6 /* GoInfoGame.entitlements */,
 				FA18CADE2CC7CD46008247F2 /* Kartaview */,
@@ -1756,9 +1802,11 @@
 		FAD5C5122AFCBE720040C61A /* GoInfoGameUITests */ = {
 			isa = PBXGroup;
 			children = (
+				C7AFA181305B085E00C539F7 /* ScreenshotOnFailureUITestCase.swift */,
 				FAD5C5132AFCBE720040C61A /* GoInfoGameUITests.swift */,
 				FAD5C5152AFCBE720040C61A /* GoInfoGameUITestsLaunchTests.swift */,
 				E70058F06D4E69B2E0669A8B /* ScreenshotOnFailureUITestCase.swift */,
+				C7AFA17C305AFC1500C539F7 /* LoginScreenUITestCases.swift */,
 			);
 			path = GoInfoGameUITests;
 			sourceTree = "<group>";
@@ -2119,6 +2167,11 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C7DBG00000000000000000A9 /* LoginFailure.json in Resources */,
+				C7DBG0000000000000000150 /* LoginSuccess.json in Resources */,
+				C7DBG0000000000000000151 /* LoginServerError.json in Resources */,
+				C7DBG0000000000000000152 /* EmptyList.json in Resources */,
+				C7DBG0000000000000000153 /* ForceUpdateNone.json in Resources */,
 				846A32C3BB81E3C29B621792 /* map_theme in Resources */,
 				973FC00A2B4D2A6D00878269 /* Localizable.strings in Resources */,
 				FAD5C4FF2AFCBE720040C61A /* LaunchScreen.storyboard in Resources */,
@@ -2493,6 +2546,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C7DBG00000000000000000A6 /* UITestStubs.swift in Sources */,
+				C7DBG00000000000000000A7 /* A11yID.swift in Sources */,
 				C78737AF2E4C9E3B00289D13 /* FloatingLabelTextField.swift in Sources */,
 				FA9F38202DC5585600D7AABF /* QuestUndoManager.swift in Sources */,
 				FA8C74D42C5A443700D28220 /* QuestOptions.swift in Sources */,
@@ -2666,9 +2721,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C7DBG00000000000000000A8 /* A11yID.swift in Sources */,
 				FAD5C5162AFCBE720040C61A /* GoInfoGameUITestsLaunchTests.swift in Sources */,
+				C7AFA17D305AFC1500C539F7 /* LoginScreenUITestCases.swift in Sources */,
 				FAD5C5142AFCBE720040C61A /* GoInfoGameUITests.swift in Sources */,
 				DD224EE7B5FC852AF5637C95 /* ScreenshotOnFailureUITestCase.swift in Sources */,
+				C7AFA182305B085E00C539F7 /* ScreenshotOnFailureUITestCase.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3518,6 +3576,16 @@
 		C787B2FD2FECE5E80026C40E /* MapLibre */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = MapLibre;
+		};
+		C7AFA178305AF8E800C539F7 /* OHHTTPStubs */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = C75666CE2E0D068900D36C41 /* XCRemoteSwiftPackageReference "OHHTTPStubs" */;
+			productName = OHHTTPStubs;
+		};
+		C7AFA17A305AF8E800C539F7 /* OHHTTPStubsSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = C75666CE2E0D068900D36C41 /* XCRemoteSwiftPackageReference "OHHTTPStubs" */;
+			productName = OHHTTPStubsSwift;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
