@@ -114,6 +114,9 @@ enum UITestStubs {
             stub(condition: isLoginRequest()) { _ in
                 response(fixture: "LoginFailure", status: 401).responseTime(4.0)
             }.name = "login -> 401 after 4s"
+        case UITestScenario.loginBiometricAvailable:
+            stubLogin(fixture: "LoginFailure", status: 401)
+            seedBiometricLoginAvailable()
         default:
             NSLog("[UITestStubs] Unknown scenario '%@' - only the catch-all is installed.", scenario)
         }
@@ -151,6 +154,25 @@ enum UITestStubs {
         stub(condition: isMethodGET() && pathStartsWith("/api/v1/project-group-roles/")) { _ in
             response(fixture: "EmptyList", status: 200)
         }.name = "GET /project-group-roles -> []"
+    }
+
+    /// Makes the biometric login button render, by satisfying `SessionManager
+    /// .canUseBiometricLogin(for:)` directly for `.production` - the screen's default
+    /// `selectedEnvironment` - rather than through `resetStateIfNeeded()`'s usual
+    /// force-declined state.
+    ///
+    /// Runs after `resetStateIfNeeded()` (which wipes this on purpose for every other
+    /// scenario), so this has to re-seed rather than merely skip the wipe. Deliberately
+    /// does NOT touch `BiometricAuthManager`/`LAContext` - the button's visibility
+    /// condition only checks Keychain + this UserDefaults flag, not whether Face ID/Touch
+    /// ID is actually enrolled, so a test can assert the button is present and tappable
+    /// without depending on - or being able to control - the simulator's biometric
+    /// enrollment state.
+    private static func seedBiometricLoginAvailable() {
+        let environment = APIEnvironment.production
+        _ = KeychainManager.save(.username, value: "biometric-uitest@example.com", for: environment)
+        _ = KeychainManager.save(.password, value: "uitest-password", for: environment)
+        SessionManager.shared.setBiometricEnabled(true, for: environment)
     }
 
     private static func installLaunchTimeStubs() {
