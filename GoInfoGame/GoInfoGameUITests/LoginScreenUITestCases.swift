@@ -265,4 +265,181 @@ final class LoginScreenUITestCases: ScreenshotOnFailureUITestCase {
                                      "\(description) extends past the right edge of the screen")
         }
     }
+
+    // MARK: - Debug mode
+    //
+    // The real trigger is 7 taps on the version label (PosmLogin.swift), but XCUITest
+    // cannot reliably drive that native multi-tap gesture: its synthesized taps don't feed
+    // UIKit's multi-tap recognizer the way a real finger does, no matter how they're paced
+    // or padded from the test side (verified directly - identical taps worked instantly by
+    // hand, never once under automation). Rather than change that gesture to accommodate
+    // testing, PosmLogin.swift exposes one additional element - present only when
+    // UITestRuntime.isActive, absent in Release and in ordinary manual DEBUG-build use -
+    // that reaches the exact same `showEnableDebugModeAlert = true` state via a single
+    // ordinary tap. Every test below uses that entry point, then exercises entirely real
+    // app UI and logic (the alert, the environment picker, the disable flow) from there.
+    //
+    // What this means for coverage: fully automated below is everything the debug-mode
+    // feature DOES once triggered. NOT automated, and needing a manual check instead, is
+    // whether exactly 7 real taps (and not some other count) is what triggers it in
+    // production - that specific detail is outside what XCUITest can verify here.
+
+    @discardableResult
+    private func unlockDebugModeAlert(_ app: XCUIApplication,
+                                      file: StaticString = #filePath,
+                                      line: UInt = #line) -> XCUIElement {
+        let unlock = element(app, id: A11yID.Login.debugModeUITestUnlock)
+        XCTAssertTrue(unlock.waitForExistence(timeout: 15), "Debug mode test-unlock element not found", file: file, line: line)
+        XCTAssertTrue(scrollToElement(unlock, in: scroll(in: app)), "Debug mode test-unlock element unreachable", file: file, line: line)
+        unlock.tap()
+        return unlock
+    }
+
+    func testDebugModeAndErrorMessageAreHiddenOnLaunch() throws {
+        let app = launchApp(scenario: UITestScenario.loginInvalidCredentials)
+
+        XCTAssertTrue(app.buttons[A11yID.Login.loginButton].waitForExistence(timeout: 15),
+                      "App did not reach the login screen")
+        XCTAssertFalse(app.staticTexts[A11yID.Login.errorMessage].exists,
+                       "Error message shown on a fresh launch, before any login attempt")
+        XCTAssertFalse(element(app, id: A11yID.Login.environmentPicker).exists,
+                       "Environment picker visible on a fresh launch - debug mode should start disabled")
+        XCTAssertFalse(element(app, id: A11yID.Login.exitDebugModeButton).exists,
+                       "Exit debug mode button visible on a fresh launch - debug mode should start disabled")
+    }
+
+    func testDebugModeAlertOffersEnableAndNotNow() throws {
+        let app = launchApp(scenario: UITestScenario.loginInvalidCredentials)
+        unlockDebugModeAlert(app)
+
+        let alert = app.alerts["Debug mode"]
+        XCTAssertTrue(alert.waitForExistence(timeout: 5), "No alert after the debug-mode trigger")
+        XCTAssertTrue(alert.staticTexts["Do you want to enable debug mode?"].exists,
+                      "Alert message did not ask to enable debug mode")
+        XCTAssertTrue(alert.buttons["Enable"].exists, "Alert missing an Enable button")
+        XCTAssertTrue(alert.buttons["Not Now"].exists, "Alert missing a Not Now button")
+    }
+
+    func testDecliningEnableDebugModeAlertLeavesDebugModeOff() throws {
+        let app = launchApp(scenario: UITestScenario.loginInvalidCredentials)
+        unlockDebugModeAlert(app)
+
+        let alert = app.alerts["Debug mode"]
+        XCTAssertTrue(alert.waitForExistence(timeout: 5), "No alert after the debug-mode trigger")
+        alert.buttons["Not Now"].tap()
+
+        XCTAssertFalse(element(app, id: A11yID.Login.environmentPicker).exists,
+                       "Environment picker appeared despite declining the debug mode alert")
+        XCTAssertFalse(element(app, id: A11yID.Login.exitDebugModeButton).exists,
+                       "Exit debug mode button appeared despite declining the debug mode alert")
+    }
+
+    func testEnablingDebugModeShowsEnvironmentPickerWithAllThreeEnvironments() throws {
+        let app = launchApp(scenario: UITestScenario.loginInvalidCredentials)
+        unlockDebugModeAlert(app)
+
+        let alert = app.alerts["Debug mode"]
+        XCTAssertTrue(alert.waitForExistence(timeout: 5), "No alert after the debug-mode trigger")
+        alert.buttons["Enable"].tap()
+
+        // The alert itself only offers Enable/Not Now - the three environments live in a
+        // separate Menu that appears once debug mode is on, not inside the alert.
+        let picker = element(app, id: A11yID.Login.environmentPicker)
+        XCTAssertTrue(picker.waitForExistence(timeout: 5), "Environment picker did not appear after enabling debug mode")
+        XCTAssertTrue(scrollToElement(picker, in: scroll(in: app)), "Environment picker unreachable")
+        XCTAssertTrue(picker.label.contains("Production"), "Environment picker did not default to Production")
+
+        picker.tap()
+
+        // Menu items surface as top-level buttons (via UIMenu), not nested under the
+        // picker's own element, so these are queried at the app level. The three names
+        // (from APIEnvironment.displayString()) are not localized, so matching by label
+        // text is safe and stable here.
+        for name in ["Development", "Staging", "Production"] {
+            XCTAssertTrue(app.buttons[name].waitForExistence(timeout: 3),
+                          "\(name) missing from the environment menu")
+        }
+
+        app.buttons["Staging"].tap()
+        XCTAssertTrue(picker.label.contains("Staging"), "Environment picker did not update after selecting Staging")
+    }
+
+    func testExitDebugModeDisablesDebugModeAndResetsEnvironment() throws {
+        let app = launchApp(scenario: UITestScenario.loginInvalidCredentials)
+        unlockDebugModeAlert(app)
+        app.alerts["Debug mode"].buttons["Enable"].tap()
+
+        let picker = element(app, id: A11yID.Login.environmentPicker)
+        XCTAssertTrue(picker.waitForExistence(timeout: 5), "Environment picker did not appear after enabling debug mode")
+        XCTAssertTrue(scrollToElement(picker, in: scroll(in: app)), "Environment picker unreachable")
+        picker.tap()
+        XCTAssertTrue(app.buttons["Staging"].waitForExistence(timeout: 3), "Staging option not found")
+        app.buttons["Staging"].tap()
+        XCTAssertTrue(picker.label.contains("Staging"), "Environment did not switch to Staging")
+
+        let exitButton = element(app, id: A11yID.Login.exitDebugModeButton)
+        XCTAssertTrue(exitButton.waitForExistence(timeout: 5), "Exit debug mode button not found")
+        XCTAssertTrue(scrollToElement(exitButton, in: scroll(in: app)), "Exit debug mode button unreachable")
+        exitButton.tap()
+
+        let disableAlert = app.alerts["Debug mode"]
+        XCTAssertTrue(disableAlert.waitForExistence(timeout: 5), "No alert after tapping Exit debug mode")
+        XCTAssertTrue(disableAlert.staticTexts["Do you want to disable debug mode?"].exists,
+                      "Alert message did not ask to disable debug mode")
+        disableAlert.buttons["Disable"].tap()
+
+        XCTAssertFalse(element(app, id: A11yID.Login.environmentPicker).exists,
+                       "Environment picker still visible after disabling debug mode")
+        XCTAssertFalse(element(app, id: A11yID.Login.exitDebugModeButton).exists,
+                       "Exit debug mode button still visible after disabling debug mode")
+
+        // Confirm the reset actually took effect, not just that the picker is hidden: enable
+        // debug mode again and check it comes back showing Production rather than the
+        // Staging it was left on.
+        unlockDebugModeAlert(app)
+        app.alerts["Debug mode"].buttons["Enable"].tap()
+        let pickerAgain = element(app, id: A11yID.Login.environmentPicker)
+        XCTAssertTrue(pickerAgain.waitForExistence(timeout: 5), "Environment picker did not reappear")
+        XCTAssertTrue(pickerAgain.label.contains("Production"),
+                      "Environment was not reset to Production when debug mode was disabled")
+    }
+
+    // MARK: - Debug mode / biometric reachability
+
+    func testDebugModeActionButtonsAreReachableAndTappable() throws {
+        let app = launchApp(scenario: UITestScenario.loginInvalidCredentials)
+        unlockDebugModeAlert(app)
+        app.alerts["Debug mode"].buttons["Enable"].tap()
+
+        let scrollView = scroll(in: app)
+        let buttons: [(XCUIElement, String)] = [
+            (element(app, id: A11yID.Login.environmentPicker), "Environment picker"),
+            (element(app, id: A11yID.Login.exitDebugModeButton), "Exit debug mode button")
+        ]
+
+        for (button, description) in buttons {
+            XCTAssertTrue(button.waitForExistence(timeout: 10), "\(description) not found")
+            XCTAssertTrue(scrollToElement(button, in: scrollView), "\(description) could not be scrolled into view")
+            XCTAssertGreaterThanOrEqual(button.frame.height, Self.minimumTapTarget,
+                                        "\(description) is shorter than the 44pt minimum tap target")
+        }
+    }
+
+    func testBiometricLoginButtonIsReachableAndTappableWhenAvailable() throws {
+        // Only this scenario seeds Keychain + the biometric-enabled flag; every other
+        // scenario runs through resetStateIfNeeded()'s usual force-declined state, so this
+        // button is otherwise unreachable by any other test in this suite.
+        let app = launchApp(scenario: UITestScenario.loginBiometricAvailable)
+
+        let button = element(app, id: A11yID.Login.biometricButton)
+        XCTAssertTrue(button.waitForExistence(timeout: 15), "Biometric login button not found")
+        XCTAssertTrue(scrollToElement(button, in: scroll(in: app)), "Biometric login button unreachable")
+        XCTAssertGreaterThanOrEqual(button.frame.height, Self.minimumTapTarget,
+                                    "Biometric login button is shorter than the 44pt minimum tap target")
+
+        // Deliberately not tapped: doing so invokes LocalAuthentication and shows a real
+        // system Face ID/Touch ID prompt with no deterministic outcome to assert on.
+        // Presence, reachability and tap-target size are what "visible ... and tappable"
+        // calls for here; actually completing biometric auth is out of scope for XCUITest.
+    }
 }

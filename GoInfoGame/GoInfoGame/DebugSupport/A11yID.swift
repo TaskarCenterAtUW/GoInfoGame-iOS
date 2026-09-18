@@ -33,6 +33,13 @@ enum A11yID {
         static let contactUsButton = "login_contact_us_button"
         static let accessMapButton = "login_access_map_button"
         static let loadingIndicator = "login_loading_indicator"
+        static let appVersionLabel = "login_app_version_label"
+        static let exitDebugModeButton = "login_exit_debug_mode_button"
+        /// Test-only element (see PosmLogin.swift) that reaches the same state as 7 real
+        /// taps on `appVersionLabel`, since XCUITest cannot reliably drive that native
+        /// multi-tap gesture. Only exists when UITestRuntime.isActive; invisible and
+        /// absent otherwise, including in ordinary manual DEBUG-build use.
+        static let debugModeUITestUnlock = "login_debug_mode_uitest_unlock"
     }
 
     enum Workspaces {
@@ -58,6 +65,10 @@ enum UITestScenario {
     static let loginServerError = "login_server_error"
     static let loginNetworkDown = "login_network_down"
     static let loginSlowResponse = "login_slow_response"
+    /// Seeds Keychain credentials + the biometric-enabled flag for .production (the
+    /// screen's default selectedEnvironment) instead of the usual force-declined state,
+    /// so the biometric login button actually renders and can be asserted on.
+    static let loginBiometricAvailable = "login_biometric_available"
 
     /// Launch argument (not environment) that clears UserDefaults and the Keychain.
     static let resetStateArgument = "-UITestResetState"
