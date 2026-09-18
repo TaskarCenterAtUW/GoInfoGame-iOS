@@ -34,6 +34,7 @@ struct InitialView: View {
                                     .frame(minWidth: 44, minHeight: 44) // Explicitly meet accessibility tap target standards
                                     .contentShape(Rectangle())
                                     .accessibilityLabel(L10n.Localizable.profile)
+                                    .accessibilityIdentifier(A11yID.Workspaces.profileButton)
                             }
                         }
 
@@ -47,6 +48,7 @@ struct InitialView: View {
                                     .disableAutocorrection(true)
                                     .focused($isSearchFieldFocused)
                                     .accessibilityLabel("Search workspaces by title")
+                                    .accessibilityIdentifier(A11yID.Workspaces.searchField)
                                 if !viewModel.searchText.isEmpty {
                                     Button {
                                         viewModel.searchText = ""
@@ -57,6 +59,7 @@ struct InitialView: View {
                                             .contentShape(Rectangle())
                                     }
                                     .accessibilityLabel("Clear search text")
+                                    .accessibilityIdentifier(A11yID.Workspaces.searchClearButton)
                                 }
                             }
                             .padding(8)
@@ -88,6 +91,7 @@ struct InitialView: View {
                                 .contentShape(Rectangle())
                         }
                         .accessibilityLabel(isSearchActive ? "Close search" : "Search workspaces")
+                        .accessibilityIdentifier(A11yID.Workspaces.searchToggleButton)
                     }
 
                     VStack(spacing: 20) {
@@ -163,6 +167,7 @@ struct WorkspacesListView: View {
                 ScrollView {
                     VStack {
                         Text("Loading workspaces available for you... Please make sure you have location service enabled.")
+                            .accessibilityIdentifier(A11yID.Workspaces.loadingText)
                             .font(.custom("Lato-Bold", size: 20, relativeTo: .body))
                             .foregroundColor((Asset.Colors.huskyPurple.swiftUIColor))
                             .multilineTextAlignment(.center)
@@ -170,10 +175,12 @@ struct WorkspacesListView: View {
                     }
                     .frame(maxWidth: .infinity)
                 }
+                .accessibilityIdentifier(A11yID.Workspaces.scrollView)
             } else {
                 ScrollView {
                     VStack {
                         Text(viewModel.errorMessage ?? "Something went wrong. Please try again later.")
+                            .accessibilityIdentifier(A11yID.Workspaces.errorText)
                             .font(.custom("Lato-Bold", size: 20, relativeTo: .body))
                             .foregroundColor((Asset.Colors.huskyPurple.swiftUIColor))
                             .multilineTextAlignment(.center)
@@ -194,21 +201,25 @@ struct WorkspacesListView: View {
                             }
                             .foregroundStyle(Asset.Colors.accentPink.swiftUIColor)
                         }
+                        .accessibilityIdentifier(A11yID.Workspaces.tryAgainButton)
                         .padding(.top, 20)
                     }
                     .frame(maxWidth: .infinity)
                 }
+                .accessibilityIdentifier(A11yID.Workspaces.scrollView)
             }
         } else if viewModel.workspaces?.count == 0 {
             ScrollView {
                 VStack {
                     Text("No workspaces available for you to work on.")
+                        .accessibilityIdentifier(A11yID.Workspaces.emptyText)
                         .font(.custom("Lato-Bold", size: 20, relativeTo: .body))
                         .foregroundColor((Asset.Colors.huskyPurple.swiftUIColor))
                         .multilineTextAlignment(.center)
                 }
                 .frame(maxWidth: .infinity)
             }
+            .accessibilityIdentifier(A11yID.Workspaces.scrollView)
 
         } else {
             ScrollView {
@@ -257,17 +268,20 @@ struct WorkspacesListView: View {
                             .cornerRadius(10)
                         }
                         .accessibilityLabel("Filter by project group. Currently: \(viewModel.projectGroupDisplayName(for: viewModel.selectedProjectGroupId))")
+                        .accessibilityIdentifier(A11yID.Workspaces.projectGroupFilter)
                     }
 
                     if viewModel.filteredWorkspaces.isEmpty {
                         VStack(spacing: 12) {
                             Text("No workspaces match your search or filter.")
+                                .accessibilityIdentifier(A11yID.Workspaces.noResultsText)
                                 .font(.custom("Lato-Bold", size: 17, relativeTo: .body))
                                 .foregroundColor(Asset.Colors.huskyPurple.swiftUIColor)
                                 .multilineTextAlignment(.center)
                             Button("Clear filters") {
                                 viewModel.clearFilters()
                             }
+                            .accessibilityIdentifier(A11yID.Workspaces.clearFiltersButton)
                             .font(.custom("Lato-Bold", size: 15, relativeTo: .body))
                             .foregroundColor(Asset.Colors.accentPink.swiftUIColor)
                             .frame(minHeight: 44)
@@ -312,6 +326,7 @@ struct WorkspacesListView: View {
                                     .background(Asset.Colors.huskyPurple.swiftUIColor)
                                     .cornerRadius(9)
                                 }
+                                .accessibilityIdentifier(A11yID.Workspaces.workspaceRow(id: workspace.id))
                             }
                         }
                         .padding()
@@ -319,6 +334,7 @@ struct WorkspacesListView: View {
                 }
                 .padding([.leading, .trailing])
             }
+            .accessibilityIdentifier(A11yID.Workspaces.scrollView)
             .alert(isPresented: $showAlert) {
                 Alert(title: Text(alertMessage), dismissButton: .cancel())
             }

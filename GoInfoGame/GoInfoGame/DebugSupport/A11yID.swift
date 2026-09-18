@@ -44,6 +44,26 @@ enum A11yID {
 
     enum Workspaces {
         static let title = "workspaces_title"
+        static let profileButton = "workspaces_profile_button"
+        static let searchToggleButton = "workspaces_search_toggle_button"
+        static let searchField = "workspaces_search_field"
+        static let searchClearButton = "workspaces_search_clear_button"
+        static let projectGroupFilter = "workspaces_project_group_filter"
+        static let clearFiltersButton = "workspaces_clear_filters_button"
+        static let tryAgainButton = "workspaces_try_again_button"
+        static let loadingText = "workspaces_loading_text"
+        static let errorText = "workspaces_error_text"
+        static let emptyText = "workspaces_empty_text"
+        static let noResultsText = "workspaces_no_results_text"
+        static let scrollView = "workspaces_scroll_view"
+
+        /// Identifier for one workspace's row button in the list. Built from the
+        /// workspace's own numeric id (matching a mock fixture's "id" field) rather than
+        /// its title, so a test can address a specific row without depending on wording
+        /// that might be localized or renamed later.
+        static func workspaceRow(id: Int) -> String {
+            "workspaces_row_\(id)"
+        }
     }
 }
 
@@ -69,6 +89,24 @@ enum UITestScenario {
     /// screen's default selectedEnvironment) instead of the usual force-declined state,
     /// so the biometric login button actually renders and can be asserted on.
     static let loginBiometricAvailable = "login_biometric_available"
+
+    /// Rich workspace list (multiple entries across 2 project groups) - backs search,
+    /// filter, scroll/overlap and profile-navigation tests. Deliberately more than 1
+    /// eligible workspace: exactly 1 makes the screen skip the list UI entirely and
+    /// auto-navigate to the map (see `workspacesSingleAutoRedirect`).
+    static let workspacesWithData = "workspaces_with_data"
+    /// Zero workspaces returned for an otherwise-successful login.
+    static let workspacesEmpty = "workspaces_empty"
+    /// The workspaces fetch itself fails with a 500.
+    static let workspacesServerError = "workspaces_server_error"
+    /// The workspaces fetch fails as a connectivity error, not an HTTP error - same UI
+    /// branch as workspacesServerError today (there is no dedicated offline state), kept
+    /// as its own scenario so the test's intent (network, not server) stays explicit.
+    static let workspacesNetworkDown = "workspaces_network_down"
+    /// Exactly 1 eligible workspace: WorkspacesListView skips the picker UI and
+    /// auto-navigates straight to MapView once the workspace's details (including an
+    /// empty-but-valid longFormQuestDef) resolve.
+    static let workspacesSingleAutoRedirect = "workspaces_single_auto_redirect"
 
     /// Launch argument (not environment) that clears UserDefaults and the Keychain.
     static let resetStateArgument = "-UITestResetState"

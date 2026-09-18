@@ -99,7 +99,8 @@ enum UITestStubs {
             stubLogin(fixture: "LoginFailure", status: 401)
         case UITestScenario.loginSuccess:
             stubLogin(fixture: "LoginSuccess", status: 200)
-            stubPostLoginScreens()
+            stubWorkspacesList(fixture: "EmptyList")
+            stubProjectGroupRoles(fixture: "EmptyList")
         case UITestScenario.loginServerError:
             stubLogin(fixture: "LoginServerError", status: 500)
         case UITestScenario.loginNetworkDown:
@@ -117,6 +118,35 @@ enum UITestStubs {
         case UITestScenario.loginBiometricAvailable:
             stubLogin(fixture: "LoginFailure", status: 401)
             seedBiometricLoginAvailable()
+
+        case UITestScenario.workspacesWithData:
+            seedLoggedInAndLandOnWorkspaces()
+            stubWorkspacesList(fixture: "WorkspacesList")
+            stubProjectGroupRoles(fixture: "ProjectGroupRoles")
+            stubUserProfile(fixture: "UserProfilePlaceholder")
+        case UITestScenario.workspacesEmpty:
+            seedLoggedInAndLandOnWorkspaces()
+            stubWorkspacesList(fixture: "EmptyList")
+            stubProjectGroupRoles(fixture: "EmptyList")
+        case UITestScenario.workspacesServerError:
+            seedLoggedInAndLandOnWorkspaces()
+            stubWorkspacesList(fixture: "WorkspacesServerError", status: 500)
+            stubProjectGroupRoles(fixture: "EmptyList")
+        case UITestScenario.workspacesNetworkDown:
+            seedLoggedInAndLandOnWorkspaces()
+            stub(condition: isWorkspacesListRequest()) { _ in
+                HTTPStubsResponse(error: NSError(domain: NSURLErrorDomain,
+                                                 code: URLError.notConnectedToInternet.rawValue))
+            }.name = "workspaces/mine -> network down"
+            stubProjectGroupRoles(fixture: "EmptyList")
+        case UITestScenario.workspacesSingleAutoRedirect:
+            seedLoggedInAndLandOnWorkspaces()
+            stubWorkspacesList(fixture: "WorkspacesSingle")
+            stubProjectGroupRoles(fixture: "EmptyList")
+            stub(condition: isMethodGET() && pathMatches(#"^/api/v1/workspaces/\d+$"#)) { _ in
+                response(fixture: "WorkspaceDetailsSingle", status: 200)
+            }.name = "GET /workspaces/{id} -> WorkspaceDetailsSingle"
+
         default:
             NSLog("[UITestStubs] Unknown scenario '%@' - only the catch-all is installed.", scenario)
         }
@@ -133,6 +163,10 @@ enum UITestStubs {
         isMethodPOST() && isPath("/api/v1/authenticate")
     }
 
+    private static func isWorkspacesListRequest() -> HTTPStubsTestBlock {
+        isMethodGET() && isPath("/api/v1/workspaces/mine")
+    }
+
     // MARK: - Scenario pieces
 
     private static func stubLogin(fixture name: String, status: Int32) {
@@ -141,19 +175,30 @@ enum UITestStubs {
         }.name = "POST /api/v1/authenticate -> \(status)"
     }
 
-    /// Everything InitialView asks for once login succeeds.
-    ///
-    /// Both return empty collections: the assertion after a successful login is that the
-    /// app left the login screen, not that any particular workspace rendered, and an empty
-    /// list keeps these fixtures from having to track the Workspace model.
-    private static func stubPostLoginScreens() {
-        stub(condition: isMethodGET() && isPath("/api/v1/workspaces/mine")) { _ in
-            response(fixture: "EmptyList", status: 200)
-        }.name = "GET /workspaces/mine -> []"
+    /// The workspaces list InitialView fetches once location resolves.
+    private static func stubWorkspacesList(fixture name: String, status: Int32 = 200) {
+        stub(condition: isWorkspacesListRequest()) { _ in
+            response(fixture: name, status: status)
+        }.name = "GET /workspaces/mine -> \(name) (\(status))"
+    }
 
+    /// Names for the project-group filter dropdown. Non-fatal in the app if this fails or
+    /// is empty - the dropdown just falls back to showing raw ids - so every scenario stubs
+    /// it, even ones that don't care about the filter, to keep the app's own error logging
+    /// quiet.
+    private static func stubProjectGroupRoles(fixture name: String) {
         stub(condition: isMethodGET() && pathStartsWith("/api/v1/project-group-roles/")) { _ in
-            response(fixture: "EmptyList", status: 200)
-        }.name = "GET /project-group-roles -> []"
+            response(fixture: name, status: 200)
+        }.name = "GET /project-group-roles -> \(name)"
+    }
+
+    /// Fetched by UserProfileViewModel when UserProfileView appears. Only scenarios that
+    /// actually navigate to the profile screen need this; everything else can leave it
+    /// unstubbed and let the catch-all fail it loudly if that ever turns out to be wrong.
+    private static func stubUserProfile(fixture name: String) {
+        stub(condition: isMethodGET() && isPath("/api/v1/user-profile")) { _ in
+            response(fixture: name, status: 200)
+        }.name = "GET /user-profile -> \(name)"
     }
 
     /// Makes the biometric login button render, by satisfying `SessionManager
@@ -173,6 +218,35 @@ enum UITestStubs {
         _ = KeychainManager.save(.username, value: "biometric-uitest@example.com", for: environment)
         _ = KeychainManager.save(.password, value: "uitest-password", for: environment)
         SessionManager.shared.setBiometricEnabled(true, for: environment)
+    }
+
+    /// Skips the login screen's own UI entirely for scenarios that are actually about a
+    /// later screen (Workspaces): SceneDelegate picks InitialView vs PosmLoginView as the
+    /// root purely from `@AppStorage("loggedIn")` at launch, so setting that (plus a valid-
+    /// shaped accessToken, which fetchProjectGroupRoles needs to resolve a user id via
+    /// JWTDecoder.subject(fromToken:)) lands the app straight on the Workspaces screen.
+    /// Faster than re-driving the login form in every one of these tests, and keeps this
+    /// suite from depending on the login screen's own UI at all.
+    ///
+    /// Does not set accessToken_Generate/accessToken_expire_in: AppDelegate
+    /// .validateAccessToken() only schedules a refresh when accessToken_Generate is
+    /// present, so leaving it unset (resetStateIfNeeded() already wiped it) keeps that
+    /// timer out of the way rather than needing to be seeded to a "not expired yet" value.
+    private static func seedLoggedInAndLandOnWorkspaces() {
+        UserDefaults.standard.set(true, forKey: "loggedIn")
+        // Same placeholder token as LoginSuccess.json (sub: "uitest-user-0001"), reused
+        // directly rather than duplicated, so a change to one does not silently desync
+        // from the other.
+        guard let url = Bundle.main.url(forResource: "LoginSuccess", withExtension: "json"),
+              let data = try? Data(contentsOf: url),
+              let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
+              let accessToken = json["access_token"] as? String else {
+            NSLog("[UITestStubs] Could not read access_token from LoginSuccess.json")
+            return
+        }
+        if !KeychainManager.save(key: "accessToken", data: accessToken) {
+            NSLog("[UITestStubs] Failed to save accessToken - see KeychainManager's own log line for the OSStatus")
+        }
     }
 
     private static func installLaunchTimeStubs() {

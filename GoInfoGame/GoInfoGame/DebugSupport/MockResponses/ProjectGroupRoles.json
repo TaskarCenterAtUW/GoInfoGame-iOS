@@ -1,0 +1,39 @@
+[
+  {
+    "project_group_name": "AA Viewer Internal",
+    "tdei_project_group_id": "1ec1c79b-6b7a-4011-936b-c75dbbd903e3",
+    "roles": [
+      "poc",
+      "osw_data_generator"
+    ],
+    "data_viewer_config": {
+      "dataset_viewer_allowed": true,
+      "feedback_turnaround_time": {
+        "number": 15,
+        "units": "days"
+      }
+    }
+  },
+  {
+    "project_group_name": "Asian Leisure Pvt Ltd",
+    "tdei_project_group_id": "1bfb55d7-f4c8-4fde-b324-472b112e471b",
+    "roles": [
+      "poc"
+    ],
+    "data_viewer_config": {
+      "dataset_viewer_allowed": true,
+      "feedback_turnaround_time": {
+        "number": 2,
+        "units": "days"
+      }
+    }
+  },
+  {
+    "project_group_name": "TDEI Default",
+    "tdei_project_group_id": "a9647ce1-b1cc-4fd7-b7a2-95097de3a437",
+    "roles": [
+      "member"
+    ],
+    "data_viewer_config": {}
+  }
+]

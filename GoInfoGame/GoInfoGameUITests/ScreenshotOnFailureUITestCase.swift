@@ -128,6 +128,33 @@ class ScreenshotOnFailureUITestCase: XCTestCase {
         return element.isHittable
     }
 
+    /// Asserts that no two of `elements` share any on-screen area.
+    ///
+    /// Only currently-existing elements are compared - a SwiftUI view hidden behind a
+    /// conditional (e.g. one of several mutually-exclusive branches) still has a frame,
+    /// usually .zero, and comparing it would either produce a false failure or a false
+    /// pass depending on where .zero happens to land, neither of which says anything about
+    /// a real layout bug. Callers pass only the elements meant to be visible together.
+    ///
+    /// Every pair is checked once (`i < j`), not `count^2` times, so a single genuine
+    /// overlap between A and B is reported once, under whichever of the two names sorts
+    /// first in the input, rather than twice.
+    func assertNoOverlap(_ elements: [(element: XCUIElement, name: String)],
+                        file: StaticString = #filePath,
+                        line: UInt = #line) {
+        let visible = elements.filter { $0.element.exists }
+        guard visible.count > 1 else { return }
+        for i in 0..<(visible.count - 1) {
+            for j in (i + 1)..<visible.count {
+                let (elementA, nameA) = visible[i]
+                let (elementB, nameB) = visible[j]
+                XCTAssertFalse(elementA.frame.intersects(elementB.frame),
+                               "\(nameA) overlaps \(nameB) (\(elementA.frame) vs \(elementB.frame))",
+                               file: file, line: line)
+            }
+        }
+    }
+
     override func tearDown() {
         if let run = testRun, run.failureCount > 0 {
             // XCUIScreen.main rather than XCUIApplication().screenshot(): the latter
