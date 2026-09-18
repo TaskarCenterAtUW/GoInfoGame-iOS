@@ -182,6 +182,17 @@ jobs:
             _dev="$1"; _udid="$2"; _slug="$3"; _log="build/ui-$_slug.log"
             xcrun simctl boot "$_udid" >/dev/null 2>&1
             xcrun simctl bootstatus "$_udid" -b >/dev/null 2>&1
+            # Pre-grant location + set a fixed simulated coordinate: InitialViewModel only
+            # calls fetchWorkspacesList() from inside CLLocationManager's
+            # didUpdateLocations callback, which never fires on a simulator with no
+            # location authorized/simulated - the Workspaces screen then sits on its
+            # "Loading workspaces..." text forever and the whole
+            # WorkspacesScreenUITestCases suite times out. Confirmed directly: this was
+            # missing and reproduced the exact hang. Bundle id must match
+            # tech.opentoall.aviv.scoutroute (GoInfoGame's PRODUCT_BUNDLE_IDENTIFIER) -
+            # update this if that ever changes.
+            xcrun simctl privacy "$_udid" grant location tech.opentoall.aviv.scoutroute >/dev/null 2>&1
+            xcrun simctl location "$_udid" set 47.6062,-122.3321 >/dev/null 2>&1
             NSUnbufferedIO=YES xcodebuild test-without-building \
               -workspace "$WORKSPACE" -scheme "$SCHEME" \
               -destination "platform=iOS Simulator,id=$_udid" \
