@@ -83,14 +83,74 @@ enum A11yID {
         static let logoutButton = "profile_logout_button"
     }
 
-    /// Only this one identifier for now: MapView's own profile button, added while
-    /// implementing the Profile screen's test suite (it is the screen's second entry
-    /// point) so it is ready for whenever MapView gets its own UI test suite. Full Map
-    /// screen coverage - and testing this entry point end-to-end - is a separate,
-    /// deferred effort: reaching MapView needs a workspace whose details response has a
-    /// populated longFormQuestDef, which no current fixture provides.
     enum Map {
+        // MARK: Top bar
         static let profileButton = "map_profile_button"
+        /// The tappable workspace-name element in the toolbar (name + "Workspace" label
+        /// combined into one accessibility element; tapping it shows a change-workspace
+        /// confirmation alert, matched by its title text like every other alert in this
+        /// app).
+        static let workspaceTitleButton = "map_workspace_title_button"
+        static let syncButton = "map_sync_button"
+        static let accessibilityModeButton = "map_accessibility_mode_button"
+        static let manageQuestsButton = "map_manage_quests_button"
+
+        // MARK: Floating buttons
+        static let layersButton = "map_layers_button"
+        static let downloadButton = "map_download_button"
+        static let undoButton = "map_undo_button"
+        /// Only rendered once the map is rotated off north (CompassButtonView's own
+        /// condition) - simulating a rotation gesture reliably via XCUITest is not
+        /// something this suite attempts, so treat this the same as the Profile screen's
+        /// biometric toggle: absence is not itself a failure.
+        static let compassButton = "map_compass_button"
+        static let zoomInButton = "map_zoom_in_button"
+        static let zoomOutButton = "map_zoom_out_button"
+        static let myLocationButton = "map_my_location_button"
+        static let scaleBar = "map_scale_bar"
+
+        // MARK: Map annotations
+        //
+        // QuestAnnotationView/QuestClusterAnnotationView are raw MLNAnnotationView
+        // (UIKit) subclasses drawn directly on the MLNMapView, not SwiftUI - but
+        // accessibilityIdentifier is a UIView/UIAccessibilityIdentification property, so
+        // it applies here the same way. Both use ONE shared identifier (there can be
+        // several on screen at once, each a distinct element XCUITest enumerates
+        // separately) rather than one per instance, since which quest/cluster renders
+        // where is data-dependent. A cluster's count is readable via its accessibility
+        // value/label - see QuestClusterAnnotationView.
+        static let questAnnotation = "map_quest_annotation"
+        static let clusterAnnotation = "map_cluster_annotation"
+
+        // MARK: Actions & flows - identifiers on what each button/gesture opens, so a
+        // test can confirm the transition happened, not just that the trigger exists.
+        /// Root of the quest-answer sheet (MapView.swift's QuestSheetView) - presented
+        /// after tapping a quest/cluster annotation. Covers only "did it open", not its
+        /// per-quest-type form content, which has no identifiers of its own.
+        static let questAnswerSheet = "map_quest_answer_sheet"
+        /// The small "Create Note"/"Add Feature" card shown after a long-press on empty
+        /// map area (MapView.swift's PinChoiceCard) has no root identifier of its own -
+        /// confirmed directly that giving a multi-child container like it one stamps
+        /// that identifier onto every leaf inside, overwriting these two buttons' own.
+        /// "Create Note" existing doubles as the card's presence signal for tests.
+        static let pinChoiceCreateNoteButton = "map_pin_choice_create_note_button"
+        static let pinChoiceAddFeatureButton = "map_pin_choice_add_feature_button"
+        /// Root of the bottom sheet shown after a long-press directly on a quest
+        /// annotation (MapView.swift's MultiQuestSelectionBottomSheet).
+        static let multiSelectSheet = "map_multi_select_sheet"
+        /// The transient "No elements to sync" (or other status) overlay shown after
+        /// tapping the sync button - MapView.swift's own showAlert/alertMessage state,
+        /// not a system alert. Shared across whatever alertMessage happens to be set.
+        static let syncStatusAlert = "map_sync_status_alert"
+        /// UndoSidebarView's close button - no root identifier on the sidebar itself,
+        /// same reasoning as pinChoiceCreateNoteButton above. Doubles as the sidebar's
+        /// presence signal for tests.
+        static let undoSidebarCloseButton = "map_undo_sidebar_close_button"
+        /// AccessibilityModeView's close ("X") button - also doubles as this screen's
+        /// presence signal, since the screen itself has no root identifier.
+        static let accessibilityModeCloseButton = "map_accessibility_mode_close_button"
+        /// ManageQuestsView's close ("X") button - same role as accessibilityModeCloseButton.
+        static let manageQuestsCloseButton = "map_manage_quests_close_button"
     }
 }
 
@@ -142,6 +202,17 @@ enum UITestScenario {
     /// stay blank while everything else (toggles, logout, back) stays usable, which is
     /// what this scenario is for verifying.
     static let profileFetchError = "profile_fetch_error"
+
+    /// Reaches MapView: a single eligible workspace (id 3001, distinct from
+    /// workspacesSingleAutoRedirect's id 222 so the two scenarios' fixtures never
+    /// collide) whose details response has a genuinely populated longFormQuestDef -
+    /// adapted from GoInfoGame/Helpers/SampleResponses/LongQuestsResponse.json, a real
+    /// captured response already in this repo, trimmed to one quest_query ("nodes with
+    /// (ext:junction=yes)") - plus a /map.json OSM elements response (also modeled on
+    /// the real SCLIO Seattle pins response.json already in this repo, trimmed to a
+    /// handful of nodes) with 5 matching nodes placed a few meters apart (expected to
+    /// cluster) and 1 more several km away (expected to stay a separate pin).
+    static let mapWithQuestClusters = "map_with_quest_clusters"
 
     /// Launch argument (not environment) that clears UserDefaults and the Keychain.
     static let resetStateArgument = "-UITestResetState"

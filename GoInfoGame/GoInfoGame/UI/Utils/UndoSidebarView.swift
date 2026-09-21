@@ -51,6 +51,7 @@ struct UndoSidebarView: View {
                         .frame(minWidth: 44, minHeight: 44)
                         .contentShape(Rectangle())
                 }
+                .accessibilityIdentifier(A11yID.Map.undoSidebarCloseButton)
             }
             .foregroundColor(Asset.Colors.huskyPurple.swiftUIColor)
 
@@ -92,6 +93,14 @@ struct UndoSidebarView: View {
         .background(Color.white)
         .cornerRadius(15)
         .shadow(radius: 5)
+        // No identifier here: this VStack has several independent children (header,
+        // ScrollView, the close button below), and confirmed directly (via a captured
+        // accessibility hierarchy dump) that applying .accessibilityIdentifier to a
+        // container like that stamps the SAME identifier onto every one of its leaf
+        // descendants instead of tagging one combined element - it silently overwrote
+        // the close button's own more specific identifier below. The close button's
+        // identifier is this sidebar's only identifier, and doubles as its presence
+        // signal for tests.
     }
 }
 #Preview {

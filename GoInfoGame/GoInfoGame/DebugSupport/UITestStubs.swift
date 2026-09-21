@@ -153,6 +153,29 @@ enum UITestStubs {
             stubProjectGroupRoles(fixture: "ProjectGroupRoles")
             stubUserProfile(fixture: "UserProfileServerError", status: 500)
 
+        case UITestScenario.mapWithQuestClusters:
+            // No workspaceID seeding needed: WorkspacesSingle.json has exactly 1
+            // eligible workspace and WorkspaceDetailsWithQuests.json has a genuinely
+            // populated longFormQuestDef, so WorkspacesListView's real auto-redirect path
+            // fires on its own - it calls fetchLongQuestsFor for real, which is what
+            // saves "workspaceID" to Keychain on success (the same call path
+            // workspacesSingleAutoRedirect already exercises successfully, just with a
+            // fixture that resolves to a fallback instead of a redirect).
+            seedLoggedInAndLandOnWorkspaces()
+            stubWorkspacesList(fixture: "WorkspacesSingle")
+            stubProjectGroupRoles(fixture: "EmptyList")
+            stub(condition: isMethodGET() && pathMatches(#"^/api/v1/workspaces/\d+$"#)) { _ in
+                response(fixture: "WorkspaceDetailsWithQuests", status: 200)
+            }.name = "GET /workspaces/{id} -> WorkspaceDetailsWithQuests"
+            // fetchOSMElements() -> setupType: .osm -> APIConfiguration.osmUrl, which for
+            // the default .production environment (nothing here switches it) resolves to
+            // ".../prod/api/0.6" + "/map.json" - matches the path the app's own
+            // (currently dead, #if DEBUG && false-gated) legacy stub block in
+            // ApiManager.swift already used for this exact endpoint.
+            stub(condition: isMethodGET() && isPath("/prod/api/0.6/map.json")) { _ in
+                response(fixture: "MapOSMElements", status: 200)
+            }.name = "GET /map.json -> MapOSMElements"
+
         default:
             NSLog("[UITestStubs] Unknown scenario '%@' - only the catch-all is installed.", scenario)
         }
