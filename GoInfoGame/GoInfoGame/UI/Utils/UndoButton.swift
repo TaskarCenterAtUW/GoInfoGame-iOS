@@ -55,6 +55,7 @@ struct UndoButton: View {
                 }
                 .padding(.leading, 12)
                 .padding(.top, 20)
+                .accessibilityIdentifier(A11yID.Map.undoButton)
             }
 
             if showUndoPopup, let item = selectedUndoItem {

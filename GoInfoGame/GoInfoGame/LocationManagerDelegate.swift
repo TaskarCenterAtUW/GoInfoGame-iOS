@@ -49,7 +49,20 @@ class LocationManagerDelegate: NSObject, CLLocationManagerDelegate {
         // instead of UITestRuntime.isActive alone).
         if UITestRuntime.isActive {
             DispatchQueue.main.async { [weak self] in
-                let fixedLocation = CLLocation(latitude: 47.6062, longitude: -122.3321)
+                // Kondapur, Hyderabad (17.4385, 78.3610) - not an arbitrary choice: it is
+                // the real-world area MapOSMElements.json's captured OSM data covers
+                // (bounds ~17.43-17.45N, 78.35-78.37E, matching workspace 222's actual
+                // name, "Copy from Stage Kondapur Dataset"). MapViewModel centers the
+                // map's camera on whatever coordinate this delivers and there is no
+                // auto-fit-to-loaded-data logic anywhere in CustomMap/MapView - the
+                // camera stays exactly where location puts it regardless of where the
+                // fetched elements actually are. A location outside this fixture's
+                // geographic bounds would leave every element off-screen even though the
+                // (path-matched, bbox-agnostic) stub still returns all of them. Other
+                // scenarios that touch location (Workspaces/Login/Profile) do not depend
+                // on the specific coordinate, only that a fix arrives at all, so this is
+                // safe to share across all of them.
+                let fixedLocation = CLLocation(latitude: 17.4385, longitude: 78.3610)
                 self?.location = fixedLocation
                 self?.locationUpdateHandler?(fixedLocation.coordinate)
             }
