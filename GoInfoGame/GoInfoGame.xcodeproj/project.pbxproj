@@ -210,8 +210,6 @@
 		C7AFA179305AF8E800C539F7 /* OHHTTPStubs in Frameworks */ = {isa = PBXBuildFile; productRef = C7AFA178305AF8E800C539F7 /* OHHTTPStubs */; };
 		C7AFA17B305AF8E800C539F7 /* OHHTTPStubsSwift in Frameworks */ = {isa = PBXBuildFile; productRef = C7AFA17A305AF8E800C539F7 /* OHHTTPStubsSwift */; };
 		C7AFA17D305AFC1500C539F7 /* LoginScreenUITestCases.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7AFA17C305AFC1500C539F7 /* LoginScreenUITestCases.swift */; };
-		C7DBG0000000000000000203 /* ProfileScreenUITestCases.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7DBG0000000000000000202 /* ProfileScreenUITestCases.swift */; };
-		C7DBG0000000000000000201 /* WorkspacesScreenUITestCases.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7DBG0000000000000000200 /* WorkspacesScreenUITestCases.swift */; };
 		C7AFA182305B085E00C539F7 /* ScreenshotOnFailureUITestCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7AFA181305B085E00C539F7 /* ScreenshotOnFailureUITestCase.swift */; };
 		C7BA83542E3C9C3600755BA7 /* QuestSyncButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7BA83532E3C9C3600755BA7 /* QuestSyncButton.swift */; };
 		C7D3103E2EA0B3BB00CA10A9 /* ForceUpdateViewModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7D3103D2EA0B3BB00CA10A9 /* ForceUpdateViewModifier.swift */; };
@@ -219,6 +217,7 @@
 		C7DBG00000000000000000A6 /* UITestStubs.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7DBG00000000000000000A3 /* UITestStubs.swift */; };
 		C7DBG00000000000000000A7 /* A11yID.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7DBG00000000000000000A4 /* A11yID.swift */; };
 		C7DBG00000000000000000A8 /* A11yID.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7DBG00000000000000000A4 /* A11yID.swift */; };
+		C7DBG00000000000000000A9 /* LoginFailure.json in Resources */ = {isa = PBXBuildFile; fileRef = C7DBG00000000000000000A5 /* LoginFailure.json */; };
 		C7DBG0000000000000000150 /* LoginSuccess.json in Resources */ = {isa = PBXBuildFile; fileRef = C7DBG0000000000000000100 /* LoginSuccess.json */; };
 		C7DBG0000000000000000151 /* LoginServerError.json in Resources */ = {isa = PBXBuildFile; fileRef = C7DBG0000000000000000101 /* LoginServerError.json */; };
 		C7DBG0000000000000000152 /* EmptyList.json in Resources */ = {isa = PBXBuildFile; fileRef = C7DBG0000000000000000102 /* EmptyList.json */; };
@@ -230,7 +229,11 @@
 		C7DBG0000000000000000158 /* WorkspacesSingle.json in Resources */ = {isa = PBXBuildFile; fileRef = C7DBG0000000000000000108 /* WorkspacesSingle.json */; };
 		C7DBG0000000000000000159 /* WorkspaceDetailsSingle.json in Resources */ = {isa = PBXBuildFile; fileRef = C7DBG0000000000000000109 /* WorkspaceDetailsSingle.json */; };
 		C7DBG0000000000000000160 /* UserProfileServerError.json in Resources */ = {isa = PBXBuildFile; fileRef = C7DBG0000000000000000110 /* UserProfileServerError.json */; };
-		C7DBG00000000000000000A9 /* LoginFailure.json in Resources */ = {isa = PBXBuildFile; fileRef = C7DBG00000000000000000A5 /* LoginFailure.json */; };
+		C7DBG0000000000000000201 /* WorkspacesScreenUITestCases.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7DBG0000000000000000200 /* WorkspacesScreenUITestCases.swift */; };
+		C7DBG0000000000000000203 /* ProfileScreenUITestCases.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7DBG0000000000000000202 /* ProfileScreenUITestCases.swift */; };
+		C7DBG0000000000000000221 /* WorkspaceDetailsWithQuests.json in Resources */ = {isa = PBXBuildFile; fileRef = C7DBG0000000000000000211 /* WorkspaceDetailsWithQuests.json */; };
+		C7DBG0000000000000000222 /* MapOSMElements.json in Resources */ = {isa = PBXBuildFile; fileRef = C7DBG0000000000000000212 /* MapOSMElements.json */; };
+		C7DBG0000000000000000231 /* MapScreenUITestCases.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7DBG0000000000000000230 /* MapScreenUITestCases.swift */; };
 		C7DD04152F7E7A5800307026 /* Lato-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FA8C74D12C598F9D00D28220 /* Lato-Bold.ttf */; };
 		C7DD04162F7E7A6100307026 /* Lato-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FA8C74D02C598F9D00D28220 /* Lato-Regular.ttf */; };
 		C7DD04172F7E7A6100307026 /* Lato-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FA8C74D22C5998D600D28220 /* Lato-Medium.ttf */; };
@@ -621,14 +624,13 @@
 		C7A357452EA22A120033F6FB /* Config.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Config.xcconfig; sourceTree = "<group>"; };
 		C7A922242E45C36D00705E21 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		C7AFA17C305AFC1500C539F7 /* LoginScreenUITestCases.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginScreenUITestCases.swift; sourceTree = "<group>"; };
-		C7DBG0000000000000000202 /* ProfileScreenUITestCases.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileScreenUITestCases.swift; sourceTree = "<group>"; };
-		C7DBG0000000000000000200 /* WorkspacesScreenUITestCases.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkspacesScreenUITestCases.swift; sourceTree = "<group>"; };
 		C7AFA181305B085E00C539F7 /* ScreenshotOnFailureUITestCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenshotOnFailureUITestCase.swift; sourceTree = "<group>"; };
 		C7BA83532E3C9C3600755BA7 /* QuestSyncButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = QuestSyncButton.swift; path = GoInfoGame/UI/Map/QuestSyncButton.swift; sourceTree = SOURCE_ROOT; };
 		C7D3103D2EA0B3BB00CA10A9 /* ForceUpdateViewModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForceUpdateViewModifier.swift; sourceTree = "<group>"; };
 		C7D310402EA1302500CA10A9 /* StoreKit.storekit */ = {isa = PBXFileReference; lastKnownFileType = text; path = StoreKit.storekit; sourceTree = "<group>"; };
 		C7DBG00000000000000000A3 /* UITestStubs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UITestStubs.swift; sourceTree = "<group>"; };
 		C7DBG00000000000000000A4 /* A11yID.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = A11yID.swift; sourceTree = "<group>"; };
+		C7DBG00000000000000000A5 /* LoginFailure.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = LoginFailure.json; sourceTree = "<group>"; };
 		C7DBG0000000000000000100 /* LoginSuccess.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = LoginSuccess.json; sourceTree = "<group>"; };
 		C7DBG0000000000000000101 /* LoginServerError.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = LoginServerError.json; sourceTree = "<group>"; };
 		C7DBG0000000000000000102 /* EmptyList.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = EmptyList.json; sourceTree = "<group>"; };
@@ -640,7 +642,11 @@
 		C7DBG0000000000000000108 /* WorkspacesSingle.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = WorkspacesSingle.json; sourceTree = "<group>"; };
 		C7DBG0000000000000000109 /* WorkspaceDetailsSingle.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = WorkspaceDetailsSingle.json; sourceTree = "<group>"; };
 		C7DBG0000000000000000110 /* UserProfileServerError.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = UserProfileServerError.json; sourceTree = "<group>"; };
-		C7DBG00000000000000000A5 /* LoginFailure.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = LoginFailure.json; sourceTree = "<group>"; };
+		C7DBG0000000000000000200 /* WorkspacesScreenUITestCases.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkspacesScreenUITestCases.swift; sourceTree = "<group>"; };
+		C7DBG0000000000000000202 /* ProfileScreenUITestCases.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileScreenUITestCases.swift; sourceTree = "<group>"; };
+		C7DBG0000000000000000211 /* WorkspaceDetailsWithQuests.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = WorkspaceDetailsWithQuests.json; sourceTree = "<group>"; };
+		C7DBG0000000000000000212 /* MapOSMElements.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = MapOSMElements.json; sourceTree = "<group>"; };
+		C7DBG0000000000000000230 /* MapScreenUITestCases.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapScreenUITestCases.swift; sourceTree = "<group>"; };
 		C7E9528C2ED887CC001BFB75 /* NoQuestsNearView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoQuestsNearView.swift; sourceTree = "<group>"; };
 		C7E9528E2ED88B00001BFB75 /* lato-heavy.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "lato-heavy.ttf"; sourceTree = "<group>"; };
 		C7ED070E2D70E2EC001FFFE2 /* TokenRefresher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenRefresher.swift; sourceTree = "<group>"; };
@@ -1567,6 +1573,8 @@
 			isa = PBXGroup;
 			children = (
 				C7DBG00000000000000000A5 /* LoginFailure.json */,
+				C7DBG0000000000000000211 /* WorkspaceDetailsWithQuests.json */,
+				C7DBG0000000000000000212 /* MapOSMElements.json */,
 				C7DBG0000000000000000110 /* UserProfileServerError.json */,
 				C7DBG0000000000000000104 /* WorkspacesList.json */,
 				C7DBG0000000000000000105 /* ProjectGroupRoles.json */,
@@ -1832,6 +1840,7 @@
 				FAD5C5152AFCBE720040C61A /* GoInfoGameUITestsLaunchTests.swift */,
 				E70058F06D4E69B2E0669A8B /* ScreenshotOnFailureUITestCase.swift */,
 				C7AFA17C305AFC1500C539F7 /* LoginScreenUITestCases.swift */,
+				C7DBG0000000000000000230 /* MapScreenUITestCases.swift */,
 				C7DBG0000000000000000202 /* ProfileScreenUITestCases.swift */,
 				C7DBG0000000000000000200 /* WorkspacesScreenUITestCases.swift */,
 			);
@@ -2195,6 +2204,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				C7DBG00000000000000000A9 /* LoginFailure.json in Resources */,
+				C7DBG0000000000000000221 /* WorkspaceDetailsWithQuests.json in Resources */,
+				C7DBG0000000000000000222 /* MapOSMElements.json in Resources */,
 				C7DBG0000000000000000160 /* UserProfileServerError.json in Resources */,
 				C7DBG0000000000000000154 /* WorkspacesList.json in Resources */,
 				C7DBG0000000000000000155 /* ProjectGroupRoles.json in Resources */,
@@ -2255,13 +2266,9 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-GoInfoGame/Pods-GoInfoGame-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
-			inputPaths = (
-			);
 			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-GoInfoGame/Pods-GoInfoGame-frameworks-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -2364,13 +2371,9 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-GoInfoGame-GoInfoGameUITests/Pods-GoInfoGame-GoInfoGameUITests-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
-			inputPaths = (
-			);
 			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-GoInfoGame-GoInfoGameUITests/Pods-GoInfoGame-GoInfoGameUITests-frameworks-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -2445,13 +2448,9 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-osmapiTests/Pods-osmapiTests-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
-			inputPaths = (
-			);
 			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-osmapiTests/Pods-osmapiTests-frameworks-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -2758,6 +2757,7 @@
 				C7DBG00000000000000000A8 /* A11yID.swift in Sources */,
 				FAD5C5162AFCBE720040C61A /* GoInfoGameUITestsLaunchTests.swift in Sources */,
 				C7AFA17D305AFC1500C539F7 /* LoginScreenUITestCases.swift in Sources */,
+				C7DBG0000000000000000231 /* MapScreenUITestCases.swift in Sources */,
 				C7DBG0000000000000000203 /* ProfileScreenUITestCases.swift in Sources */,
 				C7DBG0000000000000000201 /* WorkspacesScreenUITestCases.swift in Sources */,
 				FAD5C5142AFCBE720040C61A /* GoInfoGameUITests.swift in Sources */,

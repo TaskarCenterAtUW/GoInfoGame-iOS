@@ -231,6 +231,7 @@ struct AccessibilityModeView: View {
             dismiss()
         }
         .accessibilityLabel(L10n.Localizable.closeScreenReaderModeScreen)
+        .accessibilityIdentifier(A11yID.Map.accessibilityModeCloseButton)
     }
     
     private var filterButton: some View {

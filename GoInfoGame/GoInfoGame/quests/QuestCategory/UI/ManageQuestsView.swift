@@ -140,6 +140,7 @@ struct ManageQuestsView: View {
                     .frame(minWidth: 44, minHeight: 44)
                     .contentShape(Rectangle())
             })
+            .accessibilityIdentifier(A11yID.Map.manageQuestsCloseButton)
         }
         .padding(.horizontal, 16)
         .padding(.top, 30)

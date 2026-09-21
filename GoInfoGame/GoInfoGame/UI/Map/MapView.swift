@@ -195,6 +195,7 @@ struct MapView: View {
                     )
                     .accessibilityElement(children: .combine)
                     .accessibilityLabel(alertMessage)
+                    .accessibilityIdentifier(A11yID.Map.syncStatusAlert)
                     .onAppear {
                         DispatchQueue.main.asyncAfter(deadline: .now() + 2) { showAlert = false }
                     }
@@ -215,6 +216,7 @@ struct MapView: View {
                             }
                             .accessibilityLabel(L10n.Localizable.mapModes)
                             .accessibilitySortPriority(1)
+                            .accessibilityIdentifier(A11yID.Map.layersButton)
 
                             // Download data
                             FloatingActionButton(name: "download", iconSize: 20) {
@@ -222,6 +224,7 @@ struct MapView: View {
                             }
                             .accessibilityLabel(L10n.Localizable.downloadData)
                             .accessibilitySortPriority(1)
+                            .accessibilityIdentifier(A11yID.Map.downloadButton)
                         }
                     }
                     .padding(.top, 24)
@@ -238,6 +241,15 @@ struct MapView: View {
                                 onRevert: { id in MapUndoManager.shared.undo(for: id) }
                             )
                             .accessibilitySortPriority(1)
+                            // The identifier lives on the trigger Button inside
+                            // UndoButton.swift itself, not here: this view also renders
+                            // the sidebar (a multi-child container) once tapped, and
+                            // confirmed directly that an identifier applied to a
+                            // stateful wrapper like that stamps onto every leaf in
+                            // WHICHEVER state is showing - it silently overwrote the
+                            // sidebar's own close-button identifier. Applying it inside,
+                            // on just the trigger Button leaf, keeps this reachable in
+                            // its collapsed state without that collision.
 
                             if case .wmts(let server) = viewModel.selectedOption,
                                server.attribution.attributionRequired,
@@ -265,6 +277,7 @@ struct MapView: View {
                             CompassButtonView(heading: heading) {
                                 mapViewRef?.resetNorth()
                             }
+                            .accessibilityIdentifier(A11yID.Map.compassButton)
 
                             // Zoom in / out — grouped pill
                             ZoomControlView(
@@ -295,8 +308,10 @@ struct MapView: View {
                             }
                             .accessibilityLabel(L10n.Localizable.currentLocation)
                             .accessibilitySortPriority(1)
-                            
+                            .accessibilityIdentifier(A11yID.Map.myLocationButton)
+
                             ScaleBarView(metersPerPoint: metersPerPoint)
+                                .accessibilityIdentifier(A11yID.Map.scaleBar)
                         }
                         .padding(.bottom, 24)
                         .padding(.trailing, 8)
@@ -329,6 +344,7 @@ struct MapView: View {
                             }
                         }
                     )
+                    .accessibilityIdentifier(A11yID.Map.multiSelectSheet)
                     .transition(.move(edge: .bottom))
                     .animation(.easeInOut, value: viewModel.selectedAnnotaions.count)
                 }
@@ -343,6 +359,9 @@ struct MapView: View {
                         onCreateNote: { choosePinFlow(.createNote) },
                         onAddFeature: { choosePinFlow(.addFeature) }
                     )
+                    // No identifier here: see A11yID.swift's comment on
+                    // pinChoiceCreateNoteButton for why - this card's own two buttons
+                    // carry the only identifiers that matter.
                     .position(pinChoiceScreenPoint)
                     .ignoresSafeArea()
                     .transition(.opacity.combined(with: .scale(scale: 0.9, anchor: .top)))
@@ -441,6 +460,14 @@ struct MapView: View {
                                     .multilineTextAlignment(.leading)
                             }
                         }
+                        // No accessibilityIdentifier here: the outer VStack below applies
+                        // .accessibilityElement(children: .combine), which collapses this
+                        // ScrollView into that single combined element for VoiceOver users -
+                        // correct, deliberate behavior, left untouched - so an identifier on
+                        // the ScrollView itself would be structurally unreachable by
+                        // XCUITest regardless (confirmed directly: it never surfaced as a
+                        // queryable element). workspaceTitleButton (below) is what a test
+                        // should query.
                         // Fixed size so the toolbar measures this item identically on every layout pass
                         // (an unconstrained ScrollView was sized ambiguously, which is what caused the
                         // leading toolbar content to shift/wrap differently after returning from Profile).
@@ -452,6 +479,7 @@ struct MapView: View {
                         .accessibilityElement(children: .combine)
                         .accessibilityLabel("\(L10n.Localizable.workspace): \(selectedWorkspace.title)")
                         .accessibilityAddTraits(.isButton)
+                        .accessibilityIdentifier(A11yID.Map.workspaceTitleButton)
                     }
                 }
             }
@@ -498,10 +526,12 @@ struct MapView: View {
                         }
                     }
                 )
+                .accessibilityIdentifier(A11yID.Map.syncButton)
             }
 
             ToolbarItem(placement: .topBarTrailing) {
                 accessbilityButton
+                    .accessibilityIdentifier(A11yID.Map.accessibilityModeButton)
             }
 
             ToolbarItem(placement: .topBarTrailing) {
@@ -525,6 +555,7 @@ struct MapView: View {
                 .buttonStyle(.plain)
                 .labelStyle(.iconOnly)
                 .accessibilityLabel(L10n.Localizable.manageQuests)
+                .accessibilityIdentifier(A11yID.Map.manageQuestsButton)
                 .sheet(isPresented: $showFilterQuestsSheet) {
                     ManageQuestsView()
                         // Sized to its own content by ManageQuestsView itself.
@@ -1021,6 +1052,7 @@ struct QuestSheetView: View {
                 EmptyView()
             }
         }
+        .accessibilityIdentifier(A11yID.Map.questAnswerSheet)
         .task(id: viewModel.selectedQuest?.id) {
             guard !viewModel.isMultiSelectModeEnabled,
                   let longQuest = viewModel.getSelectedQuest()?.parent as? LongElementQuest else {
@@ -1287,6 +1319,7 @@ struct PinChoiceCard: View {
                     .padding(.vertical, 14)
             }
             .foregroundStyle(Asset.Colors._42526ETextFieldText.swiftUIColor)
+            .accessibilityIdentifier(A11yID.Map.pinChoiceCreateNoteButton)
 
             Divider()
 
@@ -1298,6 +1331,7 @@ struct PinChoiceCard: View {
                     .padding(.vertical, 14)
             }
             .foregroundStyle(Asset.Colors._42526ETextFieldText.swiftUIColor)
+            .accessibilityIdentifier(A11yID.Map.pinChoiceAddFeatureButton)
         }
         .frame(width: 220)
         .background(Color(.systemBackground))
