@@ -65,6 +65,33 @@ enum A11yID {
             "workspaces_row_\(id)"
         }
     }
+
+    enum Profile {
+        static let scrollView = "profile_scroll_view"
+        static let backButton = "profile_back_button"
+        static let titleLabel = "profile_title_label"
+        /// One combined element (UserProfileView already applies
+        /// .accessibilityElement(children: .combine) to the name+email VStack), so a
+        /// single identifier covers both rather than one each.
+        static let nameAndEmailLabel = "profile_name_and_email_label"
+        static let lowBandwidthToggle = "profile_low_bandwidth_toggle"
+        /// Only exists when BiometricAuthManager.canEvaluateBiometrics() is true, i.e. the
+        /// simulator has Face ID/Touch ID enrolled - not the case on a fresh/CI simulator
+        /// by default, unlike location this cannot be pre-configured via `xcrun simctl`.
+        /// Tests must treat its absence as valid, not as a failure.
+        static let biometricToggle = "profile_biometric_toggle"
+        static let logoutButton = "profile_logout_button"
+    }
+
+    /// Only this one identifier for now: MapView's own profile button, added while
+    /// implementing the Profile screen's test suite (it is the screen's second entry
+    /// point) so it is ready for whenever MapView gets its own UI test suite. Full Map
+    /// screen coverage - and testing this entry point end-to-end - is a separate,
+    /// deferred effort: reaching MapView needs a workspace whose details response has a
+    /// populated longFormQuestDef, which no current fixture provides.
+    enum Map {
+        static let profileButton = "map_profile_button"
+    }
 }
 
 /// Names of the stubbed network scenarios a UI test can launch the app under.
@@ -107,6 +134,14 @@ enum UITestScenario {
     /// auto-navigates straight to MapView once the workspace's details (including an
     /// empty-but-valid longFormQuestDef) resolve.
     static let workspacesSingleAutoRedirect = "workspaces_single_auto_redirect"
+
+    /// The Profile screen's success path is already covered by workspacesWithData (it
+    /// stubs GET /user-profile -> UserProfilePlaceholder alongside the workspaces list),
+    /// so it does not need its own scenario. This one is for the failure path only:
+    /// UserProfileView has no error UI branch for a failed profile fetch - name/email
+    /// stay blank while everything else (toggles, logout, back) stays usable, which is
+    /// what this scenario is for verifying.
+    static let profileFetchError = "profile_fetch_error"
 
     /// Launch argument (not environment) that clears UserDefaults and the Keychain.
     static let resetStateArgument = "-UITestResetState"

@@ -28,6 +28,35 @@ class LocationManagerDelegate: NSObject, CLLocationManagerDelegate {
     }
     
     func startUpdatingLocation(distanceFilter: CLLocationDistance = 150) {
+        #if DEBUG
+        // Real CLLocationManager simulation on a simulator depends on `xcrun simctl
+        // location set` having been applied to that specific device - confirmed directly
+        // to be unreliable: it was set once, worked, and then silently stopped taking
+        // effect partway through a later, unrelated test run with no clear trigger
+        // (startUpdatingLocation kept firing but didUpdateLocations never did again).
+        // Anything that only proceeds after a first location fix - e.g. InitialViewModel
+        // .fetchWorkspacesList(), gated on locationUpdateHandler - is then stuck forever.
+        // Delivering one fixed coordinate directly removes the dependency on that
+        // simulator state entirely, for every consumer of this class (InitialViewModel,
+        // MapViewModel, KartaviewViewModel, AccessibilityModeViewModel, CustomMap).
+        // Async, matching CLLocationManager's own asynchronous delivery, so callers that
+        // set locationUpdateHandler immediately before calling this (the normal pattern)
+        // are not depending on synchronous delivery order.
+        //
+        // Uniform for now - it does not distinguish scenarios, so there is currently no
+        // way to test "location permission denied" behavior under UI tests. Revisit if
+        // that ever needs coverage (e.g. gate this on a dedicated UITestScenario check
+        // instead of UITestRuntime.isActive alone).
+        if UITestRuntime.isActive {
+            DispatchQueue.main.async { [weak self] in
+                let fixedLocation = CLLocation(latitude: 47.6062, longitude: -122.3321)
+                self?.location = fixedLocation
+                self?.locationUpdateHandler?(fixedLocation.coordinate)
+            }
+            return
+        }
+        #endif
+
         self.locationManager.desiredAccuracy = kCLLocationAccuracyNearestTenMeters
         self.locationManager.distanceFilter = distanceFilter
         self.locationManager.startUpdatingLocation()
