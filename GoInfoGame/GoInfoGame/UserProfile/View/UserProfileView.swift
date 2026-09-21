@@ -55,6 +55,7 @@ struct UserProfileView: View {
                                 .layoutPriority(2)
                                 .accessibilityElement(children: .combine)
                                 .accessibilityLabel("Username \(userFullName()) and email ID \(viewModel.user?.email ?? "")")
+                                .accessibilityIdentifier(A11yID.Profile.nameAndEmailLabel)
                             }
                         }
                         .frame(minHeight: 200)
@@ -75,6 +76,7 @@ struct UserProfileView: View {
                                             SessionManager.shared.logout(environment: APIConfiguration.shared.environment, clearBiometricCreds: true)
                                         }
                                     }
+                                    .accessibilityIdentifier(A11yID.Profile.biometricToggle)
                                 }
                                 
                                 Toggle(isOn: $lowBandwidthMode) {
@@ -90,6 +92,7 @@ struct UserProfileView: View {
                                 .toggleStyle(SwitchToggleStyle(tint: Asset.Colors.accentPink.swiftUIColor))
                                 .accessibilityLabel(L10n.Localizable.lowBandwidthMode)
                                 .accessibilityHint(L10n.Localizable.disableQuestImagesToSaveData)
+                                .accessibilityIdentifier(A11yID.Profile.lowBandwidthToggle)
                                 
                                 Line()
                                     .stroke(style: .init(dash: [4]))
@@ -113,6 +116,7 @@ struct UserProfileView: View {
                     }
                     .frame(maxWidth: .infinity)
                 }
+                .accessibilityIdentifier(A11yID.Profile.scrollView)
                 .navigationBarBackButtonHidden()
                 .navigationTitle(L10n.Localizable.myProfile)
                 .navigationBarTitleDisplayMode(.inline)
@@ -130,6 +134,7 @@ struct UserProfileView: View {
                                 .contentShape(Rectangle())
                                 .accessibilityLabel(L10n.Localizable.back)
                         }
+                        .accessibilityIdentifier(A11yID.Profile.backButton)
                     }
                     // Colors just this screen's title without touching the shared UINavigationBar.appearance() proxy,
                     // which was leaking into Map's toolbar layout when returning from this screen.
@@ -137,6 +142,7 @@ struct UserProfileView: View {
                         Text(L10n.Localizable.myProfile)
                             .font(.headline)
                             .foregroundStyle(Asset.Colors.huskyPurple.swiftUIColor)
+                            .accessibilityIdentifier(A11yID.Profile.titleLabel)
                     }
                 }
             }
@@ -211,6 +217,7 @@ struct UserProfileView: View {
             .background(Asset.Colors.huskyPurple.swiftUIColor)
             .cornerRadius(25)
         }
+        .accessibilityIdentifier(A11yID.Profile.logoutButton)
     }
 }
 

@@ -210,6 +210,7 @@
 		C7AFA179305AF8E800C539F7 /* OHHTTPStubs in Frameworks */ = {isa = PBXBuildFile; productRef = C7AFA178305AF8E800C539F7 /* OHHTTPStubs */; };
 		C7AFA17B305AF8E800C539F7 /* OHHTTPStubsSwift in Frameworks */ = {isa = PBXBuildFile; productRef = C7AFA17A305AF8E800C539F7 /* OHHTTPStubsSwift */; };
 		C7AFA17D305AFC1500C539F7 /* LoginScreenUITestCases.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7AFA17C305AFC1500C539F7 /* LoginScreenUITestCases.swift */; };
+		C7DBG0000000000000000203 /* ProfileScreenUITestCases.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7DBG0000000000000000202 /* ProfileScreenUITestCases.swift */; };
 		C7DBG0000000000000000201 /* WorkspacesScreenUITestCases.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7DBG0000000000000000200 /* WorkspacesScreenUITestCases.swift */; };
 		C7AFA182305B085E00C539F7 /* ScreenshotOnFailureUITestCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7AFA181305B085E00C539F7 /* ScreenshotOnFailureUITestCase.swift */; };
 		C7BA83542E3C9C3600755BA7 /* QuestSyncButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7BA83532E3C9C3600755BA7 /* QuestSyncButton.swift */; };
@@ -228,6 +229,7 @@
 		C7DBG0000000000000000157 /* UserProfilePlaceholder.json in Resources */ = {isa = PBXBuildFile; fileRef = C7DBG0000000000000000107 /* UserProfilePlaceholder.json */; };
 		C7DBG0000000000000000158 /* WorkspacesSingle.json in Resources */ = {isa = PBXBuildFile; fileRef = C7DBG0000000000000000108 /* WorkspacesSingle.json */; };
 		C7DBG0000000000000000159 /* WorkspaceDetailsSingle.json in Resources */ = {isa = PBXBuildFile; fileRef = C7DBG0000000000000000109 /* WorkspaceDetailsSingle.json */; };
+		C7DBG0000000000000000160 /* UserProfileServerError.json in Resources */ = {isa = PBXBuildFile; fileRef = C7DBG0000000000000000110 /* UserProfileServerError.json */; };
 		C7DBG00000000000000000A9 /* LoginFailure.json in Resources */ = {isa = PBXBuildFile; fileRef = C7DBG00000000000000000A5 /* LoginFailure.json */; };
 		C7DD04152F7E7A5800307026 /* Lato-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FA8C74D12C598F9D00D28220 /* Lato-Bold.ttf */; };
 		C7DD04162F7E7A6100307026 /* Lato-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FA8C74D02C598F9D00D28220 /* Lato-Regular.ttf */; };
@@ -619,6 +621,7 @@
 		C7A357452EA22A120033F6FB /* Config.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Config.xcconfig; sourceTree = "<group>"; };
 		C7A922242E45C36D00705E21 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		C7AFA17C305AFC1500C539F7 /* LoginScreenUITestCases.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginScreenUITestCases.swift; sourceTree = "<group>"; };
+		C7DBG0000000000000000202 /* ProfileScreenUITestCases.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileScreenUITestCases.swift; sourceTree = "<group>"; };
 		C7DBG0000000000000000200 /* WorkspacesScreenUITestCases.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkspacesScreenUITestCases.swift; sourceTree = "<group>"; };
 		C7AFA181305B085E00C539F7 /* ScreenshotOnFailureUITestCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenshotOnFailureUITestCase.swift; sourceTree = "<group>"; };
 		C7BA83532E3C9C3600755BA7 /* QuestSyncButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = QuestSyncButton.swift; path = GoInfoGame/UI/Map/QuestSyncButton.swift; sourceTree = SOURCE_ROOT; };
@@ -636,6 +639,7 @@
 		C7DBG0000000000000000107 /* UserProfilePlaceholder.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = UserProfilePlaceholder.json; sourceTree = "<group>"; };
 		C7DBG0000000000000000108 /* WorkspacesSingle.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = WorkspacesSingle.json; sourceTree = "<group>"; };
 		C7DBG0000000000000000109 /* WorkspaceDetailsSingle.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = WorkspaceDetailsSingle.json; sourceTree = "<group>"; };
+		C7DBG0000000000000000110 /* UserProfileServerError.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = UserProfileServerError.json; sourceTree = "<group>"; };
 		C7DBG00000000000000000A5 /* LoginFailure.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = LoginFailure.json; sourceTree = "<group>"; };
 		C7E9528C2ED887CC001BFB75 /* NoQuestsNearView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoQuestsNearView.swift; sourceTree = "<group>"; };
 		C7E9528E2ED88B00001BFB75 /* lato-heavy.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "lato-heavy.ttf"; sourceTree = "<group>"; };
@@ -1563,6 +1567,7 @@
 			isa = PBXGroup;
 			children = (
 				C7DBG00000000000000000A5 /* LoginFailure.json */,
+				C7DBG0000000000000000110 /* UserProfileServerError.json */,
 				C7DBG0000000000000000104 /* WorkspacesList.json */,
 				C7DBG0000000000000000105 /* ProjectGroupRoles.json */,
 				C7DBG0000000000000000106 /* WorkspacesServerError.json */,
@@ -1827,6 +1832,7 @@
 				FAD5C5152AFCBE720040C61A /* GoInfoGameUITestsLaunchTests.swift */,
 				E70058F06D4E69B2E0669A8B /* ScreenshotOnFailureUITestCase.swift */,
 				C7AFA17C305AFC1500C539F7 /* LoginScreenUITestCases.swift */,
+				C7DBG0000000000000000202 /* ProfileScreenUITestCases.swift */,
 				C7DBG0000000000000000200 /* WorkspacesScreenUITestCases.swift */,
 			);
 			path = GoInfoGameUITests;
@@ -2189,6 +2195,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				C7DBG00000000000000000A9 /* LoginFailure.json in Resources */,
+				C7DBG0000000000000000160 /* UserProfileServerError.json in Resources */,
 				C7DBG0000000000000000154 /* WorkspacesList.json in Resources */,
 				C7DBG0000000000000000155 /* ProjectGroupRoles.json in Resources */,
 				C7DBG0000000000000000156 /* WorkspacesServerError.json in Resources */,
@@ -2751,6 +2758,7 @@
 				C7DBG00000000000000000A8 /* A11yID.swift in Sources */,
 				FAD5C5162AFCBE720040C61A /* GoInfoGameUITestsLaunchTests.swift in Sources */,
 				C7AFA17D305AFC1500C539F7 /* LoginScreenUITestCases.swift in Sources */,
+				C7DBG0000000000000000203 /* ProfileScreenUITestCases.swift in Sources */,
 				C7DBG0000000000000000201 /* WorkspacesScreenUITestCases.swift in Sources */,
 				FAD5C5142AFCBE720040C61A /* GoInfoGameUITests.swift in Sources */,
 				DD224EE7B5FC852AF5637C95 /* ScreenshotOnFailureUITestCase.swift in Sources */,

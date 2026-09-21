@@ -421,6 +421,7 @@ struct MapView: View {
                             .clipShape(Circle())
                             .accessibilityLabel(L10n.Localizable.profile)
                     }
+                    .accessibilityIdentifier(A11yID.Map.profileButton)
 
                     Rectangle()
                         .fill(Asset.Colors.ddddddLine.swiftUIColor)

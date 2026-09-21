@@ -147,6 +147,12 @@ enum UITestStubs {
                 response(fixture: "WorkspaceDetailsSingle", status: 200)
             }.name = "GET /workspaces/{id} -> WorkspaceDetailsSingle"
 
+        case UITestScenario.profileFetchError:
+            seedLoggedInAndLandOnWorkspaces()
+            stubWorkspacesList(fixture: "WorkspacesList")
+            stubProjectGroupRoles(fixture: "ProjectGroupRoles")
+            stubUserProfile(fixture: "UserProfileServerError", status: 500)
+
         default:
             NSLog("[UITestStubs] Unknown scenario '%@' - only the catch-all is installed.", scenario)
         }
@@ -195,10 +201,10 @@ enum UITestStubs {
     /// Fetched by UserProfileViewModel when UserProfileView appears. Only scenarios that
     /// actually navigate to the profile screen need this; everything else can leave it
     /// unstubbed and let the catch-all fail it loudly if that ever turns out to be wrong.
-    private static func stubUserProfile(fixture name: String) {
+    private static func stubUserProfile(fixture name: String, status: Int32 = 200) {
         stub(condition: isMethodGET() && isPath("/api/v1/user-profile")) { _ in
-            response(fixture: name, status: 200)
-        }.name = "GET /user-profile -> \(name)"
+            response(fixture: name, status: status)
+        }.name = "GET /user-profile -> \(name) (\(status))"
     }
 
     /// Makes the biometric login button render, by satisfying `SessionManager
@@ -246,6 +252,19 @@ enum UITestStubs {
         }
         if !KeychainManager.save(key: "accessToken", data: accessToken) {
             NSLog("[UITestStubs] Failed to save accessToken - see KeychainManager's own log line for the OSStatus")
+        }
+
+        // Also needed for the Profile screen specifically: UserProfileViewModel
+        // .fetchUserProfile() guards on SessionManager.shared.username, which reads a
+        // DIFFERENT, per-environment-namespaced Keychain key (KeychainManager.load
+        // (.username, for:)) than the plain "accessToken" key saved above. Missing this
+        // was found directly: fetchUserProfile()'s first guard silently returned without
+        // ever firing the request, so the profile-screen stub above was registered but
+        // never actually hit. `.production` matches PosmLoginView's default
+        // selectedEnvironment, which is what APIConfiguration.shared.environment stays at
+        // here since no scenario switches it.
+        if !KeychainManager.save(.username, value: "test@email.com", for: .production) {
+            NSLog("[UITestStubs] Failed to save the namespaced username Keychain key")
         }
     }
 
