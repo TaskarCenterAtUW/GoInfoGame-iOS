@@ -73,11 +73,11 @@ class MapViewModel: ObservableObject {
         if isMultiSelectModeEnabled {
             let displayUnit = selectedAnnotaions.first?.displayUnit
             if let longElementQuest = displayUnit?.parent as? LongElementQuest {
-                longElementQuest.questAnswersSelected = { [weak self] tags in
+                longElementQuest.questAnswersSelected = { [weak self] answer in
                     guard let self = self else { return }
                     for quest in self.selectedAnnotaions {
                         if let leq = quest.displayUnit?.parent as? LongElementQuest {
-                            leq.onAnswer(answer: tags)
+                            leq.onAnswer(answer: answer)
                         }
                     }
                     self.selectedAnnotaions.removeAll()
@@ -89,9 +89,9 @@ class MapViewModel: ObservableObject {
             return displayUnit
         } else {
             if let longElementQuest = selectedQuest?.parent as? LongElementQuest {
-                longElementQuest.questAnswersSelected = { [weak self] tags in
+                longElementQuest.questAnswersSelected = { [weak self] answer in
                     guard let self = self else { return }
-                    longElementQuest.onAnswer(answer: tags)
+                    longElementQuest.onAnswer(answer: answer)
                 }
             }
             return selectedQuest

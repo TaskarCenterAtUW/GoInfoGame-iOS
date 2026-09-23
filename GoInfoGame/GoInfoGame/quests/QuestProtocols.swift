@@ -119,55 +119,16 @@ class QuestBase {
     }
 
     // Add a custom implementation
-    
-    public func updateTags(id: Int64, questType: String, tags:[String:String], type: ElementType, iconName: String, exclude_gig_tags: Bool = false) {
 
-       // Convert from ElementType enum to StoredElementEnum
-       let storedElementType: StoredElementEnum = type == .way ? .way : .node
-
-       switch (storedElementType){
-       case .way:
-           elementSubmittingToPOSM = .way
-//          _ = DatabaseConnector.shared.addWayTags(id: storedId, tags: tags)
-           let way =  DatabaseConnector.shared.getWay(id: Int(id))!
-           // Create a changeset
-           _ = DatabaseConnector.shared.createChangeset(id: Int(id), questType: questType, type: storedElementType, originalTags: way.tags.toDictionary(), tags: tags, version: way.version, iconName: iconName, nodes: way.nodes)
-       case .node:
-           elementSubmittingToPOSM = .node
-//          _ = DatabaseConnector.shared.addNodeTags(id: storedId, tags: tags)
-           let node =  DatabaseConnector.shared.getNode(id: Int(id))!
-           // Create a changeset
-           _ = DatabaseConnector.shared.createChangeset(id: Int(id), questType: questType, type: storedElementType, originalTags: node.tags.toDictionary(), tags: tags, version: node.version, iconName: iconName, point: CLLocationCoordinate2D(latitude: node.latitude, longitude: node.longitude))
-       case .unknown:
-           print("Unknown Stored element type received")
-       }
-       // Sync using datasyncmanager
-       
-       // Dismiss sheet after syncing to db
-       MapViewPublisher.shared.dismissSheet.send(.syncing)
-       MapViewPublisher.shared.dismissSheet.send(.syncBackground(Int(id)))
-       
-       DatasyncManager.shared.syncDataToOSM(exclude_gig_tags: exclude_gig_tags) { success in
-           DispatchQueue.main.async {
-               MapViewPublisher.shared.dismissSheet.send(.synced)
-
-               switch success {
-               case .success(let success):
-                   if success {
-                       // Only now are the merged tags actually persisted locally —
-                       // safe to re-check whether this element still needs answers.
-                       MapViewPublisher.shared.dismissSheet.send(.answerSynced(Int(id)))
-                   } else {
-                       print("Sync failed. Handle accordingly.")
-                       MapViewPublisher.shared.dismissSheet.send(.failed("Submission failed. Please try again."))
-                   }
-               case .failure(let error):
-                   print("Error during sync: \(error)")
-                   let errorMessage = error.localizedDescription
-                   MapViewPublisher.shared.dismissSheet.send(.failed(errorMessage))
-               }
-           }
-       }
+    /// Persists the answer locally and hands it to `QuestSubmissionManager`'s offline
+    /// queue, which uploads any attached photo and syncs to OSM in the background —
+    /// this always returns immediately, whether or not there's connectivity, so a quest
+    /// (with or without a photo) can be submitted offline. `capturedImage`/`imageTagKey`
+    /// are non-nil only for a LongForm answer with an attached KartaView photo; every
+    /// other quest type leaves them at their default (nil), unaffected by this path.
+    public func updateTags(id: Int64, questType: String, tags:[String:String], type: ElementType, iconName: String, exclude_gig_tags: Bool = false, capturedImage: UIImage? = nil, imageTagKey: String? = nil) {
+        elementSubmittingToPOSM = type == .way ? .way : .node
+        QuestSubmissionManager.submit(id: id, questType: questType, tags: tags, type: type, iconName: iconName, capturedImage: capturedImage, imageTagKey: imageTagKey)
     }
 }
 // Adds default method and implementation

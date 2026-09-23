@@ -479,18 +479,27 @@ struct MapView: View {
                         }
 
                         guard viewModel.syncFailedElementsCount > 0 else { return }
+
+                        // Routed entirely through QuestQueueProcessor now (not also
+                        // DatasyncManager.syncDataToOSM) — that batch call doesn't know
+                        // about pendingImagePath, so running both against the same
+                        // StoredChangeset rows at once could sync a photo-pending answer
+                        // without its photo URL. QuestQueueProcessor.attempt handles a
+                        // plain tag-only changeset exactly the same way syncData() did.
                         isSyncingElements = true
-                        DatasyncManager.shared.syncDataToOSM(exclude_gig_tags: false) { _ in
+                        Task {
+                            await QuestSubmissionManager.resumePendingUploadsAsync()
                             isSyncingElements = false
                             viewModel.checkSyncStatus()
                             // This path (unlike a normal answer submission through
                             // QuestProtocols.updateTags) retries whatever changesets
                             // were left pending from an earlier offline/failed sync —
-                            // it never sends .answerSynced, so pins for elements that
-                            // just got their answers merged (or that are still
-                            // excluded as pending) would otherwise sit stale until an
-                            // unrelated map pan triggered a refetch. A full refresh
-                            // re-evaluates everything against current DB state,
+                            // it never sends .answerSynced for every item on its own
+                            // (only per successfully-synced element), so pins for
+                            // elements that just got their answers merged (or that are
+                            // still excluded as pending) would otherwise sit stale
+                            // until an unrelated map pan triggered a refetch. A full
+                            // refresh re-evaluates everything against current DB state,
                             // whether this attempt fully succeeded, partially
                             // succeeded, or failed again.
                             viewModel.refreshQuests()
@@ -687,6 +696,11 @@ struct MapView: View {
                 isSyncingFeatures = true
             case .featuresSyncFinished:
                 isSyncingFeatures = false
+                viewModel.checkSyncStatus()
+            case .questPhotoUploadFailed(let elementName, let message):
+                alertIcon = "exclamationmark.triangle.fill"
+                alertMessage = "Couldn't upload photo for \(elementName): \(message). Your answer was saved and will retry automatically."
+                showAlert = true
                 viewModel.checkSyncStatus()
             }
         }
@@ -1209,6 +1223,11 @@ public enum SheetDismissalScenario {
     case featuresQueueUpdated
     case featuresSyncing
     case featuresSyncFinished
+    /// A queued quest answer's photo upload to KartaView failed (the answer itself
+    /// stays queued and will retry automatically) — surfaced to the user since a
+    /// silently-retrying photo upload is more likely to hide a real, recurring
+    /// problem than a generic tag-sync retry would.
+    case questPhotoUploadFailed(elementName: String, message: String)
 }
 
 class ContextualInfo: ObservableObject {

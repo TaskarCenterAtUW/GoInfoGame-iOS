@@ -19,6 +19,18 @@ enum LongFormActiveAlert: Identifiable {
     }
 }
 
+/// LongForm's answer payload. Unlike every other quest form (which submits a bare
+/// `[String:String]`), LongForm can also carry a captured-but-not-yet-uploaded
+/// KartaView photo — the upload itself is deferred to `QuestSubmissionManager`'s
+/// offline queue rather than attempted here, so Submit never has to wait on the
+/// network (see QuestSubmissionManager.swift). This is LongForm's own `AnswerClass`;
+/// no other quest form is affected by it.
+struct LongFormAnswer {
+    let tags: [String: String]
+    let capturedImage: UIImage?
+    let imageTagKey: String?
+}
+
 struct LongForm: View, QuestForm {
 
     // @StateObject (not @ObservedObject): LongForm is reconstructed as a fresh struct
@@ -46,32 +58,16 @@ struct LongForm: View, QuestForm {
     /// is skipped and the form always starts blank.
     var isMultiSelectMode: Bool = false
 
-    var action: (([String:String]) -> Void)?
+    var action: ((LongFormAnswer) -> Void)?
 
-    typealias AnswerClass = [String:String]
+    typealias AnswerClass = LongFormAnswer
 
     var coordinate: CLLocationCoordinate2D?
 
     @Environment(\.presentationMode) var presentationMode
 
-    @State private var showKartaviewAlert = false
-
-    @State private var kartaViewAlert = ""
-
     @State private var isCameraPresented = false
     @State private var capturedImage: UIImage?
-
-    @State private var isLoading = false
-
-    @State private var showImagePath = false
-
-    @State private var imagePath = ""
-
-    @State private var uploadedPhotos: [String] = []
-
-    /// Tracks the in-flight KartaView upload so Submit can await it instead of
-    /// racing ahead and submitting before `uploadedPhotos` is populated.
-    @State private var uploadTask: Task<Void, Never>?
 
     @State private var showNotesBox = false
 
@@ -180,6 +176,16 @@ struct LongForm: View, QuestForm {
                         } else {
                             Text("No Quests available")
                         }
+
+                        if capturedImage != nil {
+                            // Cosmetic confirmation only — the actual upload is deferred
+                            // to QuestSubmissionManager's offline queue and happens after
+                            // Submit, so there is nothing to wait on here.
+                            Label("Photo attached", systemImage: "checkmark.circle.fill")
+                                .font(.custom("Lato-Regular", size: 14, relativeTo: .headline))
+                                .foregroundStyle(Asset.Colors.huskyPurple.swiftUIColor)
+                                .accessibilityLabel("Photo attached, will upload after submit")
+                        }
                     }
                     .listRowInsets(EdgeInsets(top: 4, leading: 20, bottom: 4, trailing: 20))
                     .listRowBackground(Color.clear)
@@ -214,51 +220,10 @@ struct LongForm: View, QuestForm {
             .onChange(of: viewModel.selectedChoices) { _ in
                 viewModel.clearAnswersForHiddenQuests()
             }
-            .onChange(of: capturedImage) { newValue in
-                if newValue != nil {
-                    uploadImageToKartaView()
-                }
-            }
             .sheet(isPresented: $isCameraPresented) {
                 CameraView(capturedImage: $capturedImage, isPresented: $isCameraPresented)
                     .applyPresentationSizingPage()
                    }
-
-        if showKartaviewAlert {
-            VStack {
-                Image(systemName: "checkmark.circle.fill")
-                    .resizable()
-                    .aspectRatio(contentMode: .fit)
-                    .frame(width: 50, height: 50)
-                    .foregroundColor(.green)
-                    .padding(.bottom, 50)
-                Text("Image uploaded to Kartaview")
-                    .foregroundColor(.white)
-                    .padding()
-                    .background(Color.orange)
-                    .cornerRadius(10)
-            }
-            .padding([.all], 50)
-            .background(Color.white)
-            .accessibilityElement(children: .combine)
-            .accessibilityLabel("Image uploaded to Kartaview")
-            .onAppear {
-                DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-                    showKartaviewAlert = false // Dismiss notification box after 1 second
-                }
-            }
-        }
-
-        if isLoading {
-            VStack {
-                ProgressView("Uploading...")
-                    .progressViewStyle(CircularProgressViewStyle())
-                    .padding()
-                    .background(Color.white)
-                    .cornerRadius(10)
-                    .shadow(radius: 10)
-            }
-        }
         }
         // Matches the background used everywhere else in the app (ManageQuestsView,
         // UserSettingsView, AccessibilityModeView, etc.) instead of the system's default
@@ -315,29 +280,6 @@ struct LongForm: View, QuestForm {
         await MainActor.run {
             noteViewModel.isLoading = false
             showNotesBox = false
-        }
-    }
-
-    func uploadImageToKartaView() {
-        isLoading = true
-        let kvViewModel = KartaviewViewModel(capturedImage: capturedImage!)
-        uploadTask = Task { @MainActor in
-            do {
-                let path = try await kvViewModel.uploadAsync()
-                isLoading = false
-                kartaViewAlert = "Upload Successful"
-                showKartaviewAlert = true
-                showImagePath = true
-                imagePath = path
-                print("KARTAVIEW IMAGE PATH --->>>\(path)")
-                uploadedPhotos.append(path)
-                print(uploadedPhotos)
-            } catch {
-                isLoading = false
-                kartaViewAlert = "Upload Failed"
-                showKartaviewAlert = true
-                print("KARTAVIEW UPLOAD FAILED --->>>\(error.localizedDescription)")
-            }
         }
     }
 
@@ -523,27 +465,24 @@ struct LongForm: View, QuestForm {
 
     private var submitButton: some View {
         Button(action: {
-            Task {
-                // If a photo upload is still in flight, wait for it to finish so
-                // the resulting URL makes it into uploadedPhotos before we read it —
-                // otherwise the ext:kartaview_url tag can be silently dropped.
-                await uploadTask?.value
-
-                var answersToSubmit = viewModel.getAnswersForSubmission()
-                if !answersToSubmit.isEmpty {
-                    if let validationError = viewModel.validationErrorMessage() {
-                        self.submitStatusMessage = validationError
-                        self.activeAlert = .submissionError(message: validationError)
-                    } else if let action = action {
-                        if !uploadedPhotos.isEmpty {
-                            answersToSubmit["ext:kartaview_url"] = uploadedPhotos.last //joined(separator: ", ")
-                        }
-                        action(answersToSubmit)
-                    }
-                } else {
-                    self.submitStatusMessage = "Please answer atleast one quest to submit"
-                    self.activeAlert = .submissionError(message: "Please answer atleast one quest to submit")
+            let answersToSubmit = viewModel.getAnswersForSubmission()
+            if !answersToSubmit.isEmpty {
+                if let validationError = viewModel.validationErrorMessage() {
+                    self.submitStatusMessage = validationError
+                    self.activeAlert = .submissionError(message: validationError)
+                } else if let action = action {
+                    // The photo (if any) is handed off unuploaded — QuestSubmissionManager's
+                    // offline queue uploads it and merges the URL into the tags in the
+                    // background, so Submit never waits on the network here.
+                    action(LongFormAnswer(
+                        tags: answersToSubmit,
+                        capturedImage: capturedImage,
+                        imageTagKey: capturedImage != nil ? "ext:kartaview_url" : nil
+                    ))
                 }
+            } else {
+                self.submitStatusMessage = "Please answer atleast one quest to submit"
+                self.activeAlert = .submissionError(message: "Please answer atleast one quest to submit")
             }
         }) {
             Text("Submit")

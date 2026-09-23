@@ -63,6 +63,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         }
         NotesSubmissionManager.resumePendingUploads()
         FeatureSubmissionManager.resumePendingUploads()
+        QuestSubmissionManager.resumePendingUploads()
     }
 
     func sceneWillResignActive(_ scene: UIScene) {

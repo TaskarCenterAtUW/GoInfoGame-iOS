@@ -62,7 +62,7 @@ class LongElementQuest: QuestBase, Quest {
 
     var changesetComment: String = ""
     
-    typealias AnswerClass = [String:String]
+    typealias AnswerClass = LongFormAnswer
     
     var form:  AnyView {
         get{
@@ -159,7 +159,7 @@ class LongElementQuest: QuestBase, Quest {
         return DisplayUnit(title: self.title, description: "", id: "\(uid)-\(questId)",parent: self,sheetSize: .LONGFORM)
     }
     
-    var questAnswersSelected: (([String:String]) -> Void)? = nil
+    var questAnswersSelected: ((LongFormAnswer) -> Void)? = nil
     
     var annotationCoordinate: CLLocationCoordinate2D? {
           didSet {
@@ -223,8 +223,9 @@ class LongElementQuest: QuestBase, Quest {
     }
 
 
-    func onAnswer(answer: [String : String]) {
-        self.updateTags(id: id, questType: elementType, tags: answer, type: type, iconName: iconName)
+    func onAnswer(answer: LongFormAnswer) {
+        self.updateTags(id: id, questType: elementType, tags: answer.tags, type: type, iconName: iconName,
+                         capturedImage: answer.capturedImage, imageTagKey: answer.imageTagKey)
     }
 
     func fetchLatestTagsIfNeeded() async -> (tags: [String: String], timestamp: Date)? {

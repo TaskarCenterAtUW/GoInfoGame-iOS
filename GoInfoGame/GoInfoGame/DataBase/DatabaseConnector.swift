@@ -384,7 +384,7 @@ class DatabaseConnector {
      - parameter tags [String:String] tags changed with this
      - Returns: An instance of `StoredChangeset`
         */
-    func createChangeset(id:Int, questType: String, type: StoredElementEnum, originalTags:[String:String], tags:[String:String], version: Int, iconName: String, point: CLLocationCoordinate2D? = nil, nodes: List<Int64>? = nil) -> StoredChangeset? {
+    func createChangeset(id:Int, questType: String, type: StoredElementEnum, originalTags:[String:String], tags:[String:String], version: Int, iconName: String, point: CLLocationCoordinate2D? = nil, nodes: List<Int64>? = nil, pendingImagePath: String? = nil, pendingImageTagKey: String? = nil) -> StoredChangeset? {
         let realm = try! Realm(configuration: RealmConfig.configuration)
         let storedChangeset = StoredChangeset()
         storedChangeset.elementId = id
@@ -398,16 +398,18 @@ class DatabaseConnector {
         if let nodes = nodes {
             storedChangeset.nodes = nodes
         }
-        
+        storedChangeset.pendingImagePath = pendingImagePath
+        storedChangeset.pendingImageTagKey = pendingImageTagKey
+
         storedChangeset.timestamp =  String(Date().timeIntervalSince1970)
         for tag in tags {
             storedChangeset.tags.setValue(tag.value, forKey: tag.key)
         }
-        
+
         for tag in originalTags {
             storedChangeset.originalTags.setValue(tag.value, forKey: tag.key)
         }
-        
+
         do {
             try realm.write {
                 realm.add(storedChangeset)
@@ -640,10 +642,70 @@ class DatabaseConnector {
         }
     }
 
+    // MARK: - Quest answer queue (offline queue for LongForm submissions)
+
+    /// All quest answers still waiting to sync (and/or upload a pending photo), oldest
+    /// first. Mirrors `pendingFeatureDrafts()`/`pendingNoteDrafts()` — a plain-value
+    /// snapshot, since the underlying `StoredChangeset` Realm objects are confined to
+    /// this thread/Realm instance and can't cross into `QuestQueueProcessor`'s actor context.
+    func pendingChangesets() -> [StoredChangesetSnapshot] {
+        let realm = try! Realm(configuration: RealmConfig.configuration)
+        return realm.objects(StoredChangeset.self)
+            .filter(NSPredicate(format: "updatedVersion == -1"))
+            .sorted(byKeyPath: "timestamp")
+            .map {
+                StoredChangesetSnapshot(
+                    id: $0.id,
+                    elementId: $0.elementId,
+                    elementType: $0.elementType,
+                    questType: $0.questType ?? "Element",
+                    iconName: $0.iconName,
+                    tags: $0.tags.toDictionary(),
+                    originalTags: $0.originalTags.toDictionary(),
+                    version: $0.version,
+                    point: $0.point,
+                    nodes: Array($0.nodes),
+                    pendingImagePath: $0.pendingImagePath,
+                    pendingImageTagKey: $0.pendingImageTagKey
+                )
+            }
+    }
+
+    /// Writes an uploaded photo's URL into the changeset's tags and clears the pending
+    /// photo bookkeeping, so a subsequent attempt (or a re-read of this row) no longer
+    /// tries to upload it again. Mirrors the merge `StoredChangeset.asOSMNode()`/
+    /// `asOSMWay()` already do between `originalTags` and `tags`.
+    func attachUploadedPhotoURL(id: String, tagKey: String, url: String) {
+        let realm = try! Realm(configuration: RealmConfig.configuration)
+        guard let changeset = realm.object(ofType: StoredChangeset.self, forPrimaryKey: id) else { return }
+        try! realm.write {
+            changeset.tags.setValue(url, forKey: tagKey)
+            changeset.pendingImagePath = nil
+            changeset.pendingImageTagKey = nil
+        }
+    }
+
+    /// Records a failed sync/upload attempt without removing the changeset — it stays
+    /// queued (already reflected in `syncFailedElementsCount`) for the next retry.
+    /// Mirrors `markFeatureDraftFailed`/`markNoteDraftFailed`.
+    func markChangesetFailed(id: String, error: String) {
+        let realm = try! Realm(configuration: RealmConfig.configuration)
+        guard let changeset = realm.object(ofType: StoredChangeset.self, forPrimaryKey: id) else { return }
+        try! realm.write {
+            changeset.lastError = error
+            changeset.retryCount += 1
+        }
+    }
+
 }
 
 struct RealmConfig {
-    static let configuration = Realm.Configuration(schemaVersion: 3) { migration, oldSchemaVersion in
+    // Bumped 3 -> 4 for StoredChangeset's new pendingImagePath/pendingImageTagKey/
+    // retryCount/lastError fields (offline quest photo queue). All four are optional
+    // or have defaults, so no migration block content is needed for existing rows —
+    // Realm fills them in automatically — but the version itself must move, or a
+    // pre-existing installed schema-version-3 database won't match this class anymore.
+    static let configuration = Realm.Configuration(schemaVersion: 4) { migration, oldSchemaVersion in
         if oldSchemaVersion < 1 {
             let formatter = DateFormatter()
             formatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
