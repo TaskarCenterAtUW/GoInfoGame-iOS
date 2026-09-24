@@ -69,6 +69,19 @@ struct LongForm: View, QuestForm {
     @State private var isCameraPresented = false
     @State private var capturedImage: UIImage?
 
+    /// True once the user has dismissed the preview of a photo that was already
+    /// synced on a previous visit (`tags?["ext:kartaview_url"]`) — hides that card and
+    /// reveals the normal "take a photo" CTA again. Purely local UI state: nothing is
+    /// changed server-side unless the user then captures and submits a new photo,
+    /// which replaces the tag value the normal way.
+    @State private var dismissedExistingPhoto = false
+
+    /// Set in `.onAppear` when this element has a queued photo that has failed to
+    /// upload 3+ times — drives `showPhotoRetryExhaustedAlert`. Checked only on
+    /// reopen, not proactively, so it doesn't interrupt unrelated work.
+    @State private var stuckPhotoChangeset: StoredChangesetSnapshot?
+    @State private var showPhotoRetryExhaustedAlert = false
+
     @State private var showNotesBox = false
 
     @State private var noteText = ""
@@ -155,7 +168,7 @@ struct LongForm: View, QuestForm {
                                     if canShowQuest(quest) {
                                         LongQuestView(quest: quest, selectedChoice: binding(for: quest), uploadPhoto:  { result in
                                             if result { isCameraPresented = true }
-                                        })
+                                        }, hasPhotoAttached: hasPhotoAttached)
                                     }
                                 }
                             }
@@ -177,15 +190,7 @@ struct LongForm: View, QuestForm {
                             Text("No Quests available")
                         }
 
-                        if capturedImage != nil {
-                            // Cosmetic confirmation only — the actual upload is deferred
-                            // to QuestSubmissionManager's offline queue and happens after
-                            // Submit, so there is nothing to wait on here.
-                            Label("Photo attached", systemImage: "checkmark.circle.fill")
-                                .font(.custom("Lato-Regular", size: 14, relativeTo: .headline))
-                                .foregroundStyle(Asset.Colors.huskyPurple.swiftUIColor)
-                                .accessibilityLabel("Photo attached, will upload after submit")
-                        }
+                        photoCard
                     }
                     .listRowInsets(EdgeInsets(top: 4, leading: 20, bottom: 4, trailing: 20))
                     .listRowBackground(Color.clear)
@@ -215,6 +220,14 @@ struct LongForm: View, QuestForm {
                     if !isMultiSelectMode {
                         viewModel.prefillAnswers(tags: tags ?? [:])
                     }
+                }
+                // Checked only here (on reopen), not proactively — a photo that's
+                // still retrying quietly in the background shouldn't interrupt
+                // whatever else the user is doing when the 3rd attempt happens.
+                if let elementId = Int(questID ?? ""),
+                   let stuck = DatabaseConnector.shared.stuckPhotoChangeset(elementId: elementId) {
+                    stuckPhotoChangeset = stuck
+                    showPhotoRetryExhaustedAlert = true
                 }
             }
             .onChange(of: viewModel.selectedChoices) { _ in
@@ -246,6 +259,17 @@ struct LongForm: View, QuestForm {
             case .submissionError(let message):
                 return Alert(title: Text(message), dismissButton: .default(Text("OK")))
             }
+        }
+        .alert("Photo upload failed", isPresented: $showPhotoRetryExhaustedAlert, presenting: stuckPhotoChangeset) { changeset in
+            Button("Retry") {
+                QuestSubmissionManager.resumePendingUploads()
+            }
+            Button("Skip Photo & Submit", role: .destructive) {
+                QuestSubmissionManager.skipPendingPhoto(changesetId: changeset.id)
+            }
+            Button("Cancel", role: .cancel) {}
+        } message: { changeset in
+            Text("We couldn't upload the photo for \"\(elementName ?? "this element")\" after \(changeset.retryCount) attempts. You can try again, or submit the quest without the photo.")
         }
     }
 
@@ -326,6 +350,100 @@ struct LongForm: View, QuestForm {
                 .multilineTextAlignment(.leading)
                 .accessibilityLabel("\(label): \(value)")
         }
+    }
+
+    /// True whenever `photoCard` below is showing something — captured this session,
+    /// or already synced from a previous visit and not dismissed. Only one photo is
+    /// kept per quest answer at a time, so the "take a photo" follow-up CTA
+    /// (`FollowUpButton`, threaded down through `LongQuestView`/`QuestOptions`) hides
+    /// itself whenever this is true; retaking still works via the camera icon on the
+    /// card itself, which triggers the same `isCameraPresented` sheet.
+    private var hasPhotoAttached: Bool {
+        if capturedImage != nil { return true }
+        if !dismissedExistingPhoto, let existing = tags?["ext:kartaview_url"], !existing.isEmpty { return true }
+        return false
+    }
+
+    /// Local always wins over remote: a fresh capture this session supersedes
+    /// whatever photo (if any) was already synced on a previous visit.
+    @ViewBuilder
+    private var photoCard: some View {
+        if let capturedImage {
+            photoCardRow(
+                caption: "Photo attached",
+                subcaption: "Uploads when you submit",
+                onDelete: { self.capturedImage = nil }
+            ) {
+                Image(uiImage: capturedImage)
+                    .resizable()
+                    .scaledToFill()
+                    .frame(width: 56, height: 56)
+                    .clipShape(RoundedRectangle(cornerRadius: 8))
+                    .clipped()
+            }
+        } else if !dismissedExistingPhoto, let existingPhotoURL = tags?["ext:kartaview_url"], !existingPhotoURL.isEmpty {
+            // LongFormImageView shows its own spinner while the remote thumbnail
+            // loads, so there's no separate "loading" caption to swap out here.
+            photoCardRow(
+                caption: "Photo from last visit",
+                subcaption: nil,
+                onDelete: { dismissedExistingPhoto = true }
+            ) {
+                LongFormImageView(urlString: existingPhotoURL, width: 56, height: 56)
+                    .clipShape(RoundedRectangle(cornerRadius: 8))
+            }
+        }
+    }
+
+    /// Framed thumbnail + circular delete badge, mirroring the photo-attach pattern
+    /// already used in CreateNoteView/AddFeatureView — plus a retake button, which
+    /// reuses the same camera sheet the "Other" follow-up choice opens.
+    @ViewBuilder
+    private func photoCardRow<Thumbnail: View>(
+        caption: String,
+        subcaption: String?,
+        onDelete: @escaping () -> Void,
+        @ViewBuilder thumbnail: () -> Thumbnail
+    ) -> some View {
+        HStack(spacing: 12) {
+            ZStack(alignment: .topLeading) {
+                thumbnail()
+
+                Button(action: onDelete) {
+                    Image(systemName: "xmark.circle.fill")
+                        .foregroundStyle(.white, .black.opacity(0.6))
+                }
+                // Without this, List rows swallow this button's taps (same gotcha
+                // documented on composeNoteButton/ignoreQuestButton below).
+                .buttonStyle(.plain)
+                .offset(x: -6, y: -6)
+                .accessibilityLabel("Remove photo")
+            }
+
+            VStack(alignment: .leading, spacing: 2) {
+                Text(caption)
+                    .font(.custom("Lato-Bold", size: 14, relativeTo: .headline))
+                    .foregroundStyle(Asset.Colors.huskyPurple.swiftUIColor)
+                if let subcaption {
+                    Text(subcaption)
+                        .font(.custom("Lato-Regular", size: 12, relativeTo: .footnote))
+                        .foregroundStyle(.secondary)
+                }
+            }
+
+            Spacer()
+
+            Button(action: { isCameraPresented = true }) {
+                Image(systemName: "camera.fill")
+                    .foregroundStyle(Asset.Colors.huskyPurple.swiftUIColor)
+                    .frame(width: 32, height: 32)
+                    .background(Color.white)
+                    .clipShape(Circle())
+            }
+            .buttonStyle(.plain)
+            .accessibilityLabel("Retake photo")
+        }
+        .accessibilityElement(children: .combine)
     }
 
     private var header: some View {
@@ -465,12 +583,21 @@ struct LongForm: View, QuestForm {
 
     private var submitButton: some View {
         Button(action: {
-            let answersToSubmit = viewModel.getAnswersForSubmission()
+            var answersToSubmit = viewModel.getAnswersForSubmission()
             if !answersToSubmit.isEmpty {
                 if let validationError = viewModel.validationErrorMessage() {
                     self.submitStatusMessage = validationError
                     self.activeAlert = .submissionError(message: validationError)
                 } else if let action = action {
+                    // The user removed the previously-synced photo (dismissedExistingPhoto)
+                    // and didn't capture a replacement — signal deletion the same way any
+                    // other cleared answer does: an empty value drops the tag on sync
+                    // (see OSMNode/OSMWay.toPayload's empty-value skip). Without this,
+                    // dismissing the preview only hid it locally; the stale tag would
+                    // still be there after Submit.
+                    if capturedImage == nil, dismissedExistingPhoto, let existing = tags?["ext:kartaview_url"], !existing.isEmpty {
+                        answersToSubmit["ext:kartaview_url"] = ""
+                    }
                     // The photo (if any) is handed off unuploaded — QuestSubmissionManager's
                     // offline queue uploads it and merges the URL into the tags in the
                     // background, so Submit never waits on the network here.

@@ -120,6 +120,7 @@ struct StoredChangesetSnapshot {
     let nodes: [Int64]
     let pendingImagePath: String?
     let pendingImageTagKey: String?
+    let retryCount: Int
 
     func asOSMNode(tags overrideTags: [String: String]) -> OSMNode {
         var storage = originalTags

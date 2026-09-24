@@ -666,7 +666,8 @@ class DatabaseConnector {
                     point: $0.point,
                     nodes: Array($0.nodes),
                     pendingImagePath: $0.pendingImagePath,
-                    pendingImageTagKey: $0.pendingImageTagKey
+                    pendingImageTagKey: $0.pendingImageTagKey,
+                    retryCount: $0.retryCount
                 )
             }
     }
@@ -695,6 +696,46 @@ class DatabaseConnector {
             changeset.lastError = error
             changeset.retryCount += 1
         }
+    }
+
+    /// The pending changeset for this element whose photo has failed 3+ times, if any.
+    /// A changeset's `attempt()` returns immediately after a photo-upload failure
+    /// (never reaches tag sync), so for a still-pending row, `pendingImagePath != nil`
+    /// means any recorded failures were specifically about the photo — used to show
+    /// the retry-exhausted alert only when the user reopens that quest, not proactively.
+    func stuckPhotoChangeset(elementId: Int) -> StoredChangesetSnapshot? {
+        let realm = try! Realm(configuration: RealmConfig.configuration)
+        let predicate = NSPredicate(format: "elementId == %d AND updatedVersion == -1 AND pendingImagePath != nil AND retryCount >= 3", elementId)
+        guard let changeset = realm.objects(StoredChangeset.self).filter(predicate).first else { return nil }
+        return StoredChangesetSnapshot(
+            id: changeset.id,
+            elementId: changeset.elementId,
+            elementType: changeset.elementType,
+            questType: changeset.questType ?? "Element",
+            iconName: changeset.iconName,
+            tags: changeset.tags.toDictionary(),
+            originalTags: changeset.originalTags.toDictionary(),
+            version: changeset.version,
+            point: changeset.point,
+            nodes: Array(changeset.nodes),
+            pendingImagePath: changeset.pendingImagePath,
+            pendingImageTagKey: changeset.pendingImageTagKey,
+            retryCount: changeset.retryCount
+        )
+    }
+
+    /// Permanently abandons a changeset's pending photo ("Skip Photo & Submit") — clears
+    /// pendingImagePath/pendingImageTagKey so the next queue drain syncs just the tags.
+    /// Returns the old file path so the caller can delete it via QuestImageStorage.
+    func skipPendingPhoto(id: String) -> String? {
+        let realm = try! Realm(configuration: RealmConfig.configuration)
+        guard let changeset = realm.object(ofType: StoredChangeset.self, forPrimaryKey: id) else { return nil }
+        let oldPath = changeset.pendingImagePath
+        try! realm.write {
+            changeset.pendingImagePath = nil
+            changeset.pendingImageTagKey = nil
+        }
+        return oldPath
     }
 
 }

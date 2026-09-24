@@ -14,7 +14,12 @@ struct LongQuestView: View {
     @Binding var selectedChoice: QuestAnswerChoice?
 
     var uploadPhoto: (Bool) -> ()
-    
+
+    /// True once a photo already exists for this quest's answer (freshly captured
+    /// this session, or already synced from a previous visit) — hides the "take a
+    /// photo" follow-up CTA, since only one photo is kept per quest at a time.
+    var hasPhotoAttached: Bool = false
+
     @AppStorage("lowBandwidthMode") private var lowBandwidthMode: Bool = false
     
     @State private var isImageExpanded: Bool = false
@@ -53,7 +58,7 @@ struct LongQuestView: View {
                 .fixedSize(horizontal: false, vertical: true)
                 .accessibilityLabel(quest.questDescription)
             if let questType = quest.questType {
-                QuestOptions(quest: quest, selectedChoice: $selectedChoice, questType: questType, uploadPhoto: uploadPhoto)
+                QuestOptions(quest: quest, selectedChoice: $selectedChoice, questType: questType, uploadPhoto: uploadPhoto, hasPhotoAttached: hasPhotoAttached)
             }
             
         }

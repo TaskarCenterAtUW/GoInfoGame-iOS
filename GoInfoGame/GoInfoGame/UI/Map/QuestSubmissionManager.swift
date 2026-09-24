@@ -72,6 +72,18 @@ enum QuestSubmissionManager {
         await QuestQueueProcessor.shared.processPending()
     }
 
+    /// "Skip Photo & Submit" — abandons the photo file permanently, then re-drains the
+    /// queue so the changeset's tags sync immediately instead of waiting for the next
+    /// trigger.
+    static func skipPendingPhoto(changesetId: String) {
+        Task.detached(priority: .userInitiated) {
+            if let oldPath = DatabaseConnector.shared.skipPendingPhoto(id: changesetId) {
+                QuestImageStorage.shared.delete(paths: [oldPath])
+            }
+            await QuestQueueProcessor.shared.processPending()
+        }
+    }
+
     /// A failed attempt is never fatal to the batch — the answer stays queued (already
     /// reflected in the sync badge) and is retried by the next trigger. A photo-upload
     /// failure specifically is also surfaced to the user via `.questPhotoUploadFailed`,
