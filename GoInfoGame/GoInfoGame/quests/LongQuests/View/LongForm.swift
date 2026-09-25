@@ -19,6 +19,18 @@ enum LongFormActiveAlert: Identifiable {
     }
 }
 
+/// LongForm's answer payload. Unlike every other quest form (which submits a bare
+/// `[String:String]`), LongForm can also carry a captured-but-not-yet-uploaded
+/// KartaView photo — the upload itself is deferred to `QuestSubmissionManager`'s
+/// offline queue rather than attempted here, so Submit never has to wait on the
+/// network (see QuestSubmissionManager.swift). This is LongForm's own `AnswerClass`;
+/// no other quest form is affected by it.
+struct LongFormAnswer {
+    let tags: [String: String]
+    let capturedImage: UIImage?
+    let imageTagKey: String?
+}
+
 struct LongForm: View, QuestForm {
 
     // @StateObject (not @ObservedObject): LongForm is reconstructed as a fresh struct
@@ -46,32 +58,29 @@ struct LongForm: View, QuestForm {
     /// is skipped and the form always starts blank.
     var isMultiSelectMode: Bool = false
 
-    var action: (([String:String]) -> Void)?
+    var action: ((LongFormAnswer) -> Void)?
 
-    typealias AnswerClass = [String:String]
+    typealias AnswerClass = LongFormAnswer
 
     var coordinate: CLLocationCoordinate2D?
 
     @Environment(\.presentationMode) var presentationMode
 
-    @State private var showKartaviewAlert = false
-
-    @State private var kartaViewAlert = ""
-
     @State private var isCameraPresented = false
     @State private var capturedImage: UIImage?
 
-    @State private var isLoading = false
+    /// True once the user has marked the previously-synced photo
+    /// (`tags?["ext:kartaview_url"]`) for removal — drives the "PendingRemoval" card
+    /// state ("Photo will be removed" / undo), not an immediate hide. Purely local UI
+    /// state until Submit: nothing is changed server-side until then, and the user can
+    /// undo back to "Uploaded" any time before submitting.
+    @State private var dismissedExistingPhoto = false
 
-    @State private var showImagePath = false
-
-    @State private var imagePath = ""
-
-    @State private var uploadedPhotos: [String] = []
-
-    /// Tracks the in-flight KartaView upload so Submit can await it instead of
-    /// racing ahead and submitting before `uploadedPhotos` is populated.
-    @State private var uploadTask: Task<Void, Never>?
+    /// Set in `.onAppear` when this element has a queued photo that has failed to
+    /// upload 3+ times — drives `showPhotoRetryExhaustedAlert`. Checked only on
+    /// reopen, not proactively, so it doesn't interrupt unrelated work.
+    @State private var stuckPhotoChangeset: StoredChangesetSnapshot?
+    @State private var showPhotoRetryExhaustedAlert = false
 
     @State private var showNotesBox = false
 
@@ -159,7 +168,7 @@ struct LongForm: View, QuestForm {
                                     if canShowQuest(quest) {
                                         LongQuestView(quest: quest, selectedChoice: binding(for: quest), uploadPhoto:  { result in
                                             if result { isCameraPresented = true }
-                                        })
+                                        }, hasPhotoAttached: hasPhotoAttached)
                                     }
                                 }
                             }
@@ -180,6 +189,8 @@ struct LongForm: View, QuestForm {
                         } else {
                             Text("No Quests available")
                         }
+
+                        photoCard
                     }
                     .listRowInsets(EdgeInsets(top: 4, leading: 20, bottom: 4, trailing: 20))
                     .listRowBackground(Color.clear)
@@ -210,55 +221,22 @@ struct LongForm: View, QuestForm {
                         viewModel.prefillAnswers(tags: tags ?? [:])
                     }
                 }
+                // Checked only here (on reopen), not proactively — a photo that's
+                // still retrying quietly in the background shouldn't interrupt
+                // whatever else the user is doing when the 3rd attempt happens.
+                if let elementId = Int(questID ?? ""),
+                   let stuck = DatabaseConnector.shared.stuckPhotoChangeset(elementId: elementId) {
+                    stuckPhotoChangeset = stuck
+                    showPhotoRetryExhaustedAlert = true
+                }
             }
             .onChange(of: viewModel.selectedChoices) { _ in
                 viewModel.clearAnswersForHiddenQuests()
-            }
-            .onChange(of: capturedImage) { newValue in
-                if newValue != nil {
-                    uploadImageToKartaView()
-                }
             }
             .sheet(isPresented: $isCameraPresented) {
                 CameraView(capturedImage: $capturedImage, isPresented: $isCameraPresented)
                     .applyPresentationSizingPage()
                    }
-
-        if showKartaviewAlert {
-            VStack {
-                Image(systemName: "checkmark.circle.fill")
-                    .resizable()
-                    .aspectRatio(contentMode: .fit)
-                    .frame(width: 50, height: 50)
-                    .foregroundColor(.green)
-                    .padding(.bottom, 50)
-                Text("Image uploaded to Kartaview")
-                    .foregroundColor(.white)
-                    .padding()
-                    .background(Color.orange)
-                    .cornerRadius(10)
-            }
-            .padding([.all], 50)
-            .background(Color.white)
-            .accessibilityElement(children: .combine)
-            .accessibilityLabel("Image uploaded to Kartaview")
-            .onAppear {
-                DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-                    showKartaviewAlert = false // Dismiss notification box after 1 second
-                }
-            }
-        }
-
-        if isLoading {
-            VStack {
-                ProgressView("Uploading...")
-                    .progressViewStyle(CircularProgressViewStyle())
-                    .padding()
-                    .background(Color.white)
-                    .cornerRadius(10)
-                    .shadow(radius: 10)
-            }
-        }
         }
         // Matches the background used everywhere else in the app (ManageQuestsView,
         // UserSettingsView, AccessibilityModeView, etc.) instead of the system's default
@@ -281,6 +259,17 @@ struct LongForm: View, QuestForm {
             case .submissionError(let message):
                 return Alert(title: Text(message), dismissButton: .default(Text("OK")))
             }
+        }
+        .alert("Photo upload failed", isPresented: $showPhotoRetryExhaustedAlert, presenting: stuckPhotoChangeset) { changeset in
+            Button("Retry") {
+                QuestSubmissionManager.resumePendingUploads()
+            }
+            Button("Skip Photo & Submit", role: .destructive) {
+                QuestSubmissionManager.skipPendingPhoto(changesetId: changeset.id)
+            }
+            Button("Cancel", role: .cancel) {}
+        } message: { changeset in
+            Text("We couldn't upload the photo for \"\(elementName ?? "this element")\" after \(changeset.retryCount) attempts. You can try again, or submit the quest without the photo.")
         }
     }
 
@@ -315,29 +304,6 @@ struct LongForm: View, QuestForm {
         await MainActor.run {
             noteViewModel.isLoading = false
             showNotesBox = false
-        }
-    }
-
-    func uploadImageToKartaView() {
-        isLoading = true
-        let kvViewModel = KartaviewViewModel(capturedImage: capturedImage!)
-        uploadTask = Task { @MainActor in
-            do {
-                let path = try await kvViewModel.uploadAsync()
-                isLoading = false
-                kartaViewAlert = "Upload Successful"
-                showKartaviewAlert = true
-                showImagePath = true
-                imagePath = path
-                print("KARTAVIEW IMAGE PATH --->>>\(path)")
-                uploadedPhotos.append(path)
-                print(uploadedPhotos)
-            } catch {
-                isLoading = false
-                kartaViewAlert = "Upload Failed"
-                showKartaviewAlert = true
-                print("KARTAVIEW UPLOAD FAILED --->>>\(error.localizedDescription)")
-            }
         }
     }
 
@@ -384,6 +350,147 @@ struct LongForm: View, QuestForm {
                 .multilineTextAlignment(.leading)
                 .accessibilityLabel("\(label): \(value)")
         }
+    }
+
+    /// Whether there's an existing, previously-synced photo for this element
+    /// (`tags?["ext:kartaview_url"]`) — used both to pick the right card state and to
+    /// choose the right "Pending" subtitle (plain upload vs. replace-warning).
+    private var hasExistingPhoto: Bool {
+        !(tags?["ext:kartaview_url"] ?? "").isEmpty
+    }
+
+    /// True whenever `photoCard` below is showing a card at all — captured this
+    /// session, an existing synced photo, or one marked for removal. Only one photo
+    /// is kept per quest answer at a time, so the "take a photo" follow-up CTA
+    /// (`FollowUpButton`, threaded down through `LongQuestView`/`QuestOptions`) hides
+    /// itself whenever this is true; retaking still works via the camera icon on the
+    /// card itself, which triggers the same `isCameraPresented` sheet. Marked-for-
+    /// removal still counts as "attached" here — the card (in its removal flavor)
+    /// replaces the CTA, it doesn't coexist with it.
+    private var hasPhotoAttached: Bool {
+        capturedImage != nil || hasExistingPhoto
+    }
+
+    /// Local always wins over remote: a fresh capture this session supersedes
+    /// whatever photo (if any) was already synced on a previous visit. Three states:
+    /// Pending (a new capture, not yet submitted), Uploaded (existing synced photo,
+    /// untouched), and PendingRemoval (existing photo marked for removal, undoable).
+    @ViewBuilder
+    private var photoCard: some View {
+        if let capturedImage {
+            photoCardRow(
+                caption: "Photo attached",
+                subcaption: hasExistingPhoto
+                    ? "Replaces previous photo — tap ✕ to keep original"
+                    : "Uploads when you submit",
+                badgeSystemImage: "xmark.circle.fill",
+                badgeAction: { self.capturedImage = nil },
+                badgeAccessibilityLabel: "Remove photo"
+            ) {
+                Image(uiImage: capturedImage)
+                    .resizable()
+                    .scaledToFill()
+                    .frame(width: 56, height: 56)
+                    .clipShape(RoundedRectangle(cornerRadius: 8))
+                    .clipped()
+            }
+        } else if hasExistingPhoto, let existingPhotoURL = tags?["ext:kartaview_url"] {
+            if dismissedExistingPhoto {
+                photoCardRow(
+                    caption: "Photo will be removed",
+                    subcaption: "Removed when you submit",
+                    badgeSystemImage: "arrow.uturn.backward.circle.fill",
+                    badgeAction: { dismissedExistingPhoto = false },
+                    badgeAccessibilityLabel: "Undo removal"
+                ) {
+                    LongFormImageView(urlString: existingPhotoURL, width: 56, height: 56)
+                        .clipShape(RoundedRectangle(cornerRadius: 8))
+                        .opacity(0.5)
+                }
+            } else {
+                // LongFormImageView shows its own spinner while the remote thumbnail
+                // loads, so there's no separate "loading" caption to swap out here.
+                photoCardRow(
+                    caption: "Existing photo",
+                    subcaption: "Tap 📷 to replace it, or ✕ to remove it",
+                    badgeSystemImage: "xmark.circle.fill",
+                    badgeAction: { dismissedExistingPhoto = true },
+                    badgeAccessibilityLabel: "Remove photo"
+                ) {
+                    LongFormImageView(urlString: existingPhotoURL, width: 56, height: 56)
+                        .clipShape(RoundedRectangle(cornerRadius: 8))
+                }
+            }
+        }
+    }
+
+    /// Framed thumbnail + circular badge (delete or undo, depending on state),
+    /// mirroring the photo-attach pattern already used in CreateNoteView/
+    /// AddFeatureView — plus a retake button, which reuses the same camera sheet the
+    /// "Other" follow-up choice opens. Retaking from any state (including
+    /// PendingRemoval) simply captures a new photo, which — since a fresh
+    /// `capturedImage` always wins in `photoCard` above — naturally lands in
+    /// "Pending" regardless of where the tap came from.
+    @ViewBuilder
+    private func photoCardRow<Thumbnail: View>(
+        caption: String,
+        subcaption: String?,
+        badgeSystemImage: String,
+        badgeAction: @escaping () -> Void,
+        badgeAccessibilityLabel: String,
+        @ViewBuilder thumbnail: () -> Thumbnail
+    ) -> some View {
+        HStack(spacing: 12) {
+            ZStack(alignment: .topLeading) {
+                thumbnail()
+
+                Button(action: badgeAction) {
+                    Image(systemName: badgeSystemImage)
+                        .foregroundStyle(.white, .black.opacity(0.6))
+                }
+                // Without this, List rows swallow this button's taps (same gotcha
+                // documented on composeNoteButton/ignoreQuestButton below).
+                .buttonStyle(.plain)
+                .offset(x: -6, y: -6)
+                .accessibilityLabel(badgeAccessibilityLabel)
+            }
+
+            VStack(alignment: .leading, spacing: 2) {
+                Text(caption)
+                    .font(.custom("Lato-Bold", size: 14, relativeTo: .headline))
+                    .foregroundStyle(Asset.Colors.huskyPurple.swiftUIColor)
+                if let subcaption {
+                    Text(subcaption)
+                        .font(.custom("Lato-Regular", size: 12, relativeTo: .footnote))
+                        .foregroundStyle(.secondary)
+                }
+            }
+
+            Spacer()
+
+            Button(action: { isCameraPresented = true }) {
+                Image(systemName: "camera.fill")
+                    .foregroundStyle(Asset.Colors.huskyPurple.swiftUIColor)
+                    .frame(width: 32, height: 32)
+                    .background(Color.white)
+                    .clipShape(Circle())
+            }
+            .buttonStyle(.plain)
+            .accessibilityLabel("Retake photo")
+        }
+        .padding(10)
+        // Card treatment from the reference mockup: a bordered container around the
+        // whole row, distinct from the plain list rows around it. Reuses the same
+        // gray-stroke/corner-radius convention already used for option thumbnails
+        // elsewhere in this quest UI (see QuestOptions.NoImageView) rather than
+        // introducing a new color or radius.
+        .background(Color.white)
+        .overlay(
+            RoundedRectangle(cornerRadius: 10)
+                .stroke(Color.gray.opacity(0.3), lineWidth: 1)
+        )
+        .cornerRadius(10)
+        .accessibilityElement(children: .combine)
     }
 
     private var header: some View {
@@ -523,27 +630,33 @@ struct LongForm: View, QuestForm {
 
     private var submitButton: some View {
         Button(action: {
-            Task {
-                // If a photo upload is still in flight, wait for it to finish so
-                // the resulting URL makes it into uploadedPhotos before we read it —
-                // otherwise the ext:kartaview_url tag can be silently dropped.
-                await uploadTask?.value
-
-                var answersToSubmit = viewModel.getAnswersForSubmission()
-                if !answersToSubmit.isEmpty {
-                    if let validationError = viewModel.validationErrorMessage() {
-                        self.submitStatusMessage = validationError
-                        self.activeAlert = .submissionError(message: validationError)
-                    } else if let action = action {
-                        if !uploadedPhotos.isEmpty {
-                            answersToSubmit["ext:kartaview_url"] = uploadedPhotos.last //joined(separator: ", ")
-                        }
-                        action(answersToSubmit)
+            var answersToSubmit = viewModel.getAnswersForSubmission()
+            if !answersToSubmit.isEmpty {
+                if let validationError = viewModel.validationErrorMessage() {
+                    self.submitStatusMessage = validationError
+                    self.activeAlert = .submissionError(message: validationError)
+                } else if let action = action {
+                    // The user removed the previously-synced photo (dismissedExistingPhoto)
+                    // and didn't capture a replacement — signal deletion the same way any
+                    // other cleared answer does: an empty value drops the tag on sync
+                    // (see OSMNode/OSMWay.toPayload's empty-value skip). Without this,
+                    // dismissing the preview only hid it locally; the stale tag would
+                    // still be there after Submit.
+                    if capturedImage == nil, dismissedExistingPhoto, let existing = tags?["ext:kartaview_url"], !existing.isEmpty {
+                        answersToSubmit["ext:kartaview_url"] = ""
                     }
-                } else {
-                    self.submitStatusMessage = "Please answer atleast one quest to submit"
-                    self.activeAlert = .submissionError(message: "Please answer atleast one quest to submit")
+                    // The photo (if any) is handed off unuploaded — QuestSubmissionManager's
+                    // offline queue uploads it and merges the URL into the tags in the
+                    // background, so Submit never waits on the network here.
+                    action(LongFormAnswer(
+                        tags: answersToSubmit,
+                        capturedImage: capturedImage,
+                        imageTagKey: capturedImage != nil ? "ext:kartaview_url" : nil
+                    ))
                 }
+            } else {
+                self.submitStatusMessage = "Please answer atleast one quest to submit"
+                self.activeAlert = .submissionError(message: "Please answer atleast one quest to submit")
             }
         }) {
             Text("Submit")

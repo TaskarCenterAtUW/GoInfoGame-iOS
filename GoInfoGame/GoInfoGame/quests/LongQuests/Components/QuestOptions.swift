@@ -19,24 +19,28 @@ struct QuestOptions: View {
     @Binding var selectedChoice: QuestAnswerChoice?
     
     var questType: QuestType
-    
+
     var uploadPhoto: (Bool) -> ()
-    
+
+    var hasPhotoAttached: Bool = false
+
     @AppStorage("lowBandwidthMode") private var lowBandwidthMode: Bool = false
-    
+
     var body: some View {
         switch questType {
         case .exclusiveChoice:
             ExclusiveChoiceView(
                 options: questOptions,
                 selectedChoice: $selectedChoice,
-                uploadPhoto: uploadPhoto
+                uploadPhoto: uploadPhoto,
+                hasPhotoAttached: hasPhotoAttached
             )
         case .multipleChoice:
             MultipleChoiceView(
                 options: questOptions,
                 selectedChoice: $selectedChoice,
-                uploadPhoto: uploadPhoto
+                uploadPhoto: uploadPhoto,
+                hasPhotoAttached: hasPhotoAttached
             )
             
         case .numeric:
@@ -61,6 +65,7 @@ private extension QuestOptions {
         let options: [QuestAnswerChoice]
         @Binding var selectedChoice: QuestAnswerChoice?
         var uploadPhoto: (Bool) -> ()
+        var hasPhotoAttached: Bool = false
 
         @State private var selectedImageURL: String? = nil
         @State private var selectedImageText: String? = nil
@@ -106,7 +111,8 @@ private extension QuestOptions {
                         FollowUpButton(
                             options: options,
                             selectedChoice: $selectedChoice,
-                            uploadPhoto: uploadPhoto
+                            uploadPhoto: uploadPhoto,
+                            hasPhotoAttached: hasPhotoAttached
                         )
                     }
                     .padding()
@@ -119,6 +125,7 @@ private extension QuestOptions {
         let options: [QuestAnswerChoice]
         @Binding var selectedChoice: QuestAnswerChoice?
         var uploadPhoto: (Bool) -> ()
+        var hasPhotoAttached: Bool = false
 
         @State private var selectedValues: Set<String> = []
         @State private var selectedImageURL: String? = nil
@@ -168,7 +175,8 @@ private extension QuestOptions {
                         FollowUpButton(
                             options: options,
                             selectedChoice: $selectedChoice,
-                            uploadPhoto: uploadPhoto
+                            uploadPhoto: uploadPhoto,
+                            hasPhotoAttached: hasPhotoAttached
                         )
                     }
                     .padding()
@@ -907,6 +915,11 @@ private extension QuestOptions {
         let options: [QuestAnswerChoice]
         @Binding var selectedChoice: QuestAnswerChoice?
         let uploadPhoto: (Bool) -> Void
+        /// Only one photo is kept per quest answer — once one exists (captured this
+        /// session, or already synced from a previous visit), hide this CTA instead
+        /// of showing it alongside the photo preview card. Retaking still works via
+        /// the camera icon on that card, which reuses the same `uploadPhoto` trigger.
+        var hasPhotoAttached: Bool = false
 
         private var followUpText: String? {
             guard let value = selectedChoice?.value else { return nil }
@@ -915,7 +928,7 @@ private extension QuestOptions {
         }
 
         var body: some View {
-            if let followUp = followUpText {
+            if let followUp = followUpText, !hasPhotoAttached {
                 Button(action: {
                     uploadPhoto(true)
                 }) {
