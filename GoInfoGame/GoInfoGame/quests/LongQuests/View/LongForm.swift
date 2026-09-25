@@ -69,11 +69,11 @@ struct LongForm: View, QuestForm {
     @State private var isCameraPresented = false
     @State private var capturedImage: UIImage?
 
-    /// True once the user has dismissed the preview of a photo that was already
-    /// synced on a previous visit (`tags?["ext:kartaview_url"]`) — hides that card and
-    /// reveals the normal "take a photo" CTA again. Purely local UI state: nothing is
-    /// changed server-side unless the user then captures and submits a new photo,
-    /// which replaces the tag value the normal way.
+    /// True once the user has marked the previously-synced photo
+    /// (`tags?["ext:kartaview_url"]`) for removal — drives the "PendingRemoval" card
+    /// state ("Photo will be removed" / undo), not an immediate hide. Purely local UI
+    /// state until Submit: nothing is changed server-side until then, and the user can
+    /// undo back to "Uploaded" any time before submitting.
     @State private var dismissedExistingPhoto = false
 
     /// Set in `.onAppear` when this element has a queued photo that has failed to
@@ -352,27 +352,40 @@ struct LongForm: View, QuestForm {
         }
     }
 
-    /// True whenever `photoCard` below is showing something — captured this session,
-    /// or already synced from a previous visit and not dismissed. Only one photo is
-    /// kept per quest answer at a time, so the "take a photo" follow-up CTA
+    /// Whether there's an existing, previously-synced photo for this element
+    /// (`tags?["ext:kartaview_url"]`) — used both to pick the right card state and to
+    /// choose the right "Pending" subtitle (plain upload vs. replace-warning).
+    private var hasExistingPhoto: Bool {
+        !(tags?["ext:kartaview_url"] ?? "").isEmpty
+    }
+
+    /// True whenever `photoCard` below is showing a card at all — captured this
+    /// session, an existing synced photo, or one marked for removal. Only one photo
+    /// is kept per quest answer at a time, so the "take a photo" follow-up CTA
     /// (`FollowUpButton`, threaded down through `LongQuestView`/`QuestOptions`) hides
     /// itself whenever this is true; retaking still works via the camera icon on the
-    /// card itself, which triggers the same `isCameraPresented` sheet.
+    /// card itself, which triggers the same `isCameraPresented` sheet. Marked-for-
+    /// removal still counts as "attached" here — the card (in its removal flavor)
+    /// replaces the CTA, it doesn't coexist with it.
     private var hasPhotoAttached: Bool {
-        if capturedImage != nil { return true }
-        if !dismissedExistingPhoto, let existing = tags?["ext:kartaview_url"], !existing.isEmpty { return true }
-        return false
+        capturedImage != nil || hasExistingPhoto
     }
 
     /// Local always wins over remote: a fresh capture this session supersedes
-    /// whatever photo (if any) was already synced on a previous visit.
+    /// whatever photo (if any) was already synced on a previous visit. Three states:
+    /// Pending (a new capture, not yet submitted), Uploaded (existing synced photo,
+    /// untouched), and PendingRemoval (existing photo marked for removal, undoable).
     @ViewBuilder
     private var photoCard: some View {
         if let capturedImage {
             photoCardRow(
                 caption: "Photo attached",
-                subcaption: "Uploads when you submit",
-                onDelete: { self.capturedImage = nil }
+                subcaption: hasExistingPhoto
+                    ? "Replaces previous photo — tap ✕ to keep original"
+                    : "Uploads when you submit",
+                badgeSystemImage: "xmark.circle.fill",
+                badgeAction: { self.capturedImage = nil },
+                badgeAccessibilityLabel: "Remove photo"
             ) {
                 Image(uiImage: capturedImage)
                     .resizable()
@@ -381,43 +394,65 @@ struct LongForm: View, QuestForm {
                     .clipShape(RoundedRectangle(cornerRadius: 8))
                     .clipped()
             }
-        } else if !dismissedExistingPhoto, let existingPhotoURL = tags?["ext:kartaview_url"], !existingPhotoURL.isEmpty {
-            // LongFormImageView shows its own spinner while the remote thumbnail
-            // loads, so there's no separate "loading" caption to swap out here.
-            photoCardRow(
-                caption: "Photo from last visit",
-                subcaption: nil,
-                onDelete: { dismissedExistingPhoto = true }
-            ) {
-                LongFormImageView(urlString: existingPhotoURL, width: 56, height: 56)
-                    .clipShape(RoundedRectangle(cornerRadius: 8))
+        } else if hasExistingPhoto, let existingPhotoURL = tags?["ext:kartaview_url"] {
+            if dismissedExistingPhoto {
+                photoCardRow(
+                    caption: "Photo will be removed",
+                    subcaption: "Removed when you submit",
+                    badgeSystemImage: "arrow.uturn.backward.circle.fill",
+                    badgeAction: { dismissedExistingPhoto = false },
+                    badgeAccessibilityLabel: "Undo removal"
+                ) {
+                    LongFormImageView(urlString: existingPhotoURL, width: 56, height: 56)
+                        .clipShape(RoundedRectangle(cornerRadius: 8))
+                        .opacity(0.5)
+                }
+            } else {
+                // LongFormImageView shows its own spinner while the remote thumbnail
+                // loads, so there's no separate "loading" caption to swap out here.
+                photoCardRow(
+                    caption: "Existing photo",
+                    subcaption: "Tap 📷 to replace it, or ✕ to remove it",
+                    badgeSystemImage: "xmark.circle.fill",
+                    badgeAction: { dismissedExistingPhoto = true },
+                    badgeAccessibilityLabel: "Remove photo"
+                ) {
+                    LongFormImageView(urlString: existingPhotoURL, width: 56, height: 56)
+                        .clipShape(RoundedRectangle(cornerRadius: 8))
+                }
             }
         }
     }
 
-    /// Framed thumbnail + circular delete badge, mirroring the photo-attach pattern
-    /// already used in CreateNoteView/AddFeatureView — plus a retake button, which
-    /// reuses the same camera sheet the "Other" follow-up choice opens.
+    /// Framed thumbnail + circular badge (delete or undo, depending on state),
+    /// mirroring the photo-attach pattern already used in CreateNoteView/
+    /// AddFeatureView — plus a retake button, which reuses the same camera sheet the
+    /// "Other" follow-up choice opens. Retaking from any state (including
+    /// PendingRemoval) simply captures a new photo, which — since a fresh
+    /// `capturedImage` always wins in `photoCard` above — naturally lands in
+    /// "Pending" regardless of where the tap came from.
     @ViewBuilder
     private func photoCardRow<Thumbnail: View>(
         caption: String,
         subcaption: String?,
-        onDelete: @escaping () -> Void,
+        badgeSystemImage: String,
+        badgeAction: @escaping () -> Void,
+        badgeAccessibilityLabel: String,
         @ViewBuilder thumbnail: () -> Thumbnail
     ) -> some View {
         HStack(spacing: 12) {
             ZStack(alignment: .topLeading) {
                 thumbnail()
 
-                Button(action: onDelete) {
-                    Image(systemName: "xmark.circle.fill")
+                Button(action: badgeAction) {
+                    Image(systemName: badgeSystemImage)
                         .foregroundStyle(.white, .black.opacity(0.6))
                 }
                 // Without this, List rows swallow this button's taps (same gotcha
                 // documented on composeNoteButton/ignoreQuestButton below).
                 .buttonStyle(.plain)
                 .offset(x: -6, y: -6)
-                .accessibilityLabel("Remove photo")
+                .accessibilityLabel(badgeAccessibilityLabel)
             }
 
             VStack(alignment: .leading, spacing: 2) {
