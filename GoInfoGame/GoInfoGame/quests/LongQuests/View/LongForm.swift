@@ -443,6 +443,18 @@ struct LongForm: View, QuestForm {
             .buttonStyle(.plain)
             .accessibilityLabel("Retake photo")
         }
+        .padding(10)
+        // Card treatment from the reference mockup: a bordered container around the
+        // whole row, distinct from the plain list rows around it. Reuses the same
+        // gray-stroke/corner-radius convention already used for option thumbnails
+        // elsewhere in this quest UI (see QuestOptions.NoImageView) rather than
+        // introducing a new color or radius.
+        .background(Color.white)
+        .overlay(
+            RoundedRectangle(cornerRadius: 10)
+                .stroke(Color.gray.opacity(0.3), lineWidth: 1)
+        )
+        .cornerRadius(10)
         .accessibilityElement(children: .combine)
     }
 
