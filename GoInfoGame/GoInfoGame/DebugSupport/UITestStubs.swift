@@ -164,6 +164,8 @@ enum UITestStubs {
             seedLoggedInAndLandOnWorkspaces()
             stubWorkspacesList(fixture: "WorkspacesSingle")
             stubProjectGroupRoles(fixture: "EmptyList")
+            // Map's profile button opens the Profile screen, which fetches this on appear.
+            stubUserProfile(fixture: "UserProfilePlaceholder")
             stub(condition: isMethodGET() && pathMatches(#"^/api/v1/workspaces/\d+$"#)) { _ in
                 response(fixture: "WorkspaceDetailsWithQuests", status: 200)
             }.name = "GET /workspaces/{id} -> WorkspaceDetailsWithQuests"
@@ -175,6 +177,36 @@ enum UITestStubs {
             stub(condition: isMethodGET() && isPath("/prod/api/0.6/map.json")) { _ in
                 response(fixture: "MapOSMElements", status: 200)
             }.name = "GET /map.json -> MapOSMElements"
+
+        case UITestScenario.workspacesPickRowToMap:
+            seedLoggedInAndLandOnWorkspaces()
+            stubWorkspacesList(fixture: "WorkspacesList")
+            stubProjectGroupRoles(fixture: "ProjectGroupRoles")
+            stubUserProfile(fixture: "UserProfilePlaceholder")
+            stubWorkspaceDetails(fixture: "WorkspaceDetailsWithQuests")
+            stubOSMMapData()
+        case UITestScenario.workspacesPickRowDetailsError:
+            seedLoggedInAndLandOnWorkspaces()
+            stubWorkspacesList(fixture: "WorkspacesList")
+            stubProjectGroupRoles(fixture: "ProjectGroupRoles")
+            stubWorkspaceDetails(fixture: "WorkspacesServerError", status: 500)
+        case UITestScenario.sessionExpiredOnWorkspaceDetails:
+            seedLoggedInAndLandOnWorkspaces()
+            stubWorkspacesList(fixture: "WorkspacesList")
+            stubProjectGroupRoles(fixture: "ProjectGroupRoles")
+            stubWorkspaceDetails(fixture: "LoginFailure", status: 401)
+            // ApiManager retries a 401 exactly once via TokenRefresher; failing that
+            // request too is what makes the session count as expired.
+            stub(condition: isMethodPOST() && pathEndsWith("refresh-token")) { _ in
+                response(fixture: "LoginFailure", status: 401)
+            }.name = "POST /refresh-token -> 401"
+        case UITestScenario.loginBiometricPrompt:
+            // resetStateIfNeeded() marks biometrics declined for every environment so
+            // the prompt never shows up uninvited; this scenario is the one that wants it.
+            SessionManager.shared.setDeclinedBiometric(false, for: .production)
+            stubLogin(fixture: "LoginSuccess", status: 200)
+            stubWorkspacesList(fixture: "EmptyList")
+            stubProjectGroupRoles(fixture: "EmptyList")
 
         default:
             NSLog("[UITestStubs] Unknown scenario '%@' - only the catch-all is installed.", scenario)
@@ -228,6 +260,22 @@ enum UITestStubs {
         stub(condition: isMethodGET() && isPath("/api/v1/user-profile")) { _ in
             response(fixture: name, status: status)
         }.name = "GET /user-profile -> \(name) (\(status))"
+    }
+
+    /// `GET /workspaces/{id}` - the details InitialViewModel.fetchLongQuestsFor loads once a
+    /// workspace row is tapped (or auto-selected).
+    private static func stubWorkspaceDetails(fixture name: String, status: Int32 = 200) {
+        stub(condition: isMethodGET() && pathMatches(#"^/api/v1/workspaces/\d+$"#)) { _ in
+            response(fixture: name, status: status)
+        }.name = "GET /workspaces/{id} -> \(name) (\(status))"
+    }
+
+    /// The OSM elements MapView fetches for the visible area - see the comment on
+    /// mapWithQuestClusters for why this path is what it is.
+    private static func stubOSMMapData() {
+        stub(condition: isMethodGET() && isPath("/prod/api/0.6/map.json")) { _ in
+            response(fixture: "MapOSMElements", status: 200)
+        }.name = "GET /map.json -> MapOSMElements"
     }
 
     /// Makes the biometric login button render, by satisfying `SessionManager

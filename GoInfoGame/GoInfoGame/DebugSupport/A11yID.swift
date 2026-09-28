@@ -214,6 +214,26 @@ enum UITestScenario {
     /// cluster) and 1 more several km away (expected to stay a separate pin).
     static let mapWithQuestClusters = "map_with_quest_clusters"
 
+    /// Multiple eligible workspaces (the same list as workspacesWithData) where tapping a
+    /// row succeeds: `GET /workspaces/{id}` resolves to WorkspaceDetailsWithQuests and
+    /// `map.json` to MapOSMElements, so the real picker -> fetchLongQuestsFor -> MapView
+    /// path runs. Unlike mapWithQuestClusters (1 eligible workspace, auto-redirect), this
+    /// is what lets a test go Workspaces -> Map and back again via "change workspace".
+    static let workspacesPickRowToMap = "workspaces_pick_row_to_map"
+    /// Same list, but `GET /workspaces/{id}` fails with a 500, exercising the alert
+    /// InitialView shows when a tapped workspace's details cannot be loaded.
+    static let workspacesPickRowDetailsError = "workspaces_pick_row_details_error"
+    /// Same list, but `GET /workspaces/{id}` answers 401 and the follow-up refresh-token
+    /// request fails too - the app's real "session expired" path: it swaps the root view
+    /// back to the login screen and posts SessionExpired, which shows the "Logout" alert.
+    static let sessionExpiredOnWorkspaceDetails = "session_expired_on_workspace_details"
+    /// A successful login on a device where biometrics are available and not yet
+    /// declined, so the "Enable Biometric Login?" prompt shows after login. Also forces
+    /// BiometricAuthManager.canEvaluateBiometrics() to true for this scenario only - the
+    /// simulator's real enrollment state differs between machines (see
+    /// UITestStubs.resetStateIfNeeded()) and cannot be relied on.
+    static let loginBiometricPrompt = "login_biometric_prompt"
+
     /// Launch argument (not environment) that clears UserDefaults and the Keychain.
     static let resetStateArgument = "-UITestResetState"
 }

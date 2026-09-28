@@ -449,7 +449,7 @@ final class UserFlowTests: XCTestCase {
                                     let displayUnit = mapViewModel.getSelectedQuest()
                                     if let longElementQuest = displayUnit?.parent as? LongElementQuest,
                                        let form = longElementQuest.internalForm as? LongForm {
-                                        form.action?([testingTagKey : testingTagValue])
+                                        form.action?(LongFormAnswer(tags: [testingTagKey : testingTagValue], capturedImage: nil, imageTagKey: nil))
                                     } else {
                                         XCTFail("LongElementQuest UI component not found")
                                         expectation.fulfill()
