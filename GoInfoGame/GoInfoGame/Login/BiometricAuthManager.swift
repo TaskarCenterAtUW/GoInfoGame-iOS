@@ -17,6 +17,15 @@ struct BiometricAuthManager {
     }
     
     static func canEvaluateBiometrics() -> Bool {
+        #if DEBUG
+        // Only the one scenario that is specifically about the post-login biometric
+        // prompt - every other scenario keeps the real answer, so nothing else changes
+        // behavior. The simulator's actual Face ID enrollment differs between machines
+        // and cannot be controlled from a UI test.
+        if ProcessInfo.processInfo.environment[UITestScenario.environmentKey] == UITestScenario.loginBiometricPrompt {
+            return true
+        }
+        #endif
         return LAContext().canEvaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, error: nil)
     }
 

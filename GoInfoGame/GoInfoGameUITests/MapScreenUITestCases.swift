@@ -65,6 +65,16 @@ final class MapScreenUITestCases: ScreenshotOnFailureUITestCase {
         return app
     }
 
+    /// `isHittable` is an instantaneous snapshot - this waits for it to become true.
+    private func waitUntilHittable(_ element: XCUIElement, timeout: TimeInterval = 10) -> Bool {
+        let deadline = Date().addingTimeInterval(timeout)
+        while Date() < deadline {
+            if element.exists && element.isHittable { return true }
+            usleep(250_000)
+        }
+        return element.exists && element.isHittable
+    }
+
     /// Finds a top-bar trailing button, falling back to iOS 26's toolbar overflow ("...")
     /// menu if it is not directly visible - automatic SwiftUI/UIKit behavior when the
     /// toolbar cannot fit every trailing item at once, not something this app's own code
@@ -213,7 +223,11 @@ final class MapScreenUITestCases: ScreenshotOnFailureUITestCase {
     func testTopBarElementsAreVisibleAndAccessible() throws {
         let app = reachMapScreen()
 
-        XCTAssertTrue(app.buttons[A11yID.Map.profileButton].isHittable, "Profile button not tappable")
+        // Polled, not a single isHittable check: that is an instant snapshot, and this
+        // runs the moment the workspace title appears - seen failing intermittently
+        // (passed 2 of 3 isolated runs) right after landing, while the navigation bar
+        // is still settling from the push into the Map.
+        XCTAssertTrue(waitUntilHittable(app.buttons[A11yID.Map.profileButton]), "Profile button not tappable")
         XCTAssertTrue(element(app, id: A11yID.Map.workspaceTitleButton).exists, "Workspace title button not found")
 
         XCTAssertTrue(trailingToolbarButton(app, id: A11yID.Map.syncButton).exists, "Sync button not accessible")
@@ -256,6 +270,61 @@ final class MapScreenUITestCases: ScreenshotOnFailureUITestCase {
         alert.buttons["Cancel"].tap()
         XCTAssertTrue(element(app, id: A11yID.Map.workspaceTitleButton).waitForExistence(timeout: 5),
                       "Left the Map screen despite cancelling the change-workspace confirmation")
+    }
+
+    /// Confirming ("Yes") swaps the root view back to the workspace picker. Needs a
+    /// scenario with several workspaces: with just one, the picker would immediately
+    /// auto-redirect straight back to the Map, which would look like nothing happened.
+    func testConfirmingChangeWorkspaceReturnsToWorkspacePicker() throws {
+        let app = launchApp(scenario: UITestScenario.workspacesPickRowToMap)
+
+        XCTAssertTrue(app.staticTexts[A11yID.Workspaces.title].waitForExistence(timeout: 20),
+                      "Did not land on the Workspaces screen")
+        let row = app.buttons[A11yID.Workspaces.workspaceRow(id: 222)]
+        XCTAssertTrue(scrollToElement(row, in: app.scrollViews[A11yID.Workspaces.scrollView]),
+                      "Workspace row 222 not reachable")
+        row.tap()
+
+        let title = element(app, id: A11yID.Map.workspaceTitleButton)
+        XCTAssertTrue(title.waitForExistence(timeout: 30), "Did not reach the Map screen")
+        title.tap()
+
+        let alert = app.alerts["Do you want to change the workspace?"]
+        XCTAssertTrue(alert.waitForExistence(timeout: 5), "Change-workspace confirmation did not appear")
+        alert.buttons["Yes"].tap()
+
+        XCTAssertTrue(app.staticTexts[A11yID.Workspaces.title].waitForExistence(timeout: 20),
+                      "Did not return to the workspace picker after confirming")
+        XCTAssertTrue(title.waitForNonExistence(timeout: 10), "Still on the Map screen after confirming the change")
+        XCTAssertTrue(scrollToElement(app.buttons[A11yID.Workspaces.workspaceRow(id: 222)],
+                                      in: app.scrollViews[A11yID.Workspaces.scrollView]),
+                      "Workspace list is not shown again after changing workspace")
+    }
+
+    // MARK: - Profile
+
+    /// The Map's profile button is the second entry point to the Profile screen (the
+    /// first, from Workspaces, is covered by ProfileScreenUITestCases). Going there and
+    /// back must leave the map intact rather than rebuilding or losing it.
+    func testProfileButtonOpensProfileScreenAndBackReturnsToMap() throws {
+        let app = reachMapScreen()
+
+        // Wait for real map content first, so "still there afterwards" means something.
+        let cluster = element(app, id: A11yID.Map.clusterAnnotation)
+        XCTAssertTrue(cluster.waitForExistence(timeout: 40), "Map content did not load before leaving the screen")
+
+        app.buttons[A11yID.Map.profileButton].tap()
+
+        let profileLabel = element(app, id: A11yID.Profile.nameAndEmailLabel)
+        XCTAssertTrue(profileLabel.waitForExistence(timeout: 10), "Did not reach the Profile screen from the Map")
+
+        app.buttons[A11yID.Profile.backButton].tap()
+
+        XCTAssertTrue(profileLabel.waitForNonExistence(timeout: 10), "Still on the Profile screen after tapping back")
+        XCTAssertTrue(element(app, id: A11yID.Map.workspaceTitleButton).waitForExistence(timeout: 10),
+                      "Did not return to the Map screen after tapping back")
+        XCTAssertTrue(element(app, id: A11yID.Map.clusterAnnotation).waitForExistence(timeout: 20),
+                      "Map content is gone after returning from the Profile screen")
     }
 
     // MARK: - Clustering
@@ -454,6 +523,75 @@ final class MapScreenUITestCases: ScreenshotOnFailureUITestCase {
         XCTAssertTrue(element(app, id: A11yID.Map.workspaceTitleButton).waitForExistence(timeout: 5),
                       "Left the Map screen after tapping My Location")
         XCTAssertTrue(element(app, id: A11yID.Map.myLocationButton).isHittable, "My Location button not usable after tapping it")
+    }
+
+    /// Not part of the default suite run - requires the Gachibowli route to already be
+    /// feeding the Simulator's real location service (Scripts/run-map-ui-tests-with-
+    /// location.sh), which is what actually makes MapLibre's own user-location layer
+    /// ("You Are Here", read by MLNMapView.showsUserLocation - separate from this app's
+    /// own fixed-coordinate LocationManagerDelegate mock, see that file's comment)
+    /// resolve to a real, on-screen position. Confirmed directly, running under that
+    /// script: the annotation's value ("17 degree(s) and 26/27 minute(s) north...")
+    /// visibly advanced between two checks a second apart, and its on-screen frame moved
+    /// - genuine live route playback, not a static stub. Under a plain test run with no
+    /// location fed, "You Are Here" may never appear (or sit wherever the Simulator's
+    /// location last happened to be, unrelated to this route) - skip rather than fail in
+    /// that case, the same way this suite already treats the compass button/biometric
+    /// toggle's absence.
+    func testMyLocationButtonRecentersAlongGachibowliRoute() throws {
+        let app = reachMapScreen()
+
+        let userLocation = app.buttons["You Are Here"]
+        guard userLocation.waitForExistence(timeout: 15) else {
+            throw XCTSkip("\"You Are Here\" never appeared - is the Gachibowli route actually running? See Scripts/run-map-ui-tests-with-location.sh")
+        }
+        // The annotation also exists without the route - at whatever location the
+        // Simulator happens to hold (a default, or one left by an earlier run) - so
+        // existing is not proof the route is running. Its value reads like "17 degree(s)
+        // and 26 minute(s) north by 78 degree(s) and 22 minute(s) east"; anything that is
+        // not in the Hyderabad area means this run isn't being fed the route.
+        let position = (userLocation.value as? String) ?? ""
+        guard position.contains("17 degree(s)"), position.contains("78 degree(s)") else {
+            throw XCTSkip("\"You Are Here\" is not in the Gachibowli area (\(position)) - the route isn't running. See Scripts/run-map-ui-tests-with-location.sh")
+        }
+
+        // The annotation exists before MapLibre has laid it out: until its first location
+        // update is processed it sits at a placeholder frame of (-15, -15, 30, 30), off
+        // the top-left corner (seen directly). Tapping My Location before that would be
+        // racing the very state this test is about, so wait for a real position first.
+        let window = app.windows.firstMatch
+        var positioned = false
+        for _ in 0..<40 {
+            // Inset, because the placeholder's own center is exactly (0, 0) - a point ON
+            // the window's edge, which a plain contains() would count as on-screen.
+            if window.frame.insetBy(dx: 10, dy: 10).contains(CGPoint(x: userLocation.frame.midX, y: userLocation.frame.midY)) {
+                positioned = true
+                break
+            }
+            usleep(500_000)
+        }
+        guard positioned else {
+            throw XCTSkip("\"You Are Here\" was never given an on-screen position (frame: \(userLocation.frame)) - MapLibre never resolved the simulated location. Route playback reaching MapLibre was confirmed on iOS 26.5 but not iOS 17.0. See Scripts/run-map-ui-tests-with-location.sh")
+        }
+
+        element(app, id: A11yID.Map.myLocationButton).tap()
+
+        // MapLibre recenters the camera on the user location asynchronously - poll for
+        // the annotation settling near screen center rather than asserting immediately.
+        let tolerance: CGFloat = 150
+        var recentered = false
+        for _ in 0..<10 {
+            if userLocation.exists,
+               abs(userLocation.frame.midX - window.frame.midX) < tolerance,
+               abs(userLocation.frame.midY - window.frame.midY) < tolerance {
+                recentered = true
+                break
+            }
+            usleep(500_000)
+        }
+        XCTAssertTrue(recentered,
+                      "Map did not recenter on the user's live location after tapping My Location - "
+                      + "position: \(position), annotation frame: \(userLocation.frame), window: \(window.frame)")
     }
 
     /// Zoom level itself isn't asserted - see this file's header comment for why (no

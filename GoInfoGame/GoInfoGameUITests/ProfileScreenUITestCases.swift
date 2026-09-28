@@ -116,6 +116,32 @@ final class ProfileScreenUITestCases: ScreenshotOnFailureUITestCase {
         XCTAssertEqual(before, toggle.value as? String, "Low bandwidth toggle did not return to its original state")
     }
 
+    /// The setting is backed by @AppStorage, so it should outlive the screen: toggle it,
+    /// leave, come back, and it should still be in the state it was left in. Catches the
+    /// toggle silently becoming view-local state.
+    func testLowBandwidthSettingPersistsAfterLeavingAndReturning() throws {
+        let app = navigateToProfileFromWorkspaces(scenario: UITestScenario.workspacesWithData)
+
+        let toggle = element(app, id: A11yID.Profile.lowBandwidthToggle)
+        XCTAssertTrue(scrollToElement(toggle, in: scroll(in: app)), "Low bandwidth toggle unreachable")
+        let original = toggle.value as? String
+        toggle.tap()
+        let changed = toggle.value as? String
+        XCTAssertNotEqual(original, changed, "Low bandwidth toggle did not change")
+
+        app.buttons[A11yID.Profile.backButton].tap()
+        XCTAssertTrue(app.staticTexts[A11yID.Workspaces.title].waitForExistence(timeout: 10),
+                      "Did not return to the Workspaces screen")
+        app.buttons[A11yID.Workspaces.profileButton].tap()
+        XCTAssertTrue(element(app, id: A11yID.Profile.nameAndEmailLabel).waitForExistence(timeout: 10),
+                      "Did not return to the Profile screen")
+
+        let reopened = element(app, id: A11yID.Profile.lowBandwidthToggle)
+        XCTAssertTrue(scrollToElement(reopened, in: scroll(in: app)), "Low bandwidth toggle unreachable on return")
+        XCTAssertEqual(reopened.value as? String, changed,
+                       "Low bandwidth setting was not remembered after leaving and returning to the Profile screen")
+    }
+
     /// BiometricAuthManager.canEvaluateBiometrics() gates this element on whether the
     /// simulator has Face ID/Touch ID enrolled - true on a developer's own simulator after
     /// enrolling it manually, false on a fresh/CI simulator by default, and unlike location

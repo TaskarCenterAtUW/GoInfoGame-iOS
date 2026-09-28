@@ -130,6 +130,57 @@ final class LoginScreenUITestCases: ScreenshotOnFailureUITestCase {
                        "Error message shown despite the login succeeding")
     }
 
+    // MARK: - Post-login prompts and session expiry
+
+    /// The prompt only appears when biometrics are available and not yet declined - the
+    /// scenario forces both (see UITestScenario.loginBiometricPrompt), since neither can be
+    /// relied on from a fresh simulator. Only "Not Now" is driven: "Enable" would go on to
+    /// a real LAContext evaluation, whose outcome depends on the machine's Face ID
+    /// enrollment and can put a system prompt in front of the app.
+    func testBiometricPromptAppearsAfterLoginAndNotNowContinuesToWorkspaces() throws {
+        let app = launchApp(scenario: UITestScenario.loginBiometricPrompt)
+
+        enterCredentials(app, username: "test@email.com", password: "correct-password\n")
+        tapLogin(app)
+
+        let alert = app.alerts["Enable Biometric Login?"]
+        XCTAssertTrue(alert.waitForExistence(timeout: 15), "Biometric prompt did not appear after a successful login")
+        XCTAssertTrue(alert.buttons["Enable"].exists, "Biometric prompt missing an Enable button")
+        XCTAssertTrue(alert.buttons["Not Now"].exists, "Biometric prompt missing a Not Now button")
+        XCTAssertFalse(app.staticTexts[A11yID.Workspaces.title].exists,
+                       "Navigated to Workspaces before the biometric prompt was answered")
+
+        alert.buttons["Not Now"].tap()
+
+        XCTAssertTrue(app.staticTexts[A11yID.Workspaces.title].waitForExistence(timeout: 20),
+                      "Did not continue to the workspaces screen after declining biometric login")
+    }
+
+    /// The real session-expiry path: a 401 on a request, then a failed token refresh, makes
+    /// ApiManager swap the root view back to the login screen and (after a 1s delay) post
+    /// SessionExpired, which the login screen turns into a "Logout" alert.
+    func testSessionExpiryReturnsToLoginWithLogoutAlert() throws {
+        let app = launchApp(scenario: UITestScenario.sessionExpiredOnWorkspaceDetails)
+
+        XCTAssertTrue(app.staticTexts[A11yID.Workspaces.title].waitForExistence(timeout: 20),
+                      "Did not land on the Workspaces screen")
+        let row = app.buttons[A11yID.Workspaces.workspaceRow(id: 222)]
+        XCTAssertTrue(scrollToElement(row, in: app.scrollViews[A11yID.Workspaces.scrollView]),
+                      "Workspace row 222 not reachable")
+        row.tap()
+
+        let alert = app.alerts["Logout"]
+        XCTAssertTrue(alert.waitForExistence(timeout: 20), "Session-expired alert did not appear")
+        XCTAssertTrue(alert.staticTexts["Your session has expired. Please login again"].exists,
+                      "Session-expired alert has unexpected message text")
+        alert.buttons["OK"].tap()
+
+        XCTAssertTrue(app.buttons[A11yID.Login.loginButton].waitForExistence(timeout: 10),
+                      "Did not end up on the login screen after a session expiry")
+        XCTAssertFalse(app.staticTexts[A11yID.Workspaces.title].exists,
+                       "Still on the Workspaces screen after the session expired")
+    }
+
     // MARK: - Client-side validation
 
     func testLoginWithEmptyUsernameShowsValidationAlert() throws {

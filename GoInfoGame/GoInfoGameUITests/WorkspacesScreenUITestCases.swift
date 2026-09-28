@@ -230,6 +230,44 @@ final class WorkspacesScreenUITestCases: ScreenshotOnFailureUITestCase {
                       "Full list did not return after selecting All Project Groups")
     }
 
+    // MARK: - Selecting a workspace
+
+    /// The core action of this screen: tapping a row fetches that workspace's details and,
+    /// on success, opens the Map. Every other test here stops short of tapping a row.
+    func testTappingWorkspaceRowNavigatesToMapScreen() throws {
+        let app = launchApp(scenario: UITestScenario.workspacesPickRowToMap)
+        waitForWorkspacesScreen(app)
+
+        let row = workspaceRow(app, id: 222)
+        XCTAssertTrue(scrollToElement(row, in: scroll(in: app)), "Workspace row 222 not reachable")
+        row.tap()
+
+        XCTAssertTrue(element(app, id: A11yID.Map.workspaceTitleButton).waitForExistence(timeout: 30),
+                      "Did not reach the Map screen after tapping a workspace")
+        XCTAssertFalse(app.staticTexts[A11yID.Workspaces.title].exists,
+                       "Workspaces title still present - did not fully transition to the Map screen")
+    }
+
+    /// When the tapped workspace's details cannot be loaded the screen stays put and says
+    /// so, rather than navigating anywhere or hanging on the loading state.
+    func testTappingWorkspaceRowWhoseDetailsFailShowsAlertAndStaysOnScreen() throws {
+        let app = launchApp(scenario: UITestScenario.workspacesPickRowDetailsError)
+        waitForWorkspacesScreen(app)
+
+        let row = workspaceRow(app, id: 222)
+        XCTAssertTrue(scrollToElement(row, in: scroll(in: app)), "Workspace row 222 not reachable")
+        row.tap()
+
+        let alert = app.alerts["Not able to load the workspace details. Please try again later."]
+        XCTAssertTrue(alert.waitForExistence(timeout: 15), "Error alert did not appear after the details request failed")
+        alert.buttons.firstMatch.tap()
+
+        XCTAssertTrue(alert.waitForNonExistence(timeout: 5), "Alert did not dismiss")
+        XCTAssertTrue(app.staticTexts[A11yID.Workspaces.title].exists, "Left the Workspaces screen despite the failure")
+        XCTAssertFalse(element(app, id: A11yID.Map.workspaceTitleButton).exists, "Navigated to the Map despite the failure")
+        XCTAssertTrue(workspaceRow(app, id: 222).exists, "Workspace list is gone after dismissing the alert")
+    }
+
     // MARK: - Profile navigation
 
     func testNavigatingToProfileScreenFromWorkspaces() throws {
