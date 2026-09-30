@@ -283,6 +283,38 @@ enum A11yID {
         static let confirmationRevertButton = "undo_edits_confirmation_revert_button"
         static let confirmationCancelButton = "undo_edits_confirmation_cancel_button"
     }
+
+    /// Identifiers for ManageQuestsView (GoInfoGame/quests/QuestCategory/UI/
+    /// ManageQuestsView.swift), reached from both A11yID.Map.manageQuestsButton and
+    /// A11yID.AccessibilityMode.filterButton - a single zero-parameter view with no
+    /// configuration difference between the two entry points. Its own close button is
+    /// A11yID.Map.manageQuestsCloseButton (grouped there, not here, alongside every
+    /// other screen's own "doubles as presence signal" close button - see that
+    /// property's own comment).
+    enum ManageQuests {
+        /// The List holding both sections - always rendered (unlike UndoEdits/
+        /// AccessibilityMode's own lists, FEATURES is never empty), so this can double
+        /// as a secondary presence signal too.
+        static let scrollView = "manage_quests_scroll_view"
+        /// One FEATURES toggle: `manage_quests_toggle_<elementType>` - keyed by the
+        /// quest's own element type string ("Sidewalks", "Crossings", "Kerbs") rather
+        /// than a numeric id, since LongElementQuest.title is always empty in practice
+        /// (ManageQuestsView's own fallback to elementType is what actually renders),
+        /// making elementType the only stable, human-meaningful key available. State is
+        /// read through the toggle's own `value` ("1"/"0"), the identifier only locates
+        /// it - same convention as A11yID.LongForm's choice tiles.
+        static func featureToggle(elementType: String) -> String { "manage_quests_toggle_\(elementType)" }
+        /// "HIDDEN ELEMENTS" section header text - shares its row with unhideAllButton
+        /// (stacked instead at large accessibility text), the one place on this screen
+        /// two independent elements sit side by side and are genuinely at risk of
+        /// overlapping.
+        static let hiddenElementsLabel = "manage_quests_hidden_elements_label"
+        static let unhideAllButton = "manage_quests_unhide_all_button"
+        /// One HIDDEN ELEMENTS row: `manage_quests_hidden_row_<elementID>` - the
+        /// underlying OSM element id (HiddenQuest.id), same identity this file's other
+        /// per-element identifiers use.
+        static func hiddenRow(elementID: Int64) -> String { "manage_quests_hidden_row_\(elementID)" }
+    }
 }
 
 /// Names of the stubbed network scenarios a UI test can launch the app under.
@@ -419,6 +451,18 @@ enum UITestScenario {
     /// displays it - this scenario documents that real behavior rather than a
     /// hypothetical error UI).
     static let undoEditsNetworkDown = "undo_edits_network_down"
+
+    /// Lands on the Map with WorkspaceDetailsWithQuests.json's 3 real FEATURES
+    /// (Sidewalks/Crossings/Kerbs) and 2 SEEDED HIDDEN ELEMENTS rows written directly to
+    /// UserDefaults["hiddenElements"] (see UITestStubs.seedHiddenQuests) - like the undo
+    /// list, HiddenQuestManager's data has no network fetch behind it at all, and
+    /// nothing else can populate it except actually hiding a quest through a real
+    /// Map/Accessibility Mode flow first. No network scenario is needed for this screen
+    /// otherwise - every interaction on it (a FEATURES toggle, Unhide All, swipe-to-
+    /// delete) is a synchronous local UserDefaults write, confirmed directly by reading
+    /// QuestsRepository/HiddenQuestManager - there is no distinct online/offline
+    /// behavior to exercise here the way LongForm/UndoEdits have.
+    static let manageQuestsOnline = "manage_quests_online"
 
     /// Launch argument (not environment) that clears UserDefaults and the Keychain.
     static let resetStateArgument = "-UITestResetState"
