@@ -115,6 +115,7 @@ struct UndoButton: View {
                     onRemovePreview()
                 }
                 .frame(minHeight: 44)
+                .accessibilityIdentifier(A11yID.Map.undoPopupCancelButton)
 
                 Spacer()
 
@@ -128,6 +129,7 @@ struct UndoButton: View {
                 .frame(minHeight: 44)
                 .background(Color.red)
                 .cornerRadius(8)
+                .accessibilityIdentifier(A11yID.Map.undoPopupRevertButton)
             }
         }
         .padding()
