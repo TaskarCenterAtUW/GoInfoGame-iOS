@@ -226,23 +226,23 @@ enum UITestStubs {
             stubProjectGroupRoles(fixture: "EmptyList")
 
         case UITestScenario.longFormOnline:
-            installLongFormBaseline()
-            stubLatestElementFetch()
+            installQuestFormBaseline(mapFixture: "LongFormOSMElements")
+            stubLatestElementFetch(mapFixture: "LongFormOSMElements", latestFixture: "LongFormLatestElements")
             stubChangesetCreate()
             stubChangesetUpload()
             stubChangesetClose()
 
         case UITestScenario.longFormNetworkDown:
-            installLongFormBaseline()
+            installQuestFormBaseline(mapFixture: "LongFormOSMElements")
             // The freshness fetch and every submission step fail - map data itself
-            // (already stubbed by installLongFormBaseline) is unaffected, so the pins
+            // (already stubbed by installQuestFormBaseline) is unaffected, so the pins
             // are still there to tap.
             stubOSMConnectivityFailure(pathMatches(#"^/prod/api/0\.6/(way|node)/\d+\.json$"#), name: "fetch latest element")
             stubOSMConnectivityFailure(isMethodPUT() && isPath("/prod/api/0.6/changeset/create"), name: "changeset create")
 
         case UITestScenario.longFormNetworkRecovers:
-            installLongFormBaseline()
-            stubLatestElementFetch()
+            installQuestFormBaseline(mapFixture: "LongFormOSMElements")
+            stubLatestElementFetch(mapFixture: "LongFormOSMElements", latestFixture: "LongFormLatestElements")
             // Only the FIRST changeset/create attempt fails - QuestSubmissionManager's
             // offline queue leaves the answer pending after that, and a later retry
             // (sync button, or another submit) must succeed.
@@ -258,6 +258,28 @@ enum UITestStubs {
             }.name = "changeset create -> fails once, then succeeds"
             stubChangesetUpload()
             stubChangesetClose()
+
+        case UITestScenario.accessibilityModeOnline:
+            installQuestFormBaseline(mapFixture: "AccessibilityModeOSMElements")
+            // No freshness-fetch override needed: every element here carries only blank
+            // Sidewalks tags, so echoing the map data back (stubLatestElementFetch's own
+            // fallback when latestFixture is nil) is already the correct response.
+            stubLatestElementFetch(mapFixture: "AccessibilityModeOSMElements", latestFixture: nil)
+            stubChangesetCreate()
+            stubChangesetUpload()
+            stubChangesetClose()
+
+        case UITestScenario.accessibilityModeNetworkDown:
+            installQuestFormBaseline(mapFixture: "AccessibilityModeOSMElements")
+            // The nearest-quest list itself never calls the network (it reads
+            // mapViewModel.items, already populated by the map load above) - this
+            // scenario exists to prove exactly that: the list still populates even
+            // though every OSM API call after the map load fails.
+            stubOSMConnectivityFailure(pathMatches(#"^/prod/api/0\.6/(way|node)/\d+\.json$"#), name: "fetch latest element")
+            stubOSMConnectivityFailure(isMethodPUT() && isPath("/prod/api/0.6/changeset/create"), name: "changeset create")
+
+        case UITestScenario.accessibilityModeNoNearbyQuests:
+            installQuestFormBaseline(mapFixture: "AccessibilityModeOSMElementsFar")
 
         default:
             NSLog("[UITestStubs] Unknown scenario '%@' - only the catch-all is installed.", scenario)
@@ -329,11 +351,14 @@ enum UITestStubs {
         }.name = "GET /map.json -> \(name)"
     }
 
-    /// Shared setup for the three longForm* scenarios: lands on the Map with
-    /// LongFormOSMElements.json's pins (see that fixture's own "_note" for what each
-    /// one is) and WorkspaceDetailsWithQuests.json's real quest definitions. Callers add
-    /// their own freshness-fetch/changeset stubs on top.
-    private static func installLongFormBaseline() {
+    /// Shared setup for every scenario that lands on the Map with a real, populated
+    /// longFormQuestDef and a chosen /map.json fixture - the longForm* scenarios
+    /// (LongFormOSMElements.json, engineered around specific tags) and the
+    /// accessibilityMode* scenarios (AccessibilityModeOSMElements.json, engineered
+    /// around specific distances/bearings) both just need this same shape with a
+    /// different map fixture. Callers add their own freshness-fetch/changeset stubs on
+    /// top.
+    private static func installQuestFormBaseline(mapFixture: String) {
         seedLoggedInAndLandOnWorkspaces()
         stubWorkspacesList(fixture: "WorkspacesSingle")
         stubProjectGroupRoles(fixture: "EmptyList")
@@ -341,34 +366,39 @@ enum UITestStubs {
         stub(condition: isMethodGET() && pathMatches(#"^/api/v1/workspaces/\d+$"#)) { _ in
             response(fixture: "WorkspaceDetailsWithQuests", status: 200)
         }.name = "GET /workspaces/{id} -> WorkspaceDetailsWithQuests"
-        stubOSMMapData(fixture: "LongFormOSMElements")
+        stubOSMMapData(fixture: mapFixture)
     }
 
     /// `GET /way/{id}.json` and `GET /node/{id}.json` - the freshness check
     /// `LongElementQuest.fetchLatestTagsIfNeeded()` runs when a pin is tapped. Answers
-    /// from LongFormLatestElements.json, keyed by id - see that fixture's own "_note".
-    /// A request for an id with no entry there falls through to the map data's own tags
+    /// from `latestFixture`, keyed by id, when given - see LongFormLatestElements.json's
+    /// own "_note" for the shape. A request for an id with no entry there (or when
+    /// `latestFixture` is nil - AccessibilityModeOSMElements' elements are all blank, so
+    /// there is nothing an override would add) falls through to `mapFixture`'s own tags
     /// (a plausible real response: the element simply hasn't changed since map.json was
     /// fetched), not to the catch-all.
-    private static func stubLatestElementFetch() {
-        guard let url = Bundle.main.url(forResource: "LongFormLatestElements", withExtension: "json"),
-              let data = try? Data(contentsOf: url),
-              let latestJSON = try? JSONSerialization.jsonObject(with: data) as? [String: Any] else {
-            NSLog("[UITestStubs] Could not read LongFormLatestElements.json")
-            return
+    private static func stubLatestElementFetch(mapFixture: String, latestFixture: String?) {
+        var latest: [String: [String: Any]] = ["way": [:], "node": [:]]
+        if let latestFixture {
+            guard let url = Bundle.main.url(forResource: latestFixture, withExtension: "json"),
+                  let data = try? Data(contentsOf: url),
+                  let latestJSON = try? JSONSerialization.jsonObject(with: data) as? [String: Any] else {
+                NSLog("[UITestStubs] Could not read %@.json", latestFixture)
+                return
+            }
+            // Top-level also has a plain-String "_note" key, which is why this isn't cast
+            // straight to [String: [String: Any]] - a top-level String value would fail
+            // that cast for the whole file, not just that one key.
+            latest = [
+                "way": latestJSON["way"] as? [String: Any] ?? [:],
+                "node": latestJSON["node"] as? [String: Any] ?? [:],
+            ]
         }
-        // Top-level also has a plain-String "_note" key, which is why this isn't cast
-        // straight to [String: [String: Any]] - a top-level String value would fail
-        // that cast for the whole file, not just that one key.
-        let latest: [String: [String: Any]] = [
-            "way": latestJSON["way"] as? [String: Any] ?? [:],
-            "node": latestJSON["node"] as? [String: Any] ?? [:],
-        ]
-        guard let mapURL = Bundle.main.url(forResource: "LongFormOSMElements", withExtension: "json"),
+        guard let mapURL = Bundle.main.url(forResource: mapFixture, withExtension: "json"),
               let mapData = try? Data(contentsOf: mapURL),
               let mapJSON = try? JSONSerialization.jsonObject(with: mapData) as? [String: Any],
               let mapElements = mapJSON["elements"] as? [[String: Any]] else {
-            NSLog("[UITestStubs] Could not read LongFormOSMElements.json")
+            NSLog("[UITestStubs] Could not read %@.json", mapFixture)
             return
         }
 

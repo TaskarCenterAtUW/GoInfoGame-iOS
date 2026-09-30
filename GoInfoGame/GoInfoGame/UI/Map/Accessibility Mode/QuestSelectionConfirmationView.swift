@@ -87,6 +87,7 @@ struct QuestSelectionConfirmationView: View {
                 .fixedSize(horizontal: false, vertical: true)
                 .accessibilityLabel(Text(L10n.Localizable.startAnsweringTheQuestions))
         }
+        .accessibilityIdentifier(A11yID.AccessibilityMode.confirmationAnswerButton)
     }
     
     private var hideQuestButton: some View {
@@ -108,6 +109,7 @@ struct QuestSelectionConfirmationView: View {
                 }
                 .accessibilityLabel(Text(L10n.Localizable.hideThisQuest))
         }
+        .accessibilityIdentifier(A11yID.AccessibilityMode.confirmationHideButton)
     }
 
     private var notNowButton: some View {
@@ -125,6 +127,7 @@ struct QuestSelectionConfirmationView: View {
                 .contentShape(Rectangle())
                 .accessibilityLabel(Text(L10n.Localizable.notNow))
         }
+        .accessibilityIdentifier(A11yID.AccessibilityMode.confirmationNotNowButton)
     }
 }
 

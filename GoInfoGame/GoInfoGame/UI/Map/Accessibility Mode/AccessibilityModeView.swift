@@ -62,6 +62,7 @@ struct AccessibilityModeView: View {
                                 }
                                 .buttonStyle(PlainButtonStyle())
                                 .listRowInsets(EdgeInsets())
+                                .accessibilityIdentifier(A11yID.AccessibilityMode.questCard(elementID: item.quest.id))
                             }
                         }
                         .listRowSeparator(.hidden)
@@ -79,6 +80,7 @@ struct AccessibilityModeView: View {
                     .scrollContentBackground(.hidden)
                     .background(Color.clear)
                     .listRowSpacing(20)
+                    .accessibilityIdentifier(A11yID.AccessibilityMode.scrollView)
                 }
             }
             .padding()
@@ -193,8 +195,9 @@ struct AccessibilityModeView: View {
         // Now inside a List row — without this, List applies its own default
         // button/selection styling, which can make taps unreliable.
         .buttonStyle(.plain)
+        .accessibilityIdentifier(A11yID.AccessibilityMode.refreshButton)
     }
-    
+
     private var numberOfQuestsView: some View {
         VStack(alignment: .leading, spacing: 5.0) {
             Text(L10n.Localizable.numberOfQuests + " \(viewModel.nearestQuest.count)")
@@ -204,6 +207,7 @@ struct AccessibilityModeView: View {
                 .lineLimit(nil)
                 .fixedSize(horizontal: false, vertical: true)
                 .accessibilityLabel(L10n.Localizable.numberOfQuests + " \(viewModel.nearestQuest.count)")
+                .accessibilityIdentifier(A11yID.AccessibilityMode.questCountLabel)
 
             Text(L10n.Localizable.selectTheQuestToStartAnswering)
                 .font(FontFamily.Lato.medium.swiftUIFont(size: 14, relativeTo: .subheadline))
@@ -231,6 +235,7 @@ struct AccessibilityModeView: View {
                 .foregroundColor(Asset.Colors.huskyPurple.swiftUIColor)
                 .accessibilityLabel(L10n.Localizable.manageQuests)
         }
+        .accessibilityIdentifier(A11yID.AccessibilityMode.filterButton)
         .sheet(isPresented: $showBottomSheet) {
             ManageQuestsView()
                 // Sized to its own content by ManageQuestsView itself.
@@ -265,6 +270,7 @@ struct AccessibilityModeView: View {
         // Section — without this, List's default button styling makes taps on either
         // one unreliable.
         .buttonStyle(.plain)
+        .accessibilityIdentifier(A11yID.AccessibilityMode.undoEditButton)
     }
 
     private var goToMapView: some View {
@@ -289,6 +295,7 @@ struct AccessibilityModeView: View {
                 .stroke(Asset.Colors.huskyPurple.swiftUIColor, lineWidth: 2)
         )
         .buttonStyle(.plain)
+        .accessibilityIdentifier(A11yID.AccessibilityMode.goToMapButton)
     }
 
     private var bottomBar: some View {
