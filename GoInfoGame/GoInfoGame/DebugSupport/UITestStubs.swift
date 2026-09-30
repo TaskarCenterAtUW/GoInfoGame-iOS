@@ -294,6 +294,10 @@ enum UITestStubs {
             seedUndoableChangesets()
             stubOSMConnectivityFailure(isMethodPUT() && isPath("/prod/api/0.6/changeset/create"), name: "changeset create")
 
+        case UITestScenario.manageQuestsOnline:
+            installQuestFormBaseline(mapFixture: "AccessibilityModeOSMElements")
+            seedHiddenQuests()
+
         default:
             NSLog("[UITestStubs] Unknown scenario '%@' - only the catch-all is installed.", scenario)
         }
@@ -522,6 +526,27 @@ enum UITestStubs {
         } catch {
             NSLog("[UITestStubs] Error seeding undo changesets: %@", "\(error)")
         }
+    }
+
+    /// Writes 2 HiddenQuest rows directly to UserDefaults["hiddenElements"], for
+    /// manageQuestsOnline - see that scenario's own comment for why (HiddenQuestManager
+    /// has no network fetch behind it; nothing else can seed it except actually hiding a
+    /// quest through a real Map/Accessibility Mode flow first). Matches
+    /// HiddenQuestManager.saveHiddenQuests()'s own encoding exactly (a plain
+    /// JSONEncoder-encoded [HiddenQuest]), so HiddenQuestManager.shared's lazy init -
+    /// whenever something first touches it, well after this runs - reads it back
+    /// exactly as if a real hide had happened. Two rows (not one) so "Unhide All" and
+    /// "swipe-delete a single row" can be tested as genuinely different outcomes.
+    private static func seedHiddenQuests() {
+        let seeded = [
+            HiddenQuest(id: 810401, name: "Sidewalks"),
+            HiddenQuest(id: 810402, name: "Crossings"),
+        ]
+        guard let data = try? JSONEncoder().encode(seeded) else {
+            NSLog("[UITestStubs] Error encoding seeded hidden quests")
+            return
+        }
+        UserDefaults.standard.set(data, forKey: "hiddenElements")
     }
 
     /// A connectivity failure for whatever `condition` matches - used by

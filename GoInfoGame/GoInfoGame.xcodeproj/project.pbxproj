@@ -243,6 +243,7 @@
 		C7DBG0000000000000000241 /* LongFormScreenUITestCases.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7DBG0000000000000000240 /* LongFormScreenUITestCases.swift */; };
 		C7DBG0000000000000000255 /* AccessibilityModeScreenUITestCases.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7DBG0000000000000000252 /* AccessibilityModeScreenUITestCases.swift */; };
 		C7DBG0000000000000000261 /* UndoEditsScreenUITestCases.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7DBG0000000000000000260 /* UndoEditsScreenUITestCases.swift */; };
+		C7DBG0000000000000000271 /* ManageQuestsScreenUITestCases.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7DBG0000000000000000270 /* ManageQuestsScreenUITestCases.swift */; };
 		C7DD04152F7E7A5800307026 /* Lato-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FA8C74D12C598F9D00D28220 /* Lato-Bold.ttf */; };
 		C7DD04162F7E7A6100307026 /* Lato-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FA8C74D02C598F9D00D28220 /* Lato-Regular.ttf */; };
 		C7DD04172F7E7A6100307026 /* Lato-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FA8C74D22C5998D600D28220 /* Lato-Medium.ttf */; };
@@ -663,6 +664,7 @@
 		C7DBG0000000000000000240 /* LongFormScreenUITestCases.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LongFormScreenUITestCases.swift; sourceTree = "<group>"; };
 		C7DBG0000000000000000252 /* AccessibilityModeScreenUITestCases.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccessibilityModeScreenUITestCases.swift; sourceTree = "<group>"; };
 		C7DBG0000000000000000260 /* UndoEditsScreenUITestCases.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UndoEditsScreenUITestCases.swift; sourceTree = "<group>"; };
+		C7DBG0000000000000000270 /* ManageQuestsScreenUITestCases.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManageQuestsScreenUITestCases.swift; sourceTree = "<group>"; };
 		C7E9528C2ED887CC001BFB75 /* NoQuestsNearView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoQuestsNearView.swift; sourceTree = "<group>"; };
 		C7E9528E2ED88B00001BFB75 /* lato-heavy.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "lato-heavy.ttf"; sourceTree = "<group>"; };
 		C7ED070E2D70E2EC001FFFE2 /* TokenRefresher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenRefresher.swift; sourceTree = "<group>"; };
@@ -1868,6 +1870,7 @@
 				C7DBG0000000000000000240 /* LongFormScreenUITestCases.swift */,
 				C7DBG0000000000000000252 /* AccessibilityModeScreenUITestCases.swift */,
 				C7DBG0000000000000000260 /* UndoEditsScreenUITestCases.swift */,
+				C7DBG0000000000000000270 /* ManageQuestsScreenUITestCases.swift */,
 				C7DBG0000000000000000202 /* ProfileScreenUITestCases.swift */,
 				C7DBG0000000000000000200 /* WorkspacesScreenUITestCases.swift */,
 			);
@@ -2794,6 +2797,7 @@
 				C7DBG0000000000000000241 /* LongFormScreenUITestCases.swift in Sources */,
 				C7DBG0000000000000000255 /* AccessibilityModeScreenUITestCases.swift in Sources */,
 				C7DBG0000000000000000261 /* UndoEditsScreenUITestCases.swift in Sources */,
+				C7DBG0000000000000000271 /* ManageQuestsScreenUITestCases.swift in Sources */,
 				C7DBG0000000000000000203 /* ProfileScreenUITestCases.swift in Sources */,
 				C7DBG0000000000000000201 /* WorkspacesScreenUITestCases.swift in Sources */,
 				FAD5C5142AFCBE720040C61A /* GoInfoGameUITests.swift in Sources */,
