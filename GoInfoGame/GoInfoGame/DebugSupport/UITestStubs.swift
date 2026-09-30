@@ -298,6 +298,9 @@ enum UITestStubs {
             installQuestFormBaseline(mapFixture: "AccessibilityModeOSMElements")
             seedHiddenQuests()
 
+        case UITestScenario.mapWithNoImageryOptions:
+            installQuestFormBaseline(mapFixture: "AccessibilityModeOSMElements", workspaceDetailsFixture: "WorkspaceDetailsNoImagery")
+
         default:
             NSLog("[UITestStubs] Unknown scenario '%@' - only the catch-all is installed.", scenario)
         }
@@ -375,14 +378,14 @@ enum UITestStubs {
     /// around specific distances/bearings) both just need this same shape with a
     /// different map fixture. Callers add their own freshness-fetch/changeset stubs on
     /// top.
-    private static func installQuestFormBaseline(mapFixture: String) {
+    private static func installQuestFormBaseline(mapFixture: String, workspaceDetailsFixture: String = "WorkspaceDetailsWithQuests") {
         seedLoggedInAndLandOnWorkspaces()
         stubWorkspacesList(fixture: "WorkspacesSingle")
         stubProjectGroupRoles(fixture: "EmptyList")
         stubUserProfile(fixture: "UserProfilePlaceholder")
         stub(condition: isMethodGET() && pathMatches(#"^/api/v1/workspaces/\d+$"#)) { _ in
-            response(fixture: "WorkspaceDetailsWithQuests", status: 200)
-        }.name = "GET /workspaces/{id} -> WorkspaceDetailsWithQuests"
+            response(fixture: workspaceDetailsFixture, status: 200)
+        }.name = "GET /workspaces/{id} -> \(workspaceDetailsFixture)"
         stubOSMMapData(fixture: mapFixture)
     }
 

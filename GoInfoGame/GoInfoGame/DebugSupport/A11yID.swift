@@ -177,6 +177,20 @@ enum A11yID {
 
         // MARK: Floating buttons
         static let layersButton = "map_layers_button"
+        /// The List inside SatellitePickerSheet (opened by layersButton) - unlike every
+        /// other sheet in this app, it has no close button of its own (swipe-to-dismiss
+        /// is explicitly allowed - MapView.swift's own .sheet has no
+        /// .interactiveDismissDisabled()), so this doubles as that sheet's presence
+        /// signal instead.
+        static let satellitePickerScrollView = "map_satellite_picker_scroll_view"
+        /// One row of SatellitePickerSheet's list: `map_satellite_option_<id>` - keyed
+        /// by SatelliteOption.id ("none" for "Default Imagery", or a WMTS server's own
+        /// id string e.g. "EsriWorldImageryClarity") - already a stable identity in the
+        /// app's own model, not invented for testing. Selection state is read through
+        /// the row's own `isSelected` accessibility trait (SatellitePickerSheet.swift's
+        /// own .accessibilityAddTraits(isSelected ? [.isButton, .isSelected] : ...)),
+        /// not through this identifier.
+        static func satelliteOptionRow(id: String) -> String { "map_satellite_option_\(id)" }
         static let downloadButton = "map_download_button"
         static let undoButton = "map_undo_button"
         /// Only rendered once the map is rotated off north (CompassButtonView's own
@@ -463,6 +477,19 @@ enum UITestScenario {
     /// QuestsRepository/HiddenQuestManager - there is no distinct online/offline
     /// behavior to exercise here the way LongForm/UndoEdits have.
     static let manageQuestsOnline = "manage_quests_online"
+
+    /// Lands on the Map with WorkspaceDetailsNoImagery.json - identical to
+    /// WorkspaceDetailsWithQuests.json except `imageryListDef` is null, so
+    /// MapViewModel.updateOptions(for:) has no WMTS servers to geo-fence in and the
+    /// satellite picker shows only its always-present "Default Imagery" option. Not
+    /// built on workspacesSingleAutoRedirect: that scenario's own fixture
+    /// (WorkspaceDetailsSingle.json) has `longFormQuestDef: null`, which
+    /// InitialViewModel.fetchLongQuestsFor treats as a failure and falls back to the
+    /// ordinary Workspaces picker screen instead of navigating to Map at all (confirmed
+    /// directly - see WorkspacesScreenUITestCases.testSingleEligibleWorkspaceWithout
+    /// LongformFallsBackToPicker's own comment) - it never reaches the Map screen this
+    /// scenario needs.
+    static let mapWithNoImageryOptions = "map_with_no_imagery_options"
 
     /// Launch argument (not environment) that clears UserDefaults and the Keychain.
     static let resetStateArgument = "-UITestResetState"
