@@ -20,6 +20,7 @@
   "membersCount": 0,
   "longFormQuestDef": {
     "version": "3.0.0",
+    "recency_period": 36500,
     "elements": [
       {
         "element_type": "Sidewalks",

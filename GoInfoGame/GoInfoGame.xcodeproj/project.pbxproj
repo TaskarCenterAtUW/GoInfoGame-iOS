@@ -235,7 +235,10 @@
 		C7DBG0000000000000000203 /* ProfileScreenUITestCases.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7DBG0000000000000000202 /* ProfileScreenUITestCases.swift */; };
 		C7DBG0000000000000000221 /* WorkspaceDetailsWithQuests.json in Resources */ = {isa = PBXBuildFile; fileRef = C7DBG0000000000000000211 /* WorkspaceDetailsWithQuests.json */; };
 		C7DBG0000000000000000222 /* MapOSMElements.json in Resources */ = {isa = PBXBuildFile; fileRef = C7DBG0000000000000000212 /* MapOSMElements.json */; };
+		C7DBG0000000000000000223 /* LongFormOSMElements.json in Resources */ = {isa = PBXBuildFile; fileRef = C7DBG0000000000000000213 /* LongFormOSMElements.json */; };
+		C7DBG0000000000000000224 /* LongFormLatestElements.json in Resources */ = {isa = PBXBuildFile; fileRef = C7DBG0000000000000000214 /* LongFormLatestElements.json */; };
 		C7DBG0000000000000000231 /* MapScreenUITestCases.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7DBG0000000000000000230 /* MapScreenUITestCases.swift */; };
+		C7DBG0000000000000000241 /* LongFormScreenUITestCases.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7DBG0000000000000000240 /* LongFormScreenUITestCases.swift */; };
 		C7DD04152F7E7A5800307026 /* Lato-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FA8C74D12C598F9D00D28220 /* Lato-Bold.ttf */; };
 		C7DD04162F7E7A6100307026 /* Lato-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FA8C74D02C598F9D00D28220 /* Lato-Regular.ttf */; };
 		C7DD04172F7E7A6100307026 /* Lato-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FA8C74D22C5998D600D28220 /* Lato-Medium.ttf */; };
@@ -648,7 +651,10 @@
 		C7DBG0000000000000000202 /* ProfileScreenUITestCases.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileScreenUITestCases.swift; sourceTree = "<group>"; };
 		C7DBG0000000000000000211 /* WorkspaceDetailsWithQuests.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = WorkspaceDetailsWithQuests.json; sourceTree = "<group>"; };
 		C7DBG0000000000000000212 /* MapOSMElements.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = MapOSMElements.json; sourceTree = "<group>"; };
+		C7DBG0000000000000000213 /* LongFormOSMElements.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = LongFormOSMElements.json; sourceTree = "<group>"; };
+		C7DBG0000000000000000214 /* LongFormLatestElements.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = LongFormLatestElements.json; sourceTree = "<group>"; };
 		C7DBG0000000000000000230 /* MapScreenUITestCases.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapScreenUITestCases.swift; sourceTree = "<group>"; };
+		C7DBG0000000000000000240 /* LongFormScreenUITestCases.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LongFormScreenUITestCases.swift; sourceTree = "<group>"; };
 		C7E9528C2ED887CC001BFB75 /* NoQuestsNearView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoQuestsNearView.swift; sourceTree = "<group>"; };
 		C7E9528E2ED88B00001BFB75 /* lato-heavy.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "lato-heavy.ttf"; sourceTree = "<group>"; };
 		C7ED070E2D70E2EC001FFFE2 /* TokenRefresher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenRefresher.swift; sourceTree = "<group>"; };
@@ -1580,6 +1586,8 @@
 				C7DBG00000000000000000A5 /* LoginFailure.json */,
 				C7DBG0000000000000000211 /* WorkspaceDetailsWithQuests.json */,
 				C7DBG0000000000000000212 /* MapOSMElements.json */,
+				C7DBG0000000000000000213 /* LongFormOSMElements.json */,
+				C7DBG0000000000000000214 /* LongFormLatestElements.json */,
 				C7DBG0000000000000000110 /* UserProfileServerError.json */,
 				C7DBG0000000000000000104 /* WorkspacesList.json */,
 				C7DBG0000000000000000105 /* ProjectGroupRoles.json */,
@@ -1847,6 +1855,7 @@
 				E70058F06D4E69B2E0669A8B /* ScreenshotOnFailureUITestCase.swift */,
 				C7AFA17C305AFC1500C539F7 /* LoginScreenUITestCases.swift */,
 				C7DBG0000000000000000230 /* MapScreenUITestCases.swift */,
+				C7DBG0000000000000000240 /* LongFormScreenUITestCases.swift */,
 				C7DBG0000000000000000202 /* ProfileScreenUITestCases.swift */,
 				C7DBG0000000000000000200 /* WorkspacesScreenUITestCases.swift */,
 			);
@@ -2212,6 +2221,8 @@
 				C7DBG00000000000000000A9 /* LoginFailure.json in Resources */,
 				C7DBG0000000000000000221 /* WorkspaceDetailsWithQuests.json in Resources */,
 				C7DBG0000000000000000222 /* MapOSMElements.json in Resources */,
+				C7DBG0000000000000000223 /* LongFormOSMElements.json in Resources */,
+				C7DBG0000000000000000224 /* LongFormLatestElements.json in Resources */,
 				C7DBG0000000000000000160 /* UserProfileServerError.json in Resources */,
 				C7DBG0000000000000000154 /* WorkspacesList.json in Resources */,
 				C7DBG0000000000000000155 /* ProjectGroupRoles.json in Resources */,
@@ -2766,6 +2777,7 @@
 				FAD5C5162AFCBE720040C61A /* GoInfoGameUITestsLaunchTests.swift in Sources */,
 				C7AFA17D305AFC1500C539F7 /* LoginScreenUITestCases.swift in Sources */,
 				C7DBG0000000000000000231 /* MapScreenUITestCases.swift in Sources */,
+				C7DBG0000000000000000241 /* LongFormScreenUITestCases.swift in Sources */,
 				C7DBG0000000000000000203 /* ProfileScreenUITestCases.swift in Sources */,
 				C7DBG0000000000000000201 /* WorkspacesScreenUITestCases.swift in Sources */,
 				FAD5C5142AFCBE720040C61A /* GoInfoGameUITests.swift in Sources */,

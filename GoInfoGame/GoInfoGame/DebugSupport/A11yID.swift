@@ -83,6 +83,45 @@ enum A11yID {
         static let logoutButton = "profile_logout_button"
     }
 
+    /// Identifiers for the LongForm quest-answer form (GoInfoGame/quests/LongQuests) and
+    /// the sheet that hosts it (MapView.swift's QuestSheetView).
+    ///
+    /// Two constraints learned from the real accessibility hierarchy, that shape this set:
+    /// - identifiers go on LEAF controls only. Putting one on a container with several
+    ///   independent children stamps the same value onto every leaf inside it - confirmed
+    ///   directly for QuestSheetView's own root Group (see MapView.swift), which is why
+    ///   it has no identifier of its own and the dismiss button below is used instead.
+    /// - choice tiles are `.accessibilityElement(children: .combine)` buttons whose LABEL
+    ///   already carries the selection state ("<choice> option selected" / "... option
+    ///   unselected"), so state is asserted through the label; the identifier only locates.
+    enum LongForm {
+        /// The pinned header's close ("X") button, label "Dismiss". Doubles as the
+        /// "form is open" signal (the sheet has no other stable root element).
+        static let dismissButton = "longform_dismiss_button"
+        /// The List holding everything below the header - the scroll container for every
+        /// reachability / "scroll until visible" check.
+        static let scrollView = "longform_scroll_view"
+        static let composeNoteButton = "longform_compose_note_button"
+        static let ignoreQuestButton = "longform_ignore_quest_button"
+        static let submitButton = "longform_submit_button"
+
+        /// One tile of an ExclusiveChoice/MultipleChoice question:
+        /// `longform_option_<questID>_<choice value>` (e.g. `longform_option_101_concrete`).
+        static func option(questID: Int, value: String) -> String { "longform_option_\(questID)_\(value)" }
+        /// The free-text (TextEntry) input of a question: `longform_text_<questID>`.
+        static func textInput(questID: Int) -> String { "longform_text_\(questID)" }
+        /// The Numeric input of a question: `longform_numeric_<questID>`.
+        static func numericInput(questID: Int) -> String { "longform_numeric_\(questID)" }
+        /// The question's title text: `longform_question_<questID>` - lets a test assert a
+        /// dependent question appeared/disappeared without depending on its wording.
+        static func question(questID: Int) -> String { "longform_question_\(questID)" }
+        /// QuestSheetView's "This element has already been answered by another user"
+        /// state - shown instead of the form when the freshness fetch reveals someone
+        /// else already completed every applicable question.
+        static let alreadyAnsweredMessage = "longform_already_answered_message"
+        static let alreadyAnsweredOKButton = "longform_already_answered_ok_button"
+    }
+
     enum Map {
         // MARK: Top bar
         static let profileButton = "map_profile_button"
@@ -118,16 +157,23 @@ enum A11yID {
         // several on screen at once, each a distinct element XCUITest enumerates
         // separately) rather than one per instance, since which quest/cluster renders
         // where is data-dependent. A cluster's count is readable via its accessibility
-        // value/label - see QuestClusterAnnotationView.
+        // value/label - see QuestClusterAnnotationView. A quest pin's own accessibility
+        // value likewise carries its underlying OSM element's id - not set directly on
+        // QuestAnnotationView, but via LongElementQuest.displayUnit's `description`
+        // (confirmed directly: MapLibre auto-copies DisplayUnitAnnotation.subtitle,
+        // which reads that field, into the rendered annotation view's own
+        // accessibilityValue, overwriting anything set explicitly on the UIView itself)
+        // - see that property's own comment.
         static let questAnnotation = "map_quest_annotation"
         static let clusterAnnotation = "map_cluster_annotation"
 
         // MARK: Actions & flows - identifiers on what each button/gesture opens, so a
         // test can confirm the transition happened, not just that the trigger exists.
-        /// Root of the quest-answer sheet (MapView.swift's QuestSheetView) - presented
-        /// after tapping a quest/cluster annotation. Covers only "did it open", not its
-        /// per-quest-type form content, which has no identifiers of its own.
-        static let questAnswerSheet = "map_quest_answer_sheet"
+        //
+        // QuestSheetView (presented after tapping a quest/cluster annotation) has no
+        // root identifier of its own - see A11yID.LongForm's own comment for why - use
+        // A11yID.LongForm.dismissButton / .alreadyAnsweredOKButton as the "did it open"
+        // signal instead.
         /// The small "Create Note"/"Add Feature" card shown after a long-press on empty
         /// map area (MapView.swift's PinChoiceCard) has no root identifier of its own -
         /// confirmed directly that giving a multi-child container like it one stamps
@@ -233,6 +279,21 @@ enum UITestScenario {
     /// simulator's real enrollment state differs between machines (see
     /// UITestStubs.resetStateIfNeeded()) and cannot be relied on.
     static let loginBiometricPrompt = "login_biometric_prompt"
+
+    /// PLACEHOLDERS for the LongForm suite (stubs not written yet - an unknown scenario
+    /// only installs the catch-all). All three land on the Map with LongFormOSMElements
+    /// .json (5 tappable pins, 1 fully-answered way that must show no pin) and
+    /// WorkspaceDetailsWithQuests.json's quest definitions.
+    ///
+    /// Everything on the OSM API succeeds: freshness fetch (LongFormLatestElements.json),
+    /// then changeset create -> upload -> close.
+    static let longFormOnline = "long_form_online"
+    /// The map data loads, but every OSM API call after that fails with a connectivity
+    /// error (fetch on tap, changeset create/upload/close) - a mid-session outage.
+    static let longFormNetworkDown = "long_form_network_down"
+    /// Like longFormNetworkDown for the FIRST changeset attempt only, then everything
+    /// succeeds - so a Submit queues offline and the Sync button's retry goes through.
+    static let longFormNetworkRecovers = "long_form_network_recovers"
 
     /// Launch argument (not environment) that clears UserDefaults and the Keychain.
     static let resetStateArgument = "-UITestResetState"

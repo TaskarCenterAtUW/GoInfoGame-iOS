@@ -30,6 +30,7 @@ struct QuestOptions: View {
         switch questType {
         case .exclusiveChoice:
             ExclusiveChoiceView(
+                questID: quest.questID,
                 options: questOptions,
                 selectedChoice: $selectedChoice,
                 uploadPhoto: uploadPhoto,
@@ -37,19 +38,22 @@ struct QuestOptions: View {
             )
         case .multipleChoice:
             MultipleChoiceView(
+                questID: quest.questID,
                 options: questOptions,
                 selectedChoice: $selectedChoice,
                 uploadPhoto: uploadPhoto,
                 hasPhotoAttached: hasPhotoAttached
             )
-            
+
         case .numeric:
             NumericInputView(
+                questID: quest.questID,
                 selectedChoice: $selectedChoice,
                 validation: quest.questAnswerValidation
             )
         case .textEntry:
             TextEntryView(
+                questID: quest.questID,
                 selectedChoice: $selectedChoice
             )
         case .autoCapture:
@@ -62,6 +66,7 @@ struct QuestOptions: View {
 private extension QuestOptions {
 
     struct ExclusiveChoiceView: View {
+        let questID: Int
         let options: [QuestAnswerChoice]
         @Binding var selectedChoice: QuestAnswerChoice?
         var uploadPhoto: (Bool) -> ()
@@ -105,6 +110,8 @@ private extension QuestOptions {
                                 )
                                 .accessibilityElement(children: .combine)
                                 .accessibilityLabel((selectedChoice?.choiceText == option.choiceText) ? "\(option.choiceText) \(L10n.Localizable.optionSelected)" :  "\(option.choiceText) \(L10n.Localizable.optionUnselected)")
+                                // After .combine, so it tags this one combined element (a leaf).
+                                .accessibilityIdentifier(A11yID.LongForm.option(questID: questID, value: option.value))
                             }
                         }
 
@@ -122,6 +129,7 @@ private extension QuestOptions {
     }
 
     struct MultipleChoiceView: View {
+        let questID: Int
         let options: [QuestAnswerChoice]
         @Binding var selectedChoice: QuestAnswerChoice?
         var uploadPhoto: (Bool) -> ()
@@ -169,6 +177,7 @@ private extension QuestOptions {
                                 )
                                 .accessibilityElement(children: .combine)
                                 .accessibilityLabel((selectedValues.contains(option.value)) ? "\(option.choiceText) \(L10n.Localizable.optionSelected)" :  "\(option.choiceText) \(L10n.Localizable.optionUnselected)")
+                                .accessibilityIdentifier(A11yID.LongForm.option(questID: questID, value: option.value))
                             }
                         }
 
@@ -223,6 +232,7 @@ private extension QuestOptions {
     }
 
     struct NumericInputView: View {
+        let questID: Int
         @Binding var selectedChoice: QuestAnswerChoice?
         var validation: QuestAnswerValidation?
 
@@ -243,6 +253,7 @@ private extension QuestOptions {
                 .padding(.vertical, 4) // Adds internal space
                 .padding(.horizontal, 10)
                 .frame(minWidth: 100, minHeight: 44) // Meets accessibility minimums
+                .accessibilityIdentifier(A11yID.LongForm.numericInput(questID: questID))
 
                 if let errorMessage {
                     Text(errorMessage)
@@ -360,6 +371,7 @@ private extension QuestOptions {
     }
     
     struct TextEntryView: View {
+        let questID: Int
         @Binding var selectedChoice: QuestAnswerChoice?
         let maxLenth: Int = 255
         
@@ -393,6 +405,7 @@ private extension QuestOptions {
                 .lineLimit(nil)
                 .border(Color.gray)
                 .accessibilityLabel("Text entry field. \(currentValue.count) out of \(maxLenth) characters used.")
+                .accessibilityIdentifier(A11yID.LongForm.textInput(questID: questID))
                 
                 Text("\(currentValue.count) / \(maxLenth)")
                     .font(.caption)

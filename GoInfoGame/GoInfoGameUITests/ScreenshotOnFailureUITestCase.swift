@@ -32,6 +32,29 @@ class ScreenshotOnFailureUITestCase: XCTestCase {
             cancel.tap()
             return true
         }
+
+        // A simulator that has never granted GoInfoGame location access before (a fresh
+        // Erase All Content and Settings, or a CI machine's first run) shows the system
+        // "Allow Location" alert the moment CLLocationManager's delegate is assigned
+        // (LocationManagerDelegate.locationManagerDidChangeAuthorization fires with
+        // .notDetermined on launch and immediately calls requestWhenInUseAuthorization()).
+        // That's unconditional, unlike startUpdatingLocation's own UITestRuntime bypass
+        // (LocationManagerDelegate.swift's own comment) - the bypass only skips the real
+        // GPS fix, not this authorization prompt. Left unhandled, the alert sits in front
+        // of the whole app and every test that needs the Map screen times out identically
+        // ("Form did not open" etc.), independent of whatever that test is actually
+        // checking. Tapping any allow option is fine either way: the app never uses the
+        // real coordinate under UITestRuntime.isActive regardless of what's granted here.
+        addUIInterruptionMonitor(withDescription: "Location permission request") { alert in
+            for title in ["Allow While Using App", "Allow Once", "Allow"] {
+                let button = alert.buttons[title]
+                if button.exists {
+                    button.tap()
+                    return true
+                }
+            }
+            return false
+        }
     }
 
     /// Dismisses the "Sign in with Apple ID" AutoFill sheet if it is currently showing.
@@ -56,8 +79,16 @@ class ScreenshotOnFailureUITestCase: XCTestCase {
         let springboard = XCUIApplication(bundleIdentifier: "com.apple.springboard")
         let alert = springboard.alerts.firstMatch
         guard alert.waitForExistence(timeout: 1) else { return false }
-        if alert.buttons["Cancel"].exists {
-            alert.buttons["Cancel"].tap()
+        // "Cancel" dismisses the sign-in nag; the location-permission alert (see the
+        // "Location permission request" interruption monitor in setUpWithError, whose own
+        // comment explains why it shows up and why any allow option is fine to tap) uses a
+        // different button set entirely, so both are tried here.
+        for title in ["Cancel", "Allow While Using App", "Allow Once", "Allow"] {
+            let button = alert.buttons[title]
+            if button.exists {
+                button.tap()
+                break
+            }
         }
         _ = alert.waitForNonExistence(timeout: 3)
         return true
@@ -85,6 +116,12 @@ class ScreenshotOnFailureUITestCase: XCTestCase {
             app.launchArguments.append(UITestScenario.resetStateArgument)
         }
         app.launch()
+        // Deterministic, not just the passive interruption monitor above: that monitor is
+        // only consulted when XCTest happens to synchronize on a query, and this comment's
+        // sibling on the sign-in nag already found that unreliable enough to warrant an
+        // explicit check. The location-permission alert (see setUpWithError) can appear
+        // this early, before any test has made its own query yet.
+        dismissSystemAlertsIfPresent(app)
         return app
     }
 
@@ -114,18 +151,29 @@ class ScreenshotOnFailureUITestCase: XCTestCase {
     func scrollToElement(_ element: XCUIElement,
                          in scrollView: XCUIElement,
                          maxSwipes: Int = 8) -> Bool {
-        guard element.exists else { return false }
         let viewport = XCUIApplication().windows.firstMatch.frame
         var swipes = 0
         while !element.isHittable && swipes < maxSwipes {
-            if element.frame.midY > viewport.midY {
+            // A row a List hasn't materialized yet (lazy virtualization - unlike every
+            // ScrollView-based screen this helper was originally written against)
+            // doesn't just sit off-screen, it plain doesn't exist, reporting a .zero
+            // frame. Trusting frame.midY (reads as 0) for direction in that case
+            // reads as "already above the viewport" and scrolls the wrong way for a
+            // target that's actually further down and simply hasn't rendered yet -
+            // confirmed directly: a question only a few rows into a real List failed
+            // to ever become reachable under the old guard (`element.exists` returning
+            // false immediately, before a single scroll was attempted) combined with
+            // this misread direction once existence was allowed to retry instead.
+            // Default to revealing more content below whenever the element isn't real
+            // yet; only trust its actual frame for direction once it exists.
+            if element.exists && element.frame.midY > viewport.midY {
                 scrollView.swipeUp()
             } else {
                 scrollView.swipeDown()
             }
             swipes += 1
         }
-        return element.isHittable
+        return element.exists && element.isHittable
     }
 
     /// Asserts that no two of `elements` share any on-screen area.
