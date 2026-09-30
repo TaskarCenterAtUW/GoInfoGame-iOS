@@ -41,6 +41,23 @@ enum UITestStubs {
             UserDefaults.standard.removePersistentDomain(forName: domain)
         }
 
+        // The local Realm element database is not part of UserDefaults/Keychain and is
+        // never touched by anything above or below this line - it survives across every
+        // app relaunch on the same simulator, including between separate UI test runs.
+        // A fixture that reuses element ids also used elsewhere (LongForm's fixtures
+        // deliberately reuse ids from the Map suite's own MapOSMElements.json, to keep
+        // both suites' pins in the same real-world area) can then collide with whatever
+        // that id's row already held from an earlier run, producing pins/tags that don't
+        // match either fixture. Safe to call unconditionally here (unlike
+        // AppDelegate's own commented-out call to this) because this whole function is
+        // itself gated on the UI-test-only launch argument and #if DEBUG below - it never
+        // runs for a real user. realm.deleteAll() (not deleting the underlying file) is
+        // the correct way to clear it: AppDelegate already opens a Realm instance at this
+        // configuration earlier in launch (to force schema computation ahead of a
+        // race-prone concurrent access - see its own comment), and deleting the file out
+        // from under an already-open instance in the same process would not reliably work.
+        DatabaseConnector.shared.clearDB()
+
         // The Keychain is not part of the app container and survives even a full
         // uninstall of the simulator app, so it has to be cleared by hand.
         _ = KeychainManager.delete(key: "accessToken")
@@ -208,6 +225,40 @@ enum UITestStubs {
             stubWorkspacesList(fixture: "EmptyList")
             stubProjectGroupRoles(fixture: "EmptyList")
 
+        case UITestScenario.longFormOnline:
+            installLongFormBaseline()
+            stubLatestElementFetch()
+            stubChangesetCreate()
+            stubChangesetUpload()
+            stubChangesetClose()
+
+        case UITestScenario.longFormNetworkDown:
+            installLongFormBaseline()
+            // The freshness fetch and every submission step fail - map data itself
+            // (already stubbed by installLongFormBaseline) is unaffected, so the pins
+            // are still there to tap.
+            stubOSMConnectivityFailure(pathMatches(#"^/prod/api/0\.6/(way|node)/\d+\.json$"#), name: "fetch latest element")
+            stubOSMConnectivityFailure(isMethodPUT() && isPath("/prod/api/0.6/changeset/create"), name: "changeset create")
+
+        case UITestScenario.longFormNetworkRecovers:
+            installLongFormBaseline()
+            stubLatestElementFetch()
+            // Only the FIRST changeset/create attempt fails - QuestSubmissionManager's
+            // offline queue leaves the answer pending after that, and a later retry
+            // (sync button, or another submit) must succeed.
+            var hasFailedOnce = false
+            stub(condition: isMethodPUT() && isPath("/prod/api/0.6/changeset/create")) { _ in
+                if !hasFailedOnce {
+                    hasFailedOnce = true
+                    return HTTPStubsResponse(error: NSError(domain: NSURLErrorDomain,
+                                                             code: URLError.notConnectedToInternet.rawValue))
+                }
+                return HTTPStubsResponse(data: Data("775".utf8), statusCode: 200,
+                                         headers: ["Content-Type": "application/json"])
+            }.name = "changeset create -> fails once, then succeeds"
+            stubChangesetUpload()
+            stubChangesetClose()
+
         default:
             NSLog("[UITestStubs] Unknown scenario '%@' - only the catch-all is installed.", scenario)
         }
@@ -272,10 +323,115 @@ enum UITestStubs {
 
     /// The OSM elements MapView fetches for the visible area - see the comment on
     /// mapWithQuestClusters for why this path is what it is.
-    private static func stubOSMMapData() {
+    private static func stubOSMMapData(fixture name: String = "MapOSMElements") {
         stub(condition: isMethodGET() && isPath("/prod/api/0.6/map.json")) { _ in
-            response(fixture: "MapOSMElements", status: 200)
-        }.name = "GET /map.json -> MapOSMElements"
+            response(fixture: name, status: 200)
+        }.name = "GET /map.json -> \(name)"
+    }
+
+    /// Shared setup for the three longForm* scenarios: lands on the Map with
+    /// LongFormOSMElements.json's pins (see that fixture's own "_note" for what each
+    /// one is) and WorkspaceDetailsWithQuests.json's real quest definitions. Callers add
+    /// their own freshness-fetch/changeset stubs on top.
+    private static func installLongFormBaseline() {
+        seedLoggedInAndLandOnWorkspaces()
+        stubWorkspacesList(fixture: "WorkspacesSingle")
+        stubProjectGroupRoles(fixture: "EmptyList")
+        stubUserProfile(fixture: "UserProfilePlaceholder")
+        stub(condition: isMethodGET() && pathMatches(#"^/api/v1/workspaces/\d+$"#)) { _ in
+            response(fixture: "WorkspaceDetailsWithQuests", status: 200)
+        }.name = "GET /workspaces/{id} -> WorkspaceDetailsWithQuests"
+        stubOSMMapData(fixture: "LongFormOSMElements")
+    }
+
+    /// `GET /way/{id}.json` and `GET /node/{id}.json` - the freshness check
+    /// `LongElementQuest.fetchLatestTagsIfNeeded()` runs when a pin is tapped. Answers
+    /// from LongFormLatestElements.json, keyed by id - see that fixture's own "_note".
+    /// A request for an id with no entry there falls through to the map data's own tags
+    /// (a plausible real response: the element simply hasn't changed since map.json was
+    /// fetched), not to the catch-all.
+    private static func stubLatestElementFetch() {
+        guard let url = Bundle.main.url(forResource: "LongFormLatestElements", withExtension: "json"),
+              let data = try? Data(contentsOf: url),
+              let latestJSON = try? JSONSerialization.jsonObject(with: data) as? [String: Any] else {
+            NSLog("[UITestStubs] Could not read LongFormLatestElements.json")
+            return
+        }
+        // Top-level also has a plain-String "_note" key, which is why this isn't cast
+        // straight to [String: [String: Any]] - a top-level String value would fail
+        // that cast for the whole file, not just that one key.
+        let latest: [String: [String: Any]] = [
+            "way": latestJSON["way"] as? [String: Any] ?? [:],
+            "node": latestJSON["node"] as? [String: Any] ?? [:],
+        ]
+        guard let mapURL = Bundle.main.url(forResource: "LongFormOSMElements", withExtension: "json"),
+              let mapData = try? Data(contentsOf: mapURL),
+              let mapJSON = try? JSONSerialization.jsonObject(with: mapData) as? [String: Any],
+              let mapElements = mapJSON["elements"] as? [[String: Any]] else {
+            NSLog("[UITestStubs] Could not read LongFormOSMElements.json")
+            return
+        }
+
+        func respond(kind: String, id: String) -> HTTPStubsResponse {
+            if let byId = latest[kind]?[id] as? [String: Any],
+               let body = try? JSONSerialization.data(withJSONObject: byId) {
+                return HTTPStubsResponse(data: body, statusCode: 200, headers: ["Content-Type": "application/json"])
+            }
+            if let element = mapElements.first(where: { "\($0["id"] ?? "")" == id && $0["type"] as? String == kind }) {
+                // OSMWayResponse/OSMNodeResponse decode version/generator/copyright/
+                // attribution/license as non-optional - reuse map.json's own values
+                // for them rather than making them up.
+                var wrapped = mapJSON
+                wrapped["elements"] = [element]
+                if let body = try? JSONSerialization.data(withJSONObject: wrapped) {
+                    return HTTPStubsResponse(data: body, statusCode: 200, headers: ["Content-Type": "application/json"])
+                }
+            }
+            return HTTPStubsResponse(error: NSError(domain: "OSM", code: 404,
+                                                     userInfo: [NSLocalizedDescriptionKey: "\(kind) \(id) not found"]))
+        }
+
+        stub(condition: isMethodGET() && pathMatches(#"^/prod/api/0\.6/way/\d+\.json$"#)) { request in
+            let id = request.url?.lastPathComponent.replacingOccurrences(of: ".json", with: "") ?? ""
+            return respond(kind: "way", id: id)
+        }.name = "GET /way/{id}.json -> LongFormLatestElements (or map data)"
+
+        stub(condition: isMethodGET() && pathMatches(#"^/prod/api/0\.6/node/\d+\.json$"#)) { request in
+            let id = request.url?.lastPathComponent.replacingOccurrences(of: ".json", with: "") ?? ""
+            return respond(kind: "node", id: id)
+        }.name = "GET /node/{id}.json -> LongFormLatestElements (or map data)"
+    }
+
+    /// `PUT /changeset/create` - the first step of every quest-answer submission.
+    /// Response is decoded as a bare `Int` (the new changeset id).
+    private static func stubChangesetCreate() {
+        stub(condition: isMethodPUT() && isPath("/prod/api/0.6/changeset/create")) { _ in
+            HTTPStubsResponse(data: Data("775".utf8), statusCode: 200, headers: ["Content-Type": "application/json"])
+        }.name = "PUT /changeset/create -> 775"
+    }
+
+    /// `POST /changeset/{id}/upload` - decoded as a plain string (useJSON: false), so
+    /// any 200 with a text body satisfies it; the app never parses this response.
+    private static func stubChangesetUpload() {
+        stub(condition: isMethodPOST() && pathMatches(#"^/prod/api/0\.6/changeset/\d+/upload$"#)) { _ in
+            HTTPStubsResponse(data: Data("<diffResult />".utf8), statusCode: 200, headers: ["Content-Type": "text/xml"])
+        }.name = "POST /changeset/{id}/upload -> 200"
+    }
+
+    /// `PUT /changeset/{id}/close` - decoded as `Bool`; an empty body is treated as
+    /// success by ApiManager's own empty-response special case for `Bool`.
+    private static func stubChangesetClose() {
+        stub(condition: isMethodPUT() && pathMatches(#"^/prod/api/0\.6/changeset/\d+/close$"#)) { _ in
+            HTTPStubsResponse(data: Data(), statusCode: 200, headers: ["Content-Type": "application/json"])
+        }.name = "PUT /changeset/{id}/close -> 200 (empty)"
+    }
+
+    /// A connectivity failure for whatever `condition` matches - used by
+    /// longFormNetworkDown for both the freshness fetch and the first submission step.
+    private static func stubOSMConnectivityFailure(_ condition: @escaping HTTPStubsTestBlock, name: String) {
+        stub(condition: condition) { _ in
+            HTTPStubsResponse(error: NSError(domain: NSURLErrorDomain, code: URLError.notConnectedToInternet.rawValue))
+        }.name = "\(name) -> network down"
     }
 
     /// Makes the biometric login button render, by satisfying `SessionManager

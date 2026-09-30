@@ -669,8 +669,12 @@ final class MapScreenUITestCases: ScreenshotOnFailureUITestCase {
         XCTAssertTrue(quest.waitForExistence(timeout: 40), "No quest annotation appeared to tap")
         quest.tap()
 
-        XCTAssertTrue(element(app, id: A11yID.Map.questAnswerSheet).waitForExistence(timeout: 10),
-                      "Quest answer sheet did not open after tapping a quest annotation")
+        // A form-opened signal that survives whichever branch QuestSheetView resolves to
+        // (LongForm, or "already answered by another user") - see A11yID.LongForm's own
+        // comment for why there is no single container-level identifier for the sheet.
+        let opened = element(app, id: A11yID.LongForm.dismissButton).waitForExistence(timeout: 15)
+            || element(app, id: A11yID.LongForm.alreadyAnsweredOKButton).waitForExistence(timeout: 2)
+        XCTAssertTrue(opened, "Quest answer sheet did not open after tapping a quest annotation")
     }
 
     /// Multi-select is entered exclusively by a long-press directly on an existing quest

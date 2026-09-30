@@ -79,6 +79,7 @@ struct LongFormDismissButtonView: View {
                     .contentShape(Rectangle())
             })
             .accessibilityLabel("Dismiss")
+            .accessibilityIdentifier(A11yID.LongForm.dismissButton)
         }
     }
 }

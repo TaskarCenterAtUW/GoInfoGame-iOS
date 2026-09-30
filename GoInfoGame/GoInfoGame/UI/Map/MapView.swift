@@ -1047,6 +1047,7 @@ struct QuestSheetView: View {
                         .foregroundColor(.green)
                     Text(message)
                         .multilineTextAlignment(.center)
+                        .accessibilityIdentifier(A11yID.LongForm.alreadyAnsweredMessage)
                     Button(action: { dismiss() }) {
                         Text("OK")
                             .foregroundColor(.white)
@@ -1055,6 +1056,7 @@ struct QuestSheetView: View {
                             .background(Asset.Colors.huskyPurple.swiftUIColor)
                             .cornerRadius(12)
                     }
+                    .accessibilityIdentifier(A11yID.LongForm.alreadyAnsweredOKButton)
                 }
                 .padding(24)
             } else if let selectedQuest = viewModel.getSelectedQuest() {
@@ -1069,7 +1071,12 @@ struct QuestSheetView: View {
                 EmptyView()
             }
         }
-        .accessibilityIdentifier(A11yID.Map.questAnswerSheet)
+        // No identifier on this Group: each of its three branches (ProgressView, the
+        // already-answered VStack, LongForm) has several independent children, and
+        // confirmed directly that stamping one here overwrites every one of their own
+        // more specific identifiers (LongForm's dismiss/submit/option buttons included)
+        // with this single value. Each branch's own leaves carry the only identifiers
+        // that matter now.
         .task(id: viewModel.selectedQuest?.id) {
             guard !viewModel.isMultiSelectModeEnabled,
                   let longQuest = viewModel.getSelectedQuest()?.parent as? LongElementQuest else {
