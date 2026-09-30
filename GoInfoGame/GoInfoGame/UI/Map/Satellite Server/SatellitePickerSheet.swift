@@ -39,8 +39,10 @@ struct SatellitePickerSheet: View {
                     .buttonStyle(.plain)
                     .accessibilityLabel(option.name)
                     .accessibilityAddTraits(isSelected ? [.isButton, .isSelected] : .isButton)
+                    .accessibilityIdentifier(A11yID.Map.satelliteOptionRow(id: option.id))
                 }
             }
+            .accessibilityIdentifier(A11yID.Map.satellitePickerScrollView)
             .navigationTitle("Select Satellite Layer")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
