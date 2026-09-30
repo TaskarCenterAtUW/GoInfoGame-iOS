@@ -21,6 +21,7 @@
 import Foundation
 import OHHTTPStubs
 import OHHTTPStubsSwift
+import RealmSwift
 
 enum UITestStubs {
 
@@ -281,6 +282,18 @@ enum UITestStubs {
         case UITestScenario.accessibilityModeNoNearbyQuests:
             installQuestFormBaseline(mapFixture: "AccessibilityModeOSMElementsFar")
 
+        case UITestScenario.undoEditsOnline:
+            installQuestFormBaseline(mapFixture: "AccessibilityModeOSMElements")
+            seedUndoableChangesets()
+            stubChangesetCreate()
+            stubChangesetUpload()
+            stubChangesetClose()
+
+        case UITestScenario.undoEditsNetworkDown:
+            installQuestFormBaseline(mapFixture: "AccessibilityModeOSMElements")
+            seedUndoableChangesets()
+            stubOSMConnectivityFailure(isMethodPUT() && isPath("/prod/api/0.6/changeset/create"), name: "changeset create")
+
         default:
             NSLog("[UITestStubs] Unknown scenario '%@' - only the catch-all is installed.", scenario)
         }
@@ -454,6 +467,61 @@ enum UITestStubs {
         stub(condition: isMethodPUT() && pathMatches(#"^/prod/api/0\.6/changeset/\d+/close$"#)) { _ in
             HTTPStubsResponse(data: Data(), statusCode: 200, headers: ["Content-Type": "application/json"])
         }.name = "PUT /changeset/{id}/close -> 200 (empty)"
+    }
+
+    /// Writes two already-synced, undoable StoredChangeset rows directly to Realm, for
+    /// the undoEdits* scenarios - see UITestScenario.undoEditsOnline's own comment for
+    /// why this exists (the undo list is pure local data with no network fetch behind
+    /// it; nothing else can seed one except driving a full LongForm answer-and-submit
+    /// round trip first). Mirrors DatabaseConnector's own createChangeset/
+    /// createChangesetForNewElement shape - in particular, changesetId = 0 is the
+    /// sentinel MapUndoManager.getUndoItems() filters on for "synced and undoable"; the
+    /// production default (-1, "not yet synced") would make these invisible to it.
+    private static func seedUndoableChangesets() {
+        let realm = try! Realm(configuration: RealmConfig.configuration)
+
+        // A tag edit on an existing way - undoing it reverts ext:surface back to
+        // "concrete" (the classification into "Modified" vs "Added" in the undo UI
+        // comes from whether the key also exists in originalTags - see
+        // QuestUndoManager.getUndoItems()).
+        let modified = StoredChangeset()
+        modified.elementId = 810301
+        modified.elementType = .way
+        modified.version = 1
+        modified.updatedVersion = 1
+        modified.changesetId = 0
+        modified.questType = "Sidewalks"
+        modified.iconName = "sidewalk"
+        modified.timestamp = String(Date().timeIntervalSince1970)
+        modified.originalTags.setValue("concrete", forKey: "ext:surface")
+        modified.tags.setValue("asphalt", forKey: "ext:surface")
+
+        // A feature created via Add Feature - undoing it deletes the element outright
+        // (isCreatedElement), which is what makes the confirmation button read "Delete
+        // Feature" instead of "Revert Changes". Backdated a full day so this row lands
+        // under a separate date section header from `modified` in UndoEditsView's
+        // grouped list.
+        let created = StoredChangeset()
+        created.elementId = 810302
+        created.elementType = .node
+        created.version = 1
+        created.updatedVersion = 1
+        created.changesetId = 0
+        created.questType = "Kerbs"
+        created.iconName = "sidewalk"
+        created.timestamp = String(Date().addingTimeInterval(-90_000).timeIntervalSince1970)
+        created.isCreatedElement = true
+        created.tags.setValue("kerb", forKey: "barrier")
+        created.tags.setValue("raised", forKey: "kerb")
+
+        do {
+            try realm.write {
+                realm.add(modified)
+                realm.add(created)
+            }
+        } catch {
+            NSLog("[UITestStubs] Error seeding undo changesets: %@", "\(error)")
+        }
     }
 
     /// A connectivity failure for whatever `condition` matches - used by

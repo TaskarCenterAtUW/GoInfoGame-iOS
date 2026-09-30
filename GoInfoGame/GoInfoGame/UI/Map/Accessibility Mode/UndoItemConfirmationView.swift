@@ -82,6 +82,7 @@ struct UndoItemConfirmationView: View {
                     dismiss()
                     onClose()
                 })
+                .accessibilityIdentifier(A11yID.UndoEdits.confirmationCloseButton)
             })
 
             DottedLine()
@@ -196,6 +197,7 @@ struct UndoItemConfirmationView: View {
                     .accessibilityLabel(Text(undoItem.isCreatedElement ? "Delete Feature" : L10n.Localizable.revertChanges))
             }
         }
+        .accessibilityIdentifier(A11yID.UndoEdits.confirmationRevertButton)
     }
 
     private var cancelButton: some View {
@@ -221,6 +223,7 @@ struct UndoItemConfirmationView: View {
 
             }
         }
+        .accessibilityIdentifier(A11yID.UndoEdits.confirmationCancelButton)
     }
 }
 

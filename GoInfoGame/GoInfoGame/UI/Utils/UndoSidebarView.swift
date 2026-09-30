@@ -80,6 +80,7 @@ struct UndoSidebarView: View {
                         .background(Color(.systemGray6))
                         .cornerRadius(10)
                     }
+                    .accessibilityIdentifier(A11yID.Map.undoSidebarRow(elementID: Int64(item.elementId)))
                 }
             }
 

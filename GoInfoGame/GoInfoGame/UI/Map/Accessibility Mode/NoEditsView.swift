@@ -30,6 +30,7 @@ struct NoEditsView: View {
                 .lineLimit(nil)
                 .fixedSize(horizontal: false, vertical: true)
                 .accessibilityLabel(L10n.Localizable.noEditsFound)
+                .accessibilityIdentifier(A11yID.UndoEdits.noEditsMessage)
 
             Text(L10n.Localizable.newEditsWillAppearHereWhenAQuestIsAnswered)
                 .font(FontFamily.Lato.medium.swiftUIFont(size: 18, relativeTo: .body))

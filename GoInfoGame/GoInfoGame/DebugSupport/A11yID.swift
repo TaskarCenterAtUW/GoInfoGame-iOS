@@ -233,11 +233,55 @@ enum A11yID {
         /// same reasoning as pinChoiceCreateNoteButton above. Doubles as the sidebar's
         /// presence signal for tests.
         static let undoSidebarCloseButton = "map_undo_sidebar_close_button"
+        /// One row of UndoSidebarView's list: `map_undo_sidebar_row_<elementID>` - the
+        /// underlying OSM element id (UndoItem.elementId), same identity used throughout
+        /// this file's other per-element identifiers.
+        static func undoSidebarRow(elementID: Int64) -> String { "map_undo_sidebar_row_\(elementID)" }
+        /// UndoButton's inline confirmation popup (shown after tapping a sidebar row) -
+        /// label reads "Delete" instead of "Revert" for a created element
+        /// (UndoItem.isCreatedElement), same as the fuller UndoItemConfirmationView.
+        static let undoPopupRevertButton = "map_undo_popup_revert_button"
+        static let undoPopupCancelButton = "map_undo_popup_cancel_button"
         /// AccessibilityModeView's close ("X") button - also doubles as this screen's
         /// presence signal, since the screen itself has no root identifier.
         static let accessibilityModeCloseButton = "map_accessibility_mode_close_button"
         /// ManageQuestsView's close ("X") button - same role as accessibilityModeCloseButton.
         static let manageQuestsCloseButton = "map_manage_quests_close_button"
+    }
+
+    /// Identifiers for the "Undo Edits" screen (GoInfoGame/UI/Map/Accessibility Mode/
+    /// UndoEditsView.swift), reached from A11yID.AccessibilityMode.undoEditButton. Both
+    /// this screen and Map's own floating undo button (A11yID.Map.undoButton /
+    /// undoSidebarRow) read/write the exact same underlying data
+    /// (MapUndoManager.shared over local StoredChangeset rows) - this is just the
+    /// richer, full-screen presentation of it.
+    enum UndoEdits {
+        /// The toolbar's close ("X") button - no root identifier on the screen itself
+        /// (NavigationStack has no single leaf to tag), same reasoning as
+        /// A11yID.Map.accessibilityModeCloseButton. Doubles as this screen's presence
+        /// signal.
+        static let closeButton = "undo_edits_close_button"
+        /// The List holding every date section - only rendered when there is at least
+        /// one undo item; see noEditsMessage for the alternative branch.
+        static let scrollView = "undo_edits_scroll_view"
+        static let goBackButton = "undo_edits_go_back_button"
+        /// NoEditsView's "No edits found" text - shown in place of the List when
+        /// viewModel.undoItems is empty. Doubles as that state's presence signal.
+        static let noEditsMessage = "undo_edits_no_edits_message"
+
+        /// One row of the list: `undo_edits_row_<elementID>` - the underlying OSM
+        /// element id (UndoItem.elementId), same identity A11yID.Map.undoSidebarRow and
+        /// this file's other per-element identifiers use.
+        static func row(elementID: Int64) -> String { "undo_edits_row_\(elementID)" }
+
+        // UndoItemConfirmationView - the sheet shown after tapping a row.
+        static let confirmationCloseButton = "undo_edits_confirmation_close_button"
+        /// Label reads "Delete Feature" instead of "Revert Changes" for a created
+        /// element (UndoItem.isCreatedElement) - state read through the label, the
+        /// identifier only locates it, same convention as A11yID.LongForm's own choice
+        /// tiles.
+        static let confirmationRevertButton = "undo_edits_confirmation_revert_button"
+        static let confirmationCancelButton = "undo_edits_confirmation_cancel_button"
     }
 }
 
@@ -352,6 +396,29 @@ enum UITestScenario {
     /// distanceThreshold, so viewModel.nearestQuest ends up empty and NoQuestsNearView
     /// renders.
     static let accessibilityModeNoNearbyQuests = "accessibility_mode_no_nearby_quests"
+
+    /// PLACEHOLDERS for the Undo Edits suite. Lands on the Map the same way
+    /// accessibilityMode* does, with two SEEDED, already-undoable StoredChangeset rows
+    /// written directly to Realm (see UITestStubs.seedUndoableChangesets) rather than
+    /// stubbed over the network - the undo list is 100% local data (MapUndoManager
+    /// .getUndoItems(), a Realm query with no network fetch behind it), and nothing in
+    /// the app or its normal test flow can construct one except by driving a full
+    /// LongForm answer-and-submit round trip, which would make every test in this suite
+    /// slow and coupled to LongForm's own behavior. This is the first UI-test scenario
+    /// in this project to seed local DB state directly instead of only stubbing network.
+    /// The two seeded rows: element 810301 (a way, ext:surface edited concrete ->
+    /// asphalt, "Revert Changes") and element 810302 (a node, newly created via Add
+    /// Feature, "Delete Feature") - on two different days, so the list's date-grouping
+    /// gets exercised too. The empty-state case needs no new scenario: accessibilityMode
+    /// Online already has zero seeded changesets.
+    static let undoEditsOnline = "undo_edits_online"
+    /// Same two seeded rows, but changeset/create fails with a connectivity error for
+    /// every attempt - reverting/deleting an item leaves it unchanged in the list, with
+    /// no crash and no visible error state (confirmed directly: QuestBase.updateUndoTags
+    /// posts a `.failed` dismissal scenario, but nothing anywhere in the app actually
+    /// displays it - this scenario documents that real behavior rather than a
+    /// hypothetical error UI).
+    static let undoEditsNetworkDown = "undo_edits_network_down"
 
     /// Launch argument (not environment) that clears UserDefaults and the Keychain.
     static let resetStateArgument = "-UITestResetState"
