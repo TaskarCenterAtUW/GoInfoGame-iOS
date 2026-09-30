@@ -1,0 +1,303 @@
+{
+  "_note": "UI-test fixture (Accessibility/Screen Reader Mode). All 7 ways are blank Sidewalks elements (footway=sidewalk, highway=footway, no other tags) - AccessibilityModeViewModel doesn't care about tag content, only distance/bearing from the fixed UI-test camera (17.4385,78.3610), so geometry (not tags) is this fixture's whole point. Each way's 2 nodes sit symmetrically around its intended center (DatabaseConnector.getCenterForWay averages them), so the center lands exactly on the computed point - E1..E5 are within the 250m distanceThreshold at 40/90/140/190/230m (N/E/S/W/NE) - the expected top-5-by-distance list, in that order. E6 (245m, SE) is also within threshold but must be excluded by the sort-then-cap-to-5 logic, not the distance filter - proves the cap, not just the threshold. E7 (300m, N) is beyond the threshold and must never appear at all - proves the filter itself. See AccessibilityModeOSMElementsFar.json for the empty-list (NoQuestsNearView) scenario.",
+  "version": "0.6",
+  "generator": "openstreetmap-cgimap 2.1.0 (51 ws-osm-cgimap-dev--0000003-7549cc885-kvvs2)",
+  "copyright": "OpenStreetMap and contributors",
+  "attribution": "http://www.openstreetmap.org/copyright",
+  "license": "http://opendatacommons.org/licenses/odbl/1-0/",
+  "bounds": {
+    "minlat": 17.436,
+    "minlon": 78.358,
+    "maxlat": 17.442,
+    "maxlon": 78.364
+  },
+  "elements": [
+    {
+      "type": "node",
+      "id": 810001,
+      "lat": 17.4388597,
+      "lon": 78.3608,
+      "timestamp": "2026-06-12T06:05:30Z",
+      "version": 1,
+      "changeset": 1,
+      "user": "Srikanth Voonna",
+      "uid": 27,
+      "tags": {}
+    },
+    {
+      "type": "node",
+      "id": 810002,
+      "lat": 17.4388597,
+      "lon": 78.3612,
+      "timestamp": "2026-06-12T06:05:30Z",
+      "version": 1,
+      "changeset": 1,
+      "user": "Srikanth Voonna",
+      "uid": 27,
+      "tags": {}
+    },
+    {
+      "type": "way",
+      "id": 700001,
+      "timestamp": "2026-06-12T06:05:30Z",
+      "version": 1,
+      "changeset": 1,
+      "user": "Srikanth Voonna",
+      "uid": 27,
+      "nodes": [
+        810001,
+        810002
+      ],
+      "tags": {
+        "footway": "sidewalk",
+        "highway": "footway"
+      }
+    },
+    {
+      "type": "node",
+      "id": 810003,
+      "lat": 17.4385,
+      "lon": 78.3616484,
+      "timestamp": "2026-06-12T06:05:30Z",
+      "version": 1,
+      "changeset": 1,
+      "user": "Srikanth Voonna",
+      "uid": 27,
+      "tags": {}
+    },
+    {
+      "type": "node",
+      "id": 810004,
+      "lat": 17.4385,
+      "lon": 78.3620484,
+      "timestamp": "2026-06-12T06:05:30Z",
+      "version": 1,
+      "changeset": 1,
+      "user": "Srikanth Voonna",
+      "uid": 27,
+      "tags": {}
+    },
+    {
+      "type": "way",
+      "id": 700002,
+      "timestamp": "2026-06-12T06:05:30Z",
+      "version": 1,
+      "changeset": 1,
+      "user": "Srikanth Voonna",
+      "uid": 27,
+      "nodes": [
+        810003,
+        810004
+      ],
+      "tags": {
+        "footway": "sidewalk",
+        "highway": "footway"
+      }
+    },
+    {
+      "type": "node",
+      "id": 810005,
+      "lat": 17.4372409,
+      "lon": 78.3608,
+      "timestamp": "2026-06-12T06:05:30Z",
+      "version": 1,
+      "changeset": 1,
+      "user": "Srikanth Voonna",
+      "uid": 27,
+      "tags": {}
+    },
+    {
+      "type": "node",
+      "id": 810006,
+      "lat": 17.4372409,
+      "lon": 78.3612,
+      "timestamp": "2026-06-12T06:05:30Z",
+      "version": 1,
+      "changeset": 1,
+      "user": "Srikanth Voonna",
+      "uid": 27,
+      "tags": {}
+    },
+    {
+      "type": "way",
+      "id": 700003,
+      "timestamp": "2026-06-12T06:05:30Z",
+      "version": 1,
+      "changeset": 1,
+      "user": "Srikanth Voonna",
+      "uid": 27,
+      "nodes": [
+        810005,
+        810006
+      ],
+      "tags": {
+        "footway": "sidewalk",
+        "highway": "footway"
+      }
+    },
+    {
+      "type": "node",
+      "id": 810007,
+      "lat": 17.4385,
+      "lon": 78.359009,
+      "timestamp": "2026-06-12T06:05:30Z",
+      "version": 1,
+      "changeset": 1,
+      "user": "Srikanth Voonna",
+      "uid": 27,
+      "tags": {}
+    },
+    {
+      "type": "node",
+      "id": 810008,
+      "lat": 17.4385,
+      "lon": 78.359409,
+      "timestamp": "2026-06-12T06:05:30Z",
+      "version": 1,
+      "changeset": 1,
+      "user": "Srikanth Voonna",
+      "uid": 27,
+      "tags": {}
+    },
+    {
+      "type": "way",
+      "id": 700004,
+      "timestamp": "2026-06-12T06:05:30Z",
+      "version": 1,
+      "changeset": 1,
+      "user": "Srikanth Voonna",
+      "uid": 27,
+      "nodes": [
+        810007,
+        810008
+      ],
+      "tags": {
+        "footway": "sidewalk",
+        "highway": "footway"
+      }
+    },
+    {
+      "type": "node",
+      "id": 810009,
+      "lat": 17.4399626,
+      "lon": 78.3623331,
+      "timestamp": "2026-06-12T06:05:30Z",
+      "version": 1,
+      "changeset": 1,
+      "user": "Srikanth Voonna",
+      "uid": 27,
+      "tags": {}
+    },
+    {
+      "type": "node",
+      "id": 810010,
+      "lat": 17.4399626,
+      "lon": 78.3627331,
+      "timestamp": "2026-06-12T06:05:30Z",
+      "version": 1,
+      "changeset": 1,
+      "user": "Srikanth Voonna",
+      "uid": 27,
+      "tags": {}
+    },
+    {
+      "type": "way",
+      "id": 700005,
+      "timestamp": "2026-06-12T06:05:30Z",
+      "version": 1,
+      "changeset": 1,
+      "user": "Srikanth Voonna",
+      "uid": 27,
+      "nodes": [
+        810009,
+        810010
+      ],
+      "tags": {
+        "footway": "sidewalk",
+        "highway": "footway"
+      }
+    },
+    {
+      "type": "node",
+      "id": 810011,
+      "lat": 17.436942,
+      "lon": 78.362433,
+      "timestamp": "2026-06-12T06:05:30Z",
+      "version": 1,
+      "changeset": 1,
+      "user": "Srikanth Voonna",
+      "uid": 27,
+      "tags": {}
+    },
+    {
+      "type": "node",
+      "id": 810012,
+      "lat": 17.436942,
+      "lon": 78.362833,
+      "timestamp": "2026-06-12T06:05:30Z",
+      "version": 1,
+      "changeset": 1,
+      "user": "Srikanth Voonna",
+      "uid": 27,
+      "tags": {}
+    },
+    {
+      "type": "way",
+      "id": 700006,
+      "timestamp": "2026-06-12T06:05:30Z",
+      "version": 1,
+      "changeset": 1,
+      "user": "Srikanth Voonna",
+      "uid": 27,
+      "nodes": [
+        810011,
+        810012
+      ],
+      "tags": {
+        "footway": "sidewalk",
+        "highway": "footway"
+      }
+    },
+    {
+      "type": "node",
+      "id": 810013,
+      "lat": 17.441198,
+      "lon": 78.3608,
+      "timestamp": "2026-06-12T06:05:30Z",
+      "version": 1,
+      "changeset": 1,
+      "user": "Srikanth Voonna",
+      "uid": 27,
+      "tags": {}
+    },
+    {
+      "type": "node",
+      "id": 810014,
+      "lat": 17.441198,
+      "lon": 78.3612,
+      "timestamp": "2026-06-12T06:05:30Z",
+      "version": 1,
+      "changeset": 1,
+      "user": "Srikanth Voonna",
+      "uid": 27,
+      "tags": {}
+    },
+    {
+      "type": "way",
+      "id": 700007,
+      "timestamp": "2026-06-12T06:05:30Z",
+      "version": 1,
+      "changeset": 1,
+      "user": "Srikanth Voonna",
+      "uid": 27,
+      "nodes": [
+        810013,
+        810014
+      ],
+      "tags": {
+        "footway": "sidewalk",
+        "highway": "footway"
+      }
+    }
+  ]
+}

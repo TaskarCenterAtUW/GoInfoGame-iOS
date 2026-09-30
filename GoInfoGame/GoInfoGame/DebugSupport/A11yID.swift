@@ -122,6 +122,47 @@ enum A11yID {
         static let alreadyAnsweredOKButton = "longform_already_answered_ok_button"
     }
 
+    /// Identifiers for the Accessibility (Screen Reader) Mode screen (GoInfoGame/UI/Map/
+    /// Accessibility Mode/), reached from A11yID.Map.accessibilityModeButton. Same two
+    /// constraints as A11yID.LongForm apply here (leaf-only identifiers; state read
+    /// through the label, not the identifier) - see that enum's own comment.
+    enum AccessibilityMode {
+        /// The List holding the quest-count header, the nearest-quest cards, and the
+        /// bottom bar (undo/go-to-map) - the scroll container for every reachability /
+        /// "scroll until visible" check. Only rendered when viewModel.nearestQuest is
+        /// non-empty; see noQuestsMessage for the alternative branch.
+        static let scrollView = "accessibility_mode_scroll_view"
+        /// "Showing N quest(s)" header - lets a test assert the count shown to the user
+        /// matches how many cards are actually in the list, without depending on wording.
+        static let questCountLabel = "accessibility_mode_quest_count_label"
+        static let refreshButton = "accessibility_mode_refresh_button"
+        /// Opens ManageQuestsView (the "tune" toolbar icon) - out of scope for this
+        /// suite's own tests (it's ManageQuestsView's own screen to test), identified
+        /// here only so a bounds/overlap/reachability check can include it.
+        static let filterButton = "accessibility_mode_filter_button"
+        static let undoEditButton = "accessibility_mode_undo_edit_button"
+        static let goToMapButton = "accessibility_mode_go_to_map_button"
+        /// NoQuestsNearView's "No quests found" text - shown in place of the List when
+        /// nearestQuest is empty. Doubles as that state's presence signal.
+        static let noQuestsMessage = "accessibility_mode_no_quests_message"
+
+        /// One row of the nearest-quest list: `accessibility_mode_quest_card_<elementID>`
+        /// - the underlying OSM element id (DisplayUnitWithCoordinate.id), the same
+        /// identity A11yID.Map.questAnnotation's own accessibilityValue and A11yID
+        /// .LongForm's per-question identifiers use, so a test can target one specific
+        /// card regardless of where the distance sort puts it.
+        static func questCard(elementID: Int64) -> String { "accessibility_mode_quest_card_\(elementID)" }
+
+        // QuestSelectionConfirmationView - the sheet shown after tapping a quest card,
+        // before LongForm. No root identifier of its own - same reasoning as
+        // A11yID.Map.pinChoiceCreateNoteButton (a multi-child container stamps one
+        // identifier onto every leaf) - startAnswerButton doubles as this sheet's
+        // presence signal.
+        static let confirmationAnswerButton = "accessibility_mode_confirmation_answer_button"
+        static let confirmationHideButton = "accessibility_mode_confirmation_hide_button"
+        static let confirmationNotNowButton = "accessibility_mode_confirmation_not_now_button"
+    }
+
     enum Map {
         // MARK: Top bar
         static let profileButton = "map_profile_button"
@@ -294,6 +335,23 @@ enum UITestScenario {
     /// Like longFormNetworkDown for the FIRST changeset attempt only, then everything
     /// succeeds - so a Submit queues offline and the Sync button's retry goes through.
     static let longFormNetworkRecovers = "long_form_network_recovers"
+
+    /// PLACEHOLDERS for the Accessibility (Screen Reader) Mode suite. All three land on
+    /// the Map the same way the longForm* scenarios do (real Workspaces auto-redirect),
+    /// but serve AccessibilityModeOSMElements.json - a fixture engineered around known
+    /// distances/bearings from the fixed UI-test camera rather than around tags, since
+    /// AccessibilityModeViewModel's own logic (filterQuestsNerestToUser) is purely
+    /// geometric. See that fixture's own "_note" for exactly what each element is.
+    static let accessibilityModeOnline = "accessibility_mode_online"
+    /// Same map data, but every OSM API call after the map load fails with a
+    /// connectivity error - proves the nearest-quest list (a pure local-DB read via
+    /// mapViewModel.items) is unaffected by network state, since
+    /// AccessibilityModeViewModel itself never calls the network at all.
+    static let accessibilityModeNetworkDown = "accessibility_mode_network_down"
+    /// AccessibilityModeOSMElementsFar.json - every element sits well beyond the 250m
+    /// distanceThreshold, so viewModel.nearestQuest ends up empty and NoQuestsNearView
+    /// renders.
+    static let accessibilityModeNoNearbyQuests = "accessibility_mode_no_nearby_quests"
 
     /// Launch argument (not environment) that clears UserDefaults and the Keychain.
     static let resetStateArgument = "-UITestResetState"
