@@ -246,6 +246,13 @@
 		C7DBG0000000000000000271 /* ManageQuestsScreenUITestCases.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7DBG0000000000000000270 /* ManageQuestsScreenUITestCases.swift */; };
 		C7DBG0000000000000000281 /* SatellitePickerScreenUITestCases.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7DBG0000000000000000280 /* SatellitePickerScreenUITestCases.swift */; };
 		C7DBG0000000000000000283 /* WorkspaceDetailsNoImagery.json in Resources */ = {isa = PBXBuildFile; fileRef = C7DBG0000000000000000282 /* WorkspaceDetailsNoImagery.json */; };
+		C7DBG0000000000000000291 /* PasswordAuthenticationScreenUITestCases.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7DBG0000000000000000290 /* PasswordAuthenticationScreenUITestCases.swift */; };
+		C7DBG0000000000000000301 /* ForceUpdateScreenUITestCases.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7DBG0000000000000000300 /* ForceUpdateScreenUITestCases.swift */; };
+		C7DBG0000000000000000303 /* ForceUpdateSoft.json in Resources */ = {isa = PBXBuildFile; fileRef = C7DBG0000000000000000302 /* ForceUpdateSoft.json */; };
+		C7DBG0000000000000000305 /* ForceUpdateForce.json in Resources */ = {isa = PBXBuildFile; fileRef = C7DBG0000000000000000304 /* ForceUpdateForce.json */; };
+		C7DBG0000000000000000311 /* MultiQuestSelectionUITestCases.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7DBG0000000000000000310 /* MultiQuestSelectionUITestCases.swift */; };
+		C7DBG0000000000000000321 /* ConflictResolutionUITestCases.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7DBG0000000000000000320 /* ConflictResolutionUITestCases.swift */; };
+		C7DBG0000000000000000331 /* AddFeatureScreenUITestCases.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7DBG0000000000000000330 /* AddFeatureScreenUITestCases.swift */; };
 		C7DD04152F7E7A5800307026 /* Lato-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FA8C74D12C598F9D00D28220 /* Lato-Bold.ttf */; };
 		C7DD04162F7E7A6100307026 /* Lato-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FA8C74D02C598F9D00D28220 /* Lato-Regular.ttf */; };
 		C7DD04172F7E7A6100307026 /* Lato-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FA8C74D22C5998D600D28220 /* Lato-Medium.ttf */; };
@@ -669,6 +676,13 @@
 		C7DBG0000000000000000270 /* ManageQuestsScreenUITestCases.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManageQuestsScreenUITestCases.swift; sourceTree = "<group>"; };
 		C7DBG0000000000000000280 /* SatellitePickerScreenUITestCases.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SatellitePickerScreenUITestCases.swift; sourceTree = "<group>"; };
 		C7DBG0000000000000000282 /* WorkspaceDetailsNoImagery.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = WorkspaceDetailsNoImagery.json; sourceTree = "<group>"; };
+		C7DBG0000000000000000290 /* PasswordAuthenticationScreenUITestCases.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PasswordAuthenticationScreenUITestCases.swift; sourceTree = "<group>"; };
+		C7DBG0000000000000000300 /* ForceUpdateScreenUITestCases.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForceUpdateScreenUITestCases.swift; sourceTree = "<group>"; };
+		C7DBG0000000000000000302 /* ForceUpdateSoft.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = ForceUpdateSoft.json; sourceTree = "<group>"; };
+		C7DBG0000000000000000304 /* ForceUpdateForce.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = ForceUpdateForce.json; sourceTree = "<group>"; };
+		C7DBG0000000000000000310 /* MultiQuestSelectionUITestCases.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MultiQuestSelectionUITestCases.swift; sourceTree = "<group>"; };
+		C7DBG0000000000000000320 /* ConflictResolutionUITestCases.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConflictResolutionUITestCases.swift; sourceTree = "<group>"; };
+		C7DBG0000000000000000330 /* AddFeatureScreenUITestCases.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddFeatureScreenUITestCases.swift; sourceTree = "<group>"; };
 		C7E9528C2ED887CC001BFB75 /* NoQuestsNearView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoQuestsNearView.swift; sourceTree = "<group>"; };
 		C7E9528E2ED88B00001BFB75 /* lato-heavy.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "lato-heavy.ttf"; sourceTree = "<group>"; };
 		C7ED070E2D70E2EC001FFFE2 /* TokenRefresher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenRefresher.swift; sourceTree = "<group>"; };
@@ -1616,6 +1630,8 @@
 				C7DBG0000000000000000101 /* LoginServerError.json */,
 				C7DBG0000000000000000102 /* EmptyList.json */,
 				C7DBG0000000000000000103 /* ForceUpdateNone.json */,
+				C7DBG0000000000000000302 /* ForceUpdateSoft.json */,
+				C7DBG0000000000000000304 /* ForceUpdateForce.json */,
 			);
 			path = MockResponses;
 			sourceTree = "<group>";
@@ -1877,6 +1893,11 @@
 				C7DBG0000000000000000260 /* UndoEditsScreenUITestCases.swift */,
 				C7DBG0000000000000000270 /* ManageQuestsScreenUITestCases.swift */,
 				C7DBG0000000000000000280 /* SatellitePickerScreenUITestCases.swift */,
+				C7DBG0000000000000000290 /* PasswordAuthenticationScreenUITestCases.swift */,
+				C7DBG0000000000000000300 /* ForceUpdateScreenUITestCases.swift */,
+				C7DBG0000000000000000310 /* MultiQuestSelectionUITestCases.swift */,
+				C7DBG0000000000000000320 /* ConflictResolutionUITestCases.swift */,
+				C7DBG0000000000000000330 /* AddFeatureScreenUITestCases.swift */,
 				C7DBG0000000000000000202 /* ProfileScreenUITestCases.swift */,
 				C7DBG0000000000000000200 /* WorkspacesScreenUITestCases.swift */,
 			);
@@ -2258,6 +2279,8 @@
 				C7DBG0000000000000000151 /* LoginServerError.json in Resources */,
 				C7DBG0000000000000000152 /* EmptyList.json in Resources */,
 				C7DBG0000000000000000153 /* ForceUpdateNone.json in Resources */,
+				C7DBG0000000000000000303 /* ForceUpdateSoft.json in Resources */,
+				C7DBG0000000000000000305 /* ForceUpdateForce.json in Resources */,
 				846A32C3BB81E3C29B621792 /* map_theme in Resources */,
 				973FC00A2B4D2A6D00878269 /* Localizable.strings in Resources */,
 				FAD5C4FF2AFCBE720040C61A /* LaunchScreen.storyboard in Resources */,
@@ -2806,6 +2829,11 @@
 				C7DBG0000000000000000261 /* UndoEditsScreenUITestCases.swift in Sources */,
 				C7DBG0000000000000000271 /* ManageQuestsScreenUITestCases.swift in Sources */,
 				C7DBG0000000000000000281 /* SatellitePickerScreenUITestCases.swift in Sources */,
+				C7DBG0000000000000000291 /* PasswordAuthenticationScreenUITestCases.swift in Sources */,
+				C7DBG0000000000000000301 /* ForceUpdateScreenUITestCases.swift in Sources */,
+				C7DBG0000000000000000311 /* MultiQuestSelectionUITestCases.swift in Sources */,
+				C7DBG0000000000000000321 /* ConflictResolutionUITestCases.swift in Sources */,
+				C7DBG0000000000000000331 /* AddFeatureScreenUITestCases.swift in Sources */,
 				C7DBG0000000000000000203 /* ProfileScreenUITestCases.swift in Sources */,
 				C7DBG0000000000000000201 /* WorkspacesScreenUITestCases.swift in Sources */,
 				FAD5C5142AFCBE720040C61A /* GoInfoGameUITests.swift in Sources */,

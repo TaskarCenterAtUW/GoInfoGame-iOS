@@ -1173,6 +1173,7 @@ struct ConflictResolutionSheet: View {
                                 .fontWeight(.semibold))
                                 .tag(TagResolutionChoice.useMine)
                                 .accessibilityLabel("\(question). Your answer: \(tag.answeredValue)")
+                                .accessibilityIdentifier(A11yID.ConflictResolution.useMineChoice(tagKey: tag.key))
                             (Text("Existing value: ")
                                 .foregroundColor(Asset.Colors.a2A2A2Gray.swiftUIColor)
                              + Text(tag.existingValue)
@@ -1180,6 +1181,7 @@ struct ConflictResolutionSheet: View {
                                 .fontWeight(.semibold))
                                 .tag(TagResolutionChoice.useServer)
                                 .accessibilityLabel("\(question). Existing value on the server: \(tag.existingValue)")
+                                .accessibilityIdentifier(A11yID.ConflictResolution.useServerChoice(tagKey: tag.key))
                         }
                         .pickerStyle(.inline)
                         .labelsHidden()
@@ -1202,6 +1204,7 @@ struct ConflictResolutionSheet: View {
                         dismiss()
                     }
                     .accessibilityHint("Discards your choices and leaves this element unsynced")
+                    .accessibilityIdentifier(A11yID.ConflictResolution.cancelButton)
                 }
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Confirm") {
@@ -1210,6 +1213,7 @@ struct ConflictResolutionSheet: View {
                     }
                     .foregroundStyle(Asset.Colors.huskyPurple.swiftUIColor)
                     .accessibilityHint("Applies your chosen values for each tag and continues syncing")
+                    .accessibilityIdentifier(A11yID.ConflictResolution.confirmButton)
                 }
             }
         }
@@ -1293,8 +1297,14 @@ struct MultiQuestSelectionBottomSheet: View {
                 Text("**Select \(selectedAnnotationType):**").font(.headline)
                 Text("\(selectedCount) \(selectedAnnotationType.lowercased()) selected")
                     .font(.subheadline).foregroundColor(.gray)
+                    .accessibilityIdentifier(A11yID.Map.multiSelectCountLabel)
                 Spacer()
             }
+            // Without this, SwiftUI auto-merges the two sibling Text views into one
+            // VoiceOver element, and the count Text's own identifier above becomes
+            // structurally unreachable by XCUITest (same failure mode documented on
+            // this file's workspaceTitleButton) - .contain keeps each child queryable.
+            .accessibilityElement(children: .contain)
             .padding()
 
             VStack {
@@ -1306,6 +1316,7 @@ struct MultiQuestSelectionBottomSheet: View {
                     }
                 }
                 .padding()
+                .accessibilityIdentifier(A11yID.Map.multiSelectAnswerQuestsButton)
                 Divider()
                 Button(action: onCancel) {
                     HStack {
@@ -1315,7 +1326,15 @@ struct MultiQuestSelectionBottomSheet: View {
                     }
                 }
                 .padding()
+                .accessibilityIdentifier(A11yID.Map.multiSelectCancelButton)
             }
+            // Same reasoning as the count-label row above: without a .contain boundary
+            // here, the outer call site's own .accessibilityIdentifier(multiSelectSheet)
+            // (MapView.swift, where this view is constructed) recursively overrides these
+            // two buttons' own identifiers instead of just tagging this group - confirmed
+            // directly (both buttons showed up as identifier 'map_multi_select_sheet' in
+            // the accessibility snapshot, not their own answerQuests/cancel identifiers).
+            .accessibilityElement(children: .contain)
             .background(Color.white)
             .cornerRadius(20)
             .padding()

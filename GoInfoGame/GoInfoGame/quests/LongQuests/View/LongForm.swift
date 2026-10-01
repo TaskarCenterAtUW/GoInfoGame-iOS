@@ -146,6 +146,7 @@ struct LongForm: View, QuestForm {
                         if showCreateNoteMessage {
                             Text(alertMessage)
                                 .foregroundColor(alertMessage == "Note submitted successfully" ? Color.green : Color.red)
+                                .accessibilityIdentifier(A11yID.LongForm.composeNoteStatusMessage)
                                 .onAppear {
                                     DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
                                         showCreateNoteMessage = false
@@ -584,6 +585,7 @@ struct LongForm: View, QuestForm {
                 .frame(minHeight: 100)
                 .border(Asset.Colors.huskyPurple.swiftUIColor)
                 .accessibilityLabel("Note text editor")
+                .accessibilityIdentifier(A11yID.LongForm.composeNoteTextEditor)
 
             HStack {
                 Button(action: {
@@ -612,6 +614,7 @@ struct LongForm: View, QuestForm {
                 }
                 .buttonStyle(.plain)
                 .disabled(noteText == "")
+                .accessibilityIdentifier(A11yID.LongForm.composeNoteSubmitButton)
 
                 Button (action: {
                     showNotesBox = false
@@ -625,6 +628,7 @@ struct LongForm: View, QuestForm {
                         .cornerRadius(9)
                         .accessibilityLabel("Cancel note composition")
                 }
+                .accessibilityIdentifier(A11yID.LongForm.composeNoteCancelButton)
                 .buttonStyle(.plain)
             }
         }
