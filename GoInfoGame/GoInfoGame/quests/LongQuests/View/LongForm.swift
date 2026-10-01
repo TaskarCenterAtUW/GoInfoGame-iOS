@@ -146,6 +146,7 @@ struct LongForm: View, QuestForm {
                         if showCreateNoteMessage {
                             Text(alertMessage)
                                 .foregroundColor(alertMessage == "Note submitted successfully" ? Color.green : Color.red)
+                                .accessibilityIdentifier(A11yID.LongForm.composeNoteStatusMessage)
                                 .onAppear {
                                     DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
                                         showCreateNoteMessage = false
@@ -203,6 +204,7 @@ struct LongForm: View, QuestForm {
                     .listRowBackground(Color.clear)
                     .listRowSeparator(.hidden)
                 }
+                .accessibilityIdentifier(A11yID.LongForm.scrollView)
                 .scrollContentBackground(.hidden)
                 .padding(.bottom, keyboardHeight)
                 .onReceive(Publishers.keyboardHeight) { height in
@@ -555,6 +557,7 @@ struct LongForm: View, QuestForm {
         // with two buttons sharing one row (this + ignoreQuestButton below) that made
         // taps land on the wrong button or not register at all.
         .buttonStyle(.plain)
+        .accessibilityIdentifier(A11yID.LongForm.composeNoteButton)
     }
 
     private var ignoreQuestButton: some View {
@@ -570,6 +573,7 @@ struct LongForm: View, QuestForm {
                 .accessibilityLabel("Ignore this quest")
         }
         .buttonStyle(.plain)
+        .accessibilityIdentifier(A11yID.LongForm.ignoreQuestButton)
     }
 
     private var notesBoxContent: some View {
@@ -581,6 +585,7 @@ struct LongForm: View, QuestForm {
                 .frame(minHeight: 100)
                 .border(Asset.Colors.huskyPurple.swiftUIColor)
                 .accessibilityLabel("Note text editor")
+                .accessibilityIdentifier(A11yID.LongForm.composeNoteTextEditor)
 
             HStack {
                 Button(action: {
@@ -609,6 +614,7 @@ struct LongForm: View, QuestForm {
                 }
                 .buttonStyle(.plain)
                 .disabled(noteText == "")
+                .accessibilityIdentifier(A11yID.LongForm.composeNoteSubmitButton)
 
                 Button (action: {
                     showNotesBox = false
@@ -622,6 +628,7 @@ struct LongForm: View, QuestForm {
                         .cornerRadius(9)
                         .accessibilityLabel("Cancel note composition")
                 }
+                .accessibilityIdentifier(A11yID.LongForm.composeNoteCancelButton)
                 .buttonStyle(.plain)
             }
         }
@@ -672,6 +679,7 @@ struct LongForm: View, QuestForm {
         .buttonStyle(.plain)
         .disabled(viewModel.validationErrorMessage() != nil)
         .frame(maxWidth: .infinity)
+        .accessibilityIdentifier(A11yID.LongForm.submitButton)
     }
 }
 

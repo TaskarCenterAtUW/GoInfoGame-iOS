@@ -23,11 +23,11 @@
 		05DBBB642B17204300B6F110 /* RealmOPGeometry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05DBBB632B17204300B6F110 /* RealmOPGeometry.swift */; };
 		05DBBB662B17209600B6F110 /* RealmOPMeta.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05DBBB652B17209600B6F110 /* RealmOPMeta.swift */; };
 		171574E02FD1CC4A00AA6603 /* PhotoLookupResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 171574DF2FD1CC4A00AA6603 /* PhotoLookupResponse.swift */; };
+		227FDA1227FD4BFA2E18876C /* QuestImageStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42FA4EB22185846E113DA376 /* QuestImageStorage.swift */; };
 		2E71655C971839F8DAF42E67 /* CompassButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61CD36AA62170BAF936749E0 /* CompassButtonView.swift */; };
 		342561966FC217124BD9CFE7 /* Pods_GoInfoGame_GoInfoGameUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2D539E22EFF6636F8CBA035A /* Pods_GoInfoGame_GoInfoGameUITests.framework */; };
 		46B6E640D2414B20BBA4CBF0 /* FeatureSubmissionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C38242EA353F419D881E164C /* FeatureSubmissionManager.swift */; };
 		4A89C70038014808B0E110A0 /* FeatureImageStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AF3DE0241AC4BAB9C051601 /* FeatureImageStorage.swift */; };
-		227FDA1227FD4BFA2E18876C /* QuestImageStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42FA4EB22185846E113DA376 /* QuestImageStorage.swift */; };
 		5F9B87EE81842B57F4B7C8FB /* QuestSubmissionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7B0248DF7AD2506C0779CE9 /* QuestSubmissionManager.swift */; };
 		70CFF415C62865D5A2F409AD /* NoteImageStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86C5ED636FC6D3C98650F231 /* NoteImageStorage.swift */; };
 		74D8E739AE340D54DEF2E74C /* Pods_GoInfoGameTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 066F85ADCDCE7357368131F8 /* Pods_GoInfoGameTests.framework */; };
@@ -209,9 +209,50 @@
 		C79EDA932EDA0BBD00D2B100 /* UndoItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C79EDA922EDA0BBD00D2B100 /* UndoItemView.swift */; };
 		C7A357462EA22A120033F6FB /* Config.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = C7A357452EA22A120033F6FB /* Config.xcconfig */; };
 		C7A922252E45C36D00705E21 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = C7A922242E45C36D00705E21 /* PrivacyInfo.xcprivacy */; };
+		C7AFA179305AF8E800C539F7 /* OHHTTPStubs in Frameworks */ = {isa = PBXBuildFile; productRef = C7AFA178305AF8E800C539F7 /* OHHTTPStubs */; };
+		C7AFA17B305AF8E800C539F7 /* OHHTTPStubsSwift in Frameworks */ = {isa = PBXBuildFile; productRef = C7AFA17A305AF8E800C539F7 /* OHHTTPStubsSwift */; };
+		C7AFA17D305AFC1500C539F7 /* LoginScreenUITestCases.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7AFA17C305AFC1500C539F7 /* LoginScreenUITestCases.swift */; };
+		C7AFA182305B085E00C539F7 /* ScreenshotOnFailureUITestCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7AFA181305B085E00C539F7 /* ScreenshotOnFailureUITestCase.swift */; };
 		C7BA83542E3C9C3600755BA7 /* QuestSyncButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7BA83532E3C9C3600755BA7 /* QuestSyncButton.swift */; };
 		C7D3103E2EA0B3BB00CA10A9 /* ForceUpdateViewModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7D3103D2EA0B3BB00CA10A9 /* ForceUpdateViewModifier.swift */; };
 		C7D310412EA1302500CA10A9 /* StoreKit.storekit in Resources */ = {isa = PBXBuildFile; fileRef = C7D310402EA1302500CA10A9 /* StoreKit.storekit */; };
+		C7DBG00000000000000000A6 /* UITestStubs.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7DBG00000000000000000A3 /* UITestStubs.swift */; };
+		C7DBG00000000000000000A7 /* A11yID.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7DBG00000000000000000A4 /* A11yID.swift */; };
+		C7DBG00000000000000000A8 /* A11yID.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7DBG00000000000000000A4 /* A11yID.swift */; };
+		C7DBG00000000000000000A9 /* LoginFailure.json in Resources */ = {isa = PBXBuildFile; fileRef = C7DBG00000000000000000A5 /* LoginFailure.json */; };
+		C7DBG0000000000000000150 /* LoginSuccess.json in Resources */ = {isa = PBXBuildFile; fileRef = C7DBG0000000000000000100 /* LoginSuccess.json */; };
+		C7DBG0000000000000000151 /* LoginServerError.json in Resources */ = {isa = PBXBuildFile; fileRef = C7DBG0000000000000000101 /* LoginServerError.json */; };
+		C7DBG0000000000000000152 /* EmptyList.json in Resources */ = {isa = PBXBuildFile; fileRef = C7DBG0000000000000000102 /* EmptyList.json */; };
+		C7DBG0000000000000000153 /* ForceUpdateNone.json in Resources */ = {isa = PBXBuildFile; fileRef = C7DBG0000000000000000103 /* ForceUpdateNone.json */; };
+		C7DBG0000000000000000154 /* WorkspacesList.json in Resources */ = {isa = PBXBuildFile; fileRef = C7DBG0000000000000000104 /* WorkspacesList.json */; };
+		C7DBG0000000000000000155 /* ProjectGroupRoles.json in Resources */ = {isa = PBXBuildFile; fileRef = C7DBG0000000000000000105 /* ProjectGroupRoles.json */; };
+		C7DBG0000000000000000156 /* WorkspacesServerError.json in Resources */ = {isa = PBXBuildFile; fileRef = C7DBG0000000000000000106 /* WorkspacesServerError.json */; };
+		C7DBG0000000000000000157 /* UserProfilePlaceholder.json in Resources */ = {isa = PBXBuildFile; fileRef = C7DBG0000000000000000107 /* UserProfilePlaceholder.json */; };
+		C7DBG0000000000000000158 /* WorkspacesSingle.json in Resources */ = {isa = PBXBuildFile; fileRef = C7DBG0000000000000000108 /* WorkspacesSingle.json */; };
+		C7DBG0000000000000000159 /* WorkspaceDetailsSingle.json in Resources */ = {isa = PBXBuildFile; fileRef = C7DBG0000000000000000109 /* WorkspaceDetailsSingle.json */; };
+		C7DBG0000000000000000160 /* UserProfileServerError.json in Resources */ = {isa = PBXBuildFile; fileRef = C7DBG0000000000000000110 /* UserProfileServerError.json */; };
+		C7DBG0000000000000000201 /* WorkspacesScreenUITestCases.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7DBG0000000000000000200 /* WorkspacesScreenUITestCases.swift */; };
+		C7DBG0000000000000000203 /* ProfileScreenUITestCases.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7DBG0000000000000000202 /* ProfileScreenUITestCases.swift */; };
+		C7DBG0000000000000000221 /* WorkspaceDetailsWithQuests.json in Resources */ = {isa = PBXBuildFile; fileRef = C7DBG0000000000000000211 /* WorkspaceDetailsWithQuests.json */; };
+		C7DBG0000000000000000222 /* MapOSMElements.json in Resources */ = {isa = PBXBuildFile; fileRef = C7DBG0000000000000000212 /* MapOSMElements.json */; };
+		C7DBG0000000000000000223 /* LongFormOSMElements.json in Resources */ = {isa = PBXBuildFile; fileRef = C7DBG0000000000000000213 /* LongFormOSMElements.json */; };
+		C7DBG0000000000000000224 /* LongFormLatestElements.json in Resources */ = {isa = PBXBuildFile; fileRef = C7DBG0000000000000000214 /* LongFormLatestElements.json */; };
+		C7DBG0000000000000000253 /* AccessibilityModeOSMElements.json in Resources */ = {isa = PBXBuildFile; fileRef = C7DBG0000000000000000250 /* AccessibilityModeOSMElements.json */; };
+		C7DBG0000000000000000254 /* AccessibilityModeOSMElementsFar.json in Resources */ = {isa = PBXBuildFile; fileRef = C7DBG0000000000000000251 /* AccessibilityModeOSMElementsFar.json */; };
+		C7DBG0000000000000000231 /* MapScreenUITestCases.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7DBG0000000000000000230 /* MapScreenUITestCases.swift */; };
+		C7DBG0000000000000000241 /* LongFormScreenUITestCases.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7DBG0000000000000000240 /* LongFormScreenUITestCases.swift */; };
+		C7DBG0000000000000000255 /* AccessibilityModeScreenUITestCases.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7DBG0000000000000000252 /* AccessibilityModeScreenUITestCases.swift */; };
+		C7DBG0000000000000000261 /* UndoEditsScreenUITestCases.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7DBG0000000000000000260 /* UndoEditsScreenUITestCases.swift */; };
+		C7DBG0000000000000000271 /* ManageQuestsScreenUITestCases.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7DBG0000000000000000270 /* ManageQuestsScreenUITestCases.swift */; };
+		C7DBG0000000000000000281 /* SatellitePickerScreenUITestCases.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7DBG0000000000000000280 /* SatellitePickerScreenUITestCases.swift */; };
+		C7DBG0000000000000000283 /* WorkspaceDetailsNoImagery.json in Resources */ = {isa = PBXBuildFile; fileRef = C7DBG0000000000000000282 /* WorkspaceDetailsNoImagery.json */; };
+		C7DBG0000000000000000291 /* PasswordAuthenticationScreenUITestCases.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7DBG0000000000000000290 /* PasswordAuthenticationScreenUITestCases.swift */; };
+		C7DBG0000000000000000301 /* ForceUpdateScreenUITestCases.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7DBG0000000000000000300 /* ForceUpdateScreenUITestCases.swift */; };
+		C7DBG0000000000000000303 /* ForceUpdateSoft.json in Resources */ = {isa = PBXBuildFile; fileRef = C7DBG0000000000000000302 /* ForceUpdateSoft.json */; };
+		C7DBG0000000000000000305 /* ForceUpdateForce.json in Resources */ = {isa = PBXBuildFile; fileRef = C7DBG0000000000000000304 /* ForceUpdateForce.json */; };
+		C7DBG0000000000000000311 /* MultiQuestSelectionUITestCases.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7DBG0000000000000000310 /* MultiQuestSelectionUITestCases.swift */; };
+		C7DBG0000000000000000321 /* ConflictResolutionUITestCases.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7DBG0000000000000000320 /* ConflictResolutionUITestCases.swift */; };
+		C7DBG0000000000000000331 /* AddFeatureScreenUITestCases.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7DBG0000000000000000330 /* AddFeatureScreenUITestCases.swift */; };
 		C7DD04152F7E7A5800307026 /* Lato-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FA8C74D12C598F9D00D28220 /* Lato-Bold.ttf */; };
 		C7DD04162F7E7A6100307026 /* Lato-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FA8C74D02C598F9D00D28220 /* Lato-Regular.ttf */; };
 		C7DD04172F7E7A6100307026 /* Lato-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FA8C74D22C5998D600D28220 /* Lato-Medium.ttf */; };
@@ -219,6 +260,7 @@
 		C7E9528F2ED88B00001BFB75 /* lato-heavy.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C7E9528E2ED88B00001BFB75 /* lato-heavy.ttf */; };
 		C7ED070F2D70E2EC001FFFE2 /* TokenRefresher.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7ED070E2D70E2EC001FFFE2 /* TokenRefresher.swift */; };
 		CFECB318461BB876B1621890 /* Pods_osmapi.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C4F37DA661B22FA87DF8282F /* Pods_osmapi.framework */; };
+		DD224EE7B5FC852AF5637C95 /* ScreenshotOnFailureUITestCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = E70058F06D4E69B2E0669A8B /* ScreenshotOnFailureUITestCase.swift */; };
 		F45BA2B5418942E3B4C91667 /* StoredFeatureDraft.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C9C135AD8A342A1A94E757C /* StoredFeatureDraft.swift */; };
 		FA18CAE22CC7CD89008247F2 /* KartaviewViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA18CAE12CC7CD89008247F2 /* KartaviewViewModel.swift */; };
 		FA18CAE52CC7D0DD008247F2 /* SequenceModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA18CAE42CC7D0DD008247F2 /* SequenceModel.swift */; };
@@ -261,7 +303,6 @@
 		FAD5C4FF2AFCBE720040C61A /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FAD5C4FD2AFCBE720040C61A /* LaunchScreen.storyboard */; };
 		FAD5C50A2AFCBE720040C61A /* GoInfoGameTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAD5C5092AFCBE720040C61A /* GoInfoGameTests.swift */; };
 		FAD5C5142AFCBE720040C61A /* GoInfoGameUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAD5C5132AFCBE720040C61A /* GoInfoGameUITests.swift */; };
-		DD224EE7B5FC852AF5637C95 /* ScreenshotOnFailureUITestCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = E70058F06D4E69B2E0669A8B /* ScreenshotOnFailureUITestCase.swift */; };
 		FAD5C5162AFCBE720040C61A /* GoInfoGameUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAD5C5152AFCBE720040C61A /* GoInfoGameUITestsLaunchTests.swift */; };
 		FAE2584F2D39819300D2BB12 /* ManageQuestsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAE2584E2D39819300D2BB12 /* ManageQuestsView.swift */; };
 		FAE258522D3A780F00D2BB12 /* FloatingActionButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAE258512D3A780F00D2BB12 /* FloatingActionButton.swift */; };
@@ -389,13 +430,13 @@
 		30877432D1026706D7E805DA /* map_theme */ = {isa = PBXFileReference; lastKnownFileType = folder; path = map_theme; sourceTree = "<group>"; };
 		3B948B071EF07217DD32E626 /* Pods_osmapiTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_osmapiTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		3D797A45474D6135AFA24613 /* Pods-GoInfoGameTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-GoInfoGameTests.debug.xcconfig"; path = "Target Support Files/Pods-GoInfoGameTests/Pods-GoInfoGameTests.debug.xcconfig"; sourceTree = "<group>"; };
+		42FA4EB22185846E113DA376 /* QuestImageStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuestImageStorage.swift; sourceTree = "<group>"; };
 		61CD36AA62170BAF936749E0 /* CompassButtonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompassButtonView.swift; sourceTree = "<group>"; };
 		66BED441AF03CC04539E8D4A /* Pods_GoInfoGame.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_GoInfoGame.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		79F024C6DD9B31E354C41ED3 /* Pods-osmapi.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-osmapi.debug.xcconfig"; path = "Target Support Files/Pods-osmapi/Pods-osmapi.debug.xcconfig"; sourceTree = "<group>"; };
 		86C5ED636FC6D3C98650F231 /* NoteImageStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoteImageStorage.swift; sourceTree = "<group>"; };
 		89C2A88A7749F031BCDFE226 /* Pods-GoInfoGameTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-GoInfoGameTests.release.xcconfig"; path = "Target Support Files/Pods-GoInfoGameTests/Pods-GoInfoGameTests.release.xcconfig"; sourceTree = "<group>"; };
 		8AF3DE0241AC4BAB9C051601 /* FeatureImageStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeatureImageStorage.swift; sourceTree = "<group>"; };
-		42FA4EB22185846E113DA376 /* QuestImageStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuestImageStorage.swift; sourceTree = "<group>"; };
 		9111A9602D6348DD884AB010 /* LongFormElement+Completion.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "LongFormElement+Completion.swift"; sourceTree = "<group>"; };
 		970D5BD02B62B61300C20BE7 /* MapViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapViewController.swift; sourceTree = "<group>"; };
 		970D5BD22B67638400C20BE7 /* MapViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapViewModel.swift; sourceTree = "<group>"; };
@@ -549,7 +590,6 @@
 		B0CCB98B2B8626AE00AA73DE /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
 		B0CCB98D2B8626C600AA73DE /* ProfileViewVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewVM.swift; sourceTree = "<group>"; };
 		C38242EA353F419D881E164C /* FeatureSubmissionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeatureSubmissionManager.swift; sourceTree = "<group>"; };
-		F7B0248DF7AD2506C0779CE9 /* QuestSubmissionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuestSubmissionManager.swift; sourceTree = "<group>"; };
 		C4F37DA661B22FA87DF8282F /* Pods_osmapi.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_osmapi.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		C714D9532FFFCBB500CA1CB4 /* NotesSubmissionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotesSubmissionManager.swift; sourceTree = "<group>"; };
 		C71EB5A82E2100510009E610 /* SatellitePickerSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SatellitePickerSheet.swift; sourceTree = "<group>"; };
@@ -602,16 +642,57 @@
 		C79EDA922EDA0BBD00D2B100 /* UndoItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UndoItemView.swift; sourceTree = "<group>"; };
 		C7A357452EA22A120033F6FB /* Config.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Config.xcconfig; sourceTree = "<group>"; };
 		C7A922242E45C36D00705E21 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
+		C7AFA17C305AFC1500C539F7 /* LoginScreenUITestCases.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginScreenUITestCases.swift; sourceTree = "<group>"; };
+		C7AFA181305B085E00C539F7 /* ScreenshotOnFailureUITestCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenshotOnFailureUITestCase.swift; sourceTree = "<group>"; };
 		C7BA83532E3C9C3600755BA7 /* QuestSyncButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = QuestSyncButton.swift; path = GoInfoGame/UI/Map/QuestSyncButton.swift; sourceTree = SOURCE_ROOT; };
 		C7D3103D2EA0B3BB00CA10A9 /* ForceUpdateViewModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForceUpdateViewModifier.swift; sourceTree = "<group>"; };
 		C7D310402EA1302500CA10A9 /* StoreKit.storekit */ = {isa = PBXFileReference; lastKnownFileType = text; path = StoreKit.storekit; sourceTree = "<group>"; };
+		C7DBG00000000000000000A3 /* UITestStubs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UITestStubs.swift; sourceTree = "<group>"; };
+		C7DBG00000000000000000A4 /* A11yID.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = A11yID.swift; sourceTree = "<group>"; };
+		C7DBG00000000000000000A5 /* LoginFailure.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = LoginFailure.json; sourceTree = "<group>"; };
+		C7DBG0000000000000000100 /* LoginSuccess.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = LoginSuccess.json; sourceTree = "<group>"; };
+		C7DBG0000000000000000101 /* LoginServerError.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = LoginServerError.json; sourceTree = "<group>"; };
+		C7DBG0000000000000000102 /* EmptyList.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = EmptyList.json; sourceTree = "<group>"; };
+		C7DBG0000000000000000103 /* ForceUpdateNone.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = ForceUpdateNone.json; sourceTree = "<group>"; };
+		C7DBG0000000000000000104 /* WorkspacesList.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = WorkspacesList.json; sourceTree = "<group>"; };
+		C7DBG0000000000000000105 /* ProjectGroupRoles.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = ProjectGroupRoles.json; sourceTree = "<group>"; };
+		C7DBG0000000000000000106 /* WorkspacesServerError.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = WorkspacesServerError.json; sourceTree = "<group>"; };
+		C7DBG0000000000000000107 /* UserProfilePlaceholder.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = UserProfilePlaceholder.json; sourceTree = "<group>"; };
+		C7DBG0000000000000000108 /* WorkspacesSingle.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = WorkspacesSingle.json; sourceTree = "<group>"; };
+		C7DBG0000000000000000109 /* WorkspaceDetailsSingle.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = WorkspaceDetailsSingle.json; sourceTree = "<group>"; };
+		C7DBG0000000000000000110 /* UserProfileServerError.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = UserProfileServerError.json; sourceTree = "<group>"; };
+		C7DBG0000000000000000200 /* WorkspacesScreenUITestCases.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkspacesScreenUITestCases.swift; sourceTree = "<group>"; };
+		C7DBG0000000000000000202 /* ProfileScreenUITestCases.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileScreenUITestCases.swift; sourceTree = "<group>"; };
+		C7DBG0000000000000000211 /* WorkspaceDetailsWithQuests.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = WorkspaceDetailsWithQuests.json; sourceTree = "<group>"; };
+		C7DBG0000000000000000212 /* MapOSMElements.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = MapOSMElements.json; sourceTree = "<group>"; };
+		C7DBG0000000000000000213 /* LongFormOSMElements.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = LongFormOSMElements.json; sourceTree = "<group>"; };
+		C7DBG0000000000000000214 /* LongFormLatestElements.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = LongFormLatestElements.json; sourceTree = "<group>"; };
+		C7DBG0000000000000000250 /* AccessibilityModeOSMElements.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = AccessibilityModeOSMElements.json; sourceTree = "<group>"; };
+		C7DBG0000000000000000251 /* AccessibilityModeOSMElementsFar.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = AccessibilityModeOSMElementsFar.json; sourceTree = "<group>"; };
+		C7DBG0000000000000000230 /* MapScreenUITestCases.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapScreenUITestCases.swift; sourceTree = "<group>"; };
+		C7DBG0000000000000000240 /* LongFormScreenUITestCases.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LongFormScreenUITestCases.swift; sourceTree = "<group>"; };
+		C7DBG0000000000000000252 /* AccessibilityModeScreenUITestCases.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccessibilityModeScreenUITestCases.swift; sourceTree = "<group>"; };
+		C7DBG0000000000000000260 /* UndoEditsScreenUITestCases.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UndoEditsScreenUITestCases.swift; sourceTree = "<group>"; };
+		C7DBG0000000000000000270 /* ManageQuestsScreenUITestCases.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManageQuestsScreenUITestCases.swift; sourceTree = "<group>"; };
+		C7DBG0000000000000000280 /* SatellitePickerScreenUITestCases.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SatellitePickerScreenUITestCases.swift; sourceTree = "<group>"; };
+		C7DBG0000000000000000282 /* WorkspaceDetailsNoImagery.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = WorkspaceDetailsNoImagery.json; sourceTree = "<group>"; };
+		C7DBG0000000000000000290 /* PasswordAuthenticationScreenUITestCases.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PasswordAuthenticationScreenUITestCases.swift; sourceTree = "<group>"; };
+		C7DBG0000000000000000300 /* ForceUpdateScreenUITestCases.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForceUpdateScreenUITestCases.swift; sourceTree = "<group>"; };
+		C7DBG0000000000000000302 /* ForceUpdateSoft.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = ForceUpdateSoft.json; sourceTree = "<group>"; };
+		C7DBG0000000000000000304 /* ForceUpdateForce.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = ForceUpdateForce.json; sourceTree = "<group>"; };
+		C7DBG0000000000000000310 /* MultiQuestSelectionUITestCases.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MultiQuestSelectionUITestCases.swift; sourceTree = "<group>"; };
+		C7DBG0000000000000000320 /* ConflictResolutionUITestCases.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConflictResolutionUITestCases.swift; sourceTree = "<group>"; };
+		C7DBG0000000000000000330 /* AddFeatureScreenUITestCases.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddFeatureScreenUITestCases.swift; sourceTree = "<group>"; };
 		C7E9528C2ED887CC001BFB75 /* NoQuestsNearView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoQuestsNearView.swift; sourceTree = "<group>"; };
 		C7E9528E2ED88B00001BFB75 /* lato-heavy.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "lato-heavy.ttf"; sourceTree = "<group>"; };
 		C7ED070E2D70E2EC001FFFE2 /* TokenRefresher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenRefresher.swift; sourceTree = "<group>"; };
 		C96303080D26026265099E0E /* Pods-GoInfoGame.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-GoInfoGame.release.xcconfig"; path = "Target Support Files/Pods-GoInfoGame/Pods-GoInfoGame.release.xcconfig"; sourceTree = "<group>"; };
 		D76D8E22AC705A38AFEA78B1 /* Pods-GoInfoGame-GoInfoGameUITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-GoInfoGame-GoInfoGameUITests.debug.xcconfig"; path = "Target Support Files/Pods-GoInfoGame-GoInfoGameUITests/Pods-GoInfoGame-GoInfoGameUITests.debug.xcconfig"; sourceTree = "<group>"; };
+		E37B569B16FABF1505892C3A /* Pods-osmapiTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-osmapiTests.debug.xcconfig"; path = "Target Support Files/Pods-osmapiTests/Pods-osmapiTests.debug.xcconfig"; sourceTree = "<group>"; };
+		E70058F06D4E69B2E0669A8B /* ScreenshotOnFailureUITestCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenshotOnFailureUITestCase.swift; sourceTree = "<group>"; };
 		E82B8736511C2D879C41EDA1 /* Pods-osmapiTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-osmapiTests.release.xcconfig"; path = "Target Support Files/Pods-osmapiTests/Pods-osmapiTests.release.xcconfig"; sourceTree = "<group>"; };
 		F008D431593E568E75C48C84 /* Pods-GoInfoGame.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-GoInfoGame.debug.xcconfig"; path = "Target Support Files/Pods-GoInfoGame/Pods-GoInfoGame.debug.xcconfig"; sourceTree = "<group>"; };
+		F7B0248DF7AD2506C0779CE9 /* QuestSubmissionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuestSubmissionManager.swift; sourceTree = "<group>"; };
 		FA18CAE12CC7CD89008247F2 /* KartaviewViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KartaviewViewModel.swift; sourceTree = "<group>"; };
 		FA18CAE42CC7D0DD008247F2 /* SequenceModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SequenceModel.swift; sourceTree = "<group>"; };
 		FA18CAE62CC80A34008247F2 /* UploadPhotoModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadPhotoModel.swift; sourceTree = "<group>"; };
@@ -665,7 +746,6 @@
 		FAD5C5092AFCBE720040C61A /* GoInfoGameTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoInfoGameTests.swift; sourceTree = "<group>"; };
 		FAD5C50F2AFCBE720040C61A /* GoInfoGameUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = GoInfoGameUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		FAD5C5132AFCBE720040C61A /* GoInfoGameUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoInfoGameUITests.swift; sourceTree = "<group>"; };
-		E70058F06D4E69B2E0669A8B /* ScreenshotOnFailureUITestCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenshotOnFailureUITestCase.swift; sourceTree = "<group>"; };
 		FAD5C5152AFCBE720040C61A /* GoInfoGameUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoInfoGameUITestsLaunchTests.swift; sourceTree = "<group>"; };
 		FAE2584E2D39819300D2BB12 /* ManageQuestsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManageQuestsView.swift; sourceTree = "<group>"; };
 		FAE258512D3A780F00D2BB12 /* FloatingActionButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FloatingActionButton.swift; sourceTree = "<group>"; };
@@ -754,6 +834,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				342561966FC217124BD9CFE7 /* Pods_GoInfoGame_GoInfoGameUITests.framework in Frameworks */,
+				C7AFA17B305AF8E800C539F7 /* OHHTTPStubsSwift in Frameworks */,
+				C7AFA179305AF8E800C539F7 /* OHHTTPStubs in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -930,8 +1012,8 @@
 				89C2A88A7749F031BCDFE226 /* Pods-GoInfoGameTests.release.xcconfig */,
 				79F024C6DD9B31E354C41ED3 /* Pods-osmapi.debug.xcconfig */,
 				0644279A63026564F68E19C5 /* Pods-osmapi.release.xcconfig */,
-				8F9CA56CC2D1FF9A06516950 /* Pods-osmapiTests.debug.xcconfig */,
 				E82B8736511C2D879C41EDA1 /* Pods-osmapiTests.release.xcconfig */,
+				E37B569B16FABF1505892C3A /* Pods-osmapiTests.debug.xcconfig */,
 			);
 			path = Pods;
 			sourceTree = "<group>";
@@ -1516,6 +1598,44 @@
 			path = "Accessibility Mode";
 			sourceTree = "<group>";
 		};
+		C7DBG00000000000000000A1 /* DebugSupport */ = {
+			isa = PBXGroup;
+			children = (
+				C7DBG00000000000000000A4 /* A11yID.swift */,
+				C7DBG00000000000000000A3 /* UITestStubs.swift */,
+				C7DBG00000000000000000A2 /* MockResponses */,
+			);
+			path = DebugSupport;
+			sourceTree = "<group>";
+		};
+		C7DBG00000000000000000A2 /* MockResponses */ = {
+			isa = PBXGroup;
+			children = (
+				C7DBG00000000000000000A5 /* LoginFailure.json */,
+				C7DBG0000000000000000211 /* WorkspaceDetailsWithQuests.json */,
+				C7DBG0000000000000000212 /* MapOSMElements.json */,
+				C7DBG0000000000000000213 /* LongFormOSMElements.json */,
+				C7DBG0000000000000000214 /* LongFormLatestElements.json */,
+				C7DBG0000000000000000250 /* AccessibilityModeOSMElements.json */,
+				C7DBG0000000000000000251 /* AccessibilityModeOSMElementsFar.json */,
+				C7DBG0000000000000000282 /* WorkspaceDetailsNoImagery.json */,
+				C7DBG0000000000000000110 /* UserProfileServerError.json */,
+				C7DBG0000000000000000104 /* WorkspacesList.json */,
+				C7DBG0000000000000000105 /* ProjectGroupRoles.json */,
+				C7DBG0000000000000000106 /* WorkspacesServerError.json */,
+				C7DBG0000000000000000107 /* UserProfilePlaceholder.json */,
+				C7DBG0000000000000000108 /* WorkspacesSingle.json */,
+				C7DBG0000000000000000109 /* WorkspaceDetailsSingle.json */,
+				C7DBG0000000000000000100 /* LoginSuccess.json */,
+				C7DBG0000000000000000101 /* LoginServerError.json */,
+				C7DBG0000000000000000102 /* EmptyList.json */,
+				C7DBG0000000000000000103 /* ForceUpdateNone.json */,
+				C7DBG0000000000000000302 /* ForceUpdateSoft.json */,
+				C7DBG0000000000000000304 /* ForceUpdateForce.json */,
+			);
+			path = MockResponses;
+			sourceTree = "<group>";
+		};
 		FA18CADE2CC7CD46008247F2 /* Kartaview */ = {
 			isa = PBXGroup;
 			children = (
@@ -1703,6 +1823,7 @@
 		FAD5C4F12AFCBE700040C61A /* GoInfoGame */ = {
 			isa = PBXGroup;
 			children = (
+				C7DBG00000000000000000A1 /* DebugSupport */,
 				C78EEFAC2FDAD91000729240 /* PointNMap-Bridging-Header.h */,
 				C787EF162E9676CC00BEF0A6 /* GoInfoGame.entitlements */,
 				FA18CADE2CC7CD46008247F2 /* Kartaview */,
@@ -1761,9 +1882,24 @@
 		FAD5C5122AFCBE720040C61A /* GoInfoGameUITests */ = {
 			isa = PBXGroup;
 			children = (
+				C7AFA181305B085E00C539F7 /* ScreenshotOnFailureUITestCase.swift */,
 				FAD5C5132AFCBE720040C61A /* GoInfoGameUITests.swift */,
 				FAD5C5152AFCBE720040C61A /* GoInfoGameUITestsLaunchTests.swift */,
 				E70058F06D4E69B2E0669A8B /* ScreenshotOnFailureUITestCase.swift */,
+				C7AFA17C305AFC1500C539F7 /* LoginScreenUITestCases.swift */,
+				C7DBG0000000000000000230 /* MapScreenUITestCases.swift */,
+				C7DBG0000000000000000240 /* LongFormScreenUITestCases.swift */,
+				C7DBG0000000000000000252 /* AccessibilityModeScreenUITestCases.swift */,
+				C7DBG0000000000000000260 /* UndoEditsScreenUITestCases.swift */,
+				C7DBG0000000000000000270 /* ManageQuestsScreenUITestCases.swift */,
+				C7DBG0000000000000000280 /* SatellitePickerScreenUITestCases.swift */,
+				C7DBG0000000000000000290 /* PasswordAuthenticationScreenUITestCases.swift */,
+				C7DBG0000000000000000300 /* ForceUpdateScreenUITestCases.swift */,
+				C7DBG0000000000000000310 /* MultiQuestSelectionUITestCases.swift */,
+				C7DBG0000000000000000320 /* ConflictResolutionUITestCases.swift */,
+				C7DBG0000000000000000330 /* AddFeatureScreenUITestCases.swift */,
+				C7DBG0000000000000000202 /* ProfileScreenUITestCases.swift */,
+				C7DBG0000000000000000200 /* WorkspacesScreenUITestCases.swift */,
 			);
 			path = GoInfoGameUITests;
 			sourceTree = "<group>";
@@ -2124,6 +2260,27 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C7DBG00000000000000000A9 /* LoginFailure.json in Resources */,
+				C7DBG0000000000000000221 /* WorkspaceDetailsWithQuests.json in Resources */,
+				C7DBG0000000000000000222 /* MapOSMElements.json in Resources */,
+				C7DBG0000000000000000223 /* LongFormOSMElements.json in Resources */,
+				C7DBG0000000000000000224 /* LongFormLatestElements.json in Resources */,
+				C7DBG0000000000000000253 /* AccessibilityModeOSMElements.json in Resources */,
+				C7DBG0000000000000000254 /* AccessibilityModeOSMElementsFar.json in Resources */,
+				C7DBG0000000000000000283 /* WorkspaceDetailsNoImagery.json in Resources */,
+				C7DBG0000000000000000160 /* UserProfileServerError.json in Resources */,
+				C7DBG0000000000000000154 /* WorkspacesList.json in Resources */,
+				C7DBG0000000000000000155 /* ProjectGroupRoles.json in Resources */,
+				C7DBG0000000000000000156 /* WorkspacesServerError.json in Resources */,
+				C7DBG0000000000000000157 /* UserProfilePlaceholder.json in Resources */,
+				C7DBG0000000000000000158 /* WorkspacesSingle.json in Resources */,
+				C7DBG0000000000000000159 /* WorkspaceDetailsSingle.json in Resources */,
+				C7DBG0000000000000000150 /* LoginSuccess.json in Resources */,
+				C7DBG0000000000000000151 /* LoginServerError.json in Resources */,
+				C7DBG0000000000000000152 /* EmptyList.json in Resources */,
+				C7DBG0000000000000000153 /* ForceUpdateNone.json in Resources */,
+				C7DBG0000000000000000303 /* ForceUpdateSoft.json in Resources */,
+				C7DBG0000000000000000305 /* ForceUpdateForce.json in Resources */,
 				846A32C3BB81E3C29B621792 /* map_theme in Resources */,
 				973FC00A2B4D2A6D00878269 /* Localizable.strings in Resources */,
 				FAD5C4FF2AFCBE720040C61A /* LaunchScreen.storyboard in Resources */,
@@ -2355,13 +2512,9 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-osmapiTests/Pods-osmapiTests-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
-			inputPaths = (
-			);
 			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-osmapiTests/Pods-osmapiTests-frameworks-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -2490,6 +2643,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C7DBG00000000000000000A6 /* UITestStubs.swift in Sources */,
+				C7DBG00000000000000000A7 /* A11yID.swift in Sources */,
 				C78737AF2E4C9E3B00289D13 /* FloatingLabelTextField.swift in Sources */,
 				FA9F38202DC5585600D7AABF /* QuestUndoManager.swift in Sources */,
 				FA8C74D42C5A443700D28220 /* QuestOptions.swift in Sources */,
@@ -2665,9 +2820,25 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C7DBG00000000000000000A8 /* A11yID.swift in Sources */,
 				FAD5C5162AFCBE720040C61A /* GoInfoGameUITestsLaunchTests.swift in Sources */,
+				C7AFA17D305AFC1500C539F7 /* LoginScreenUITestCases.swift in Sources */,
+				C7DBG0000000000000000231 /* MapScreenUITestCases.swift in Sources */,
+				C7DBG0000000000000000241 /* LongFormScreenUITestCases.swift in Sources */,
+				C7DBG0000000000000000255 /* AccessibilityModeScreenUITestCases.swift in Sources */,
+				C7DBG0000000000000000261 /* UndoEditsScreenUITestCases.swift in Sources */,
+				C7DBG0000000000000000271 /* ManageQuestsScreenUITestCases.swift in Sources */,
+				C7DBG0000000000000000281 /* SatellitePickerScreenUITestCases.swift in Sources */,
+				C7DBG0000000000000000291 /* PasswordAuthenticationScreenUITestCases.swift in Sources */,
+				C7DBG0000000000000000301 /* ForceUpdateScreenUITestCases.swift in Sources */,
+				C7DBG0000000000000000311 /* MultiQuestSelectionUITestCases.swift in Sources */,
+				C7DBG0000000000000000321 /* ConflictResolutionUITestCases.swift in Sources */,
+				C7DBG0000000000000000331 /* AddFeatureScreenUITestCases.swift in Sources */,
+				C7DBG0000000000000000203 /* ProfileScreenUITestCases.swift in Sources */,
+				C7DBG0000000000000000201 /* WorkspacesScreenUITestCases.swift in Sources */,
 				FAD5C5142AFCBE720040C61A /* GoInfoGameUITests.swift in Sources */,
 				DD224EE7B5FC852AF5637C95 /* ScreenshotOnFailureUITestCase.swift in Sources */,
+				C7AFA182305B085E00C539F7 /* ScreenshotOnFailureUITestCase.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2826,7 +2997,7 @@
 		};
 		A40E72862B5D462A00328848 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 8F9CA56CC2D1FF9A06516950 /* Pods-osmapiTests.debug.xcconfig */;
+			baseConfigurationReference = E37B569B16FABF1505892C3A /* Pods-osmapiTests.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CODE_SIGN_STYLE = Automatic;
@@ -3517,6 +3688,16 @@
 		C787B2FD2FECE5E80026C40E /* MapLibre */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = MapLibre;
+		};
+		C7AFA178305AF8E800C539F7 /* OHHTTPStubs */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = C75666CE2E0D068900D36C41 /* XCRemoteSwiftPackageReference "OHHTTPStubs" */;
+			productName = OHHTTPStubs;
+		};
+		C7AFA17A305AF8E800C539F7 /* OHHTTPStubsSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = C75666CE2E0D068900D36C41 /* XCRemoteSwiftPackageReference "OHHTTPStubs" */;
+			productName = OHHTTPStubsSwift;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
