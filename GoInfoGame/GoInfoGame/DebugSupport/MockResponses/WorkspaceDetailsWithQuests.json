@@ -337,6 +337,22 @@
           }
         ]
       }
+    ],
+    "feature-presets": [
+      {
+        "name": "Bench",
+        "icon": "preset_temaki_bench",
+        "tags": {
+          "amenity": "bench"
+        }
+      },
+      {
+        "name": "Power Pole",
+        "icon": "preset_temaki_power_pole",
+        "tags": {
+          "power": "pole"
+        }
+      }
     ]
   },
   "imageryListDef": [

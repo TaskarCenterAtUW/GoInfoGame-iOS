@@ -509,6 +509,136 @@ final class LongFormScreenUITestCases: ScreenshotOnFailureUITestCase {
         XCTAssertTrue(submit.isEnabled, "Submit did not re-enable after correcting the lane count to a valid value")
     }
 
+    // MARK: - Compose Note
+
+    /// Compose Note is an inline toggle box within this same sheet (LongForm.swift's
+    /// own notesBoxContent), not a separate screen - opened by composeNoteButton,
+    /// submits via POST /notes.json (the same OSM API host every other LongForm
+    /// network call uses).
+    func testComposeNoteButtonOpensTextEditorWithSubmitDisabled() throws {
+        let app = reachMapScreen(scenario: UITestScenario.longFormOnline)
+        XCTAssertTrue(openForm(app, elementID: 409776), "Form did not open")
+        let scrollView = scroll(in: app)
+
+        let composeNote = element(app, id: A11yID.LongForm.composeNoteButton)
+        XCTAssertTrue(scrollFormToElement(composeNote, in: scrollView), "Compose Note button not reachable")
+        composeNote.tap()
+
+        let editor = element(app, id: A11yID.LongForm.composeNoteTextEditor)
+        XCTAssertTrue(scrollFormToElement(editor, in: scrollView), "Note text editor not reachable")
+
+        let submit = element(app, id: A11yID.LongForm.composeNoteSubmitButton)
+        XCTAssertTrue(scrollFormToElement(submit, in: scrollView), "Note submit button not reachable")
+        XCTAssertFalse(submit.isEnabled, "Note submit button is enabled despite the text editor being empty")
+    }
+
+    func testTypingNoteTextEnablesSubmitButton() throws {
+        let app = reachMapScreen(scenario: UITestScenario.longFormOnline)
+        XCTAssertTrue(openForm(app, elementID: 409776), "Form did not open")
+        let scrollView = scroll(in: app)
+
+        element(app, id: A11yID.LongForm.composeNoteButton).tap()
+        let editor = element(app, id: A11yID.LongForm.composeNoteTextEditor)
+        XCTAssertTrue(scrollFormToElement(editor, in: scrollView), "Note text editor not reachable")
+        editor.tap()
+        editor.typeText("Uneven pavement near the entrance")
+        dismissKeyboardIfShown(app)
+
+        let submit = element(app, id: A11yID.LongForm.composeNoteSubmitButton)
+        XCTAssertTrue(scrollFormToElement(submit, in: scrollView), "Note submit button not reachable")
+        XCTAssertTrue(submit.isEnabled, "Note submit button did not enable after typing text")
+    }
+
+    func testCancelClosesComposeNoteWithoutSubmitting() throws {
+        let app = reachMapScreen(scenario: UITestScenario.longFormOnline)
+        XCTAssertTrue(openForm(app, elementID: 409776), "Form did not open")
+        let scrollView = scroll(in: app)
+
+        element(app, id: A11yID.LongForm.composeNoteButton).tap()
+        let editor = element(app, id: A11yID.LongForm.composeNoteTextEditor)
+        XCTAssertTrue(scrollFormToElement(editor, in: scrollView), "Note text editor not reachable")
+        editor.tap()
+        editor.typeText("This should never be submitted")
+        dismissKeyboardIfShown(app)
+
+        let cancel = element(app, id: A11yID.LongForm.composeNoteCancelButton)
+        XCTAssertTrue(scrollFormToElement(cancel, in: scrollView), "Cancel button not reachable")
+        cancel.tap()
+
+        XCTAssertTrue(element(app, id: A11yID.LongForm.composeNoteTextEditor).waitForNonExistence(timeout: 5),
+                      "Note text editor still showing after Cancel")
+        XCTAssertFalse(element(app, id: A11yID.LongForm.composeNoteStatusMessage).exists,
+                       "A status message appeared despite cancelling instead of submitting")
+    }
+
+    // MARK: - Compose Note: network on/off
+
+    func testSubmittingNoteOnlineShowsSuccessMessage() throws {
+        let app = reachMapScreen(scenario: UITestScenario.longFormOnline)
+        XCTAssertTrue(openForm(app, elementID: 409776), "Form did not open")
+        let scrollView = scroll(in: app)
+
+        element(app, id: A11yID.LongForm.composeNoteButton).tap()
+        let editor = element(app, id: A11yID.LongForm.composeNoteTextEditor)
+        XCTAssertTrue(scrollFormToElement(editor, in: scrollView), "Note text editor not reachable")
+        editor.tap()
+        editor.typeText("Uneven pavement near the entrance")
+        dismissKeyboardIfShown(app)
+
+        let submit = element(app, id: A11yID.LongForm.composeNoteSubmitButton)
+        XCTAssertTrue(scrollFormToElement(submit, in: scrollView), "Note submit button not reachable")
+        submit.tap()
+
+        let status = element(app, id: A11yID.LongForm.composeNoteStatusMessage)
+        XCTAssertTrue(status.waitForExistence(timeout: 15), "Status message did not appear after submitting")
+        XCTAssertEqual(status.label, "Note submitted successfully", "Unexpected status text - label: \(status.label)")
+        XCTAssertTrue(element(app, id: A11yID.LongForm.composeNoteTextEditor).waitForNonExistence(timeout: 5),
+                      "Note box still showing after a successful submit")
+    }
+
+    func testSubmittingNoteOfflineShowsErrorMessage() throws {
+        let app = reachMapScreen(scenario: UITestScenario.longFormNetworkDown)
+        XCTAssertTrue(openForm(app, elementID: 409776), "Form did not open")
+        let scrollView = scroll(in: app)
+
+        element(app, id: A11yID.LongForm.composeNoteButton).tap()
+        let editor = element(app, id: A11yID.LongForm.composeNoteTextEditor)
+        XCTAssertTrue(scrollFormToElement(editor, in: scrollView), "Note text editor not reachable")
+        editor.tap()
+        editor.typeText("Uneven pavement near the entrance")
+        dismissKeyboardIfShown(app)
+
+        let submit = element(app, id: A11yID.LongForm.composeNoteSubmitButton)
+        XCTAssertTrue(scrollFormToElement(submit, in: scrollView), "Note submit button not reachable")
+        submit.tap()
+
+        let status = element(app, id: A11yID.LongForm.composeNoteStatusMessage)
+        XCTAssertTrue(status.waitForExistence(timeout: 15), "Status message did not appear after a failed submit")
+        XCTAssertNotEqual(status.label, "Note submitted successfully",
+                          "Got the success message despite the network being down - label: \(status.label)")
+    }
+
+    // MARK: - Compose Note: layout
+
+    func testComposeNoteControlsLayout() throws {
+        let app = reachMapScreen(scenario: UITestScenario.longFormOnline)
+        XCTAssertTrue(openForm(app, elementID: 409776), "Form did not open")
+        let scrollView = scroll(in: app)
+
+        element(app, id: A11yID.LongForm.composeNoteButton).tap()
+        let editor = element(app, id: A11yID.LongForm.composeNoteTextEditor)
+        let submit = element(app, id: A11yID.LongForm.composeNoteSubmitButton)
+        let cancel = element(app, id: A11yID.LongForm.composeNoteCancelButton)
+        XCTAssertTrue(scrollFormToElement(cancel, in: scrollView, requireFullyOnScreen: true), "Compose Note controls not reachable")
+
+        let window = app.windows.firstMatch
+        for (name, control) in [("Note text editor", editor), ("Submit button", submit), ("Cancel button", cancel)] {
+            XCTAssertTrue(control.isHittable, "\(name) exists but is not tappable")
+            XCTAssertTrue(window.frame.contains(control.frame), "\(name) extends outside the screen bounds")
+        }
+        assertNoOverlap([(submit, "Submit button"), (cancel, "Cancel button")])
+    }
+
     // MARK: - Already answered
 
     /// The freshness fetch can reveal that someone else fully answered this element

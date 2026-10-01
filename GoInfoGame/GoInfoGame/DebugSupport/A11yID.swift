@@ -83,6 +83,23 @@ enum A11yID {
         static let logoutButton = "profile_logout_button"
     }
 
+    /// Identifiers for PasswordAuthenticationPopupView (GoInfoGame/Login/
+    /// PasswordAuthenticationPopupView.swift), shown when Profile's biometricToggle is
+    /// switched on - re-verifies the account password (the same POST
+    /// /api/v1/authenticate endpoint the Login screen itself uses) before attempting
+    /// real Face ID/Touch ID enrollment. Only reachable at all when
+    /// A11yID.Profile.biometricToggle exists in the first place - see that property's
+    /// own comment on canEvaluateBiometrics().
+    enum PasswordAuth {
+        static let passwordField = "password_auth_password_field"
+        static let continueButton = "password_auth_continue_button"
+        static let cancelButton = "password_auth_cancel_button"
+        /// Only exists once a request has actually failed - doubles as that state's
+        /// presence signal, matching the convention used throughout this file for
+        /// conditionally-rendered text.
+        static let errorMessage = "password_auth_error_message"
+    }
+
     /// Identifiers for the LongForm quest-answer form (GoInfoGame/quests/LongQuests) and
     /// the sheet that hosts it (MapView.swift's QuestSheetView).
     ///
@@ -120,6 +137,19 @@ enum A11yID {
         /// else already completed every applicable question.
         static let alreadyAnsweredMessage = "longform_already_answered_message"
         static let alreadyAnsweredOKButton = "longform_already_answered_ok_button"
+
+        // Compose Note - an inline toggle box within this same sheet (LongForm.swift's
+        // own notesBoxContent), not a separate screen - opened by composeNoteButton
+        // above. Submits to POST /notes.json, the same OSM API host every other
+        // LongForm network call uses.
+        static let composeNoteTextEditor = "longform_compose_note_text_editor"
+        static let composeNoteSubmitButton = "longform_compose_note_submit_button"
+        static let composeNoteCancelButton = "longform_compose_note_cancel_button"
+        /// Only exists once a submission has actually finished (success or failure) -
+        /// doubles as that state's presence signal, matching the convention used
+        /// throughout this file for conditionally-rendered text. Auto-dismisses after
+        /// 3 seconds (LongForm.swift's own DispatchQueue.main.asyncAfter).
+        static let composeNoteStatusMessage = "longform_compose_note_status_message"
     }
 
     /// Identifiers for the Accessibility (Screen Reader) Mode screen (GoInfoGame/UI/Map/
@@ -237,8 +267,15 @@ enum A11yID {
         static let pinChoiceCreateNoteButton = "map_pin_choice_create_note_button"
         static let pinChoiceAddFeatureButton = "map_pin_choice_add_feature_button"
         /// Root of the bottom sheet shown after a long-press directly on a quest
-        /// annotation (MapView.swift's MultiQuestSelectionBottomSheet).
+        /// annotation (MapView.swift's MultiQuestSelectionBottomSheet). A SINGLE
+        /// long-pressed pin is enough to open it (selectedCount starts at 1) - more
+        /// pins of the SAME element type can be added with further long-presses.
         static let multiSelectSheet = "map_multi_select_sheet"
+        static let multiSelectAnswerQuestsButton = "map_multi_select_answer_quests_button"
+        static let multiSelectCancelButton = "map_multi_select_cancel_button"
+        /// "<N> <type> selected" - lets a test assert the running count without
+        /// depending on its exact wording.
+        static let multiSelectCountLabel = "map_multi_select_count_label"
         /// The transient "No elements to sync" (or other status) overlay shown after
         /// tapping the sync button - MapView.swift's own showAlert/alertMessage state,
         /// not a system alert. Shared across whatever alertMessage happens to be set.
@@ -328,6 +365,62 @@ enum A11yID {
         /// underlying OSM element id (HiddenQuest.id), same identity this file's other
         /// per-element identifiers use.
         static func hiddenRow(elementID: Int64) -> String { "manage_quests_hidden_row_\(elementID)" }
+    }
+
+    /// Identifiers for ConflictResolutionSheet (GoInfoGame/UI/Map/MapView.swift), shown
+    /// when a quest submission's changeset upload comes back 409 - the server's own
+    /// tags moved since the freshness fetch, on a key the user also just answered.
+    /// Reached only through DatasyncManager.updateWay2/updateNode2's real conflict
+    /// path, not a dedicated UI trigger.
+    enum ConflictResolution {
+        /// The toolbar's "Cancel" button - no root identifier on the screen itself
+        /// (NavigationView has no single leaf to tag), same reasoning as
+        /// A11yID.LongForm.dismissButton. Doubles as this screen's presence signal.
+        static let cancelButton = "conflict_resolution_cancel_button"
+        static let confirmButton = "conflict_resolution_confirm_button"
+        /// One conflicting tag's picker row: `conflict_resolution_use_mine_<tagKey>` /
+        /// `conflict_resolution_use_server_<tagKey>` - keyed by the OSM tag key itself
+        /// (e.g. "ext:surface"), the only stable identity ConflictingTag carries (its
+        /// own `id` is a fresh UUID per conflict, not reusable across a test's
+        /// assertions). `.inline` Picker rows are a List's own standard trailing-
+        /// checkmark rows, not custom buttons - these identifiers only locate; selection
+        /// state is read through isSelected, the same convention as this file's other
+        /// pickers/toggles.
+        static func useMineChoice(tagKey: String) -> String { "conflict_resolution_use_mine_\(tagKey)" }
+        static func useServerChoice(tagKey: String) -> String { "conflict_resolution_use_server_\(tagKey)" }
+    }
+
+    /// Identifiers for AddFeatureView/FeatureSubmissionView (GoInfoGame/UI/Map/
+    /// AddFeatureView.swift), reached from A11yID.Map.pinChoiceAddFeatureButton. Two
+    /// sheets in sequence: the preset grid (AddFeatureView), then the note+photo form
+    /// (FeatureSubmissionView) once a preset is picked.
+    enum AddFeature {
+        /// AddFeatureView's close ("X") button - no root identifier on the sheet itself
+        /// (VStack has no single leaf to tag, same reasoning as
+        /// A11yID.Map.accessibilityModeCloseButton). Doubles as this sheet's presence
+        /// signal.
+        static let closeButton = "add_feature_close_button"
+        /// Shown instead of the preset grid when featurePresets is empty.
+        static let noPresetsMessage = "add_feature_no_presets_message"
+        /// One preset tile in the grid: `add_feature_preset_<name>` - keyed by
+        /// FeaturePreset.name, the only stable identity it carries (its own `id` is a
+        /// fresh UUID per decode, not reusable across a test's assertions) - same
+        /// convention as A11yID.ManageQuests.featureToggle's elementType keying.
+        static func presetButton(name: String) -> String { "add_feature_preset_\(name)" }
+
+        // MARK: FeatureSubmissionView (the note+photo sheet shown after picking a preset)
+        /// No root identifier on this sheet either, same reasoning as closeButton above -
+        /// submissionNoteTextEditor doubles as its presence signal.
+        static let submissionCloseButton = "add_feature_submission_close_button"
+        static let submissionNoteTextEditor = "add_feature_submission_note_text_editor"
+        /// "<N>/255" - lets a test assert the running count without depending on exact
+        /// wording, same convention as A11yID.Map.multiSelectCountLabel.
+        static let submissionNoteCharCountLabel = "add_feature_submission_note_char_count_label"
+        /// Opens CameraView - real camera capture is not something this suite attempts
+        /// (same reasoning as A11yID.Map.compassButton's own rotation gesture), so tests
+        /// only confirm this control exists and is tappable, never a resulting photo.
+        static let submissionAddPhotoButton = "add_feature_submission_add_photo_button"
+        static let submissionSubmitButton = "add_feature_submission_submit_button"
     }
 }
 
@@ -490,6 +583,95 @@ enum UITestScenario {
     /// LongformFallsBackToPicker's own comment) - it never reaches the Map screen this
     /// scenario needs.
     static let mapWithNoImageryOptions = "map_with_no_imagery_options"
+
+    /// Lands on the Map with LongFormOSMElements.json, same baseline as longFormOnline,
+    /// but the changeset UPLOAD step (not create, not the freshness fetch) returns a
+    /// real 409 the first time only, then succeeds on retry - mirrors
+    /// longFormNetworkRecovers' own "fails once" shape exactly, since
+    /// DatasyncManager.updateWay2/updateNode2 retries the SAME upload call after the
+    /// user resolves the conflict, and a stub that kept returning 409 forever would
+    /// re-prompt infinitely. A 409 on this specific endpoint is exactly what
+    /// ApiManager/APIError decode as .conflict (APIError.swift's own status-code
+    /// mapping), which is what DatasyncManager catches to re-fetch the "latest" tags
+    /// and raise ConflictResolutionSheet - not a separate, made-up test-only trigger.
+    static let longFormConflict = "long_form_conflict"
+
+    /// PLACEHOLDERS for the Password Auth popup suite. All four land on Profile
+    /// (reusing workspacesWithData's own stub shape) with BiometricAuthManager
+    /// .canEvaluateBiometrics() forced true (see that function's own comment) so
+    /// A11yID.Profile.biometricToggle actually renders - otherwise identical to
+    /// workspacesWithData. Each launch fixes the password-verification endpoint's own
+    /// response for the whole test (stub selection happens once, at app launch, inside
+    /// the app process - a UI test running in a separate Runner process has no way to
+    /// change it mid-test), so a distinct outcome needs its own scenario the same way
+    /// longFormOnline/NetworkDown/NetworkRecovers do.
+    ///
+    /// The correct-password case (`Online`) still ends in an error today, not true
+    /// enrollment success - BiometricAuthManager.authenticate() does its own separate,
+    /// unbypassed real LAContext check with no UI-test hook at all, and safely resolves
+    /// to "unavailable" on a simulator with nothing enrolled (confirmed directly: it
+    /// short-circuits before any real system Face ID/Touch ID prompt could appear, so
+    /// there's no hang risk - just a real, different error than the wrong-password case).
+    static let profileBiometricPopupOnline = "profile_biometric_popup_online"
+    /// The password-verification request succeeds, but with a wrong-password 401 -
+    /// PasswordAuthenticationViewModel's generic "Invalid username or password." path.
+    static let profileBiometricPopupWrongPassword = "profile_biometric_popup_wrong_password"
+    /// The password-verification request fails as a connectivity error, not an HTTP
+    /// status - same generic error message as the wrong-password case (the ViewModel
+    /// doesn't distinguish why `performLogin` failed), but proves it doesn't hang or
+    /// crash when offline.
+    static let profileBiometricPopupNetworkDown = "profile_biometric_popup_network_down"
+    /// Like `Online`, but the password-verification response is delayed - long enough
+    /// for a UI test to observe the popup's own loading state before it resolves.
+    static let profileBiometricPopupSlowResponse = "profile_biometric_popup_slow_response"
+
+    /// PLACEHOLDERS for the Force Update alert suite. All three land on the Workspaces
+    /// screen (EmptyList, matching loginBiometricPrompt's own minimal shape - the alert
+    /// itself is presented over whichever root view is active, Workspaces or Login,
+    /// identically, since SceneDelegate applies ForceUpdateViewModifier to both) with
+    /// GET app-force-update.json stubbed - ForceUpdateManager.checkForceUpdate() fires
+    /// on every sceneDidBecomeActive (including a cold launch), so no extra
+    /// foreground/background step is needed to trigger it. Every other scenario in this
+    /// whole suite leaves this endpoint unstubbed, which is NOT the same as "no
+    /// update" - it hits the catch-all, checkForceUpdate() throws, and the `try?` in
+    /// SceneDelegate swallows it silently (appUpdateInfo never leaves its initial
+    /// .noUpdate value and updateCheckCompleted never fires) - same visible outcome
+    /// (no alert) as a genuine no-update response, but for a different reason, which is
+    /// why `forceUpdateNone` stubs it explicitly rather than relying on that.
+    ///
+    /// min_required_version/latest_version in the two non-`None` fixtures are picked
+    /// relative to nothing (e.g. "999.0.0"/"0.0.1") rather than the actual running
+    /// CFBundleShortVersionString, so these stay correct regardless of the app's real
+    /// version at any given time.
+    static let forceUpdateNone = "force_update_none"
+    /// latest_version far ahead of any real running version, but min_required_version
+    /// far behind it - ValidateForceUpdate's own ordering means this is what actually
+    /// produces .softUpdate rather than .forceUpdate.
+    static let forceUpdateSoft = "force_update_soft"
+    /// min_required_version far ahead of any real running version - always
+    /// .forceUpdate, regardless of what's actually installed.
+    static let forceUpdateForce = "force_update_force"
+
+    /// PLACEHOLDERS for the Add Feature suite. Land on the Map the same way the
+    /// longForm* scenarios do (real Workspaces auto-redirect), with
+    /// WorkspaceDetailsWithQuests.json's own "feature-presets" (Bench, Power Pole) and
+    /// LongFormOSMElements.json for the map - entering the flow needs an empty area to
+    /// long-press, not any particular element, so the choice of map fixture is
+    /// incidental here (reused rather than inventing a new one).
+    ///
+    /// Node creation (FeatureSubmissionManager.attempt -> DatasyncManager.createNode)
+    /// hits the exact same three endpoints as a LongForm submit (changeset
+    /// create/upload/close) - only the upload response differs: it must echo back a
+    /// `<node old_id="-1" new_id=... new_version=.../>` (CreateNodeDiffResultParser's
+    /// own requirement), unlike stubChangesetUpload()'s plain `<diffResult />` used by
+    /// LongForm's own way-update path - hence this suite's own upload stub rather than
+    /// reusing that shared one.
+    static let addFeatureOnline = "add_feature_online"
+    /// The map loads, but the changeset upload step fails with a connectivity error -
+    /// FeatureSubmissionManager persists the draft before any network call regardless
+    /// (DatabaseConnector.upsertFeatureDraft), so this proves a feature captured
+    /// offline stays queued rather than being lost.
+    static let addFeatureNetworkDown = "add_feature_network_down"
 
     /// Launch argument (not environment) that clears UserDefaults and the Keychain.
     static let resetStateArgument = "-UITestResetState"

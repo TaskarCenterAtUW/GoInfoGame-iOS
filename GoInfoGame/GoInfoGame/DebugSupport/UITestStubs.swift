@@ -232,6 +232,7 @@ enum UITestStubs {
             stubChangesetCreate()
             stubChangesetUpload()
             stubChangesetClose()
+            stubSubmitNote()
 
         case UITestScenario.longFormNetworkDown:
             installQuestFormBaseline(mapFixture: "LongFormOSMElements")
@@ -240,6 +241,7 @@ enum UITestStubs {
             // are still there to tap.
             stubOSMConnectivityFailure(pathMatches(#"^/prod/api/0\.6/(way|node)/\d+\.json$"#), name: "fetch latest element")
             stubOSMConnectivityFailure(isMethodPUT() && isPath("/prod/api/0.6/changeset/create"), name: "changeset create")
+            stubOSMConnectivityFailure(isMethodPOST() && isPath("/prod/api/0.6/notes.json"), name: "submit note")
 
         case UITestScenario.longFormNetworkRecovers:
             installQuestFormBaseline(mapFixture: "LongFormOSMElements")
@@ -300,6 +302,91 @@ enum UITestStubs {
 
         case UITestScenario.mapWithNoImageryOptions:
             installQuestFormBaseline(mapFixture: "AccessibilityModeOSMElements", workspaceDetailsFixture: "WorkspaceDetailsNoImagery")
+
+        case UITestScenario.longFormConflict:
+            installQuestFormBaseline(mapFixture: "LongFormOSMElements")
+            stubLatestElementFetch(mapFixture: "LongFormOSMElements", latestFixture: "LongFormLatestElements")
+            stubChangesetCreate()
+            var hasConflictedOnce = false
+            stub(condition: isMethodPOST() && pathMatches(#"^/prod/api/0\.6/changeset/\d+/upload$"#)) { _ in
+                if !hasConflictedOnce {
+                    hasConflictedOnce = true
+                    return HTTPStubsResponse(data: Data("Version mismatch".utf8), statusCode: 409, headers: nil)
+                }
+                return HTTPStubsResponse(data: Data("<diffResult />".utf8), statusCode: 200, headers: ["Content-Type": "text/xml"])
+            }.name = "changeset upload -> 409 once, then succeeds"
+            stubChangesetClose()
+
+        case UITestScenario.profileBiometricPopupOnline:
+            seedLoggedInAndLandOnWorkspaces()
+            stubWorkspacesList(fixture: "WorkspacesList")
+            stubProjectGroupRoles(fixture: "ProjectGroupRoles")
+            stubUserProfile(fixture: "UserProfilePlaceholder")
+            stubLogin(fixture: "LoginSuccess", status: 200)
+
+        case UITestScenario.profileBiometricPopupWrongPassword:
+            seedLoggedInAndLandOnWorkspaces()
+            stubWorkspacesList(fixture: "WorkspacesList")
+            stubProjectGroupRoles(fixture: "ProjectGroupRoles")
+            stubUserProfile(fixture: "UserProfilePlaceholder")
+            stubLogin(fixture: "LoginFailure", status: 401)
+
+        case UITestScenario.profileBiometricPopupNetworkDown:
+            seedLoggedInAndLandOnWorkspaces()
+            stubWorkspacesList(fixture: "WorkspacesList")
+            stubProjectGroupRoles(fixture: "ProjectGroupRoles")
+            stubUserProfile(fixture: "UserProfilePlaceholder")
+            stub(condition: isLoginRequest()) { _ in
+                HTTPStubsResponse(error: NSError(domain: NSURLErrorDomain, code: URLError.notConnectedToInternet.rawValue))
+            }.name = "login (password verification) -> network down"
+
+        case UITestScenario.profileBiometricPopupSlowResponse:
+            seedLoggedInAndLandOnWorkspaces()
+            stubWorkspacesList(fixture: "WorkspacesList")
+            stubProjectGroupRoles(fixture: "ProjectGroupRoles")
+            stubUserProfile(fixture: "UserProfilePlaceholder")
+            stub(condition: isLoginRequest()) { _ in
+                response(fixture: "LoginSuccess", status: 200).responseTime(4.0)
+            }.name = "login (password verification) -> 200 after 4s"
+
+        case UITestScenario.forceUpdateNone:
+            seedLoggedInAndLandOnWorkspaces()
+            stubWorkspacesList(fixture: "EmptyList")
+            stubProjectGroupRoles(fixture: "EmptyList")
+            stubForceUpdate(fixture: "ForceUpdateNone")
+
+        case UITestScenario.forceUpdateSoft:
+            seedLoggedInAndLandOnWorkspaces()
+            stubWorkspacesList(fixture: "EmptyList")
+            stubProjectGroupRoles(fixture: "EmptyList")
+            stubForceUpdate(fixture: "ForceUpdateSoft")
+
+        case UITestScenario.forceUpdateForce:
+            seedLoggedInAndLandOnWorkspaces()
+            stubWorkspacesList(fixture: "EmptyList")
+            stubProjectGroupRoles(fixture: "EmptyList")
+            stubForceUpdate(fixture: "ForceUpdateForce")
+
+        case UITestScenario.addFeatureOnline:
+            installQuestFormBaseline(mapFixture: "LongFormOSMElements")
+            stubChangesetCreate()
+            // Unlike stubChangesetUpload() (a plain `<diffResult />`, used by LongForm's
+            // own way-update path), node creation requires the response to echo back a
+            // `<node old_id="-1" new_id=... new_version=.../>` - CreateNodeDiffResult
+            // Parser's own requirement (DatasyncManager.swift) for learning the server-
+            // assigned id/version.
+            stub(condition: isMethodPOST() && pathMatches(#"^/prod/api/0\.6/changeset/\d+/upload$"#)) { _ in
+                HTTPStubsResponse(data: Data(#"<diffResult><node old_id="-1" new_id="900901" new_version="1"/></diffResult>"#.utf8),
+                                  statusCode: 200, headers: ["Content-Type": "text/xml"])
+            }.name = "POST /changeset/{id}/upload -> node created"
+            stubChangesetClose()
+
+        case UITestScenario.addFeatureNetworkDown:
+            installQuestFormBaseline(mapFixture: "LongFormOSMElements")
+            // Same failure point as longFormNetworkDown's own "changeset create" -
+            // FeatureSubmissionManager has already persisted the draft (Realm + disk)
+            // before this call, so nothing here affects whether the draft survives.
+            stubOSMConnectivityFailure(isMethodPUT() && isPath("/prod/api/0.6/changeset/create"), name: "changeset create")
 
         default:
             NSLog("[UITestStubs] Unknown scenario '%@' - only the catch-all is installed.", scenario)
@@ -529,6 +616,29 @@ enum UITestStubs {
         } catch {
             NSLog("[UITestStubs] Error seeding undo changesets: %@", "\(error)")
         }
+    }
+
+    /// `POST /notes.json` - Compose Note's own submission (LongForm.swift's
+    /// submitNote() -> NotesViewModel.createNote(), modelType: String.self,
+    /// useJSON: false - decoded as a plain string, same as stubChangesetUpload()'s own
+    /// endpoint, so any 200 with a text body satisfies it). The failure case is covered
+    /// by stubOSMConnectivityFailure directly (longFormNetworkDown), same as the
+    /// freshness-fetch/changeset-create stubs already do, so this only ever needs to
+    /// answer success.
+    private static func stubSubmitNote() {
+        stub(condition: isMethodPOST() && isPath("/prod/api/0.6/notes.json")) { _ in
+            HTTPStubsResponse(data: Data("ok".utf8), statusCode: 200, headers: ["Content-Type": "text/plain"])
+        }.name = "POST /notes.json -> 200"
+    }
+
+    /// `GET app-force-update.json` - ForceUpdateManager.checkForceUpdate() fetches this
+    /// from a static file hosted on GitHub (Config.xcconfig's APP_FORCE_UPDATE_URL), not
+    /// from this app's own API host like every other stub in this file - matched on path
+    /// alone, same as the rest of this file's conditions.
+    private static func stubForceUpdate(fixture name: String) {
+        stub(condition: isMethodGET() && isPath("/TaskarCenterAtUW/asr-config/refs/heads/main/force-update/app-force-update.json")) { _ in
+            response(fixture: name, status: 200)
+        }.name = "GET app-force-update.json -> \(name)"
     }
 
     /// Writes 2 HiddenQuest rows directly to UserDefaults["hiddenElements"], for
