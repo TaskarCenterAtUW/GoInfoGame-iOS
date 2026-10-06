@@ -12,6 +12,9 @@ import UIKit
 struct UserProfileView: View {
     @Environment(\.dismiss) var dismiss
 
+    /// True when opened from the map, i.e. a workspace (and its long form) is loaded.
+    var isWorkspaceSelected: Bool = false
+
     @StateObject private var viewModel = UserProfileViewModel()
     
     @AppStorage("loggedIn") private var loggedIn: Bool = false
@@ -90,7 +93,20 @@ struct UserProfileView: View {
                                 .toggleStyle(SwitchToggleStyle(tint: Asset.Colors.accentPink.swiftUIColor))
                                 .accessibilityLabel(L10n.Localizable.lowBandwidthMode)
                                 .accessibilityHint(L10n.Localizable.disableQuestImagesToSaveData)
-                                
+
+                                Line()
+                                    .stroke(style: .init(dash: [4]))
+                                    .foregroundStyle(Asset.Colors.ddddddLine.swiftUIColor)
+                                    .frame(height: 1)
+                                    .accessibilityHidden(true)
+
+                                Text("DEBUG")
+                                    .font(FontFamily.Lato.bold.swiftUIFont(size: 14, relativeTo: .caption))
+                                    .foregroundStyle(Asset.Colors.huskyPurple.swiftUIColor)
+                                    .accessibilityAddTraits(.isHeader)
+
+                                showQuestFormsRow
+
                                 Line()
                                     .stroke(style: .init(dash: [4]))
                                     .foregroundStyle(Asset.Colors.ddddddLine.swiftUIColor)
@@ -185,7 +201,23 @@ struct UserProfileView: View {
         .accessibilityHidden(true)
     }
 
-        
+    private var showQuestFormsRow: some View {
+        NavigationLink(destination: ShowQuestFormsView(isWorkspaceSelected: isWorkspaceSelected)) {
+            HStack {
+                Text("Show Quest Forms")
+                    .font(FontFamily.Lato.bold.swiftUIFont(size: 16, relativeTo: .headline))
+                    .foregroundStyle(Asset.Colors._42526ETextFieldText.swiftUIColor)
+                Spacer()
+                Image(systemName: "chevron.right")
+                    .foregroundStyle(Asset.Colors._42526ETextFieldText.swiftUIColor)
+                    .accessibilityHidden(true)
+            }
+            .frame(minHeight: 44)
+            .contentShape(Rectangle())
+        }
+        .accessibilityLabel("Show Quest Forms")
+    }
+
     private var logOutButton: some View {
         Button {
             Utilities.clearAllData()

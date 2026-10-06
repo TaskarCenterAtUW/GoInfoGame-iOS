@@ -58,6 +58,12 @@ struct LongForm: View, QuestForm {
     /// is skipped and the form always starts blank.
     var isMultiSelectMode: Bool = false
 
+    /// When true, this form is a read-only preview of the workspace's long form (opened
+    /// from Profile → Show Quest Forms) rather than answering a real element — the
+    /// element info rows and Compose Note / Ignore actions are hidden, and `action`
+    /// receives the answers without anything being submitted.
+    var isPreviewMode: Bool = false
+
     var action: ((LongFormAnswer) -> Void)?
 
     typealias AnswerClass = LongFormAnswer
@@ -117,49 +123,51 @@ struct LongForm: View, QuestForm {
                 header
 
                 List {
-                    Section {
-                        tagInfoRow(label: "ID", value: questID ?? "0")
+                    if !isPreviewMode {
+                        Section {
+                            tagInfoRow(label: "ID", value: questID ?? "0")
 
-                        tagInfoRow(label: "Intersection", value: tags?["ext:intersection_at"])
+                            tagInfoRow(label: "Intersection", value: tags?["ext:intersection_at"])
 
-                        tagInfoRow(label: "Name", value: tags?["name"])
+                            tagInfoRow(label: "Name", value: tags?["name"])
 
-                        // Side by side, neither button has enough width at large
-                        // accessibility text sizes to fit its label as a whole word, so
-                        // both wrap mid-word. Stacking them instead gives each the full
-                        // row width.
-                        Group {
-                            if dynamicTypeSize.isAccessibilitySize {
-                                VStack(alignment: .leading, spacing: 8) {
-                                    composeNoteButton
-                                    ignoreQuestButton
-                                }
-                            } else {
-                                HStack {
-                                    composeNoteButton
-                                    Spacer()
-                                    ignoreQuestButton
-                                }
-                            }
-                        }
-
-                        if showCreateNoteMessage {
-                            Text(alertMessage)
-                                .foregroundColor(alertMessage == "Note submitted successfully" ? Color.green : Color.red)
-                                .onAppear {
-                                    DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
-                                        showCreateNoteMessage = false
+                            // Side by side, neither button has enough width at large
+                            // accessibility text sizes to fit its label as a whole word, so
+                            // both wrap mid-word. Stacking them instead gives each the full
+                            // row width.
+                            Group {
+                                if dynamicTypeSize.isAccessibilitySize {
+                                    VStack(alignment: .leading, spacing: 8) {
+                                        composeNoteButton
+                                        ignoreQuestButton
+                                    }
+                                } else {
+                                    HStack {
+                                        composeNoteButton
+                                        Spacer()
+                                        ignoreQuestButton
                                     }
                                 }
-                        }
+                            }
 
-                        if showNotesBox {
-                            notesBoxContent
+                            if showCreateNoteMessage {
+                                Text(alertMessage)
+                                    .foregroundColor(alertMessage == "Note submitted successfully" ? Color.green : Color.red)
+                                    .onAppear {
+                                        DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
+                                            showCreateNoteMessage = false
+                                        }
+                                    }
+                            }
+
+                            if showNotesBox {
+                                notesBoxContent
+                            }
                         }
+                        .listRowInsets(EdgeInsets(top: 4, leading: 20, bottom: 4, trailing: 20))
+                        .listRowBackground(Color.clear)
+                        .listRowSeparator(.hidden)
                     }
-                    .listRowInsets(EdgeInsets(top: 4, leading: 20, bottom: 4, trailing: 20))
-                    .listRowBackground(Color.clear)
-                    .listRowSeparator(.hidden)
 
                     Section {
                         if let quests = questsForLongForm()?.quests {
@@ -224,7 +232,8 @@ struct LongForm: View, QuestForm {
                 // Checked only here (on reopen), not proactively — a photo that's
                 // still retrying quietly in the background shouldn't interrupt
                 // whatever else the user is doing when the 3rd attempt happens.
-                if let elementId = Int(questID ?? ""),
+                if !isPreviewMode,
+                   let elementId = Int(questID ?? ""),
                    let stuck = DatabaseConnector.shared.stuckPhotoChangeset(elementId: elementId) {
                     stuckPhotoChangeset = stuck
                     showPhotoRetryExhaustedAlert = true

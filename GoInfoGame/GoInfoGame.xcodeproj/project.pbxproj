@@ -285,6 +285,7 @@
 		FAFDA20E2C6F58D600ECEAE9 /* UserProfile.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAFDA20D2C6F58D600ECEAE9 /* UserProfile.swift */; };
 		FAFDA2102C6F592700ECEAE9 /* UserProfileViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAFDA20F2C6F592700ECEAE9 /* UserProfileViewModel.swift */; };
 		FAFDA2122C6F64E800ECEAE9 /* UserProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAFDA2112C6F64E800ECEAE9 /* UserProfileView.swift */; };
+		A1C0FFEE2E9F000100000001 /* ShowQuestFormsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1C0FFEE2E9F000100000002 /* ShowQuestFormsView.swift */; };
 		FAFDA2142C7351CB00ECEAE9 /* APIError.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAFDA2132C7351CB00ECEAE9 /* APIError.swift */; };
 /* End PBXBuildFile section */
 
@@ -686,6 +687,7 @@
 		FAFDA20D2C6F58D600ECEAE9 /* UserProfile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfile.swift; sourceTree = "<group>"; };
 		FAFDA20F2C6F592700ECEAE9 /* UserProfileViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfileViewModel.swift; sourceTree = "<group>"; };
 		FAFDA2112C6F64E800ECEAE9 /* UserProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfileView.swift; sourceTree = "<group>"; };
+		A1C0FFEE2E9F000100000002 /* ShowQuestFormsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShowQuestFormsView.swift; sourceTree = "<group>"; };
 		FAFDA2132C7351CB00ECEAE9 /* APIError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIError.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -1835,6 +1837,7 @@
 			isa = PBXGroup;
 			children = (
 				FAFDA2112C6F64E800ECEAE9 /* UserProfileView.swift */,
+				A1C0FFEE2E9F000100000002 /* ShowQuestFormsView.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -2595,6 +2598,7 @@
 				0536DD992B0BDBFE00B04C4B /* OAuthManager.swift in Sources */,
 				A4E711A62B57BBCA00C9DE08 /* QuestProtocols.swift in Sources */,
 				FAFDA2122C6F64E800ECEAE9 /* UserProfileView.swift in Sources */,
+				A1C0FFEE2E9F000100000001 /* ShowQuestFormsView.swift in Sources */,
 				973FBFFE2B46BB3800878269 /* Utils.swift in Sources */,
 				B0CCB98C2B8626AE00AA73DE /* ProfileView.swift in Sources */,
 				FAF44FBD2B3084EC004FE664 /* OnboardingView1.swift in Sources */,

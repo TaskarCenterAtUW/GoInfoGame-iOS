@@ -110,7 +110,7 @@ struct MapView: View {
     var body: some View {
             ZStack {
                 NavigationLink(
-                    destination: UserProfileView(),
+                    destination: UserProfileView(isWorkspaceSelected: true),
                     isActive: $navigateToProfile
                 ) { EmptyView() }
 
