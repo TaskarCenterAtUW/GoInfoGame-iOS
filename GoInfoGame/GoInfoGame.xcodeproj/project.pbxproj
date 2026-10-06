@@ -24,11 +24,11 @@
 		171574E02FD1CC4A00AA6603 /* PhotoLookupResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 171574DF2FD1CC4A00AA6603 /* PhotoLookupResponse.swift */; };
 		188843AD2B5FA2DF0008DCF8 /* TactilePavingStepsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 188843AC2B5FA2DF0008DCF8 /* TactilePavingStepsTests.swift */; };
 		188843AF2B5FB32D0008DCF8 /* WayLitTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 188843AE2B5FB32D0008DCF8 /* WayLitTests.swift */; };
+		227FDA1227FD4BFA2E18876C /* QuestImageStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42FA4EB22185846E113DA376 /* QuestImageStorage.swift */; };
 		2E71655C971839F8DAF42E67 /* CompassButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61CD36AA62170BAF936749E0 /* CompassButtonView.swift */; };
 		342561966FC217124BD9CFE7 /* Pods_GoInfoGame_GoInfoGameUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2D539E22EFF6636F8CBA035A /* Pods_GoInfoGame_GoInfoGameUITests.framework */; };
 		46B6E640D2414B20BBA4CBF0 /* FeatureSubmissionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C38242EA353F419D881E164C /* FeatureSubmissionManager.swift */; };
 		4A89C70038014808B0E110A0 /* FeatureImageStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AF3DE0241AC4BAB9C051601 /* FeatureImageStorage.swift */; };
-		227FDA1227FD4BFA2E18876C /* QuestImageStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42FA4EB22185846E113DA376 /* QuestImageStorage.swift */; };
 		5F9B87EE81842B57F4B7C8FB /* QuestSubmissionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7B0248DF7AD2506C0779CE9 /* QuestSubmissionManager.swift */; };
 		70CFF415C62865D5A2F409AD /* NoteImageStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86C5ED636FC6D3C98650F231 /* NoteImageStorage.swift */; };
 		74D8E739AE340D54DEF2E74C /* Pods_GoInfoGameTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 066F85ADCDCE7357368131F8 /* Pods_GoInfoGameTests.framework */; };
@@ -392,13 +392,13 @@
 		2D539E22EFF6636F8CBA035A /* Pods_GoInfoGame_GoInfoGameUITests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_GoInfoGame_GoInfoGameUITests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		30877432D1026706D7E805DA /* map_theme */ = {isa = PBXFileReference; lastKnownFileType = folder; path = map_theme; sourceTree = "<group>"; };
 		3D797A45474D6135AFA24613 /* Pods-GoInfoGameTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-GoInfoGameTests.debug.xcconfig"; path = "Target Support Files/Pods-GoInfoGameTests/Pods-GoInfoGameTests.debug.xcconfig"; sourceTree = "<group>"; };
+		42FA4EB22185846E113DA376 /* QuestImageStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuestImageStorage.swift; sourceTree = "<group>"; };
 		61CD36AA62170BAF936749E0 /* CompassButtonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompassButtonView.swift; sourceTree = "<group>"; };
 		66BED441AF03CC04539E8D4A /* Pods_GoInfoGame.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_GoInfoGame.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		79F024C6DD9B31E354C41ED3 /* Pods-osmapi.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-osmapi.debug.xcconfig"; path = "Target Support Files/Pods-osmapi/Pods-osmapi.debug.xcconfig"; sourceTree = "<group>"; };
 		86C5ED636FC6D3C98650F231 /* NoteImageStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoteImageStorage.swift; sourceTree = "<group>"; };
 		89C2A88A7749F031BCDFE226 /* Pods-GoInfoGameTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-GoInfoGameTests.release.xcconfig"; path = "Target Support Files/Pods-GoInfoGameTests/Pods-GoInfoGameTests.release.xcconfig"; sourceTree = "<group>"; };
 		8AF3DE0241AC4BAB9C051601 /* FeatureImageStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeatureImageStorage.swift; sourceTree = "<group>"; };
-		42FA4EB22185846E113DA376 /* QuestImageStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuestImageStorage.swift; sourceTree = "<group>"; };
 		9111A9602D6348DD884AB010 /* LongFormElement+Completion.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "LongFormElement+Completion.swift"; sourceTree = "<group>"; };
 		970D5BD02B62B61300C20BE7 /* MapViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapViewController.swift; sourceTree = "<group>"; };
 		970D5BD22B67638400C20BE7 /* MapViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapViewModel.swift; sourceTree = "<group>"; };
@@ -552,7 +552,6 @@
 		B0CCB98B2B8626AE00AA73DE /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
 		B0CCB98D2B8626C600AA73DE /* ProfileViewVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewVM.swift; sourceTree = "<group>"; };
 		C38242EA353F419D881E164C /* FeatureSubmissionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeatureSubmissionManager.swift; sourceTree = "<group>"; };
-		F7B0248DF7AD2506C0779CE9 /* QuestSubmissionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuestSubmissionManager.swift; sourceTree = "<group>"; };
 		C4F37DA661B22FA87DF8282F /* Pods_osmapi.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_osmapi.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		C714D9532FFFCBB500CA1CB4 /* NotesSubmissionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotesSubmissionManager.swift; sourceTree = "<group>"; };
 		C71EB5A82E2100510009E610 /* SatellitePickerSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SatellitePickerSheet.swift; sourceTree = "<group>"; };
@@ -614,6 +613,7 @@
 		C96303080D26026265099E0E /* Pods-GoInfoGame.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-GoInfoGame.release.xcconfig"; path = "Target Support Files/Pods-GoInfoGame/Pods-GoInfoGame.release.xcconfig"; sourceTree = "<group>"; };
 		D76D8E22AC705A38AFEA78B1 /* Pods-GoInfoGame-GoInfoGameUITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-GoInfoGame-GoInfoGameUITests.debug.xcconfig"; path = "Target Support Files/Pods-GoInfoGame-GoInfoGameUITests/Pods-GoInfoGame-GoInfoGameUITests.debug.xcconfig"; sourceTree = "<group>"; };
 		F008D431593E568E75C48C84 /* Pods-GoInfoGame.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-GoInfoGame.debug.xcconfig"; path = "Target Support Files/Pods-GoInfoGame/Pods-GoInfoGame.debug.xcconfig"; sourceTree = "<group>"; };
+		F7B0248DF7AD2506C0779CE9 /* QuestSubmissionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuestSubmissionManager.swift; sourceTree = "<group>"; };
 		FA18CAE12CC7CD89008247F2 /* KartaviewViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KartaviewViewModel.swift; sourceTree = "<group>"; };
 		FA18CAE42CC7D0DD008247F2 /* SequenceModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SequenceModel.swift; sourceTree = "<group>"; };
 		FA18CAE62CC80A34008247F2 /* UploadPhotoModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadPhotoModel.swift; sourceTree = "<group>"; };
@@ -2167,9 +2167,13 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-GoInfoGame/Pods-GoInfoGame-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
+			inputPaths = (
+			);
 			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-GoInfoGame/Pods-GoInfoGame-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -2250,9 +2254,13 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-GoInfoGame-GoInfoGameUITests/Pods-GoInfoGame-GoInfoGameUITests-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
+			inputPaths = (
+			);
 			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-GoInfoGame-GoInfoGameUITests/Pods-GoInfoGame-GoInfoGameUITests-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -3074,7 +3082,7 @@
 				CODE_SIGN_ENTITLEMENTS = GoInfoGame/GoInfoGame.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = G8MQVE5WWW;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
@@ -3106,7 +3114,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.2.10;
+				MARKETING_VERSION = 1.2.11;
 				MTL_HEADER_SEARCH_PATHS = "$(SRCROOT)/PointNMap $(SRCROOT)/PointNMapShaderTypes";
 				OTHER_CFLAGS = "-DACCELERATE_NEW_LAPACK";
 				OTHER_LDFLAGS = (
@@ -3151,7 +3159,7 @@
 				CODE_SIGN_ENTITLEMENTS = GoInfoGame/GoInfoGame.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_TEAM = G8MQVE5WWW;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -3182,7 +3190,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.2.10;
+				MARKETING_VERSION = 1.2.11;
 				MTL_HEADER_SEARCH_PATHS = "$(SRCROOT)/PointNMap $(SRCROOT)/PointNMapShaderTypes";
 				OTHER_CFLAGS = "-DACCELERATE_NEW_LAPACK";
 				OTHER_LDFLAGS = (
