@@ -18,11 +18,15 @@ class LongElementQuest: QuestBase, Quest {
     var type: osmparser.ElementType
     
     var iconName: String {
+        Self.iconName(elementType: elementType, elementTypeIcon: elementTypeIcon)
+    }
+
+    static func iconName(elementType: String, elementTypeIcon: String?) -> String {
         if let iconName = elementTypeIcon {
             return iconName
         } else {
             let lowercasedElementType = elementType.lowercased()
-            
+
             switch lowercasedElementType {
             case "sidewalks":
                 return "sidewalk_surface"
