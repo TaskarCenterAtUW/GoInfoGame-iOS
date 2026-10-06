@@ -61,6 +61,7 @@
 		97AC1C132B70EF0A004F0BF4 /* Surfaces.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97AC1C122B70EF0A004F0BF4 /* Surfaces.swift */; };
 		97F2FA8A2B0630A3000B9726 /* Pods_GoInfoGame.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 66BED441AF03CC04539E8D4A /* Pods_GoInfoGame.framework */; };
 		98E6B86BDDC74537ACA56927 /* LongFormElement+Completion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9111A9602D6348DD884AB010 /* LongFormElement+Completion.swift */; };
+		A1C0FFEE2E9F000100000001 /* ShowQuestFormsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1C0FFEE2E9F000100000002 /* ShowQuestFormsView.swift */; };
 		A40004EC2B62338400AF21FB /* AppQuestManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A40004EB2B62338400AF21FB /* AppQuestManager.swift */; };
 		A40E72642B5CD65000328848 /* OverpassRequestManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A40E72632B5CD65000328848 /* OverpassRequestManagerTests.swift */; };
 		A40E726E2B5D462A00328848 /* osmapi.docc in Sources */ = {isa = PBXBuildFile; fileRef = A40E726D2B5D462A00328848 /* osmapi.docc */; };
@@ -285,7 +286,6 @@
 		FAFDA20E2C6F58D600ECEAE9 /* UserProfile.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAFDA20D2C6F58D600ECEAE9 /* UserProfile.swift */; };
 		FAFDA2102C6F592700ECEAE9 /* UserProfileViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAFDA20F2C6F592700ECEAE9 /* UserProfileViewModel.swift */; };
 		FAFDA2122C6F64E800ECEAE9 /* UserProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAFDA2112C6F64E800ECEAE9 /* UserProfileView.swift */; };
-		A1C0FFEE2E9F000100000001 /* ShowQuestFormsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1C0FFEE2E9F000100000002 /* ShowQuestFormsView.swift */; };
 		FAFDA2142C7351CB00ECEAE9 /* APIError.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAFDA2132C7351CB00ECEAE9 /* APIError.swift */; };
 /* End PBXBuildFile section */
 
@@ -458,6 +458,7 @@
 		97AC1C202B726AC9004F0BF4 /* TactilePavingKerb.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TactilePavingKerb.swift; sourceTree = "<group>"; };
 		97AC1C222B726ADC004F0BF4 /* TactilePavingKerbForm.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TactilePavingKerbForm.swift; sourceTree = "<group>"; };
 		97F2FA8D2B0630C4000B9726 /* SwiftOverpassAPI.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = SwiftOverpassAPI.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		A1C0FFEE2E9F000100000002 /* ShowQuestFormsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShowQuestFormsView.swift; sourceTree = "<group>"; };
 		A40004EB2B62338400AF21FB /* AppQuestManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppQuestManager.swift; sourceTree = "<group>"; };
 		A40E72632B5CD65000328848 /* OverpassRequestManagerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OverpassRequestManagerTests.swift; sourceTree = "<group>"; };
 		A40E726A2B5D462A00328848 /* osmapi.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = osmapi.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -687,7 +688,6 @@
 		FAFDA20D2C6F58D600ECEAE9 /* UserProfile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfile.swift; sourceTree = "<group>"; };
 		FAFDA20F2C6F592700ECEAE9 /* UserProfileViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfileViewModel.swift; sourceTree = "<group>"; };
 		FAFDA2112C6F64E800ECEAE9 /* UserProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfileView.swift; sourceTree = "<group>"; };
-		A1C0FFEE2E9F000100000002 /* ShowQuestFormsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShowQuestFormsView.swift; sourceTree = "<group>"; };
 		FAFDA2132C7351CB00ECEAE9 /* APIError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIError.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -3086,7 +3086,7 @@
 				CODE_SIGN_ENTITLEMENTS = GoInfoGame/GoInfoGame.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 1;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = G8MQVE5WWW;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
@@ -3118,7 +3118,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.2.11;
+				MARKETING_VERSION = 1.2.12;
 				MTL_HEADER_SEARCH_PATHS = "$(SRCROOT)/PointNMap $(SRCROOT)/PointNMapShaderTypes";
 				OTHER_CFLAGS = "-DACCELERATE_NEW_LAPACK";
 				OTHER_LDFLAGS = (
@@ -3163,7 +3163,7 @@
 				CODE_SIGN_ENTITLEMENTS = GoInfoGame/GoInfoGame.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = G8MQVE5WWW;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -3194,7 +3194,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.2.11;
+				MARKETING_VERSION = 1.2.12;
 				MTL_HEADER_SEARCH_PATHS = "$(SRCROOT)/PointNMap $(SRCROOT)/PointNMapShaderTypes";
 				OTHER_CFLAGS = "-DACCELERATE_NEW_LAPACK";
 				OTHER_LDFLAGS = (
