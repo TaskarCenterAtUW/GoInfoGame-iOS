@@ -16,6 +16,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         
     @AppStorage("loggedIn") private var loggedIn: Bool = false
 
+    @AppStorage("keepScreenOn") private var keepScreenOn: Bool = false
+
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
         // Use this method to optionally configure and attach the UIWindow `window` to the provided UIWindowScene `scene`.
         // If using a storyboard, the `window` property will automatically be initialized and attached to the scene.
@@ -58,6 +60,9 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     func sceneDidBecomeActive(_ scene: UIScene) {
         // Called when the scene has moved from an inactive state to an active state.
         // Use this method to restart any tasks that were paused (or not yet started) when the scene was inactive.
+        // Re-applied on every activation so the Profile → "Keep screen on" preference
+        // holds across launches; iOS itself only honors it while the app is in front.
+        UIApplication.shared.isIdleTimerDisabled = keepScreenOn
         Task {
             try? await self.forceUpdateManager.checkForceUpdate()
         }

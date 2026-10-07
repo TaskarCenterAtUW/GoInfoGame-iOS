@@ -33,6 +33,8 @@ internal enum L10n {
     internal static let currentLocation = L10n.tr("Localizable", "Current Location", fallback: "Current Location")
     /// Date & Time
     internal static let dateTime = L10n.tr("Localizable", "Date & Time", fallback: "Date & Time")
+    /// Debug
+    internal static let debug = L10n.tr("Localizable", "Debug", fallback: "Debug")
     /// Disable quest images to save data
     internal static let disableQuestImagesToSaveData = L10n.tr("Localizable", "Disable quest images to save data", fallback: "Disable quest images to save data")
     /// Don't show again for this session
@@ -47,6 +49,8 @@ internal enum L10n {
     internal static let hideThisQuest = L10n.tr("Localizable", "Hide this quest", fallback: "Hide this quest")
     /// Invalid credentials
     internal static let invalidCredentials = L10n.tr("Localizable", "Invalid credentials", fallback: "Invalid credentials")
+    /// Keep screen on
+    internal static let keepScreenOn = L10n.tr("Localizable", "Keep screen on", fallback: "Keep screen on")
     /// Low Bandwidth Mode
     internal static let lowBandwidthMode = L10n.tr("Localizable", "Low Bandwidth Mode", fallback: "Low Bandwidth Mode")
     /// Manage Quests
@@ -63,8 +67,12 @@ internal enum L10n {
     internal static let noQuestsFound = L10n.tr("Localizable", "No Quests Found!", fallback: "No Quests Found!")
     /// Not now
     internal static let notNow = L10n.tr("Localizable", "Not now", fallback: "Not now")
+    /// Nothing found
+    internal static let nothingFound = L10n.tr("Localizable", "Nothing found", fallback: "Nothing found")
     /// Number of quests:
     internal static let numberOfQuests = L10n.tr("Localizable", "Number of quests:", fallback: "Number of quests:")
+    /// OK
+    internal static let ok = L10n.tr("Localizable", "OK", fallback: "OK")
     /// option selected
     internal static let optionSelected = L10n.tr("Localizable", "option selected", fallback: "option selected")
     /// option unselected
@@ -274,8 +282,20 @@ internal enum L10n {
     internal static let selectedType = L10n.tr("Localizable", "Selected Type:", fallback: "Selected Type:")
     /// Settings
     internal static let settings = L10n.tr("Localizable", "Settings", fallback: "Settings")
+    /// Show + and − buttons on the map for zooming
+    internal static let showAndButtonsOnTheMapForZooming = L10n.tr("Localizable", "Show + and − buttons on the map for zooming", fallback: "Show + and − buttons on the map for zooming")
+    /// Show map zoom buttons
+    internal static let showMapZoomButtons = L10n.tr("Localizable", "Show map zoom buttons", fallback: "Show map zoom buttons")
+    /// Show Quest Forms
+    internal static let showQuestForms = L10n.tr("Localizable", "Show Quest Forms", fallback: "Show Quest Forms")
+    /// Shows the quest form preview
+    internal static let showsTheQuestFormPreview = L10n.tr("Localizable", "Shows the quest form preview", fallback: "Shows the quest form preview")
     /// Start answering the questions
     internal static let startAnsweringTheQuestions = L10n.tr("Localizable", "Start answering the questions", fallback: "Start answering the questions")
+    /// Stop the screen from turning off while the app is open
+    internal static let stopTheScreenFromTurningOffWhileTheAppIsOpen = L10n.tr("Localizable", "Stop the screen from turning off while the app is open", fallback: "Stop the screen from turning off while the app is open")
+    /// Tagging
+    internal static let tagging = L10n.tr("Localizable", "Tagging", fallback: "Tagging")
     /// Try moving to a different location to discover more quests.
     internal static let tryMovingToADifferentLocationToDiscoverMoreQuests = L10n.tr("Localizable", "Try moving to a different location to discover more quests.", fallback: "Try moving to a different location to discover more quests.")
     /// Type

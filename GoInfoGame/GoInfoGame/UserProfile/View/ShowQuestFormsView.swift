@@ -43,7 +43,7 @@ struct ShowQuestFormsView: View {
             if elements.isEmpty {
                 VStack {
                     Spacer()
-                    Text("Nothing found")
+                    Text(L10n.Localizable.nothingFound)
                         .font(FontFamily.Lato.bold.swiftUIFont(size: 18, relativeTo: .headline))
                         .foregroundStyle(Asset.Colors._42526ETextFieldText.swiftUIColor)
                     Spacer()
@@ -66,14 +66,14 @@ struct ShowQuestFormsView: View {
                     }
                     .buttonStyle(.plain)
                     .accessibilityLabel(element.elementType)
-                    .accessibilityHint("Shows the quest form preview")
+                    .accessibilityHint(L10n.Localizable.showsTheQuestFormPreview)
                 }
                 .listStyle(.plain)
             }
         }
         .searchable(text: $searchText, placement: .navigationBarDrawer(displayMode: .automatic))
         .navigationBarBackButtonHidden()
-        .navigationTitle("Show Quest Forms")
+        .navigationTitle(L10n.Localizable.showQuestForms)
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .navigationBarLeading) {
@@ -91,7 +91,7 @@ struct ShowQuestFormsView: View {
                 }
             }
             ToolbarItem(placement: .principal) {
-                Text("Show Quest Forms")
+                Text(L10n.Localizable.showQuestForms)
                     .font(.headline)
                     .foregroundStyle(Asset.Colors.huskyPurple.swiftUIColor)
             }
@@ -112,11 +112,11 @@ struct ShowQuestFormsView: View {
             .interactiveDismissDisabled()
             .applyPresentationSizingPage()
         }
-        .alert("Tagging", isPresented: Binding(
+        .alert(L10n.Localizable.tagging, isPresented: Binding(
             get: { previewAnswer != nil },
             set: { if !$0 { previewAnswer = nil } }
         ), presenting: previewAnswer) { _ in
-            Button("OK", role: .cancel) {}
+            Button(L10n.Localizable.ok, role: .cancel) {}
         } message: { answer in
             Text(taggingSummary(for: answer))
         }

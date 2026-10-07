@@ -21,6 +21,10 @@ struct UserProfileView: View {
     
     @AppStorage("lowBandwidthMode") private var lowBandwidthMode: Bool = false
     
+    @AppStorage("showMapZoomButtons") private var showMapZoomButtons: Bool = true
+    
+    @AppStorage("keepScreenOn") private var keepScreenOn: Bool = false
+    
     @State private var useBiometricID: Bool = false
         
     @State private var showPasswordAuthenticationView: Bool = false
@@ -93,6 +97,17 @@ struct UserProfileView: View {
                                 .toggleStyle(SwitchToggleStyle(tint: Asset.Colors.accentPink.swiftUIColor))
                                 .accessibilityLabel(L10n.Localizable.lowBandwidthMode)
                                 .accessibilityHint(L10n.Localizable.disableQuestImagesToSaveData)
+                                
+                                preferenceToggle(isOn: $showMapZoomButtons,
+                                                 title: L10n.Localizable.showMapZoomButtons,
+                                                 subtitle: L10n.Localizable.showAndButtonsOnTheMapForZooming)
+                                
+                                preferenceToggle(isOn: $keepScreenOn,
+                                                 title: L10n.Localizable.keepScreenOn,
+                                                 subtitle: L10n.Localizable.stopTheScreenFromTurningOffWhileTheAppIsOpen)
+                                .onChange(of: keepScreenOn) { isOn in
+                                    UIApplication.shared.isIdleTimerDisabled = isOn
+                                }
 
                                 Line()
                                     .stroke(style: .init(dash: [4]))
@@ -100,7 +115,7 @@ struct UserProfileView: View {
                                     .frame(height: 1)
                                     .accessibilityHidden(true)
 
-                                Text("DEBUG")
+                                Text(L10n.Localizable.debug.uppercased())
                                     .font(FontFamily.Lato.bold.swiftUIFont(size: 14, relativeTo: .caption))
                                     .foregroundStyle(Asset.Colors.huskyPurple.swiftUIColor)
                                     .accessibilityAddTraits(.isHeader)
@@ -201,10 +216,26 @@ struct UserProfileView: View {
         .accessibilityHidden(true)
     }
 
+    private func preferenceToggle(isOn: Binding<Bool>, title: String, subtitle: String) -> some View {
+        Toggle(isOn: isOn) {
+            VStack(alignment: .leading, spacing: 4) {
+                Text(title)
+                    .font(FontFamily.Lato.bold.swiftUIFont(size: 16, relativeTo: .headline))
+                    .foregroundStyle(Asset.Colors._42526ETextFieldText.swiftUIColor)
+                Text(subtitle)
+                    .font(FontFamily.Lato.regular.swiftUIFont(size: 12, relativeTo: .caption))
+                    .foregroundStyle(Asset.Colors._42526ETextFieldText.swiftUIColor)
+            }
+        }
+        .toggleStyle(SwitchToggleStyle(tint: Asset.Colors.accentPink.swiftUIColor))
+        .accessibilityLabel(title)
+        .accessibilityHint(subtitle)
+    }
+
     private var showQuestFormsRow: some View {
         NavigationLink(destination: ShowQuestFormsView(isWorkspaceSelected: isWorkspaceSelected)) {
             HStack {
-                Text("Show Quest Forms")
+                Text(L10n.Localizable.showQuestForms)
                     .font(FontFamily.Lato.bold.swiftUIFont(size: 16, relativeTo: .headline))
                     .foregroundStyle(Asset.Colors._42526ETextFieldText.swiftUIColor)
                 Spacer()
@@ -215,7 +246,7 @@ struct UserProfileView: View {
             .frame(minHeight: 44)
             .contentShape(Rectangle())
         }
-        .accessibilityLabel("Show Quest Forms")
+        .accessibilityLabel(L10n.Localizable.showQuestForms)
     }
 
     private var logOutButton: some View {
