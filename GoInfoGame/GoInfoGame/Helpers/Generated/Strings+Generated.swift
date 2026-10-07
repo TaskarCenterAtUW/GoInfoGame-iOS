@@ -11,6 +11,10 @@ import Foundation
 // swiftlint:disable nesting type_body_length type_name vertical_whitespace_opening_braces
 internal enum L10n {
   internal enum Localizable {
+    /// %d results found
+    internal static func dResultsFound(_ p1: Int) -> String {
+      return L10n.tr("Localizable", "%d results found", p1, fallback: "%d results found")
+    }
     /// AVIV ScoutRoute
     internal static let appName = L10n.tr("Localizable", "App Name", fallback: "AVIV ScoutRoute")
     /// Back

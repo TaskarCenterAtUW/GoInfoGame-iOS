@@ -116,6 +116,7 @@ struct UserProfileView: View {
                                     .accessibilityHidden(true)
 
                                 Text(L10n.Localizable.debug.uppercased())
+                                    .accessibilityLabel(L10n.Localizable.debug)
                                     .font(FontFamily.Lato.bold.swiftUIFont(size: 14, relativeTo: .caption))
                                     .foregroundStyle(Asset.Colors.huskyPurple.swiftUIColor)
                                     .accessibilityAddTraits(.isHeader)

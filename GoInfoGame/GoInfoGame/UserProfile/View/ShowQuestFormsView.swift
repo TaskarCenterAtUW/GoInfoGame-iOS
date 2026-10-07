@@ -72,6 +72,16 @@ struct ShowQuestFormsView: View {
             }
         }
         .searchable(text: $searchText, placement: .navigationBarDrawer(displayMode: .automatic))
+        .task(id: searchText) {
+            // VoiceOver gets no feedback that the list below the search field changed,
+            // so announce the result count once typing pauses (task(id:) cancels the
+            // pending announcement on every keystroke).
+            guard !searchText.isEmpty else { return }
+            try? await Task.sleep(nanoseconds: 600_000_000)
+            guard !Task.isCancelled else { return }
+            let message = elements.isEmpty ? L10n.Localizable.nothingFound : L10n.Localizable.dResultsFound(elements.count)
+            UIAccessibility.post(notification: .announcement, argument: message)
+        }
         .navigationBarBackButtonHidden()
         .navigationTitle(L10n.Localizable.showQuestForms)
         .navigationBarTitleDisplayMode(.inline)
