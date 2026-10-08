@@ -1,3 +1,4 @@
 [submodule "Frameworks/PointNMap"]
 	path = Frameworks/PointNMap
 	url = https://github.com/himanshunaidu/PointNMap.git
+	branch = main

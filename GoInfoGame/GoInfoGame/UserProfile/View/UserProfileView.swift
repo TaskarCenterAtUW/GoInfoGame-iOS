@@ -12,11 +12,18 @@ import UIKit
 struct UserProfileView: View {
     @Environment(\.dismiss) var dismiss
 
+    /// True when opened from the map, i.e. a workspace (and its long form) is loaded.
+    var isWorkspaceSelected: Bool = false
+
     @StateObject private var viewModel = UserProfileViewModel()
     
     @AppStorage("loggedIn") private var loggedIn: Bool = false
     
     @AppStorage("lowBandwidthMode") private var lowBandwidthMode: Bool = false
+    
+    @AppStorage("showMapZoomButtons") private var showMapZoomButtons: Bool = true
+    
+    @AppStorage("keepScreenOn") private var keepScreenOn: Bool = false
     
     @State private var useBiometricID: Bool = false
         
@@ -94,6 +101,31 @@ struct UserProfileView: View {
                                 .accessibilityHint(L10n.Localizable.disableQuestImagesToSaveData)
                                 .accessibilityIdentifier(A11yID.Profile.lowBandwidthToggle)
                                 
+                                preferenceToggle(isOn: $showMapZoomButtons,
+                                                 title: L10n.Localizable.showMapZoomButtons,
+                                                 subtitle: L10n.Localizable.showAndButtonsOnTheMapForZooming)
+                                
+                                preferenceToggle(isOn: $keepScreenOn,
+                                                 title: L10n.Localizable.keepScreenOn,
+                                                 subtitle: L10n.Localizable.stopTheScreenFromTurningOffWhileTheAppIsOpen)
+                                .onChange(of: keepScreenOn) { isOn in
+                                    UIApplication.shared.isIdleTimerDisabled = isOn
+                                }
+
+                                Line()
+                                    .stroke(style: .init(dash: [4]))
+                                    .foregroundStyle(Asset.Colors.ddddddLine.swiftUIColor)
+                                    .frame(height: 1)
+                                    .accessibilityHidden(true)
+
+                                Text(L10n.Localizable.debug.uppercased())
+                                    .accessibilityLabel(L10n.Localizable.debug)
+                                    .font(FontFamily.Lato.bold.swiftUIFont(size: 14, relativeTo: .caption))
+                                    .foregroundStyle(Asset.Colors.huskyPurple.swiftUIColor)
+                                    .accessibilityAddTraits(.isHeader)
+
+                                showQuestFormsRow
+
                                 Line()
                                     .stroke(style: .init(dash: [4]))
                                     .foregroundStyle(Asset.Colors.ddddddLine.swiftUIColor)
@@ -191,7 +223,39 @@ struct UserProfileView: View {
         .accessibilityHidden(true)
     }
 
-        
+    private func preferenceToggle(isOn: Binding<Bool>, title: String, subtitle: String) -> some View {
+        Toggle(isOn: isOn) {
+            VStack(alignment: .leading, spacing: 4) {
+                Text(title)
+                    .font(FontFamily.Lato.bold.swiftUIFont(size: 16, relativeTo: .headline))
+                    .foregroundStyle(Asset.Colors._42526ETextFieldText.swiftUIColor)
+                Text(subtitle)
+                    .font(FontFamily.Lato.regular.swiftUIFont(size: 12, relativeTo: .caption))
+                    .foregroundStyle(Asset.Colors._42526ETextFieldText.swiftUIColor)
+            }
+        }
+        .toggleStyle(SwitchToggleStyle(tint: Asset.Colors.accentPink.swiftUIColor))
+        .accessibilityLabel(title)
+        .accessibilityHint(subtitle)
+    }
+
+    private var showQuestFormsRow: some View {
+        NavigationLink(destination: ShowQuestFormsView(isWorkspaceSelected: isWorkspaceSelected)) {
+            HStack {
+                Text(L10n.Localizable.showQuestForms)
+                    .font(FontFamily.Lato.bold.swiftUIFont(size: 16, relativeTo: .headline))
+                    .foregroundStyle(Asset.Colors._42526ETextFieldText.swiftUIColor)
+                Spacer()
+                Image(systemName: "chevron.right")
+                    .foregroundStyle(Asset.Colors._42526ETextFieldText.swiftUIColor)
+                    .accessibilityHidden(true)
+            }
+            .frame(minHeight: 44)
+            .contentShape(Rectangle())
+        }
+        .accessibilityLabel(L10n.Localizable.showQuestForms)
+    }
+
     private var logOutButton: some View {
         Button {
             Utilities.clearAllData()

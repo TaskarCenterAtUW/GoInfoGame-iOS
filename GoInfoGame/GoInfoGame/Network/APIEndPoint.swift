@@ -20,11 +20,12 @@ struct APIEndpoint {
     static let login = { (loginParams:Data) in APIEndpoint(path: "/authenticate", method: "POST", body: loginParams, headers: ["Content-Type":"application/json"], formData: nil) }
     
     static let refreshToken = { (refreshToken: String) in
-        let headers = ["Content-Type":"application/json"]
-        let postBody  = refreshToken.data(using: .utf8)
+        let headers = ["Content-Type":"application/json",
+                       "refresh_token" : refreshToken]
+//        let postBody  = refreshToken.data(using: .utf8)
         return APIEndpoint(path: "/refresh-token",
                     method: "POST",
-                    body: postBody,
+                    body: nil,
                     headers: headers,
                     formData: nil)
         

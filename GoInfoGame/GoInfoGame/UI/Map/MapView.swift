@@ -23,6 +23,7 @@ struct MapView: View {
     @Environment(\.presentationMode) private var presentationMode
     @Environment(\.accessibilityVoiceOverEnabled) var isVoiceOverOn
     @AppStorage("isMapFromOnboarding") var isMapFromOnboarding: Bool = false
+    @AppStorage("showMapZoomButtons") private var showMapZoomButtons: Bool = true
     @StateObject var viewModel: MapViewModel
     @State private var isPresented = false
 
@@ -110,7 +111,7 @@ struct MapView: View {
     var body: some View {
             ZStack {
                 NavigationLink(
-                    destination: UserProfileView(),
+                    destination: UserProfileView(isWorkspaceSelected: true),
                     isActive: $navigateToProfile
                 ) { EmptyView() }
 
@@ -280,22 +281,24 @@ struct MapView: View {
                             .accessibilityIdentifier(A11yID.Map.compassButton)
 
                             // Zoom in / out — grouped pill
-                            ZoomControlView(
-                                onZoomIn: {
-                                    if let mapView = mapViewRef {
-                                        let newZoom = min(mapView.zoomLevel + 1.0, 22)
-                                        mapView.setZoomLevel(newZoom, animated: true)
-                                        voiceOverAnnounce(message: "Zoomed in to level \(Int(newZoom))")
+                            if showMapZoomButtons {
+                                ZoomControlView(
+                                    onZoomIn: {
+                                        if let mapView = mapViewRef {
+                                            let newZoom = min(mapView.zoomLevel + 1.0, 22)
+                                            mapView.setZoomLevel(newZoom, animated: true)
+                                            voiceOverAnnounce(message: "Zoomed in to level \(Int(newZoom))")
+                                        }
+                                    },
+                                    onZoomOut: {
+                                        if let mapView = mapViewRef {
+                                            let newZoom = max(mapView.zoomLevel - 1.0, 0)
+                                            mapView.setZoomLevel(newZoom, animated: true)
+                                            voiceOverAnnounce(message: "Zoomed out to level \(Int(newZoom))")
+                                        }
                                     }
-                                },
-                                onZoomOut: {
-                                    if let mapView = mapViewRef {
-                                        let newZoom = max(mapView.zoomLevel - 1.0, 0)
-                                        mapView.setZoomLevel(newZoom, animated: true)
-                                        voiceOverAnnounce(message: "Zoomed out to level \(Int(newZoom))")
-                                    }
-                                }
-                            )
+                                )
+                            }
 
                             // Current location
                             FloatingActionButton(name: "my_location", iconSize: 20) {
