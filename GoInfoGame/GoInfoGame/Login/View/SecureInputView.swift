@@ -11,10 +11,12 @@ struct SecureInputView: View {
     @Binding private var text: String
     @State private var isSecured: Bool = true
     private var placeholder: String
-    
-    init(_ placeholder: String = "", text: Binding<String>) {
+    private var accessibilityID: String?
+
+    init(_ placeholder: String = "", text: Binding<String>, accessibilityID: String? = nil) {
         self.placeholder = placeholder
         self._text = text
+        self.accessibilityID = accessibilityID
     }
     
     var body: some View {
@@ -22,8 +24,12 @@ struct SecureInputView: View {
             Group {
                 if isSecured {
                     SecureField(placeholder, text: $text)
+                        .textContentType(.password)
+                        .accessibilityIdentifier(ifPresent: accessibilityID)
                 } else {
                     TextField(placeholder, text: $text)
+                        .textContentType(.password)
+                        .accessibilityIdentifier(ifPresent: accessibilityID)
                 }
             }
             .padding(.trailing, 32)
@@ -40,6 +46,7 @@ struct SecureInputView: View {
                     .contentShape(Rectangle())
             }
             .accessibilityLabel("Toggle password visibility. " + ( isSecured ? "Show password" : "Hide password" ))
+            .accessibilityIdentifier(A11yID.Login.passwordVisibilityToggle)
         }
     }
 }

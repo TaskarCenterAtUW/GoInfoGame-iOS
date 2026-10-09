@@ -4,38 +4,29 @@
 //
 //  Created by Achyut Kumar M on 09/11/23.
 //
+//  App-level UI tests that are not tied to one screen. Per-screen coverage lives in its
+//  own file (e.g. LoginScreenUITestCases).
+//
 
 import XCTest
 
-final class GoInfoGameUITests: XCTestCase {
+final class GoInfoGameUITests: ScreenshotOnFailureUITestCase {
 
-    override func setUpWithError() throws {
-        // Put setup code here. This method is called before the invocation of each test method in the class.
+    /// The app gets to its first interactive screen without crashing, with the network
+    /// stubbed so this says something about the app rather than about connectivity.
+    func testAppLaunchesToLoginScreen() throws {
+        let app = launchApp(scenario: UITestScenario.loginInvalidCredentials)
 
-        // In UI tests it is usually best to stop immediately when a failure occurs.
-        continueAfterFailure = false
-
-        // In UI tests it’s important to set the initial state - such as interface orientation - required for your tests before they run. The setUp method is a good place to do this.
+        XCTAssertTrue(app.buttons[A11yID.Login.loginButton].waitForExistence(timeout: 15),
+                      "App did not reach the login screen after launch")
     }
 
-    override func tearDownWithError() throws {
-        // Put teardown code here. This method is called after the invocation of each test method in the class.
-    }
-
-    func testExample() throws {
-        // UI tests must launch the application that they test.
-        let app = XCUIApplication()
-        app.launch()
-
-        // Use XCTAssert and related functions to verify your tests produce the correct results.
-    }
-
-    func testLaunchPerformance() throws {
-        if #available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 7.0, *) {
-            // This measures how long it takes to launch your application.
-            measure(metrics: [XCTApplicationLaunchMetric()]) {
-                XCUIApplication().launch()
-            }
-        }
+    // >>> TEMP: fails on purpose, after the login screen is up, so the CI report's failure
+    // details and failure screenshot can be checked end to end. Delete this method (and its
+    // entry in TEMP_UI_TESTS in .github/workflows/ios-tests.yml) once the report looks right.
+    func testTempDeliberateFailureForReportCheck() throws {
+        let app = launchApp(scenario: UITestScenario.loginInvalidCredentials)
+        XCTAssertTrue(app.buttons[A11yID.Login.loginButton].waitForExistence(timeout: 15))
+        XCTFail("TEMP: deliberate failure to check the failure screenshot in the CI report")
     }
 }

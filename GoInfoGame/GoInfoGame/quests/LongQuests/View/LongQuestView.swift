@@ -34,6 +34,7 @@ struct LongQuestView: View {
                 .fixedSize(horizontal: false, vertical: true)
                 .padding([.bottom], 10)
                 .accessibilityLabel(quest.getQuestTitleVoiceOver())
+                .accessibilityIdentifier(A11yID.LongForm.question(questID: quest.questID))
             
             if !lowBandwidthMode, let imageUrl = quest.questImageURL, !imageUrl.isEmpty {
                 LongFormImageView(urlString: imageUrl, width: isImageExpanded ? 300 : 100, height: isImageExpanded ? 300 : 100)

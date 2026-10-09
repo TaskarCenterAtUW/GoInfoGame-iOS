@@ -17,6 +17,25 @@ struct BiometricAuthManager {
     }
     
     static func canEvaluateBiometrics() -> Bool {
+        #if DEBUG
+        // Only these scenarios - each about a specific biometric-adjacent UI flow (the
+        // post-login "enable biometrics?" prompt, and the 4 outcome-variants of
+        // Profile's own biometric toggle/password-confirmation popup) - every other
+        // scenario keeps the real answer, so nothing else changes behavior. The
+        // simulator's actual Face ID enrollment differs between machines and cannot be
+        // controlled from a UI test.
+        let scenario = ProcessInfo.processInfo.environment[UITestScenario.environmentKey]
+        let biometricBypassScenarios: Set<String> = [
+            UITestScenario.loginBiometricPrompt,
+            UITestScenario.profileBiometricPopupOnline,
+            UITestScenario.profileBiometricPopupWrongPassword,
+            UITestScenario.profileBiometricPopupNetworkDown,
+            UITestScenario.profileBiometricPopupSlowResponse,
+        ]
+        if let scenario, biometricBypassScenarios.contains(scenario) {
+            return true
+        }
+        #endif
         return LAContext().canEvaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, error: nil)
     }
 

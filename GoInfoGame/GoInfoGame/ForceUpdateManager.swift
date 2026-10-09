@@ -89,7 +89,21 @@ class ForceUpdateManager: ObservableObject {
     }
 
     func getAppEnvironment() async -> AppEnvironment {
-        
+        #if DEBUG
+        // AppTransaction.shared shows a SpringBoard-owned "Sign in with your Apple ID"
+        // sandbox sheet whenever no sandbox tester is configured on the simulator. Under a
+        // UI test that sheet has been observed to recur indefinitely: dismissing it
+        // re-triggers sceneDidBecomeActive -> checkForceUpdate() -> this call -> the sheet
+        // again, on every simulator tried including a freshly erased one. It is StoreKit
+        // sandbox account state, not something dismissible from test code, so it is routed
+        // around entirely here rather than chased with more dismissal logic. `.unknown`
+        // matches what a genuine AppTransaction failure already returns below, so
+        // force-update behavior for a real (non-test) sandbox/TestFlight run is unaffected.
+        if UITestRuntime.isActive {
+            return .unknown
+        }
+        #endif
+
         do {
             // Retrieve the signed AppTransaction
             let result = try await AppTransaction.shared

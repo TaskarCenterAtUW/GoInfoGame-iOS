@@ -14,7 +14,9 @@
       "containerPath" : "container:GoInfoGame.xcodeproj",
       "identifier" : "FAD5C4EE2AFCBE700040C61A",
       "name" : "GoInfoGame"
-    }
+    },
+    "uiTestingScreenshotsLifetime" : "deleteOnSuccess",
+    "userAttachmentLifetime" : "deleteOnSuccess"
   },
   "testTargets" : [
     {
@@ -22,6 +24,13 @@
         "containerPath" : "container:GoInfoGame.xcodeproj",
         "identifier" : "FAD5C5042AFCBE720040C61A",
         "name" : "GoInfoGameTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:GoInfoGame.xcodeproj",
+        "identifier" : "FAD5C50E2AFCBE720040C61A",
+        "name" : "GoInfoGameUITests"
       }
     }
   ],

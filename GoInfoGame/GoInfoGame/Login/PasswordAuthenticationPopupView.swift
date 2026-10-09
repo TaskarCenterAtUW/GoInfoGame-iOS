@@ -52,6 +52,7 @@ struct PasswordAuthenticationPopupView: View {
                 .padding()
                 .background(Color(.systemGray6))
                 .cornerRadius(8)
+                .accessibilityIdentifier(A11yID.PasswordAuth.passwordField)
 
             if !viewModel.errorMessage.isEmpty {
                 Text(viewModel.errorMessage)
@@ -59,6 +60,7 @@ struct PasswordAuthenticationPopupView: View {
                     .font(.caption)
                     .multilineTextAlignment(.center)
                     .lineLimit(nil)
+                    .accessibilityIdentifier(A11yID.PasswordAuth.errorMessage)
             }
 
             Button("Continue") {
@@ -69,12 +71,14 @@ struct PasswordAuthenticationPopupView: View {
             .background(Asset.Colors.huskyPurple.swiftUIColor)
             .foregroundColor(.white)
             .cornerRadius(8)
+            .accessibilityIdentifier(A11yID.PasswordAuth.continueButton)
 
             Button("Cancel") {
                 onCancel()
             }
             .frame(minHeight: 44)
             .foregroundStyle(Asset.Colors.accentPink.swiftUIColor)
+            .accessibilityIdentifier(A11yID.PasswordAuth.cancelButton)
         }
         .padding()
     }

@@ -1,0 +1,440 @@
+# Pipeline: checkout -> build once -> run unit tests -> run UI tests on every
+# device for the trigger (iPhone 16 on normal runs; the full UI_SIMULATORS_SCHEDULED
+# list, one at a time, on the Friday-night schedule; any device not installed on
+# the runner is recorded as "not installed", not silently dropped) -> extract a screenshot
+# for each failing UI test -> render one combined report (HTML + best-effort PDF,
+# plus Markdown) with a results summary and, per failure, the assertion detail and
+# screenshot -> attach the report files to a GitHub pre-release (tag ios-ci-reports)
+# and link them from the run summary - see .github/scripts/publish-reports.sh.
+#
+# NOTE: not actions/upload-artifact. From this self-hosted runner its very first
+# request (CreateArtifact, made before any bytes are sent) times out on every attempt,
+# so no artifact is ever created - the Android repo hit the same thing and moved to
+# release assets too. Release assets go through uploads.github.com, which works.
+# The Markdown is also always written to the run summary as a fallback view.
+# JUnit XML, per-device xcodebuild logs and .xcresult bundles stay under ./build.
+#
+# Runs on a SELF-HOSTED runner (label: self-hosted) that already has Xcode,
+# xcbeautify, CocoaPods and the iOS simulators installed.
+#
+# Knobs - env: block below:
+#   UNIT_SIMULATOR    - one device to run the unit tests on
+#   UI_SIMULATORS_DEFAULT   - UI test device(s) for push / PR / manual runs
+#   UI_SIMULATORS_SCHEDULED - newline-separated device list for the scheduled run
+#   UI_MAX_PARALLEL         - simulators run at the same time (1 = serial)
+#
+# Optional repo secrets (Settings > Secrets and variables > Actions):
+#   KARTAVIEW_ACCESS_TOKEN, JAWG_ACCESS_TOKEN  -> written to Secrets.xcconfig if it
+#   is missing on the runner; the build tolerates their absence (#include?).
+
+name: iOS Tests
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+  schedule:
+    # Every Friday 22:00 IST. GitHub cron is UTC and IST = UTC+5:30, so 22:00 IST
+    # = 16:30 UTC. Scheduled runs only fire for the workflow file on the default
+    # branch, and can start a few minutes late when GitHub is busy.
+    - cron: "30 16 * * 5"
+
+# Only the newest commit on a branch runs: a new push/PR update cancels the older
+# in-flight (or queued) run for the same branch. head_ref (PRs) and ref_name
+# (pushes) are both the plain branch name, so a push and its PR share one group
+# instead of testing the same commit twice. The Friday-night scheduled run gets its
+# own group so a push to main never cancels the long full-device run.
+concurrency:
+  group: ios-tests-${{ github.head_ref || github.ref_name }}-${{ github.event_name == 'schedule' && 'scheduled' || 'normal' }}
+  cancel-in-progress: true
+
+permissions:
+  contents: write        # create/update the ios-ci-reports pre-release (publish-reports.sh)
+  checks: write          # mikepenz/action-junit-report posts a check run
+  pull-requests: write   # ...and annotates the PR
+
+env:
+  WORKSPACE: GoInfoGame/GoInfoGame.xcworkspace
+  SCHEME: GoInfoGame
+  UNIT_SIMULATOR: "iPhone 16 Pro"
+  # >>> TEMP: run only these tests - a few passing, a few failing - so the report can
+  # be checked quickly. One Target/Class/method per line. To revert, delete both
+  # variables (empty = run the whole GoInfoGameTests / GoInfoGameUITests target).
+  TEMP_UNIT_TESTS: |
+    GoInfoGameTests/UndoMerge/testUndoMerge1
+    GoInfoGameTests/UndoMerge/testUndoMerge2
+    GoInfoGameTests/SideWalkWidthTests/testFootwayQuery
+    GoInfoGameTests/DatasyncManagerTests/testOpenChangeset
+    GoInfoGameTests/UserFlowTests/testChangesetFetch
+  TEMP_UI_TESTS: |
+    GoInfoGameUITests/GoInfoGameUITests/testAppLaunchesToLoginScreen
+    GoInfoGameUITests/GoInfoGameUITestsLaunchTests/testLaunch
+    GoInfoGameUITests/GoInfoGameUITests/testTempDeliberateFailureForReportCheck
+  # One simulator at a time. Normal runs only have one device anyway; the scheduled
+  # run walks the whole device list serially.
+  UI_MAX_PARALLEL: "1"
+  # UI test devices, chosen by trigger (see the UI tests step):
+  #   normal runs (push / PR / manual) -> UI_SIMULATORS_DEFAULT, for fast feedback
+  #   scheduled Friday-night run       -> UI_SIMULATORS_SCHEDULED, the full matrix
+  UI_SIMULATORS_DEFAULT: "iPhone 16"
+  # One device name per line. Unknown names are skipped (warning), so this list
+  # can be aspirational. Add every simulator you care about here.
+  UI_SIMULATORS_SCHEDULED: |
+    iPhone SE (3rd generation)
+    iPhone 16
+    iPhone 16 Plus
+    iPhone 16 Pro
+    iPhone 16 Pro Max
+    iPad (10th generation)
+    iPad mini (6th generation)
+    iPad Air 11-inch (M2)
+    iPad Air 13-inch (M2)
+    iPad Pro 11-inch (M4)
+    iPad Pro 13-inch (M4)
+
+jobs:
+  test:
+    name: Unit + UI tests
+    # Not for PRs from forks: this runs on a self-hosted Mac, so a fork's PR would run
+    # outside code on it (and its read-only token couldn't publish the reports anyway).
+    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: self-hosted
+    timeout-minutes: 150
+
+    steps:
+      - name: Checkout (with submodules)
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Tooling versions
+        run: |
+          set -euo pipefail
+          xcodebuild -version
+          pod --version
+          command -v xcbeautify >/dev/null || { echo "::error::xcbeautify not on PATH (brew install xcbeautify)"; exit 1; }
+          xcbeautify --version
+
+      - name: Cache CocoaPods
+        uses: actions/cache@v4
+        with:
+          path: GoInfoGame/Pods
+          key: ${{ runner.os }}-pods-${{ hashFiles('GoInfoGame/Podfile.lock') }}
+          restore-keys: ${{ runner.os }}-pods-
+
+      - name: Cache Swift packages
+        uses: actions/cache@v4
+        with:
+          path: ~/Library/Developer/Xcode/DerivedData/GoInfoGame-*/SourcePackages
+          key: ${{ runner.os }}-spm-${{ hashFiles('GoInfoGame/GoInfoGame.xcworkspace/xcshareddata/swiftpm/Package.resolved') }}
+          restore-keys: ${{ runner.os }}-spm-
+
+      - name: Write Secrets.xcconfig (only if missing)
+        env:
+          KARTAVIEW_ACCESS_TOKEN: ${{ secrets.KARTAVIEW_ACCESS_TOKEN }}
+          JAWG_ACCESS_TOKEN: ${{ secrets.JAWG_ACCESS_TOKEN }}
+        run: |
+          set -euo pipefail
+          dest="GoInfoGame/GoInfoGame/Resources/Secrets.xcconfig"
+          if [ -f "$dest" ]; then
+            echo "$dest already present - leaving it untouched."
+          elif [ -n "${KARTAVIEW_ACCESS_TOKEN:-}" ] || [ -n "${JAWG_ACCESS_TOKEN:-}" ]; then
+            printf 'KARTAVIEW_ACCESS_TOKEN = %s\nJAWG_ACCESS_TOKEN = %s\n' \
+              "${KARTAVIEW_ACCESS_TOKEN:-}" "${JAWG_ACCESS_TOKEN:-}" > "$dest"
+            echo "Wrote $dest from repository secrets."
+          else
+            echo "No $dest and no token secrets - Config.xcconfig #include? tolerates this."
+          fi
+
+      - name: pod install
+        working-directory: GoInfoGame
+        env:
+          LANG: en_US.UTF-8
+          LC_ALL: en_US.UTF-8
+        run: pod install
+
+      - name: Resolve Swift packages
+        run: xcodebuild -resolvePackageDependencies -workspace "$WORKSPACE" -scheme "$SCHEME"
+
+      # -------- build once, then reuse for every test run --------
+      - name: Build for testing
+        run: |
+          set -o pipefail
+          rm -rf build/reports build/results build/*.log
+          mkdir -p build/reports build/results
+          xcrun simctl shutdown all || true
+          NSUnbufferedIO=YES xcodebuild build-for-testing \
+            -workspace "$WORKSPACE" -scheme "$SCHEME" \
+            -destination "generic/platform=iOS Simulator" \
+            -enableCodeCoverage YES \
+            ENABLE_USER_SCRIPT_SANDBOXING=NO \
+            CODE_SIGNING_ALLOWED=NO \
+            | tee build/build.log \
+            | xcbeautify
+
+      # -------- STEP 1: unit tests --------
+      - name: Unit tests
+        run: |
+          set +e                       # keep the step alive so cleanup/report always run
+          set -o pipefail
+          udid=$(xcrun simctl list devices available | grep -F "$UNIT_SIMULATOR (" | grep -oE '[0-9A-F-]{36}' | head -1)
+          if [ -z "$udid" ]; then
+            echo "::error::unit simulator '$UNIT_SIMULATOR' not installed"
+            xcrun simctl list devices available | grep -i iphone
+            exit 1
+          fi
+          xcrun simctl boot "$udid"; xcrun simctl bootstatus "$udid" -b
+          mkdir -p build/reports/unit
+          # Turns a newline-separated test list into -only-testing flags, falling back to the
+          # whole target when the list is empty (i.e. once the TEMP variables are removed).
+          only_flags() { # $1 = list, $2 = default target
+            _out=""
+            while IFS= read -r _t; do
+              _t="$(printf '%s' "$_t" | sed 's/^[[:space:]]*//; s/[[:space:]]*$//')"
+              [ -z "$_t" ] && continue
+              _out="$_out -only-testing:$_t"
+            done <<< "$1"
+            [ -z "$_out" ] && _out="-only-testing:$2"
+            printf '%s' "$_out"
+          }
+          unit_only="$(only_flags "$TEMP_UNIT_TESTS" GoInfoGameTests)"
+          echo "Unit tests selection:$unit_only"
+          NSUnbufferedIO=YES xcodebuild test-without-building \
+            -workspace "$WORKSPACE" -scheme "$SCHEME" \
+            -destination "platform=iOS Simulator,id=$udid" \
+            $unit_only \
+            -resultBundlePath build/results/unit.xcresult \
+            -enableCodeCoverage YES -retry-tests-on-failure -test-timeouts-enabled YES \
+            CODE_SIGNING_ALLOWED=NO \
+            | tee build/unit.log \
+            | xcbeautify --report junit --report-path build/reports/unit
+          rc=${PIPESTATUS[0]}
+          [ -f build/reports/unit/junit.xml ] && mv build/reports/unit/junit.xml build/reports/unit.xml
+          rmdir build/reports/unit 2>/dev/null
+          xcrun simctl shutdown "$udid"
+          echo "unit tests exit code: $rc"
+          exit "$rc"
+
+      # -------- STEP 2: UI tests, on the device list chosen for this trigger --------
+      - name: UI tests (per device)
+        if: ${{ !cancelled() }}      # still run UI tests even if a unit test failed
+        run: |
+          set +e            # a failing device must NOT abort the step
+          max_par="${UI_MAX_PARALLEL:-1}"
+
+          # Full device matrix for the scheduled run, a single quick device otherwise.
+          if [ "$GITHUB_EVENT_NAME" = "schedule" ]; then
+            ui_devices="$UI_SIMULATORS_SCHEDULED"
+            echo "Scheduled run: full device list."
+          else
+            ui_devices="$UI_SIMULATORS_DEFAULT"
+            echo "Normal run: default device only."
+          fi
+          echo "Running UI tests, up to $max_par simulator(s) at once."
+          # Turns a newline-separated test list into -only-testing flags, falling back to the
+          # whole target when the list is empty (i.e. once the TEMP variables are removed).
+          only_flags() { # $1 = list, $2 = default target
+            _out=""
+            while IFS= read -r _t; do
+              _t="$(printf '%s' "$_t" | sed 's/^[[:space:]]*//; s/[[:space:]]*$//')"
+              [ -z "$_t" ] && continue
+              _out="$_out -only-testing:$_t"
+            done <<< "$1"
+            [ -z "$_out" ] && _out="-only-testing:$2"
+            printf '%s' "$_out"
+          }
+          ui_only="$(only_flags "$TEMP_UI_TESTS" GoInfoGameUITests)"
+          echo "UI tests selection:$ui_only"
+
+          # runs one device end-to-end; writes build/results/.rc-<slug> as "<rc>\t<device>"
+          run_device() {
+            _dev="$1"; _udid="$2"; _slug="$3"; _log="build/ui-$_slug.log"
+            xcrun simctl boot "$_udid" >/dev/null 2>&1
+            xcrun simctl bootstatus "$_udid" -b >/dev/null 2>&1
+            # Pre-grant location + set a fixed simulated coordinate: InitialViewModel only
+            # calls fetchWorkspacesList() from inside CLLocationManager's
+            # didUpdateLocations callback, which never fires on a simulator with no
+            # location authorized/simulated - the Workspaces screen then sits on its
+            # "Loading workspaces..." text forever and the whole
+            # WorkspacesScreenUITestCases suite times out. Confirmed directly: this was
+            # missing and reproduced the exact hang. Bundle id must match
+            # tech.opentoall.aviv.scoutroute (GoInfoGame's PRODUCT_BUNDLE_IDENTIFIER) -
+            # update this if that ever changes.
+            xcrun simctl privacy "$_udid" grant location tech.opentoall.aviv.scoutroute >/dev/null 2>&1
+            xcrun simctl location "$_udid" set 47.6062,-122.3321 >/dev/null 2>&1
+            NSUnbufferedIO=YES xcodebuild test-without-building \
+              -workspace "$WORKSPACE" -scheme "$SCHEME" \
+              -destination "platform=iOS Simulator,id=$_udid" \
+              $ui_only \
+              -resultBundlePath "build/results/ui-$_slug.xcresult" \
+              -retry-tests-on-failure -test-timeouts-enabled YES \
+              CODE_SIGNING_ALLOWED=NO > "$_log" 2>&1
+            _rc=$?
+            mkdir -p "build/reports/ui-$_slug"
+            xcbeautify --report junit --report-path "build/reports/ui-$_slug" < "$_log" >/dev/null 2>&1 || true
+            [ -f "build/reports/ui-$_slug/junit.xml" ] && mv "build/reports/ui-$_slug/junit.xml" "build/reports/ui-$_slug.xml"
+            rmdir "build/reports/ui-$_slug" 2>/dev/null
+            xcrun simctl shutdown "$_udid" >/dev/null 2>&1
+            printf '%s\t%s\n' "$_rc" "$_dev" > "build/results/.rc-$_slug"
+            if [ "$_rc" -eq 0 ]; then echo "[done] $_dev — passed"; else echo "[done] $_dev — FAILED (exit $_rc), see build/ui-$_slug.log"; fi
+          }
+
+          : > build/results/skipped.txt      # devices requested but not installed
+          pids=""; running=0
+          while IFS= read -r device; do
+            device="$(printf '%s' "$device" | sed 's/^[[:space:]]*//; s/[[:space:]]*$//')"
+            [ -z "$device" ] && continue
+            case "$device" in \#*) continue ;; esac   # allow '# ...' comment lines in the device lists
+            udid=$(xcrun simctl list devices available | grep -F "$device (" | grep -oE '[0-9A-F-]{36}' | head -1)
+            if [ -z "$udid" ]; then
+              echo "::warning::simulator '$device' not installed on this runner - recorded as skipped"
+              printf '%s\n' "$device" >> build/results/skipped.txt
+              continue
+            fi
+            slug=$(echo "$device" | tr -cs '[:alnum:]' '-' | sed 's/^-*//; s/-*$//')
+            echo "[start] $device ($udid)"
+            run_device "$device" "$udid" "$slug" &
+            pids="$pids $!"; running=$((running + 1))
+            if [ "$running" -ge "$max_par" ]; then
+              set -- $pids; wait "$1"; shift; pids="$*"; running=$((running - 1))
+            fi
+          done <<< "$ui_devices"
+          wait   # let the last batch finish
+
+          # tally results from the .rc-* files
+          ran=0; failed=""
+          for f in build/results/.rc-*; do
+            [ -e "$f" ] || continue
+            ran=$((ran + 1))
+            rc=$(cut -f1 < "$f"); dev=$(cut -f2- < "$f")
+            if [ "$rc" != "0" ]; then
+              failed="${failed}"$'\n'"  - ${dev} (exit $rc)"
+              slug=$(echo "$dev" | tr -cs '[:alnum:]' '-' | sed 's/^-*//; s/-*$//')
+              echo "::group::FAILED: $dev — tail of build/ui-$slug.log"
+              tail -n 60 "build/ui-$slug.log" 2>/dev/null || true
+              echo "::endgroup::"
+            fi
+          done
+          skipped=$(grep -c . build/results/skipped.txt 2>/dev/null || echo 0)
+          echo "Ran UI tests on $ran device(s); $skipped requested device(s) not installed."
+          [ "$ran" -eq 0 ] && { echo "::error::no UI simulators from the list are installed - nothing ran"; exit 1; }
+          [ -n "$failed" ] && { printf '::error::UI tests failed on:%s\n' "$failed"; exit 1; }
+          echo "All UI device runs passed."
+
+      # -------- reporting --------
+      - name: Publish test report (checks / PR annotations)
+        uses: mikepenz/action-junit-report@v5
+        if: ${{ !cancelled() }}
+        with:
+          report_paths: build/reports/*.xml
+          check_name: iOS test results
+          include_passed: true
+          require_tests: true
+
+      - name: Extract failure screenshots
+        if: ${{ !cancelled() }}
+        continue-on-error: true
+        run: |
+          mkdir -p build/report/screenshots
+          had_fail=0
+          ensure_xcparse() { command -v xcparse >/dev/null || brew install --quiet chargepoint/xcparse/xcparse; }
+
+          # `screenshots` only picks up explicit XCTAttachment screenshots (e.g. a test
+          # that calls add(XCTAttachment(screenshot:))). It has been seen to find NONE
+          # of XCUITest's automatic on-failure screenshots. `attachments` pulls every
+          # attachment regardless of how it was produced, so try both and keep whatever
+          # either finds; our own image-extension filter downstream ignores non-images.
+          # Errors are shown (not swallowed) so a real xcparse/xcresult problem is visible
+          # in the log instead of silently producing zero screenshots.
+          extract_for() {
+            local xcresult="$1" outdir="$2"
+            mkdir -p "$outdir"
+            echo "-- xcparse attachments: $xcresult"
+            xcparse attachments --test "$xcresult" "$outdir" 2>&1 | tail -10
+            echo "-- xcparse screenshots: $xcresult"
+            xcparse screenshots --test "$xcresult" "$outdir" 2>&1 | tail -10
+            n=$(find "$outdir" -type f \( -name '*.png' -o -name '*.jpg' -o -name '*.jpeg' \) | wc -l | tr -d ' ')
+            echo "-- $outdir: $n image file(s) extracted"
+          }
+
+          # UI: only pull screenshots from device runs that FAILED
+          for f in build/results/.rc-*; do
+            [ -e "$f" ] || continue
+            rc=$(cut -f1 < "$f"); [ "$rc" = "0" ] && continue
+            slug=$(basename "$f" | sed 's/^\.rc-//')
+            x="build/results/ui-$slug.xcresult"
+            [ -d "$x" ] || continue
+            ensure_xcparse
+            extract_for "$x" "build/report/screenshots/ui-$slug"
+            had_fail=1
+          done
+
+          # unit: only if it produced failures
+          if [ -d build/results/unit.xcresult ] && grep -q '<failure' build/reports/unit.xml 2>/dev/null; then
+            ensure_xcparse
+            extract_for build/results/unit.xcresult build/report/screenshots/unit
+            had_fail=1
+          fi
+
+          [ "$had_fail" = 0 ] && echo "no failing runs - no screenshots to extract"
+          echo "== full extracted tree =="
+          find build/report/screenshots -type f 2>/dev/null || true
+
+      - name: Ensure a PDF engine (weasyprint)
+        if: ${{ !cancelled() }}
+        continue-on-error: true
+        run: command -v weasyprint >/dev/null || brew install --quiet weasyprint
+
+      - name: Generate combined report (MD / HTML / PDF)
+        if: ${{ !cancelled() }}
+        continue-on-error: true
+        env:
+          GIT_COMMIT_MESSAGE: ${{ github.event.head_commit.message }}
+        run: |
+          python3 scripts/ci/test_report.py \
+            --junit build/reports/unit.xml build/reports/ui-*.xml \
+            --xcresult build/results/unit.xcresult \
+            --screenshots-dir build/report/screenshots \
+            --skipped-file build/results/skipped.txt \
+            --out-dir build/report
+
+      # Bundle the report into one tar.gz (HTML/PDF embed the failure screenshots inline
+      # as base64, so the archive is self-contained). The HTML and PDF are also published
+      # on their own below so they can be opened without unpacking anything.
+      - name: Bundle report
+        if: ${{ !cancelled() }}
+        continue-on-error: true
+        run: |
+          ws="$PWD"
+          present=()
+          for f in test-report.md test-report.html test-report.pdf; do
+            [ -f "build/report/$f" ] && present+=("$f")
+          done
+          if [ "${#present[@]}" -eq 0 ]; then
+            echo "::warning::no report files found under build/report - nothing to bundle"
+          else
+            rm -f build/test-report.tar.gz
+            ( cd build/report && tar -czf "$ws/build/test-report.tar.gz" "${present[@]}" )
+            echo "bundled: ${present[*]}"
+          fi
+
+      # Attached to the ios-ci-reports pre-release and linked from the run summary
+      # instead of actions/upload-artifact (see the NOTE at the top of this file).
+      # continue-on-error so a failed upload doesn't fail the job - pass/fail is
+      # already reported independently via the JUnit check above.
+      - name: Publish test reports
+        if: ${{ !cancelled() }}
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          bash .github/scripts/publish-reports.sh \
+            build/report/test-report.html \
+            build/report/test-report.pdf \
+            build/test-report.tar.gz
+
+      - name: Clean up simulators
+        # always(), not !cancelled(): simulators must be shut down even when this run
+        # is cancelled by a newer commit, or they'd linger and slow the next run.
+        if: always()
+        run: xcrun simctl shutdown all || true

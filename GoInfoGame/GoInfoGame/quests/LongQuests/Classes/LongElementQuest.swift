@@ -160,7 +160,19 @@ class LongElementQuest: QuestBase, Quest {
 
     var displayUnit: DisplayUnit {
         let uid = String(self.id)
-        return DisplayUnit(title: self.title, description: "", id: "\(uid)-\(questId)",parent: self,sheetSize: .LONGFORM)
+        // `description` has no visual UI use for this quest type (no native map callout
+        // is ever shown - tapping a pin opens the LongForm sheet directly) - it only
+        // feeds DisplayUnitAnnotation.subtitle, which MapLibre auto-copies into its
+        // rendered annotation view's own accessibilityValue (confirmed directly: the
+        // element's accessibilityValue, and NOT whatever QuestAnnotationView itself
+        // last set, always tracked this string in exactly this way - a plain UIView
+        // property assignment on the annotation view made no difference at all, since
+        // MapLibre's own internal accessibility wiring overwrites it regardless). This
+        // is the one reliable way for a UI test to tell apart several on-screen quest
+        // pins sharing one accessibilityIdentifier (see A11yID.Map.questAnnotation's own
+        // comment) - it carries this element's own OSM id, read via the pin's
+        // accessibilityValue.
+        return DisplayUnit(title: self.title, description: uid, id: "\(uid)-\(questId)", parent: self, sheetSize: .LONGFORM)
     }
     
     var questAnswersSelected: ((LongFormAnswer) -> Void)? = nil
