@@ -20,4 +20,13 @@ final class GoInfoGameUITests: ScreenshotOnFailureUITestCase {
         XCTAssertTrue(app.buttons[A11yID.Login.loginButton].waitForExistence(timeout: 15),
                       "App did not reach the login screen after launch")
     }
+
+    // >>> TEMP: fails on purpose, after the login screen is up, so the CI report's failure
+    // details and failure screenshot can be checked end to end. Delete this method (and its
+    // entry in TEMP_UI_TESTS in .github/workflows/ios-tests.yml) once the report looks right.
+    func testTempDeliberateFailureForReportCheck() throws {
+        let app = launchApp(scenario: UITestScenario.loginInvalidCredentials)
+        XCTAssertTrue(app.buttons[A11yID.Login.loginButton].waitForExistence(timeout: 15))
+        XCTFail("TEMP: deliberate failure to check the failure screenshot in the CI report")
+    }
 }

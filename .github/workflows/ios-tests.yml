@@ -4,15 +4,14 @@
 # the runner is recorded as "not installed", not silently dropped) -> extract a screenshot
 # for each failing UI test -> render one combined report (HTML + best-effort PDF,
 # plus Markdown) with a results summary and, per failure, the assertion detail and
-# screenshot -> bundle test-report.{md,html,pdf} into one tar.gz and upload it as
-# a GitHub Actions artifact (retried via Wandalen/wretry.action - see that step).
+# screenshot -> attach the report files to a GitHub pre-release (tag ios-ci-reports)
+# and link them from the run summary - see .github/scripts/publish-reports.sh.
 #
-# NOTE: this runner has intermittently been unable to reach the Actions artifact
-# backend regardless of payload size (1256 files, 26 files, 1 archive all hit the
-# same CreateArtifact/FinalizeArtifact timeout on some runs) - a known class of
-# issue on some self-hosted runners (actions/upload-artifact#531, #623). The
-# upload is continue-on-error so a repeat timeout does not fail the job; the
-# Markdown is also always written to the run summary as a fallback view.
+# NOTE: not actions/upload-artifact. From this self-hosted runner its very first
+# request (CreateArtifact, made before any bytes are sent) times out on every attempt,
+# so no artifact is ever created - the Android repo hit the same thing and moved to
+# release assets too. Release assets go through uploads.github.com, which works.
+# The Markdown is also always written to the run summary as a fallback view.
 # JUnit XML, per-device xcodebuild logs and .xcresult bundles stay under ./build.
 #
 # Runs on a SELF-HOSTED runner (label: self-hosted) that already has Xcode,
@@ -50,7 +49,7 @@ concurrency:
   cancel-in-progress: true
 
 permissions:
-  contents: read
+  contents: write        # create/update the ios-ci-reports pre-release (publish-reports.sh)
   checks: write          # mikepenz/action-junit-report posts a check run
   pull-requests: write   # ...and annotates the PR
 
@@ -68,9 +67,9 @@ env:
     GoInfoGameTests/DatasyncManagerTests/testOpenChangeset
     GoInfoGameTests/UserFlowTests/testChangesetFetch
   TEMP_UI_TESTS: |
-    GoInfoGameUITests/GoInfoGameUITests/testExample
+    GoInfoGameUITests/GoInfoGameUITests/testAppLaunchesToLoginScreen
     GoInfoGameUITests/GoInfoGameUITestsLaunchTests/testLaunch
-    GoInfoGameUITests/GoInfoGameUITests/testFaildLogin
+    GoInfoGameUITests/GoInfoGameUITests/testTempDeliberateFailureForReportCheck
   # One simulator at a time. Normal runs only have one device anyway; the scheduled
   # run walks the whole device list serially.
   UI_MAX_PARALLEL: "1"
@@ -96,6 +95,9 @@ env:
 jobs:
   test:
     name: Unit + UI tests
+    # Not for PRs from forks: this runs on a self-hosted Mac, so a fork's PR would run
+    # outside code on it (and its read-only token couldn't publish the reports anyway).
+    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
     runs-on: self-hosted
     timeout-minutes: 150
 
@@ -396,14 +398,9 @@ jobs:
             --skipped-file build/results/skipped.txt \
             --out-dir build/report
 
-      # Bundle the report into one file. HTML/PDF embed the failure screenshots inline
-      # (base64), so this archive is fully self-contained - no separate screenshots
-      # folder needed.
-      # tar.gz, not zip - actions/upload-artifact always wraps whatever it uploads in
-      # its own container zip on download, so a raw .zip here would become a
-      # same-named "test-report.zip" nested inside GitHub's own wrapper zip -
-      # indistinguishable from a corrupt file to anyone extracting it without
-      # realizing there's a second layer. tar.gz doesn't collide with that outer zip.
+      # Bundle the report into one tar.gz (HTML/PDF embed the failure screenshots inline
+      # as base64, so the archive is self-contained). The HTML and PDF are also published
+      # on their own below so they can be opened without unpacking anything.
       - name: Bundle report
         if: ${{ !cancelled() }}
         continue-on-error: true
@@ -421,27 +418,20 @@ jobs:
             echo "bundled: ${present[*]}"
           fi
 
-      # Wrapped in a retry (whole action, not just the request) - the Actions
-      # artifact backend has intermittently timed out on CreateArtifact/
-      # FinalizeArtifact from self-hosted runners regardless of payload size
-      # (actions/upload-artifact#531, #623; no fix from GitHub yet), and upload-
-      # artifact's own internal backoff (~30s across 5 tries) hasn't been enough
-      # here. continue-on-error so exhausting retries doesn't fail the job -
-      # pass/fail is already reported independently via the JUnit check above.
-      - name: Upload report artifact (tar.gz)
-        uses: Wandalen/wretry.action@v3.8.0
+      # Attached to the ios-ci-reports pre-release and linked from the run summary
+      # instead of actions/upload-artifact (see the NOTE at the top of this file).
+      # continue-on-error so a failed upload doesn't fail the job - pass/fail is
+      # already reported independently via the JUnit check above.
+      - name: Publish test reports
         if: ${{ !cancelled() }}
         continue-on-error: true
-        with:
-          action: actions/upload-artifact@v4
-          attempt_limit: 3
-          attempt_delay: 15000
-          with: |
-            name: test-report
-            path: build/test-report.tar.gz
-            retention-days: 14
-            if-no-files-found: warn
-            overwrite: true
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          bash .github/scripts/publish-reports.sh \
+            build/report/test-report.html \
+            build/report/test-report.pdf \
+            build/test-report.tar.gz
 
       - name: Clean up simulators
         # always(), not !cancelled(): simulators must be shut down even when this run
