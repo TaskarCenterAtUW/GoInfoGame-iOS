@@ -58,6 +58,19 @@ env:
   WORKSPACE: GoInfoGame/GoInfoGame.xcworkspace
   SCHEME: GoInfoGame
   UNIT_SIMULATOR: "iPhone 16 Pro"
+  # >>> TEMP: run only these tests - a few passing, a few failing - so the report can
+  # be checked quickly. One Target/Class/method per line. To revert, delete both
+  # variables (empty = run the whole GoInfoGameTests / GoInfoGameUITests target).
+  TEMP_UNIT_TESTS: |
+    GoInfoGameTests/UndoMerge/testUndoMerge1
+    GoInfoGameTests/UndoMerge/testUndoMerge2
+    GoInfoGameTests/SideWalkWidthTests/testFootwayQuery
+    GoInfoGameTests/DatasyncManagerTests/testOpenChangeset
+    GoInfoGameTests/UserFlowTests/testChangesetFetch
+  TEMP_UI_TESTS: |
+    GoInfoGameUITests/GoInfoGameUITests/testExample
+    GoInfoGameUITests/GoInfoGameUITestsLaunchTests/testLaunch
+    GoInfoGameUITests/GoInfoGameUITests/testFaildLogin
   # One simulator at a time. Normal runs only have one device anyway; the scheduled
   # run walks the whole device list serially.
   UI_MAX_PARALLEL: "1"
@@ -170,10 +183,24 @@ jobs:
           fi
           xcrun simctl boot "$udid"; xcrun simctl bootstatus "$udid" -b
           mkdir -p build/reports/unit
+          # Turns a newline-separated test list into -only-testing flags, falling back to the
+          # whole target when the list is empty (i.e. once the TEMP variables are removed).
+          only_flags() { # $1 = list, $2 = default target
+            _out=""
+            while IFS= read -r _t; do
+              _t="$(printf '%s' "$_t" | sed 's/^[[:space:]]*//; s/[[:space:]]*$//')"
+              [ -z "$_t" ] && continue
+              _out="$_out -only-testing:$_t"
+            done <<< "$1"
+            [ -z "$_out" ] && _out="-only-testing:$2"
+            printf '%s' "$_out"
+          }
+          unit_only="$(only_flags "$TEMP_UNIT_TESTS" GoInfoGameTests)"
+          echo "Unit tests selection:$unit_only"
           NSUnbufferedIO=YES xcodebuild test-without-building \
             -workspace "$WORKSPACE" -scheme "$SCHEME" \
             -destination "platform=iOS Simulator,id=$udid" \
-            -only-testing:GoInfoGameTests \
+            $unit_only \
             -resultBundlePath build/results/unit.xcresult \
             -enableCodeCoverage YES -retry-tests-on-failure -test-timeouts-enabled YES \
             CODE_SIGNING_ALLOWED=NO \
@@ -202,6 +229,20 @@ jobs:
             echo "Normal run: default device only."
           fi
           echo "Running UI tests, up to $max_par simulator(s) at once."
+          # Turns a newline-separated test list into -only-testing flags, falling back to the
+          # whole target when the list is empty (i.e. once the TEMP variables are removed).
+          only_flags() { # $1 = list, $2 = default target
+            _out=""
+            while IFS= read -r _t; do
+              _t="$(printf '%s' "$_t" | sed 's/^[[:space:]]*//; s/[[:space:]]*$//')"
+              [ -z "$_t" ] && continue
+              _out="$_out -only-testing:$_t"
+            done <<< "$1"
+            [ -z "$_out" ] && _out="-only-testing:$2"
+            printf '%s' "$_out"
+          }
+          ui_only="$(only_flags "$TEMP_UI_TESTS" GoInfoGameUITests)"
+          echo "UI tests selection:$ui_only"
 
           # runs one device end-to-end; writes build/results/.rc-<slug> as "<rc>\t<device>"
           run_device() {
@@ -222,7 +263,7 @@ jobs:
             NSUnbufferedIO=YES xcodebuild test-without-building \
               -workspace "$WORKSPACE" -scheme "$SCHEME" \
               -destination "platform=iOS Simulator,id=$_udid" \
-              -only-testing:GoInfoGameUITests \
+              $ui_only \
               -resultBundlePath "build/results/ui-$_slug.xcresult" \
               -retry-tests-on-failure -test-timeouts-enabled YES \
               CODE_SIGNING_ALLOWED=NO > "$_log" 2>&1
