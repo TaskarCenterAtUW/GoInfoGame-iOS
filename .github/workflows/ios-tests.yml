@@ -40,8 +40,13 @@ on:
     # branch, and can start a few minutes late when GitHub is busy.
     - cron: "30 16 * * 5"
 
+# Only the newest commit on a branch runs: a new push/PR update cancels the older
+# in-flight (or queued) run for the same branch. head_ref (PRs) and ref_name
+# (pushes) are both the plain branch name, so a push and its PR share one group
+# instead of testing the same commit twice. The Friday-night scheduled run gets its
+# own group so a push to main never cancels the long full-device run.
 concurrency:
-  group: ios-tests-${{ github.ref }}
+  group: ios-tests-${{ github.head_ref || github.ref_name }}-${{ github.event_name == 'schedule' && 'scheduled' || 'normal' }}
   cancel-in-progress: true
 
 permissions:
@@ -183,7 +188,7 @@ jobs:
 
       # -------- STEP 2: UI tests, on the device list chosen for this trigger --------
       - name: UI tests (per device)
-        if: always()      # still run UI tests even if a unit test failed
+        if: ${{ !cancelled() }}      # still run UI tests even if a unit test failed
         run: |
           set +e            # a failing device must NOT abort the step
           max_par="${UI_MAX_PARALLEL:-1}"
@@ -276,7 +281,7 @@ jobs:
       # -------- reporting --------
       - name: Publish test report (checks / PR annotations)
         uses: mikepenz/action-junit-report@v5
-        if: always()
+        if: ${{ !cancelled() }}
         with:
           report_paths: build/reports/*.xml
           check_name: iOS test results
@@ -284,7 +289,7 @@ jobs:
           require_tests: true
 
       - name: Extract failure screenshots
-        if: always()
+        if: ${{ !cancelled() }}
         continue-on-error: true
         run: |
           mkdir -p build/report/screenshots
@@ -333,12 +338,12 @@ jobs:
           find build/report/screenshots -type f 2>/dev/null || true
 
       - name: Ensure a PDF engine (weasyprint)
-        if: always()
+        if: ${{ !cancelled() }}
         continue-on-error: true
         run: command -v weasyprint >/dev/null || brew install --quiet weasyprint
 
       - name: Generate combined report (MD / HTML / PDF)
-        if: always()
+        if: ${{ !cancelled() }}
         continue-on-error: true
         env:
           GIT_COMMIT_MESSAGE: ${{ github.event.head_commit.message }}
@@ -359,7 +364,7 @@ jobs:
       # indistinguishable from a corrupt file to anyone extracting it without
       # realizing there's a second layer. tar.gz doesn't collide with that outer zip.
       - name: Bundle report
-        if: always()
+        if: ${{ !cancelled() }}
         continue-on-error: true
         run: |
           ws="$PWD"
@@ -384,7 +389,7 @@ jobs:
       # pass/fail is already reported independently via the JUnit check above.
       - name: Upload report artifact (tar.gz)
         uses: Wandalen/wretry.action@v3.8.0
-        if: always()
+        if: ${{ !cancelled() }}
         continue-on-error: true
         with:
           action: actions/upload-artifact@v4
@@ -398,5 +403,7 @@ jobs:
             overwrite: true
 
       - name: Clean up simulators
+        # always(), not !cancelled(): simulators must be shut down even when this run
+        # is cancelled by a newer commit, or they'd linger and slow the next run.
         if: always()
         run: xcrun simctl shutdown all || true
