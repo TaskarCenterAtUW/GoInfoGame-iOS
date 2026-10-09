@@ -211,12 +211,14 @@ class ScreenshotOnFailureUITestCase: XCTestCase {
             // The screen always shows whatever was actually in front at the moment of
             // failure, which is the thing worth looking at.
             let attachment = XCTAttachment(screenshot: XCUIScreen.main.screenshot())
-            // Plain name on purpose: `name` (XCTestCase) prints as the Objective-C
-            // style "-[Class testMethod]", and those brackets have broken downstream
-            // Markdown/HTML parsing of the resulting filename before. The test/suite
-            // is already shown in the report's failure heading, so no need to repeat
-            // it here - xcparse still files this under that test's own folder.
-            attachment.name = "Failure screenshot"
+            // `name` (XCTestCase) prints as the Objective-C style "-[Class testMethod]".
+            // Keep the class and method in the attachment name - the CI report generator
+            // uses them to match this image to its failing test - but strip the "-[ ]"
+            // so the resulting filename stays free of brackets, which have broken
+            // downstream Markdown/HTML parsing before. Result: "Failure screenshot -
+            // Class testMethod".
+            let testName = name.trimmingCharacters(in: CharacterSet(charactersIn: "-[] "))
+            attachment.name = "Failure screenshot - \(testName)"
             attachment.lifetime = .deleteOnSuccess
             add(attachment)
         }
