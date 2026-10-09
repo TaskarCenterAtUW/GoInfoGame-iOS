@@ -46,6 +46,7 @@ struct ShowQuestFormsView: View {
                     Text(L10n.Localizable.nothingFound)
                         .font(FontFamily.Lato.bold.swiftUIFont(size: 18, relativeTo: .headline))
                         .foregroundStyle(Asset.Colors._42526ETextFieldText.swiftUIColor)
+                        .accessibilityIdentifier(A11yID.ShowQuestForms.nothingFoundMessage)
                     Spacer()
                 }
                 .frame(maxWidth: .infinity)
@@ -67,6 +68,7 @@ struct ShowQuestFormsView: View {
                     .buttonStyle(.plain)
                     .accessibilityLabel(element.elementType)
                     .accessibilityHint(L10n.Localizable.showsTheQuestFormPreview)
+                    .accessibilityIdentifier(A11yID.ShowQuestForms.row(elementType: element.elementType))
                 }
                 .listStyle(.plain)
             }
@@ -99,6 +101,7 @@ struct ShowQuestFormsView: View {
                         .contentShape(Rectangle())
                         .accessibilityLabel(L10n.Localizable.back)
                 }
+                .accessibilityIdentifier(A11yID.ShowQuestForms.backButton)
             }
             ToolbarItem(placement: .principal) {
                 Text(L10n.Localizable.showQuestForms)

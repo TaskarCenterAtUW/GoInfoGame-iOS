@@ -23,8 +23,6 @@
 		05DBBB642B17204300B6F110 /* RealmOPGeometry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05DBBB632B17204300B6F110 /* RealmOPGeometry.swift */; };
 		05DBBB662B17209600B6F110 /* RealmOPMeta.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05DBBB652B17209600B6F110 /* RealmOPMeta.swift */; };
 		171574E02FD1CC4A00AA6603 /* PhotoLookupResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 171574DF2FD1CC4A00AA6603 /* PhotoLookupResponse.swift */; };
-		188843AD2B5FA2DF0008DCF8 /* TactilePavingStepsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 188843AC2B5FA2DF0008DCF8 /* TactilePavingStepsTests.swift */; };
-		188843AF2B5FB32D0008DCF8 /* WayLitTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 188843AE2B5FB32D0008DCF8 /* WayLitTests.swift */; };
 		227FDA1227FD4BFA2E18876C /* QuestImageStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42FA4EB22185846E113DA376 /* QuestImageStorage.swift */; };
 		2E71655C971839F8DAF42E67 /* CompassButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61CD36AA62170BAF936749E0 /* CompassButtonView.swift */; };
 		342561966FC217124BD9CFE7 /* Pods_GoInfoGame_GoInfoGameUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2D539E22EFF6636F8CBA035A /* Pods_GoInfoGame_GoInfoGameUITests.framework */; };
@@ -240,10 +238,10 @@
 		C7DBG0000000000000000222 /* MapOSMElements.json in Resources */ = {isa = PBXBuildFile; fileRef = C7DBG0000000000000000212 /* MapOSMElements.json */; };
 		C7DBG0000000000000000223 /* LongFormOSMElements.json in Resources */ = {isa = PBXBuildFile; fileRef = C7DBG0000000000000000213 /* LongFormOSMElements.json */; };
 		C7DBG0000000000000000224 /* LongFormLatestElements.json in Resources */ = {isa = PBXBuildFile; fileRef = C7DBG0000000000000000214 /* LongFormLatestElements.json */; };
-		C7DBG0000000000000000253 /* AccessibilityModeOSMElements.json in Resources */ = {isa = PBXBuildFile; fileRef = C7DBG0000000000000000250 /* AccessibilityModeOSMElements.json */; };
-		C7DBG0000000000000000254 /* AccessibilityModeOSMElementsFar.json in Resources */ = {isa = PBXBuildFile; fileRef = C7DBG0000000000000000251 /* AccessibilityModeOSMElementsFar.json */; };
 		C7DBG0000000000000000231 /* MapScreenUITestCases.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7DBG0000000000000000230 /* MapScreenUITestCases.swift */; };
 		C7DBG0000000000000000241 /* LongFormScreenUITestCases.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7DBG0000000000000000240 /* LongFormScreenUITestCases.swift */; };
+		C7DBG0000000000000000253 /* AccessibilityModeOSMElements.json in Resources */ = {isa = PBXBuildFile; fileRef = C7DBG0000000000000000250 /* AccessibilityModeOSMElements.json */; };
+		C7DBG0000000000000000254 /* AccessibilityModeOSMElementsFar.json in Resources */ = {isa = PBXBuildFile; fileRef = C7DBG0000000000000000251 /* AccessibilityModeOSMElementsFar.json */; };
 		C7DBG0000000000000000255 /* AccessibilityModeScreenUITestCases.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7DBG0000000000000000252 /* AccessibilityModeScreenUITestCases.swift */; };
 		C7DBG0000000000000000261 /* UndoEditsScreenUITestCases.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7DBG0000000000000000260 /* UndoEditsScreenUITestCases.swift */; };
 		C7DBG0000000000000000271 /* ManageQuestsScreenUITestCases.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7DBG0000000000000000270 /* ManageQuestsScreenUITestCases.swift */; };
@@ -256,6 +254,7 @@
 		C7DBG0000000000000000311 /* MultiQuestSelectionUITestCases.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7DBG0000000000000000310 /* MultiQuestSelectionUITestCases.swift */; };
 		C7DBG0000000000000000321 /* ConflictResolutionUITestCases.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7DBG0000000000000000320 /* ConflictResolutionUITestCases.swift */; };
 		C7DBG0000000000000000331 /* AddFeatureScreenUITestCases.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7DBG0000000000000000330 /* AddFeatureScreenUITestCases.swift */; };
+		C7DBG0000000000000000341 /* ProfileOptionsUITestCases.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7DBG0000000000000000340 /* ProfileOptionsUITestCases.swift */; };
 		C7DD04152F7E7A5800307026 /* Lato-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FA8C74D12C598F9D00D28220 /* Lato-Bold.ttf */; };
 		C7DD04162F7E7A6100307026 /* Lato-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FA8C74D02C598F9D00D28220 /* Lato-Regular.ttf */; };
 		C7DD04172F7E7A6100307026 /* Lato-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FA8C74D22C5998D600D28220 /* Lato-Medium.ttf */; };
@@ -671,10 +670,10 @@
 		C7DBG0000000000000000212 /* MapOSMElements.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = MapOSMElements.json; sourceTree = "<group>"; };
 		C7DBG0000000000000000213 /* LongFormOSMElements.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = LongFormOSMElements.json; sourceTree = "<group>"; };
 		C7DBG0000000000000000214 /* LongFormLatestElements.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = LongFormLatestElements.json; sourceTree = "<group>"; };
-		C7DBG0000000000000000250 /* AccessibilityModeOSMElements.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = AccessibilityModeOSMElements.json; sourceTree = "<group>"; };
-		C7DBG0000000000000000251 /* AccessibilityModeOSMElementsFar.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = AccessibilityModeOSMElementsFar.json; sourceTree = "<group>"; };
 		C7DBG0000000000000000230 /* MapScreenUITestCases.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapScreenUITestCases.swift; sourceTree = "<group>"; };
 		C7DBG0000000000000000240 /* LongFormScreenUITestCases.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LongFormScreenUITestCases.swift; sourceTree = "<group>"; };
+		C7DBG0000000000000000250 /* AccessibilityModeOSMElements.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = AccessibilityModeOSMElements.json; sourceTree = "<group>"; };
+		C7DBG0000000000000000251 /* AccessibilityModeOSMElementsFar.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = AccessibilityModeOSMElementsFar.json; sourceTree = "<group>"; };
 		C7DBG0000000000000000252 /* AccessibilityModeScreenUITestCases.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccessibilityModeScreenUITestCases.swift; sourceTree = "<group>"; };
 		C7DBG0000000000000000260 /* UndoEditsScreenUITestCases.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UndoEditsScreenUITestCases.swift; sourceTree = "<group>"; };
 		C7DBG0000000000000000270 /* ManageQuestsScreenUITestCases.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManageQuestsScreenUITestCases.swift; sourceTree = "<group>"; };
@@ -687,6 +686,7 @@
 		C7DBG0000000000000000310 /* MultiQuestSelectionUITestCases.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MultiQuestSelectionUITestCases.swift; sourceTree = "<group>"; };
 		C7DBG0000000000000000320 /* ConflictResolutionUITestCases.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConflictResolutionUITestCases.swift; sourceTree = "<group>"; };
 		C7DBG0000000000000000330 /* AddFeatureScreenUITestCases.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddFeatureScreenUITestCases.swift; sourceTree = "<group>"; };
+		C7DBG0000000000000000340 /* ProfileOptionsUITestCases.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileOptionsUITestCases.swift; sourceTree = "<group>"; };
 		C7E9528C2ED887CC001BFB75 /* NoQuestsNearView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoQuestsNearView.swift; sourceTree = "<group>"; };
 		C7E9528E2ED88B00001BFB75 /* lato-heavy.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "lato-heavy.ttf"; sourceTree = "<group>"; };
 		C7ED070E2D70E2EC001FFFE2 /* TokenRefresher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenRefresher.swift; sourceTree = "<group>"; };
@@ -1902,6 +1902,7 @@
 				C7DBG0000000000000000310 /* MultiQuestSelectionUITestCases.swift */,
 				C7DBG0000000000000000320 /* ConflictResolutionUITestCases.swift */,
 				C7DBG0000000000000000330 /* AddFeatureScreenUITestCases.swift */,
+				C7DBG0000000000000000340 /* ProfileOptionsUITestCases.swift */,
 				C7DBG0000000000000000202 /* ProfileScreenUITestCases.swift */,
 				C7DBG0000000000000000200 /* WorkspacesScreenUITestCases.swift */,
 			);
@@ -2335,13 +2336,9 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-GoInfoGame/Pods-GoInfoGame-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
-			inputPaths = (
-			);
 			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-GoInfoGame/Pods-GoInfoGame-frameworks-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -2444,13 +2441,9 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-GoInfoGame-GoInfoGameUITests/Pods-GoInfoGame-GoInfoGameUITests-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
-			inputPaths = (
-			);
 			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-GoInfoGame-GoInfoGameUITests/Pods-GoInfoGame-GoInfoGameUITests-frameworks-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -2848,6 +2841,7 @@
 				C7DBG0000000000000000311 /* MultiQuestSelectionUITestCases.swift in Sources */,
 				C7DBG0000000000000000321 /* ConflictResolutionUITestCases.swift in Sources */,
 				C7DBG0000000000000000331 /* AddFeatureScreenUITestCases.swift in Sources */,
+				C7DBG0000000000000000341 /* ProfileOptionsUITestCases.swift in Sources */,
 				C7DBG0000000000000000203 /* ProfileScreenUITestCases.swift in Sources */,
 				C7DBG0000000000000000201 /* WorkspacesScreenUITestCases.swift in Sources */,
 				FAD5C5142AFCBE720040C61A /* GoInfoGameUITests.swift in Sources */,

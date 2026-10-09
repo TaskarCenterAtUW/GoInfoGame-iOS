@@ -131,32 +131,21 @@ struct LongForm: View, QuestForm {
 
                             tagInfoRow(label: "Name", value: tags?["name"])
 
-                        // Side by side, neither button has enough width at large
-                        // accessibility text sizes to fit its label as a whole word, so
-                        // both wrap mid-word. Stacking them instead gives each the full
-                        // row width.
-                        Group {
-                            if dynamicTypeSize.isAccessibilitySize {
-                                VStack(alignment: .leading, spacing: 8) {
-                                    composeNoteButton
-                                    ignoreQuestButton
-                                }
-                            } else {
-                                HStack {
-                                    composeNoteButton
-                                    Spacer()
-                                    ignoreQuestButton
-                                }
-                            }
-                        }
-
-                        if showCreateNoteMessage {
-                            Text(alertMessage)
-                                .foregroundColor(alertMessage == "Note submitted successfully" ? Color.green : Color.red)
-                                .accessibilityIdentifier(A11yID.LongForm.composeNoteStatusMessage)
-                                .onAppear {
-                                    DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
-                                        showCreateNoteMessage = false
+                            // Side by side, neither button has enough width at large
+                            // accessibility text sizes to fit its label as a whole word, so
+                            // both wrap mid-word. Stacking them instead gives each the full
+                            // row width.
+                            Group {
+                                if dynamicTypeSize.isAccessibilitySize {
+                                    VStack(alignment: .leading, spacing: 8) {
+                                        composeNoteButton
+                                        ignoreQuestButton
+                                    }
+                                } else {
+                                    HStack {
+                                        composeNoteButton
+                                        Spacer()
+                                        ignoreQuestButton
                                     }
                                 }
                             }
@@ -164,6 +153,7 @@ struct LongForm: View, QuestForm {
                             if showCreateNoteMessage {
                                 Text(alertMessage)
                                     .foregroundColor(alertMessage == "Note submitted successfully" ? Color.green : Color.red)
+                                    .accessibilityIdentifier(A11yID.LongForm.composeNoteStatusMessage)
                                     .onAppear {
                                         DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
                                             showCreateNoteMessage = false
