@@ -104,6 +104,14 @@ def _images_under(root: str) -> list[str]:
     return out
 
 
+def _run_root(base: str, case: Case) -> str:
+    if case.run.startswith("UI · "):
+        return os.path.join(base, f"ui-{_run_slug(case.run)}")
+    if case.run == "Unit tests":
+        return os.path.join(base, "unit")
+    return os.path.join(base, _run_slug(case.run))
+
+
 def collect_screenshots(base: str, case: Case, limit: int = 8) -> list[str]:
     """Screenshots for a failed `case` from the xcparse tree under `base`.
 
@@ -115,12 +123,7 @@ def collect_screenshots(base: str, case: Case, limit: int = 8) -> list[str]:
     """
     if not base or not os.path.isdir(base):
         return []
-    if case.run.startswith("UI · "):
-        run_root = os.path.join(base, f"ui-{_run_slug(case.run)}")
-    elif case.run == "Unit tests":
-        run_root = os.path.join(base, "unit")
-    else:
-        run_root = os.path.join(base, _run_slug(case.run))
+    run_root = _run_root(base, case)
     if not os.path.isdir(run_root):
         return []
     method = case.name.rstrip("()")
@@ -128,12 +131,15 @@ def collect_screenshots(base: str, case: Case, limit: int = 8) -> list[str]:
     everything = _images_under(run_root)
 
     def is_own(p: str) -> bool:
-        # Directory layout: .../<class>/<method>/<file> (any nesting after method).
-        norm = p.replace(os.sep, "/")
-        if f"/{klass}/{method}/" in norm or f"/{klass}/{method}." in norm:
+        # Directory layout: .../<class>/<method>/<file>. `xcparse attachments` names the
+        # method folder WITH parentheses ("testFoo()"), `xcparse screenshots` without
+        # ("testFoo"), so compare components with a trailing "()" stripped.
+        parts = [c for c in p.replace(os.sep, "/").split("/") if c]
+        strip = lambda c: c[:-2] if c.endswith("()") else c
+        if any(parts[i] == klass and strip(parts[i + 1]) == method for i in range(len(parts) - 1)):
             return True
-        # Flat-naming layout: some xcparse commands encode "Class_method" or
-        # "Class.method" straight into the filename instead of nesting folders.
+        # Flat-naming layout: the filename itself carries "Class method" / "Class_method" /
+        # "Class.method" (the Swift side puts the test name into the attachment name).
         base_name = os.path.basename(p)
         return any(f"{klass}{sep}{method}" in base_name or f"{method}{sep}{klass}" in base_name
                   for sep in ("_", ".", "-", " "))
@@ -250,6 +256,11 @@ def build_markdown(cases: list[Case], run_order: list[str], cov: dict | None,
                 for s in shots:
                     rel = os.path.relpath(s, out_dir) if out_dir else s
                     L += [f"![{c.suite}.{c.name} — {os.path.basename(s)}]({quote(rel)})", ""]
+            elif screens_dir:
+                n_run = len(_images_under(_run_root(screens_dir, c))) if os.path.isdir(_run_root(screens_dir, c)) else 0
+                L += [f"_No screenshot matched this failure ({n_run} image(s) were extracted for this "
+                      f"run, none filed under this test). See the \"Extract failure screenshots\" "
+                      f"step log._", ""]
 
     # ---- per-suite table (only meaningful when there's a single run)
     if len(by_run) == 1:

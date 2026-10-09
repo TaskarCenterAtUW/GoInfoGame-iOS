@@ -398,24 +398,39 @@ jobs:
             --skipped-file build/results/skipped.txt \
             --out-dir build/report
 
-      # Bundle the report into one tar.gz (HTML/PDF embed the failure screenshots inline
-      # as base64, so the archive is self-contained). The HTML and PDF are also published
-      # on their own below so they can be opened without unpacking anything.
-      - name: Bundle report
+      # Bundle everything into one tar.gz: the report (HTML/PDF embed the failure
+      # screenshots inline as base64) plus the raw .xcresult test result bundles - one per
+      # run (unit.xcresult, ui-<device>.xcresult) - which open directly in Xcode. The HTML
+      # and PDF are also published on their own below so they can be read without
+      # unpacking anything.
+      - name: Bundle report + xcresults
         if: ${{ !cancelled() }}
         continue-on-error: true
         run: |
           ws="$PWD"
-          present=()
+          out="$ws/build/test-report.tar.gz"
+          # tar's -C is positional (applies to the paths after it), so each group of paths
+          # is listed relative to its own folder and lands at the archive root.
+          tar_args=(-czf "$out")
+          report_files=()
           for f in test-report.md test-report.html test-report.pdf; do
-            [ -f "build/report/$f" ] && present+=("$f")
+            [ -f "build/report/$f" ] && report_files+=("$f")
           done
-          if [ "${#present[@]}" -eq 0 ]; then
-            echo "::warning::no report files found under build/report - nothing to bundle"
+          [ "${#report_files[@]}" -gt 0 ] && tar_args+=(-C "$ws/build/report" "${report_files[@]}")
+          xcresults=()
+          for x in build/results/*.xcresult; do
+            [ -d "$x" ] && xcresults+=("$(basename "$x")")
+          done
+          [ "${#xcresults[@]}" -gt 0 ] && tar_args+=(-C "$ws/build/results" "${xcresults[@]}")
+
+          if [ "${#report_files[@]}" -eq 0 ] && [ "${#xcresults[@]}" -eq 0 ]; then
+            echo "::warning::no report files or xcresult bundles found - nothing to bundle"
           else
-            rm -f build/test-report.tar.gz
-            ( cd build/report && tar -czf "$ws/build/test-report.tar.gz" "${present[@]}" )
-            echo "bundled: ${present[*]}"
+            rm -f "$out"
+            tar "${tar_args[@]}"
+            echo "bundled report files: ${report_files[*]:-(none)}"
+            echo "bundled xcresults:    ${xcresults[*]:-(none)}"
+            ls -lh "$out"
           fi
 
       # Attached to the ios-ci-reports pre-release and linked from the run summary
