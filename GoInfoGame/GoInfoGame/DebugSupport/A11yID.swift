@@ -81,6 +81,29 @@ enum A11yID {
         /// Tests must treat its absence as valid, not as a failure.
         static let biometricToggle = "profile_biometric_toggle"
         static let logoutButton = "profile_logout_button"
+        /// Both backed by @AppStorage ("showMapZoomButtons" defaults to true,
+        /// "keepScreenOn" to false). State is read through the toggle's own `value`
+        /// ("1"/"0"), the identifier only locates it - same convention as lowBandwidthToggle.
+        static let showMapZoomButtonsToggle = "profile_show_map_zoom_buttons_toggle"
+        static let keepScreenOnToggle = "profile_keep_screen_on_toggle"
+        /// The Debug section's NavigationLink row, opening ShowQuestFormsView.
+        static let showQuestFormsRow = "profile_show_quest_forms_row"
+    }
+
+    /// Identifiers for ShowQuestFormsView (GoInfoGame/UserProfile/View/
+    /// ShowQuestFormsView.swift), reached from A11yID.Profile.showQuestFormsRow. Lists the
+    /// loaded workspace's long-form element types and opens each as a preview LongForm
+    /// (A11yID.LongForm's own identifiers apply inside it); its search field is a standard
+    /// `.searchable`, found as `app.searchFields`, not by identifier.
+    enum ShowQuestForms {
+        static let backButton = "show_quest_forms_back_button"
+        /// Shown in place of the list when there is nothing to list (no workspace loaded, or
+        /// a search with no matches).
+        static let nothingFoundMessage = "show_quest_forms_nothing_found_message"
+        /// One row of the list: `show_quest_forms_row_<elementType>` - keyed by the
+        /// element type string ("Sidewalks", "Crossings", "Kerbs"), same convention as
+        /// A11yID.ManageQuests.featureToggle.
+        static func row(elementType: String) -> String { "show_quest_forms_row_\(elementType)" }
     }
 
     /// Identifiers for PasswordAuthenticationPopupView (GoInfoGame/Login/

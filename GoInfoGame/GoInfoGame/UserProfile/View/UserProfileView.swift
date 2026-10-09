@@ -104,10 +104,12 @@ struct UserProfileView: View {
                                 preferenceToggle(isOn: $showMapZoomButtons,
                                                  title: L10n.Localizable.showMapZoomButtons,
                                                  subtitle: L10n.Localizable.showAndButtonsOnTheMapForZooming)
-                                
+                                .accessibilityIdentifier(A11yID.Profile.showMapZoomButtonsToggle)
+
                                 preferenceToggle(isOn: $keepScreenOn,
                                                  title: L10n.Localizable.keepScreenOn,
                                                  subtitle: L10n.Localizable.stopTheScreenFromTurningOffWhileTheAppIsOpen)
+                                .accessibilityIdentifier(A11yID.Profile.keepScreenOnToggle)
                                 .onChange(of: keepScreenOn) { isOn in
                                     UIApplication.shared.isIdleTimerDisabled = isOn
                                 }
@@ -254,6 +256,7 @@ struct UserProfileView: View {
             .contentShape(Rectangle())
         }
         .accessibilityLabel(L10n.Localizable.showQuestForms)
+        .accessibilityIdentifier(A11yID.Profile.showQuestFormsRow)
     }
 
     private var logOutButton: some View {

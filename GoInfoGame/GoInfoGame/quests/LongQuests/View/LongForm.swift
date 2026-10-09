@@ -153,6 +153,7 @@ struct LongForm: View, QuestForm {
                             if showCreateNoteMessage {
                                 Text(alertMessage)
                                     .foregroundColor(alertMessage == "Note submitted successfully" ? Color.green : Color.red)
+                                    .accessibilityIdentifier(A11yID.LongForm.composeNoteStatusMessage)
                                     .onAppear {
                                         DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
                                             showCreateNoteMessage = false
