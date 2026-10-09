@@ -1,0 +1,523 @@
+#!/usr/bin/env python3
+"""Build a human-readable test report (Markdown + HTML + best-effort PDF) from CI output.
+
+Usage:
+  test_report.py --junit RUN[=PATH] [RUN[=PATH] ...] [--xcresult DIR] [--out-dir DIR]
+
+Each --junit value is one "run" (e.g. the unit run, or the UI run on one device).
+  * "path/to/foo.xml"          -> run label derived from the file name
+  * "iPhone 16 Pro=path.xml"   -> explicit label
+Globs are expanded, so `--junit "build/reports/*.xml"` also works.
+
+--xcresult points at a .xcresult bundle used only for the code-coverage table.
+
+Everything is stdlib-only so it runs on any macOS runner with python3.
+Metadata (repo / branch / commit / run link) is read from GitHub Actions env vars.
+"""
+
+from __future__ import annotations
+
+import argparse
+import glob
+import html
+import json
+import os
+import re
+import subprocess
+import sys
+import xml.etree.ElementTree as ET
+from collections import OrderedDict
+from dataclasses import dataclass
+from datetime import datetime, timezone
+
+
+@dataclass
+class Case:
+    run: str
+    suite: str
+    name: str
+    time: float
+    status: str  # "passed" | "failed" | "skipped"
+    message: str = ""
+    detail: str = ""
+
+
+# ---------------------------------------------------------------- parsing
+
+def label_from_path(path: str) -> str:
+    stem = os.path.splitext(os.path.basename(path))[0]
+    if stem == "unit":
+        return "Unit tests"
+    if stem.startswith("ui-"):
+        return "UI · " + stem[3:].replace("-", " ").strip()
+    return stem.replace("-", " ").replace("_", " ").strip() or path
+
+
+def ui_label(device: str) -> str:
+    """Same label a ran UI device gets, derived straight from its name."""
+    return "UI · " + re.sub(r"[^A-Za-z0-9]+", " ", device).strip()
+
+
+def parse_junit(path: str, run: str) -> list[Case]:
+    if not os.path.isfile(path):
+        return []
+    try:
+        root = ET.parse(path).getroot()
+    except ET.ParseError:
+        return []
+    cases: list[Case] = []
+    for sn in root.iter("testsuite"):
+        sname = sn.get("name") or "Tests"
+        for tc in sn.findall("testcase"):
+            cname = tc.get("name") or "?"
+            ctime = float(tc.get("time") or 0.0)
+            failure = tc.find("failure")
+            error = tc.find("error")
+            skipped = tc.find("skipped")
+            if failure is not None or error is not None:
+                node = failure if failure is not None else error
+                cases.append(Case(run, sname, cname, ctime, "failed",
+                                  message=(node.get("message") or "").strip(),
+                                  detail=(node.text or "").strip()))
+            elif skipped is not None:
+                cases.append(Case(run, sname, cname, ctime, "skipped",
+                                  message=(skipped.get("message") or "").strip()))
+            else:
+                cases.append(Case(run, sname, cname, ctime, "passed"))
+    return cases
+
+
+_IMG_EXT = (".png", ".jpg", ".jpeg", ".heic")
+
+
+def _run_slug(run: str) -> str:
+    body = run[5:] if run.startswith("UI · ") else ("unit" if run == "Unit tests" else run)
+    return re.sub(r"[^A-Za-z0-9]+", "-", body).strip("-")
+
+
+def _images_under(root: str) -> list[str]:
+    out: list[str] = []
+    for dirpath, _, files in os.walk(root):
+        for fn in files:
+            if fn.lower().endswith(_IMG_EXT):
+                out.append(os.path.join(dirpath, fn))
+    return out
+
+
+def _run_root(base: str, case: Case) -> str:
+    if case.run.startswith("UI · "):
+        return os.path.join(base, f"ui-{_run_slug(case.run)}")
+    if case.run == "Unit tests":
+        return os.path.join(base, "unit")
+    return os.path.join(base, _run_slug(case.run))
+
+
+def collect_screenshots(base: str, case: Case, limit: int = 8) -> list[str]:
+    """Screenshots for a failed `case` from the xcparse tree under `base`.
+
+    xcparse --test lays files out as <base>/ui-<slug>/<TestClass>/<testMethod>/<img>
+    (unit failures under <base>/unit/...). Only ever return images whose path names
+    BOTH this test's class and method - never fall back to "some image in this run",
+    since that silently attributes another test's (e.g. a passing test's kept
+    launch-screen shot) screenshot to this failure, which is worse than showing none.
+    """
+    if not base or not os.path.isdir(base):
+        return []
+    run_root = _run_root(base, case)
+    if not os.path.isdir(run_root):
+        return []
+    method = case.name.rstrip("()")
+    klass = case.suite.split(".")[-1]
+    everything = _images_under(run_root)
+
+    def is_own(p: str) -> bool:
+        # Directory layout: .../<class>/<method>/<file>. `xcparse attachments` names the
+        # method folder WITH parentheses ("testFoo()"), `xcparse screenshots` without
+        # ("testFoo"), so compare components with a trailing "()" stripped.
+        parts = [c for c in p.replace(os.sep, "/").split("/") if c]
+        strip = lambda c: c[:-2] if c.endswith("()") else c
+        if any(parts[i] == klass and strip(parts[i + 1]) == method for i in range(len(parts) - 1)):
+            return True
+        # Flat-naming layout: the filename itself carries "Class method" / "Class_method" /
+        # "Class.method" (the Swift side puts the test name into the attachment name).
+        base_name = os.path.basename(p)
+        return any(f"{klass}{sep}{method}" in base_name or f"{method}{sep}{klass}" in base_name
+                  for sep in ("_", ".", "-", " "))
+
+    hits = sorted(set(p for p in everything if is_own(p)), key=os.path.getmtime)
+    return hits[-limit:]   # oldest -> newest (failure moment last)
+
+
+def dedupe_retries(cases: list[Case]) -> list[Case]:
+    """-retry-tests-on-failure re-runs a failing test up to a few times, and each
+    attempt lands in the JUnit XML as its own <testcase> with the same name - so a
+    single flaky/always-failing test can look like 3 separate failed tests. Collapse
+    same (run, suite, name) attempts into one: passed if any attempt passed
+    (Xcode's own "eventually passed" semantics), else the last (fullest) failure
+    detail; time is summed across attempts.
+    """
+    groups: "OrderedDict[tuple[str, str, str], list[Case]]" = OrderedDict()
+    for c in cases:
+        groups.setdefault((c.run, c.suite, c.name), []).append(c)
+    out: list[Case] = []
+    for attempts in groups.values():
+        if len(attempts) == 1:
+            out.append(attempts[0])
+            continue
+        passed = [a for a in attempts if a.status == "passed"]
+        failed = [a for a in attempts if a.status == "failed"]
+        final = passed[-1] if passed else (failed[-1] if failed else attempts[-1])
+        out.append(Case(final.run, final.suite, final.name,
+                        sum(a.time for a in attempts), final.status,
+                        final.message, final.detail))
+    return out
+
+
+def coverage_from_xcresult(xcresult: str) -> dict | None:
+    if not xcresult or not os.path.isdir(xcresult):
+        return None
+    try:
+        out = subprocess.run(
+            ["xcrun", "xccov", "view", "--report", "--json", xcresult],
+            capture_output=True, text=True, check=True,
+        ).stdout
+        return json.loads(out)
+    except (subprocess.CalledProcessError, json.JSONDecodeError, FileNotFoundError):
+        return None
+
+
+# ---------------------------------------------------------------- rendering
+
+def fmt_pct(x: float) -> str:
+    return f"{x * 100:.1f}%"
+
+
+def _n(cases: list[Case], status: str) -> int:
+    return sum(1 for c in cases if c.status == status)
+
+
+def build_markdown(cases: list[Case], run_order: list[str], cov: dict | None,
+                   meta: dict, screens_dir: str = "", out_dir: str = "",
+                   skipped_devices: list[str] | None = None) -> str:
+    skipped_devices = skipped_devices or []
+    total = len(cases)
+    passed, failed, skipped = _n(cases, "passed"), _n(cases, "failed"), _n(cases, "skipped")
+    duration = sum(c.time for c in cases)
+    overall = "✅ PASSED" if failed == 0 and total else ("❌ FAILED" if failed else "⚠️ NO TESTS")
+
+    by_run: "OrderedDict[str, list[Case]]" = OrderedDict((r, []) for r in run_order)
+    for c in cases:
+        by_run.setdefault(c.run, []).append(c)
+
+    L: list[str] = [f"# Test Report — {overall}", ""]
+    if meta:
+        L += ["| | |", "|---|---|"]
+        for k in ("Repository", "Branch", "Commit", "Message", "Run", "Generated"):
+            if meta.get(k):
+                L.append(f"| **{k}** | {meta[k]} |")
+        L.append("")
+    summary = (f"**{passed} passed**, **{failed} failed**, **{skipped} skipped** "
+               f"— {total} tests across {len(by_run)} run(s) in {duration:.0f}s")
+    if skipped_devices:
+        summary += f" · ⚠️ {len(skipped_devices)} device(s) not installed"
+    L += [summary, ""]
+
+    # ---- per-run / per-device table
+    L += ["## Runs", "", "| Run | Result | Tests | ✅ | ❌ | ⏭️ | Time |",
+          "|---|:--:|--:|--:|--:|--:|--:|"]
+    for run, cs in by_run.items():
+        f = _n(cs, "failed")
+        res = "✅" if f == 0 and cs else ("❌" if f else "—")
+        L.append(f"| {run} | {res} | {len(cs)} | {_n(cs,'passed')} | "
+                 f"{f} | {_n(cs,'skipped')} | {sum(c.time for c in cs):.0f}s |")
+    for dev in skipped_devices:
+        L.append(f"| {ui_label(dev)} | ⚠️ not installed | 0 | — | — | — | — |")
+    L.append("")
+    if skipped_devices:
+        L += ["> ⚠️ Requested but **not installed** on the runner — no tests ran: "
+              + ", ".join(f"`{d}`" for d in skipped_devices), ""]
+
+    # ---- failures
+    fails = [c for c in cases if c.status == "failed"]
+    if fails:
+        L += ["## Failures", ""]
+        for c in fails:
+            L += [f"### ❌ `{c.suite}.{c.name}`  —  _{c.run}_", ""]
+            if c.message:
+                L += [f"> {c.message}", ""]
+            if c.detail and c.detail != c.message:
+                L += ["```", "\n".join(c.detail.splitlines()[:20]), "```", ""]
+            shots = collect_screenshots(screens_dir, c)
+            print(f"screenshots for {c.suite}.{c.name}: {len(shots)} "
+                  f"({', '.join(os.path.basename(s) for s in shots) or 'none'})", file=sys.stderr)
+            if shots:
+                from urllib.parse import quote
+                L += ["**Screenshots** (oldest → moment of failure):", ""]
+                for s in shots:
+                    rel = os.path.relpath(s, out_dir) if out_dir else s
+                    L += [f"![{c.suite}.{c.name} — {os.path.basename(s)}]({quote(rel)})", ""]
+            elif screens_dir:
+                n_run = len(_images_under(_run_root(screens_dir, c))) if os.path.isdir(_run_root(screens_dir, c)) else 0
+                L += [f"_No screenshot matched this failure ({n_run} image(s) were extracted for this "
+                      f"run, none filed under this test). See the \"Extract failure screenshots\" "
+                      f"step log._", ""]
+
+    # ---- per-suite table (only meaningful when there's a single run)
+    if len(by_run) == 1:
+        suites = sorted({c.suite for c in cases})
+        L += ["## Suites", "", "| Suite | Tests | ✅ | ❌ | ⏭️ | Time |",
+              "|---|--:|--:|--:|--:|--:|"]
+        for s in suites:
+            cs = [c for c in cases if c.suite == s]
+            L.append(f"| {s} | {len(cs)} | {_n(cs,'passed')} | {_n(cs,'failed')} | "
+                     f"{_n(cs,'skipped')} | {sum(c.time for c in cs):.1f}s |")
+        L.append("")
+
+    # ---- coverage
+    if cov and cov.get("targets"):
+        L += ["## Code coverage", "",
+              "| Target | Coverage | Covered / Executable lines |", "|---|--:|--:|"]
+        tot_cov = tot_exe = 0
+        for t in sorted(cov["targets"], key=lambda t: t.get("name", "")):
+            covd, exe = t.get("coveredLines", 0), t.get("executableLines", 0)
+            tot_cov += covd
+            tot_exe += exe
+            L.append(f"| {t.get('name','?')} | {fmt_pct(t.get('lineCoverage',0.0))} | {covd} / {exe} |")
+        if tot_exe:
+            L.append(f"| **Overall** | **{fmt_pct(tot_cov/tot_exe)}** | **{tot_cov} / {tot_exe}** |")
+        L.append("")
+
+    # ---- passing list (collapsed)
+    passes = [c for c in cases if c.status == "passed"]
+    if passes:
+        L += ["<details><summary>Passing tests</summary>", ""]
+        for run, cs in by_run.items():
+            ok = [c for c in cs if c.status == "passed"]
+            if not ok:
+                continue
+            L.append(f"**{run}**")
+            L.append("")
+            for c in ok:
+                L.append(f"- `{c.suite}.{c.name}` ({c.time:.2f}s)")
+            L.append("")
+        L += ["</details>", ""]
+
+    return "\n".join(L)
+
+
+def _inline(text: str) -> str:
+    esc = html.escape(text)
+    esc = re.sub(r"\[([^\]]+)\]\((https?://[^)]+)\)", r'<a href="\2">\1</a>', esc)
+    esc = re.sub(r"`([^`]+)`", r"<code>\1</code>", esc)
+    esc = re.sub(r"\*\*([^*]+)\*\*", r"<strong>\1</strong>", esc)
+    esc = re.sub(r"_([^_]+)_", r"<em>\1</em>", esc)
+    return esc
+
+
+def _img_tag(alt: str, src: str, base_dir: str) -> str:
+    style = ("max-width:520px;width:100%;height:auto;border:1px solid #d1d1d6;"
+             "border-radius:6px;margin:.4rem 0;display:block;page-break-inside:avoid")
+    from urllib.parse import unquote
+    p = src
+    if base_dir and not src.startswith(("http://", "https://", "data:")):
+        p = os.path.join(base_dir, unquote(src))
+    if os.path.isfile(p):
+        import base64
+        import mimetypes
+        mt = mimetypes.guess_type(p)[0] or "image/png"
+        data = base64.b64encode(open(p, "rb").read()).decode("ascii")
+        return f'<img alt="{html.escape(alt)}" style="{style}" src="data:{mt};base64,{data}">'
+    return (f'<p><em>[screenshot not found: {html.escape(unquote(src))}]</em></p>')
+
+
+def markdown_to_html(md: str, title: str, base_dir: str = "") -> str:
+    out: list[str] = []
+    in_code = in_table = False
+    for line in md.splitlines():
+        # Greedy on both groups: the alt text can itself contain "]" (e.g. an
+        # Objective-C-style test name like "-[Class testMethod]") and the path can
+        # contain "(" ")", so anchor on the LAST "](" and the LAST ")" instead of
+        # the first "]".
+        m_img = re.match(r"^!\[(.*)\]\((.+)\)\s*$", line)
+        if m_img and not in_code:
+            if in_table:
+                out.append("</table>")
+                in_table = False
+            out.append(_img_tag(m_img.group(1), m_img.group(2), base_dir))
+            continue
+        if line.startswith("```"):
+            out.append("</pre>" if in_code else "<pre>")
+            in_code = not in_code
+            continue
+        if in_code:
+            out.append(html.escape(line))
+            continue
+        if line.startswith("<details") or line.startswith("</details"):
+            out.append(line)
+            continue
+        if line.strip() == "":
+            if in_table:
+                out.append("</table>")
+                in_table = False
+            continue
+        if line.startswith("|"):
+            cells = [c.strip() for c in line.strip().strip("|").split("|")]
+            if set("".join(cells)) <= set("-: "):
+                continue
+            if not in_table:
+                out.append("<table>")
+                in_table = True
+            out.append("<tr>" + "".join(f"<td>{_inline(c)}</td>" for c in cells) + "</tr>")
+            continue
+        if in_table:
+            out.append("</table>")
+            in_table = False
+        if line.startswith("### "):
+            out.append(f"<h3>{_inline(line[4:])}</h3>")
+        elif line.startswith("## "):
+            out.append(f"<h2>{_inline(line[3:])}</h2>")
+        elif line.startswith("# "):
+            out.append(f"<h1>{_inline(line[2:])}</h1>")
+        elif line.startswith("> "):
+            out.append(f"<blockquote>{_inline(line[2:])}</blockquote>")
+        elif line.startswith("- "):
+            out.append(f"<div class='li'>&bull; {_inline(line[2:])}</div>")
+        else:
+            out.append(f"<p>{_inline(line)}</p>")
+    if in_table:
+        out.append("</table>")
+    body = "\n".join(out)
+    return f"""<!doctype html><html><head><meta charset="utf-8">
+<title>{html.escape(title)}</title>
+<style>
+ body{{font:14px -apple-system,Segoe UI,Roboto,sans-serif;max-width:960px;margin:2rem auto;padding:0 1rem;color:#1c1c1e}}
+ h1{{border-bottom:2px solid #e5e5ea;padding-bottom:.3rem}}
+ h2{{margin-top:2rem;border-bottom:1px solid #e5e5ea;padding-bottom:.2rem}}
+ table{{border-collapse:collapse;width:100%;margin:.5rem 0}}
+ th,td{{border:1px solid #d1d1d6;padding:.4rem .6rem;text-align:left}}
+ th{{background:#f2f2f7}}
+ pre{{background:#f6f8fa;border:1px solid #e5e5ea;border-radius:6px;padding:.6rem;overflow:auto;font:12px SFMono-Regular,Menlo,monospace}}
+ blockquote{{margin:.4rem 0;padding:.2rem .8rem;border-left:3px solid #ff9500;background:#fff8ef}}
+ .li{{margin:.1rem 0}} details{{margin:.6rem 0}}
+</style></head><body>
+{body}
+</body></html>"""
+
+
+def _which(name: str) -> str | None:
+    for d in os.environ.get("PATH", "").split(os.pathsep):
+        p = os.path.join(d, name)
+        if os.path.isfile(p) and os.access(p, os.X_OK):
+            return p
+    return None
+
+
+def try_pdf(html_path: str, pdf_path: str) -> str | None:
+    candidates = [
+        ["weasyprint", html_path, pdf_path],
+        ["pandoc", html_path, "-o", pdf_path],
+        ["wkhtmltopdf", "--quiet", html_path, pdf_path],
+    ]
+    for br in ("google-chrome", "chromium", "chromium-browser",
+               "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"):
+        candidates.append([br, "--headless", "--disable-gpu", "--no-pdf-header-footer",
+                           f"--print-to-pdf={pdf_path}", f"file://{os.path.abspath(html_path)}"])
+    for cmd in candidates:
+        exe = cmd[0]
+        if not (exe if os.path.isabs(exe) and os.path.exists(exe) else _which(exe)):
+            continue
+        try:
+            subprocess.run(cmd, check=True, capture_output=True, timeout=120)
+            if os.path.isfile(pdf_path) and os.path.getsize(pdf_path) > 0:
+                return exe
+        except (subprocess.CalledProcessError, subprocess.TimeoutExpired):
+            continue
+    return None
+
+
+def collect_meta() -> dict:
+    e = os.environ.get
+    sha = e("GITHUB_SHA", "")
+    server = e("GITHUB_SERVER_URL", "https://github.com")
+    repo = e("GITHUB_REPOSITORY", "")
+    run_id = e("GITHUB_RUN_ID", "")
+    msg = (e("GIT_COMMIT_MESSAGE", "") or "").splitlines()
+    meta = {
+        "Repository": repo,
+        "Branch": e("GITHUB_REF_NAME", ""),
+        "Commit": f"`{sha[:7]}`" if sha else "",
+        "Message": msg[0] if msg else "",
+        "Run": f"[{run_id}]({server}/{repo}/actions/runs/{run_id})" if run_id and repo else "",
+        "Generated": datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M UTC"),
+    }
+    return {k: v for k, v in meta.items() if v}
+
+
+def main() -> int:
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--junit", nargs="+", required=True,
+                    help='One or more "LABEL=path" or "path" (globs ok).')
+    ap.add_argument("--xcresult", default="")
+    ap.add_argument("--screenshots-dir", default="",
+                    help="xcparse screenshots output tree; failure screenshots get embedded")
+    ap.add_argument("--skipped-file", default="",
+                    help="file with one device name per line that was requested but not installed")
+    ap.add_argument("--out-dir", default="build/report")
+    args = ap.parse_args()
+
+    skipped_devices: list[str] = []
+    if args.skipped_file and os.path.isfile(args.skipped_file):
+        skipped_devices = [ln.strip() for ln in open(args.skipped_file) if ln.strip()]
+
+    # Expand each --junit arg into (label, path) pairs.
+    pairs: list[tuple[str, str]] = []
+    for raw in args.junit:
+        label, _, spec = raw.partition("=") if "=" in raw else ("", "", raw)
+        for path in sorted(glob.glob(spec)) or [spec]:
+            pairs.append((label or label_from_path(path), path))
+
+    cases: list[Case] = []
+    run_order: list[str] = []
+    for label, path in pairs:
+        if label not in run_order:
+            run_order.append(label)
+        got = parse_junit(path, label)
+        if not got:
+            print(f"::warning::no test cases parsed from {path}", file=sys.stderr)
+        cases += got
+
+    before = len(cases)
+    cases = dedupe_retries(cases)
+    if before != len(cases):
+        print(f"collapsed {before - len(cases)} retry attempt(s) into their parent test(s)",
+              file=sys.stderr)
+
+    os.makedirs(args.out_dir, exist_ok=True)
+    md = build_markdown(cases, run_order, coverage_from_xcresult(args.xcresult),
+                        collect_meta(), args.screenshots_dir, args.out_dir, skipped_devices)
+
+    md_path = os.path.join(args.out_dir, "test-report.md")
+    html_path = os.path.join(args.out_dir, "test-report.html")
+    pdf_path = os.path.join(args.out_dir, "test-report.pdf")
+    with open(md_path, "w") as f:
+        f.write(md)
+    with open(html_path, "w") as f:
+        f.write(markdown_to_html(md, "Test Report", base_dir=args.out_dir))
+    print(f"wrote {md_path}\nwrote {html_path}")
+
+    engine = try_pdf(html_path, pdf_path)
+    print(f"wrote {pdf_path} (via {engine})" if engine else
+          "::notice::no HTML->PDF converter on runner (weasyprint / pandoc / wkhtmltopdf / chrome); skipping PDF")
+
+    summary = os.environ.get("GITHUB_STEP_SUMMARY")
+    if summary:
+        with open(summary, "a") as f:
+            f.write(md + "\n")
+
+    failed, total = _n(cases, "failed"), len(cases)
+    print(f"report: {total - failed}/{total} passed" + (f", {failed} failed" if failed else ""))
+    return 0  # gating is the test step's job, not this one
+
+
+if __name__ == "__main__":
+    sys.exit(main())

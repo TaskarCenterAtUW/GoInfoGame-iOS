@@ -22,6 +22,7 @@ struct ZoomControlView: View {
             }
             .accessibilityLabel(L10n.Localizable.zoomInMap)
             .accessibilitySortPriority(1)
+            .accessibilityIdentifier(A11yID.Map.zoomInButton)
 
             Rectangle()
                 .fill(Asset.Colors.ddddddLine.swiftUIColor)
@@ -35,6 +36,7 @@ struct ZoomControlView: View {
             }
             .accessibilityLabel(L10n.Localizable.zoomOutMap)
             .accessibilitySortPriority(1)
+            .accessibilityIdentifier(A11yID.Map.zoomOutButton)
         }
         .background(.white)
         .clipShape(Capsule())

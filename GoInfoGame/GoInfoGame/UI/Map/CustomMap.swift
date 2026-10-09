@@ -80,6 +80,12 @@ final class QuestAnnotationView: MLNAnnotationView {
         let size = CGSize(width: 36, height: 46)
         frame = CGRect(origin: .zero, size: size)
 
+        // A bare MLNAnnotationView (a plain UIView, not a UIControl) is not an
+        // accessibility element by default - without this XCUITest cannot query it as
+        // one element at all, only (if anything) its subviews individually.
+        isAccessibilityElement = true
+        accessibilityIdentifier = A11yID.Map.questAnnotation
+
         imageView.frame = bounds
         imageView.contentMode = .scaleAspectFit
         if let raw = UIImage(named: iconName) ?? UIImage(named: "notes") {
@@ -149,7 +155,16 @@ final class OverlapDotAnnotationView: MLNAnnotationView {
 final class QuestClusterAnnotationView: MLNAnnotationView {
     private let label = UILabel()
 
-    var count: Int = 0 { didSet { label.text = "\(count)" } }
+    // accessibilityValue is a UI test's only way to read the cluster count XCUITest
+    // cannot see the UILabel's text directly, since this view's own
+    // isAccessibilityElement = true (below) makes it a leaf that does not expose its
+    // subviews as separate queryable elements.
+    var count: Int = 0 {
+        didSet {
+            label.text = "\(count)"
+            accessibilityValue = "\(count)"
+        }
+    }
 
     override init(reuseIdentifier: String?) {
         super.init(reuseIdentifier: reuseIdentifier)
@@ -163,6 +178,9 @@ final class QuestClusterAnnotationView: MLNAnnotationView {
         label.textAlignment = .center
         label.frame = bounds
         addSubview(label)
+
+        isAccessibilityElement = true
+        accessibilityIdentifier = A11yID.Map.clusterAnnotation
     }
 
     required init?(coder: NSCoder) { super.init(coder: coder) }

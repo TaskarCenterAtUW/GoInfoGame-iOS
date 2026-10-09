@@ -46,6 +46,7 @@ struct UndoEditsView: View {
                                         }
                                         .buttonStyle(PlainButtonStyle())
                                         .listRowInsets(EdgeInsets())
+                                        .accessibilityIdentifier(A11yID.UndoEdits.row(elementID: Int64(item.elementId)))
                                     }
                                 } header: {
                                     Text(section.date.formatted(date: .long, time: .omitted))
@@ -62,7 +63,8 @@ struct UndoEditsView: View {
                         .background(Color.clear)
                         .listRowSpacing(20)
                         .padding(.bottom, 20)
-                        
+                        .accessibilityIdentifier(A11yID.UndoEdits.scrollView)
+
                     }
                     
                     DottedLine()
@@ -100,6 +102,7 @@ struct UndoEditsView: View {
                         dismiss()
                     }
                     .accessibilityLabel(L10n.Localizable.closeUndoEditsScreen)
+                    .accessibilityIdentifier(A11yID.UndoEdits.closeButton)
                 }
             }
             .toolbarBackground(.visible, for: .navigationBar)
@@ -166,6 +169,7 @@ struct UndoEditsView: View {
             RoundedRectangle(cornerRadius: 20)
                 .stroke(Asset.Colors.huskyPurple.swiftUIColor, lineWidth: 2)
         )
+        .accessibilityIdentifier(A11yID.UndoEdits.goBackButton)
     }
 }
 

@@ -38,6 +38,7 @@ struct NoQuestsNearView: View {
                 .lineLimit(nil)
                 .fixedSize(horizontal: false, vertical: true)
                 .accessibilityLabel(L10n.Localizable.noQuestsFound)
+                .accessibilityIdentifier(A11yID.AccessibilityMode.noQuestsMessage)
 
             Text(L10n.Localizable.tryMovingToADifferentLocationToDiscoverMoreQuests)
                 .font(FontFamily.Lato.medium.swiftUIFont(size: 18, relativeTo: .subheadline))

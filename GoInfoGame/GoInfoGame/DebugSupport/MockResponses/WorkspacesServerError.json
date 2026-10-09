@@ -1,0 +1,4 @@
+{
+  "message": "Internal server error",
+  "errors": ["An unexpected error occurred while fetching workspaces. Please try again later."]
+}

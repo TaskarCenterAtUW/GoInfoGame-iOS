@@ -52,6 +52,7 @@ struct ManageQuestsView: View {
                                 .accessibilityLabel(title)
                         }
                         .toggleStyle(SwitchToggleStyle(tint: Asset.Colors.accentPink.swiftUIColor))
+                        .accessibilityIdentifier(A11yID.ManageQuests.featureToggle(elementType: title))
                     }
                 } header: {
                     Text("FEATURES")
@@ -94,6 +95,7 @@ struct ManageQuestsView: View {
                             .lineLimit(nil)
                             .accessibilityElement(children: .combine)
                             .accessibilityLabel("\(quest.name), ID: \(quest.id)")
+                            .accessibilityIdentifier(A11yID.ManageQuests.hiddenRow(elementID: quest.id))
                         }
                         .onDelete { indexSet in
                             hiddenQuestManager.removeQuest(atOffsets: indexSet)
@@ -111,6 +113,7 @@ struct ManageQuestsView: View {
             }
             .listStyle(.insetGrouped)
             .scrollContentBackground(.hidden)
+            .accessibilityIdentifier(A11yID.ManageQuests.scrollView)
         }
         .background(Color(red: 248 / 255, green: 248 / 255, blue: 248 / 255))
         .presentationDetents([.fraction(0.85), .large])
@@ -140,6 +143,7 @@ struct ManageQuestsView: View {
                     .frame(minWidth: 44, minHeight: 44)
                     .contentShape(Rectangle())
             })
+            .accessibilityIdentifier(A11yID.Map.manageQuestsCloseButton)
         }
         .padding(.horizontal, 16)
         .padding(.top, 30)
@@ -175,6 +179,7 @@ struct ManageQuestsView: View {
             .fixedSize(horizontal: false, vertical: true)
             .accessibilityLabel("Hidden Elements")
             .accessibilityAddTraits(.isHeader)
+            .accessibilityIdentifier(A11yID.ManageQuests.hiddenElementsLabel)
     }
 
     private var unhideAllButton: some View {
@@ -193,6 +198,7 @@ struct ManageQuestsView: View {
                 .cornerRadius(10)
                 .accessibilityLabel("Unhide All")
         }
+        .accessibilityIdentifier(A11yID.ManageQuests.unhideAllButton)
     }
 
 }

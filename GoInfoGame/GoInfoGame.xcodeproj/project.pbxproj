@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0391C30BC01BA489BBAB615F /* Pods_osmapiTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3B948B071EF07217DD32E626 /* Pods_osmapiTests.framework */; };
 		0536DD852B0BD11A00B04C4B /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0536DD842B0BD11A00B04C4B /* LoginViewController.swift */; };
 		0536DD8C2B0BD2C200B04C4B /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0536DD8B2B0BD2C200B04C4B /* Constants.swift */; };
 		0536DD922B0BD58800B04C4B /* OAuthService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0536DD912B0BD58800B04C4B /* OAuthService.swift */; };
@@ -22,8 +23,6 @@
 		05DBBB642B17204300B6F110 /* RealmOPGeometry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05DBBB632B17204300B6F110 /* RealmOPGeometry.swift */; };
 		05DBBB662B17209600B6F110 /* RealmOPMeta.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05DBBB652B17209600B6F110 /* RealmOPMeta.swift */; };
 		171574E02FD1CC4A00AA6603 /* PhotoLookupResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 171574DF2FD1CC4A00AA6603 /* PhotoLookupResponse.swift */; };
-		188843AD2B5FA2DF0008DCF8 /* TactilePavingStepsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 188843AC2B5FA2DF0008DCF8 /* TactilePavingStepsTests.swift */; };
-		188843AF2B5FB32D0008DCF8 /* WayLitTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 188843AE2B5FB32D0008DCF8 /* WayLitTests.swift */; };
 		227FDA1227FD4BFA2E18876C /* QuestImageStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42FA4EB22185846E113DA376 /* QuestImageStorage.swift */; };
 		2E71655C971839F8DAF42E67 /* CompassButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61CD36AA62170BAF936749E0 /* CompassButtonView.swift */; };
 		342561966FC217124BD9CFE7 /* Pods_GoInfoGame_GoInfoGameUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2D539E22EFF6636F8CBA035A /* Pods_GoInfoGame_GoInfoGameUITests.framework */; };
@@ -211,9 +210,51 @@
 		C79EDA932EDA0BBD00D2B100 /* UndoItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C79EDA922EDA0BBD00D2B100 /* UndoItemView.swift */; };
 		C7A357462EA22A120033F6FB /* Config.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = C7A357452EA22A120033F6FB /* Config.xcconfig */; };
 		C7A922252E45C36D00705E21 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = C7A922242E45C36D00705E21 /* PrivacyInfo.xcprivacy */; };
+		C7AFA179305AF8E800C539F7 /* OHHTTPStubs in Frameworks */ = {isa = PBXBuildFile; productRef = C7AFA178305AF8E800C539F7 /* OHHTTPStubs */; };
+		C7AFA17B305AF8E800C539F7 /* OHHTTPStubsSwift in Frameworks */ = {isa = PBXBuildFile; productRef = C7AFA17A305AF8E800C539F7 /* OHHTTPStubsSwift */; };
+		C7AFA17D305AFC1500C539F7 /* LoginScreenUITestCases.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7AFA17C305AFC1500C539F7 /* LoginScreenUITestCases.swift */; };
+		C7AFA182305B085E00C539F7 /* ScreenshotOnFailureUITestCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7AFA181305B085E00C539F7 /* ScreenshotOnFailureUITestCase.swift */; };
 		C7BA83542E3C9C3600755BA7 /* QuestSyncButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7BA83532E3C9C3600755BA7 /* QuestSyncButton.swift */; };
 		C7D3103E2EA0B3BB00CA10A9 /* ForceUpdateViewModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7D3103D2EA0B3BB00CA10A9 /* ForceUpdateViewModifier.swift */; };
 		C7D310412EA1302500CA10A9 /* StoreKit.storekit in Resources */ = {isa = PBXBuildFile; fileRef = C7D310402EA1302500CA10A9 /* StoreKit.storekit */; };
+		C7DBG00000000000000000A6 /* UITestStubs.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7DBG00000000000000000A3 /* UITestStubs.swift */; };
+		C7DBG00000000000000000A7 /* A11yID.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7DBG00000000000000000A4 /* A11yID.swift */; };
+		C7DBG00000000000000000A8 /* A11yID.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7DBG00000000000000000A4 /* A11yID.swift */; };
+		C7DBG00000000000000000A9 /* LoginFailure.json in Resources */ = {isa = PBXBuildFile; fileRef = C7DBG00000000000000000A5 /* LoginFailure.json */; };
+		C7DBG0000000000000000150 /* LoginSuccess.json in Resources */ = {isa = PBXBuildFile; fileRef = C7DBG0000000000000000100 /* LoginSuccess.json */; };
+		C7DBG0000000000000000151 /* LoginServerError.json in Resources */ = {isa = PBXBuildFile; fileRef = C7DBG0000000000000000101 /* LoginServerError.json */; };
+		C7DBG0000000000000000152 /* EmptyList.json in Resources */ = {isa = PBXBuildFile; fileRef = C7DBG0000000000000000102 /* EmptyList.json */; };
+		C7DBG0000000000000000153 /* ForceUpdateNone.json in Resources */ = {isa = PBXBuildFile; fileRef = C7DBG0000000000000000103 /* ForceUpdateNone.json */; };
+		C7DBG0000000000000000154 /* WorkspacesList.json in Resources */ = {isa = PBXBuildFile; fileRef = C7DBG0000000000000000104 /* WorkspacesList.json */; };
+		C7DBG0000000000000000155 /* ProjectGroupRoles.json in Resources */ = {isa = PBXBuildFile; fileRef = C7DBG0000000000000000105 /* ProjectGroupRoles.json */; };
+		C7DBG0000000000000000156 /* WorkspacesServerError.json in Resources */ = {isa = PBXBuildFile; fileRef = C7DBG0000000000000000106 /* WorkspacesServerError.json */; };
+		C7DBG0000000000000000157 /* UserProfilePlaceholder.json in Resources */ = {isa = PBXBuildFile; fileRef = C7DBG0000000000000000107 /* UserProfilePlaceholder.json */; };
+		C7DBG0000000000000000158 /* WorkspacesSingle.json in Resources */ = {isa = PBXBuildFile; fileRef = C7DBG0000000000000000108 /* WorkspacesSingle.json */; };
+		C7DBG0000000000000000159 /* WorkspaceDetailsSingle.json in Resources */ = {isa = PBXBuildFile; fileRef = C7DBG0000000000000000109 /* WorkspaceDetailsSingle.json */; };
+		C7DBG0000000000000000160 /* UserProfileServerError.json in Resources */ = {isa = PBXBuildFile; fileRef = C7DBG0000000000000000110 /* UserProfileServerError.json */; };
+		C7DBG0000000000000000201 /* WorkspacesScreenUITestCases.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7DBG0000000000000000200 /* WorkspacesScreenUITestCases.swift */; };
+		C7DBG0000000000000000203 /* ProfileScreenUITestCases.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7DBG0000000000000000202 /* ProfileScreenUITestCases.swift */; };
+		C7DBG0000000000000000221 /* WorkspaceDetailsWithQuests.json in Resources */ = {isa = PBXBuildFile; fileRef = C7DBG0000000000000000211 /* WorkspaceDetailsWithQuests.json */; };
+		C7DBG0000000000000000222 /* MapOSMElements.json in Resources */ = {isa = PBXBuildFile; fileRef = C7DBG0000000000000000212 /* MapOSMElements.json */; };
+		C7DBG0000000000000000223 /* LongFormOSMElements.json in Resources */ = {isa = PBXBuildFile; fileRef = C7DBG0000000000000000213 /* LongFormOSMElements.json */; };
+		C7DBG0000000000000000224 /* LongFormLatestElements.json in Resources */ = {isa = PBXBuildFile; fileRef = C7DBG0000000000000000214 /* LongFormLatestElements.json */; };
+		C7DBG0000000000000000231 /* MapScreenUITestCases.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7DBG0000000000000000230 /* MapScreenUITestCases.swift */; };
+		C7DBG0000000000000000241 /* LongFormScreenUITestCases.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7DBG0000000000000000240 /* LongFormScreenUITestCases.swift */; };
+		C7DBG0000000000000000253 /* AccessibilityModeOSMElements.json in Resources */ = {isa = PBXBuildFile; fileRef = C7DBG0000000000000000250 /* AccessibilityModeOSMElements.json */; };
+		C7DBG0000000000000000254 /* AccessibilityModeOSMElementsFar.json in Resources */ = {isa = PBXBuildFile; fileRef = C7DBG0000000000000000251 /* AccessibilityModeOSMElementsFar.json */; };
+		C7DBG0000000000000000255 /* AccessibilityModeScreenUITestCases.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7DBG0000000000000000252 /* AccessibilityModeScreenUITestCases.swift */; };
+		C7DBG0000000000000000261 /* UndoEditsScreenUITestCases.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7DBG0000000000000000260 /* UndoEditsScreenUITestCases.swift */; };
+		C7DBG0000000000000000271 /* ManageQuestsScreenUITestCases.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7DBG0000000000000000270 /* ManageQuestsScreenUITestCases.swift */; };
+		C7DBG0000000000000000281 /* SatellitePickerScreenUITestCases.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7DBG0000000000000000280 /* SatellitePickerScreenUITestCases.swift */; };
+		C7DBG0000000000000000283 /* WorkspaceDetailsNoImagery.json in Resources */ = {isa = PBXBuildFile; fileRef = C7DBG0000000000000000282 /* WorkspaceDetailsNoImagery.json */; };
+		C7DBG0000000000000000291 /* PasswordAuthenticationScreenUITestCases.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7DBG0000000000000000290 /* PasswordAuthenticationScreenUITestCases.swift */; };
+		C7DBG0000000000000000301 /* ForceUpdateScreenUITestCases.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7DBG0000000000000000300 /* ForceUpdateScreenUITestCases.swift */; };
+		C7DBG0000000000000000303 /* ForceUpdateSoft.json in Resources */ = {isa = PBXBuildFile; fileRef = C7DBG0000000000000000302 /* ForceUpdateSoft.json */; };
+		C7DBG0000000000000000305 /* ForceUpdateForce.json in Resources */ = {isa = PBXBuildFile; fileRef = C7DBG0000000000000000304 /* ForceUpdateForce.json */; };
+		C7DBG0000000000000000311 /* MultiQuestSelectionUITestCases.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7DBG0000000000000000310 /* MultiQuestSelectionUITestCases.swift */; };
+		C7DBG0000000000000000321 /* ConflictResolutionUITestCases.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7DBG0000000000000000320 /* ConflictResolutionUITestCases.swift */; };
+		C7DBG0000000000000000331 /* AddFeatureScreenUITestCases.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7DBG0000000000000000330 /* AddFeatureScreenUITestCases.swift */; };
+		C7DBG0000000000000000341 /* ProfileOptionsUITestCases.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7DBG0000000000000000340 /* ProfileOptionsUITestCases.swift */; };
 		C7DD04152F7E7A5800307026 /* Lato-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FA8C74D12C598F9D00D28220 /* Lato-Bold.ttf */; };
 		C7DD04162F7E7A6100307026 /* Lato-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FA8C74D02C598F9D00D28220 /* Lato-Regular.ttf */; };
 		C7DD04172F7E7A6100307026 /* Lato-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FA8C74D22C5998D600D28220 /* Lato-Medium.ttf */; };
@@ -221,6 +262,7 @@
 		C7E9528F2ED88B00001BFB75 /* lato-heavy.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C7E9528E2ED88B00001BFB75 /* lato-heavy.ttf */; };
 		C7ED070F2D70E2EC001FFFE2 /* TokenRefresher.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7ED070E2D70E2EC001FFFE2 /* TokenRefresher.swift */; };
 		CFECB318461BB876B1621890 /* Pods_osmapi.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C4F37DA661B22FA87DF8282F /* Pods_osmapi.framework */; };
+		DD224EE7B5FC852AF5637C95 /* ScreenshotOnFailureUITestCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = E70058F06D4E69B2E0669A8B /* ScreenshotOnFailureUITestCase.swift */; };
 		F45BA2B5418942E3B4C91667 /* StoredFeatureDraft.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C9C135AD8A342A1A94E757C /* StoredFeatureDraft.swift */; };
 		FA18CAE22CC7CD89008247F2 /* KartaviewViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA18CAE12CC7CD89008247F2 /* KartaviewViewModel.swift */; };
 		FA18CAE52CC7D0DD008247F2 /* SequenceModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA18CAE42CC7D0DD008247F2 /* SequenceModel.swift */; };
@@ -239,10 +281,6 @@
 		FA633CB62DD48C4400324404 /* SessionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA633CB52DD48C3F00324404 /* SessionManager.swift */; };
 		FA6DB8B52D96BE510070CCD3 /* HiddenQuestManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA6DB8B42D96BE510070CCD3 /* HiddenQuestManager.swift */; };
 		FA87A8102B68142F000A6BEA /* LoadingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA87A80F2B68142F000A6BEA /* LoadingView.swift */; };
-		FA87A8132B6AC019000A6BEA /* StepsRampTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA87A8112B6AC019000A6BEA /* StepsRampTests.swift */; };
-		FA87A8152B6AC4E2000A6BEA /* BusStopLitTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA87A8142B6AC4E2000A6BEA /* BusStopLitTests.swift */; };
-		FA87A8172B6AC885000A6BEA /* StepsInclineTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA87A8162B6AC885000A6BEA /* StepsInclineTests.swift */; };
-		FA87A8192B6B01A4000A6BEA /* HandRailTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA87A8182B6B01A4000A6BEA /* HandRailTests.swift */; };
 		FA87A81B2B6B042E000A6BEA /* SideWalkWidthTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA87A81A2B6B042E000A6BEA /* SideWalkWidthTests.swift */; };
 		FA8C74C22C4E89C800D28220 /* LongForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA8C74C12C4E89C800D28220 /* LongForm.swift */; };
 		FA8C74C72C4FE2E900D28220 /* LongFormWidthView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA8C74C62C4FE2E900D28220 /* LongFormWidthView.swift */; };
@@ -392,6 +430,7 @@
 		2C9C135AD8A342A1A94E757C /* StoredFeatureDraft.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoredFeatureDraft.swift; sourceTree = "<group>"; };
 		2D539E22EFF6636F8CBA035A /* Pods_GoInfoGame_GoInfoGameUITests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_GoInfoGame_GoInfoGameUITests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		30877432D1026706D7E805DA /* map_theme */ = {isa = PBXFileReference; lastKnownFileType = folder; path = map_theme; sourceTree = "<group>"; };
+		3B948B071EF07217DD32E626 /* Pods_osmapiTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_osmapiTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		3D797A45474D6135AFA24613 /* Pods-GoInfoGameTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-GoInfoGameTests.debug.xcconfig"; path = "Target Support Files/Pods-GoInfoGameTests/Pods-GoInfoGameTests.debug.xcconfig"; sourceTree = "<group>"; };
 		42FA4EB22185846E113DA376 /* QuestImageStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuestImageStorage.swift; sourceTree = "<group>"; };
 		61CD36AA62170BAF936749E0 /* CompassButtonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompassButtonView.swift; sourceTree = "<group>"; };
@@ -606,14 +645,56 @@
 		C79EDA922EDA0BBD00D2B100 /* UndoItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UndoItemView.swift; sourceTree = "<group>"; };
 		C7A357452EA22A120033F6FB /* Config.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Config.xcconfig; sourceTree = "<group>"; };
 		C7A922242E45C36D00705E21 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
+		C7AFA17C305AFC1500C539F7 /* LoginScreenUITestCases.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginScreenUITestCases.swift; sourceTree = "<group>"; };
+		C7AFA181305B085E00C539F7 /* ScreenshotOnFailureUITestCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenshotOnFailureUITestCase.swift; sourceTree = "<group>"; };
 		C7BA83532E3C9C3600755BA7 /* QuestSyncButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = QuestSyncButton.swift; path = GoInfoGame/UI/Map/QuestSyncButton.swift; sourceTree = SOURCE_ROOT; };
 		C7D3103D2EA0B3BB00CA10A9 /* ForceUpdateViewModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForceUpdateViewModifier.swift; sourceTree = "<group>"; };
 		C7D310402EA1302500CA10A9 /* StoreKit.storekit */ = {isa = PBXFileReference; lastKnownFileType = text; path = StoreKit.storekit; sourceTree = "<group>"; };
+		C7DBG00000000000000000A3 /* UITestStubs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UITestStubs.swift; sourceTree = "<group>"; };
+		C7DBG00000000000000000A4 /* A11yID.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = A11yID.swift; sourceTree = "<group>"; };
+		C7DBG00000000000000000A5 /* LoginFailure.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = LoginFailure.json; sourceTree = "<group>"; };
+		C7DBG0000000000000000100 /* LoginSuccess.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = LoginSuccess.json; sourceTree = "<group>"; };
+		C7DBG0000000000000000101 /* LoginServerError.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = LoginServerError.json; sourceTree = "<group>"; };
+		C7DBG0000000000000000102 /* EmptyList.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = EmptyList.json; sourceTree = "<group>"; };
+		C7DBG0000000000000000103 /* ForceUpdateNone.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = ForceUpdateNone.json; sourceTree = "<group>"; };
+		C7DBG0000000000000000104 /* WorkspacesList.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = WorkspacesList.json; sourceTree = "<group>"; };
+		C7DBG0000000000000000105 /* ProjectGroupRoles.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = ProjectGroupRoles.json; sourceTree = "<group>"; };
+		C7DBG0000000000000000106 /* WorkspacesServerError.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = WorkspacesServerError.json; sourceTree = "<group>"; };
+		C7DBG0000000000000000107 /* UserProfilePlaceholder.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = UserProfilePlaceholder.json; sourceTree = "<group>"; };
+		C7DBG0000000000000000108 /* WorkspacesSingle.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = WorkspacesSingle.json; sourceTree = "<group>"; };
+		C7DBG0000000000000000109 /* WorkspaceDetailsSingle.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = WorkspaceDetailsSingle.json; sourceTree = "<group>"; };
+		C7DBG0000000000000000110 /* UserProfileServerError.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = UserProfileServerError.json; sourceTree = "<group>"; };
+		C7DBG0000000000000000200 /* WorkspacesScreenUITestCases.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkspacesScreenUITestCases.swift; sourceTree = "<group>"; };
+		C7DBG0000000000000000202 /* ProfileScreenUITestCases.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileScreenUITestCases.swift; sourceTree = "<group>"; };
+		C7DBG0000000000000000211 /* WorkspaceDetailsWithQuests.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = WorkspaceDetailsWithQuests.json; sourceTree = "<group>"; };
+		C7DBG0000000000000000212 /* MapOSMElements.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = MapOSMElements.json; sourceTree = "<group>"; };
+		C7DBG0000000000000000213 /* LongFormOSMElements.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = LongFormOSMElements.json; sourceTree = "<group>"; };
+		C7DBG0000000000000000214 /* LongFormLatestElements.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = LongFormLatestElements.json; sourceTree = "<group>"; };
+		C7DBG0000000000000000230 /* MapScreenUITestCases.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapScreenUITestCases.swift; sourceTree = "<group>"; };
+		C7DBG0000000000000000240 /* LongFormScreenUITestCases.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LongFormScreenUITestCases.swift; sourceTree = "<group>"; };
+		C7DBG0000000000000000250 /* AccessibilityModeOSMElements.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = AccessibilityModeOSMElements.json; sourceTree = "<group>"; };
+		C7DBG0000000000000000251 /* AccessibilityModeOSMElementsFar.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = AccessibilityModeOSMElementsFar.json; sourceTree = "<group>"; };
+		C7DBG0000000000000000252 /* AccessibilityModeScreenUITestCases.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccessibilityModeScreenUITestCases.swift; sourceTree = "<group>"; };
+		C7DBG0000000000000000260 /* UndoEditsScreenUITestCases.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UndoEditsScreenUITestCases.swift; sourceTree = "<group>"; };
+		C7DBG0000000000000000270 /* ManageQuestsScreenUITestCases.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManageQuestsScreenUITestCases.swift; sourceTree = "<group>"; };
+		C7DBG0000000000000000280 /* SatellitePickerScreenUITestCases.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SatellitePickerScreenUITestCases.swift; sourceTree = "<group>"; };
+		C7DBG0000000000000000282 /* WorkspaceDetailsNoImagery.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = WorkspaceDetailsNoImagery.json; sourceTree = "<group>"; };
+		C7DBG0000000000000000290 /* PasswordAuthenticationScreenUITestCases.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PasswordAuthenticationScreenUITestCases.swift; sourceTree = "<group>"; };
+		C7DBG0000000000000000300 /* ForceUpdateScreenUITestCases.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForceUpdateScreenUITestCases.swift; sourceTree = "<group>"; };
+		C7DBG0000000000000000302 /* ForceUpdateSoft.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = ForceUpdateSoft.json; sourceTree = "<group>"; };
+		C7DBG0000000000000000304 /* ForceUpdateForce.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = ForceUpdateForce.json; sourceTree = "<group>"; };
+		C7DBG0000000000000000310 /* MultiQuestSelectionUITestCases.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MultiQuestSelectionUITestCases.swift; sourceTree = "<group>"; };
+		C7DBG0000000000000000320 /* ConflictResolutionUITestCases.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConflictResolutionUITestCases.swift; sourceTree = "<group>"; };
+		C7DBG0000000000000000330 /* AddFeatureScreenUITestCases.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddFeatureScreenUITestCases.swift; sourceTree = "<group>"; };
+		C7DBG0000000000000000340 /* ProfileOptionsUITestCases.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileOptionsUITestCases.swift; sourceTree = "<group>"; };
 		C7E9528C2ED887CC001BFB75 /* NoQuestsNearView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoQuestsNearView.swift; sourceTree = "<group>"; };
 		C7E9528E2ED88B00001BFB75 /* lato-heavy.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "lato-heavy.ttf"; sourceTree = "<group>"; };
 		C7ED070E2D70E2EC001FFFE2 /* TokenRefresher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenRefresher.swift; sourceTree = "<group>"; };
 		C96303080D26026265099E0E /* Pods-GoInfoGame.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-GoInfoGame.release.xcconfig"; path = "Target Support Files/Pods-GoInfoGame/Pods-GoInfoGame.release.xcconfig"; sourceTree = "<group>"; };
 		D76D8E22AC705A38AFEA78B1 /* Pods-GoInfoGame-GoInfoGameUITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-GoInfoGame-GoInfoGameUITests.debug.xcconfig"; path = "Target Support Files/Pods-GoInfoGame-GoInfoGameUITests/Pods-GoInfoGame-GoInfoGameUITests.debug.xcconfig"; sourceTree = "<group>"; };
+		E37B569B16FABF1505892C3A /* Pods-osmapiTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-osmapiTests.debug.xcconfig"; path = "Target Support Files/Pods-osmapiTests/Pods-osmapiTests.debug.xcconfig"; sourceTree = "<group>"; };
+		E70058F06D4E69B2E0669A8B /* ScreenshotOnFailureUITestCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenshotOnFailureUITestCase.swift; sourceTree = "<group>"; };
+		E82B8736511C2D879C41EDA1 /* Pods-osmapiTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-osmapiTests.release.xcconfig"; path = "Target Support Files/Pods-osmapiTests/Pods-osmapiTests.release.xcconfig"; sourceTree = "<group>"; };
 		F008D431593E568E75C48C84 /* Pods-GoInfoGame.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-GoInfoGame.debug.xcconfig"; path = "Target Support Files/Pods-GoInfoGame/Pods-GoInfoGame.debug.xcconfig"; sourceTree = "<group>"; };
 		F7B0248DF7AD2506C0779CE9 /* QuestSubmissionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuestSubmissionManager.swift; sourceTree = "<group>"; };
 		FA18CAE12CC7CD89008247F2 /* KartaviewViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KartaviewViewModel.swift; sourceTree = "<group>"; };
@@ -705,6 +786,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				A40E72742B5D462A00328848 /* osmapi.framework in Frameworks */,
+				0391C30BC01BA489BBAB615F /* Pods_osmapiTests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -756,6 +838,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				342561966FC217124BD9CFE7 /* Pods_GoInfoGame_GoInfoGameUITests.framework in Frameworks */,
+				C7AFA17B305AF8E800C539F7 /* OHHTTPStubsSwift in Frameworks */,
+				C7AFA179305AF8E800C539F7 /* OHHTTPStubs in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -916,6 +1000,7 @@
 				2D539E22EFF6636F8CBA035A /* Pods_GoInfoGame_GoInfoGameUITests.framework */,
 				066F85ADCDCE7357368131F8 /* Pods_GoInfoGameTests.framework */,
 				C4F37DA661B22FA87DF8282F /* Pods_osmapi.framework */,
+				3B948B071EF07217DD32E626 /* Pods_osmapiTests.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -931,6 +1016,8 @@
 				89C2A88A7749F031BCDFE226 /* Pods-GoInfoGameTests.release.xcconfig */,
 				79F024C6DD9B31E354C41ED3 /* Pods-osmapi.debug.xcconfig */,
 				0644279A63026564F68E19C5 /* Pods-osmapi.release.xcconfig */,
+				E82B8736511C2D879C41EDA1 /* Pods-osmapiTests.release.xcconfig */,
+				E37B569B16FABF1505892C3A /* Pods-osmapiTests.debug.xcconfig */,
 			);
 			path = Pods;
 			sourceTree = "<group>";
@@ -1515,6 +1602,44 @@
 			path = "Accessibility Mode";
 			sourceTree = "<group>";
 		};
+		C7DBG00000000000000000A1 /* DebugSupport */ = {
+			isa = PBXGroup;
+			children = (
+				C7DBG00000000000000000A4 /* A11yID.swift */,
+				C7DBG00000000000000000A3 /* UITestStubs.swift */,
+				C7DBG00000000000000000A2 /* MockResponses */,
+			);
+			path = DebugSupport;
+			sourceTree = "<group>";
+		};
+		C7DBG00000000000000000A2 /* MockResponses */ = {
+			isa = PBXGroup;
+			children = (
+				C7DBG00000000000000000A5 /* LoginFailure.json */,
+				C7DBG0000000000000000211 /* WorkspaceDetailsWithQuests.json */,
+				C7DBG0000000000000000212 /* MapOSMElements.json */,
+				C7DBG0000000000000000213 /* LongFormOSMElements.json */,
+				C7DBG0000000000000000214 /* LongFormLatestElements.json */,
+				C7DBG0000000000000000250 /* AccessibilityModeOSMElements.json */,
+				C7DBG0000000000000000251 /* AccessibilityModeOSMElementsFar.json */,
+				C7DBG0000000000000000282 /* WorkspaceDetailsNoImagery.json */,
+				C7DBG0000000000000000110 /* UserProfileServerError.json */,
+				C7DBG0000000000000000104 /* WorkspacesList.json */,
+				C7DBG0000000000000000105 /* ProjectGroupRoles.json */,
+				C7DBG0000000000000000106 /* WorkspacesServerError.json */,
+				C7DBG0000000000000000107 /* UserProfilePlaceholder.json */,
+				C7DBG0000000000000000108 /* WorkspacesSingle.json */,
+				C7DBG0000000000000000109 /* WorkspaceDetailsSingle.json */,
+				C7DBG0000000000000000100 /* LoginSuccess.json */,
+				C7DBG0000000000000000101 /* LoginServerError.json */,
+				C7DBG0000000000000000102 /* EmptyList.json */,
+				C7DBG0000000000000000103 /* ForceUpdateNone.json */,
+				C7DBG0000000000000000302 /* ForceUpdateSoft.json */,
+				C7DBG0000000000000000304 /* ForceUpdateForce.json */,
+			);
+			path = MockResponses;
+			sourceTree = "<group>";
+		};
 		FA18CADE2CC7CD46008247F2 /* Kartaview */ = {
 			isa = PBXGroup;
 			children = (
@@ -1702,6 +1827,7 @@
 		FAD5C4F12AFCBE700040C61A /* GoInfoGame */ = {
 			isa = PBXGroup;
 			children = (
+				C7DBG00000000000000000A1 /* DebugSupport */,
 				C78EEFAC2FDAD91000729240 /* PointNMap-Bridging-Header.h */,
 				C787EF162E9676CC00BEF0A6 /* GoInfoGame.entitlements */,
 				FA18CADE2CC7CD46008247F2 /* Kartaview */,
@@ -1760,8 +1886,25 @@
 		FAD5C5122AFCBE720040C61A /* GoInfoGameUITests */ = {
 			isa = PBXGroup;
 			children = (
+				C7AFA181305B085E00C539F7 /* ScreenshotOnFailureUITestCase.swift */,
 				FAD5C5132AFCBE720040C61A /* GoInfoGameUITests.swift */,
 				FAD5C5152AFCBE720040C61A /* GoInfoGameUITestsLaunchTests.swift */,
+				E70058F06D4E69B2E0669A8B /* ScreenshotOnFailureUITestCase.swift */,
+				C7AFA17C305AFC1500C539F7 /* LoginScreenUITestCases.swift */,
+				C7DBG0000000000000000230 /* MapScreenUITestCases.swift */,
+				C7DBG0000000000000000240 /* LongFormScreenUITestCases.swift */,
+				C7DBG0000000000000000252 /* AccessibilityModeScreenUITestCases.swift */,
+				C7DBG0000000000000000260 /* UndoEditsScreenUITestCases.swift */,
+				C7DBG0000000000000000270 /* ManageQuestsScreenUITestCases.swift */,
+				C7DBG0000000000000000280 /* SatellitePickerScreenUITestCases.swift */,
+				C7DBG0000000000000000290 /* PasswordAuthenticationScreenUITestCases.swift */,
+				C7DBG0000000000000000300 /* ForceUpdateScreenUITestCases.swift */,
+				C7DBG0000000000000000310 /* MultiQuestSelectionUITestCases.swift */,
+				C7DBG0000000000000000320 /* ConflictResolutionUITestCases.swift */,
+				C7DBG0000000000000000330 /* AddFeatureScreenUITestCases.swift */,
+				C7DBG0000000000000000340 /* ProfileOptionsUITestCases.swift */,
+				C7DBG0000000000000000202 /* ProfileScreenUITestCases.swift */,
+				C7DBG0000000000000000200 /* WorkspacesScreenUITestCases.swift */,
 			);
 			path = GoInfoGameUITests;
 			sourceTree = "<group>";
@@ -1903,9 +2046,11 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = A40E72852B5D462A00328848 /* Build configuration list for PBXNativeTarget "osmapiTests" */;
 			buildPhases = (
+				6CBD7B645F4567FC39D9710E /* [CP] Check Pods Manifest.lock */,
 				A40E726F2B5D462A00328848 /* Sources */,
 				A40E72702B5D462A00328848 /* Frameworks */,
 				A40E72712B5D462A00328848 /* Resources */,
+				D1EC54E3E1ECF552E4817958 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -2121,6 +2266,27 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C7DBG00000000000000000A9 /* LoginFailure.json in Resources */,
+				C7DBG0000000000000000221 /* WorkspaceDetailsWithQuests.json in Resources */,
+				C7DBG0000000000000000222 /* MapOSMElements.json in Resources */,
+				C7DBG0000000000000000223 /* LongFormOSMElements.json in Resources */,
+				C7DBG0000000000000000224 /* LongFormLatestElements.json in Resources */,
+				C7DBG0000000000000000253 /* AccessibilityModeOSMElements.json in Resources */,
+				C7DBG0000000000000000254 /* AccessibilityModeOSMElementsFar.json in Resources */,
+				C7DBG0000000000000000283 /* WorkspaceDetailsNoImagery.json in Resources */,
+				C7DBG0000000000000000160 /* UserProfileServerError.json in Resources */,
+				C7DBG0000000000000000154 /* WorkspacesList.json in Resources */,
+				C7DBG0000000000000000155 /* ProjectGroupRoles.json in Resources */,
+				C7DBG0000000000000000156 /* WorkspacesServerError.json in Resources */,
+				C7DBG0000000000000000157 /* UserProfilePlaceholder.json in Resources */,
+				C7DBG0000000000000000158 /* WorkspacesSingle.json in Resources */,
+				C7DBG0000000000000000159 /* WorkspaceDetailsSingle.json in Resources */,
+				C7DBG0000000000000000150 /* LoginSuccess.json in Resources */,
+				C7DBG0000000000000000151 /* LoginServerError.json in Resources */,
+				C7DBG0000000000000000152 /* EmptyList.json in Resources */,
+				C7DBG0000000000000000153 /* ForceUpdateNone.json in Resources */,
+				C7DBG0000000000000000303 /* ForceUpdateSoft.json in Resources */,
+				C7DBG0000000000000000305 /* ForceUpdateForce.json in Resources */,
 				846A32C3BB81E3C29B621792 /* map_theme in Resources */,
 				973FC00A2B4D2A6D00878269 /* Localizable.strings in Resources */,
 				FAD5C4FF2AFCBE720040C61A /* LaunchScreen.storyboard in Resources */,
@@ -2170,13 +2336,9 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-GoInfoGame/Pods-GoInfoGame-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
-			inputPaths = (
-			);
 			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-GoInfoGame/Pods-GoInfoGame-frameworks-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -2249,6 +2411,28 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
+		6CBD7B645F4567FC39D9710E /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-osmapiTests-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
 		BB49C5A913AD6EC3010537CA /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -2257,13 +2441,9 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-GoInfoGame-GoInfoGameUITests/Pods-GoInfoGame-GoInfoGameUITests-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
-			inputPaths = (
-			);
 			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-GoInfoGame-GoInfoGameUITests/Pods-GoInfoGame-GoInfoGameUITests-frameworks-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -2329,6 +2509,23 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "if [[ \"$(uname -m)\" == arm64 ]]\nthen\n    export PATH=\"/opt/homebrew/bin:$PATH\"\nfi\n\nif command -v swiftgen >/dev/null 2>&1\nthen\n    swiftgen\nelse\n    echo \"warning: `swiftgen` command not found\"\nfi\n\n";
+		};
+		D1EC54E3E1ECF552E4817958 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-osmapiTests/Pods-osmapiTests-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-osmapiTests/Pods-osmapiTests-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-osmapiTests/Pods-osmapiTests-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
 		};
 		FF862D6335761A29040D8975 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -2452,6 +2649,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C7DBG00000000000000000A6 /* UITestStubs.swift in Sources */,
+				C7DBG00000000000000000A7 /* A11yID.swift in Sources */,
 				C78737AF2E4C9E3B00289D13 /* FloatingLabelTextField.swift in Sources */,
 				FA9F38202DC5585600D7AABF /* QuestUndoManager.swift in Sources */,
 				FA8C74D42C5A443700D28220 /* QuestOptions.swift in Sources */,
@@ -2613,17 +2812,11 @@
 			buildActionMask = 2147483647;
 			files = (
 				A444AC8F2B5E944E006C74F7 /* TestQuest.swift in Sources */,
-				FA87A8132B6AC019000A6BEA /* StepsRampTests.swift in Sources */,
-				188843AF2B5FB32D0008DCF8 /* WayLitTests.swift in Sources */,
 				A495DF2B2B68D6EC00478E44 /* TestQuestUtils.swift in Sources */,
-				FA87A8192B6B01A4000A6BEA /* HandRailTests.swift in Sources */,
-				FA87A8172B6AC885000A6BEA /* StepsInclineTests.swift in Sources */,
-				188843AD2B5FA2DF0008DCF8 /* TactilePavingStepsTests.swift in Sources */,
 				C77EEBCF2DE59D3200494CB4 /* UndoMerge.swift in Sources */,
 				A4834A442B679CE000D4F0AA /* DatasyncManagerTests.swift in Sources */,
 				A40E72642B5CD65000328848 /* OverpassRequestManagerTests.swift in Sources */,
 				A444AC8C2B5E934B006C74F7 /* UserFlowTests.swift in Sources */,
-				FA87A8152B6AC4E2000A6BEA /* BusStopLitTests.swift in Sources */,
 				FAD5C50A2AFCBE720040C61A /* GoInfoGameTests.swift in Sources */,
 				A48037332BBA8D00007EE7E4 /* WorkspacesApiManagerTests.swift in Sources */,
 				FA87A81B2B6B042E000A6BEA /* SideWalkWidthTests.swift in Sources */,
@@ -2634,8 +2827,26 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C7DBG00000000000000000A8 /* A11yID.swift in Sources */,
 				FAD5C5162AFCBE720040C61A /* GoInfoGameUITestsLaunchTests.swift in Sources */,
+				C7AFA17D305AFC1500C539F7 /* LoginScreenUITestCases.swift in Sources */,
+				C7DBG0000000000000000231 /* MapScreenUITestCases.swift in Sources */,
+				C7DBG0000000000000000241 /* LongFormScreenUITestCases.swift in Sources */,
+				C7DBG0000000000000000255 /* AccessibilityModeScreenUITestCases.swift in Sources */,
+				C7DBG0000000000000000261 /* UndoEditsScreenUITestCases.swift in Sources */,
+				C7DBG0000000000000000271 /* ManageQuestsScreenUITestCases.swift in Sources */,
+				C7DBG0000000000000000281 /* SatellitePickerScreenUITestCases.swift in Sources */,
+				C7DBG0000000000000000291 /* PasswordAuthenticationScreenUITestCases.swift in Sources */,
+				C7DBG0000000000000000301 /* ForceUpdateScreenUITestCases.swift in Sources */,
+				C7DBG0000000000000000311 /* MultiQuestSelectionUITestCases.swift in Sources */,
+				C7DBG0000000000000000321 /* ConflictResolutionUITestCases.swift in Sources */,
+				C7DBG0000000000000000331 /* AddFeatureScreenUITestCases.swift in Sources */,
+				C7DBG0000000000000000341 /* ProfileOptionsUITestCases.swift in Sources */,
+				C7DBG0000000000000000203 /* ProfileScreenUITestCases.swift in Sources */,
+				C7DBG0000000000000000201 /* WorkspacesScreenUITestCases.swift in Sources */,
 				FAD5C5142AFCBE720040C61A /* GoInfoGameUITests.swift in Sources */,
+				DD224EE7B5FC852AF5637C95 /* ScreenshotOnFailureUITestCase.swift in Sources */,
+				C7AFA182305B085E00C539F7 /* ScreenshotOnFailureUITestCase.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2726,7 +2937,7 @@
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				ENABLE_MODULE_VERIFIER = YES;
-				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu17;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
@@ -2766,7 +2977,7 @@
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				ENABLE_MODULE_VERIFIER = YES;
-				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu17;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
@@ -2794,12 +3005,13 @@
 		};
 		A40E72862B5D462A00328848 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = E37B569B16FABF1505892C3A /* Pods-osmapiTests.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = NPCMG529DV;
-				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu17;
 				GENERATE_INFOPLIST_FILE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.2;
@@ -2817,12 +3029,13 @@
 		};
 		A40E72872B5D462A00328848 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = E82B8736511C2D879C41EDA1 /* Pods-osmapiTests.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = G8MQVE5WWW;
-				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu17;
 				GENERATE_INFOPLIST_FILE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.2;
@@ -2849,7 +3062,7 @@
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				ENABLE_MODULE_VERIFIER = YES;
-				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu17;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
@@ -2888,7 +3101,7 @@
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				ENABLE_MODULE_VERIFIER = YES;
-				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu17;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
@@ -2921,7 +3134,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = NPCMG529DV;
-				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu17;
 				GENERATE_INFOPLIST_FILE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.2;
@@ -2944,7 +3157,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = G8MQVE5WWW;
-				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu17;
 				GENERATE_INFOPLIST_FILE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.2;
@@ -3239,6 +3452,15 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = G8MQVE5WWW;
 				GENERATE_INFOPLIST_FILE = YES;
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"${PODS_CONFIGURATION_BUILD_DIR}/HTMLEntities/HTMLEntities.framework/Headers\"",
+					"\"${PODS_CONFIGURATION_BUILD_DIR}/Realm/Realm.framework/Headers\"",
+					"\"${PODS_CONFIGURATION_BUILD_DIR}/RealmSwift/RealmSwift.framework/Headers\"",
+					"\"${PODS_XCFRAMEWORKS_BUILD_DIR}/Realm/Headers\"",
+					"\"$(SRCROOT)/../Frameworks/PointNMap/PointNMapShaderTypes\"",
+					"\"$(SRCROOT)/../Frameworks/PointNMap/PointNMapShared\"",
+				);
 				IPHONEOS_DEPLOYMENT_TARGET = 16.1;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.taskar.GoInfoGameTests;
@@ -3259,6 +3481,15 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = G8MQVE5WWW;
 				GENERATE_INFOPLIST_FILE = YES;
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"${PODS_CONFIGURATION_BUILD_DIR}/HTMLEntities/HTMLEntities.framework/Headers\"",
+					"\"${PODS_CONFIGURATION_BUILD_DIR}/Realm/Realm.framework/Headers\"",
+					"\"${PODS_CONFIGURATION_BUILD_DIR}/RealmSwift/RealmSwift.framework/Headers\"",
+					"\"${PODS_XCFRAMEWORKS_BUILD_DIR}/Realm/Headers\"",
+					"\"$(SRCROOT)/../Frameworks/PointNMap/PointNMapShaderTypes\"",
+					"\"$(SRCROOT)/../Frameworks/PointNMap/PointNMapShared\"",
+				);
 				IPHONEOS_DEPLOYMENT_TARGET = 16.1;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.uwtcat.gigtests;
@@ -3465,6 +3696,16 @@
 		C787B2FD2FECE5E80026C40E /* MapLibre */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = MapLibre;
+		};
+		C7AFA178305AF8E800C539F7 /* OHHTTPStubs */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = C75666CE2E0D068900D36C41 /* XCRemoteSwiftPackageReference "OHHTTPStubs" */;
+			productName = OHHTTPStubs;
+		};
+		C7AFA17A305AF8E800C539F7 /* OHHTTPStubsSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = C75666CE2E0D068900D36C41 /* XCRemoteSwiftPackageReference "OHHTTPStubs" */;
+			productName = OHHTTPStubsSwift;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
