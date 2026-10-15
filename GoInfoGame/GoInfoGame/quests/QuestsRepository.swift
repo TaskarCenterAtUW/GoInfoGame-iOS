@@ -56,9 +56,11 @@ class QuestsRepository: ObservableObject {
     @Published var customIcons: [CustomIcon] = []
 
     /// Days after which a completed element (`ext:gig_complete=yes`) becomes
-    /// answerable again, from `longFormQuestDef`'s `recency_period`. `nil` when the
-    /// workspace doesn't set one — `LongElementQuest.filterExpression` then falls
-    /// back to the original behavior of never re-surfacing completed elements.
+    /// answerable again, from `longFormQuestDef`'s `recency_period`, measured as
+    /// elapsed 24-hour periods since the element's last edit. `LongFormResponse`
+    /// defaults it to 90 when the workspace doesn't set one. `0` (or negative)
+    /// means completed elements are always surfaced again. `nil` (before any
+    /// long form has loaded) means completed elements are never re-surfaced.
     @Published var recencyPeriodDays: Int? = nil
     
     var displayQuests: [DisplayUnit] {

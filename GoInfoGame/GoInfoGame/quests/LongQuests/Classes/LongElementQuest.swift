@@ -126,21 +126,16 @@ class LongElementQuest: QuestBase, Quest {
         }
         guard longFormElement.isFullyAnswered(tags: tags) else { return false }
         guard let recencyDays = QuestsRepository.shared.recencyPeriodDays else { return true }
+        // A recency_period of 0 (or a nonsensical negative value) means completed
+        // elements never stay hidden — the element is always surfaced again.
+        guard recencyDays > 0 else { return false }
 
-        // Calendar-day difference, not elapsed-hours: dateComponents([.day], from:to:)
-        // anchors to lastEditedAt's exact time-of-day, so an edit from yesterday
-        // evening checked this morning (< 24 elapsed hours) would otherwise compute
-        // 0 days, not 1 — silently keeping a stale element hidden under a small
-        // recency_period. Diffing start-of-day for both sides gives a true calendar-
-        // date difference, matching the old ext:gig_last_updated tag's semantics
-        // (it stored a date-only string, with no time-of-day component at all).
-        let calendar = Calendar.current
-        let daysSinceUpdate = calendar.dateComponents(
-            [.day],
-            from: calendar.startOfDay(for: lastEditedAt),
-            to: calendar.startOfDay(for: Date())
-        ).day ?? 0
-        return daysSinceUpdate <= recencyDays
+        // Elapsed time, not calendar days: one recency day is exactly 24 hours from
+        // the edit, so an element completed at 3pm with recency_period 1 surfaces
+        // again from 3pm the next day onwards — independent of time zone or midnight.
+        let recencyInterval = TimeInterval(recencyDays) * 24 * 60 * 60
+        let elapsedSinceUpdate = Date().timeIntervalSince(lastEditedAt)
+        return elapsedSinceUpdate < recencyInterval
     }
 
     /// Matches the quest_query's own tag/element-type conditions regardless of
