@@ -43,7 +43,7 @@ struct LongFormResponse: Decodable {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         self.elements = try container.decode([LongFormElement].self, forKey: .elements)
         self.version = try container.decodeIfPresent(String.self, forKey: .version)
-        self.recencyPeriod = 0 // try container.decodeIfPresent(Int.self, forKey: .recencyPeriod) ?? 90
+        self.recencyPeriod = try container.decodeIfPresent(Int.self, forKey: .recencyPeriod) ?? 90
         self.featurePresets = try container.decodeIfPresent([FeaturePreset].self, forKey: .featurePresets)
         self.customIcons = try container.decodeIfPresent([CustomIcon].self, forKey: .customIcons)
     }
