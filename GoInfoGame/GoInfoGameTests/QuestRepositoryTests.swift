@@ -86,11 +86,23 @@ final class LongElementQuestTests: AppTestCase {
 
     func testRecencyIsMeasuredInCalendarDaysNotElapsedHours() {
         QuestsRepository.shared.recencyPeriodDays = 0
-        // Edited an hour ago, whatever the time of day: same calendar date -> still fresh.
-        XCTAssertTrue(sidewalks.isStillConsideredComplete(tags: way(900001).tags, lastEditedAt: Date().addingTimeInterval(-60)))
-        // Edited on the previous calendar date -> 1 day old, which exceeds a 0-day window.
-        let yesterday = Calendar.current.date(byAdding: .day, value: -1, to: Date())!
-        XCTAssertFalse(sidewalks.isStillConsideredComplete(tags: way(900001).tags, lastEditedAt: yesterday))
+        // Anchor on the calendar day boundary rather than "now minus a bit", so the result does not
+        // depend on the time of day or the machine's time zone the suite happens to run in.
+        let calendar = Calendar.current
+        let startOfToday = calendar.startOfDay(for: Date())
+        let tags = way(900001).tags
+        let context = "time zone \(calendar.timeZone.identifier), now \(Date()), start of today \(startOfToday)"
+
+        // Edited at the first instant of today -> same calendar date -> still fresh.
+        XCTAssertTrue(sidewalks.isStillConsideredComplete(tags: tags, lastEditedAt: startOfToday), context)
+        // Edited one second before today began -> previous calendar date -> 1 day old, beyond a 0-day window,
+        // even though only a second has elapsed.
+        XCTAssertFalse(sidewalks.isStillConsideredComplete(tags: tags, lastEditedAt: startOfToday.addingTimeInterval(-1)), context)
+        // A 1-day window keeps yesterday fresh and drops the day before.
+        QuestsRepository.shared.recencyPeriodDays = 1
+        XCTAssertTrue(sidewalks.isStillConsideredComplete(tags: tags, lastEditedAt: startOfToday.addingTimeInterval(-1)), context)
+        let twoDaysAgo = calendar.date(byAdding: .day, value: -2, to: startOfToday)!
+        XCTAssertFalse(sidewalks.isStillConsideredComplete(tags: tags, lastEditedAt: twoDaysAgo), context)
     }
 
     func testAnIncompleteElementIsNeverConsideredComplete() {
