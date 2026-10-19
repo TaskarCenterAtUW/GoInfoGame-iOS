@@ -72,37 +72,45 @@ final class LongElementQuestTests: AppTestCase {
     func testACompletedElementReturnsOncePastTheRecencyWindow() {
         let element = way(900001)
         let edited = Date(timeIntervalSince1970: TimeInterval(element.timestampEdited))
-        let calendar = Calendar.current
-        let age = calendar.dateComponents([.day], from: calendar.startOfDay(for: edited), to: calendar.startOfDay(for: Date())).day!
-        XCTAssertGreaterThan(age, 1, "the fixture element was last edited well in the past")
+        // Whole 24-hour periods since the edit - recency is elapsed time, not calendar days.
+        let elapsedDays = Int(Date().timeIntervalSince(edited) / 86_400)
+        XCTAssertGreaterThan(elapsedDays, 1, "the fixture element was last edited well in the past")
 
-        QuestsRepository.shared.recencyPeriodDays = age
-        XCTAssertFalse(sidewalks.isApplicable(element: element), "exactly at the limit it is still fresh")
-        QuestsRepository.shared.recencyPeriodDays = age - 1
-        XCTAssertTrue(sidewalks.isApplicable(element: element), "one day past the limit it needs re-answering")
-        QuestsRepository.shared.recencyPeriodDays = 0
+        QuestsRepository.shared.recencyPeriodDays = elapsedDays + 1
+        XCTAssertFalse(sidewalks.isApplicable(element: element), "still inside the window, so it stays hidden")
+        QuestsRepository.shared.recencyPeriodDays = elapsedDays
+        XCTAssertTrue(sidewalks.isApplicable(element: element), "the window has just run out, so it needs re-answering")
+        QuestsRepository.shared.recencyPeriodDays = 1
         XCTAssertTrue(sidewalks.isApplicable(element: element))
     }
 
-    func testRecencyIsMeasuredInCalendarDaysNotElapsedHours() {
-        QuestsRepository.shared.recencyPeriodDays = 0
-        // Anchor on the calendar day boundary rather than "now minus a bit", so the result does not
-        // depend on the time of day or the machine's time zone the suite happens to run in.
-        let calendar = Calendar.current
-        let startOfToday = calendar.startOfDay(for: Date())
+    func testAZeroDayRecencyAlwaysBringsCompletedElementsBack() {
         let tags = way(900001).tags
-        let context = "time zone \(calendar.timeZone.identifier), now \(Date()), start of today \(startOfToday)"
+        QuestsRepository.shared.recencyPeriodDays = 0
+        XCTAssertFalse(sidewalks.isStillConsideredComplete(tags: tags, lastEditedAt: Date()), "even an edit made this instant")
+        XCTAssertTrue(sidewalks.isApplicable(element: way(900001)))
 
-        // Edited at the first instant of today -> same calendar date -> still fresh.
-        XCTAssertTrue(sidewalks.isStillConsideredComplete(tags: tags, lastEditedAt: startOfToday), context)
-        // Edited one second before today began -> previous calendar date -> 1 day old, beyond a 0-day window,
-        // even though only a second has elapsed.
-        XCTAssertFalse(sidewalks.isStillConsideredComplete(tags: tags, lastEditedAt: startOfToday.addingTimeInterval(-1)), context)
-        // A 1-day window keeps yesterday fresh and drops the day before.
+        QuestsRepository.shared.recencyPeriodDays = -3   // a nonsensical value is treated like 0
+        XCTAssertFalse(sidewalks.isStillConsideredComplete(tags: tags, lastEditedAt: Date()))
+        XCTAssertTrue(sidewalks.isApplicable(element: way(900001)))
+    }
+
+    func testRecencyIsMeasuredInElapsedHoursNotCalendarDays() {
+        let tags = way(900001).tags
+        let hour: TimeInterval = 3_600
+        func fresh(_ hoursAgo: Double) -> Bool {
+            sidewalks.isStillConsideredComplete(tags: tags, lastEditedAt: Date().addingTimeInterval(-hoursAgo * hour))
+        }
+
+        // One recency day is exactly 24 hours from the edit, whatever the time of day or the time zone.
         QuestsRepository.shared.recencyPeriodDays = 1
-        XCTAssertTrue(sidewalks.isStillConsideredComplete(tags: tags, lastEditedAt: startOfToday.addingTimeInterval(-1)), context)
-        let twoDaysAgo = calendar.date(byAdding: .day, value: -2, to: startOfToday)!
-        XCTAssertFalse(sidewalks.isStillConsideredComplete(tags: tags, lastEditedAt: twoDaysAgo), context)
+        XCTAssertTrue(fresh(0))
+        XCTAssertTrue(fresh(23.9), "less than 24 hours old is fresh even if it was edited on the previous calendar date")
+        XCTAssertFalse(fresh(24.1), "more than 24 hours old needs re-answering")
+
+        QuestsRepository.shared.recencyPeriodDays = 2
+        XCTAssertTrue(fresh(47.9))
+        XCTAssertFalse(fresh(48.1))
     }
 
     func testAnIncompleteElementIsNeverConsideredComplete() {
@@ -203,6 +211,7 @@ final class LongElementQuestTests: AppTestCase {
         let events = recordSheetEvents()
         copy.onAnswer(answer: LongFormAnswer(tags: ["ext:surface": "concrete"], capturedImage: nil, imageTagKey: nil))
         waitUntil(timeout: 10, "the answer was never submitted") { events.contains("answerSynced") }
+        waitUntil(timeout: 10, "the synced tags never reached the local copy") { db.getWay(id: 121949)?.tags["ext:surface"] == "concrete" }
         XCTAssertEqual(db.getWay(id: 121949)?.tags["ext:surface"], "concrete")
     }
 

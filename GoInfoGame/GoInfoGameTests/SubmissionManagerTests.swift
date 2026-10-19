@@ -277,6 +277,7 @@ final class QuestSubmissionManagerTests: AppTestCase {
         MockServer.installLatestElements()
         QuestSubmissionManager.resumePendingUploads()
         waitUntil(timeout: 10, "the queued answer was never retried") { events.contains("answerSynced") }
+        waitUntil(timeout: 10, "the retried answer was never cleared from the queue") { db.getChangesets().isEmpty }
         XCTAssertTrue(db.getChangesets().isEmpty)
     }
 
@@ -364,6 +365,8 @@ final class QuestSubmissionManagerTests: AppTestCase {
 
         QuestSubmissionManager.skipPendingPhoto(changesetId: id)
         waitUntil(timeout: 10, "the tags never synced after skipping the photo") { events.contains("answerSynced") }
+        // The event is announced before the new version is necessarily visible to this thread's Realm.
+        waitUntil(timeout: 10, "the synced version was never stored") { db.getChangeset(for: id)?.updatedVersion == 2 }
 
         XCTAssertFalse(FileManager.default.fileExists(atPath: path), "the abandoned photo file is deleted")
         XCTAssertEqual(db.getChangeset(for: id)?.updatedVersion, 2)
