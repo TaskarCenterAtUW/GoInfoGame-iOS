@@ -229,6 +229,7 @@ final class MultiQuestSelectionUITestCases: ScreenshotOnFailureUITestCase {
 
         XCTAssertTrue(element(app, id: A11yID.LongForm.dismissButton).waitForExistence(timeout: 15),
                       "LongForm did not open for the selected batch")
+        expandLongFormSheetToFullHeight(app)
         let scrollView = scroll(in: app)
 
         // Fully answer every applicable Sidewalks question - both 700001 and 700002 are

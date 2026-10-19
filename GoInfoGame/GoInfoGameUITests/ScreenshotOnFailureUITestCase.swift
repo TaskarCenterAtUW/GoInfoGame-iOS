@@ -176,6 +176,29 @@ class ScreenshotOnFailureUITestCase: XCTestCase {
         return element.exists && element.isHittable
     }
 
+    /// Drags a LongForm sheet from its resting height up to full height.
+    ///
+    /// The form sheets rest at 70% of the screen and the user can drag them up (detents 0.7 / large).
+    /// On smaller screens (the iPhone 16 / 16 Pro) the Submit row at the bottom of the form then sits
+    /// half off-screen behind the home indicator, so a test that fills in a whole form would otherwise
+    /// tap Submit at a spot that is not really on screen (confirmed from CI failure screenshots and
+    /// reproduced on an iOS 18.4 iPhone 16 Pro). Grabbing the pinned header - outside the scrolling
+    /// list - and pulling it up is exactly what a person would do.
+    func expandLongFormSheetToFullHeight(_ app: XCUIApplication) {
+        let dismiss = app.descendants(matching: .any).matching(identifier: A11yID.LongForm.dismissButton).firstMatch
+        guard dismiss.waitForExistence(timeout: 10) else { return }
+        let window = app.windows.firstMatch.frame
+        let startY = dismiss.frame.midY
+        guard startY > window.minY + 160 else { return }   // already (nearly) full height
+        let from = app.coordinate(withNormalizedOffset: .zero).withOffset(CGVector(dx: window.minX + 60, dy: startY))
+        let to = app.coordinate(withNormalizedOffset: .zero).withOffset(CGVector(dx: window.minX + 60, dy: window.minY + 60))
+        from.press(forDuration: 0.1, thenDragTo: to)
+        // Let the detent change finish before anyone measures or taps anything.
+        let deadline = Date().addingTimeInterval(3)
+        while Date() < deadline && dismiss.frame.midY > window.minY + 160 { Thread.sleep(forTimeInterval: 0.1) }
+        Thread.sleep(forTimeInterval: 0.5)
+    }
+
     /// Asserts that no two of `elements` share any on-screen area.
     ///
     /// Only currently-existing elements are compared - a SwiftUI view hidden behind a

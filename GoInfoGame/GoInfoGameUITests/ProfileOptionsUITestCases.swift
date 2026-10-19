@@ -369,6 +369,7 @@ final class ProfileOptionsUITestCases: ScreenshotOnFailureUITestCase {
         XCTAssertTrue(row.waitForExistence(timeout: 10), "Sidewalks not listed")
         row.tap()
         XCTAssertTrue(element(app, id: A11yID.LongForm.dismissButton).waitForExistence(timeout: 15), "Preview form did not open")
+        expandLongFormSheetToFullHeight(app)
 
         // Fully answer every applicable Sidewalks question, in the form's own top-to-bottom
         // order (WorkspaceDetailsWithQuests.json: 107, 106, 101, 103, 104).
