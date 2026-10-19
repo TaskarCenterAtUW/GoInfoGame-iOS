@@ -392,58 +392,11 @@ jobs:
             ls -lh "$out"
           fi
 
-      # Wrapped in a retry (whole action, not just the request) - the Actions
-      # artifact backend has intermittently timed out on CreateArtifact/
-      # FinalizeArtifact from self-hosted runners regardless of payload size
-      # (actions/upload-artifact#531, #623; no fix from GitHub yet), and upload-
-      # artifact's own internal backoff (~30s across 5 tries) hasn't been enough
-      # here. continue-on-error so exhausting retries doesn't fail the job -
-      # pass/fail is already reported independently via the JUnit check above.
-      - name: Upload report artifact (tar.gz)
-        uses: Wandalen/wretry.action@v3.8.0
-        if: always()
-        continue-on-error: true   # runner<->GitHub artifact-service blip must not fail the job
-        with:
-          action: actions/upload-artifact@v4
-          attempt_limit: 3
-          attempt_delay: 15000
-          with: |
-            name: test-report
-            path: build/test-report.tar.gz
-            retention-days: 14
-            if-no-files-found: warn
-            overwrite: true
-
-      # Fallback that does NOT touch the artifact backend: publish the report onto a
-      # dedicated `ci-reports` branch (github.com is reachable from the runner).
-      - name: Publish report to ci-reports branch
-        if: always() && github.event_name != 'pull_request'
-        continue-on-error: true
-        run: |
-          ws="$PWD"
-          present=()
-          for f in test-report.md test-report.html test-report.pdf; do
-            [ -f "build/report/$f" ] && present+=("$f")
-          done
-          if [ "${#present[@]}" -eq 0 ]; then
-            echo "::warning::no report files found under build/report - nothing to zip"
-          else
-            rm -f build/test-report.tar.gz
-            ( cd build/report && tar -czf "$ws/build/test-report.tar.gz" "${present[@]}" )
-            echo "bundled: ${present[*]}"
-          fi
-
-      # Wrapped in a retry (whole action, not just the request) - the Actions
-      # artifact backend has intermittently timed out on CreateArtifact/
-      # FinalizeArtifact from self-hosted runners regardless of payload size
-      # (actions/upload-artifact#531, #623; no fix from GitHub yet), and upload-
-      # artifact's own internal backoff (~30s across 5 tries) hasn't been enough
-      # here. continue-on-error so exhausting retries doesn't fail the job -
-      # pass/fail is already reported independently via the JUnit check above.
-      - name: Upload report artifact (tar.gz)
-        uses: Wandalen/wretry.action@v3.8.0
-        if: always()
-        continue-on-error: true
+      # Release assets, not actions/upload-artifact (see the note at the top of this file).
+      # publish-reports.sh also links each file from the run summary and prunes old assets.
+      - name: Publish reports (release assets)
+        if: ${{ !cancelled() }}
+        continue-on-error: true   # a publish hiccup must not fail the job; pass/fail is reported by the JUnit check
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
