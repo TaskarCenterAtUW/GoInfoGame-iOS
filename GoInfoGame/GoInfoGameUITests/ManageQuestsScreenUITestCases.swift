@@ -131,10 +131,22 @@ final class ManageQuestsScreenUITestCases: ScreenshotOnFailureUITestCase {
     /// text, not the switch graphic itself (confirmed directly: the toggle's own
     /// `value` stayed "1" after a plain tap). The switch graphic sits at the row's
     /// trailing edge, so this taps there instead.
+    /// Taps at 88% of the row rather than 95%: on the iOS 18.1 layout the switch capsule ends at about
+    /// 95% of the row's width, so the old tap landed on its very edge and missed (CI: the toggle stayed
+    /// on). 88% is inside the capsule there and on newer layouts. If the value has not changed after a
+    /// couple of seconds, tap once more a little further left.
     @discardableResult
     private func tapToggle(_ toggle: XCUIElement) -> Bool {
-        toggle.coordinate(withNormalizedOffset: CGVector(dx: 0.95, dy: 0.5)).tap()
-        return true
+        let before = toggle.value as? String
+        for dx in [0.88, 0.85] {
+            toggle.coordinate(withNormalizedOffset: CGVector(dx: dx, dy: 0.5)).tap()
+            let deadline = Date().addingTimeInterval(2)
+            while Date() < deadline {
+                if (toggle.value as? String) != before { return true }
+                Thread.sleep(forTimeInterval: 0.1)
+            }
+        }
+        return false
     }
 
     private func manageQuestsControls(_ app: XCUIApplication) -> [(String, XCUIElement)] {

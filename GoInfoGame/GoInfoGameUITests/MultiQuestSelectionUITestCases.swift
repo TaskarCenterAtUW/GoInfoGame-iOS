@@ -263,12 +263,23 @@ final class MultiQuestSelectionUITestCases: ScreenshotOnFailureUITestCase {
         obstructionNo.tap()
 
         let submit = element(app, id: A11yID.LongForm.submitButton)
-        XCTAssertTrue(scrollFormToElement(submit, in: scrollView), "Submit button not reachable")
-        XCTAssertTrue(submit.isEnabled, "Submit disabled despite every applicable question being answered")
-        submit.tap()
-
-        XCTAssertTrue(element(app, id: A11yID.Map.workspaceTitleButton).waitForExistence(timeout: 10),
-                      "Map toolbar did not reappear after submitting")
+        let mapToolbar = element(app, id: A11yID.Map.workspaceTitleButton)
+        // Submit sits at the very bottom of the sheet, and right after the numeric keyboard is dismissed the
+        // sheet is still animating back (noticeably slower on older simulator runtimes such as iOS 18.1), so
+        // "hittable" can be reported for a spot the button has already moved away from and the tap lands on
+        // nothing - the failure screenshot from CI shows the sheet still open with Submit half off-screen.
+        // Let the layout settle, aim again, and only count the submit as missed if the sheet is still there
+        // after a few attempts.
+        var submitted = false
+        for _ in 0..<3 where !submitted {
+            guard submit.exists else { submitted = true; break }   // the sheet already closed
+            XCTAssertTrue(scrollFormToElement(submit, in: scrollView), "Submit button not reachable")
+            Thread.sleep(forTimeInterval: 0.75)
+            XCTAssertTrue(submit.isEnabled, "Submit disabled despite every applicable question being answered")
+            submit.tap()
+            submitted = mapToolbar.waitForExistence(timeout: 8)
+        }
+        XCTAssertTrue(submitted || mapToolbar.exists, "Map toolbar did not reappear after submitting")
         XCTAssertTrue(waitUntil(timeout: 30, condition: { findQuestAnnotation(app, elementID: 700001) == nil }),
                       "Element 700001's pin is still on the map after the batch submit")
         XCTAssertTrue(waitUntil(timeout: 5, condition: { findQuestAnnotation(app, elementID: 700002) == nil }),
