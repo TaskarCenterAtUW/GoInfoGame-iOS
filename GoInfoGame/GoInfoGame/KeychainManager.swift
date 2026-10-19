@@ -29,7 +29,7 @@ struct KeychainManager {
         // UserDefaults only when UITestRuntime.isActive keeps this invisible to any signed
         // build (Release, or an ordinarily-signed Debug run) - those keep using the real
         // Keychain, unchanged.
-        if UITestRuntime.isActive {
+        if UITestRuntime.usesKeychainStandIn {
             UserDefaults.standard.set(data, forKey: uiTestFallbackKey(for: key))
             return true
         }
@@ -54,7 +54,7 @@ struct KeychainManager {
 
     static func load(key: String) -> String? {
         #if DEBUG
-        if UITestRuntime.isActive {
+        if UITestRuntime.usesKeychainStandIn {
             return UserDefaults.standard.string(forKey: uiTestFallbackKey(for: key))
         }
         #endif
@@ -80,7 +80,7 @@ struct KeychainManager {
 
     static func delete(key: String) -> Bool {
         #if DEBUG
-        if UITestRuntime.isActive {
+        if UITestRuntime.usesKeychainStandIn {
             UserDefaults.standard.removeObject(forKey: uiTestFallbackKey(for: key))
             return true
         }

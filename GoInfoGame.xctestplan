@@ -9,7 +9,6 @@
     }
   ],
   "defaultOptions" : {
-    "codeCoverage" : false,
     "targetForVariableExpansion" : {
       "containerPath" : "container:GoInfoGame.xcodeproj",
       "identifier" : "FAD5C4EE2AFCBE700040C61A",

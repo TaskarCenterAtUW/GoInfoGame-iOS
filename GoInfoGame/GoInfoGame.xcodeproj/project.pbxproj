@@ -9,6 +9,25 @@
 /* Begin PBXBuildFile section */
 		0391C30BC01BA489BBAB615F /* Pods_osmapiTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3B948B071EF07217DD32E626 /* Pods_osmapiTests.framework */; };
 		0536DD852B0BD11A00B04C4B /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0536DD842B0BD11A00B04C4B /* LoginViewController.swift */; };
+		C7UNT0000000000000000038 /* HelpersTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7UNT0000000000000000037 /* HelpersTests.swift */; };
+		C7UNT0000000000000000036 /* ViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7UNT0000000000000000035 /* ViewModelTests.swift */; };
+		C7UNT0000000000000000034 /* QuestRepositoryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7UNT0000000000000000033 /* QuestRepositoryTests.swift */; };
+		C7UNT0000000000000000032 /* QuestModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7UNT0000000000000000031 /* QuestModelTests.swift */; };
+		C7UNT0000000000000000030 /* SubmissionManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7UNT0000000000000000029 /* SubmissionManagerTests.swift */; };
+		C7UNT0000000000000000028 /* KartaviewStatusFailure.json in Resources */ = {isa = PBXBuildFile; fileRef = C7UNT0000000000000000027 /* KartaviewStatusFailure.json */; };
+		C7UNT0000000000000000026 /* KartaviewPhotoLookupEmpty.json in Resources */ = {isa = PBXBuildFile; fileRef = C7UNT0000000000000000025 /* KartaviewPhotoLookupEmpty.json */; };
+		C7UNT0000000000000000024 /* KartaviewPhotoLookup.json in Resources */ = {isa = PBXBuildFile; fileRef = C7UNT0000000000000000023 /* KartaviewPhotoLookup.json */; };
+		C7UNT0000000000000000022 /* KartaviewUploadFinished.json in Resources */ = {isa = PBXBuildFile; fileRef = C7UNT0000000000000000021 /* KartaviewUploadFinished.json */; };
+		C7UNT0000000000000000020 /* KartaviewPhotoUploaded.json in Resources */ = {isa = PBXBuildFile; fileRef = C7UNT0000000000000000019 /* KartaviewPhotoUploaded.json */; };
+		C7UNT0000000000000000018 /* KartaviewSequenceCreated.json in Resources */ = {isa = PBXBuildFile; fileRef = C7UNT0000000000000000017 /* KartaviewSequenceCreated.json */; };
+		C7UNT0000000000000000016 /* DatabaseConnectorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7UNT0000000000000000015 /* DatabaseConnectorTests.swift */; };
+		C7UNT0000000000000000014 /* MockServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7UNT0000000000000000013 /* MockServer.swift */; };
+		C7UNT0000000000000000012 /* SessionAndLoginTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7UNT0000000000000000011 /* SessionAndLoginTests.swift */; };
+		C7UNT0000000000000000010 /* NetworkManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7UNT0000000000000000009 /* NetworkManagerTests.swift */; };
+		C7UNT0000000000000000008 /* ApiManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7UNT0000000000000000007 /* ApiManagerTests.swift */; };
+		C7UNT0000000000000000006 /* APIEndpointAndConfigTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7UNT0000000000000000005 /* APIEndpointAndConfigTests.swift */; };
+		C7UNT0000000000000000004 /* AppTestCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7UNT0000000000000000003 /* AppTestCase.swift */; };
+		C7UNT0000000000000000002 /* MockHTTP.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7UNT0000000000000000001 /* MockHTTP.swift */; };
 		0536DD8C2B0BD2C200B04C4B /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0536DD8B2B0BD2C200B04C4B /* Constants.swift */; };
 		0536DD922B0BD58800B04C4B /* OAuthService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0536DD912B0BD58800B04C4B /* OAuthService.swift */; };
 		0536DD942B0BD59900B04C4B /* OAuthError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0536DD932B0BD59900B04C4B /* OAuthError.swift */; };
@@ -62,7 +81,6 @@
 		98E6B86BDDC74537ACA56927 /* LongFormElement+Completion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9111A9602D6348DD884AB010 /* LongFormElement+Completion.swift */; };
 		A1C0FFEE2E9F000100000001 /* ShowQuestFormsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1C0FFEE2E9F000100000002 /* ShowQuestFormsView.swift */; };
 		A40004EC2B62338400AF21FB /* AppQuestManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A40004EB2B62338400AF21FB /* AppQuestManager.swift */; };
-		A40E72642B5CD65000328848 /* OverpassRequestManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A40E72632B5CD65000328848 /* OverpassRequestManagerTests.swift */; };
 		A40E726E2B5D462A00328848 /* osmapi.docc in Sources */ = {isa = PBXBuildFile; fileRef = A40E726D2B5D462A00328848 /* osmapi.docc */; };
 		A40E72742B5D462A00328848 /* osmapi.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A40E726A2B5D462A00328848 /* osmapi.framework */; };
 		A40E727B2B5D462A00328848 /* osmapiTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A40E727A2B5D462A00328848 /* osmapiTests.swift */; };
@@ -86,7 +104,6 @@
 		A475C7E02B5E4B6E00BABEDA /* OSMXMLBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = A475C7DF2B5E4B6E00BABEDA /* OSMXMLBuilder.swift */; };
 		A475C7E32B5E4CB600BABEDA /* OSMXMLBuilderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A475C7E22B5E4CB600BABEDA /* OSMXMLBuilderTests.swift */; };
 		A48037312BBA8C25007EE7E4 /* ApiManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A48037302BBA8C25007EE7E4 /* ApiManager.swift */; };
-		A48037332BBA8D00007EE7E4 /* WorkspacesApiManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A48037322BBA8D00007EE7E4 /* WorkspacesApiManagerTests.swift */; };
 		A48037362BBA8DDC007EE7E4 /* WorkspacesResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = A48037352BBA8DDC007EE7E4 /* WorkspacesResponse.swift */; };
 		A4834A3F2B67737500D4F0AA /* StoredChangeset.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4834A3E2B67737500D4F0AA /* StoredChangeset.swift */; };
 		A4834A412B67885E00D4F0AA /* DatasyncManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4834A402B67885E00D4F0AA /* DatasyncManager.swift */; };
@@ -303,7 +320,6 @@
 		FAD5C4FA2AFCBE700040C61A /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FAD5C4F82AFCBE700040C61A /* Main.storyboard */; };
 		FAD5C4FC2AFCBE720040C61A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = FAD5C4FB2AFCBE720040C61A /* Assets.xcassets */; };
 		FAD5C4FF2AFCBE720040C61A /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FAD5C4FD2AFCBE720040C61A /* LaunchScreen.storyboard */; };
-		FAD5C50A2AFCBE720040C61A /* GoInfoGameTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAD5C5092AFCBE720040C61A /* GoInfoGameTests.swift */; };
 		FAD5C5142AFCBE720040C61A /* GoInfoGameUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAD5C5132AFCBE720040C61A /* GoInfoGameUITests.swift */; };
 		FAD5C5162AFCBE720040C61A /* GoInfoGameUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAD5C5152AFCBE720040C61A /* GoInfoGameUITestsLaunchTests.swift */; };
 		FAE2584F2D39819300D2BB12 /* ManageQuestsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAE2584E2D39819300D2BB12 /* ManageQuestsView.swift */; };
@@ -405,6 +421,25 @@
 
 /* Begin PBXFileReference section */
 		0513BE762B2B464800FB61CF /* samplepoint.gpx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = samplepoint.gpx; sourceTree = "<group>"; };
+		C7UNT0000000000000000037 /* HelpersTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = HelpersTests.swift; path = "HelpersTests.swift"; sourceTree = "<group>"; };
+		C7UNT0000000000000000035 /* ViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ViewModelTests.swift; path = "ViewModelTests.swift"; sourceTree = "<group>"; };
+		C7UNT0000000000000000033 /* QuestRepositoryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = QuestRepositoryTests.swift; path = "QuestRepositoryTests.swift"; sourceTree = "<group>"; };
+		C7UNT0000000000000000031 /* QuestModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = QuestModelTests.swift; path = "QuestModelTests.swift"; sourceTree = "<group>"; };
+		C7UNT0000000000000000029 /* SubmissionManagerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = SubmissionManagerTests.swift; path = "SubmissionManagerTests.swift"; sourceTree = "<group>"; };
+		C7UNT0000000000000000027 /* KartaviewStatusFailure.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; name = KartaviewStatusFailure.json; path = "Fixtures/KartaviewStatusFailure.json"; sourceTree = "<group>"; };
+		C7UNT0000000000000000025 /* KartaviewPhotoLookupEmpty.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; name = KartaviewPhotoLookupEmpty.json; path = "Fixtures/KartaviewPhotoLookupEmpty.json"; sourceTree = "<group>"; };
+		C7UNT0000000000000000023 /* KartaviewPhotoLookup.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; name = KartaviewPhotoLookup.json; path = "Fixtures/KartaviewPhotoLookup.json"; sourceTree = "<group>"; };
+		C7UNT0000000000000000021 /* KartaviewUploadFinished.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; name = KartaviewUploadFinished.json; path = "Fixtures/KartaviewUploadFinished.json"; sourceTree = "<group>"; };
+		C7UNT0000000000000000019 /* KartaviewPhotoUploaded.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; name = KartaviewPhotoUploaded.json; path = "Fixtures/KartaviewPhotoUploaded.json"; sourceTree = "<group>"; };
+		C7UNT0000000000000000017 /* KartaviewSequenceCreated.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; name = KartaviewSequenceCreated.json; path = "Fixtures/KartaviewSequenceCreated.json"; sourceTree = "<group>"; };
+		C7UNT0000000000000000015 /* DatabaseConnectorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = DatabaseConnectorTests.swift; path = "DatabaseConnectorTests.swift"; sourceTree = "<group>"; };
+		C7UNT0000000000000000013 /* MockServer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = MockServer.swift; path = "TestSupport/MockServer.swift"; sourceTree = "<group>"; };
+		C7UNT0000000000000000011 /* SessionAndLoginTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = SessionAndLoginTests.swift; path = "SessionAndLoginTests.swift"; sourceTree = "<group>"; };
+		C7UNT0000000000000000009 /* NetworkManagerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = NetworkManagerTests.swift; path = "NetworkManagerTests.swift"; sourceTree = "<group>"; };
+		C7UNT0000000000000000007 /* ApiManagerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ApiManagerTests.swift; path = "ApiManagerTests.swift"; sourceTree = "<group>"; };
+		C7UNT0000000000000000005 /* APIEndpointAndConfigTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = APIEndpointAndConfigTests.swift; path = "APIEndpointAndConfigTests.swift"; sourceTree = "<group>"; };
+		C7UNT0000000000000000003 /* AppTestCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AppTestCase.swift; path = "TestSupport/AppTestCase.swift"; sourceTree = "<group>"; };
+		C7UNT0000000000000000001 /* MockHTTP.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = MockHTTP.swift; path = "TestSupport/MockHTTP.swift"; sourceTree = "<group>"; };
 		0536DD842B0BD11A00B04C4B /* LoginViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
 		0536DD8B2B0BD2C200B04C4B /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		0536DD912B0BD58800B04C4B /* OAuthService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OAuthService.swift; sourceTree = "<group>"; };
@@ -500,7 +535,6 @@
 		97F2FA8D2B0630C4000B9726 /* SwiftOverpassAPI.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = SwiftOverpassAPI.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		A1C0FFEE2E9F000100000002 /* ShowQuestFormsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShowQuestFormsView.swift; sourceTree = "<group>"; };
 		A40004EB2B62338400AF21FB /* AppQuestManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppQuestManager.swift; sourceTree = "<group>"; };
-		A40E72632B5CD65000328848 /* OverpassRequestManagerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OverpassRequestManagerTests.swift; sourceTree = "<group>"; };
 		A40E726A2B5D462A00328848 /* osmapi.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = osmapi.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		A40E726C2B5D462A00328848 /* osmapi.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = osmapi.h; sourceTree = "<group>"; };
 		A40E726D2B5D462A00328848 /* osmapi.docc */ = {isa = PBXFileReference; lastKnownFileType = folder.documentationcatalog; path = osmapi.docc; sourceTree = "<group>"; };
@@ -523,7 +557,6 @@
 		A475C7DF2B5E4B6E00BABEDA /* OSMXMLBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OSMXMLBuilder.swift; sourceTree = "<group>"; };
 		A475C7E22B5E4CB600BABEDA /* OSMXMLBuilderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OSMXMLBuilderTests.swift; sourceTree = "<group>"; };
 		A48037302BBA8C25007EE7E4 /* ApiManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApiManager.swift; sourceTree = "<group>"; };
-		A48037322BBA8D00007EE7E4 /* WorkspacesApiManagerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkspacesApiManagerTests.swift; sourceTree = "<group>"; };
 		A48037352BBA8DDC007EE7E4 /* WorkspacesResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkspacesResponse.swift; sourceTree = "<group>"; };
 		A4834A3E2B67737500D4F0AA /* StoredChangeset.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoredChangeset.swift; sourceTree = "<group>"; };
 		A4834A402B67885E00D4F0AA /* DatasyncManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatasyncManager.swift; sourceTree = "<group>"; };
@@ -748,7 +781,6 @@
 		FAD5C4FE2AFCBE720040C61A /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		FAD5C5002AFCBE720040C61A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		FAD5C5052AFCBE720040C61A /* GoInfoGameTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = GoInfoGameTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		FAD5C5092AFCBE720040C61A /* GoInfoGameTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoInfoGameTests.swift; sourceTree = "<group>"; };
 		FAD5C50F2AFCBE720040C61A /* GoInfoGameUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = GoInfoGameUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		FAD5C5132AFCBE720040C61A /* GoInfoGameUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoInfoGameUITests.swift; sourceTree = "<group>"; };
 		FAD5C5152AFCBE720040C61A /* GoInfoGameUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoInfoGameUITestsLaunchTests.swift; sourceTree = "<group>"; };
@@ -1872,15 +1904,31 @@
 		FAD5C5082AFCBE720040C61A /* GoInfoGameTests */ = {
 			isa = PBXGroup;
 			children = (
+				C7UNT0000000000000000037 /* HelpersTests.swift */,
+				C7UNT0000000000000000035 /* ViewModelTests.swift */,
+				C7UNT0000000000000000033 /* QuestRepositoryTests.swift */,
+				C7UNT0000000000000000031 /* QuestModelTests.swift */,
+				C7UNT0000000000000000029 /* SubmissionManagerTests.swift */,
+				C7UNT0000000000000000027 /* KartaviewStatusFailure.json */,
+				C7UNT0000000000000000025 /* KartaviewPhotoLookupEmpty.json */,
+				C7UNT0000000000000000023 /* KartaviewPhotoLookup.json */,
+				C7UNT0000000000000000021 /* KartaviewUploadFinished.json */,
+				C7UNT0000000000000000019 /* KartaviewPhotoUploaded.json */,
+				C7UNT0000000000000000017 /* KartaviewSequenceCreated.json */,
+				C7UNT0000000000000000015 /* DatabaseConnectorTests.swift */,
+				C7UNT0000000000000000013 /* MockServer.swift */,
+				C7UNT0000000000000000011 /* SessionAndLoginTests.swift */,
+				C7UNT0000000000000000009 /* NetworkManagerTests.swift */,
+				C7UNT0000000000000000007 /* ApiManagerTests.swift */,
+				C7UNT0000000000000000005 /* APIEndpointAndConfigTests.swift */,
+				C7UNT0000000000000000003 /* AppTestCase.swift */,
+				C7UNT0000000000000000001 /* MockHTTP.swift */,
 				A4834A422B679CD400D4F0AA /* data */,
 				188843AB2B5FA2BC0008DCF8 /* quests */,
 				A444AC8D2B5E943E006C74F7 /* utils */,
-				FAD5C5092AFCBE720040C61A /* GoInfoGameTests.swift */,
-				A40E72632B5CD65000328848 /* OverpassRequestManagerTests.swift */,
-				A444AC8B2B5E934B006C74F7 /* UserFlowTests.swift */,
+								A444AC8B2B5E934B006C74F7 /* UserFlowTests.swift */,
 				C77EEBCE2DE59D3200494CB4 /* UndoMerge.swift */,
-				A48037322BBA8D00007EE7E4 /* WorkspacesApiManagerTests.swift */,
-			);
+					);
 			path = GoInfoGameTests;
 			sourceTree = "<group>";
 		};
@@ -2316,6 +2364,12 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C7UNT0000000000000000028 /* KartaviewStatusFailure.json in Resources */,
+				C7UNT0000000000000000026 /* KartaviewPhotoLookupEmpty.json in Resources */,
+				C7UNT0000000000000000024 /* KartaviewPhotoLookup.json in Resources */,
+				C7UNT0000000000000000022 /* KartaviewUploadFinished.json in Resources */,
+				C7UNT0000000000000000020 /* KartaviewPhotoUploaded.json in Resources */,
+				C7UNT0000000000000000018 /* KartaviewSequenceCreated.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2812,15 +2866,25 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C7UNT0000000000000000038 /* HelpersTests.swift in Sources */,
+				C7UNT0000000000000000036 /* ViewModelTests.swift in Sources */,
+				C7UNT0000000000000000034 /* QuestRepositoryTests.swift in Sources */,
+				C7UNT0000000000000000032 /* QuestModelTests.swift in Sources */,
+				C7UNT0000000000000000030 /* SubmissionManagerTests.swift in Sources */,
+				C7UNT0000000000000000016 /* DatabaseConnectorTests.swift in Sources */,
+				C7UNT0000000000000000014 /* MockServer.swift in Sources */,
+				C7UNT0000000000000000012 /* SessionAndLoginTests.swift in Sources */,
+				C7UNT0000000000000000010 /* NetworkManagerTests.swift in Sources */,
+				C7UNT0000000000000000008 /* ApiManagerTests.swift in Sources */,
+				C7UNT0000000000000000006 /* APIEndpointAndConfigTests.swift in Sources */,
+				C7UNT0000000000000000004 /* AppTestCase.swift in Sources */,
+				C7UNT0000000000000000002 /* MockHTTP.swift in Sources */,
 				A444AC8F2B5E944E006C74F7 /* TestQuest.swift in Sources */,
 				A495DF2B2B68D6EC00478E44 /* TestQuestUtils.swift in Sources */,
 				C77EEBCF2DE59D3200494CB4 /* UndoMerge.swift in Sources */,
 				A4834A442B679CE000D4F0AA /* DatasyncManagerTests.swift in Sources */,
-				A40E72642B5CD65000328848 /* OverpassRequestManagerTests.swift in Sources */,
-				A444AC8C2B5E934B006C74F7 /* UserFlowTests.swift in Sources */,
-				FAD5C50A2AFCBE720040C61A /* GoInfoGameTests.swift in Sources */,
-				A48037332BBA8D00007EE7E4 /* WorkspacesApiManagerTests.swift in Sources */,
-				FA87A81B2B6B042E000A6BEA /* SideWalkWidthTests.swift in Sources */,
+						A444AC8C2B5E934B006C74F7 /* UserFlowTests.swift in Sources */,
+								FA87A81B2B6B042E000A6BEA /* SideWalkWidthTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

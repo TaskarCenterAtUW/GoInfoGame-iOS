@@ -706,4 +706,21 @@ enum UITestRuntime {
     static var isActive: Bool {
         ProcessInfo.processInfo.environment[UITestScenario.environmentKey] != nil
     }
+
+    /// True when this process is a hosted XCTest unit-test run (GoInfoGameTests is injected
+    /// into the app via TEST_HOST). Never true for a UI test's app process or a real launch.
+    static var isUnitTestRun: Bool {
+        NSClassFromString("XCTestCase") != nil
+    }
+
+    /// Lets a unit test exercise KeychainManager's real SecItem* path instead of the
+    /// UserDefaults stand-in it otherwise gets (see KeychainManager). Test-only switch.
+    static var forceRealKeychain = false
+
+    /// KeychainManager's UserDefaults stand-in is used for a UI-test launch and for hosted
+    /// unit tests - an unsigned (CODE_SIGNING_ALLOWED=NO) test binary has no keychain
+    /// entitlement, so the real Keychain fails there with -34018.
+    static var usesKeychainStandIn: Bool {
+        (isActive || isUnitTestRun) && !forceRealKeychain
+    }
 }

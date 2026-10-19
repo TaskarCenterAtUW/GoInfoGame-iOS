@@ -1,0 +1,17 @@
+{
+  "status": { "apiCode": 600, "apiMessage": "Success", "httpCode": 200, "httpMessage": "Success" },
+  "osv": {
+    "sequence": {
+      "id": "9001",
+      "userId": "42",
+      "dateAdded": "2026-10-15 09:00:00",
+      "currentLat": "17.4385",
+      "currentLng": "78.361",
+      "status": "active",
+      "imagesStatus": "new",
+      "metaDataFilename": "",
+      "processingStatus": "NEW",
+      "countActivePhotos": "0"
+    }
+  }
+}

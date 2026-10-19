@@ -99,7 +99,7 @@ class ForceUpdateManager: ObservableObject {
         // around entirely here rather than chased with more dismissal logic. `.unknown`
         // matches what a genuine AppTransaction failure already returns below, so
         // force-update behavior for a real (non-test) sandbox/TestFlight run is unaffected.
-        if UITestRuntime.isActive {
+        if UITestRuntime.isActive || UITestRuntime.isUnitTestRun {
             return .unknown
         }
         #endif

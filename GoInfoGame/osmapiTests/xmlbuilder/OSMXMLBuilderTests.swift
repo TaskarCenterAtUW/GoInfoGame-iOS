@@ -61,8 +61,11 @@ final class OSMXMLBuilderTests: XCTestCase {
         let builtString = xmlBuilder.buildXML(exclude_gig_tags: false)
         print(builtString)
         XCTAssertNotNil(builtString)
-        let expectedString = "<osm version = \"1\",changeset = \"188021\" />"
-        XCTAssertEqual(builtString, expectedString)
+        // Attributes are emitted from a dictionary, so only their content (not order) is guaranteed.
+        XCTAssertTrue(builtString.hasPrefix("<osm "))
+        XCTAssertTrue(builtString.contains("version = \"1\""))
+        XCTAssertTrue(builtString.contains("changeset = \"188021\""))
+        XCTAssertTrue(builtString.hasSuffix("/>"))
     }
     
     func testPayloadForNode() throws {

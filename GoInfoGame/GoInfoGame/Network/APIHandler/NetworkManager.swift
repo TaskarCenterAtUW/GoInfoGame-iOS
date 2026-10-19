@@ -153,7 +153,11 @@ class NetworkManager: NetworkHandler {
             }
 
             if status {
-                fetchData(request: request)
+                // Re-run the whole fetch as `T`. (Previously the retry's element type was inferred
+                // as `Data` from `decode(_ data: Data, ...)`, so the already-decoded response was
+                // decoded a second time as `Data` and the retry could never succeed.)
+                let retry: Future<T, Error> = fetchData(request: request)
+                retry
                     .sink(receiveCompletion: { comp in
                         switch comp {
                         case.finished:
@@ -161,15 +165,8 @@ class NetworkManager: NetworkHandler {
                         case .failure(let error):
                             promise(.failure(error))
                         }
-                    }, receiveValue: { data in
-                        self.responseHandler.decode(data, type: T.self, completion: { result in
-                            switch result {
-                            case .success(let value):
-                                promise(.success(value))
-                            case .failure(let error):
-                                promise(.failure(error))
-                            }
-                        })
+                    }, receiveValue: { value in
+                        promise(.success(value))
                     })
                     .store(in: &cancellables)
             } else {
