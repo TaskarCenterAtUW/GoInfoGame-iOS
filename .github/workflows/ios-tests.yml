@@ -392,11 +392,13 @@ jobs:
             ls -lh "$out"
           fi
 
-      # Release assets, not actions/upload-artifact (see the note at the top of this file).
-      # publish-reports.sh also links each file from the run summary and prunes old assets.
-      - name: Publish reports (release assets)
+      # Attached to the ios-ci-reports pre-release and linked from the run summary
+      # instead of actions/upload-artifact (see the NOTE at the top of this file).
+      # continue-on-error so a failed upload doesn't fail the job - pass/fail is
+      # already reported independently via the JUnit check above.
+      - name: Publish test reports
         if: ${{ !cancelled() }}
-        continue-on-error: true   # a publish hiccup must not fail the job; pass/fail is reported by the JUnit check
+        continue-on-error: true
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
