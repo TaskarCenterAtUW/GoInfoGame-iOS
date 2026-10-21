@@ -344,6 +344,29 @@ jobs:
         continue-on-error: true
         run: command -v weasyprint >/dev/null || brew install --quiet weasyprint
 
+      # Code coverage has to come from BOTH runs: the unit tests cover the logic layer and the UI
+      # tests cover the SwiftUI views, so either bundle alone understates the app (unit ~27%,
+      # UI ~71%, merged ~78% at the time of writing). Merging the result bundles also merges
+      # their coverage. If the merge is not possible the report falls back to the unit bundle.
+      - name: Merge unit + UI results for code coverage
+        if: ${{ !cancelled() }}
+        continue-on-error: true
+        run: |
+          merged="build/results/coverage.xcresult"
+          rm -rf "$merged"
+          bundles=()
+          [ -d build/results/unit.xcresult ] && bundles+=("build/results/unit.xcresult")
+          for x in build/results/ui-*.xcresult; do [ -d "$x" ] && bundles+=("$x"); done
+          if [ "${#bundles[@]}" -gt 1 ] && xcrun xcresulttool merge "${bundles[@]}" --output-path "$merged"; then
+            echo "Merged ${#bundles[@]} result bundles into $merged"
+            echo "COVERAGE_XCRESULT=$merged" >> "$GITHUB_ENV"
+            echo "COVERAGE_NOTE=unit + UI runs merged" >> "$GITHUB_ENV"
+          else
+            echo "::warning::could not merge result bundles - coverage is from the unit run only"
+            echo "COVERAGE_XCRESULT=build/results/unit.xcresult" >> "$GITHUB_ENV"
+            echo "COVERAGE_NOTE=unit run only (UI coverage not merged)" >> "$GITHUB_ENV"
+          fi
+
       - name: Generate combined report (MD / HTML / PDF)
         if: ${{ !cancelled() }}
         continue-on-error: true
@@ -352,7 +375,8 @@ jobs:
         run: |
           python3 scripts/ci/test_report.py \
             --junit build/reports/unit.xml build/reports/ui-*.xml \
-            --xcresult build/results/unit.xcresult \
+            --xcresult "${COVERAGE_XCRESULT:-build/results/unit.xcresult}" \
+            --coverage-note "${COVERAGE_NOTE:-unit run only}" \
             --screenshots-dir build/report/screenshots \
             --skipped-file build/results/skipped.txt \
             --out-dir build/report

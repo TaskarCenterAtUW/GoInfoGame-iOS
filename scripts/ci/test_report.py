@@ -9,7 +9,8 @@ Each --junit value is one "run" (e.g. the unit run, or the UI run on one device)
   * "iPhone 16 Pro=path.xml"   -> explicit label
 Globs are expanded, so `--junit "build/reports/*.xml"` also works.
 
---xcresult points at a .xcresult bundle used only for the code-coverage table.
+--xcresult points at a .xcresult bundle used only for the code-coverage table. The workflow passes
+a bundle merged from the unit and UI runs, so the table reflects both (--coverage-note says so).
 
 Everything is stdlib-only so it runs on any macOS runner with python3.
 Metadata (repo / branch / commit / run link) is read from GitHub Actions env vars.
@@ -198,7 +199,7 @@ def _n(cases: list[Case], status: str) -> int:
 
 def build_markdown(cases: list[Case], run_order: list[str], cov: dict | None,
                    meta: dict, screens_dir: str = "", out_dir: str = "",
-                   skipped_devices: list[str] | None = None) -> str:
+                   skipped_devices: list[str] | None = None, coverage_note: str = "") -> str:
     skipped_devices = skipped_devices or []
     total = len(cases)
     passed, failed, skipped = _n(cases, "passed"), _n(cases, "failed"), _n(cases, "skipped")
@@ -275,16 +276,30 @@ def build_markdown(cases: list[Case], run_order: list[str], cov: dict | None,
 
     # ---- coverage
     if cov and cov.get("targets"):
-        L += ["## Code coverage", "",
-              "| Target | Coverage | Covered / Executable lines |", "|---|--:|--:|"]
+        targets = cov["targets"]
+
+        def is_test_bundle(t: dict) -> bool:
+            return str(t.get("name", "")).endswith((".xctest", ".xctest/"))
+
+        app = next((t for t in targets if str(t.get("name", "")).startswith("GoInfoGame.app")), None)
+        L += ["## Code coverage", ""]
+        if coverage_note:
+            L += [f"_Source: {coverage_note}._", ""]
+        if app:
+            L += [f"**App code (`{app.get('name')}`): {fmt_pct(app.get('lineCoverage', 0.0))}** "
+                  f"({app.get('coveredLines', 0)} / {app.get('executableLines', 0)} lines)", ""]
+        L += ["| Target | Coverage | Covered / Executable lines |", "|---|--:|--:|"]
         tot_cov = tot_exe = 0
-        for t in sorted(cov["targets"], key=lambda t: t.get("name", "")):
+        # The app first, then everything else alphabetically.
+        ordered = sorted(targets, key=lambda t: (0 if t is app else 1, t.get("name", "")))
+        for t in ordered:
             covd, exe = t.get("coveredLines", 0), t.get("executableLines", 0)
-            tot_cov += covd
-            tot_exe += exe
+            if not is_test_bundle(t):
+                tot_cov += covd
+                tot_exe += exe
             L.append(f"| {t.get('name','?')} | {fmt_pct(t.get('lineCoverage',0.0))} | {covd} / {exe} |")
         if tot_exe:
-            L.append(f"| **Overall** | **{fmt_pct(tot_cov/tot_exe)}** | **{tot_cov} / {tot_exe}** |")
+            L.append(f"| **Overall (excluding test bundles)** | **{fmt_pct(tot_cov/tot_exe)}** | **{tot_cov} / {tot_exe}** |")
         L.append("")
 
     # ---- passing list (collapsed)
@@ -458,6 +473,8 @@ def main() -> int:
     ap.add_argument("--junit", nargs="+", required=True,
                     help='One or more "LABEL=path" or "path" (globs ok).')
     ap.add_argument("--xcresult", default="")
+    ap.add_argument("--coverage-note", default="",
+                    help="Shown above the coverage table, e.g. which runs the coverage came from.")
     ap.add_argument("--screenshots-dir", default="",
                     help="xcparse screenshots output tree; failure screenshots get embedded")
     ap.add_argument("--skipped-file", default="",
@@ -494,7 +511,8 @@ def main() -> int:
 
     os.makedirs(args.out_dir, exist_ok=True)
     md = build_markdown(cases, run_order, coverage_from_xcresult(args.xcresult),
-                        collect_meta(), args.screenshots_dir, args.out_dir, skipped_devices)
+                        collect_meta(), args.screenshots_dir, args.out_dir, skipped_devices,
+                        args.coverage_note)
 
     md_path = os.path.join(args.out_dir, "test-report.md")
     html_path = os.path.join(args.out_dir, "test-report.html")
