@@ -1,0 +1,7 @@
+{
+  "ios": {
+    "prod": { "min_required_version": "0.0.1", "latest_version": "0.0.1" },
+    "stage": { "min_required_version": "0.0.1", "latest_version": "0.0.1" },
+    "dev": { "min_required_version": "0.0.1", "latest_version": "0.0.1" }
+  }
+}

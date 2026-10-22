@@ -36,14 +36,18 @@ struct PosmLoginView: View {
                             .frame(minHeight: geometry.size.height)
                     }
                     if #available(iOS 16.4, *) {
-                        scrollView.scrollBounceBehavior(.basedOnSize)
+                        scrollView
+                            .scrollBounceBehavior(.basedOnSize)
+                            .accessibilityIdentifier(A11yID.Login.scrollView)
                     } else {
                         scrollView
+                            .accessibilityIdentifier(A11yID.Login.scrollView)
                     }
                 }
 
                 if viewModel.isLoading {
                     ActivityView(activityText: "Loading...")
+                        .accessibilityIdentifier(A11yID.Login.loadingIndicator)
                         .frame(maxWidth: .infinity, maxHeight: .infinity)
                         .background(Color.black.opacity(0.4))
                         .edgesIgnoringSafeArea(.all)
@@ -131,13 +135,15 @@ struct PosmLoginView: View {
                     }
                     .frame(minHeight: 250)
                                     
-                    FloatingLabelTextField(title: "Username", text: $viewModel.username)
+                    FloatingLabelTextField(title: "Username", text: $viewModel.username,
+                                           accessibilityID: A11yID.Login.usernameField)
                         .padding(10)
                         .cornerRadius(10)
                         .padding(.horizontal, 40)
                         .textInputAutocapitalization(.never)
                     
-                    FloatingLabelTextField(title: "Password", text: $viewModel.password, isSecure:  true)
+                    FloatingLabelTextField(title: "Password", text: $viewModel.password, isSecure:  true,
+                                           accessibilityID: A11yID.Login.passwordField)
                         .padding(10)
                         .cornerRadius(10)
                         .padding(.horizontal, 40)
@@ -163,6 +169,7 @@ struct PosmLoginView: View {
                             .background(Color(.systemGray6))
                             .cornerRadius(10)
                         }
+                        .accessibilityIdentifier(A11yID.Login.environmentPicker)
                         .padding(.horizontal, 40)
                     }
                     
@@ -182,6 +189,7 @@ struct PosmLoginView: View {
                             .background(Asset.Colors.huskyPurple.swiftUIColor)
                             .cornerRadius(25)
                     }
+                    .accessibilityIdentifier(A11yID.Login.loginButton)
                     .padding(.top, 20)
                     .padding(.horizontal, 40)
                     
@@ -219,14 +227,17 @@ struct PosmLoginView: View {
                             Label(BiometricAuthManager.biometricLabelText(), systemImage: BiometricAuthManager.biometricIcon())
                                 .font(FontFamily.Lato.bold.swiftUIFont(size: 18, relativeTo: .headline))
                                 .foregroundColor(.blue)
+                                .frame(minHeight: 44.0)
                                 .multilineTextAlignment(.center)
                                 .lineLimit(nil)
                         }
+                        .accessibilityIdentifier(A11yID.Login.biometricButton)
                         .padding(.top, 10)
                     }
-                    
+
                     if viewModel.hasLoginFailed {
                         Text(viewModel.loginFailedMessage ??  "Invalid Credentials")
+                            .accessibilityIdentifier(A11yID.Login.errorMessage)
                             .foregroundColor(.red)
                             .padding(.top, 10)
                             .font(FontFamily.Lato.medium.swiftUIFont(size: 18, relativeTo: .headline))
@@ -242,19 +253,64 @@ struct PosmLoginView: View {
                             Text("Exit debug mode")
                                 .font(FontFamily.Lato.bold.swiftUIFont(size: 16, relativeTo: .headline))
                                 .foregroundColor(Asset.Colors.d74BA827Pink.swiftUIColor)
+                                .frame(minHeight: 44)
                                 .multilineTextAlignment(.center)
                                 .lineLimit(nil)
                         }
+                        .accessibilityIdentifier(A11yID.Login.exitDebugModeButton)
                         .padding(.bottom, 5)
                     }
                     HStack {
                         appVersionText
+                            .accessibilityIdentifier(A11yID.Login.appVersionLabel)
                             .accessibilityRespondsToUserInteraction()
                             .onTapGesture(count: 7, perform: {
                                 if !debugMode {
                                     showEnableDebugModeAlert = true
                                 }
                             })
+
+                        #if DEBUG
+                        if UITestRuntime.isActive {
+                            // XCUITest cannot reliably drive the native 7-tap gesture
+                            // above: its synthesized taps are independent touch-down/
+                            // touch-up pairs injected through XCTest's own event
+                            // pipeline, which does not feed UIKit's multi-tap gesture
+                            // recognizer the way a real finger does, regardless of how
+                            // tightly they're spaced from the test side (confirmed:
+                            // identical taps worked instantly by hand, never registered
+                            // once under automation, padding the count made no
+                            // difference either). Rather than change the real gesture to
+                            // accommodate testing, this is an ADDITIONAL element that
+                            // reaches the exact same state via one ordinary tap - which
+                            // XCUITest handles perfectly reliably, as does every other
+                            // interaction in this suite. It only exists when launched
+                            // under a UI test (never in Release, and never during
+                            // ordinary manual DEBUG-build use, since UITestRuntime
+                            // .isActive is false in both), so it has zero effect on any
+                            // real user or developer. The real 7-tap gesture above is
+                            // completely unmodified.
+                            //
+                            // What this means for coverage: automated tests can fully
+                            // exercise everything the debug-mode feature DOES once
+                            // triggered (the alert, environment picker, disable flow),
+                            // using this as a deterministic entry point - but they
+                            // cannot verify that exactly 7 real taps, and not some other
+                            // count, is what triggers it in production. That one detail
+                            // needs a manual check.
+                            Color.clear
+                                .frame(width: 44, height: 44)
+                                .contentShape(Rectangle())
+                                .accessibilityIdentifier(A11yID.Login.debugModeUITestUnlock)
+                                .accessibilityAddTraits(.isButton)
+                                .accessibilityRespondsToUserInteraction()
+                                .onTapGesture {
+                                    if !debugMode {
+                                        showEnableDebugModeAlert = true
+                                    }
+                                }
+                        }
+                        #endif
                     }
                     .frame(maxWidth: .infinity)
                     
@@ -286,6 +342,7 @@ struct PosmLoginView: View {
                 .lineLimit(nil)
                 .accessibilityLabel("Forgot password?")
         }
+        .accessibilityIdentifier(A11yID.Login.forgotPasswordButton)
     }
     
     var iAmNewUser: some View {
@@ -300,6 +357,7 @@ struct PosmLoginView: View {
                 .lineLimit(nil)
                 .accessibilityLabel("I'm a new user. Tap to learn more.")
         }
+        .accessibilityIdentifier(A11yID.Login.newUserButton)
     }
     
     var contactUs: some View {
@@ -315,6 +373,7 @@ struct PosmLoginView: View {
                 .padding()
                 .accessibilityLabel("Questions? Contact Us. Tap to open email client")
         }
+        .accessibilityIdentifier(A11yID.Login.contactUsButton)
     }
     
     var accessMapRoute: some View {
@@ -331,6 +390,7 @@ struct PosmLoginView: View {
                 .accessibilityLabel("Looking for AccessMap Route? Tap to open AccessMap website")
             
         }
+        .accessibilityIdentifier(A11yID.Login.accessMapButton)
     }
     
     private func openURL(url: String) {

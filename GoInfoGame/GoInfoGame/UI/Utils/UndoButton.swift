@@ -55,6 +55,7 @@ struct UndoButton: View {
                 }
                 .padding(.leading, 12)
                 .padding(.top, 20)
+                .accessibilityIdentifier(A11yID.Map.undoButton)
             }
 
             if showUndoPopup, let item = selectedUndoItem {
@@ -114,6 +115,7 @@ struct UndoButton: View {
                     onRemovePreview()
                 }
                 .frame(minHeight: 44)
+                .accessibilityIdentifier(A11yID.Map.undoPopupCancelButton)
 
                 Spacer()
 
@@ -127,6 +129,7 @@ struct UndoButton: View {
                 .frame(minHeight: 44)
                 .background(Color.red)
                 .cornerRadius(8)
+                .accessibilityIdentifier(A11yID.Map.undoPopupRevertButton)
             }
         }
         .padding()

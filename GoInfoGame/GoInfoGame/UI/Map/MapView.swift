@@ -196,6 +196,7 @@ struct MapView: View {
                     )
                     .accessibilityElement(children: .combine)
                     .accessibilityLabel(alertMessage)
+                    .accessibilityIdentifier(A11yID.Map.syncStatusAlert)
                     .onAppear {
                         DispatchQueue.main.asyncAfter(deadline: .now() + 2) { showAlert = false }
                     }
@@ -216,6 +217,7 @@ struct MapView: View {
                             }
                             .accessibilityLabel(L10n.Localizable.mapModes)
                             .accessibilitySortPriority(1)
+                            .accessibilityIdentifier(A11yID.Map.layersButton)
 
                             // Download data
                             FloatingActionButton(name: "download", iconSize: 20) {
@@ -223,6 +225,7 @@ struct MapView: View {
                             }
                             .accessibilityLabel(L10n.Localizable.downloadData)
                             .accessibilitySortPriority(1)
+                            .accessibilityIdentifier(A11yID.Map.downloadButton)
                         }
                     }
                     .padding(.top, 24)
@@ -239,6 +242,15 @@ struct MapView: View {
                                 onRevert: { id in MapUndoManager.shared.undo(for: id) }
                             )
                             .accessibilitySortPriority(1)
+                            // The identifier lives on the trigger Button inside
+                            // UndoButton.swift itself, not here: this view also renders
+                            // the sidebar (a multi-child container) once tapped, and
+                            // confirmed directly that an identifier applied to a
+                            // stateful wrapper like that stamps onto every leaf in
+                            // WHICHEVER state is showing - it silently overwrote the
+                            // sidebar's own close-button identifier. Applying it inside,
+                            // on just the trigger Button leaf, keeps this reachable in
+                            // its collapsed state without that collision.
 
                             if case .wmts(let server) = viewModel.selectedOption,
                                server.attribution.attributionRequired,
@@ -266,6 +278,7 @@ struct MapView: View {
                             CompassButtonView(heading: heading) {
                                 mapViewRef?.resetNorth()
                             }
+                            .accessibilityIdentifier(A11yID.Map.compassButton)
 
                             // Zoom in / out — grouped pill
                             if showMapZoomButtons {
@@ -298,8 +311,10 @@ struct MapView: View {
                             }
                             .accessibilityLabel(L10n.Localizable.currentLocation)
                             .accessibilitySortPriority(1)
-                            
+                            .accessibilityIdentifier(A11yID.Map.myLocationButton)
+
                             ScaleBarView(metersPerPoint: metersPerPoint)
+                                .accessibilityIdentifier(A11yID.Map.scaleBar)
                         }
                         .padding(.bottom, 24)
                         .padding(.trailing, 8)
@@ -332,6 +347,7 @@ struct MapView: View {
                             }
                         }
                     )
+                    .accessibilityIdentifier(A11yID.Map.multiSelectSheet)
                     .transition(.move(edge: .bottom))
                     .animation(.easeInOut, value: viewModel.selectedAnnotaions.count)
                 }
@@ -346,6 +362,9 @@ struct MapView: View {
                         onCreateNote: { choosePinFlow(.createNote) },
                         onAddFeature: { choosePinFlow(.addFeature) }
                     )
+                    // No identifier here: see A11yID.swift's comment on
+                    // pinChoiceCreateNoteButton for why - this card's own two buttons
+                    // carry the only identifiers that matter.
                     .position(pinChoiceScreenPoint)
                     .ignoresSafeArea()
                     .transition(.opacity.combined(with: .scale(scale: 0.9, anchor: .top)))
@@ -424,6 +443,7 @@ struct MapView: View {
                             .clipShape(Circle())
                             .accessibilityLabel(L10n.Localizable.profile)
                     }
+                    .accessibilityIdentifier(A11yID.Map.profileButton)
 
                     Rectangle()
                         .fill(Asset.Colors.ddddddLine.swiftUIColor)
@@ -443,6 +463,14 @@ struct MapView: View {
                                     .multilineTextAlignment(.leading)
                             }
                         }
+                        // No accessibilityIdentifier here: the outer VStack below applies
+                        // .accessibilityElement(children: .combine), which collapses this
+                        // ScrollView into that single combined element for VoiceOver users -
+                        // correct, deliberate behavior, left untouched - so an identifier on
+                        // the ScrollView itself would be structurally unreachable by
+                        // XCUITest regardless (confirmed directly: it never surfaced as a
+                        // queryable element). workspaceTitleButton (below) is what a test
+                        // should query.
                         // Fixed size so the toolbar measures this item identically on every layout pass
                         // (an unconstrained ScrollView was sized ambiguously, which is what caused the
                         // leading toolbar content to shift/wrap differently after returning from Profile).
@@ -454,6 +482,7 @@ struct MapView: View {
                         .accessibilityElement(children: .combine)
                         .accessibilityLabel("\(L10n.Localizable.workspace): \(selectedWorkspace.title)")
                         .accessibilityAddTraits(.isButton)
+                        .accessibilityIdentifier(A11yID.Map.workspaceTitleButton)
                     }
                 }
             }
@@ -509,10 +538,12 @@ struct MapView: View {
                         }
                     }
                 )
+                .accessibilityIdentifier(A11yID.Map.syncButton)
             }
 
             ToolbarItem(placement: .topBarTrailing) {
                 accessbilityButton
+                    .accessibilityIdentifier(A11yID.Map.accessibilityModeButton)
             }
 
             ToolbarItem(placement: .topBarTrailing) {
@@ -536,6 +567,7 @@ struct MapView: View {
                 .buttonStyle(.plain)
                 .labelStyle(.iconOnly)
                 .accessibilityLabel(L10n.Localizable.manageQuests)
+                .accessibilityIdentifier(A11yID.Map.manageQuestsButton)
                 .sheet(isPresented: $showFilterQuestsSheet) {
                     ManageQuestsView()
                         // Sized to its own content by ManageQuestsView itself.
@@ -1015,6 +1047,7 @@ struct QuestSheetView: View {
                         .foregroundColor(.green)
                     Text(message)
                         .multilineTextAlignment(.center)
+                        .accessibilityIdentifier(A11yID.LongForm.alreadyAnsweredMessage)
                     Button(action: { dismiss() }) {
                         Text("OK")
                             .foregroundColor(.white)
@@ -1023,6 +1056,7 @@ struct QuestSheetView: View {
                             .background(Asset.Colors.huskyPurple.swiftUIColor)
                             .cornerRadius(12)
                     }
+                    .accessibilityIdentifier(A11yID.LongForm.alreadyAnsweredOKButton)
                 }
                 .padding(24)
             } else if let selectedQuest = viewModel.getSelectedQuest() {
@@ -1037,6 +1071,12 @@ struct QuestSheetView: View {
                 EmptyView()
             }
         }
+        // No identifier on this Group: each of its three branches (ProgressView, the
+        // already-answered VStack, LongForm) has several independent children, and
+        // confirmed directly that stamping one here overwrites every one of their own
+        // more specific identifiers (LongForm's dismiss/submit/option buttons included)
+        // with this single value. Each branch's own leaves carry the only identifiers
+        // that matter now.
         .task(id: viewModel.selectedQuest?.id) {
             guard !viewModel.isMultiSelectModeEnabled,
                   let longQuest = viewModel.getSelectedQuest()?.parent as? LongElementQuest else {
@@ -1136,6 +1176,7 @@ struct ConflictResolutionSheet: View {
                                 .fontWeight(.semibold))
                                 .tag(TagResolutionChoice.useMine)
                                 .accessibilityLabel("\(question). Your answer: \(tag.answeredValue)")
+                                .accessibilityIdentifier(A11yID.ConflictResolution.useMineChoice(tagKey: tag.key))
                             (Text("Existing value: ")
                                 .foregroundColor(Asset.Colors.a2A2A2Gray.swiftUIColor)
                              + Text(tag.existingValue)
@@ -1143,6 +1184,7 @@ struct ConflictResolutionSheet: View {
                                 .fontWeight(.semibold))
                                 .tag(TagResolutionChoice.useServer)
                                 .accessibilityLabel("\(question). Existing value on the server: \(tag.existingValue)")
+                                .accessibilityIdentifier(A11yID.ConflictResolution.useServerChoice(tagKey: tag.key))
                         }
                         .pickerStyle(.inline)
                         .labelsHidden()
@@ -1165,6 +1207,7 @@ struct ConflictResolutionSheet: View {
                         dismiss()
                     }
                     .accessibilityHint("Discards your choices and leaves this element unsynced")
+                    .accessibilityIdentifier(A11yID.ConflictResolution.cancelButton)
                 }
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Confirm") {
@@ -1173,6 +1216,7 @@ struct ConflictResolutionSheet: View {
                     }
                     .foregroundStyle(Asset.Colors.huskyPurple.swiftUIColor)
                     .accessibilityHint("Applies your chosen values for each tag and continues syncing")
+                    .accessibilityIdentifier(A11yID.ConflictResolution.confirmButton)
                 }
             }
         }
@@ -1256,8 +1300,14 @@ struct MultiQuestSelectionBottomSheet: View {
                 Text("**Select \(selectedAnnotationType):**").font(.headline)
                 Text("\(selectedCount) \(selectedAnnotationType.lowercased()) selected")
                     .font(.subheadline).foregroundColor(.gray)
+                    .accessibilityIdentifier(A11yID.Map.multiSelectCountLabel)
                 Spacer()
             }
+            // Without this, SwiftUI auto-merges the two sibling Text views into one
+            // VoiceOver element, and the count Text's own identifier above becomes
+            // structurally unreachable by XCUITest (same failure mode documented on
+            // this file's workspaceTitleButton) - .contain keeps each child queryable.
+            .accessibilityElement(children: .contain)
             .padding()
 
             VStack {
@@ -1269,6 +1319,7 @@ struct MultiQuestSelectionBottomSheet: View {
                     }
                 }
                 .padding()
+                .accessibilityIdentifier(A11yID.Map.multiSelectAnswerQuestsButton)
                 Divider()
                 Button(action: onCancel) {
                     HStack {
@@ -1278,7 +1329,15 @@ struct MultiQuestSelectionBottomSheet: View {
                     }
                 }
                 .padding()
+                .accessibilityIdentifier(A11yID.Map.multiSelectCancelButton)
             }
+            // Same reasoning as the count-label row above: without a .contain boundary
+            // here, the outer call site's own .accessibilityIdentifier(multiSelectSheet)
+            // (MapView.swift, where this view is constructed) recursively overrides these
+            // two buttons' own identifiers instead of just tagging this group - confirmed
+            // directly (both buttons showed up as identifier 'map_multi_select_sheet' in
+            // the accessibility snapshot, not their own answerQuests/cancel identifiers).
+            .accessibilityElement(children: .contain)
             .background(Color.white)
             .cornerRadius(20)
             .padding()
@@ -1308,6 +1367,7 @@ struct PinChoiceCard: View {
                     .padding(.vertical, 14)
             }
             .foregroundStyle(Asset.Colors._42526ETextFieldText.swiftUIColor)
+            .accessibilityIdentifier(A11yID.Map.pinChoiceCreateNoteButton)
 
             Divider()
 
@@ -1319,6 +1379,7 @@ struct PinChoiceCard: View {
                     .padding(.vertical, 14)
             }
             .foregroundStyle(Asset.Colors._42526ETextFieldText.swiftUIColor)
+            .accessibilityIdentifier(A11yID.Map.pinChoiceAddFeatureButton)
         }
         .frame(width: 220)
         .background(Color(.systemBackground))

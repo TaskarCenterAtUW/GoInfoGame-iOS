@@ -1,0 +1,15 @@
+{
+  "status": { "apiCode": 600, "apiMessage": "Success", "httpCode": 200, "httpMessage": "Success" },
+  "osv": {
+    "photo": {
+      "id": "777001",
+      "sequenceId": "9001",
+      "dateAdded": "2026-10-15 09:00:05",
+      "sequenceIndex": "1",
+      "photoName": "osmlogo.jpeg",
+      "lat": "17.4385",
+      "lng": "78.361",
+      "path": "files/photo/2026/10/15/777001.jpg"
+    }
+  }
+}

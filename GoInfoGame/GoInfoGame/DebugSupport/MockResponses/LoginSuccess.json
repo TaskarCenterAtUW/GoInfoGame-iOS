@@ -1,0 +1,6 @@
+{
+  "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRlc3RAZW1haWwuY29tIiwic3ViIjoidWl0ZXN0LXVzZXItMDAwMSIsInByZWZlcnJlZF91c2VybmFtZSI6InRlc3RAZW1haWwuY29tIiwiZXhwIjo0MTAyNDQ0ODAwLCJpYXQiOjE3MDAwMDAwMDB9.uitest-signature-not-verified",
+  "expires_in": 86400,
+  "refresh_expires_in": 172800,
+  "refresh_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1aXRlc3QtdXNlci0wMDAxIiwiZXhwIjo0MTAyNDQ0ODAwfQ.uitest-refresh-signature"
+}

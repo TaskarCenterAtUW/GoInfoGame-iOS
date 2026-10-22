@@ -1,0 +1,185 @@
+{
+  "_note": "UI-test fixture: bodies for GET /way/{id}.json and GET /node/{id}.json, keyed by id. SYNTHESIZED in the real OSM 0.6 response shape (osmapi OSMWayResponse/OSMNodeResponse). 121949 = newer server state (surface+width added), 409777 = fully answered by someone else, 409776 = duplicates its own map-data tags plus the two synthetic component-type-demo tags (ext:text_entry, ext:component:quest_type-MultipleChoice) also added to its LongFormOSMElements.json entry - this override EXISTS for 409776 (unlike 409893/900101 below, which genuinely have none), so any tag added to one has to be added to the other too or the freshness fetch silently discards it (confirmed directly: adding those two tags only to the map-data fixture left them missing from the form entirely, since QuestSheetView always rebuilds it from this file's response, not the map data, once the freshness fetch succeeds). Every other id (409893, 900101) truly has no override, so the stub falls back to echoing that element's own entry from the map data. Replace with real captured responses if you like.",
+  "way": {
+    "121949": {
+      "version": "0.6",
+      "generator": "openstreetmap-cgimap 2.1.0 (51 ws-osm-cgimap-dev--0000003-7549cc885-kvvs2)",
+      "copyright": "OpenStreetMap and contributors",
+      "attribution": "http://www.openstreetmap.org/copyright",
+      "license": "http://opendatacommons.org/licenses/odbl/1-0/",
+      "elements": [
+        {
+          "type": "way",
+          "id": 121949,
+          "timestamp": "2026-06-12T06:05:30Z",
+          "version": 2,
+          "changeset": 308,
+          "user": "Srikanth Voonna",
+          "uid": 27,
+          "nodes": [
+            800010,
+            800011
+          ],
+          "tags": {
+            "footway": "sidewalk",
+            "highway": "footway",
+            "ext:surface": "asphalt",
+            "width": "36"
+          }
+        }
+      ]
+    },
+    "409777": {
+      "version": "0.6",
+      "generator": "openstreetmap-cgimap 2.1.0 (51 ws-osm-cgimap-dev--0000003-7549cc885-kvvs2)",
+      "copyright": "OpenStreetMap and contributors",
+      "attribution": "http://www.openstreetmap.org/copyright",
+      "license": "http://opendatacommons.org/licenses/odbl/1-0/",
+      "elements": [
+        {
+          "type": "way",
+          "id": 409777,
+          "timestamp": "2025-11-07T03:33:33Z",
+          "version": 3,
+          "changeset": 119,
+          "user": "Srikanth Voonna",
+          "uid": 27,
+          "nodes": [
+            800020,
+            800021
+          ],
+          "tags": {
+            "ext:gig_complete": "yes",
+            "ext:gig_last_updated": "2025-11-07",
+            "ext:osm_id": "2706869",
+            "ext:surface": "concrete",
+            "footway": "sidewalk",
+            "highway": "footway",
+            "_id": "1061",
+            "ext:text_entry": "Done",
+            "ext:component:quest_type-MultipleChoice": "choice_2",
+            "width": "48",
+            "ext:obstruction": "no"
+          }
+        }
+      ]
+    },
+    "409776": {
+      "version": "0.6",
+      "generator": "openstreetmap-cgimap 2.1.0 (51 ws-osm-cgimap-dev--0000003-7549cc885-kvvs2)",
+      "copyright": "OpenStreetMap and contributors",
+      "attribution": "http://www.openstreetmap.org/copyright",
+      "license": "http://opendatacommons.org/licenses/odbl/1-0/",
+      "elements": [
+        {
+          "type": "way",
+          "id": 409776,
+          "timestamp": "2026-09-02T11:55:52Z",
+          "version": 3,
+          "changeset": 775,
+          "user": "Srikanth Voonna",
+          "uid": 27,
+          "nodes": [
+            800030,
+            800031
+          ],
+          "tags": {
+            "ext:kartaview_url": "https://cdn.kartaview.org/pr:sharp/aHR0cHM6Ly9zdG9yYWdlMTMub3BlbnN0cmVldGNhbS5vcmcvZmlsZXMvcGhvdG8vMjAyNi85LzIvbHRoLzExNjk3Njg1XzNhOWVkXzZhOTgwZWMxYTA4NGMuanBlZw",
+            "ext:obstruction": "yes",
+            "ext:obstruction:type": "other",
+            "ext:osm_id": "2706868",
+            "footway": "sidewalk",
+            "highway": "footway",
+            "_id": "1060",
+            "ext:text_entry": "Uneven pavement near the entrance",
+            "ext:component:quest_type-MultipleChoice": "choice_1;choice_3"
+          }
+        }
+      ]
+    },
+    "409893": {
+      "version": "0.6",
+      "generator": "openstreetmap-cgimap 2.1.0 (51 ws-osm-cgimap-dev--0000003-7549cc885-kvvs2)",
+      "copyright": "OpenStreetMap and contributors",
+      "attribution": "http://www.openstreetmap.org/copyright",
+      "license": "http://opendatacommons.org/licenses/odbl/1-0/",
+      "elements": [
+        {
+          "type": "way",
+          "id": 409893,
+          "timestamp": "2026-07-21T07:13:54Z",
+          "version": 49,
+          "changeset": 555,
+          "user": "Srikanth Voonna",
+          "uid": 27,
+          "nodes": [
+            800050,
+            800051
+          ],
+          "tags": {
+            "footway": "crossing",
+            "highway": "footway",
+            "_id": "1177"
+          }
+        }
+      ]
+    },
+    "900001": {
+      "version": "0.6",
+      "generator": "openstreetmap-cgimap 2.1.0 (51 ws-osm-cgimap-dev--0000003-7549cc885-kvvs2)",
+      "copyright": "OpenStreetMap and contributors",
+      "attribution": "http://www.openstreetmap.org/copyright",
+      "license": "http://opendatacommons.org/licenses/odbl/1-0/",
+      "elements": [
+        {
+          "type": "way",
+          "id": 900001,
+          "timestamp": "2026-06-12T06:05:30Z",
+          "version": 4,
+          "changeset": 775,
+          "user": "Srikanth Voonna",
+          "uid": 27,
+          "nodes": [
+            800040,
+            800041
+          ],
+          "tags": {
+            "highway": "footway",
+            "footway": "sidewalk",
+            "ext:text_entry": "Done",
+            "ext:component:quest_type-MultipleChoice": "choice_2",
+            "ext:surface": "asphalt",
+            "width": "48",
+            "ext:obstruction": "no"
+          }
+        }
+      ]
+    }
+  },
+  "node": {
+    "900101": {
+      "version": "0.6",
+      "generator": "openstreetmap-cgimap 2.1.0 (51 ws-osm-cgimap-dev--0000003-7549cc885-kvvs2)",
+      "copyright": "OpenStreetMap and contributors",
+      "attribution": "http://www.openstreetmap.org/copyright",
+      "license": "http://opendatacommons.org/licenses/odbl/1-0/",
+      "elements": [
+        {
+          "type": "node",
+          "id": 900101,
+          "lat": 17.4407458,
+          "lon": 78.363354,
+          "timestamp": "2026-06-12T06:05:30Z",
+          "version": 2,
+          "changeset": 1,
+          "user": "Srikanth Voonna",
+          "uid": 27,
+          "tags": {
+            "barrier": "kerb",
+            "kerb": "raised"
+          }
+        }
+      ]
+    }
+  }
+}

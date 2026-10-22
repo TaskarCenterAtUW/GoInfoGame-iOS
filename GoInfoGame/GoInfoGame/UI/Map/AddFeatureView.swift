@@ -37,6 +37,7 @@ struct AddFeatureView: View {
                         .foregroundStyle(Asset.Colors._83879BTextFiledTitle.swiftUIColor)
                         .padding()
                 }
+                .accessibilityIdentifier(A11yID.AddFeature.closeButton)
             }
 
             if questsRepository.featurePresets.isEmpty {
@@ -46,6 +47,7 @@ struct AddFeatureView: View {
                     .foregroundColor(Asset.Colors._83879BTextFiledTitle.swiftUIColor)
                     .multilineTextAlignment(.center)
                     .padding()
+                    .accessibilityIdentifier(A11yID.AddFeature.noPresetsMessage)
                 Spacer()
             } else {
                 ScrollView {
@@ -67,6 +69,7 @@ struct AddFeatureView: View {
                                 .cornerRadius(5)
                             }
                             .accessibilityLabel(preset.name)
+                            .accessibilityIdentifier(A11yID.AddFeature.presetButton(name: preset.name))
                         }
                     }
                     .padding()
@@ -181,6 +184,7 @@ struct FeatureSubmissionView: View {
                         .font(FontFamily.Lato.bold.swiftUIFont(size: 24))
                         .foregroundStyle(Asset.Colors._83879BTextFiledTitle.swiftUIColor)
                 }
+                .accessibilityIdentifier(A11yID.AddFeature.submissionCloseButton)
             }
             .padding()
 
@@ -190,6 +194,7 @@ struct FeatureSubmissionView: View {
                     .background(Asset.Colors.f5F5F5LightGrayBackground.swiftUIColor)
                     .cornerRadius(8)
                     .padding()
+                    .accessibilityIdentifier(A11yID.AddFeature.submissionNoteTextEditor)
 
                 if noteText.isEmpty {
                     Text("Add any notes about this feature (optional)")
@@ -210,6 +215,7 @@ struct FeatureSubmissionView: View {
                 .foregroundColor(Asset.Colors._83879BTextFiledTitle.swiftUIColor)
                 .frame(maxWidth: .infinity, alignment: .trailing)
                 .padding(.horizontal)
+                .accessibilityIdentifier(A11yID.AddFeature.submissionNoteCharCountLabel)
 
             photosSection
 
@@ -224,6 +230,7 @@ struct FeatureSubmissionView: View {
                         .background(Asset.Colors.huskyPurple.swiftUIColor)
                         .cornerRadius(23)
                 }
+                .accessibilityIdentifier(A11yID.AddFeature.submissionSubmitButton)
                 Spacer()
             }
             .padding(.horizontal, 20)
@@ -252,6 +259,7 @@ struct FeatureSubmissionView: View {
                 .font(FontFamily.Lato.bold.swiftUIFont(size: 16))
                 .foregroundStyle(Asset.Colors.huskyPurple.swiftUIColor)
             }
+            .accessibilityIdentifier(A11yID.AddFeature.submissionAddPhotoButton)
             .padding(.horizontal)
 
             if !capturedImages.isEmpty {
