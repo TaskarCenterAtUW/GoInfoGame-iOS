@@ -41,6 +41,8 @@ class Case:
     status: str  # "passed" | "failed" | "skipped"
     message: str = ""
     detail: str = ""
+    attempts: int = 1          # how many times -retry-tests-on-failure ran it
+    failed_attempts: int = 0   # ...and how many of those attempts failed
 
 
 # ---------------------------------------------------------------- parsing
@@ -170,8 +172,46 @@ def dedupe_retries(cases: list[Case]) -> list[Case]:
         final = passed[-1] if passed else (failed[-1] if failed else attempts[-1])
         out.append(Case(final.run, final.suite, final.name,
                         sum(a.time for a in attempts), final.status,
-                        final.message, final.detail))
+                        final.message, final.detail,
+                        attempts=len(attempts), failed_attempts=len(failed)))
     return out
+
+
+def write_deduped_junit(cases: list[Case], run_files: "OrderedDict[str, str]", out_dir: str) -> list[str]:
+    """Write one JUnit file per run containing each test ONCE, with its final outcome.
+
+    The raw xcbeautify JUnit lists every -retry-tests-on-failure attempt as its own <testcase>,
+    so anything that counts testcases (e.g. the GitHub "iOS test results" check) reports a test
+    that failed once and then passed as a failure, and inflates the total. A test that passed on a
+    retry is written as passed, with a note in <system-out> so the flakiness is still visible.
+    """
+    os.makedirs(out_dir, exist_ok=True)
+    written: list[str] = []
+    for run, filename in run_files.items():
+        run_cases = [c for c in cases if c.run == run]
+        root = ET.Element("testsuites")
+        by_suite: "OrderedDict[str, list[Case]]" = OrderedDict()
+        for c in run_cases:
+            by_suite.setdefault(c.suite, []).append(c)
+        for suite, cs in by_suite.items():
+            suite_el = ET.SubElement(root, "testsuite", name=suite, tests=str(len(cs)),
+                                     failures=str(sum(1 for c in cs if c.status == "failed")),
+                                     skipped=str(sum(1 for c in cs if c.status == "skipped")),
+                                     time=f"{sum(c.time for c in cs):.3f}")
+            for c in cs:
+                tc = ET.SubElement(suite_el, "testcase", classname=suite, name=c.name, time=f"{c.time:.3f}")
+                if c.status == "failed":
+                    f = ET.SubElement(tc, "failure", message=c.message or "failed")
+                    f.text = c.detail or c.message
+                elif c.status == "skipped":
+                    ET.SubElement(tc, "skipped", message=c.message or "skipped")
+                if c.attempts > 1:
+                    note = (f"Ran {c.attempts} times ({c.failed_attempts} failed attempt(s)); final result: {c.status}.")
+                    ET.SubElement(tc, "system-out").text = note
+        path = os.path.join(out_dir, filename)
+        ET.ElementTree(root).write(path, encoding="utf-8", xml_declaration=True)
+        written.append(path)
+    return written
 
 
 def coverage_from_xcresult(xcresult: str) -> dict | None:
@@ -480,6 +520,12 @@ def main() -> int:
     ap.add_argument("--skipped-file", default="",
                     help="file with one device name per line that was requested but not installed")
     ap.add_argument("--out-dir", default="build/report")
+    ap.add_argument("--junit-out", default="",
+                    help="Also write de-duplicated JUnit files here (one per run, retries collapsed). "
+                         "Point the GitHub check (action-junit-report) at these so retried-then-passed "
+                         "attempts are not counted as failures.")
+    ap.add_argument("--junit-only", action="store_true",
+                    help="Write the --junit-out files (and flaky-test warnings) and stop; no report.")
     args = ap.parse_args()
 
     skipped_devices: list[str] = []
@@ -508,6 +554,19 @@ def main() -> int:
     if before != len(cases):
         print(f"collapsed {before - len(cases)} retry attempt(s) into their parent test(s)",
               file=sys.stderr)
+
+    if args.junit_out:
+        run_files: "OrderedDict[str, str]" = OrderedDict()
+        for label, path in pairs:
+            run_files.setdefault(label, os.path.basename(path))
+        for written in write_deduped_junit(cases, run_files, args.junit_out):
+            print(f"wrote {written}", file=sys.stderr)
+        for c in cases:
+            if c.status == "passed" and c.failed_attempts:
+                print(f"::warning title=Flaky test::{c.run}: {c.suite}.{c.name} passed after "
+                      f"{c.failed_attempts} failed attempt(s) of {c.attempts}")
+    if args.junit_only:
+        return 0   # pass/fail of the job is decided by the test steps themselves
 
     os.makedirs(args.out_dir, exist_ok=True)
     md = build_markdown(cases, run_order, coverage_from_xcresult(args.xcresult),

@@ -281,11 +281,27 @@ jobs:
           echo "All UI device runs passed."
 
       # -------- reporting --------
+      # -retry-tests-on-failure makes xcbeautify write EVERY attempt of a test as its own
+      # <testcase>. Fed straight to the check below, a test that failed once and then passed
+      # on retry shows up as a failure (and inflates the total: 679 "tests" / 12 "failed" for
+      # a run whose 664 tests all passed). Collapse the attempts first - same rule the PDF
+      # report uses - and list the flaky ones as warnings instead.
+      - name: Collapse retried attempts for the test check
+        if: ${{ !cancelled() }}
+        continue-on-error: true
+        run: |
+          rm -rf build/reports-final
+          python3 scripts/ci/test_report.py \
+            --junit build/reports/unit.xml build/reports/ui-*.xml \
+            --junit-out build/reports-final --junit-only \
+            || { echo "::warning::could not collapse retries - the check will count every attempt"; \
+                 mkdir -p build/reports-final; cp build/reports/*.xml build/reports-final/; }
+
       - name: Publish test report (checks / PR annotations)
         uses: mikepenz/action-junit-report@v5
         if: ${{ !cancelled() }}
         with:
-          report_paths: build/reports/*.xml
+          report_paths: build/reports-final/*.xml
           check_name: iOS test results
           include_passed: true
           require_tests: true
