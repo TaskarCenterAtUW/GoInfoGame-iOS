@@ -19,7 +19,7 @@
 #
 # Knobs - env: block below:
 #   UNIT_SIMULATOR    - one device to run the unit tests on
-#   UI_SIMULATORS_DEFAULT   - UI test device(s) for push / PR / manual runs
+#   UI_SIMULATORS_DEFAULT   - UI test device(s) for PR / manual runs
 #   UI_SIMULATORS_SCHEDULED - newline-separated device list for the scheduled run
 #   UI_MAX_PARALLEL         - simulators run at the same time (1 = serial)
 #
@@ -30,7 +30,9 @@
 name: iOS Tests
 
 on:
-  push:
+  # Pull requests only: runs when a PR is opened or reopened and again for every push to a branch
+  # that has an open PR (the "synchronize" event). A plain push to a branch with no PR does not
+  # run anything. Manual runs and the Friday-night schedule below are unchanged.
   pull_request:
   workflow_dispatch:
   schedule:
@@ -39,11 +41,9 @@ on:
     # branch, and can start a few minutes late when GitHub is busy.
     - cron: "30 16 * * 5"
 
-# Only the newest commit on a branch runs: a new push/PR update cancels the older
-# in-flight (or queued) run for the same branch. head_ref (PRs) and ref_name
-# (pushes) are both the plain branch name, so a push and its PR share one group
-# instead of testing the same commit twice. The Friday-night scheduled run gets its
-# own group so a push to main never cancels the long full-device run.
+# Only the newest commit on a branch runs: a new push to the PR branch cancels the older
+# in-flight (or queued) run for the same branch. The Friday-night scheduled run gets its
+# own group so a push never cancels the long full-device run.
 concurrency:
   group: ios-tests-${{ github.head_ref || github.ref_name }}-${{ github.event_name == 'schedule' && 'scheduled' || 'normal' }}
   cancel-in-progress: true
