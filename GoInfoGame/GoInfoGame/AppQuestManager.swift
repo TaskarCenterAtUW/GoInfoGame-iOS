@@ -26,10 +26,11 @@ class AppQuestManager {
     private let seedBox = BBox(minLat: 47.70312160869372, maxLat: 47.718964653825054, minLon: -122.20866792353317, maxLon: -122.18570621653987)
     
     func getUpdatedQuest(elementId: String) -> DisplayUnitWithCoordinate? {
-        let nodesFromStorage = dbInstance.getNodes(NSPredicate(format: "tags.@count != 0"))
-        let waysFromStorage = dbInstance.getWays(NSPredicate(format: "tags.@count != 0"))
-        let theWay = waysFromStorage.first(where: {$0.id == Int64(elementId)})
-        let theNode = nodesFromStorage.first(where: {$0.id == Int64(elementId)})
+        // Primary-key lookups — scanning every stored node/way here ran on the main
+        // thread after each answer sync and grew with the workspace size.
+        let id = Int(elementId) ?? -1
+        let theNode = dbInstance.getNode(id: id).flatMap { $0.tags.count == 0 ? nil : $0 }
+        let theWay = dbInstance.getWay(id: id).flatMap { $0.tags.count == 0 ? nil : $0 }
         let allQuests = QuestsRepository.shared.applicableQuests
         // theElement if not equal to nil
         if (theNode != nil) {
@@ -132,7 +133,7 @@ class AppQuestManager {
                     // Create a duplicate of the quest
                     // Need to add another here.
                     let duplicateQuest = quest.quest.copyWithElement(element: way)
-                    let position  = dbInstance.getCenterForWay(id: way.id) ?? CLLocationCoordinate2D()
+                    let position = center(of: way) ?? dbInstance.getCenterForWay(id: way.id) ?? CLLocationCoordinate2D()
                     let unit = DisplayUnitWithCoordinate(displayUnit: duplicateQuest.displayUnit, coordinateInfo: position, id: way.id, isHidden: false)
                     displayUnits.append(unit)
                     wayQuests.append(duplicateQuest)
@@ -141,16 +142,22 @@ class AppQuestManager {
             }
         }
         debugPrint("process ways: end: \(Date())")
-        print("Sending back items")
-        print(allQuests)
-        
-        
         // get hidden ids from hiddenElements
-        let hiddenIds = HiddenQuestManager.shared.hiddenQuests.map { $0.id }
+        let hiddenIds = Set(HiddenQuestManager.shared.hiddenQuests.map { $0.id })
         let unitsToBeDisplayed = displayUnits.filter { !hiddenIds.contains($0.id) }
         return unitsToBeDisplayed
     }
     
+    /// Average of the way's stored polyline points — the same node coordinates
+    /// `getCenterForWay` averages, without one Realm lookup per node.
+    private func center(of way: Way) -> CLLocationCoordinate2D? {
+        guard !way.polyline.isEmpty else { return nil }
+        let count = Double(way.polyline.count)
+        let lat = way.polyline.reduce(0) { $0 + $1.latitude } / count
+        let lon = way.polyline.reduce(0) { $0 + $1.longitude } / count
+        return CLLocationCoordinate2D(latitude: lat, longitude: lon)
+    }
+
     // FIXME: Make this function better
     // Fetches the quest for a specific changeset based on the element
     // If there is no need to show the element after undo, it will return nil

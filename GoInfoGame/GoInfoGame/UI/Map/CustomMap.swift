@@ -366,7 +366,16 @@ struct CustomMap: UIViewRepresentable {
     /// of truth for the sheet's on-screen height).
     var questPathEdgePadding: (() -> UIEdgeInsets)?
 
+    // Larger on-disk ambient tile cache than MapLibre's 50 MB default, so panning back
+    // over an area reuses cached tiles instead of re-downloading them (slow on cellular).
+    private static let configureTileCache: Void = {
+        MLNOfflineStorage.shared.setMaximumAmbientCacheSize(200 * 1024 * 1024) { error in
+            if let error { print("Failed to set map tile cache size: \(error)") }
+        }
+    }()
+
     func makeUIView(context: Context) -> MLNMapView {
+        _ = CustomMap.configureTileCache
         // Bundled StreetComplete style — shared with the Android app so both
         // platforms render the same map theme. Glyphs/sprite inside the style
         // still resolve via "asset://", which maps to the main bundle's resource
@@ -465,6 +474,20 @@ struct CustomMap: UIViewRepresentable {
         private var clusterTimer: Timer?
         private var clusterGeneration = 0
         private var lastClusteredZoom: Double = -1
+        /// The in-flight background clustering pass, cancelled as soon as a newer one starts
+        /// so stale passes don't pile up on the CPU during continuous pinch/zoom.
+        private var currentClusterJob: ClusterJob?
+        /// Coordinate area (the viewport plus a margin) the displayed annotations were
+        /// computed for. Only quests inside it are put on the map; panning outside it
+        /// triggers a recluster.
+        private var clusteredBounds: MLNCoordinateBounds?
+        /// Annotation objects kept per quest id across data reloads, so a reload that
+        /// returns the same quests doesn't make MapLibre remove and re-add every pin.
+        private var annotationCache: [String: DisplayUnitAnnotation] = [:]
+        /// Overlap dots kept per hidden quest id, for the same reason.
+        private var overlapDotCache: [String: OverlapDotAnnotation] = [:]
+        private var lastReportedMetersPerPoint: Double = 0
+        private var lastReportedHeading: Double = -1
         private var suppressNextDidSelect = false
 
         var previousLineCoordinates: [CLLocationCoordinate2D] = []
@@ -596,14 +619,23 @@ struct CustomMap: UIViewRepresentable {
         /// sync with the fixed crosshair while Create Note/Add Feature is open.
         func mapViewRegionIsChanging(_ mapView: MLNMapView) {
             updateEditedCoordinateIfNeeded(mapView)
-            reportMetersPerPoint(mapView)
-            reportHeading(mapView)
+            // Thresholded: each report sets MapView @State and re-evaluates its whole
+            // body, which at 60 fps during a gesture was a large share of frame time.
+            reportMetersPerPoint(mapView, force: false)
+            reportHeading(mapView, force: false)
         }
 
         func mapView(_ mapView: MLNMapView, regionDidChangeAnimated animated: Bool) {
             updateEditedCoordinateIfNeeded(mapView)
             reportMetersPerPoint(mapView)
             reportHeading(mapView)
+
+            // Only quests inside `clusteredBounds` are on the map — re-run once the
+            // viewport moves past it, in every regime.
+            if let covered = clusteredBounds, !covered.contains(mapView.visibleCoordinateBounds) {
+                scheduleRecluster()
+                return
+            }
 
             let zoom = mapView.zoomLevel
             let previousBucket = clusterBucket(for: lastClusteredZoom, mapView: mapView)
@@ -618,7 +650,7 @@ struct CustomMap: UIViewRepresentable {
 
             switch currentBucket {
             case .individual:
-                // MapLibre culls off-screen pins internally — no work needed on pan.
+                // Covered area unchanged (checked above) — no work needed on pan.
                 return
             case .density, .overlap:
                 // Groupings only change when zoom changes, not on pure pan.
@@ -649,14 +681,24 @@ struct CustomMap: UIViewRepresentable {
             }
         }
 
-        private func reportMetersPerPoint(_ mapView: MLNMapView) {
+        /// `force: false` skips changes under ~1%, too small to move the scale bar.
+        private func reportMetersPerPoint(_ mapView: MLNMapView, force: Bool = true) {
             let metersPerPoint = mapView.metersPerPoint(atLatitude: mapView.centerCoordinate.latitude)
-            DispatchQueue.main.async { self.parent.onMetersPerPointChanged?(metersPerPoint) }
+            let last = lastReportedMetersPerPoint
+            guard metersPerPoint != last else { return }
+            if !force, last > 0, abs(metersPerPoint - last) / last < 0.01 { return }
+            lastReportedMetersPerPoint = metersPerPoint
+            DispatchQueue.main.async { [weak self] in self?.parent.onMetersPerPointChanged?(metersPerPoint) }
         }
 
-        private func reportHeading(_ mapView: MLNMapView) {
+        /// `force: false` skips changes under 1 degree.
+        private func reportHeading(_ mapView: MLNMapView, force: Bool = true) {
             let heading = mapView.direction
-            DispatchQueue.main.async { self.parent.onHeadingChanged?(heading) }
+            let last = lastReportedHeading
+            guard heading != last else { return }
+            if !force, last >= 0, abs(heading - last) < 1 { return }
+            lastReportedHeading = heading
+            DispatchQueue.main.async { [weak self] in self?.parent.onHeadingChanged?(heading) }
         }
 
         // MARK: - Layer Setup
@@ -696,7 +738,7 @@ struct CustomMap: UIViewRepresentable {
             let selectedIds = Set(parent.selectedAnnotations.map { $0.id })
             let selectedType = parent.selectedAnnotationType
 
-            for annotation in (mapView.annotations ?? []) {
+            for annotation in currentlyDisplayedAnnotations {
                 guard let quest = annotation as? DisplayUnitAnnotation,
                       !(quest is CluserableDisplayUnitAnnotation),
                       let view = mapView.view(for: quest) as? QuestAnnotationView else { continue }
@@ -709,16 +751,32 @@ struct CustomMap: UIViewRepresentable {
 
         func updateQuestAnnotations() {
             clusterTimer?.invalidate()
-            let items = parent.items
-            DispatchQueue.global(qos: .userInitiated).async { [weak self] in
-                guard let self else { return }
-                let annotations = items.filter { !$0.isHidden }.map { $0.annotation }
-                DispatchQueue.main.async {
-                    self.allQuestAnnotations = annotations
-                    self.lastClusteredZoom = -1  // Force re-cluster regardless of zoom
-                    self.refreshClusters()
+            var cache: [String: DisplayUnitAnnotation] = [:]
+            var annotations: [DisplayUnitAnnotation] = []
+            for item in parent.items where !item.isHidden {
+                let id = item.displayUnit.id
+                let iconName = item.displayUnit.parent?.iconName
+                // Reuse the existing object when its pin would look the same, pointing it
+                // at the freshly built quest; otherwise (moved, or icon changed) make a new
+                // one, since MapLibre doesn't observe changes on an added annotation.
+                let annotation: DisplayUnitAnnotation
+                if let existing = annotationCache[id],
+                   existing.coordinate.latitude == item.coordinateInfo.latitude,
+                   existing.coordinate.longitude == item.coordinateInfo.longitude,
+                   existing.displayUnit?.parent?.iconName == iconName {
+                    existing.displayUnit = item.displayUnit
+                    annotation = existing
+                } else {
+                    annotation = item.annotation
                 }
+                cache[id] = annotation
+                annotations.append(annotation)
             }
+            annotationCache = cache
+            overlapDotCache = overlapDotCache.filter { cache[$0.key] != nil }
+            allQuestAnnotations = annotations
+            lastClusteredZoom = -1  // Force re-cluster regardless of zoom
+            refreshClusters()
         }
 
         // Zoom level at or above which the density-count clustering (large radius,
@@ -742,10 +800,18 @@ struct CustomMap: UIViewRepresentable {
         func refreshClusters() {
             guard let mapView = mapView, mapView.bounds.width > 0 else { return }
 
-            let annotations = allQuestAnnotations
+            currentClusterJob?.cancel()
+            currentClusterJob = nil
             clusterGeneration += 1
             let generation    = clusterGeneration
             lastClusteredZoom = mapView.zoomLevel
+
+            // Only quests in (and just around) the viewport are clustered and put on the
+            // map — clustering every quest in a large workspace and handing MapLibre
+            // thousands of off-screen annotations is what stalled pan/zoom.
+            let covered = mapView.visibleCoordinateBounds.expanded(by: 0.5)
+            clusteredBounds = covered
+            let annotations = allQuestAnnotations.filter { covered.contains($0.coordinate) }
 
             guard !annotations.isEmpty else {
                 applyAnnotations([], to: mapView)
@@ -759,17 +825,18 @@ struct CustomMap: UIViewRepresentable {
             }
 
             // Convert to screen points on main thread (UIKit requirement), then
-            // run O(n²) grouping on a background thread.
+            // group on a background thread.
             let points = annotations.map { mapView.convert($0.coordinate, toPointTo: mapView) }
+            let job = ClusterJob()
+            currentClusterJob = job
 
             if mapView.zoomLevel < maxClusterZoom {
                 // Below the cluster threshold — group into density clusters with a count bubble.
                 DispatchQueue.global(qos: .userInitiated).async { [weak self] in
-                    guard let self else { return }
-                    let clustered = self.buildClusters(annotations: annotations, points: points, radius: 50)
+                    guard let groups = Self.buildClusterGroups(points: points, radius: 50, job: job) else { return }
                     DispatchQueue.main.async { [weak self] in
                         guard let self, self.clusterGeneration == generation else { return }
-                        self.applyAnnotations(clustered, to: self.mapView)
+                        self.applyAnnotations(self.makeClusterAnnotations(groups, annotations: annotations), to: self.mapView)
                     }
                 }
                 return
@@ -779,100 +846,115 @@ struct CustomMap: UIViewRepresentable {
             // but ones that would visually overlap leave just one real pin on
             // screen; the rest become small dots at their own real coordinate
             // until the user zooms in far enough to separate them.
+            let radius = overlapRadius
             DispatchQueue.global(qos: .userInitiated).async { [weak self] in
-                guard let self else { return }
-                let resolved = self.resolveOverlaps(annotations: annotations, points: points, radius: self.overlapRadius)
+                guard let hidden = Self.findOverlapped(points: points, radius: radius, job: job) else { return }
                 DispatchQueue.main.async { [weak self] in
                     guard let self, self.clusterGeneration == generation else { return }
-                    self.applyAnnotations(resolved, to: self.mapView)
+                    self.applyAnnotations(self.makeOverlapAnnotations(hidden: hidden, annotations: annotations), to: self.mapView)
                 }
             }
         }
 
         // Uses own tracking instead of mapView.annotations (which iterates MapLibre's
         // internal spatial index on the main thread and is expensive for large sets).
+        // Only the difference is removed/added — pins present before and after stay put.
         private func applyAnnotations(_ annotations: [MLNAnnotation], to mapView: MLNMapView?) {
             guard let mapView else { return }
-            if !currentlyDisplayedAnnotations.isEmpty {
-                mapView.removeAnnotations(currentlyDisplayedAnnotations)
-            }
+            let newIds = Set(annotations.map { ObjectIdentifier($0) })
+            let oldIds = Set(currentlyDisplayedAnnotations.map { ObjectIdentifier($0) })
+            let toRemove = currentlyDisplayedAnnotations.filter { !newIds.contains(ObjectIdentifier($0)) }
+            let toAdd = annotations.filter { !oldIds.contains(ObjectIdentifier($0)) }
+            if !toRemove.isEmpty { mapView.removeAnnotations(toRemove) }
             currentlyDisplayedAnnotations = annotations
-            if !annotations.isEmpty {
-                mapView.addAnnotations(annotations)
-            }
+            if !toAdd.isEmpty { mapView.addAnnotations(toAdd) }
         }
 
-        // Pure function — safe to call off the main thread.
-        private func buildClusters(annotations: [DisplayUnitAnnotation],
-                                   points: [CGPoint],
-                                   radius: CGFloat) -> [MLNAnnotation] {
-            var result: [MLNAnnotation] = []
-            var visited = Set<Int>()
+        // Pure function — safe to call off the main thread. Greedy grouping: each
+        // unvisited point starts a group and absorbs later points within `radius` of the
+        // group's running centroid. A spatial grid limits candidates to nearby points
+        // (the centroid stays close to the seed), instead of comparing every pair.
+        // Returns nil if `job` was cancelled.
+        private static func buildClusterGroups(points: [CGPoint], radius: CGFloat, job: ClusterJob) -> [[Int]]? {
+            let grid = PointGrid(points: points, cellSize: radius)
+            var groups: [[Int]] = []
+            var visited = [Bool](repeating: false, count: points.count)
 
-            for i in 0..<annotations.count {
-                if visited.contains(i) { continue }
-                visited.insert(i)
+            for i in 0..<points.count {
+                if visited[i] { continue }
+                if job.isCancelled { return nil }
+                visited[i] = true
 
-                var group = [annotations[i]]
+                var group = [i]
                 var sumX = points[i].x
                 var sumY = points[i].y
 
-                for j in (i + 1)..<annotations.count {
-                    if visited.contains(j) { continue }
+                for j in grid.indices(near: points[i], cellRadius: 2) where j > i && !visited[j] {
                     let n = CGFloat(group.count)
-                    let centroidX = sumX / n
-                    let centroidY = sumY / n
-                    if hypot(centroidX - points[j].x, centroidY - points[j].y) < radius {
-                        group.append(annotations[j])
-                        visited.insert(j)
+                    if hypot(sumX / n - points[j].x, sumY / n - points[j].y) < radius {
+                        group.append(j)
+                        visited[j] = true
                         sumX += points[j].x
                         sumY += points[j].y
                     }
                 }
-
-                if group.count > 1 {
-                    let clat = group.map { $0.coordinate.latitude  }.reduce(0, +) / Double(group.count)
-                    let clon = group.map { $0.coordinate.longitude }.reduce(0, +) / Double(group.count)
-                    let cluster = CluserableDisplayUnitAnnotation(
-                        id: "cluster-\(i)",
-                        coordinate: CLLocationCoordinate2D(latitude: clat, longitude: clon)
-                    )
-                    cluster.memberAnnotations = group
-                    result.append(cluster)
-                } else {
-                    result.append(group[0])
-                }
+                groups.append(group)
             }
-
-            return result
+            return groups
         }
 
-        // Pure function — safe to call off the main thread. Unlike buildClusters,
-        // this doesn't merge overlapping quests into a single generic cluster —
-        // each group keeps its first member as a real, tappable pin at its own
-        // coordinate, and represents every other member with a small dot at
-        // *its* own real coordinate rather than hiding it entirely.
-        private func resolveOverlaps(annotations: [DisplayUnitAnnotation],
-                                      points: [CGPoint],
-                                      radius: CGFloat) -> [MLNAnnotation] {
-            var result: [MLNAnnotation] = []
-            var visited = Set<Int>()
+        private func makeClusterAnnotations(_ groups: [[Int]], annotations: [DisplayUnitAnnotation]) -> [MLNAnnotation] {
+            groups.map { group -> MLNAnnotation in
+                guard group.count > 1 else { return annotations[group[0]] }
+                let members = group.map { annotations[$0] }
+                let clat = members.map { $0.coordinate.latitude  }.reduce(0, +) / Double(members.count)
+                let clon = members.map { $0.coordinate.longitude }.reduce(0, +) / Double(members.count)
+                let cluster = CluserableDisplayUnitAnnotation(
+                    id: "cluster-\(group[0])",
+                    coordinate: CLLocationCoordinate2D(latitude: clat, longitude: clon)
+                )
+                cluster.memberAnnotations = members
+                return cluster
+            }
+        }
 
-            for i in 0..<annotations.count {
-                if visited.contains(i) { continue }
-                visited.insert(i)
-                result.append(annotations[i])
+        // Pure function — safe to call off the main thread. Unlike buildClusterGroups,
+        // this doesn't merge overlapping quests into a single generic cluster — each
+        // group keeps its first member as a real, tappable pin at its own coordinate.
+        // Returns which indices are hidden behind an earlier pin (shown as dots at their
+        // own real coordinate), or nil if `job` was cancelled.
+        private static func findOverlapped(points: [CGPoint], radius: CGFloat, job: ClusterJob) -> Set<Int>? {
+            let grid = PointGrid(points: points, cellSize: radius)
+            var hidden = Set<Int>()
+            var visited = [Bool](repeating: false, count: points.count)
 
-                for j in (i + 1)..<annotations.count {
-                    if visited.contains(j) { continue }
+            for i in 0..<points.count {
+                if visited[i] { continue }
+                if job.isCancelled { return nil }
+                visited[i] = true
+
+                for j in grid.indices(near: points[i], cellRadius: 1) where j > i && !visited[j] {
                     if hypot(points[i].x - points[j].x, points[i].y - points[j].y) < radius {
-                        visited.insert(j)
-                        result.append(OverlapDotAnnotation(coordinate: annotations[j].coordinate))
+                        visited[j] = true
+                        hidden.insert(j)
                     }
                 }
             }
+            return hidden
+        }
 
-            return result
+        private func makeOverlapAnnotations(hidden: Set<Int>, annotations: [DisplayUnitAnnotation]) -> [MLNAnnotation] {
+            annotations.enumerated().map { index, annotation -> MLNAnnotation in
+                guard hidden.contains(index) else { return annotation }
+                if let dot = overlapDotCache[annotation.id],
+                   dot.coordinate.latitude == annotation.coordinate.latitude,
+                   dot.coordinate.longitude == annotation.coordinate.longitude {
+                    return dot
+                }
+                let dot = OverlapDotAnnotation(coordinate: annotation.coordinate)
+                overlapDotCache[annotation.id] = dot
+                return dot
+            }
         }
 
         // MARK: - Other Data Updates
@@ -1005,7 +1087,7 @@ struct CustomMap: UIViewRepresentable {
             let point = gesture.location(in: mapView)
 
             // Long press near a cluster → zoom in
-            for annotation in (mapView.annotations ?? []) {
+            for annotation in currentlyDisplayedAnnotations {
                 guard let cluster = annotation as? CluserableDisplayUnitAnnotation else { continue }
                 let annotPt = mapView.convert(cluster.coordinate, toPointTo: mapView)
                 if hypot(point.x - annotPt.x, point.y - annotPt.y) < 30 {
@@ -1023,7 +1105,7 @@ struct CustomMap: UIViewRepresentable {
             // Long press near a quest annotation → enter multi-select.
             // Suppress the didSelect that MapLibre fires when the finger lifts
             // after a long press — otherwise the annotation toggles back off immediately.
-            for annotation in (mapView.annotations ?? []) {
+            for annotation in currentlyDisplayedAnnotations {
                 guard let quest = annotation as? DisplayUnitAnnotation,
                       !(quest is CluserableDisplayUnitAnnotation) else { continue }
                 let annotPt = mapView.convert(quest.coordinate, toPointTo: mapView)
@@ -1198,6 +1280,79 @@ extension CustomMap {
             if let s = p.thoroughfare     { parts.append(s) }
             completion(parts.joined(separator: ", "))
         }
+    }
+}
+
+// MARK: - Clustering Helpers
+
+/// Cancellation flag for one background clustering pass. Set on the main thread,
+/// polled from the background one.
+private final class ClusterJob {
+    private let lock = NSLock()
+    private var cancelled = false
+
+    var isCancelled: Bool {
+        lock.lock(); defer { lock.unlock() }
+        return cancelled
+    }
+
+    func cancel() {
+        lock.lock(); cancelled = true; lock.unlock()
+    }
+}
+
+/// Buckets screen points into square cells so neighbour lookups only visit nearby
+/// points instead of every point.
+private struct PointGrid {
+    private struct Cell: Hashable { let x: Int; let y: Int }
+    private let cellSize: CGFloat
+    private var cells: [Cell: [Int]] = [:]
+
+    init(points: [CGPoint], cellSize: CGFloat) {
+        self.cellSize = cellSize
+        for (index, point) in points.enumerated() {
+            cells[cell(for: point), default: []].append(index)
+        }
+    }
+
+    private func cell(for point: CGPoint) -> Cell {
+        Cell(x: Int((point.x / cellSize).rounded(.down)), y: Int((point.y / cellSize).rounded(.down)))
+    }
+
+    /// Indices of points within `cellRadius` cells of `point`, in ascending order
+    /// (matching the order a full scan would visit them in).
+    func indices(near point: CGPoint, cellRadius: Int) -> [Int] {
+        let center = cell(for: point)
+        var result: [Int] = []
+        for dx in -cellRadius...cellRadius {
+            for dy in -cellRadius...cellRadius {
+                if let bucket = cells[Cell(x: center.x + dx, y: center.y + dy)] {
+                    result.append(contentsOf: bucket)
+                }
+            }
+        }
+        return result.sorted()
+    }
+}
+
+private extension MLNCoordinateBounds {
+    func contains(_ coordinate: CLLocationCoordinate2D) -> Bool {
+        coordinate.latitude  >= sw.latitude  && coordinate.latitude  <= ne.latitude &&
+        coordinate.longitude >= sw.longitude && coordinate.longitude <= ne.longitude
+    }
+
+    func contains(_ other: MLNCoordinateBounds) -> Bool {
+        contains(other.sw) && contains(other.ne)
+    }
+
+    /// Grown by `fraction` of its own span on every side.
+    func expanded(by fraction: Double) -> MLNCoordinateBounds {
+        let latPad = (ne.latitude  - sw.latitude)  * fraction
+        let lonPad = (ne.longitude - sw.longitude) * fraction
+        return MLNCoordinateBounds(
+            sw: CLLocationCoordinate2D(latitude: sw.latitude - latPad, longitude: sw.longitude - lonPad),
+            ne: CLLocationCoordinate2D(latitude: ne.latitude + latPad, longitude: ne.longitude + lonPad)
+        )
     }
 }
 
