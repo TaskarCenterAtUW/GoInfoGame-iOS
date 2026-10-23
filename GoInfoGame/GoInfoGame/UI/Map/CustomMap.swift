@@ -509,6 +509,12 @@ struct CustomMap: UIViewRepresentable {
             super.init()
         }
 
+        #if DEBUG
+        // Printed when the map screen is torn down; if missing, the MLNMapView (and its
+        // tile memory) is being kept alive.
+        deinit { print("CustomMap.Coordinator deinit") }
+        #endif
+
         // MARK: MLNMapViewDelegate — Style
 
         func mapView(_ mapView: MLNMapView, didFinishLoading style: MLNStyle) {

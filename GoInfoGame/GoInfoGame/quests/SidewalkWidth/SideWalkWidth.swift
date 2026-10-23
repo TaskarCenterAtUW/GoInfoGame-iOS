@@ -57,8 +57,8 @@ class SideWalkWidth : QuestBase, Quest {
     
     override init() {
         super.init()
-        self.internalForm = SideWalkWidthForm { [self] answer in
-            self.onAnswer(answer: answer)
+        self.internalForm = SideWalkWidthForm { [weak self] answer in
+            self?.onAnswer(answer: answer)
         }
     }
     

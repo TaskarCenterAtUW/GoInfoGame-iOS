@@ -44,8 +44,8 @@ class CrossingType: QuestBase, Quest {
     }
     override init() {
         super.init()
-        self.internalForm = CrossingTypeForm(action: { [self] answer in
-            self.onAnswer(answer: answer)
+        self.internalForm = CrossingTypeForm(action: { [weak self] answer in
+            self?.onAnswer(answer: answer)
         })
     }
     func onAnswer(answer: CrossingTypeAnswer) {

@@ -70,8 +70,24 @@ class LongElementQuest: QuestBase, Quest {
     
     var form:  AnyView {
         get{
+            if internalForm == nil { internalForm = makeInitialForm() }
             return AnyView(self.internalForm as! LongForm)
         }
+    }
+
+    /// The quest id `init(questId:...)` was given, used for the form built on first use.
+    private var formQuestID: String?
+
+    /// Built on first use rather than in init: a quest copy exists for every element on
+    /// the map (tens of thousands), but only a quest that is actually opened needs a form.
+    private func makeInitialForm() -> LongForm {
+        let action: (LongFormAnswer) -> Void = { [weak self] tags in
+            self?.questAnswersSelected?(tags)
+        }
+        guard let formQuestID else {
+            return LongForm(elementName: elementType, tags: tags, action: action)
+        }
+        return LongForm(elementName: elementType, questID: formQuestID, query: _internalQueryString, tags: tags, action: action)
     }
     
     var _internalExpression: ElementFilterExpression?
@@ -191,8 +207,10 @@ class LongElementQuest: QuestBase, Quest {
           self.internalForm = LongForm(
             elementName: elementType, questID: questId, query: _internalQueryString, tags: tags,
             isMultiSelectMode: isMultiSelectMode,
-            action: { [self] tags in
-                self.questAnswersSelected?(tags)
+            action: { [weak self] tags in
+                // Weak: the form is stored on this quest, so a strong capture is a retain
+                // cycle that kept every quest copy (one per map element) alive forever.
+                self?.questAnswersSelected?(tags)
             }, coordinate: annotationCoordinate ?? CLLocationCoordinate2D(latitude: 0, longitude: 0)
           )
       }
@@ -216,21 +234,13 @@ class LongElementQuest: QuestBase, Quest {
         self._internalQueryString = questQuery
         self.elementType = elementType
         self.elementTypeIcon = elementTypeIcon
-        self.internalForm = LongForm(elementName: elementType, questID: questId, query: questQuery, tags: self.tags, action: { [self] tags in
-//            self.onAnswer(answer: tags)
-            self.questAnswersSelected?(tags)
-        })
+        self.formQuestID = questId
     }
 
     override init() {
         id = -1
         type = .node
         super.init()
-
-        self.internalForm = LongForm(elementName: elementType, tags: tags, action: { [self] tags in
-//            self.onAnswer(answer: tags)
-            self.questAnswersSelected?(tags)
-        })
     }
 
 

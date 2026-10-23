@@ -31,8 +31,8 @@ class SideWalkValidation: QuestBase, Quest {
     
     override init() {
         super.init()
-        self.internalForm = SideWalkValidationForm(action: { [self] answer in
-            self.onAnswer(answer: answer)
+        self.internalForm = SideWalkValidationForm(action: { [weak self] answer in
+            self?.onAnswer(answer: answer)
         })
     }
     
