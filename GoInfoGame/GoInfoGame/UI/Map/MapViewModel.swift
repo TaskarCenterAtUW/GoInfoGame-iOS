@@ -65,6 +65,12 @@ class MapViewModel: ObservableObject {
         checkSyncStatus()
     }
 
+    #if DEBUG
+    // Leaving the map (to workspaces/login) should print this; if it doesn't, something
+    // still holds the view model and all of its quests.
+    deinit { print("MapViewModel deinit") }
+    #endif
+
     func checkSyncStatus() {
         self.syncFailedElementsCount = dbInstance.getChangesets(synced: false).count
         self.pendingNotesCount = dbInstance.pendingNoteDraftsCount()
@@ -100,9 +106,10 @@ class MapViewModel: ObservableObject {
             return displayUnit
         } else {
             if let longElementQuest = selectedQuest?.parent as? LongElementQuest {
-                longElementQuest.questAnswersSelected = { [weak self] answer in
-                    guard let self = self else { return }
-                    longElementQuest.onAnswer(answer: answer)
+                // Weak: the closure is stored on `longElementQuest` itself, so a strong
+                // capture would keep the quest alive forever.
+                longElementQuest.questAnswersSelected = { [weak longElementQuest] answer in
+                    longElementQuest?.onAnswer(answer: answer)
                 }
             }
             return selectedQuest

@@ -18,7 +18,10 @@ class MapUndoManager {
         realm = try! Realm(configuration: RealmConfig.configuration)
     }
 
-    var updateTagsHandler: ((_ changeset: StoredChangeset?) -> Void)?
+    var updateTagsHandler: ((_ changeset: StoredChangeset?) -> Void)? = { changeset in
+        guard let changeSet = changeset else { return }
+        QuestBase.updateUndoTags(changeSet: changeSet)
+    }
 
     func undo(for id: String) {
         guard let changeSet = DatabaseConnector.shared.getChangeset(for: id) else {

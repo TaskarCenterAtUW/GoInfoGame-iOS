@@ -48,15 +48,12 @@ class QuestBase {
     
    private var elementSubmittingToPOSM: ElementSubmittingToPOSM?
     
-    init () {
-        MapUndoManager.shared.updateTagsHandler = { [weak self] changeset in
-            guard let changeSet = changeset else { return }
-            
-            self?.updateUndoTags(changeSet: changeSet)
-        }
-    }
-    
-    func updateUndoTags(changeSet: StoredChangeset) {
+    init () {}
+
+    /// Static: undo needs only the changeset, not a quest instance. It used to run on
+    /// whichever quest happened to be created last, which only worked because quests
+    /// were never freed (a retain cycle through their forms).
+    static func updateUndoTags(changeSet: StoredChangeset) {
         // A created-but-undone element never existed before, so there are no
         // "original tags" to restore — undoing it means deleting it outright.
         // This never touches the modify-undo path below, which is unchanged.
@@ -100,7 +97,7 @@ class QuestBase {
     /// `.deleted` handling): drop the local `StoredNode`, keep the changeset row for
     /// history (marked completed, same as a modify-undo), and tell the map to remove
     /// the pin via the existing `refreshMapAfterSubmission` removal path.
-    private func undoCreatedElement(changeSet: StoredChangeset) {
+    private static func undoCreatedElement(changeSet: StoredChangeset) {
         Task.detached(operation: { @MainActor in
             MapViewPublisher.shared.dismissSheet.send(.syncing)
             let changesetId = changeSet.id
