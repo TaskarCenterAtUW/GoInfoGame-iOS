@@ -178,6 +178,17 @@ final class ImageStorageTests: AppTestCase {
         XCTAssertNil(load(path))
     }
 
+    func testSavedPhotosAreShrunkToTheUploadSizeAndKeepTheirHeading() throws {
+        let image = makeImage(.blue, side: 3000)
+        image.captureHeading = 90
+        let path = try QuestImageStorage.shared.save(image)
+        defer { QuestImageStorage.shared.delete(paths: [path]) }
+        let saved = try XCTUnwrap(QuestImageStorage.shared.load(path: path))
+        XCTAssertEqual(saved.size.width * saved.scale, UIImage.maxUploadDimension)
+        XCTAssertEqual(PhotoHeading.heading(inFileAt: path), 90, "resizing must not drop the capture heading from the EXIF")
+        XCTAssertEqual(saved.captureHeading, 90)
+    }
+
     func testQuestImages() throws {
         try exercise(save: QuestImageStorage.shared.save, load: QuestImageStorage.shared.load(path:), delete: QuestImageStorage.shared.delete(paths:))
     }

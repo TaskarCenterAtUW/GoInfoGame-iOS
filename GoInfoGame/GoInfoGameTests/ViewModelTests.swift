@@ -324,7 +324,27 @@ final class MapViewModelTests: AppTestCase {
         loadMap()
         model.items = []
         model.refreshQuests()
+        // The rebuild runs off the main thread, so the pins arrive asynchronously.
+        waitUntil("the pins were not rebuilt") { !model.items.isEmpty }
         XCTAssertEqual(model.items.count, 5)
+    }
+
+    func testALocationUpdateInsideARecentlyFetchedAreaIsNotRefetched() {
+        loadMap()
+        let nearby = CLLocationCoordinate2D(latitude: kondapur.latitude + 0.001, longitude: kondapur.longitude)
+        model.fetchOSMDataFor(from: .currentLocation(location: nearby))
+        XCTAssertFalse(model.isLoading, "the area around a ~110 m move is already on the device")
+        XCTAssertEqual(MockHTTP.requests(path: MockServer.mapJSON).count, 1)
+        XCTAssertEqual(model.centerCoordinate.latitude, nearby.latitude, accuracy: 1e-9)
+    }
+
+    func testALocationUpdateOutsideTheFetchedAreaFetchesAgain() {
+        loadMap()
+        let farAway = CLLocationCoordinate2D(latitude: kondapur.latitude + 0.01, longitude: kondapur.longitude)
+        model.fetchOSMDataFor(from: .currentLocation(location: farAway))
+        XCTAssertTrue(model.isLoading)
+        waitUntil("the second fetch did not finish") { !model.isLoading }
+        XCTAssertEqual(MockHTTP.requests(path: MockServer.mapJSON).count, 2)
     }
 
     func testAHiddenQuestDisappearsFromTheMap() {
@@ -441,6 +461,7 @@ final class AccessibilityModeViewModelTests: AppTestCase {
         seedMap("AccessibilityModeOSMElements")
         map = MapViewModel(workspace: workspace!)
         map.refreshQuests()
+        waitUntil("the pins were not rebuilt") { !map.items.isEmpty }
         model = AccessibilityModeViewModel(mapViewModel: map, locationManager: locationDelegate)
     }
 
