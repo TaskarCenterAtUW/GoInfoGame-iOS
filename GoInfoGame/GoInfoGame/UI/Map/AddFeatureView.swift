@@ -133,18 +133,11 @@ struct PresetIconView: View {
 
     private func loadRemoteIconIfNeeded() {
         guard remoteImage == nil,
-              let urlString = QuestsRepository.shared.customIcons.first(where: { $0.name == iconName })?.url,
-              let url = URL(string: urlString) else { return }
+              let urlString = QuestsRepository.shared.customIcons.first(where: { $0.name == iconName })?.url else { return }
 
-        if let cached = ImageCache.shared.image(forKey: urlString) {
-            remoteImage = cached
-            return
+        ImageCache.shared.loadImage(urlString: urlString) { image in
+            if let image { remoteImage = image }
         }
-        URLSession.shared.dataTask(with: url) { data, _, _ in
-            guard let data, let image = UIImage(data: data) else { return }
-            ImageCache.shared.set(image: image, forKey: urlString)
-            DispatchQueue.main.async { remoteImage = image }
-        }.resume()
     }
 }
 

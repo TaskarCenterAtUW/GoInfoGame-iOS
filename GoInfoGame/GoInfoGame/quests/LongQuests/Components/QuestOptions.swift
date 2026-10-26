@@ -555,8 +555,9 @@ private extension QuestOptions {
         // in onCaptureComplete rather than held here: both keep the last capture's
         // images, depth and mesh data, and the SDK has no public way to clear them, so
         // holding them kept that data alive for as long as the form was open.
-        /// `configure()` loads the segmentation models; run it once per view, not on every
-        /// `onAppear` (which fires again each time the question scrolls back into view).
+        /// `configure()` loads the CoreML segmentation model and creates a Metal context, so
+        /// it runs only when the user taps Open Camera (once per view) — not when the
+        /// question merely scrolls into view, which cost that memory for every form opened.
         @State private var isConfigured = false
 //        class CurrentFeaturesViewModel: ObservableObject {
 //            @Published var currentFeatures: [EditableAccessibilityFeature] = []
@@ -634,6 +635,10 @@ private extension QuestOptions {
                         // Only allow one capture at a time (temporary restriction)
                         if captures.isEmpty {
                             Button(action: {
+                                if !isConfigured {
+                                    configure()
+                                    isConfigured = true
+                                }
                                 showImagePicker = true
                             }) {
                                 HStack(spacing: 8) {
@@ -708,10 +713,6 @@ private extension QuestOptions {
                             lastSelectedChoiceValue = selected.value
                         }
                     }
-                }
-                if !isConfigured {
-                    configure()
-                    isConfigured = true
                 }
             }
             .onChange(of: selectedChoice) { newChoice in
