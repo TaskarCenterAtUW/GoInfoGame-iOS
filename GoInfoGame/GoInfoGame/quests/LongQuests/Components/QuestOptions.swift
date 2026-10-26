@@ -543,22 +543,16 @@ private extension QuestOptions {
         let autoCaptureAttributes: [String: String]
         @Binding var selectedChoice: QuestAnswerChoice?
         
-        @State private var selectedClasses: [AccessibilityFeatureClass] = []
-        @State private var selectedAttributesByClass: [AccessibilityFeatureClass: Set<AccessibilityFeatureAttribute>] = [:]
-        @StateObject private var sharedAppData: SharedBaseData = SharedBaseData()
-        @StateObject private var sharedAppContext: SharedBaseContext = SharedBaseContext()
-        @StateObject private var segmentationPipeline: SegmentationARPipeline = SegmentationARPipeline()
-        @StateObject private var sharedBaseSettings: SharedBaseSettings = SharedBaseSettings()
         let isEnhancedAnalysisEnabled = true
-        @StateObject var segmentationAnnontationPipeline: SegmentationAnnotationPipeline = SegmentationAnnotationPipeline()
-        // AttributeEstimationPipeline and AnnotationImageManager are created per capture
-        // in onCaptureComplete rather than held here: both keep the last capture's
-        // images, depth and mesh data, and the SDK has no public way to clear them, so
-        // holding them kept that data alive for as long as the form was open.
-        /// `configure()` loads the CoreML segmentation model and creates a Metal context, so
-        /// it runs only when the user taps Open Camera (once per view) — not when the
-        /// question merely scrolls into view, which cost that memory for every form opened.
-        @State private var isConfigured = false
+        /// The SDK objects for the current camera session, or nil when no camera is open
+        /// and no capture is being processed. Created on Open Camera and dropped when the
+        /// camera closes (or once its capture is processed), so the CoreML model, Metal
+        /// context and camera frames are freed between sessions instead of living for as
+        /// long as the form is open. AttributeEstimationPipeline and AnnotationImageManager
+        /// are likewise created per capture in onCaptureComplete.
+        @State private var cameraSession: AutoCaptureSession?
+        /// True while a new session's models load in the background after Open Camera.
+        @State private var isPreparingCamera = false
 //        class CurrentFeaturesViewModel: ObservableObject {
 //            @Published var currentFeatures: [EditableAccessibilityFeature] = []
 //        }
@@ -634,16 +628,16 @@ private extension QuestOptions {
                         
                         // Only allow one capture at a time (temporary restriction)
                         if captures.isEmpty {
-                            Button(action: {
-                                if !isConfigured {
-                                    configure()
-                                    isConfigured = true
-                                }
-                                showImagePicker = true
-                            }) {
+                            Button(action: openCamera) {
                                 HStack(spacing: 8) {
-                                    Image(systemName: "camera.fill")
-                                    Text("Open Camera")
+                                    if isPreparingCamera {
+                                        ProgressView()
+                                            .tint(.white)
+                                        Text("Preparing camera…")
+                                    } else {
+                                        Image(systemName: "camera.fill")
+                                        Text("Open Camera")
+                                    }
                                 }
                                 .font(.headline)
                                 .padding(.vertical, 12)
@@ -654,6 +648,7 @@ private extension QuestOptions {
                             }
                             .buttonStyle(PlainButtonStyle())
                             .contentShape(Rectangle())
+                            .disabled(isPreparingCamera || isProcessing)
                             .accessibilityIdentifier("autoCapture_open_camera")
                         }
                         
@@ -727,12 +722,78 @@ private extension QuestOptions {
                     }
                 }
             }
-            .sheet(isPresented: $showImagePicker) {
-                ARCameraViewBase(selectedClasses: self.selectedClasses.sorted(), selectedAttributesByClass: self.selectedAttributesByClass, onCaptureComplete: onCaptureComplete)
-                .environmentObject(self.sharedAppData)
-                .environmentObject(self.sharedAppContext)
-                .environmentObject(self.segmentationPipeline)
-                .environmentObject(self.sharedBaseSettings)
+            .sheet(isPresented: $showImagePicker, onDismiss: cameraClosed) {
+                if let cameraSession {
+                    ARCameraViewBase(selectedClasses: cameraSession.selectedClasses.sorted(), selectedAttributesByClass: cameraSession.selectedAttributesByClass, onCaptureComplete: onCaptureComplete)
+                    .environmentObject(cameraSession.sharedAppData)
+                    .environmentObject(cameraSession.sharedAppContext)
+                    .environmentObject(cameraSession.segmentationPipeline)
+                    .environmentObject(cameraSession.sharedBaseSettings)
+                }
+            }
+        }
+
+        /// Loads the session's models off the main thread (the first load in an app run
+        /// took seconds and froze the UI), then presents the camera.
+        private func openCamera() {
+            guard !isPreparingCamera, !isProcessing,
+                  // For demonstration purposes, we select only sidewalk class by default
+                  let sidewalkClass = PointNMapConstants.SelectedAccessibilityFeatureConfig.classes.first(where: { $0.kind == .sidewalk })
+            else { return }
+            // TEMPORARY (until the PointNMap teardown fix ships — see
+            // pointnmap-camera-teardown.patch): reuse the one already-configured session.
+            if let reusable = AutoCaptureSession.reusable {
+                #if DEBUG
+                print("[AutoCapture] reusing session \(reusable.debugID) — opening camera")
+                #endif
+                cameraSession = reusable
+                showImagePicker = true
+                return
+            }
+            isPreparingCamera = true
+            let session = AutoCaptureSession(selectedClass: sidewalkClass, isEnhancedAnalysisEnabled: isEnhancedAnalysisEnabled)
+            Task.detached(priority: .userInitiated) {
+                var configured = true
+                do {
+                    try session.configure()
+                } catch {
+                    configured = false
+                    print("Error during setup configuration: \(error)")
+                }
+                await MainActor.run {
+                    // TEMPORARY: keep it for reuse (only if setup succeeded).
+                    if configured { AutoCaptureSession.reusable = session }
+                    #if DEBUG
+                    print("[AutoCapture] session \(session.debugID) ready — opening camera")
+                    #endif
+                    self.cameraSession = session
+                    self.isPreparingCamera = false
+                    self.showImagePicker = true
+                }
+            }
+        }
+
+        /// The camera sheet closed. Unless a capture is now being processed (which holds
+        /// its own reference to the session and releases its frames when done), clear the
+        /// frames it collected; either way the view lets go of the session.
+        private func cameraClosed() {
+            guard let session = cameraSession else {
+                #if DEBUG
+                print("[AutoCapture] camera closed — no session was held")
+                #endif
+                return
+            }
+            #if DEBUG
+            print("[AutoCapture] camera closed — view lets go of session \(session.debugID) (processing: \(isProcessing))")
+            #endif
+            cameraSession = nil
+            if !isProcessing {
+                Task {
+                    await Self.releaseCaptureData(session.sharedAppData)
+                    #if DEBUG
+                    print("[AutoCapture] frames cleared for session \(session.debugID)")
+                    #endif
+                }
             }
         }
         
@@ -744,12 +805,16 @@ private extension QuestOptions {
             // Snapshot all MainActor state before entering the background task.
             // Task.detached has no actor context, so @StateObject and other
             // @MainActor-isolated properties cannot be accessed inside it directly.
-            let selectedClasses = self.selectedClasses
-            let isEnhancedAnalysisEnabled = self.sharedBaseSettings.isEnhancedAnalysisEnabled
+            guard let session = self.cameraSession else {
+                self.isProcessing = false
+                return
+            }
+            let selectedClasses = session.selectedClasses
+            let isEnhancedAnalysisEnabled = session.sharedBaseSettings.isEnhancedAnalysisEnabled
             let attributeEstimationPipeline = AttributeEstimationPipeline()
             let manager = AnnotationImageManager()
-            let segmentationAnnontationPipeline = self.segmentationAnnontationPipeline
-            let sharedAppData = self.sharedAppData
+            let segmentationAnnontationPipeline = session.segmentationAnnotationPipeline
+            let sharedAppData = session.sharedAppData
 
             Task.detached(priority: .userInitiated) {
                 do {
@@ -803,6 +868,9 @@ private extension QuestOptions {
 
                     let completedCaptures = newCaptures
                     await Self.releaseCaptureData(sharedAppData)
+                    #if DEBUG
+                    print("[AutoCapture] capture processed, frames cleared")
+                    #endif
                     await MainActor.run {
                         self.captures.append(contentsOf: completedCaptures)
                         self.isProcessing = false
@@ -828,23 +896,6 @@ private extension QuestOptions {
             await MainActor.run { sharedAppData.refreshData() }
         }
 
-        public func configure() {
-            // For demonstration purposes, we select only sidewalk class by default
-            guard let sidewalkClass = PointNMapConstants.SelectedAccessibilityFeatureConfig.classes.first(where: { $0.kind == .sidewalk }) else {
-                return
-            }
-            self.sharedBaseSettings.isEnhancedAnalysisEnabled = self.isEnhancedAnalysisEnabled
-            self.selectedClasses = [sidewalkClass]
-            self.selectedAttributesByClass[sidewalkClass] = Set(sidewalkClass.kind.attributes)
-            do {
-                try self.sharedAppContext.configure()
-                try segmentationPipeline.configure()
-                try segmentationAnnontationPipeline.configure()
-            } catch {
-                print("Error during setup configuration: \(error)")
-            }
-        }
-        
         private func updateSelectedChoice() {
             guard !captures.isEmpty else {
                 selectedChoice = nil
@@ -1045,3 +1096,58 @@ private extension QuestOptions {
 #Preview {
     QuestOptions.NoImageView(text: "This is a long option text that should wrap properly within the defined frame and be fully visible to the user without truncation.")
 }
+
+/// The PointNMap SDK objects for one autocapture camera session (see
+/// `QuestOptions.AutoCaptureView.cameraSession`). Plain storage: `AutoCaptureView` creates
+/// one per Open Camera, `configure()` runs off the main thread, and the view drops it when
+/// the camera closes so the model and Metal resources can be freed.
+final class AutoCaptureSession: @unchecked Sendable {
+    /// TEMPORARY workaround — remove once the PointNMap teardown fix ships (see
+    /// pointnmap-camera-teardown.patch), and `openCamera()` creates a session per open again.
+    ///
+    /// The SDK currently never frees its `ARCameraManager` after the camera closes, and that
+    /// manager keeps the session's model pipeline and Metal context alive. A new session per
+    /// camera open therefore leaked a full model + Metal context every time. Reusing one
+    /// configured session means the leaked managers all point at the same objects: the model
+    /// stays loaded for the rest of the app run, but no longer multiplies.
+    @MainActor static var reusable: AutoCaptureSession?
+
+    let selectedClasses: [AccessibilityFeatureClass]
+    let selectedAttributesByClass: [AccessibilityFeatureClass: Set<AccessibilityFeatureAttribute>]
+    let sharedAppData: SharedBaseData
+    let sharedAppContext = SharedBaseContext()
+    let segmentationPipeline = SegmentationARPipeline()
+    let sharedBaseSettings: SharedBaseSettings
+    let segmentationAnnotationPipeline = SegmentationAnnotationPipeline()
+
+    /// Must be created on the main actor (`SharedBaseData` is main-actor isolated).
+    @MainActor
+    init(selectedClass: AccessibilityFeatureClass, isEnhancedAnalysisEnabled: Bool) {
+        selectedClasses = [selectedClass]
+        selectedAttributesByClass = [selectedClass: Set(selectedClass.kind.attributes)]
+        sharedAppData = SharedBaseData()
+        sharedBaseSettings = SharedBaseSettings(isEnhancedAnalysisEnabled: isEnhancedAnalysisEnabled)
+        #if DEBUG
+        print("[AutoCapture] session \(debugID) created")
+        #endif
+    }
+
+    #if DEBUG
+    /// Short ID to match a session's "created" and "deinit" log lines.
+    let debugID = String(UUID().uuidString.prefix(4))
+
+    // Printed once the app has let go of a camera session. If this appears but memory
+    // still grows per open/close, what remains is held inside the SDK or by the system.
+    deinit { print("[AutoCapture] AutoCaptureSession deinit \(debugID)") }
+    #endif
+
+    /// The slow part: creates the Metal context and loads the CoreML segmentation model.
+    /// Safe off the main thread — none of these objects are main-actor isolated, and
+    /// `configure()` changes nothing SwiftUI observes. Call before the session is shown.
+    func configure() throws {
+        try sharedAppContext.configure()
+        try segmentationPipeline.configure()
+        try segmentationAnnotationPipeline.configure()
+    }
+}
+
