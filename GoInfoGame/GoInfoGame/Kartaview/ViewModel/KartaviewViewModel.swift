@@ -13,7 +13,11 @@ class KartaviewViewModel: ObservableObject {
     
     @Published var sequenceId: String?
     
-     var capturedImage: UIImage
+    private(set) var capturedImage: UIImage?
+
+    /// Already-encoded JPEG bytes (the upload queue's saved file), sent as-is instead of
+    /// re-encoding `capturedImage`.
+    private var encodedImage: Data?
     
     let locationManagerDelegate = LocationManagerDelegate()
     
@@ -23,9 +27,17 @@ class KartaviewViewModel: ObservableObject {
     
     private let kartaViewAccessToken = Bundle.main.object(forInfoDictionaryKey: "KARTAVIEW_ACCESS_TOKEN") as? String ?? ""
     
-    init(capturedImage: UIImage) {
+    convenience init(capturedImage: UIImage) {
+        self.init()
         self.capturedImage = capturedImage
-        
+    }
+
+    convenience init(imageData: Data) {
+        self.init()
+        self.encodedImage = imageData
+    }
+
+    private init() {
         locationManagerDelegate.locationUpdateHandler = { [weak self] location in
             guard let self = self else { return }
             self.location = location
@@ -49,7 +61,9 @@ class KartaviewViewModel: ObservableObject {
         
         
         ApiManager.shared.performRequest(to: .createKartaViewSequence(formData), setupType: .kartaview, modelType: SequenceModel.self) { [weak self] result in
-            guard let self = self else { return }
+            // Always call `completion`: uploadAsync's continuation waits on it, and a
+            // silent return would leave the upload queue waiting forever.
+            guard let self = self else { completion("Upload cancelled", false); return }
             switch result {
             case .success(let success):
                 // Extract the sequenceId from the response model
@@ -70,7 +84,7 @@ class KartaviewViewModel: ObservableObject {
     }
 
     func uploadPhoto(sequenceId: String, completion: @escaping (String, Bool) -> ()) {
-        guard let imageData = imageToData(image: capturedImage) else {
+        guard let imageData = encodedImage ?? capturedImage.flatMap(imageToData(image:)) else {
             print("NO image found")
             completion("Failed to process the captured photo", false)
             return
@@ -117,7 +131,7 @@ class KartaviewViewModel: ObservableObject {
         ]
         
         ApiManager.shared.performRequest(to: .uploadPhotoToKartaview(formData), setupType: .kartaview, modelType: UploadPhotoModel.self) { [weak self] result in
-            guard let self = self else { return }
+            guard let self = self else { completion("Upload cancelled", false); return }
             switch result {
             case .success(let success):
                 let status = success.status.httpCode
@@ -150,7 +164,7 @@ class KartaviewViewModel: ObservableObject {
         ]
 
         ApiManager.shared.performRequest(to: .finshedUploadingToKartaview(formData), setupType: .kartaview, modelType: FinishUploadingModel.self) { [weak self] result in
-            guard let self = self else { return }
+            guard let self = self else { completion("Upload cancelled", false); return }
             switch result {
             case .success(let success):
                 let status = success.status.httpCode
@@ -186,7 +200,7 @@ class KartaviewViewModel: ObservableObject {
     /// silently guessing a URL that may or may not be correct.
     private func fetchHostedPhotoUrl(photoId: String, attempt: Int = 1, maxAttempts: Int = 2, completion: @escaping (String?) -> Void) {
         ApiManager.shared.performRequest(to: .fetchPhotoUrlFromKartaview(photoId, kartaViewAccessToken), setupType: .kartaviewV2, modelType: PhotoLookupResponse.self) { [weak self] result in
-            guard let self = self else { return }
+            guard let self = self else { completion(nil); return }
             if case .success(let response) = result, let url = response.result?.data?.imageLthUrl {
                 completion(url)
                 return
@@ -201,14 +215,17 @@ class KartaviewViewModel: ObservableObject {
                 return
             }
             DispatchQueue.main.asyncAfter(deadline: .now() + 2) { [weak self] in
-                self?.fetchHostedPhotoUrl(photoId: photoId, attempt: attempt + 1, maxAttempts: maxAttempts, completion: completion)
+                guard let self else { completion(nil); return }
+                self.fetchHostedPhotoUrl(photoId: photoId, attempt: attempt + 1, maxAttempts: maxAttempts, completion: completion)
             }
         }
     }
 
 
     func imageToData(image: UIImage) -> Data? {
-        return image.jpegData(compressionQuality: 1.0)
+        // Was quality 1.0 at full resolution (8–15 MB per 12 MP photo), which took
+        // minutes to upload on 3G.
+        return image.uploadJPEGData()
     }
 
     /// Runs the full create-sequence → upload-photo → finish → fetch-url chain and returns the hosted photo URL.

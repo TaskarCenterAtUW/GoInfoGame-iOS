@@ -76,7 +76,7 @@ enum FeatureSubmissionManager {
     fileprivate static func attempt(_ record: StoredFeatureDraftSnapshot) async {
         do {
             var tags = record.tags
-            let images = record.imagePaths.compactMap { FeatureImageStorage.shared.load(path: $0) }
+            let images = record.imagePaths.compactMap { FeatureImageStorage.shared.loadData(path: $0) }
             if !images.isEmpty {
                 let photoURLs = try await uploadPhotos(images)
                 for (index, url) in photoURLs.enumerated() {
@@ -126,7 +126,7 @@ enum FeatureSubmissionManager {
         }
     }
 
-    private static func uploadPhotos(_ images: [UIImage]) async throws -> [String] {
+    private static func uploadPhotos(_ images: [Data]) async throws -> [String] {
         var urls: [String] = []
 
         for (index, image) in images.enumerated() {
@@ -136,7 +136,7 @@ enum FeatureSubmissionManager {
                 // requires those to happen on a thread with an active run loop (main),
                 // or the app-level authorization handshake stalls. Only construction
                 // needs the hop; the network upload itself is fine off the main thread.
-                let viewModel = await MainActor.run { KartaviewViewModel(capturedImage: image) }
+                let viewModel = await MainActor.run { KartaviewViewModel(imageData: image) }
                 let url = try await viewModel.uploadAsync()
                 urls.append(url)
             } catch {

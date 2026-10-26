@@ -23,7 +23,7 @@ final class NoteImageStorage {
 
     @discardableResult
     func save(_ image: UIImage) throws -> String {
-        guard let data = image.jpegData(compressionQuality: 0.9) else {
+        guard let data = image.uploadJPEGData() else {
             throw NSError(domain: "NoteImageStorage", code: 0, userInfo: [NSLocalizedDescriptionKey: "Failed to encode photo"])
         }
         let fileURL = directoryURL.appendingPathComponent("\(UUID().uuidString).jpg")
@@ -33,6 +33,12 @@ final class NoteImageStorage {
 
     func load(path: String) -> UIImage? {
         UIImage(contentsOfFile: path)
+    }
+
+    /// The saved JPEG bytes, uploaded as-is — decoding to a `UIImage` and re-encoding
+    /// would cost tens of MB of memory per photo for no benefit.
+    func loadData(path: String) -> Data? {
+        fileManager.contents(atPath: path)
     }
 
     func delete(paths: [String]) {

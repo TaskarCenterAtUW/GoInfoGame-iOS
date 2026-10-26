@@ -36,7 +36,9 @@ struct CameraView: UIViewControllerRepresentable {
         
         func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
             if let image = info[.originalImage] as? UIImage {
-                parent.capturedImage = image
+                // Shrunk right away so the full 12 MP original (~48 MB decoded) isn't
+                // held by the form, its preview, and the upload queue.
+                parent.capturedImage = image.resizedForUpload()
             }
             parent.isPresented = false // Close the camera view after capturing
         }

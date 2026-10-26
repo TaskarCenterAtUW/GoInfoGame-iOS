@@ -63,7 +63,7 @@ enum NotesSubmissionManager {
     /// (already reflected in the sync badge) and is retried by the next trigger.
     fileprivate static func attempt(_ record: StoredNoteDraftSnapshot) async {
         do {
-            let images = record.imagePaths.compactMap { NoteImageStorage.shared.load(path: $0) }
+            let images = record.imagePaths.compactMap { NoteImageStorage.shared.loadData(path: $0) }
             var finalNoteText = record.noteText
 
             if !images.isEmpty {
@@ -91,7 +91,7 @@ enum NotesSubmissionManager {
         }
     }
 
-    private static func uploadPhotos(_ images: [UIImage]) async throws -> [String] {
+    private static func uploadPhotos(_ images: [Data]) async throws -> [String] {
         var urls: [String] = []
 
         for (index, image) in images.enumerated() {
@@ -101,7 +101,7 @@ enum NotesSubmissionManager {
                 // requires those to happen on a thread with an active run loop (main),
                 // or the app-level authorization handshake stalls. Only construction
                 // needs the hop; the network upload itself is fine off the main thread.
-                let viewModel = await MainActor.run { KartaviewViewModel(capturedImage: image) }
+                let viewModel = await MainActor.run { KartaviewViewModel(imageData: image) }
                 let url = try await viewModel.uploadAsync()
                 urls.append(url)
             } catch {

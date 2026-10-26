@@ -95,12 +95,12 @@ enum QuestSubmissionManager {
             var tags = record.tags
 
             if let path = record.pendingImagePath, let tagKey = record.pendingImageTagKey {
-                guard let image = QuestImageStorage.shared.load(path: path) else {
+                guard let imageData = QuestImageStorage.shared.loadData(path: path) else {
                     DatabaseConnector.shared.markChangesetFailed(id: record.id, error: "Saved photo could not be read")
                     return
                 }
                 do {
-                    let url = try await uploadPhoto(image)
+                    let url = try await uploadPhoto(imageData)
                     tags[tagKey] = url
                     DatabaseConnector.shared.attachUploadedPhotoURL(id: record.id, tagKey: tagKey, url: url)
                     QuestImageStorage.shared.delete(paths: [path])
@@ -146,14 +146,14 @@ enum QuestSubmissionManager {
         }
     }
 
-    private static func uploadPhoto(_ image: UIImage) async throws -> String {
+    private static func uploadPhoto(_ imageData: Data) async throws -> String {
         // KartaviewViewModel creates a CLLocationManager on init and immediately calls
         // requestWhenInUseAuthorization()/startUpdating*() — CoreLocation requires
         // those to happen on a thread with an active run loop (main), or the app-level
         // authorization handshake stalls. Only construction needs the hop; the network
         // upload itself is fine off the main thread. Mirrors FeatureSubmissionManager/
         // NotesSubmissionManager's identical uploadPhotos helper.
-        let viewModel = await MainActor.run { KartaviewViewModel(capturedImage: image) }
+        let viewModel = await MainActor.run { KartaviewViewModel(imageData: imageData) }
         return try await viewModel.uploadAsync()
     }
 }

@@ -29,6 +29,15 @@ final class KartaviewViewModelTests: AppTestCase {
         return outcome
     }
 
+    func testQueuedPhotoBytesAreUploadedAsSaved() throws {
+        MockServer.installKartaview(.ok)
+        let bytes = Data([0xFF, 0xD8, 0xFF, 0xE0, 0x51, 0x75, 0x65, 0x75, 0x65, 0x64])
+        let (_, ok) = upload(KartaviewViewModel(imageData: bytes))
+        XCTAssertTrue(ok)
+        let sent = try XCTUnwrap(MockHTTP.requests(path: "/1.0/photo/").first?.body)
+        XCTAssertNotNil(sent.range(of: bytes), "the saved JPEG is sent as-is, not decoded and re-encoded")
+    }
+
     func testAFullUploadReturnsTheHostedPhotoURL() {
         MockServer.installKartaview(.ok)
         let model = KartaviewViewModel(capturedImage: makeImage())
@@ -163,6 +172,14 @@ final class ImageStorageTests: AppTestCase {
         XCTAssertFalse(FileManager.default.fileExists(atPath: path))
         XCTAssertFalse(FileManager.default.fileExists(atPath: other))
         XCTAssertNil(load(path))
+    }
+
+    func testSavedPhotosAreShrunkToTheUploadSize() throws {
+        let path = try QuestImageStorage.shared.save(makeImage(.blue, side: 3000))
+        defer { QuestImageStorage.shared.delete(paths: [path]) }
+        let saved = try XCTUnwrap(QuestImageStorage.shared.load(path: path))
+        XCTAssertEqual(saved.size.width * saved.scale, UIImage.maxUploadDimension)
+        XCTAssertEqual(QuestImageStorage.shared.loadData(path: path), FileManager.default.contents(atPath: path))
     }
 
     func testQuestImages() throws {

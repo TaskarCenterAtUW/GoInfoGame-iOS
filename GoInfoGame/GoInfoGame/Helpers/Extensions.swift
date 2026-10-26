@@ -331,3 +331,34 @@ extension Double {
     var degreesToRadians: Double { return self * .pi / 180 }
     var radiansToDegrees: Double { return self * 180 / .pi }
 }
+
+extension UIImage {
+    /// Longest side, in pixels, of every photo the app stores and uploads.
+    static let maxUploadDimension: CGFloat = 2048
+    /// JPEG quality used when storing a photo for upload.
+    static let uploadJPEGQuality: CGFloat = 0.8
+
+    /// A copy whose longest side is at most `maxDimension` pixels (orientation baked in),
+    /// or `self` when it is already that small. A full 12 MP camera photo is ~48 MB once
+    /// decoded and 8–15 MB as a high-quality JPEG, which is slow to upload on cellular.
+    func resizedForUpload(maxDimension: CGFloat = UIImage.maxUploadDimension) -> UIImage {
+        let pixelWidth = size.width * scale
+        let pixelHeight = size.height * scale
+        let longest = max(pixelWidth, pixelHeight)
+        guard longest > maxDimension, pixelWidth > 0, pixelHeight > 0 else { return self }
+
+        let ratio = maxDimension / longest
+        let target = CGSize(width: (pixelWidth * ratio).rounded(), height: (pixelHeight * ratio).rounded())
+        let format = UIGraphicsImageRendererFormat()
+        format.scale = 1
+        format.opaque = true
+        return UIGraphicsImageRenderer(size: target, format: format).image { _ in
+            draw(in: CGRect(origin: .zero, size: target))
+        }
+    }
+
+    /// Resized for upload and JPEG-encoded at `uploadJPEGQuality`.
+    func uploadJPEGData() -> Data? {
+        resizedForUpload().jpegData(compressionQuality: UIImage.uploadJPEGQuality)
+    }
+}

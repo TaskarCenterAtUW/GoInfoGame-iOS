@@ -551,8 +551,13 @@ private extension QuestOptions {
         @StateObject private var sharedBaseSettings: SharedBaseSettings = SharedBaseSettings()
         let isEnhancedAnalysisEnabled = true
         @StateObject var segmentationAnnontationPipeline: SegmentationAnnotationPipeline = SegmentationAnnotationPipeline()
-        @StateObject var attributeEstimationPipeline: AttributeEstimationPipeline = AttributeEstimationPipeline()
-        @StateObject var manager: AnnotationImageManager = AnnotationImageManager()
+        // AttributeEstimationPipeline and AnnotationImageManager are created per capture
+        // in onCaptureComplete rather than held here: both keep the last capture's
+        // images, depth and mesh data, and the SDK has no public way to clear them, so
+        // holding them kept that data alive for as long as the form was open.
+        /// `configure()` loads the segmentation models; run it once per view, not on every
+        /// `onAppear` (which fires again each time the question scrolls back into view).
+        @State private var isConfigured = false
 //        class CurrentFeaturesViewModel: ObservableObject {
 //            @Published var currentFeatures: [EditableAccessibilityFeature] = []
 //        }
@@ -704,7 +709,10 @@ private extension QuestOptions {
                         }
                     }
                 }
-                configure()
+                if !isConfigured {
+                    configure()
+                    isConfigured = true
+                }
             }
             .onChange(of: selectedChoice) { newChoice in
                 // Monitor selectedChoice for external changes
@@ -737,8 +745,8 @@ private extension QuestOptions {
             // @MainActor-isolated properties cannot be accessed inside it directly.
             let selectedClasses = self.selectedClasses
             let isEnhancedAnalysisEnabled = self.sharedBaseSettings.isEnhancedAnalysisEnabled
-            let attributeEstimationPipeline = self.attributeEstimationPipeline
-            let manager = self.manager
+            let attributeEstimationPipeline = AttributeEstimationPipeline()
+            let manager = AnnotationImageManager()
             let segmentationAnnontationPipeline = self.segmentationAnnontationPipeline
             let sharedAppData = self.sharedAppData
 
@@ -793,6 +801,7 @@ private extension QuestOptions {
                     }
 
                     let completedCaptures = newCaptures
+                    await Self.releaseCaptureData(sharedAppData)
                     await MainActor.run {
                         self.captures.append(contentsOf: completedCaptures)
                         self.isProcessing = false
@@ -800,6 +809,7 @@ private extension QuestOptions {
                     }
                 } catch {
                     print("Error configuring attribute estimation pipeline: \(error)")
+                    await Self.releaseCaptureData(sharedAppData)
                     await MainActor.run {
                         self.errorMessage = error.localizedDescription
                         self.isProcessingError = true
@@ -809,6 +819,14 @@ private extension QuestOptions {
             }
         }
         
+        /// Drops the recent camera frames (image, depth, segmentation) and the last capture
+        /// record the SDK keeps in `SharedBaseData` once a capture has been processed —
+        /// the measurements are already in `captures`, and nothing else clears them.
+        private static func releaseCaptureData(_ sharedAppData: SharedBaseData) async {
+            await sharedAppData.refreshQueue()
+            await MainActor.run { sharedAppData.refreshData() }
+        }
+
         public func configure() {
             // For demonstration purposes, we select only sidewalk class by default
             guard let sidewalkClass = PointNMapConstants.SelectedAccessibilityFeatureConfig.classes.first(where: { $0.kind == .sidewalk }) else {
