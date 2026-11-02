@@ -73,6 +73,14 @@ enum APIEnvironment: String, CaseIterable {
             return "https://api.openstreetcam.org/2.0"
         }
     }
+
+    /// Panoramax instance photos are uploaded to (OpenStreetMap France's public instance).
+    var panoramaxBaseURL: String {
+        switch self {
+        case .development, .staging, .production:
+            return "https://panoramax.openstreetmap.fr"
+        }
+    }
     
     func displayString() -> String {
         switch self {

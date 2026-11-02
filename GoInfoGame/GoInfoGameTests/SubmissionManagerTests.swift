@@ -146,6 +146,93 @@ final class KartaviewViewModelTests: AppTestCase {
     }
 }
 
+// MARK: - Panoramax photo upload
+
+final class PanoramaxUploaderTests: AppTestCase {
+
+    private let spot = CLLocationCoordinate2D(latitude: 47.6553, longitude: -122.3035)
+    // ASCII stand-in for JPEG bytes, so the recorded multipart body stays readable as text.
+    private let photo = Data("jpeg-bytes".utf8)
+
+    private var uploader: PanoramaxUploader { PhotoUploadService.makePanoramaxUploader() }
+
+    func testAnUploadReturnsTheHostedPhotoURL() async throws {
+        MockServer.installPanoramax(.ok)
+        let url = try await uploader.upload(imageData: photo, coordinate: spot)
+        XCTAssertEqual(url, MockServer.panoramaxPhotoURL)
+    }
+
+    func testTheUploadSetHoldsOnePhotoThatIsNeverSplitOrDeduplicated() async throws {
+        MockServer.installPanoramax(.ok)
+        _ = try await uploader.upload(imageData: photo, coordinate: spot)
+
+        let create = try XCTUnwrap(MockHTTP.requests(path: "/api/upload_sets", method: "POST").first)
+        XCTAssertEqual(create.header("Authorization"), "Bearer \(MockServer.panoramaxToken)")
+        let json = try XCTUnwrap(try JSONSerialization.jsonObject(with: try XCTUnwrap(create.body)) as? [String: Any])
+        XCTAssertEqual(json["estimated_nb_files"] as? Int, 1)
+        XCTAssertEqual(json["no_split"] as? Bool, true)
+        XCTAssertEqual(json["no_deduplication"] as? Bool, true)
+        XCTAssertEqual(json["visibility"] as? String, "anyone")
+    }
+
+    func testThePhotoIsSentWithItsLocationAndCaptureTime() async throws {
+        MockServer.installPanoramax(.ok)
+        let capturedAt = Date(timeIntervalSince1970: 1_793_000_000)
+        _ = try await uploader.upload(imageData: photo, coordinate: spot, capturedAt: capturedAt)
+
+        let file = try XCTUnwrap(MockHTTP.requests(path: MockServer.panoramaxFilesPath, method: "POST").first)
+        XCTAssertEqual(file.header("Authorization"), "Bearer \(MockServer.panoramaxToken)")
+        let body = file.bodyString
+        XCTAssertTrue(body.contains("name=\"override_latitude\"\r\n\r\n47.6553\r\n"))
+        XCTAssertTrue(body.contains("name=\"override_longitude\"\r\n\r\n-122.3035\r\n"))
+        XCTAssertTrue(body.contains("name=\"override_capture_time\"\r\n\r\n\(ISO8601DateFormatter().string(from: capturedAt))\r\n"))
+        XCTAssertTrue(body.contains("Content-Type: image/jpeg\r\n\r\njpeg-bytes\r\n"))
+    }
+
+    func testARejectedPhotoThrowsTheReasonEvenThoughTheStatusIs202() async {
+        MockServer.installPanoramax(.rejected)
+        do {
+            _ = try await uploader.upload(imageData: photo, coordinate: spot)
+            XCTFail("a rejected photo must not return a URL")
+        } catch {
+            XCTAssertEqual(error as? PanoramaxError, .rejected("No GPS coordinates"))
+        }
+    }
+
+    func testAnInvalidTokenThrowsTheServerMessageAndUploadsNothing() async {
+        MockServer.installPanoramax(.unauthorized)
+        do {
+            _ = try await uploader.upload(imageData: photo, coordinate: spot)
+            XCTFail("an unauthorized upload must fail")
+        } catch {
+            XCTAssertEqual(error as? PanoramaxError, .server(status: 401, message: "Token not valid"))
+        }
+        XCTAssertTrue(MockHTTP.requests(path: MockServer.panoramaxFilesPath).isEmpty)
+    }
+
+    func testAMissingTokenFailsWithoutAnyRequest() async {
+        MockServer.installPanoramax(.ok)
+        do {
+            _ = try await PanoramaxUploader(baseURL: MockServer.panoramaxBaseURL, token: "").upload(imageData: photo, coordinate: spot)
+            XCTFail("an upload without a token must fail")
+        } catch {
+            XCTAssertEqual(error as? PanoramaxError, .missingToken)
+        }
+        XCTAssertTrue(MockHTTP.requests.isEmpty)
+    }
+
+    func testTheServiceSendsPhotosToPanoramaxWhenSelected() async throws {
+        MockServer.installPanoramax(.ok)
+        PhotoUploadService.provider = .panoramax
+        let url = try await PhotoUploadService.upload(makeImage(), coordinate: spot)
+
+        XCTAssertEqual(url, MockServer.panoramaxPhotoURL)
+        XCTAssertTrue(MockHTTP.requests(path: "/1.0/sequence/").isEmpty, "KartaView is not called")
+        let file = try XCTUnwrap(MockHTTP.requests(path: MockServer.panoramaxFilesPath).first)
+        XCTAssertTrue(file.header("Content-Type")?.hasPrefix("multipart/form-data; boundary=") == true)
+    }
+}
+
 // MARK: - On-disk image stores
 
 final class ImageStorageTests: AppTestCase {
@@ -346,6 +433,24 @@ final class QuestSubmissionManagerTests: AppTestCase {
         XCTAssertEqual(message, "Failed to create Kartaview sequence")
     }
 
+    func testWithPanoramaxSelectedThePhotoURLBecomesTheSameTag() throws {
+        MockServer.installPanoramax(.ok)
+        PhotoUploadService.provider = .panoramax
+        submitSidewalk(image: makeImage(), imageTagKey: "ext:kartaview_url")
+        waitUntil(timeout: 15, "the answer never synced") { events.contains("answerSynced") }
+
+        let synced = try XCTUnwrap(db.getChangesets(synced: true).first)
+        XCTAssertEqual(synced.tags["ext:kartaview_url"], MockServer.panoramaxPhotoURL)
+        XCTAssertTrue(MockHTTP.requests(path: "/1.0/sequence/").isEmpty, "KartaView is not called")
+
+        // A way's photo is placed at its first node.
+        let firstNodeId = try XCTUnwrap(db.getWay(id: 121949)?.nodes.first)
+        let firstNode = try XCTUnwrap(db.getNode(id: Int(firstNodeId)))
+        let file = try XCTUnwrap(MockHTTP.requests(path: MockServer.panoramaxFilesPath).first)
+        XCTAssertTrue(file.bodyString.contains("name=\"override_latitude\"\r\n\r\n\(firstNode.latitude)\r\n"))
+        XCTAssertTrue(file.bodyString.contains("name=\"override_longitude\"\r\n\r\n\(firstNode.longitude)\r\n"))
+    }
+
     func testAPhotoFileThatWentMissingIsRecordedAsAFailure() throws {
         MockServer.installKartaview(.ok)
         let id = db.createChangeset(id: 121949, questType: "Sidewalks", type: .way, originalTags: ["footway": "sidewalk", "highway": "footway"],
@@ -443,6 +548,21 @@ final class NotesSubmissionManagerTests: AppTestCase {
         let realm = try Realm(configuration: RealmConfig.configuration)
         let draft = try XCTUnwrap(realm.objects(StoredNoteDraft.self).first)
         XCTAssertEqual(draft.lastError, "Failed to upload photo 1 to Kartaview: Failed to create Kartaview sequence")
+        NoteImageStorage.shared.delete(paths: Array(draft.imagePaths))
+    }
+
+    func testWithPanoramaxSelectedARejectedPhotoKeepsTheNoteQueued() throws {
+        MockServer.installNotes()
+        MockServer.installPanoramax(.rejected)
+        PhotoUploadService.provider = .panoramax
+        NotesSubmissionManager.submit(NoteDraft(noteText: "photo rejected", images: [makeImage()], coordinates: here))
+        waitForDrain()
+
+        XCTAssertEqual(db.pendingNoteDraftsCount(), 1)
+        XCTAssertTrue(MockHTTP.requests(path: "\(MockServer.osm)/notes.json").isEmpty, "the note is not sent without its photo")
+        let realm = try Realm(configuration: RealmConfig.configuration)
+        let draft = try XCTUnwrap(realm.objects(StoredNoteDraft.self).first)
+        XCTAssertEqual(draft.lastError, "Failed to upload photo 1 to Panoramax: Panoramax rejected the photo: No GPS coordinates")
         NoteImageStorage.shared.delete(paths: Array(draft.imagePaths))
     }
 

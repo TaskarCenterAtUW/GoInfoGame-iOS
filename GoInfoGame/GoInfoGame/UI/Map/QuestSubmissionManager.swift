@@ -100,7 +100,7 @@ enum QuestSubmissionManager {
                     return
                 }
                 do {
-                    let url = try await uploadPhoto(image)
+                    let url = try await PhotoUploadService.upload(image, coordinate: photoCoordinate(for: record))
                     tags[tagKey] = url
                     DatabaseConnector.shared.attachUploadedPhotoURL(id: record.id, tagKey: tagKey, url: url)
                     QuestImageStorage.shared.delete(paths: [path])
@@ -146,15 +146,12 @@ enum QuestSubmissionManager {
         }
     }
 
-    private static func uploadPhoto(_ image: UIImage) async throws -> String {
-        // KartaviewViewModel creates a CLLocationManager on init and immediately calls
-        // requestWhenInUseAuthorization()/startUpdating*() — CoreLocation requires
-        // those to happen on a thread with an active run loop (main), or the app-level
-        // authorization handshake stalls. Only construction needs the hop; the network
-        // upload itself is fine off the main thread. Mirrors FeatureSubmissionManager/
-        // NotesSubmissionManager's identical uploadPhotos helper.
-        let viewModel = await MainActor.run { KartaviewViewModel(capturedImage: image) }
-        return try await viewModel.uploadAsync()
+    /// Where the photo was taken: the node itself, or a way's first node.
+    private static func photoCoordinate(for record: StoredChangesetSnapshot) -> CLLocationCoordinate2D? {
+        if record.elementType == .node { return record.point }
+        guard let firstNodeId = record.nodes.first,
+              let node = DatabaseConnector.shared.getNode(id: Int(firstNodeId)) else { return nil }
+        return CLLocationCoordinate2D(latitude: node.latitude, longitude: node.longitude)
     }
 }
 

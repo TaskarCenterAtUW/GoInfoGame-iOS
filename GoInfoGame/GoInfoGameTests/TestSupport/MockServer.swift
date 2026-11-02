@@ -148,6 +148,41 @@ enum MockServer {
         }
     }
 
+    // MARK: Panoramax (photo uploads)
+
+    static let panoramaxBaseURL = "https://panoramax.test"
+    static let panoramaxToken = "test-panoramax-token"
+    static let panoramaxUploadSetID = "8f1d9c2e-0000-4000-8000-000000000001"
+    static let panoramaxPictureID = "c0ffee00-1111-4222-8333-444455556666"
+    static let panoramaxPhotoURL = "\(panoramaxBaseURL)/api/pictures/\(panoramaxPictureID)/hd.jpg"
+    static let panoramaxFilesPath = "/api/upload_sets/\(panoramaxUploadSetID)/files"
+
+    enum Panoramax {
+        case ok
+        case rejected       // 202, but the body says the photo was not accepted
+        case unauthorized   // upload set creation answers 401
+        case offline        // the photo upload never reaches the server
+    }
+
+    static func installPanoramax(_ mode: Panoramax = .ok) {
+        if mode == .unauthorized {
+            MockHTTP.stub("POST", path: "/api/upload_sets",
+                          reply: .statusWithBody(401, #"{"details":{"error":"Impossible to decode token"},"message":"Token not valid","status_code":401}"#))
+            return
+        }
+        MockHTTP.stub("POST", path: "/api/upload_sets", reply: .json(#"{"id":"\#(panoramaxUploadSetID)","title":"GoInfoGame"}"#))
+        switch mode {
+        case .rejected:
+            MockHTTP.stub("POST", path: panoramaxFilesPath,
+                          reply: .json(#"{"file_name":"a.jpg","rejected":{"reason":"file_missing_mandatory_metadata","severity":"error","message":"No GPS coordinates","details":null}}"#, status: 202))
+        case .offline:
+            MockHTTP.stub("POST", path: panoramaxFilesPath, reply: .offline)
+        default:
+            MockHTTP.stub("POST", path: panoramaxFilesPath,
+                          reply: .json(#"{"file_name":"a.jpg","picture_id":"\#(panoramaxPictureID)","rejected":null}"#, status: 202))
+        }
+    }
+
     // MARK: Notes
 
     static func installNotes(success: Bool = true) {

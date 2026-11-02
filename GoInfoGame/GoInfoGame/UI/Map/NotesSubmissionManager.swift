@@ -67,7 +67,7 @@ enum NotesSubmissionManager {
             var finalNoteText = record.noteText
 
             if !images.isEmpty {
-                let photoURLs = try await uploadPhotos(images)
+                let photoURLs = try await uploadPhotos(images, coordinate: record.coordinates)
                 finalNoteText += "\n\n" + photoURLs.joined(separator: "\n")
             }
 
@@ -91,24 +91,18 @@ enum NotesSubmissionManager {
         }
     }
 
-    private static func uploadPhotos(_ images: [UIImage]) async throws -> [String] {
+    private static func uploadPhotos(_ images: [UIImage], coordinate: CLLocationCoordinate2D) async throws -> [String] {
         var urls: [String] = []
 
         for (index, image) in images.enumerated() {
             do {
-                // KartaviewViewModel creates a CLLocationManager on init and immediately
-                // calls requestWhenInUseAuthorization()/startUpdating*() — CoreLocation
-                // requires those to happen on a thread with an active run loop (main),
-                // or the app-level authorization handshake stalls. Only construction
-                // needs the hop; the network upload itself is fine off the main thread.
-                let viewModel = await MainActor.run { KartaviewViewModel(capturedImage: image) }
-                let url = try await viewModel.uploadAsync()
+                let url = try await PhotoUploadService.upload(image, coordinate: coordinate)
                 urls.append(url)
             } catch {
                 throw NSError(
-                    domain: "KartaviewUpload",
+                    domain: "PhotoUpload",
                     code: 0,
-                    userInfo: [NSLocalizedDescriptionKey: "Failed to upload photo \(index + 1) to Kartaview: \(error.localizedDescription)"]
+                    userInfo: [NSLocalizedDescriptionKey: "Failed to upload photo \(index + 1) to \(PhotoUploadService.provider.displayName): \(error.localizedDescription)"]
                 )
             }
         }

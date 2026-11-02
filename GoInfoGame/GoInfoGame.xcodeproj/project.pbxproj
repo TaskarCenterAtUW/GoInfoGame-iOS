@@ -282,6 +282,8 @@
 		DD224EE7B5FC852AF5637C95 /* ScreenshotOnFailureUITestCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = E70058F06D4E69B2E0669A8B /* ScreenshotOnFailureUITestCase.swift */; };
 		F45BA2B5418942E3B4C91667 /* StoredFeatureDraft.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C9C135AD8A342A1A94E757C /* StoredFeatureDraft.swift */; };
 		FA18CAE22CC7CD89008247F2 /* KartaviewViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA18CAE12CC7CD89008247F2 /* KartaviewViewModel.swift */; };
+		B7A1C0DE2F10000100000004 /* PanoramaxUploader.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7A1C0DE2F10000100000002 /* PanoramaxUploader.swift */; };
+		B7A1C0DE2F10000100000005 /* PhotoUploadService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7A1C0DE2F10000100000003 /* PhotoUploadService.swift */; };
 		FA18CAE52CC7D0DD008247F2 /* SequenceModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA18CAE42CC7D0DD008247F2 /* SequenceModel.swift */; };
 		FA18CAE72CC80A34008247F2 /* UploadPhotoModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA18CAE62CC80A34008247F2 /* UploadPhotoModel.swift */; };
 		FA18CAE92CCFD212008247F2 /* FinishUploadingModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA18CAE82CCFD212008247F2 /* FinishUploadingModel.swift */; };
@@ -732,6 +734,8 @@
 		F008D431593E568E75C48C84 /* Pods-GoInfoGame.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-GoInfoGame.debug.xcconfig"; path = "Target Support Files/Pods-GoInfoGame/Pods-GoInfoGame.debug.xcconfig"; sourceTree = "<group>"; };
 		F7B0248DF7AD2506C0779CE9 /* QuestSubmissionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuestSubmissionManager.swift; sourceTree = "<group>"; };
 		FA18CAE12CC7CD89008247F2 /* KartaviewViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KartaviewViewModel.swift; sourceTree = "<group>"; };
+		B7A1C0DE2F10000100000002 /* PanoramaxUploader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PanoramaxUploader.swift; sourceTree = "<group>"; };
+		B7A1C0DE2F10000100000003 /* PhotoUploadService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoUploadService.swift; sourceTree = "<group>"; };
 		FA18CAE42CC7D0DD008247F2 /* SequenceModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SequenceModel.swift; sourceTree = "<group>"; };
 		FA18CAE62CC80A34008247F2 /* UploadPhotoModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadPhotoModel.swift; sourceTree = "<group>"; };
 		FA18CAE82CCFD212008247F2 /* FinishUploadingModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FinishUploadingModel.swift; sourceTree = "<group>"; };
@@ -1673,6 +1677,15 @@
 			path = MockResponses;
 			sourceTree = "<group>";
 		};
+		B7A1C0DE2F10000100000001 /* PhotoUpload */ = {
+			isa = PBXGroup;
+			children = (
+				B7A1C0DE2F10000100000002 /* PanoramaxUploader.swift */,
+				B7A1C0DE2F10000100000003 /* PhotoUploadService.swift */,
+			);
+			path = PhotoUpload;
+			sourceTree = "<group>";
+		};
 		FA18CADE2CC7CD46008247F2 /* Kartaview */ = {
 			isa = PBXGroup;
 			children = (
@@ -1864,6 +1877,7 @@
 				C78EEFAC2FDAD91000729240 /* PointNMap-Bridging-Header.h */,
 				C787EF162E9676CC00BEF0A6 /* GoInfoGame.entitlements */,
 				FA18CADE2CC7CD46008247F2 /* Kartaview */,
+				B7A1C0DE2F10000100000001 /* PhotoUpload */,
 				FAFDA2092C6F589900ECEAE9 /* UserProfile */,
 				FAFDA1FB2C6D321500ECEAE9 /* Login */,
 				FA8C74CF2C598F3D00D28220 /* Fonts */,
@@ -2776,6 +2790,8 @@
 				FAFDA2042C6E8BEA00ECEAE9 /* APIEnvironment.swift in Sources */,
 				973FC0032B47DE0700878269 /* QuestsVM.swift in Sources */,
 				FA18CAE22CC7CD89008247F2 /* KartaviewViewModel.swift in Sources */,
+				B7A1C0DE2F10000100000004 /* PanoramaxUploader.swift in Sources */,
+				B7A1C0DE2F10000100000005 /* PhotoUploadService.swift in Sources */,
 				971575172B5FFD6F0044797C /* MapView.swift in Sources */,
 				FAFDA2102C6F592700ECEAE9 /* UserProfileViewModel.swift in Sources */,
 				FAE2584F2D39819300D2BB12 /* ManageQuestsView.swift in Sources */,
