@@ -25,13 +25,6 @@
 	<string>$(PANORAMAX_BASE_URL)</string>
 	<key>PHOTO_UPLOAD_PROVIDER</key>
 	<string>$(PHOTO_UPLOAD_PROVIDER)</string>
-	<key>NSAppTransportSecurity</key>
-	<dict>
-		<key>NSAllowsLocalNetworking</key>
-		<true/>
-	</dict>
-	<key>NSLocalNetworkUsageDescription</key>
-	<string>Uploads photos to a test server on your local network.</string>
 	<key>JAWG_ACCESS_TOKEN</key>
 	<string>$(JAWG_ACCESS_TOKEN)</string>
 	<key>AppStpre_URL</key>
