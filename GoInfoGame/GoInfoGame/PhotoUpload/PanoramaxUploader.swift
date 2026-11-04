@@ -44,7 +44,18 @@ struct PanoramaxUploader {
     let token: String
     var session: URLSession = .shared
 
-    init(baseURL: String = APIConfiguration.shared.environment.panoramaxBaseURL,
+    /// PANORAMAX_BASE_URL from Secrets.xcconfig (e.g. a local test server) wins over the
+    /// environment's default instance when it is set.
+    static var defaultBaseURL: String {
+        let configured = (Bundle.main.object(forInfoDictionaryKey: "PANORAMAX_BASE_URL") as? String)?
+            .trimmingCharacters(in: .whitespaces) ?? ""
+        guard !configured.isEmpty, !configured.hasPrefix("$(") else {
+            return APIConfiguration.shared.environment.panoramaxBaseURL
+        }
+        return configured.hasSuffix("/") ? String(configured.dropLast()) : configured
+    }
+
+    init(baseURL: String = PanoramaxUploader.defaultBaseURL,
          token: String = Bundle.main.object(forInfoDictionaryKey: "PANORAMAX_TOKEN") as? String ?? "",
          session: URLSession = .shared) {
         self.baseURL = baseURL
@@ -67,13 +78,14 @@ struct PanoramaxUploader {
 
     private func createUploadSet() async throws -> String {
         let payload: [String: Any] = [
-            "title": "GoInfoGame",
+            "title": "AVIV ScoutRoute",
             "estimated_nb_files": 1,
             // Every photo is its own upload: don't split it into sequences or drop it as a
             // duplicate of an earlier photo taken at the same spot.
             "no_split": true,
             "no_deduplication": true,
-            "visibility": "anyone"
+            "visibility": "anyone",
+            "tags": ["test tag" : "value"]
         ]
         var request = try makeRequest(path: "/api/upload_sets")
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
@@ -95,11 +107,19 @@ struct PanoramaxUploader {
         // Panoramax rejects photos without GPS and capture time, and our JPEG carries no
         // EXIF, so both are always sent as override fields.
         var body = Data()
+        let tags: [[String: String]] = [
+            ["key": "osm|traffic_sign", "value": "stop"],
+            ["key": "detection_model[osm|traffic_sign]", "value": "SGBlur/1.0.0"]
+        ]
+        let jsonData = try JSONSerialization.data(withJSONObject: tags, options: [.sortedKeys, .withoutEscapingSlashes])
+        let jsonString = String(data: jsonData, encoding: .utf8)!
+        
         let fields = [
             "override_latitude": "\(coordinate.latitude)",
             "override_longitude": "\(coordinate.longitude)",
-            "override_capture_time": ISO8601DateFormatter().string(from: capturedAt)
-        ]
+            "override_capture_time": ISO8601DateFormatter().string(from: capturedAt),
+            "semantics" : jsonString
+        ] as [String : Any]
         for (name, value) in fields {
             body.append("--\(boundary)\r\nContent-Disposition: form-data; name=\"\(name)\"\r\n\r\n\(value)\r\n")
         }
