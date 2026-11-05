@@ -63,10 +63,14 @@ struct PanoramaxUploader {
         self.session = session
     }
 
-    func upload(imageData: Data, coordinate: CLLocationCoordinate2D, capturedAt: Date = Date()) async throws -> String {
+    /// `semantics` are Panoramax semantic tags (`[["key": ..., "value": ...]]`) stored on the
+    /// picture, e.g. from `PhotoUploadContext.semantics`.
+    func upload(imageData: Data, coordinate: CLLocationCoordinate2D, capturedAt: Date = Date(),
+                semantics: [[String: String]] = []) async throws -> String {
         guard !token.isEmpty else { throw PanoramaxError.missingToken }
         let uploadSetId = try await createUploadSet()
-        let pictureId = try await uploadFile(imageData, to: uploadSetId, coordinate: coordinate, capturedAt: capturedAt)
+        let pictureId = try await uploadFile(imageData, to: uploadSetId, coordinate: coordinate,
+                                             capturedAt: capturedAt, semantics: semantics)
         return pictureURL(for: pictureId)
     }
 
@@ -84,8 +88,7 @@ struct PanoramaxUploader {
             // duplicate of an earlier photo taken at the same spot.
             "no_split": true,
             "no_deduplication": true,
-            "visibility": "anyone",
-            "tags": ["test tag" : "value"]
+            "visibility": "anyone"
         ]
         var request = try makeRequest(path: "/api/upload_sets")
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
@@ -99,7 +102,7 @@ struct PanoramaxUploader {
     }
 
     private func uploadFile(_ imageData: Data, to uploadSetId: String, coordinate: CLLocationCoordinate2D,
-                            capturedAt: Date) async throws -> String {
+                            capturedAt: Date, semantics: [[String: String]]) async throws -> String {
         let boundary = "Boundary-\(UUID().uuidString)"
         var request = try makeRequest(path: "/api/upload_sets/\(uploadSetId)/files")
         request.setValue("multipart/form-data; boundary=\(boundary)", forHTTPHeaderField: "Content-Type")
@@ -107,19 +110,15 @@ struct PanoramaxUploader {
         // Panoramax rejects photos without GPS and capture time, and our JPEG carries no
         // EXIF, so both are always sent as override fields.
         var body = Data()
-        let tags: [[String: String]] = [
-            ["key": "osm|traffic_sign", "value": "stop"],
-            ["key": "detection_model[osm|traffic_sign]", "value": "SGBlur/1.0.0"]
-        ]
-        let jsonData = try JSONSerialization.data(withJSONObject: tags, options: [.sortedKeys, .withoutEscapingSlashes])
-        let jsonString = String(data: jsonData, encoding: .utf8)!
-        
-        let fields = [
+        var fields = [
             "override_latitude": "\(coordinate.latitude)",
             "override_longitude": "\(coordinate.longitude)",
-            "override_capture_time": ISO8601DateFormatter().string(from: capturedAt),
-            "semantics" : jsonString
-        ] as [String : Any]
+            "override_capture_time": ISO8601DateFormatter().string(from: capturedAt)
+        ]
+        if !semantics.isEmpty {
+            let json = try JSONSerialization.data(withJSONObject: semantics, options: [.sortedKeys, .withoutEscapingSlashes])
+            fields["semantics"] = String(decoding: json, as: UTF8.self)
+        }
         for (name, value) in fields {
             body.append("--\(boundary)\r\nContent-Disposition: form-data; name=\"\(name)\"\r\n\r\n\(value)\r\n")
         }

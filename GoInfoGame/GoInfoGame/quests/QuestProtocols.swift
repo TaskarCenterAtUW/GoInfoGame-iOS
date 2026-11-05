@@ -126,9 +126,9 @@ class QuestBase {
     /// (with or without a photo) can be submitted offline. `capturedImage`/`imageTagKey`
     /// are non-nil only for a LongForm answer with an attached KartaView photo; every
     /// other quest type leaves them at their default (nil), unaffected by this path.
-    public func updateTags(id: Int64, questType: String, tags:[String:String], type: ElementType, iconName: String, exclude_gig_tags: Bool = false, capturedImage: UIImage? = nil, imageTagKey: String? = nil) {
+    public func updateTags(id: Int64, questType: String, tags:[String:String], type: ElementType, iconName: String, exclude_gig_tags: Bool = false, capturedImage: UIImage? = nil, imageTagKey: String? = nil, imageQuestion: String? = nil, imageQuestId: Int? = nil) {
         elementSubmittingToPOSM = type == .way ? .way : .node
-        QuestSubmissionManager.submit(id: id, questType: questType, tags: tags, type: type, iconName: iconName, capturedImage: capturedImage, imageTagKey: imageTagKey)
+        QuestSubmissionManager.submit(id: id, questType: questType, tags: tags, type: type, iconName: iconName, capturedImage: capturedImage, imageTagKey: imageTagKey, imageQuestion: imageQuestion, imageQuestId: imageQuestId)
     }
 }
 // Adds default method and implementation

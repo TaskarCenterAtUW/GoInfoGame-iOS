@@ -187,6 +187,32 @@ final class PanoramaxUploaderTests: AppTestCase {
         XCTAssertTrue(body.contains("name=\"override_longitude\"\r\n\r\n-122.3035\r\n"))
         XCTAssertTrue(body.contains("name=\"override_capture_time\"\r\n\r\n\(ISO8601DateFormatter().string(from: capturedAt))\r\n"))
         XCTAssertTrue(body.contains("Content-Type: image/jpeg\r\n\r\njpeg-bytes\r\n"))
+        XCTAssertFalse(body.contains("name=\"semantics\""), "no semantics field without context")
+    }
+
+    func testThePhotoCarriesItsContextAsSemantics() async throws {
+        MockServer.installPanoramax(.ok)
+        let context = PhotoUploadContext(workspaceId: "222", elementId: "way/121949", question: "What is the surface?",
+                                         questId: 7)
+        _ = try await uploader.upload(imageData: photo, coordinate: spot, semantics: context.semantics)
+
+        let file = try XCTUnwrap(MockHTTP.requests(path: MockServer.panoramaxFilesPath, method: "POST").first)
+        let body = file.bodyString
+        let marker = "name=\"semantics\"\r\n\r\n"
+        let start = try XCTUnwrap(body.range(of: marker)).upperBound
+        let json = String(body[start...].prefix { $0 != "\r" })
+        let tags = try XCTUnwrap(try JSONSerialization.jsonObject(with: Data(json.utf8)) as? [[String: String]])
+        XCTAssertEqual(tags, [
+            ["key": "workspace_id", "value": "222"],
+            ["key": "element_id", "value": "way/121949"],
+            ["key": "quest_id", "value": "7"],
+            ["key": "question", "value": "What is the surface?"]
+        ])
+    }
+
+    func testEmptyContextFieldsAreLeftOutOfTheSemantics() {
+        let context = PhotoUploadContext(workspaceId: "222", elementId: "", question: "  ")
+        XCTAssertEqual(context.semantics, [["key": "workspace_id", "value": "222"]])
     }
 
     func testARejectedPhotoThrowsTheReasonEvenThoughTheStatusIs202() async {
@@ -300,9 +326,10 @@ final class QuestSubmissionManagerTests: AppTestCase {
         events = recordSheetEvents()
     }
 
-    private func submitSidewalk(tags: [String: String] = ["ext:surface": "concrete"], image: UIImage? = nil, imageTagKey: String? = nil) {
+    private func submitSidewalk(tags: [String: String] = ["ext:surface": "concrete"], image: UIImage? = nil, imageTagKey: String? = nil,
+                                imageQuestion: String? = nil, imageQuestId: Int? = nil) {
         QuestSubmissionManager.submit(id: 121949, questType: "Sidewalks", tags: tags, type: .way, iconName: "sidewalk_surface",
-                                      capturedImage: image, imageTagKey: imageTagKey)
+                                      capturedImage: image, imageTagKey: imageTagKey, imageQuestion: imageQuestion, imageQuestId: imageQuestId)
     }
 
     private func waitForDrain(_ message: String = "queue never finished draining") {
@@ -433,14 +460,33 @@ final class QuestSubmissionManagerTests: AppTestCase {
         XCTAssertEqual(message, "Failed to create Kartaview sequence")
     }
 
-    func testWithPanoramaxSelectedThePhotoURLBecomesTheSameTag() throws {
+    func testAPhotoQueuedUnderTheKartaviewTagGoesToStreetImagesWhenPanoramaxHostsIt() throws {
         MockServer.installPanoramax(.ok)
         PhotoUploadService.provider = .panoramax
-        submitSidewalk(image: makeImage(), imageTagKey: "ext:kartaview_url")
+        submitSidewalk(image: makeImage(), imageTagKey: PhotoTag.kartaview)
         waitUntil(timeout: 15, "the answer never synced") { events.contains("answerSynced") }
 
         let synced = try XCTUnwrap(db.getChangesets(synced: true).first)
-        XCTAssertEqual(synced.tags["ext:kartaview_url"], MockServer.panoramaxPhotoURL)
+        XCTAssertEqual(synced.tags[PhotoTag.streetImages], MockServer.panoramaxPhotoURL)
+        XCTAssertNil(synced.tags[PhotoTag.kartaview])
+    }
+
+    func testWithPanoramaxSelectedThePhotoURLBecomesAStreetImagesTag() throws {
+        MockServer.installPanoramax(.ok)
+        PhotoUploadService.provider = .panoramax
+        submitSidewalk(image: makeImage(), imageTagKey: PhotoTag.streetImages, imageQuestion: "What is the surface?",
+                       imageQuestId: 7)
+        waitUntil(timeout: 15, "the answer never synced") { events.contains("answerSynced") }
+
+        let synced = try XCTUnwrap(db.getChangesets(synced: true).first)
+        XCTAssertEqual(synced.tags[PhotoTag.streetImages], MockServer.panoramaxPhotoURL)
+        XCTAssertNil(synced.tags[PhotoTag.kartaview])
+        let semantics = try XCTUnwrap(MockHTTP.requests(path: MockServer.panoramaxFilesPath).first).bodyString
+        for expected in [#""key":"workspace_id","value":"222""#, #""key":"element_id","value":"way/121949""#, #""key":"quest_id","value":"7""#,
+                         #""key":"question","value":"What is the surface?""#] {
+            XCTAssertTrue(semantics.contains(expected), "semantics missing \(expected)")
+        }
+        XCTAssertFalse(semantics.contains("user_email"), "the user's email is never sent")
         XCTAssertTrue(MockHTTP.requests(path: "/1.0/sequence/").isEmpty, "KartaView is not called")
 
         // A way's photo is placed at its first node.
@@ -736,5 +782,28 @@ final class FeatureSubmissionManagerTests: AppTestCase {
         FeatureSubmissionManager.resumePendingUploads()
         RunLoop.main.run(until: Date().addingTimeInterval(0.3))
         XCTAssertTrue(events.names.isEmpty)
+    }
+}
+
+final class PhotoTagTests: XCTestCase {
+
+    func testStreetImagesWinsOverTheOlderKartaviewTag() {
+        let tags = [PhotoTag.kartaview: "https://kv/old.jpg", PhotoTag.streetImages: "https://pnx/new.jpg"]
+        XCTAssertEqual(PhotoTag.existingURL(in: tags), "https://pnx/new.jpg")
+    }
+
+    func testAKartaviewOnlyPhotoIsStillFound() {
+        XCTAssertEqual(PhotoTag.existingURL(in: [PhotoTag.kartaview: "https://kv/old.jpg"]), "https://kv/old.jpg")
+    }
+
+    func testEmptyValuesCountAsNoPhoto() {
+        let tags = [PhotoTag.streetImages: "", PhotoTag.kartaview: ""]
+        XCTAssertNil(PhotoTag.existingURL(in: tags))
+        XCTAssertTrue(PhotoTag.keysWithPhoto(in: tags).isEmpty)
+    }
+
+    func testEachProviderWritesItsOwnTag() {
+        XCTAssertEqual(PhotoUploadProvider.kartaview.tagKey, "ext:kartaview_url")
+        XCTAssertEqual(PhotoUploadProvider.panoramax.tagKey, "ext:street_images")
     }
 }

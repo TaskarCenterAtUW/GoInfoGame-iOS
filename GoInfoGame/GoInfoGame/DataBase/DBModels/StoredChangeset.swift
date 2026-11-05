@@ -59,6 +59,10 @@ class StoredChangeset: Object {
     /// Which tag key the uploaded photo's URL should be written to (e.g.
     /// "ext:kartaview_url"). Only meaningful while `pendingImagePath` is non-nil.
     @Persisted var pendingImageTagKey: String?
+    /// Title of the question the pending photo was taken for, sent with the upload.
+    @Persisted var pendingImageQuestion: String?
+    /// `quest_id` of that question.
+    @Persisted var pendingImageQuestId: Int?
     @Persisted var retryCount: Int = 0
     @Persisted var lastError: String?
 
@@ -120,7 +124,18 @@ struct StoredChangesetSnapshot {
     let nodes: [Int64]
     let pendingImagePath: String?
     let pendingImageTagKey: String?
+    var pendingImageQuestion: String? = nil
+    var pendingImageQuestId: Int? = nil
     let retryCount: Int
+
+    /// OSM-style id ("way/123", "node/456") used to refer to this element from a photo.
+    var osmElementId: String? {
+        switch elementType {
+        case .way: return "way/\(elementId)"
+        case .node: return "node/\(elementId)"
+        case .unknown: return nil
+        }
+    }
 
     func asOSMNode(tags overrideTags: [String: String]) -> OSMNode {
         var storage = originalTags

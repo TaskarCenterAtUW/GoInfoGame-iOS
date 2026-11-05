@@ -22,12 +22,15 @@ enum QuestSubmissionManager {
     /// whole pending queue (not just this answer), so any earlier answers that failed
     /// get swept up too.
     static func submit(id: Int64, questType: String, tags: [String: String], type: ElementType,
-                        iconName: String, capturedImage: UIImage?, imageTagKey: String?) {
+                        iconName: String, capturedImage: UIImage?, imageTagKey: String?,
+                        imageQuestion: String? = nil, imageQuestId: Int? = nil) {
         let storedElementType: StoredElementEnum = type == .way ? .way : .node
 
         Task.detached(priority: .userInitiated) {
             let pendingImagePath: String? = capturedImage.flatMap { try? QuestImageStorage.shared.save($0) }
             let pendingImageTagKey = pendingImagePath != nil ? imageTagKey : nil
+            let pendingImageQuestion = pendingImagePath != nil ? imageQuestion : nil
+            let pendingImageQuestId = pendingImagePath != nil ? imageQuestId : nil
 
             switch storedElementType {
             case .way:
@@ -35,7 +38,8 @@ enum QuestSubmissionManager {
                 DatabaseConnector.shared.createChangeset(
                     id: Int(id), questType: questType, type: storedElementType,
                     originalTags: way.tags.toDictionary(), tags: tags, version: way.version, iconName: iconName,
-                    nodes: way.nodes, pendingImagePath: pendingImagePath, pendingImageTagKey: pendingImageTagKey
+                    nodes: way.nodes, pendingImagePath: pendingImagePath, pendingImageTagKey: pendingImageTagKey,
+                    pendingImageQuestion: pendingImageQuestion, pendingImageQuestId: pendingImageQuestId
                 )
             case .node:
                 guard let node = DatabaseConnector.shared.getNode(id: Int(id)) else { return }
@@ -43,7 +47,8 @@ enum QuestSubmissionManager {
                     id: Int(id), questType: questType, type: storedElementType,
                     originalTags: node.tags.toDictionary(), tags: tags, version: node.version, iconName: iconName,
                     point: CLLocationCoordinate2D(latitude: node.latitude, longitude: node.longitude),
-                    pendingImagePath: pendingImagePath, pendingImageTagKey: pendingImageTagKey
+                    pendingImagePath: pendingImagePath, pendingImageTagKey: pendingImageTagKey,
+                    pendingImageQuestion: pendingImageQuestion, pendingImageQuestId: pendingImageQuestId
                 )
             case .unknown:
                 print("Unknown Stored element type received")
@@ -94,13 +99,20 @@ enum QuestSubmissionManager {
         do {
             var tags = record.tags
 
-            if let path = record.pendingImagePath, let tagKey = record.pendingImageTagKey {
+            if let path = record.pendingImagePath, let storedTagKey = record.pendingImageTagKey {
+                // A photo queued under one photo tag but uploaded after the provider
+                // changed goes under the tag of the provider that actually hosts it.
+                let tagKey = PhotoTag.all.contains(storedTagKey) ? PhotoUploadService.provider.tagKey : storedTagKey
                 guard let image = QuestImageStorage.shared.load(path: path) else {
                     DatabaseConnector.shared.markChangesetFailed(id: record.id, error: "Saved photo could not be read")
                     return
                 }
                 do {
-                    let url = try await PhotoUploadService.upload(image, coordinate: photoCoordinate(for: record))
+                    let context = PhotoUploadContext.current(elementId: record.osmElementId,
+                                                             question: record.pendingImageQuestion,
+                                                             questId: record.pendingImageQuestId)
+                    let url = try await PhotoUploadService.upload(image, coordinate: photoCoordinate(for: record),
+                                                                  context: context)
                     tags[tagKey] = url
                     DatabaseConnector.shared.attachUploadedPhotoURL(id: record.id, tagKey: tagKey, url: url)
                     QuestImageStorage.shared.delete(paths: [path])

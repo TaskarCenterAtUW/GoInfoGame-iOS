@@ -384,7 +384,7 @@ class DatabaseConnector {
      - parameter tags [String:String] tags changed with this
      - Returns: An instance of `StoredChangeset`
         */
-    func createChangeset(id:Int, questType: String, type: StoredElementEnum, originalTags:[String:String], tags:[String:String], version: Int, iconName: String, point: CLLocationCoordinate2D? = nil, nodes: List<Int64>? = nil, pendingImagePath: String? = nil, pendingImageTagKey: String? = nil) -> StoredChangeset? {
+    func createChangeset(id:Int, questType: String, type: StoredElementEnum, originalTags:[String:String], tags:[String:String], version: Int, iconName: String, point: CLLocationCoordinate2D? = nil, nodes: List<Int64>? = nil, pendingImagePath: String? = nil, pendingImageTagKey: String? = nil, pendingImageQuestion: String? = nil, pendingImageQuestId: Int? = nil) -> StoredChangeset? {
         let realm = try! Realm(configuration: RealmConfig.configuration)
         let storedChangeset = StoredChangeset()
         storedChangeset.elementId = id
@@ -400,6 +400,8 @@ class DatabaseConnector {
         }
         storedChangeset.pendingImagePath = pendingImagePath
         storedChangeset.pendingImageTagKey = pendingImageTagKey
+        storedChangeset.pendingImageQuestion = pendingImageQuestion
+        storedChangeset.pendingImageQuestId = pendingImageQuestId
 
         storedChangeset.timestamp =  String(Date().timeIntervalSince1970)
         for tag in tags {
@@ -667,6 +669,8 @@ class DatabaseConnector {
                     nodes: Array($0.nodes),
                     pendingImagePath: $0.pendingImagePath,
                     pendingImageTagKey: $0.pendingImageTagKey,
+                    pendingImageQuestion: $0.pendingImageQuestion,
+                    pendingImageQuestId: $0.pendingImageQuestId,
                     retryCount: $0.retryCount
                 )
             }
@@ -683,6 +687,8 @@ class DatabaseConnector {
             changeset.tags.setValue(url, forKey: tagKey)
             changeset.pendingImagePath = nil
             changeset.pendingImageTagKey = nil
+            changeset.pendingImageQuestion = nil
+            changeset.pendingImageQuestId = nil
         }
     }
 
@@ -720,6 +726,8 @@ class DatabaseConnector {
             nodes: Array(changeset.nodes),
             pendingImagePath: changeset.pendingImagePath,
             pendingImageTagKey: changeset.pendingImageTagKey,
+            pendingImageQuestion: changeset.pendingImageQuestion,
+            pendingImageQuestId: changeset.pendingImageQuestId,
             retryCount: changeset.retryCount
         )
     }
@@ -734,6 +742,8 @@ class DatabaseConnector {
         try! realm.write {
             changeset.pendingImagePath = nil
             changeset.pendingImageTagKey = nil
+            changeset.pendingImageQuestion = nil
+            changeset.pendingImageQuestId = nil
         }
         return oldPath
     }
@@ -746,7 +756,10 @@ struct RealmConfig {
     // or have defaults, so no migration block content is needed for existing rows —
     // Realm fills them in automatically — but the version itself must move, or a
     // pre-existing installed schema-version-3 database won't match this class anymore.
-    static let configuration = Realm.Configuration(schemaVersion: 4) { migration, oldSchemaVersion in
+    // Bumped 4 -> 5 -> 6 for StoredChangeset.pendingImageQuestion/pendingImageQuestId
+    // (optional, no migration
+    // content needed).
+    static let configuration = Realm.Configuration(schemaVersion: 6) { migration, oldSchemaVersion in
         if oldSchemaVersion < 1 {
             let formatter = DateFormatter()
             formatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
