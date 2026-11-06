@@ -427,7 +427,7 @@ struct LongForm: View, QuestForm {
                     badgeAction: { dismissedExistingPhoto = false },
                     badgeAccessibilityLabel: "Undo removal"
                 ) {
-                    LongFormImageView(urlString: existingPhotoURL, width: 56, height: 56)
+                    LongFormImageView(urlString: PhotoTag.thumbnailURL(for: existingPhotoURL), width: 56, height: 56)
                         .clipShape(RoundedRectangle(cornerRadius: 8))
                         .opacity(0.5)
                 }
@@ -441,7 +441,7 @@ struct LongForm: View, QuestForm {
                     badgeAction: { dismissedExistingPhoto = true },
                     badgeAccessibilityLabel: "Remove photo"
                 ) {
-                    LongFormImageView(urlString: existingPhotoURL, width: 56, height: 56)
+                    LongFormImageView(urlString: PhotoTag.thumbnailURL(for: existingPhotoURL), width: 56, height: 56)
                         .clipShape(RoundedRectangle(cornerRadius: 8))
                 }
             }

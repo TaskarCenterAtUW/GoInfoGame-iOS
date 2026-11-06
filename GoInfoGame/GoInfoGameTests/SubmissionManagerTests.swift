@@ -674,3 +674,29 @@ final class PhotoTagTests: XCTestCase {
         XCTAssertEqual(PhotoTag.kartaview, "ext:kartaview_url")
     }
 }
+
+final class PhotoThumbnailTests: XCTestCase {
+
+    func testAPanoramaxPhotoUsesItsThumbnail() {
+        let hd = "https://pnx.test/api/pictures/c0ffee00-1111-4222-8333-444455556666/hd.jpg"
+        XCTAssertEqual(PhotoTag.thumbnailURL(for: hd), "https://pnx.test/api/pictures/c0ffee00-1111-4222-8333-444455556666/thumb.jpg")
+    }
+
+    func testTheStandardSizeAlsoMapsToTheThumbnail() {
+        XCTAssertEqual(PhotoTag.thumbnailURL(for: "http://localhost:5001/api/pictures/abc/sd.jpg"),
+                       "http://localhost:5001/api/pictures/abc/thumb.jpg")
+    }
+
+    func testAPanoramaxInstanceUnderASubpathKeepsItsPrefix() {
+        XCTAssertEqual(PhotoTag.thumbnailURL(for: "https://host/panoramax/api/pictures/abc/hd.jpg"),
+                       "https://host/panoramax/api/pictures/abc/thumb.jpg")
+    }
+
+    func testOtherURLsAreLeftAlone() {
+        for url in ["https://cdn.kartaview.org/pr:sharp/photo-777001.jpg",
+                    "https://example.com/pictures/abc/hd.jpg",
+                    "not a url at all"] {
+            XCTAssertEqual(PhotoTag.thumbnailURL(for: url), url)
+        }
+    }
+}

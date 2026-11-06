@@ -28,6 +28,21 @@ enum PhotoTag {
     static func keysWithPhoto(in tags: [String: String]?) -> [String] {
         all.filter { !(tags?[$0] ?? "").isEmpty }
     }
+
+    /// A small version of a photo URL for previews. A Panoramax picture URL
+    /// (`…/api/pictures/<id>/hd.jpg` or `sd.jpg`) becomes its 500px-wide `thumb.jpg`; any
+    /// other URL, such as an old KartaView photo, is returned unchanged. The tag itself
+    /// keeps the full-size URL.
+    static func thumbnailURL(for urlString: String) -> String {
+        guard var components = URLComponents(string: urlString) else { return urlString }
+        var parts = components.path.split(separator: "/", omittingEmptySubsequences: false)
+        guard parts.count >= 4,
+              parts[parts.count - 3] == "pictures", parts[parts.count - 4] == "api",
+              ["hd.jpg", "sd.jpg"].contains(parts[parts.count - 1]) else { return urlString }
+        parts[parts.count - 1] = "thumb.jpg"
+        components.path = parts.joined(separator: "/")
+        return components.string ?? urlString
+    }
 }
 
 /// Who and what a photo was taken for. Panoramax stores these as the picture's semantic
