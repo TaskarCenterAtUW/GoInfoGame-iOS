@@ -58,9 +58,7 @@ final class ApiManagerTests: AppTestCase {
             (.workspace, APIEnvironment.staging.workspaceBaseURL),
             (.login, APIEnvironment.staging.loginBaseURL),
             (.osm, APIEnvironment.staging.osmBaseURL),
-            (.userProfile, APIEnvironment.staging.userProfileBaseURL),
-            (.kartaview, APIEnvironment.staging.kartaViewBaseURL),
-            (.kartaviewV2, APIEnvironment.staging.kartaViewV2BaseURL)
+            (.userProfile, APIEnvironment.staging.userProfileBaseURL)
         ]
         for (setup, base) in expected {
             MockHTTP.reset()
@@ -121,7 +119,7 @@ final class ApiManagerTests: AppTestCase {
             ["key": "unsupported", "value": 12345]
         ]
         let endpoint = APIEndpoint(path: "/photo/", method: "POST", body: nil, headers: nil, formData: form)
-        perform(endpoint, setup: .kartaview, as: [String: String].self)
+        perform(endpoint, setup: .workspace, as: [String: String].self)
 
         let sent = try XCTUnwrap(MockHTTP.requests.first)
         let contentType = try XCTUnwrap(sent.header("Content-Type"))

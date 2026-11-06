@@ -49,8 +49,7 @@ class AppTestCase: XCTestCase {
         repo.customIcons = []
         repo.recencyPeriodDays = nil
         SessionManager.shared.lastLoginPassword = nil
-        // A local Secrets.xcconfig may select Panoramax; tests default to KartaView and a stub instance.
-        PhotoUploadService.provider = .kartaview
+        // Photo uploads go to a stub Panoramax instance, never the one in a local Secrets.xcconfig.
         PhotoUploadService.makePanoramaxUploader = {
             PanoramaxUploader(baseURL: MockServer.panoramaxBaseURL, token: MockServer.panoramaxToken)
         }

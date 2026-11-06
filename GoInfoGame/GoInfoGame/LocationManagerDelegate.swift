@@ -38,7 +38,7 @@ class LocationManagerDelegate: NSObject, CLLocationManagerDelegate {
         // .fetchWorkspacesList(), gated on locationUpdateHandler - is then stuck forever.
         // Delivering one fixed coordinate directly removes the dependency on that
         // simulator state entirely, for every consumer of this class (InitialViewModel,
-        // MapViewModel, KartaviewViewModel, AccessibilityModeViewModel, CustomMap).
+        // MapViewModel, AccessibilityModeViewModel, CustomMap).
         // Async, matching CLLocationManager's own asynchronous delivery, so callers that
         // set locationUpdateHandler immediately before calling this (the normal pattern)
         // are not depending on synchronous delivery order.

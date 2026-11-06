@@ -21,7 +21,7 @@ enum LongFormActiveAlert: Identifiable {
 
 /// LongForm's answer payload. Unlike every other quest form (which submits a bare
 /// `[String:String]`), LongForm can also carry a captured-but-not-yet-uploaded
-/// KartaView photo — the upload itself is deferred to `QuestSubmissionManager`'s
+/// photo — the upload itself is deferred to `QuestSubmissionManager`'s
 /// offline queue rather than attempted here, so Submit never has to wait on the
 /// network (see QuestSubmissionManager.swift). This is LongForm's own `AnswerClass`;
 /// no other quest form is affected by it.
@@ -671,10 +671,10 @@ struct LongForm: View, QuestForm {
                     // (see OSMNode/OSMWay.toPayload's empty-value skip). Without this,
                     // dismissing the preview only hid it locally; the stale tag would
                     // still be there after Submit.
-                    // A new photo goes under the current provider's tag; any photo under
-                    // the other tag (e.g. an old KartaView one) is dropped so the element
-                    // doesn't keep two. Removing the photo clears every photo tag it has.
-                    let photoTagKey = PhotoUploadService.provider.tagKey
+                    // A new photo goes to Panoramax under `ext:street_images`; an older
+                    // KartaView photo (`ext:kartaview_url`) is dropped so the element doesn't
+                    // keep two. Removing the photo clears every photo tag it has.
+                    let photoTagKey = PhotoTag.streetImages
                     if capturedImage != nil || dismissedExistingPhoto {
                         for key in PhotoTag.keysWithPhoto(in: tags) where capturedImage == nil || key != photoTagKey {
                             answersToSubmit[key] = ""

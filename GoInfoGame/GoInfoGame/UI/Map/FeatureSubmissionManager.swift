@@ -22,7 +22,7 @@ struct FeatureDraft {
     var coordinates: CLLocationCoordinate2D
 }
 
-/// Creates features (and their Kartaview photo uploads) outside the lifetime of
+/// Creates features (and their photo uploads) outside the lifetime of
 /// FeatureSubmissionView, so the sheet can dismiss immediately after Submit is tapped —
 /// mirrors NotesSubmissionManager's role for Create Note. Every draft is persisted
 /// (photos on disk, metadata in Realm) *before* any network call, so a feature captured
@@ -137,7 +137,7 @@ enum FeatureSubmissionManager {
                 throw NSError(
                     domain: "PhotoUpload",
                     code: 0,
-                    userInfo: [NSLocalizedDescriptionKey: "Failed to upload photo \(index + 1) to \(PhotoUploadService.provider.displayName): \(error.localizedDescription)"]
+                    userInfo: [NSLocalizedDescriptionKey: "Failed to upload photo \(index + 1) to Panoramax: \(error.localizedDescription)"]
                 )
             }
         }

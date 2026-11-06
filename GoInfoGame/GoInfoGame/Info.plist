@@ -17,14 +17,10 @@
 	</array>
 	<key>APP_FORCE_UPDATE_URL</key>
 	<string>$(APP_FORCE_UPDATE_URL)</string>
-	<key>KARTAVIEW_ACCESS_TOKEN</key>
-	<string>$(KARTAVIEW_ACCESS_TOKEN)</string>
 	<key>PANORAMAX_TOKEN</key>
 	<string>$(PANORAMAX_TOKEN)</string>
 	<key>PANORAMAX_BASE_URL</key>
 	<string>$(PANORAMAX_BASE_URL)</string>
-	<key>PHOTO_UPLOAD_PROVIDER</key>
-	<string>$(PHOTO_UPLOAD_PROVIDER)</string>
 	<key>JAWG_ACCESS_TOKEN</key>
 	<string>$(JAWG_ACCESS_TOKEN)</string>
 	<key>AppStpre_URL</key>

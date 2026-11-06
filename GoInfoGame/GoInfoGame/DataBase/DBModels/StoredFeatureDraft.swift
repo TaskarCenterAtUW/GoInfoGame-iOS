@@ -8,7 +8,7 @@ import RealmSwift
 import CoreLocation
 
 /// A feature (created via Add Feature, with any captured photos already saved to
-/// disk) still waiting to be uploaded to Kartaview and created as an OSM node.
+/// disk) still waiting to be uploaded to Panoramax and created as an OSM node.
 /// Presence of a row here means the feature is pending — the row is deleted once
 /// creation succeeds, which is what lets a feature captured offline (or interrupted
 /// mid-upload) survive an app kill and be retried later from the sync button or on

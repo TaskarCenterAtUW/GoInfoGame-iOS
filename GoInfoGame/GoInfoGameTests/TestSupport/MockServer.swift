@@ -110,44 +110,6 @@ enum MockServer {
         }
     }
 
-    // MARK: Kartaview (photo uploads)
-
-    static let kartaviewPhotoURL = "https://cdn.kartaview.org/pr:sharp/unit-test-photo-777001.jpg"
-
-    enum Kartaview {
-        case ok
-        case createFails            // sequence creation rejected
-        case createStatusNot200     // 200 HTTP but the API's own status says failure
-        case uploadFails            // photo upload answers 500
-        case uploadStatusNot200
-        case finishFails            // "finished uploading" answers 500
-        case finishStatusNot200
-        case lookupWithoutURL       // the hosted-URL lookup never produces a URL
-    }
-
-    static func installKartaview(_ mode: Kartaview = .ok) {
-        switch mode {
-        case .createFails:        MockHTTP.stub("POST", path: "/1.0/sequence/", reply: .statusWithBody(500, "boom"))
-        case .createStatusNot200: MockHTTP.stub("POST", path: "/1.0/sequence/", reply: .json(withHTTPStatus: 401, of: "KartaviewSequenceCreated"))
-        default:                  MockHTTP.stub("POST", path: "/1.0/sequence/", reply: .fixture("KartaviewSequenceCreated"))
-        }
-        switch mode {
-        case .uploadFails:        MockHTTP.stub("POST", path: "/1.0/photo/", reply: .statusWithBody(500, "boom"))
-        case .uploadStatusNot200: MockHTTP.stub("POST", path: "/1.0/photo/", reply: .json(#"{"status":{"apiCode":660,"apiMessage":"no","httpCode":403,"httpMessage":"no"},"osv":{"photo":{"id":"1","sequenceId":"1","dateAdded":"d","sequenceIndex":"1","photoName":"p","lat":"0","lng":"0","path":"p"}}}"#))
-        default:                  MockHTTP.stub("POST", path: "/1.0/photo/", reply: .fixture("KartaviewPhotoUploaded"))
-        }
-        switch mode {
-        case .finishFails:        MockHTTP.stub("POST", path: "/1.0/sequence/finished-uploading/", reply: .statusWithBody(500, "boom"))
-        case .finishStatusNot200: MockHTTP.stub("POST", path: "/1.0/sequence/finished-uploading/", reply: .fixture("KartaviewStatusFailure"))
-        default:                  MockHTTP.stub("POST", path: "/1.0/sequence/finished-uploading/", reply: .fixture("KartaviewUploadFinished"))
-        }
-        if mode == .lookupWithoutURL {
-            MockHTTP.stub("GET", pathRegex: #"^/2\.0/photo/\d+$"#, reply: .fixture("KartaviewPhotoLookupEmpty"))
-        } else {
-            MockHTTP.stub("GET", pathRegex: #"^/2\.0/photo/\d+$"#, reply: .fixture("KartaviewPhotoLookup"))
-        }
-    }
-
     // MARK: Panoramax (photo uploads)
 
     static let panoramaxBaseURL = "https://panoramax.test"
@@ -253,17 +215,5 @@ extension AppTestCase {
         if workspace == nil { XCTFail("Could not load quests from \(fixture)", file: file, line: line) }
         QuestsRepository.shared.loadLongQuests(from: "longQuestJson")
         return workspace
-    }
-}
-
-extension MockHTTP.Reply {
-    /// A copy of a Kartaview fixture whose embedded `status.httpCode` is changed - the API answers
-    /// HTTP 200 and reports its own failure inside the body.
-    static func json(withHTTPStatus code: Int, of fixture: String) -> MockHTTP.Reply {
-        var object = (MockHTTP.fixtureJSON(fixture) as? [String: Any]) ?? [:]
-        var status = (object["status"] as? [String: Any]) ?? [:]
-        status["httpCode"] = code
-        object["status"] = status
-        return .json((try? JSONSerialization.data(withJSONObject: object)) ?? Data())
     }
 }

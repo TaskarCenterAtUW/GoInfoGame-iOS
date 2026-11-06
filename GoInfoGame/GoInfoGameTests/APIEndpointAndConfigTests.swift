@@ -77,7 +77,7 @@ final class APIEnvironmentTests: XCTestCase {
     func testEveryEnvironmentHasWellFormedBaseURLs() {
         for env in APIEnvironment.allCases {
             let urls = [env.workspaceBaseURL, env.loginBaseURL, env.osmBaseURL, env.userProfileBaseURL,
-                        env.kartaViewBaseURL, env.kartaViewV2BaseURL]
+                        env.panoramaxBaseURL]
             for string in urls {
                 let url = URL(string: string)
                 XCTAssertNotNil(url, "\(env) has a malformed base URL: \(string)")
@@ -98,8 +98,10 @@ final class APIEnvironmentTests: XCTestCase {
         XCTAssertTrue(APIEnvironment.development.userProfileBaseURL.contains("-dev"))
         XCTAssertTrue(APIEnvironment.staging.userProfileBaseURL.contains("-stage"))
         XCTAssertTrue(APIEnvironment.production.userProfileBaseURL.contains("-prod"))
-        XCTAssertTrue(APIEnvironment.production.kartaViewV2BaseURL.hasSuffix("/2.0"))
-        XCTAssertTrue(APIEnvironment.production.kartaViewBaseURL.hasSuffix("/1.0"))
+        for env in APIEnvironment.allCases {
+            XCTAssertFalse(env.panoramaxBaseURL.hasSuffix("/"), "\(env) Panoramax URL must not end in /")
+            XCTAssertFalse(env.panoramaxBaseURL.contains("openstreetmap.fr"), "\(env) must use our own Panoramax instance")
+        }
     }
 }
 
@@ -128,8 +130,6 @@ final class APIConfigurationTests: AppTestCase {
         XCTAssertEqual(config.loginUrl(for: endpoint)?.absoluteString, APIEnvironment.development.loginBaseURL + "/ping")
         XCTAssertEqual(config.osmUrl(for: endpoint)?.absoluteString, APIEnvironment.development.osmBaseURL + "/ping")
         XCTAssertEqual(config.userProfileUrl(for: endpoint)?.absoluteString, APIEnvironment.development.userProfileBaseURL + "/ping")
-        XCTAssertEqual(config.kartaViewUrl(for: endpoint)?.absoluteString, APIEnvironment.development.kartaViewBaseURL + "/ping")
-        XCTAssertEqual(config.kartaViewV2Url(for: endpoint)?.absoluteString, APIEnvironment.development.kartaViewV2BaseURL + "/ping")
     }
 
     func testSwitchingEnvironmentChangesSubsequentURLs() {
@@ -241,27 +241,6 @@ final class APIEndpointTests: XCTestCase {
         XCTAssertEqual(e.path, "/user-profile?user_name=a@b.com")
         XCTAssertEqual(e.method, "GET")
         XCTAssertEqual(e.headers?["Authorization"], "Bearer tok")
-    }
-
-    func testKartaviewEndpointsCarryFormDataAndNoHeaders() {
-        let form: [[String: Any]] = [["key": "k", "value": "v", "type": "text"]]
-        for (endpoint, path) in [(APIEndpoint.createKartaViewSequence(form), "/sequence/"),
-                                 (APIEndpoint.uploadPhotoToKartaview(form), "/photo/"),
-                                 (APIEndpoint.finshedUploadingToKartaview(form), "/sequence/finished-uploading/")] {
-            XCTAssertEqual(endpoint.path, path)
-            XCTAssertEqual(endpoint.method, "POST")
-            XCTAssertNil(endpoint.body)
-            XCTAssertNil(endpoint.headers)
-            XCTAssertEqual(endpoint.formData?.count, 1)
-        }
-    }
-
-    func testFetchPhotoUrlFromKartaviewPercentEncodesTheToken() {
-        let e = APIEndpoint.fetchPhotoUrlFromKartaview("42", "a b&c")
-        XCTAssertEqual(e.method, "GET")
-        XCTAssertTrue(e.path.hasPrefix("/photo/42?access_token="))
-        XCTAssertFalse(e.path.contains(" "), "spaces must be percent-encoded: \(e.path)")
-        XCTAssertNil(e.formData)
     }
 
     func testSubmitNoteBuildsJSONBody() {

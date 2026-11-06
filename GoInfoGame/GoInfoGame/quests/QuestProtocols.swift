@@ -124,7 +124,7 @@ class QuestBase {
     /// queue, which uploads any attached photo and syncs to OSM in the background —
     /// this always returns immediately, whether or not there's connectivity, so a quest
     /// (with or without a photo) can be submitted offline. `capturedImage`/`imageTagKey`
-    /// are non-nil only for a LongForm answer with an attached KartaView photo; every
+    /// are non-nil only for a LongForm answer with an attached photo; every
     /// other quest type leaves them at their default (nil), unaffected by this path.
     public func updateTags(id: Int64, questType: String, tags:[String:String], type: ElementType, iconName: String, exclude_gig_tags: Bool = false, capturedImage: UIImage? = nil, imageTagKey: String? = nil, imageQuestion: String? = nil, imageQuestId: Int? = nil) {
         elementSubmittingToPOSM = type == .way ? .way : .node

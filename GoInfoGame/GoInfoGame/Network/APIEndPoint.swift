@@ -118,26 +118,6 @@ struct APIEndpoint {
         
         return APIEndpoint(path: "/user-profile?user_name=\(userName)", method: "GET", body: nil, headers: header, formData: nil) }
     
-    static let createKartaViewSequence = { (formData: [[String: Any]]) in
-        return APIEndpoint(path: "/sequence/", method: "POST", body: nil, headers: nil, formData: formData)
-    }
-    
-    static let uploadPhotoToKartaview = {(formData: [[String: Any]]) in
-        return APIEndpoint(path: "/photo/", method: "POST", body: nil, headers: nil, formData: formData)
-    }
-    
-    static let fetchPhotoUrlFromKartaview = { (photoId: String, accessToken: String) in
-        var components = URLComponents()
-        components.queryItems = [URLQueryItem(name: "access_token", value: accessToken)]
-        let query = components.percentEncodedQuery.map { "?\($0)" } ?? ""
-        return APIEndpoint(path: "/photo/\(photoId)" + query, method: "GET", body: nil, headers: nil, formData: nil)
-    }
-    
-    static let finshedUploadingToKartaview = { (formData: [[String: Any]]) in
-        return APIEndpoint(path: "/sequence/finished-uploading/", method: "POST", body: nil, headers: nil, formData: formData)
-    
-    }
-    
     static let submitNote = { (note: String, accessToken: String, lat: Double, long: Double, workspaceId: String) in
         let header = [
             "Authorization": "Bearer \(accessToken)",

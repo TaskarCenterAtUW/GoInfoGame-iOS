@@ -55,7 +55,8 @@ enum MockHTTP {
         /// The URL path as sent - unlike `URL.path`, this keeps a trailing slash ("/sequence/").
         var path: String { URLComponents(url: request.url!, resolvingAgainstBaseURL: false)?.path ?? request.url!.path }
         var method: String { request.httpMethod ?? "GET" }
-        var bodyString: String { body.flatMap { String(data: $0, encoding: .utf8) } ?? "" }
+        /// Lossy, so a multipart body with binary JPEG bytes still exposes its text fields.
+        var bodyString: String { body.map { String(decoding: $0, as: UTF8.self) } ?? "" }
         func header(_ name: String) -> String? { request.value(forHTTPHeaderField: name) }
     }
 
@@ -212,7 +213,7 @@ enum MockHTTP {
     // MARK: Fixtures
 
     /// Loads a JSON fixture. The UI tests' shared fixtures (GoInfoGame/DebugSupport/MockResponses)
-    /// ship inside the host app bundle; fixtures only unit tests need (e.g. Kartaview uploads) live
+    /// ship inside the host app bundle; fixtures only unit tests need live
     /// in this test bundle (GoInfoGameTests/Fixtures) and are looked up as a fallback.
     static func fixture(_ name: String, file: StaticString = #filePath, line: UInt = #line) -> Data {
         for bundle in [Bundle.main, Bundle(for: FixtureBundleAnchor.self)] {

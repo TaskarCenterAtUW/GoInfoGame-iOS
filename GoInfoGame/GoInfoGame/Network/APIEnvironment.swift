@@ -56,31 +56,24 @@ enum APIEnvironment: String, CaseIterable {
         }
     }
     
-    var kartaViewBaseURL: String {
-        switch self {
-        case .development:
-            return "https://api.openstreetcam.org/1.0"
-        case .staging:
-            return "https://api.openstreetcam.org/1.0"
-        case .production:
-            return "https://api.openstreetcam.org/1.0"
-        }
-    }
-
-    var kartaViewV2BaseURL: String {
-        switch self {
-        case .development, .staging, .production:
-            return "https://api.openstreetcam.org/2.0"
-        }
-    }
-
-    /// Panoramax instance photos are uploaded to (OpenStreetMap France's public instance).
+    /// Our own Panoramax instance for each environment. The URL is saved in every photo's
+    /// `ext:street_images` tag, so each one must be a permanent hostname.
+    /// Stage and prod use the dev instance until their own instances exist.
+    /// `PANORAMAX_BASE_URL` in Secrets.xcconfig, when set, overrides this for local testing.
     var panoramaxBaseURL: String {
         switch self {
-        case .development, .staging, .production:
-            return "https://panoramax.openstreetmap.fr"
+        case .development:
+            return Self.panoramaxDevURL
+        case .staging:
+            return Self.panoramaxDevURL
+        case .production:
+            return Self.panoramaxDevURL
         }
     }
+
+    // Azure's default hostname. Move to a permanent custom domain before production
+    // photos are written, or saved photo URLs will break when the host changes.
+    private static let panoramaxDevURL = "https://panoramax-dev-faaadghgcfgwcchk.westus2-01.azurewebsites.net"
     
     func displayString() -> String {
         switch self {

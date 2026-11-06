@@ -8,7 +8,7 @@ import UIKit
 import CoreLocation
 import osmparser
 
-/// Submits quest answers (and any attached KartaView photo) outside the lifetime of
+/// Submits quest answers (and any attached photo) outside the lifetime of
 /// LongForm, so Submit can return immediately whether or not there's connectivity.
 /// Every answer is persisted (photo on disk, tags/element info in Realm, via the same
 /// `StoredChangeset` row `QuestProtocols.updateTags` already wrote before this queue
@@ -100,9 +100,9 @@ enum QuestSubmissionManager {
             var tags = record.tags
 
             if let path = record.pendingImagePath, let storedTagKey = record.pendingImageTagKey {
-                // A photo queued under one photo tag but uploaded after the provider
-                // changed goes under the tag of the provider that actually hosts it.
-                let tagKey = PhotoTag.all.contains(storedTagKey) ? PhotoUploadService.provider.tagKey : storedTagKey
+                // Every photo now goes to Panoramax, so one queued by an older version
+                // under `ext:kartaview_url` is written to `ext:street_images` instead.
+                let tagKey = PhotoTag.all.contains(storedTagKey) ? PhotoTag.streetImages : storedTagKey
                 guard let image = QuestImageStorage.shared.load(path: path) else {
                     DatabaseConnector.shared.markChangesetFailed(id: record.id, error: "Saved photo could not be read")
                     return

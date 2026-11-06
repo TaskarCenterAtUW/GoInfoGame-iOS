@@ -16,7 +16,7 @@ public struct NoteDraft {
     var coordinates: CLLocationCoordinate2D
 }
 
-/// Submits notes (and their Kartaview photo uploads) outside the lifetime of
+/// Submits notes (and their photo uploads) outside the lifetime of
 /// CreateNoteView, so the sheet can dismiss immediately after Submit is tapped.
 /// Every draft is persisted (text + photos on disk, metadata in Realm) *before* any
 /// network call, so a note captured offline — or one whose upload gets interrupted —
@@ -102,7 +102,7 @@ enum NotesSubmissionManager {
                 throw NSError(
                     domain: "PhotoUpload",
                     code: 0,
-                    userInfo: [NSLocalizedDescriptionKey: "Failed to upload photo \(index + 1) to \(PhotoUploadService.provider.displayName): \(error.localizedDescription)"]
+                    userInfo: [NSLocalizedDescriptionKey: "Failed to upload photo \(index + 1) to Panoramax: \(error.localizedDescription)"]
                 )
             }
         }

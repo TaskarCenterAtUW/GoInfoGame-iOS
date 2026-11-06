@@ -18,8 +18,6 @@ enum SetupType {
     case login
     case osm
     case userProfile
-    case kartaview
-    case kartaviewV2
 }
 
 // Singleton object that deals with APIs
@@ -58,10 +56,6 @@ class ApiManager {
             finalUrl = APIConfiguration.shared.osmUrl(for: endpoint)
         case .userProfile:
             finalUrl = APIConfiguration.shared.userProfileUrl(for: endpoint)
-        case .kartaview:
-            finalUrl = APIConfiguration.shared.kartaViewUrl(for: endpoint)
-        case .kartaviewV2:
-            finalUrl = APIConfiguration.shared.kartaViewV2Url(for: endpoint)
         }
         debugPrint("URL prepared \(Date())")
         guard let url = finalUrl else {

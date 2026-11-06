@@ -8,7 +8,7 @@ import RealmSwift
 import CoreLocation
 
 /// A note (with any captured photos already saved to disk) still waiting to be
-/// uploaded to Kartaview and submitted to the notes API. Presence of a row here
+/// uploaded to Panoramax and submitted to the notes API. Presence of a row here
 /// means the note is pending — the row is deleted once submission succeeds, which
 /// is what lets a note captured offline (or interrupted mid-upload) survive an app
 /// kill and be retried later from the sync button or on next app launch.

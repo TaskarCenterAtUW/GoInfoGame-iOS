@@ -14,12 +14,6 @@
 		C7UNT0000000000000000034 /* QuestRepositoryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7UNT0000000000000000033 /* QuestRepositoryTests.swift */; };
 		C7UNT0000000000000000032 /* QuestModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7UNT0000000000000000031 /* QuestModelTests.swift */; };
 		C7UNT0000000000000000030 /* SubmissionManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7UNT0000000000000000029 /* SubmissionManagerTests.swift */; };
-		C7UNT0000000000000000028 /* KartaviewStatusFailure.json in Resources */ = {isa = PBXBuildFile; fileRef = C7UNT0000000000000000027 /* KartaviewStatusFailure.json */; };
-		C7UNT0000000000000000026 /* KartaviewPhotoLookupEmpty.json in Resources */ = {isa = PBXBuildFile; fileRef = C7UNT0000000000000000025 /* KartaviewPhotoLookupEmpty.json */; };
-		C7UNT0000000000000000024 /* KartaviewPhotoLookup.json in Resources */ = {isa = PBXBuildFile; fileRef = C7UNT0000000000000000023 /* KartaviewPhotoLookup.json */; };
-		C7UNT0000000000000000022 /* KartaviewUploadFinished.json in Resources */ = {isa = PBXBuildFile; fileRef = C7UNT0000000000000000021 /* KartaviewUploadFinished.json */; };
-		C7UNT0000000000000000020 /* KartaviewPhotoUploaded.json in Resources */ = {isa = PBXBuildFile; fileRef = C7UNT0000000000000000019 /* KartaviewPhotoUploaded.json */; };
-		C7UNT0000000000000000018 /* KartaviewSequenceCreated.json in Resources */ = {isa = PBXBuildFile; fileRef = C7UNT0000000000000000017 /* KartaviewSequenceCreated.json */; };
 		C7UNT0000000000000000016 /* DatabaseConnectorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7UNT0000000000000000015 /* DatabaseConnectorTests.swift */; };
 		C7UNT0000000000000000014 /* MockServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7UNT0000000000000000013 /* MockServer.swift */; };
 		C7UNT0000000000000000012 /* SessionAndLoginTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7UNT0000000000000000011 /* SessionAndLoginTests.swift */; };
@@ -41,7 +35,6 @@
 		05DBBB622B164D9A00B6F110 /* RealOPElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05DBBB612B164D9A00B6F110 /* RealOPElement.swift */; };
 		05DBBB642B17204300B6F110 /* RealmOPGeometry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05DBBB632B17204300B6F110 /* RealmOPGeometry.swift */; };
 		05DBBB662B17209600B6F110 /* RealmOPMeta.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05DBBB652B17209600B6F110 /* RealmOPMeta.swift */; };
-		171574E02FD1CC4A00AA6603 /* PhotoLookupResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 171574DF2FD1CC4A00AA6603 /* PhotoLookupResponse.swift */; };
 		227FDA1227FD4BFA2E18876C /* QuestImageStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42FA4EB22185846E113DA376 /* QuestImageStorage.swift */; };
 		2E71655C971839F8DAF42E67 /* CompassButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61CD36AA62170BAF936749E0 /* CompassButtonView.swift */; };
 		342561966FC217124BD9CFE7 /* Pods_GoInfoGame_GoInfoGameUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2D539E22EFF6636F8CBA035A /* Pods_GoInfoGame_GoInfoGameUITests.framework */; };
@@ -281,12 +274,8 @@
 		CFECB318461BB876B1621890 /* Pods_osmapi.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C4F37DA661B22FA87DF8282F /* Pods_osmapi.framework */; };
 		DD224EE7B5FC852AF5637C95 /* ScreenshotOnFailureUITestCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = E70058F06D4E69B2E0669A8B /* ScreenshotOnFailureUITestCase.swift */; };
 		F45BA2B5418942E3B4C91667 /* StoredFeatureDraft.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C9C135AD8A342A1A94E757C /* StoredFeatureDraft.swift */; };
-		FA18CAE22CC7CD89008247F2 /* KartaviewViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA18CAE12CC7CD89008247F2 /* KartaviewViewModel.swift */; };
 		B7A1C0DE2F10000100000004 /* PanoramaxUploader.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7A1C0DE2F10000100000002 /* PanoramaxUploader.swift */; };
 		B7A1C0DE2F10000100000005 /* PhotoUploadService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7A1C0DE2F10000100000003 /* PhotoUploadService.swift */; };
-		FA18CAE52CC7D0DD008247F2 /* SequenceModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA18CAE42CC7D0DD008247F2 /* SequenceModel.swift */; };
-		FA18CAE72CC80A34008247F2 /* UploadPhotoModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA18CAE62CC80A34008247F2 /* UploadPhotoModel.swift */; };
-		FA18CAE92CCFD212008247F2 /* FinishUploadingModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA18CAE82CCFD212008247F2 /* FinishUploadingModel.swift */; };
 		FA18CAEB2CD0F718008247F2 /* CameraView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA18CAEA2CD0F718008247F2 /* CameraView.swift */; };
 		FA1992ED2BB1A78C003B4719 /* KeychainManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA1992EC2BB1A78C003B4719 /* KeychainManager.swift */; };
 		FA50718C2D54E08800CE9798 /* AddFeatureView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA50718B2D54E08800CE9798 /* AddFeatureView.swift */; };
@@ -428,12 +417,6 @@
 		C7UNT0000000000000000033 /* QuestRepositoryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = QuestRepositoryTests.swift; path = "QuestRepositoryTests.swift"; sourceTree = "<group>"; };
 		C7UNT0000000000000000031 /* QuestModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = QuestModelTests.swift; path = "QuestModelTests.swift"; sourceTree = "<group>"; };
 		C7UNT0000000000000000029 /* SubmissionManagerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = SubmissionManagerTests.swift; path = "SubmissionManagerTests.swift"; sourceTree = "<group>"; };
-		C7UNT0000000000000000027 /* KartaviewStatusFailure.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; name = KartaviewStatusFailure.json; path = "Fixtures/KartaviewStatusFailure.json"; sourceTree = "<group>"; };
-		C7UNT0000000000000000025 /* KartaviewPhotoLookupEmpty.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; name = KartaviewPhotoLookupEmpty.json; path = "Fixtures/KartaviewPhotoLookupEmpty.json"; sourceTree = "<group>"; };
-		C7UNT0000000000000000023 /* KartaviewPhotoLookup.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; name = KartaviewPhotoLookup.json; path = "Fixtures/KartaviewPhotoLookup.json"; sourceTree = "<group>"; };
-		C7UNT0000000000000000021 /* KartaviewUploadFinished.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; name = KartaviewUploadFinished.json; path = "Fixtures/KartaviewUploadFinished.json"; sourceTree = "<group>"; };
-		C7UNT0000000000000000019 /* KartaviewPhotoUploaded.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; name = KartaviewPhotoUploaded.json; path = "Fixtures/KartaviewPhotoUploaded.json"; sourceTree = "<group>"; };
-		C7UNT0000000000000000017 /* KartaviewSequenceCreated.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; name = KartaviewSequenceCreated.json; path = "Fixtures/KartaviewSequenceCreated.json"; sourceTree = "<group>"; };
 		C7UNT0000000000000000015 /* DatabaseConnectorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = DatabaseConnectorTests.swift; path = "DatabaseConnectorTests.swift"; sourceTree = "<group>"; };
 		C7UNT0000000000000000013 /* MockServer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = MockServer.swift; path = "TestSupport/MockServer.swift"; sourceTree = "<group>"; };
 		C7UNT0000000000000000011 /* SessionAndLoginTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = SessionAndLoginTests.swift; path = "SessionAndLoginTests.swift"; sourceTree = "<group>"; };
@@ -459,7 +442,6 @@
 		0644279A63026564F68E19C5 /* Pods-osmapi.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-osmapi.release.xcconfig"; path = "Target Support Files/Pods-osmapi/Pods-osmapi.release.xcconfig"; sourceTree = "<group>"; };
 		066F85ADCDCE7357368131F8 /* Pods_GoInfoGameTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_GoInfoGameTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		16DDF6D11556A5A5F2F1C860 /* StoredNoteDraft.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoredNoteDraft.swift; sourceTree = "<group>"; };
-		171574DF2FD1CC4A00AA6603 /* PhotoLookupResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoLookupResponse.swift; sourceTree = "<group>"; };
 		188843AC2B5FA2DF0008DCF8 /* TactilePavingStepsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TactilePavingStepsTests.swift; sourceTree = "<group>"; };
 		188843AE2B5FB32D0008DCF8 /* WayLitTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WayLitTests.swift; sourceTree = "<group>"; };
 		18EC425B2B84987200DE05D7 /* TactilePavingCrosswalkForm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TactilePavingCrosswalkForm.swift; sourceTree = "<group>"; };
@@ -733,12 +715,8 @@
 		E82B8736511C2D879C41EDA1 /* Pods-osmapiTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-osmapiTests.release.xcconfig"; path = "Target Support Files/Pods-osmapiTests/Pods-osmapiTests.release.xcconfig"; sourceTree = "<group>"; };
 		F008D431593E568E75C48C84 /* Pods-GoInfoGame.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-GoInfoGame.debug.xcconfig"; path = "Target Support Files/Pods-GoInfoGame/Pods-GoInfoGame.debug.xcconfig"; sourceTree = "<group>"; };
 		F7B0248DF7AD2506C0779CE9 /* QuestSubmissionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuestSubmissionManager.swift; sourceTree = "<group>"; };
-		FA18CAE12CC7CD89008247F2 /* KartaviewViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KartaviewViewModel.swift; sourceTree = "<group>"; };
 		B7A1C0DE2F10000100000002 /* PanoramaxUploader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PanoramaxUploader.swift; sourceTree = "<group>"; };
 		B7A1C0DE2F10000100000003 /* PhotoUploadService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoUploadService.swift; sourceTree = "<group>"; };
-		FA18CAE42CC7D0DD008247F2 /* SequenceModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SequenceModel.swift; sourceTree = "<group>"; };
-		FA18CAE62CC80A34008247F2 /* UploadPhotoModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadPhotoModel.swift; sourceTree = "<group>"; };
-		FA18CAE82CCFD212008247F2 /* FinishUploadingModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FinishUploadingModel.swift; sourceTree = "<group>"; };
 		FA18CAEA2CD0F718008247F2 /* CameraView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraView.swift; sourceTree = "<group>"; };
 		FA1992EC2BB1A78C003B4719 /* KeychainManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeychainManager.swift; sourceTree = "<group>"; };
 		FA50718B2D54E08800CE9798 /* AddFeatureView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddFeatureView.swift; sourceTree = "<group>"; };
@@ -1686,42 +1664,6 @@
 			path = PhotoUpload;
 			sourceTree = "<group>";
 		};
-		FA18CADE2CC7CD46008247F2 /* Kartaview */ = {
-			isa = PBXGroup;
-			children = (
-				FA18CAE32CC7CDAF008247F2 /* Model */,
-				FA18CAE02CC7CD61008247F2 /* ViewModel */,
-				FA18CADF2CC7CD5C008247F2 /* View */,
-			);
-			path = Kartaview;
-			sourceTree = "<group>";
-		};
-		FA18CADF2CC7CD5C008247F2 /* View */ = {
-			isa = PBXGroup;
-			children = (
-				FA18CAEA2CD0F718008247F2 /* CameraView.swift */,
-			);
-			path = View;
-			sourceTree = "<group>";
-		};
-		FA18CAE02CC7CD61008247F2 /* ViewModel */ = {
-			isa = PBXGroup;
-			children = (
-				FA18CAE12CC7CD89008247F2 /* KartaviewViewModel.swift */,
-			);
-			path = ViewModel;
-			sourceTree = "<group>";
-		};
-		FA18CAE32CC7CDAF008247F2 /* Model */ = {
-			isa = PBXGroup;
-			children = (
-				FA18CAE42CC7D0DD008247F2 /* SequenceModel.swift */,
-				FA18CAE62CC80A34008247F2 /* UploadPhotoModel.swift */,
-				FA18CAE82CCFD212008247F2 /* FinishUploadingModel.swift */,
-			);
-			path = Model;
-			sourceTree = "<group>";
-		};
 		FA5853BF2B21E3E000301CDA /* Onboarding */ = {
 			isa = PBXGroup;
 			children = (
@@ -1834,6 +1776,7 @@
 			isa = PBXGroup;
 			children = (
 				FABF3CFC2B8607860080EAC9 /* MeasureWidthContainer.swift */,
+				FA18CAEA2CD0F718008247F2 /* CameraView.swift */,
 				FABF3CFF2B8607D80080EAC9 /* MeasureSidewalkView.swift */,
 			);
 			path = Camera;
@@ -1842,7 +1785,6 @@
 		FAD5C4E62AFCBE700040C61A = {
 			isa = PBXGroup;
 			children = (
-				171574DF2FD1CC4A00AA6603 /* PhotoLookupResponse.swift */,
 				FAD5C4F12AFCBE700040C61A /* GoInfoGame */,
 				FAD5C5082AFCBE720040C61A /* GoInfoGameTests */,
 				FAD5C5122AFCBE720040C61A /* GoInfoGameUITests */,
@@ -1876,7 +1818,6 @@
 				C7DBG00000000000000000A1 /* DebugSupport */,
 				C78EEFAC2FDAD91000729240 /* PointNMap-Bridging-Header.h */,
 				C787EF162E9676CC00BEF0A6 /* GoInfoGame.entitlements */,
-				FA18CADE2CC7CD46008247F2 /* Kartaview */,
 				B7A1C0DE2F10000100000001 /* PhotoUpload */,
 				FAFDA2092C6F589900ECEAE9 /* UserProfile */,
 				FAFDA1FB2C6D321500ECEAE9 /* Login */,
@@ -1923,12 +1864,6 @@
 				C7UNT0000000000000000033 /* QuestRepositoryTests.swift */,
 				C7UNT0000000000000000031 /* QuestModelTests.swift */,
 				C7UNT0000000000000000029 /* SubmissionManagerTests.swift */,
-				C7UNT0000000000000000027 /* KartaviewStatusFailure.json */,
-				C7UNT0000000000000000025 /* KartaviewPhotoLookupEmpty.json */,
-				C7UNT0000000000000000023 /* KartaviewPhotoLookup.json */,
-				C7UNT0000000000000000021 /* KartaviewUploadFinished.json */,
-				C7UNT0000000000000000019 /* KartaviewPhotoUploaded.json */,
-				C7UNT0000000000000000017 /* KartaviewSequenceCreated.json */,
 				C7UNT0000000000000000015 /* DatabaseConnectorTests.swift */,
 				C7UNT0000000000000000013 /* MockServer.swift */,
 				C7UNT0000000000000000011 /* SessionAndLoginTests.swift */,
@@ -2378,12 +2313,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				C7UNT0000000000000000028 /* KartaviewStatusFailure.json in Resources */,
-				C7UNT0000000000000000026 /* KartaviewPhotoLookupEmpty.json in Resources */,
-				C7UNT0000000000000000024 /* KartaviewPhotoLookup.json in Resources */,
-				C7UNT0000000000000000022 /* KartaviewUploadFinished.json in Resources */,
-				C7UNT0000000000000000020 /* KartaviewPhotoUploaded.json in Resources */,
-				C7UNT0000000000000000018 /* KartaviewSequenceCreated.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2743,7 +2672,6 @@
 				98E6B86BDDC74537ACA56927 /* LongFormElement+Completion.swift in Sources */,
 				C79EDA8F2ED9977700D2B100 /* DottedLineView.swift in Sources */,
 				C78E8BC42EDF2D55002215C0 /* EditedTagView.swift in Sources */,
-				FA18CAE72CC80A34008247F2 /* UploadPhotoModel.swift in Sources */,
 				FAFDA1FA2C6B861A00ECEAE9 /* FileStorageManager.swift in Sources */,
 				70CFF415C62865D5A2F409AD /* NoteImageStorage.swift in Sources */,
 				4A89C70038014808B0E110A0 /* FeatureImageStorage.swift in Sources */,
@@ -2789,7 +2717,6 @@
 				973FC0112B4D2D1C00878269 /* QuestAndDescriptionView.swift in Sources */,
 				FAFDA2042C6E8BEA00ECEAE9 /* APIEnvironment.swift in Sources */,
 				973FC0032B47DE0700878269 /* QuestsVM.swift in Sources */,
-				FA18CAE22CC7CD89008247F2 /* KartaviewViewModel.swift in Sources */,
 				B7A1C0DE2F10000100000004 /* PanoramaxUploader.swift in Sources */,
 				B7A1C0DE2F10000100000005 /* PhotoUploadService.swift in Sources */,
 				971575172B5FFD6F0044797C /* MapView.swift in Sources */,
@@ -2807,7 +2734,6 @@
 				A4B83AF32B5F9385006684CA /* StoredWay.swift in Sources */,
 				C778A50F2EDD9C6D0014B9C5 /* UndoEditsViewModel.swift in Sources */,
 				C787F3422E9CD34F00BEF0A6 /* ForceUpdateManager.swift in Sources */,
-				FA18CAE52CC7D0DD008247F2 /* SequenceModel.swift in Sources */,
 				C71EB5AC2E2100510009E610 /* WMTSServer.swift in Sources */,
 				C71EB5AD2E2100510009E610 /* SatellitePickerSheet.swift in Sources */,
 				C71EB5AE2E2100510009E610 /* SatelliteServerResponse.swift in Sources */,
@@ -2833,7 +2759,6 @@
 				C78E8BC22EDF20E6002215C0 /* UndoItemConfirmationView.swift in Sources */,
 				0536DD972B0BD95100B04C4B /* URLSession+Extension.swift in Sources */,
 				973FC04C2B5A5F5F00878269 /* RadioItem.swift in Sources */,
-				FA18CAE92CCFD212008247F2 /* FinishUploadingModel.swift in Sources */,
 				C7ED070F2D70E2EC001FFFE2 /* TokenRefresher.swift in Sources */,
 				C71EB5B62E2100E30009E610 /* ResponseHandler.swift in Sources */,
 				C71EB5B72E2100E30009E610 /* NetworkManager.swift in Sources */,
@@ -2862,7 +2787,6 @@
 				971902112B983EFC009B3270 /* CustomMap.swift in Sources */,
 				FA5071982D71F1B000CE9798 /* SyncLogger.swift in Sources */,
 				A48037362BBA8DDC007EE7E4 /* WorkspacesResponse.swift in Sources */,
-				171574E02FD1CC4A00AA6603 /* PhotoLookupResponse.swift in Sources */,
 				C769AB552E431EFE00FA810A /* Strings+Generated.swift in Sources */,
 				C73D2F792F98A0A800978D89 /* LiDARDetection.swift in Sources */,
 				0536DD992B0BDBFE00B04C4B /* OAuthManager.swift in Sources */,
@@ -3396,7 +3320,7 @@
 				);
 				INFOPLIST_FILE = GoInfoGame/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "AVIV ScoutRoute";
-				INFOPLIST_KEY_NSCameraUsageDescription = "This app requires access to your camera to upload images to Kartaview";
+				INFOPLIST_KEY_NSCameraUsageDescription = "This app requires access to your camera to take photos of sidewalks and other features";
 				INFOPLIST_KEY_NSFaceIDUsageDescription = "Used to securely log in using Face ID";
 				INFOPLIST_KEY_NSFileProviderDomainUsageDescription = "";
 				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "We use your location to help you find the closest workspaces.";
@@ -3472,7 +3396,7 @@
 				);
 				INFOPLIST_FILE = GoInfoGame/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "AVIV ScoutRoute";
-				INFOPLIST_KEY_NSCameraUsageDescription = "This app requires access to your camera to upload images to Kartaview";
+				INFOPLIST_KEY_NSCameraUsageDescription = "This app requires access to your camera to take photos of sidewalks and other features";
 				INFOPLIST_KEY_NSFaceIDUsageDescription = "Used to securely log in using Face ID";
 				INFOPLIST_KEY_NSFileProviderDomainUsageDescription = "";
 				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "We use your location to help you find the closest workspaces.";
