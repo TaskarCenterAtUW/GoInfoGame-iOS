@@ -103,6 +103,31 @@ final class APIEnvironmentTests: XCTestCase {
             XCTAssertFalse(env.panoramaxBaseURL.contains("openstreetmap.fr"), "\(env) must use our own Panoramax instance")
         }
     }
+
+    func testPanoramaxConfigIsReadForEachEnvironment() {
+        let info: [String: Any] = [
+            "PANORAMAX_BASE_URL_DEV": "https://dev.panoramax.test", "PANORAMAX_TOKEN_DEV": "dev-token",
+            "PANORAMAX_BASE_URL_STAGE": "https://stage.panoramax.test/", "PANORAMAX_TOKEN_STAGE": " stage-token ",
+            "PANORAMAX_BASE_URL_PROD": "https://prod.panoramax.test", "PANORAMAX_TOKEN_PROD": "prod-token"
+        ]
+        XCTAssertEqual(APIEnvironment.development.panoramaxBaseURL(info: info), "https://dev.panoramax.test")
+        XCTAssertEqual(APIEnvironment.staging.panoramaxBaseURL(info: info), "https://stage.panoramax.test")
+        XCTAssertEqual(APIEnvironment.production.panoramaxBaseURL(info: info), "https://prod.panoramax.test")
+        XCTAssertEqual(APIEnvironment.development.panoramaxToken(info: info), "dev-token")
+        XCTAssertEqual(APIEnvironment.staging.panoramaxToken(info: info), "stage-token")
+        XCTAssertEqual(APIEnvironment.production.panoramaxToken(info: info), "prod-token")
+    }
+
+    func testMissingPanoramaxConfigFallsBackToDevInstanceAndNoToken() {
+        let fallback = APIEnvironment.development.panoramaxBaseURL(info: [:])
+        XCTAssertTrue(fallback.hasPrefix("https://"))
+        for info: [String: Any] in [[:], ["PANORAMAX_BASE_URL_PROD": "", "PANORAMAX_TOKEN_PROD": ""],
+                                    ["PANORAMAX_BASE_URL_PROD": "$(PANORAMAX_BASE_URL_PROD)",
+                                     "PANORAMAX_TOKEN_PROD": "$(PANORAMAX_TOKEN_PROD)"]] {
+            XCTAssertEqual(APIEnvironment.production.panoramaxBaseURL(info: info), fallback)
+            XCTAssertEqual(APIEnvironment.production.panoramaxToken(info: info), "")
+        }
+    }
 }
 
 final class APIConfigurationTests: AppTestCase {

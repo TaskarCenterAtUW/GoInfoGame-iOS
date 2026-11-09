@@ -17,10 +17,18 @@
 	</array>
 	<key>APP_FORCE_UPDATE_URL</key>
 	<string>$(APP_FORCE_UPDATE_URL)</string>
-	<key>PANORAMAX_TOKEN</key>
-	<string>$(PANORAMAX_TOKEN)</string>
-	<key>PANORAMAX_BASE_URL</key>
-	<string>$(PANORAMAX_BASE_URL)</string>
+	<key>PANORAMAX_BASE_URL_DEV</key>
+	<string>$(PANORAMAX_BASE_URL_DEV)</string>
+	<key>PANORAMAX_BASE_URL_STAGE</key>
+	<string>$(PANORAMAX_BASE_URL_STAGE)</string>
+	<key>PANORAMAX_BASE_URL_PROD</key>
+	<string>$(PANORAMAX_BASE_URL_PROD)</string>
+	<key>PANORAMAX_TOKEN_DEV</key>
+	<string>$(PANORAMAX_TOKEN_DEV)</string>
+	<key>PANORAMAX_TOKEN_STAGE</key>
+	<string>$(PANORAMAX_TOKEN_STAGE)</string>
+	<key>PANORAMAX_TOKEN_PROD</key>
+	<string>$(PANORAMAX_TOKEN_PROD)</string>
 	<key>JAWG_ACCESS_TOKEN</key>
 	<string>$(JAWG_ACCESS_TOKEN)</string>
 	<key>AppStpre_URL</key>

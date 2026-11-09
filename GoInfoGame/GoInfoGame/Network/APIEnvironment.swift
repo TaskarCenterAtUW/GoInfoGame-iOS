@@ -56,25 +56,42 @@ enum APIEnvironment: String, CaseIterable {
         }
     }
     
-    /// Our own Panoramax instance for each environment. The URL is saved in every photo's
+    /// Our own Panoramax instance for this environment, from `PANORAMAX_BASE_URL_DEV`,
+    /// `_STAGE` or `_PROD` in Secrets.xcconfig. The URL is saved in every photo's
     /// `ext:street_images` tag, so each one must be a permanent hostname.
-    /// Stage and prod use the dev instance until their own instances exist.
-    /// `PANORAMAX_BASE_URL` in Secrets.xcconfig, when set, overrides this for local testing.
-    var panoramaxBaseURL: String {
-        switch self {
-        case .development:
-            return Self.panoramaxDevURL
-        case .staging:
-            return Self.panoramaxDevURL
-        case .production:
+    /// Falls back to the dev instance when the environment's key is not set.
+    var panoramaxBaseURL: String { panoramaxBaseURL(info: Bundle.main.infoDictionary) }
+
+    /// The upload token for this environment's instance, from `PANORAMAX_TOKEN_DEV`,
+    /// `_STAGE` or `_PROD` in Secrets.xcconfig. Empty when it is not set.
+    var panoramaxToken: String { panoramaxToken(info: Bundle.main.infoDictionary) }
+
+    func panoramaxBaseURL(info: [String: Any]?) -> String {
+        guard let url = Self.configValue("PANORAMAX_BASE_URL_\(configSuffix)", in: info) else {
             return Self.panoramaxDevURL
         }
+        return url.hasSuffix("/") ? String(url.dropLast()) : url
     }
 
-    // Azure's default hostname. Move to a permanent custom domain before production
-    // photos are written, or saved photo URLs will break when the host changes.
+    func panoramaxToken(info: [String: Any]?) -> String {
+        Self.configValue("PANORAMAX_TOKEN_\(configSuffix)", in: info) ?? ""
+    }
+
+    /// Suffix of this environment's keys in Secrets.xcconfig: DEV, STAGE or PROD.
+    private var configSuffix: String { rawValue.uppercased() }
+
+    /// A build setting passed through Info.plist, or nil when it is empty or was never
+    /// defined (Xcode then leaves the `$(KEY)` placeholder or an empty string).
+    private static func configValue(_ key: String, in info: [String: Any]?) -> String? {
+        guard let value = (info?[key] as? String)?.trimmingCharacters(in: .whitespacesAndNewlines),
+              !value.isEmpty, !value.hasPrefix("$(") else { return nil }
+        return value
+    }
+
+    // Used when Secrets.xcconfig has no URL for the environment (e.g. CI). Azure's default
+    // hostname: move to a permanent custom domain before production photos are written.
     private static let panoramaxDevURL = "https://panoramax-dev-faaadghgcfgwcchk.westus2-01.azurewebsites.net"
-    
+
     func displayString() -> String {
         switch self {
         case .development:

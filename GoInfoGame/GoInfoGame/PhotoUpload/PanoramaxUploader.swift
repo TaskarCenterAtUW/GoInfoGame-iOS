@@ -44,19 +44,10 @@ struct PanoramaxUploader {
     let token: String
     var session: URLSession = .shared
 
-    /// PANORAMAX_BASE_URL from Secrets.xcconfig (e.g. a local test server) wins over the
-    /// environment's default instance when it is set.
-    static var defaultBaseURL: String {
-        let configured = (Bundle.main.object(forInfoDictionaryKey: "PANORAMAX_BASE_URL") as? String)?
-            .trimmingCharacters(in: .whitespaces) ?? ""
-        guard !configured.isEmpty, !configured.hasPrefix("$(") else {
-            return APIConfiguration.shared.environment.panoramaxBaseURL
-        }
-        return configured.hasSuffix("/") ? String(configured.dropLast()) : configured
-    }
-
-    init(baseURL: String = PanoramaxUploader.defaultBaseURL,
-         token: String = Bundle.main.object(forInfoDictionaryKey: "PANORAMAX_TOKEN") as? String ?? "",
+    /// Defaults to the instance and token of the app's current environment (dev, stage or
+    /// prod), both set in Secrets.xcconfig.
+    init(baseURL: String = APIConfiguration.shared.environment.panoramaxBaseURL,
+         token: String = APIConfiguration.shared.environment.panoramaxToken,
          session: URLSession = .shared) {
         self.baseURL = baseURL
         self.token = token
