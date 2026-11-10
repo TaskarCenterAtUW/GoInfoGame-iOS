@@ -21,7 +21,7 @@ enum LongFormActiveAlert: Identifiable {
 
 /// LongForm's answer payload. Unlike every other quest form (which submits a bare
 /// `[String:String]`), LongForm can also carry a captured-but-not-yet-uploaded
-/// KartaView photo — the upload itself is deferred to `QuestSubmissionManager`'s
+/// photo — the upload itself is deferred to `QuestSubmissionManager`'s
 /// offline queue rather than attempted here, so Submit never has to wait on the
 /// network (see QuestSubmissionManager.swift). This is LongForm's own `AnswerClass`;
 /// no other quest form is affected by it.
@@ -29,6 +29,10 @@ struct LongFormAnswer {
     let tags: [String: String]
     let capturedImage: UIImage?
     let imageTagKey: String?
+    /// Title of the question whose photo prompt was used, sent with the photo upload.
+    var imageQuestion: String? = nil
+    /// `quest_id` of that question.
+    var imageQuestId: Int? = nil
 }
 
 struct LongForm: View, QuestForm {
@@ -74,9 +78,13 @@ struct LongForm: View, QuestForm {
 
     @State private var isCameraPresented = false
     @State private var capturedImage: UIImage?
+    /// The question whose "take a photo" prompt opened the camera, if any. Kept when the
+    /// photo is retaken from its card.
+    @State private var photoQuestion: String?
+    @State private var photoQuestId: Int?
 
     /// True once the user has marked the previously-synced photo
-    /// (`tags?["ext:kartaview_url"]`) for removal — drives the "PendingRemoval" card
+    /// (`PhotoTag.existingURL(in: tags)`) for removal — drives the "PendingRemoval" card
     /// state ("Photo will be removed" / undo), not an immediate hide. Purely local UI
     /// state until Submit: nothing is changed server-side until then, and the user can
     /// undo back to "Uploaded" any time before submitting.
@@ -176,7 +184,11 @@ struct LongForm: View, QuestForm {
                                 if viewModel.shouldShowQuest(quest) {
                                     if canShowQuest(quest) {
                                         LongQuestView(quest: quest, selectedChoice: binding(for: quest), uploadPhoto:  { result in
-                                            if result { isCameraPresented = true }
+                                            if result {
+                                                photoQuestion = quest.questTitle
+                                                photoQuestId = quest.questID
+                                                isCameraPresented = true
+                                            }
                                         }, hasPhotoAttached: hasPhotoAttached)
                                     }
                                 }
@@ -364,10 +376,11 @@ struct LongForm: View, QuestForm {
     }
 
     /// Whether there's an existing, previously-synced photo for this element
-    /// (`tags?["ext:kartaview_url"]`) — used both to pick the right card state and to
-    /// choose the right "Pending" subtitle (plain upload vs. replace-warning).
+    /// (`ext:street_images`, or the older `ext:kartaview_url`) — used both to pick the
+    /// right card state and to choose the right "Pending" subtitle (plain upload vs.
+    /// replace-warning).
     private var hasExistingPhoto: Bool {
-        !(tags?["ext:kartaview_url"] ?? "").isEmpty
+        PhotoTag.existingURL(in: tags) != nil
     }
 
     /// True whenever `photoCard` below is showing a card at all — captured this
@@ -405,7 +418,7 @@ struct LongForm: View, QuestForm {
                     .clipShape(RoundedRectangle(cornerRadius: 8))
                     .clipped()
             }
-        } else if hasExistingPhoto, let existingPhotoURL = tags?["ext:kartaview_url"] {
+        } else if let existingPhotoURL = PhotoTag.existingURL(in: tags) {
             if dismissedExistingPhoto {
                 photoCardRow(
                     caption: "Photo will be removed",
@@ -414,7 +427,7 @@ struct LongForm: View, QuestForm {
                     badgeAction: { dismissedExistingPhoto = false },
                     badgeAccessibilityLabel: "Undo removal"
                 ) {
-                    LongFormImageView(urlString: existingPhotoURL, width: 56, height: 56)
+                    LongFormImageView(urlString: PhotoTag.thumbnailURL(for: existingPhotoURL), width: 56, height: 56)
                         .clipShape(RoundedRectangle(cornerRadius: 8))
                         .opacity(0.5)
                 }
@@ -428,7 +441,7 @@ struct LongForm: View, QuestForm {
                     badgeAction: { dismissedExistingPhoto = true },
                     badgeAccessibilityLabel: "Remove photo"
                 ) {
-                    LongFormImageView(urlString: existingPhotoURL, width: 56, height: 56)
+                    LongFormImageView(urlString: PhotoTag.thumbnailURL(for: existingPhotoURL), width: 56, height: 56)
                         .clipShape(RoundedRectangle(cornerRadius: 8))
                 }
             }
@@ -658,8 +671,14 @@ struct LongForm: View, QuestForm {
                     // (see OSMNode/OSMWay.toPayload's empty-value skip). Without this,
                     // dismissing the preview only hid it locally; the stale tag would
                     // still be there after Submit.
-                    if capturedImage == nil, dismissedExistingPhoto, let existing = tags?["ext:kartaview_url"], !existing.isEmpty {
-                        answersToSubmit["ext:kartaview_url"] = ""
+                    // A new photo goes to Panoramax under `ext:street_images`; an older
+                    // KartaView photo (`ext:kartaview_url`) is dropped so the element doesn't
+                    // keep two. Removing the photo clears every photo tag it has.
+                    let photoTagKey = PhotoTag.streetImages
+                    if capturedImage != nil || dismissedExistingPhoto {
+                        for key in PhotoTag.keysWithPhoto(in: tags) where capturedImage == nil || key != photoTagKey {
+                            answersToSubmit[key] = ""
+                        }
                     }
                     // The photo (if any) is handed off unuploaded — QuestSubmissionManager's
                     // offline queue uploads it and merges the URL into the tags in the
@@ -667,7 +686,9 @@ struct LongForm: View, QuestForm {
                     action(LongFormAnswer(
                         tags: answersToSubmit,
                         capturedImage: capturedImage,
-                        imageTagKey: capturedImage != nil ? "ext:kartaview_url" : nil
+                        imageTagKey: capturedImage != nil ? photoTagKey : nil,
+                        imageQuestion: capturedImage != nil ? photoQuestion : nil,
+                        imageQuestId: capturedImage != nil ? photoQuestId : nil
                     ))
                 }
             } else {

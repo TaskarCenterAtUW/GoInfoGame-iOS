@@ -22,7 +22,7 @@ struct FeatureDraft {
     var coordinates: CLLocationCoordinate2D
 }
 
-/// Creates features (and their Kartaview photo uploads) outside the lifetime of
+/// Creates features (and their photo uploads) outside the lifetime of
 /// FeatureSubmissionView, so the sheet can dismiss immediately after Submit is tapped —
 /// mirrors NotesSubmissionManager's role for Create Note. Every draft is persisted
 /// (photos on disk, metadata in Realm) *before* any network call, so a feature captured
@@ -76,12 +76,9 @@ enum FeatureSubmissionManager {
     fileprivate static func attempt(_ record: StoredFeatureDraftSnapshot) async {
         do {
             var tags = record.tags
-            let images = record.imagePaths.compactMap { FeatureImageStorage.shared.load(path: $0) }
-            if !images.isEmpty {
-                let photoURLs = try await uploadPhotos(images)
-                for (index, url) in photoURLs.enumerated() {
-                    tags["ext:image_url\(index + 1)"] = url
-                }
+            let photoURLs = try await uploadPhotos(for: record)
+            for (index, url) in photoURLs.enumerated() {
+                tags["ext:image_url\(index + 1)"] = url
             }
 
             let node = UserNodesHelper.getPowerPole(
@@ -91,6 +88,16 @@ enum FeatureSubmissionManager {
                 tags: tags
             )
             let created = try await DatasyncManager.shared.createNode(node: node)
+
+            // The photos went up before the node existed, so add its id to them now, like a
+            // quest photo's element_id. Detached: it may wait for Panoramax to dispatch the
+            // pictures, and must not hold up the rest of the queue.
+            if !photoURLs.isEmpty {
+                let elementId = "node/\(created.id)"
+                Task.detached(priority: .utility) {
+                    await PhotoUploadService.tagPhotos(photoURLs, withElementId: elementId)
+                }
+            }
 
             // Persist locally under the server's real id/version (never returned any
             // other way — see DatasyncManager.uploadNode), so the element can be
@@ -126,24 +133,29 @@ enum FeatureSubmissionManager {
         }
     }
 
-    private static func uploadPhotos(_ images: [UIImage]) async throws -> [String] {
+    /// Uploads the draft's photos in order and returns their URLs. Each URL is saved on the
+    /// draft as soon as its photo is up, so when a later photo or the element itself fails, the
+    /// retry reuses it instead of putting the same photo on Panoramax again.
+    private static func uploadPhotos(for record: StoredFeatureDraftSnapshot) async throws -> [String] {
         var urls: [String] = []
 
-        for (index, image) in images.enumerated() {
+        for (index, path) in record.imagePaths.enumerated() {
+            if let url = record.uploadedPhotoURLs[index] {
+                urls.append(url)
+                continue
+            }
+            guard let image = FeatureImageStorage.shared.load(path: path) else { continue }
             do {
-                // KartaviewViewModel creates a CLLocationManager on init and immediately
-                // calls requestWhenInUseAuthorization()/startUpdating*() — CoreLocation
-                // requires those to happen on a thread with an active run loop (main),
-                // or the app-level authorization handshake stalls. Only construction
-                // needs the hop; the network upload itself is fine off the main thread.
-                let viewModel = await MainActor.run { KartaviewViewModel(capturedImage: image) }
-                let url = try await viewModel.uploadAsync()
+                let url = try await PhotoUploadService.upload(image, coordinate: record.coordinates,
+                                                              capturedAt: record.createdAt,
+                                                              context: .current(source: .newFeature, featureType: record.presetName))
+                DatabaseConnector.shared.attachFeatureDraftPhotoURL(id: record.id, photoIndex: index, url: url)
                 urls.append(url)
             } catch {
                 throw NSError(
-                    domain: "KartaviewUpload",
+                    domain: "PhotoUpload",
                     code: 0,
-                    userInfo: [NSLocalizedDescriptionKey: "Failed to upload photo \(index + 1) to Kartaview: \(error.localizedDescription)"]
+                    userInfo: [NSLocalizedDescriptionKey: "Failed to upload photo \(index + 1) to Panoramax: \(error.localizedDescription)"]
                 )
             }
         }

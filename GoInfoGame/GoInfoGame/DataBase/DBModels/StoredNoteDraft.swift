@@ -8,7 +8,7 @@ import RealmSwift
 import CoreLocation
 
 /// A note (with any captured photos already saved to disk) still waiting to be
-/// uploaded to Kartaview and submitted to the notes API. Presence of a row here
+/// uploaded to Panoramax and submitted to the notes API. Presence of a row here
 /// means the note is pending — the row is deleted once submission succeeds, which
 /// is what lets a note captured offline (or interrupted mid-upload) survive an app
 /// kill and be retried later from the sync button or on next app launch.
@@ -21,6 +21,10 @@ class StoredNoteDraft: Object {
     @Persisted var createdAt: Date = Date()
     @Persisted var lastError: String?
     @Persisted var retryCount: Int = 0
+    /// Panoramax URL of each photo already uploaded, keyed by its index in `imagePaths`
+    /// ("0", "1", …; Realm map keys can't hold the "." of a file path), so a retry only
+    /// uploads the photos that haven't gone up yet.
+    @Persisted var uploadedPhotoURLs = Map<String, String>()
 }
 
 /// Plain-value mirror of a StoredNoteDraft. Realm objects are confined to the thread/
@@ -31,4 +35,8 @@ struct StoredNoteDraftSnapshot {
     let noteText: String
     let imagePaths: [String]
     let coordinates: CLLocationCoordinate2D
+    /// When the draft was saved, i.e. when its photos were taken.
+    var createdAt: Date = Date()
+    /// Photos already on Panoramax, keyed by their index in `imagePaths`.
+    var uploadedPhotoURLs: [Int: String] = [:]
 }

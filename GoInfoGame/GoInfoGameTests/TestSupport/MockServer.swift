@@ -110,42 +110,43 @@ enum MockServer {
         }
     }
 
-    // MARK: Kartaview (photo uploads)
+    // MARK: Panoramax (photo uploads)
 
-    static let kartaviewPhotoURL = "https://cdn.kartaview.org/pr:sharp/unit-test-photo-777001.jpg"
+    static let panoramaxBaseURL = "https://panoramax.test"
+    static let panoramaxToken = "test-panoramax-token"
+    static let panoramaxUploadSetID = "8f1d9c2e-0000-4000-8000-000000000001"
+    static let panoramaxPictureID = "c0ffee00-1111-4222-8333-444455556666"
+    static let panoramaxPhotoURL = "\(panoramaxBaseURL)/api/pictures/\(panoramaxPictureID)/hd.jpg"
+    static let panoramaxFilesPath = "/api/upload_sets/\(panoramaxUploadSetID)/files"
+    static let panoramaxPicturePath = "/api/pictures/\(panoramaxPictureID)"
 
-    enum Kartaview {
+    enum Panoramax {
         case ok
-        case createFails            // sequence creation rejected
-        case createStatusNot200     // 200 HTTP but the API's own status says failure
-        case uploadFails            // photo upload answers 500
-        case uploadStatusNot200
-        case finishFails            // "finished uploading" answers 500
-        case finishStatusNot200
-        case lookupWithoutURL       // the hosted-URL lookup never produces a URL
+        case rejected       // 202, but the body says the photo was not accepted
+        case unauthorized   // upload set creation answers 401
+        case offline        // the photo upload never reaches the server
     }
 
-    static func installKartaview(_ mode: Kartaview = .ok) {
+    static func installPanoramax(_ mode: Panoramax = .ok) {
+        if mode == .unauthorized {
+            MockHTTP.stub("POST", path: "/api/upload_sets",
+                          reply: .statusWithBody(401, #"{"details":{"error":"Impossible to decode token"},"message":"Token not valid","status_code":401}"#))
+            return
+        }
+        MockHTTP.stub("POST", path: "/api/upload_sets", reply: .json(#"{"id":"\#(panoramaxUploadSetID)","title":"GoInfoGame"}"#))
         switch mode {
-        case .createFails:        MockHTTP.stub("POST", path: "/1.0/sequence/", reply: .statusWithBody(500, "boom"))
-        case .createStatusNot200: MockHTTP.stub("POST", path: "/1.0/sequence/", reply: .json(withHTTPStatus: 401, of: "KartaviewSequenceCreated"))
-        default:                  MockHTTP.stub("POST", path: "/1.0/sequence/", reply: .fixture("KartaviewSequenceCreated"))
+        case .rejected:
+            MockHTTP.stub("POST", path: panoramaxFilesPath,
+                          reply: .json(#"{"file_name":"a.jpg","rejected":{"reason":"file_missing_mandatory_metadata","severity":"error","message":"No GPS coordinates","details":null}}"#, status: 202))
+        case .offline:
+            MockHTTP.stub("POST", path: panoramaxFilesPath, reply: .offline)
+        default:
+            MockHTTP.stub("POST", path: panoramaxFilesPath,
+                          reply: .json(#"{"file_name":"a.jpg","picture_id":"\#(panoramaxPictureID)","rejected":null}"#, status: 202))
         }
-        switch mode {
-        case .uploadFails:        MockHTTP.stub("POST", path: "/1.0/photo/", reply: .statusWithBody(500, "boom"))
-        case .uploadStatusNot200: MockHTTP.stub("POST", path: "/1.0/photo/", reply: .json(#"{"status":{"apiCode":660,"apiMessage":"no","httpCode":403,"httpMessage":"no"},"osv":{"photo":{"id":"1","sequenceId":"1","dateAdded":"d","sequenceIndex":"1","photoName":"p","lat":"0","lng":"0","path":"p"}}}"#))
-        default:                  MockHTTP.stub("POST", path: "/1.0/photo/", reply: .fixture("KartaviewPhotoUploaded"))
-        }
-        switch mode {
-        case .finishFails:        MockHTTP.stub("POST", path: "/1.0/sequence/finished-uploading/", reply: .statusWithBody(500, "boom"))
-        case .finishStatusNot200: MockHTTP.stub("POST", path: "/1.0/sequence/finished-uploading/", reply: .fixture("KartaviewStatusFailure"))
-        default:                  MockHTTP.stub("POST", path: "/1.0/sequence/finished-uploading/", reply: .fixture("KartaviewUploadFinished"))
-        }
-        if mode == .lookupWithoutURL {
-            MockHTTP.stub("GET", pathRegex: #"^/2\.0/photo/\d+$"#, reply: .fixture("KartaviewPhotoLookupEmpty"))
-        } else {
-            MockHTTP.stub("GET", pathRegex: #"^/2\.0/photo/\d+$"#, reply: .fixture("KartaviewPhotoLookup"))
-        }
+        // Adding semantics to the uploaded picture.
+        MockHTTP.stub("PATCH", path: panoramaxPicturePath,
+                      reply: .json(#"{"id":"\#(panoramaxPictureID)","type":"Feature"}"#, status: 200))
     }
 
     // MARK: Notes
@@ -218,17 +219,5 @@ extension AppTestCase {
         if workspace == nil { XCTFail("Could not load quests from \(fixture)", file: file, line: line) }
         QuestsRepository.shared.loadLongQuests(from: "longQuestJson")
         return workspace
-    }
-}
-
-extension MockHTTP.Reply {
-    /// A copy of a Kartaview fixture whose embedded `status.httpCode` is changed - the API answers
-    /// HTTP 200 and reports its own failure inside the body.
-    static func json(withHTTPStatus code: Int, of fixture: String) -> MockHTTP.Reply {
-        var object = (MockHTTP.fixtureJSON(fixture) as? [String: Any]) ?? [:]
-        var status = (object["status"] as? [String: Any]) ?? [:]
-        status["httpCode"] = code
-        object["status"] = status
-        return .json((try? JSONSerialization.data(withJSONObject: object)) ?? Data())
     }
 }

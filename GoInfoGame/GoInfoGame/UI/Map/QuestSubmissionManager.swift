@@ -8,7 +8,7 @@ import UIKit
 import CoreLocation
 import osmparser
 
-/// Submits quest answers (and any attached KartaView photo) outside the lifetime of
+/// Submits quest answers (and any attached photo) outside the lifetime of
 /// LongForm, so Submit can return immediately whether or not there's connectivity.
 /// Every answer is persisted (photo on disk, tags/element info in Realm, via the same
 /// `StoredChangeset` row `QuestProtocols.updateTags` already wrote before this queue
@@ -22,12 +22,15 @@ enum QuestSubmissionManager {
     /// whole pending queue (not just this answer), so any earlier answers that failed
     /// get swept up too.
     static func submit(id: Int64, questType: String, tags: [String: String], type: ElementType,
-                        iconName: String, capturedImage: UIImage?, imageTagKey: String?) {
+                        iconName: String, capturedImage: UIImage?, imageTagKey: String?,
+                        imageQuestion: String? = nil, imageQuestId: Int? = nil) {
         let storedElementType: StoredElementEnum = type == .way ? .way : .node
 
         Task.detached(priority: .userInitiated) {
             let pendingImagePath: String? = capturedImage.flatMap { try? QuestImageStorage.shared.save($0) }
             let pendingImageTagKey = pendingImagePath != nil ? imageTagKey : nil
+            let pendingImageQuestion = pendingImagePath != nil ? imageQuestion : nil
+            let pendingImageQuestId = pendingImagePath != nil ? imageQuestId : nil
 
             switch storedElementType {
             case .way:
@@ -35,7 +38,8 @@ enum QuestSubmissionManager {
                 DatabaseConnector.shared.createChangeset(
                     id: Int(id), questType: questType, type: storedElementType,
                     originalTags: way.tags.toDictionary(), tags: tags, version: way.version, iconName: iconName,
-                    nodes: way.nodes, pendingImagePath: pendingImagePath, pendingImageTagKey: pendingImageTagKey
+                    nodes: way.nodes, pendingImagePath: pendingImagePath, pendingImageTagKey: pendingImageTagKey,
+                    pendingImageQuestion: pendingImageQuestion, pendingImageQuestId: pendingImageQuestId
                 )
             case .node:
                 guard let node = DatabaseConnector.shared.getNode(id: Int(id)) else { return }
@@ -43,7 +47,8 @@ enum QuestSubmissionManager {
                     id: Int(id), questType: questType, type: storedElementType,
                     originalTags: node.tags.toDictionary(), tags: tags, version: node.version, iconName: iconName,
                     point: CLLocationCoordinate2D(latitude: node.latitude, longitude: node.longitude),
-                    pendingImagePath: pendingImagePath, pendingImageTagKey: pendingImageTagKey
+                    pendingImagePath: pendingImagePath, pendingImageTagKey: pendingImageTagKey,
+                    pendingImageQuestion: pendingImageQuestion, pendingImageQuestId: pendingImageQuestId
                 )
             case .unknown:
                 print("Unknown Stored element type received")
@@ -94,13 +99,20 @@ enum QuestSubmissionManager {
         do {
             var tags = record.tags
 
-            if let path = record.pendingImagePath, let tagKey = record.pendingImageTagKey {
+            if let path = record.pendingImagePath, let storedTagKey = record.pendingImageTagKey {
+                // Every photo now goes to Panoramax, so one queued by an older version
+                // under `ext:kartaview_url` is written to `ext:street_images` instead.
+                let tagKey = PhotoTag.all.contains(storedTagKey) ? PhotoTag.streetImages : storedTagKey
                 guard let image = QuestImageStorage.shared.load(path: path) else {
                     DatabaseConnector.shared.markChangesetFailed(id: record.id, error: "Saved photo could not be read")
                     return
                 }
                 do {
-                    let url = try await uploadPhoto(image)
+                    let context = PhotoUploadContext.current(source: .quest, elementId: record.osmElementId,
+                                                             question: record.pendingImageQuestion,
+                                                             questId: record.pendingImageQuestId)
+                    let url = try await PhotoUploadService.upload(image, coordinate: photoCoordinate(for: record),
+                                                                  context: context)
                     tags[tagKey] = url
                     DatabaseConnector.shared.attachUploadedPhotoURL(id: record.id, tagKey: tagKey, url: url)
                     QuestImageStorage.shared.delete(paths: [path])
@@ -146,15 +158,12 @@ enum QuestSubmissionManager {
         }
     }
 
-    private static func uploadPhoto(_ image: UIImage) async throws -> String {
-        // KartaviewViewModel creates a CLLocationManager on init and immediately calls
-        // requestWhenInUseAuthorization()/startUpdating*() — CoreLocation requires
-        // those to happen on a thread with an active run loop (main), or the app-level
-        // authorization handshake stalls. Only construction needs the hop; the network
-        // upload itself is fine off the main thread. Mirrors FeatureSubmissionManager/
-        // NotesSubmissionManager's identical uploadPhotos helper.
-        let viewModel = await MainActor.run { KartaviewViewModel(capturedImage: image) }
-        return try await viewModel.uploadAsync()
+    /// Where the photo was taken: the node itself, or a way's first node.
+    private static func photoCoordinate(for record: StoredChangesetSnapshot) -> CLLocationCoordinate2D? {
+        if record.elementType == .node { return record.point }
+        guard let firstNodeId = record.nodes.first,
+              let node = DatabaseConnector.shared.getNode(id: Int(firstNodeId)) else { return nil }
+        return CLLocationCoordinate2D(latitude: node.latitude, longitude: node.longitude)
     }
 }
 

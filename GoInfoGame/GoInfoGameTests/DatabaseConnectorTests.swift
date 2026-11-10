@@ -358,14 +358,14 @@ final class DatabaseConnectorChangesetTests: AppTestCase {
     }
 
     func testAttachingAnUploadedPhotoURLClearsThePendingPhoto() {
-        let changeset = makeWayChangeset(pendingImage: ("/tmp/photo.jpg", "ext:kartaview_url"))
+        let changeset = makeWayChangeset(pendingImage: ("/tmp/photo.jpg", "ext:street_images"))
         XCTAssertEqual(changeset.pendingImagePath, "/tmp/photo.jpg")
-        XCTAssertEqual(db.pendingChangesets().first?.pendingImageTagKey, "ext:kartaview_url")
+        XCTAssertEqual(db.pendingChangesets().first?.pendingImageTagKey, "ext:street_images")
 
-        db.attachUploadedPhotoURL(id: changeset.id, tagKey: "ext:kartaview_url", url: "https://cdn/x.jpg")
+        db.attachUploadedPhotoURL(id: changeset.id, tagKey: "ext:street_images", url: "https://cdn/x.jpg")
 
         let stored = db.getChangeset(for: changeset.id)
-        XCTAssertEqual(stored?.tags["ext:kartaview_url"], "https://cdn/x.jpg")
+        XCTAssertEqual(stored?.tags["ext:street_images"], "https://cdn/x.jpg")
         XCTAssertNil(stored?.pendingImagePath)
         XCTAssertNil(stored?.pendingImageTagKey)
     }
@@ -382,7 +382,7 @@ final class DatabaseConnectorChangesetTests: AppTestCase {
     }
 
     func testAPhotoIsOnlyConsideredStuckAfterThreeFailures() {
-        let changeset = makeWayChangeset(id: 77, pendingImage: ("/tmp/p.jpg", "ext:kartaview_url"))
+        let changeset = makeWayChangeset(id: 77, pendingImage: ("/tmp/p.jpg", "ext:street_images"))
         XCTAssertNil(db.stuckPhotoChangeset(elementId: 77))
         db.markChangesetFailed(id: changeset.id, error: "1")
         db.markChangesetFailed(id: changeset.id, error: "2")
@@ -399,7 +399,7 @@ final class DatabaseConnectorChangesetTests: AppTestCase {
     }
 
     func testSkippingThePhotoReturnsItsPathAndLetsTheTagsSync() {
-        let changeset = makeWayChangeset(pendingImage: ("/tmp/skip.jpg", "ext:kartaview_url"))
+        let changeset = makeWayChangeset(pendingImage: ("/tmp/skip.jpg", "ext:street_images"))
         XCTAssertEqual(db.skipPendingPhoto(id: changeset.id), "/tmp/skip.jpg")
         XCTAssertNil(db.getChangeset(for: changeset.id)?.pendingImagePath)
         XCTAssertNil(db.skipPendingPhoto(id: changeset.id), "nothing left to skip")
@@ -446,6 +446,23 @@ final class DatabaseConnectorDraftTests: AppTestCase {
         XCTAssertEqual(stored.retryCount, 2)
         XCTAssertEqual(stored.lastError, "boom again")
         db.markNoteDraftFailed(id: "missing", error: "ignored")
+    }
+
+    func testUploadedPhotoURLsAreKeptOnTheDraftAndClearedByAResubmit() {
+        db.upsertNoteDraft(id: "a", noteText: "x", imagePaths: ["/p/1.jpg", "/p/2.jpg"], coordinates: here)
+        db.attachNoteDraftPhotoURL(id: "a", photoIndex: 0, url: "https://pmx.test/1")
+        db.attachNoteDraftPhotoURL(id: "missing", photoIndex: 0, url: "ignored")
+        XCTAssertEqual(db.pendingNoteDrafts().first?.uploadedPhotoURLs, [0: "https://pmx.test/1"])
+
+        db.upsertFeatureDraft(id: "f", presetName: "Bench", iconName: "i", tags: [:], imagePaths: ["/f/1.jpg"], coordinates: here)
+        db.attachFeatureDraftPhotoURL(id: "f", photoIndex: 0, url: "https://pmx.test/f1")
+        XCTAssertEqual(db.pendingFeatureDrafts().first?.uploadedPhotoURLs, [0: "https://pmx.test/f1"])
+
+        // Resubmitting a draft replaces its photos, so the old URLs no longer apply.
+        db.upsertNoteDraft(id: "a", noteText: "y", imagePaths: ["/p/3.jpg"], coordinates: here)
+        db.upsertFeatureDraft(id: "f", presetName: "Bench", iconName: "i", tags: [:], imagePaths: [], coordinates: here)
+        XCTAssertEqual(db.pendingNoteDrafts().first?.uploadedPhotoURLs, [:])
+        XCTAssertEqual(db.pendingFeatureDrafts().first?.uploadedPhotoURLs, [:])
     }
 
     func testDeletingANoteDraft() {

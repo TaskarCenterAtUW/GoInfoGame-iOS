@@ -52,13 +52,17 @@ class StoredChangeset: Object {
     /// this to delete the element on undo instead of restoring `originalTags`.
     @Persisted var isCreatedElement: Bool = false
 
-    /// A captured-but-not-yet-uploaded KartaView photo tied to this answer, saved to
+    /// A captured-but-not-yet-uploaded photo tied to this answer, saved to
     /// disk by `QuestImageStorage`. Non-nil until `QuestSubmissionManager` uploads it
     /// and writes the resulting URL into `tags[pendingImageTagKey]`, clearing both.
     @Persisted var pendingImagePath: String?
     /// Which tag key the uploaded photo's URL should be written to (e.g.
-    /// "ext:kartaview_url"). Only meaningful while `pendingImagePath` is non-nil.
+    /// "ext:street_images"). Only meaningful while `pendingImagePath` is non-nil.
     @Persisted var pendingImageTagKey: String?
+    /// Title of the question the pending photo was taken for, sent with the upload.
+    @Persisted var pendingImageQuestion: String?
+    /// `quest_id` of that question.
+    @Persisted var pendingImageQuestId: Int?
     @Persisted var retryCount: Int = 0
     @Persisted var lastError: String?
 
@@ -120,7 +124,18 @@ struct StoredChangesetSnapshot {
     let nodes: [Int64]
     let pendingImagePath: String?
     let pendingImageTagKey: String?
+    var pendingImageQuestion: String? = nil
+    var pendingImageQuestId: Int? = nil
     let retryCount: Int
+
+    /// OSM-style id ("way/123", "node/456") used to refer to this element from a photo.
+    var osmElementId: String? {
+        switch elementType {
+        case .way: return "way/\(elementId)"
+        case .node: return "node/\(elementId)"
+        case .unknown: return nil
+        }
+    }
 
     func asOSMNode(tags overrideTags: [String: String]) -> OSMNode {
         var storage = originalTags

@@ -236,7 +236,8 @@ class LongElementQuest: QuestBase, Quest {
 
     func onAnswer(answer: LongFormAnswer) {
         self.updateTags(id: id, questType: elementType, tags: answer.tags, type: type, iconName: iconName,
-                         capturedImage: answer.capturedImage, imageTagKey: answer.imageTagKey)
+                         capturedImage: answer.capturedImage, imageTagKey: answer.imageTagKey,
+                         imageQuestion: answer.imageQuestion, imageQuestId: answer.imageQuestId)
     }
 
     func fetchLatestTagsIfNeeded() async -> (tags: [String: String], timestamp: Date)? {

@@ -1270,7 +1270,7 @@ public enum SheetDismissalScenario {
     case featuresQueueUpdated
     case featuresSyncing
     case featuresSyncFinished
-    /// A queued quest answer's photo upload to KartaView failed (the answer itself
+    /// A queued quest answer's photo upload to Panoramax failed (the answer itself
     /// stays queued and will retry automatically) — surfaced to the user since a
     /// silently-retrying photo upload is more likely to hide a real, recurring
     /// problem than a generic tag-sync retry would.

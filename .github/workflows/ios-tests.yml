@@ -24,8 +24,9 @@
 #   UI_MAX_PARALLEL         - simulators run at the same time (1 = serial)
 #
 # Optional repo secrets (Settings > Secrets and variables > Actions):
-#   KARTAVIEW_ACCESS_TOKEN, JAWG_ACCESS_TOKEN  -> written to Secrets.xcconfig if it
-#   is missing on the runner; the build tolerates their absence (#include?).
+#   JAWG_ACCESS_TOKEN  -> written to Secrets.xcconfig if it is missing on the
+#   runner; the build tolerates its absence (#include?). Photo-upload tests use a
+#   mock Panoramax server and need no token.
 
 name: iOS Tests
 
@@ -118,16 +119,14 @@ jobs:
 
       - name: Write Secrets.xcconfig (only if missing)
         env:
-          KARTAVIEW_ACCESS_TOKEN: ${{ secrets.KARTAVIEW_ACCESS_TOKEN }}
           JAWG_ACCESS_TOKEN: ${{ secrets.JAWG_ACCESS_TOKEN }}
         run: |
           set -euo pipefail
           dest="GoInfoGame/GoInfoGame/Resources/Secrets.xcconfig"
           if [ -f "$dest" ]; then
             echo "$dest already present - leaving it untouched."
-          elif [ -n "${KARTAVIEW_ACCESS_TOKEN:-}" ] || [ -n "${JAWG_ACCESS_TOKEN:-}" ]; then
-            printf 'KARTAVIEW_ACCESS_TOKEN = %s\nJAWG_ACCESS_TOKEN = %s\n' \
-              "${KARTAVIEW_ACCESS_TOKEN:-}" "${JAWG_ACCESS_TOKEN:-}" > "$dest"
+          elif [ -n "${JAWG_ACCESS_TOKEN:-}" ]; then
+            printf 'JAWG_ACCESS_TOKEN = %s\n' "${JAWG_ACCESS_TOKEN:-}" > "$dest"
             echo "Wrote $dest from repository secrets."
           else
             echo "No $dest and no token secrets - Config.xcconfig #include? tolerates this."

@@ -16,7 +16,7 @@ public struct NoteDraft {
     var coordinates: CLLocationCoordinate2D
 }
 
-/// Submits notes (and their Kartaview photo uploads) outside the lifetime of
+/// Submits notes (and their photo uploads) outside the lifetime of
 /// CreateNoteView, so the sheet can dismiss immediately after Submit is tapped.
 /// Every draft is persisted (text + photos on disk, metadata in Realm) *before* any
 /// network call, so a note captured offline — or one whose upload gets interrupted —
@@ -63,11 +63,10 @@ enum NotesSubmissionManager {
     /// (already reflected in the sync badge) and is retried by the next trigger.
     fileprivate static func attempt(_ record: StoredNoteDraftSnapshot) async {
         do {
-            let images = record.imagePaths.compactMap { NoteImageStorage.shared.load(path: $0) }
             var finalNoteText = record.noteText
 
-            if !images.isEmpty {
-                let photoURLs = try await uploadPhotos(images)
+            let photoURLs = try await uploadPhotos(for: record)
+            if !photoURLs.isEmpty {
                 finalNoteText += "\n\n" + photoURLs.joined(separator: "\n")
             }
 
@@ -91,24 +90,29 @@ enum NotesSubmissionManager {
         }
     }
 
-    private static func uploadPhotos(_ images: [UIImage]) async throws -> [String] {
+    /// Uploads the draft's photos in order and returns their URLs. Each URL is saved on the
+    /// draft as soon as its photo is up, so when a later photo or the note itself fails, the
+    /// retry reuses it instead of putting the same photo on Panoramax again.
+    private static func uploadPhotos(for record: StoredNoteDraftSnapshot) async throws -> [String] {
         var urls: [String] = []
 
-        for (index, image) in images.enumerated() {
+        for (index, path) in record.imagePaths.enumerated() {
+            if let url = record.uploadedPhotoURLs[index] {
+                urls.append(url)
+                continue
+            }
+            guard let image = NoteImageStorage.shared.load(path: path) else { continue }
             do {
-                // KartaviewViewModel creates a CLLocationManager on init and immediately
-                // calls requestWhenInUseAuthorization()/startUpdating*() — CoreLocation
-                // requires those to happen on a thread with an active run loop (main),
-                // or the app-level authorization handshake stalls. Only construction
-                // needs the hop; the network upload itself is fine off the main thread.
-                let viewModel = await MainActor.run { KartaviewViewModel(capturedImage: image) }
-                let url = try await viewModel.uploadAsync()
+                let url = try await PhotoUploadService.upload(image, coordinate: record.coordinates,
+                                                              capturedAt: record.createdAt,
+                                                              context: .current(source: .note))
+                DatabaseConnector.shared.attachNoteDraftPhotoURL(id: record.id, photoIndex: index, url: url)
                 urls.append(url)
             } catch {
                 throw NSError(
-                    domain: "KartaviewUpload",
+                    domain: "PhotoUpload",
                     code: 0,
-                    userInfo: [NSLocalizedDescriptionKey: "Failed to upload photo \(index + 1) to Kartaview: \(error.localizedDescription)"]
+                    userInfo: [NSLocalizedDescriptionKey: "Failed to upload photo \(index + 1) to Panoramax: \(error.localizedDescription)"]
                 )
             }
         }

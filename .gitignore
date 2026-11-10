@@ -94,3 +94,5 @@ GoInfoGame/.DS_Store
 
 # Secrets (never commit)
 GoInfoGame/GoInfoGame/Resources/Secrets.xcconfig
+pointnmap-camera-teardown.patch
+scripts/panoramax_demo.sh

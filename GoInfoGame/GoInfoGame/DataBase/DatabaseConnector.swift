@@ -384,7 +384,7 @@ class DatabaseConnector {
      - parameter tags [String:String] tags changed with this
      - Returns: An instance of `StoredChangeset`
         */
-    func createChangeset(id:Int, questType: String, type: StoredElementEnum, originalTags:[String:String], tags:[String:String], version: Int, iconName: String, point: CLLocationCoordinate2D? = nil, nodes: List<Int64>? = nil, pendingImagePath: String? = nil, pendingImageTagKey: String? = nil) -> StoredChangeset? {
+    func createChangeset(id:Int, questType: String, type: StoredElementEnum, originalTags:[String:String], tags:[String:String], version: Int, iconName: String, point: CLLocationCoordinate2D? = nil, nodes: List<Int64>? = nil, pendingImagePath: String? = nil, pendingImageTagKey: String? = nil, pendingImageQuestion: String? = nil, pendingImageQuestId: Int? = nil) -> StoredChangeset? {
         let realm = try! Realm(configuration: RealmConfig.configuration)
         let storedChangeset = StoredChangeset()
         storedChangeset.elementId = id
@@ -400,6 +400,8 @@ class DatabaseConnector {
         }
         storedChangeset.pendingImagePath = pendingImagePath
         storedChangeset.pendingImageTagKey = pendingImageTagKey
+        storedChangeset.pendingImageQuestion = pendingImageQuestion
+        storedChangeset.pendingImageQuestId = pendingImageQuestId
 
         storedChangeset.timestamp =  String(Date().timeIntervalSince1970)
         for tag in tags {
@@ -524,10 +526,14 @@ class DatabaseConnector {
         draft.latitude = coordinates.latitude
         draft.longitude = coordinates.longitude
         draft.createdAt = Date()
+        var saved = draft
         try! realm.write {
-            realm.add(draft, update: .modified)
+            saved = realm.create(StoredNoteDraft.self, value: draft, update: .modified)
+            // A resubmit brings new photos, so URLs uploaded for the old ones no longer
+            // apply. `.modified` merges maps rather than replacing them, hence the clear.
+            saved.uploadedPhotoURLs.removeAll()
         }
-        return draft
+        return saved
     }
 
     /// All notes still waiting to be uploaded/submitted, oldest first.
@@ -540,7 +546,9 @@ class DatabaseConnector {
                     id: $0.id,
                     noteText: $0.noteText,
                     imagePaths: Array($0.imagePaths),
-                    coordinates: CLLocationCoordinate2D(latitude: $0.latitude, longitude: $0.longitude)
+                    coordinates: CLLocationCoordinate2D(latitude: $0.latitude, longitude: $0.longitude),
+                    createdAt: $0.createdAt,
+                    uploadedPhotoURLs: Self.photoURLsByIndex($0.uploadedPhotoURLs)
                 )
             }
     }
@@ -564,6 +572,15 @@ class DatabaseConnector {
         }
     }
 
+    /// Records that one of the draft's photos is on Panoramax, so a retry skips it.
+    func attachNoteDraftPhotoURL(id: String, photoIndex: Int, url: String) {
+        let realm = try! Realm(configuration: RealmConfig.configuration)
+        guard let draft = realm.object(ofType: StoredNoteDraft.self, forPrimaryKey: id) else { return }
+        try! realm.write {
+            draft.uploadedPhotoURLs[String(photoIndex)] = url
+        }
+    }
+
     func markNoteDraftFailed(id: String, error: String) {
         let realm = try! Realm(configuration: RealmConfig.configuration)
         guard let draft = realm.object(ofType: StoredNoteDraft.self, forPrimaryKey: id) else { return }
@@ -571,6 +588,15 @@ class DatabaseConnector {
             draft.lastError = error
             draft.retryCount += 1
         }
+    }
+
+    /// A draft's stored "0", "1", … photo URL keys as photo indexes.
+    private static func photoURLsByIndex(_ map: Map<String, String>) -> [Int: String] {
+        var urls: [Int: String] = [:]
+        for (key, url) in map.toDictionary() {
+            if let index = Int(key) { urls[index] = url }
+        }
+        return urls
     }
 
     // MARK: - Feature drafts (offline queue for Add Feature)
@@ -591,10 +617,14 @@ class DatabaseConnector {
         draft.latitude = coordinates.latitude
         draft.longitude = coordinates.longitude
         draft.createdAt = Date()
+        var saved = draft
         try! realm.write {
-            realm.add(draft, update: .modified)
+            saved = realm.create(StoredFeatureDraft.self, value: draft, update: .modified)
+            // A resubmit brings new photos, so URLs uploaded for the old ones no longer
+            // apply. `.modified` merges maps rather than replacing them, hence the clear.
+            saved.uploadedPhotoURLs.removeAll()
         }
-        return draft
+        return saved
     }
 
     /// All features still waiting to be uploaded/created, oldest first.
@@ -609,7 +639,9 @@ class DatabaseConnector {
                     iconName: $0.iconName,
                     tags: $0.tags.toDictionary(),
                     imagePaths: Array($0.imagePaths),
-                    coordinates: CLLocationCoordinate2D(latitude: $0.latitude, longitude: $0.longitude)
+                    coordinates: CLLocationCoordinate2D(latitude: $0.latitude, longitude: $0.longitude),
+                    createdAt: $0.createdAt,
+                    uploadedPhotoURLs: Self.photoURLsByIndex($0.uploadedPhotoURLs)
                 )
             }
     }
@@ -630,6 +662,15 @@ class DatabaseConnector {
         guard let draft = realm.object(ofType: StoredFeatureDraft.self, forPrimaryKey: id) else { return }
         try! realm.write {
             realm.delete(draft)
+        }
+    }
+
+    /// Records that one of the draft's photos is on Panoramax, so a retry skips it.
+    func attachFeatureDraftPhotoURL(id: String, photoIndex: Int, url: String) {
+        let realm = try! Realm(configuration: RealmConfig.configuration)
+        guard let draft = realm.object(ofType: StoredFeatureDraft.self, forPrimaryKey: id) else { return }
+        try! realm.write {
+            draft.uploadedPhotoURLs[String(photoIndex)] = url
         }
     }
 
@@ -667,6 +708,8 @@ class DatabaseConnector {
                     nodes: Array($0.nodes),
                     pendingImagePath: $0.pendingImagePath,
                     pendingImageTagKey: $0.pendingImageTagKey,
+                    pendingImageQuestion: $0.pendingImageQuestion,
+                    pendingImageQuestId: $0.pendingImageQuestId,
                     retryCount: $0.retryCount
                 )
             }
@@ -683,6 +726,8 @@ class DatabaseConnector {
             changeset.tags.setValue(url, forKey: tagKey)
             changeset.pendingImagePath = nil
             changeset.pendingImageTagKey = nil
+            changeset.pendingImageQuestion = nil
+            changeset.pendingImageQuestId = nil
         }
     }
 
@@ -720,6 +765,8 @@ class DatabaseConnector {
             nodes: Array(changeset.nodes),
             pendingImagePath: changeset.pendingImagePath,
             pendingImageTagKey: changeset.pendingImageTagKey,
+            pendingImageQuestion: changeset.pendingImageQuestion,
+            pendingImageQuestId: changeset.pendingImageQuestId,
             retryCount: changeset.retryCount
         )
     }
@@ -734,6 +781,8 @@ class DatabaseConnector {
         try! realm.write {
             changeset.pendingImagePath = nil
             changeset.pendingImageTagKey = nil
+            changeset.pendingImageQuestion = nil
+            changeset.pendingImageQuestId = nil
         }
         return oldPath
     }
@@ -746,7 +795,12 @@ struct RealmConfig {
     // or have defaults, so no migration block content is needed for existing rows —
     // Realm fills them in automatically — but the version itself must move, or a
     // pre-existing installed schema-version-3 database won't match this class anymore.
-    static let configuration = Realm.Configuration(schemaVersion: 4) { migration, oldSchemaVersion in
+    // Bumped 4 -> 5 -> 6 for StoredChangeset.pendingImageQuestion/pendingImageQuestId
+    // (optional, no migration
+    // content needed).
+    // Bumped 6 -> 7 for StoredNoteDraft/StoredFeatureDraft.uploadedPhotoURLs (an empty
+    // map by default, no migration content needed).
+    static let configuration = Realm.Configuration(schemaVersion: 7) { migration, oldSchemaVersion in
         if oldSchemaVersion < 1 {
             let formatter = DateFormatter()
             formatter.dateFormat = "yyyy-MM-dd HH:mm:ss"

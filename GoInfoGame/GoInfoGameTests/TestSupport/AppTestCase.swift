@@ -49,6 +49,11 @@ class AppTestCase: XCTestCase {
         repo.customIcons = []
         repo.recencyPeriodDays = nil
         SessionManager.shared.lastLoginPassword = nil
+        // Photo uploads go to a stub Panoramax instance, never the one in a local Secrets.xcconfig.
+        PhotoUploadService.makePanoramaxUploader = {
+            PanoramaxUploader(baseURL: MockServer.panoramaxBaseURL, token: MockServer.panoramaxToken)
+        }
+        PhotoUploadService.semanticsRetryDelays = [0, 0, 0]
     }
 
     // MARK: Session helpers
