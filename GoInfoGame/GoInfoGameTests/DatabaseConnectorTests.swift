@@ -448,6 +448,23 @@ final class DatabaseConnectorDraftTests: AppTestCase {
         db.markNoteDraftFailed(id: "missing", error: "ignored")
     }
 
+    func testUploadedPhotoURLsAreKeptOnTheDraftAndClearedByAResubmit() {
+        db.upsertNoteDraft(id: "a", noteText: "x", imagePaths: ["/p/1.jpg", "/p/2.jpg"], coordinates: here)
+        db.attachNoteDraftPhotoURL(id: "a", photoIndex: 0, url: "https://pmx.test/1")
+        db.attachNoteDraftPhotoURL(id: "missing", photoIndex: 0, url: "ignored")
+        XCTAssertEqual(db.pendingNoteDrafts().first?.uploadedPhotoURLs, [0: "https://pmx.test/1"])
+
+        db.upsertFeatureDraft(id: "f", presetName: "Bench", iconName: "i", tags: [:], imagePaths: ["/f/1.jpg"], coordinates: here)
+        db.attachFeatureDraftPhotoURL(id: "f", photoIndex: 0, url: "https://pmx.test/f1")
+        XCTAssertEqual(db.pendingFeatureDrafts().first?.uploadedPhotoURLs, [0: "https://pmx.test/f1"])
+
+        // Resubmitting a draft replaces its photos, so the old URLs no longer apply.
+        db.upsertNoteDraft(id: "a", noteText: "y", imagePaths: ["/p/3.jpg"], coordinates: here)
+        db.upsertFeatureDraft(id: "f", presetName: "Bench", iconName: "i", tags: [:], imagePaths: [], coordinates: here)
+        XCTAssertEqual(db.pendingNoteDrafts().first?.uploadedPhotoURLs, [:])
+        XCTAssertEqual(db.pendingFeatureDrafts().first?.uploadedPhotoURLs, [:])
+    }
+
     func testDeletingANoteDraft() {
         db.upsertNoteDraft(id: "a", noteText: "x", imagePaths: [], coordinates: here)
         db.deleteNoteDraft(id: "a")

@@ -108,7 +108,7 @@ enum QuestSubmissionManager {
                     return
                 }
                 do {
-                    let context = PhotoUploadContext.current(elementId: record.osmElementId,
+                    let context = PhotoUploadContext.current(source: .quest, elementId: record.osmElementId,
                                                              question: record.pendingImageQuestion,
                                                              questId: record.pendingImageQuestId)
                     let url = try await PhotoUploadService.upload(image, coordinate: photoCoordinate(for: record),

@@ -76,12 +76,9 @@ enum FeatureSubmissionManager {
     fileprivate static func attempt(_ record: StoredFeatureDraftSnapshot) async {
         do {
             var tags = record.tags
-            let images = record.imagePaths.compactMap { FeatureImageStorage.shared.load(path: $0) }
-            if !images.isEmpty {
-                let photoURLs = try await uploadPhotos(images, coordinate: record.coordinates)
-                for (index, url) in photoURLs.enumerated() {
-                    tags["ext:image_url\(index + 1)"] = url
-                }
+            let photoURLs = try await uploadPhotos(for: record)
+            for (index, url) in photoURLs.enumerated() {
+                tags["ext:image_url\(index + 1)"] = url
             }
 
             let node = UserNodesHelper.getPowerPole(
@@ -126,12 +123,23 @@ enum FeatureSubmissionManager {
         }
     }
 
-    private static func uploadPhotos(_ images: [UIImage], coordinate: CLLocationCoordinate2D) async throws -> [String] {
+    /// Uploads the draft's photos in order and returns their URLs. Each URL is saved on the
+    /// draft as soon as its photo is up, so when a later photo or the element itself fails, the
+    /// retry reuses it instead of putting the same photo on Panoramax again.
+    private static func uploadPhotos(for record: StoredFeatureDraftSnapshot) async throws -> [String] {
         var urls: [String] = []
 
-        for (index, image) in images.enumerated() {
+        for (index, path) in record.imagePaths.enumerated() {
+            if let url = record.uploadedPhotoURLs[index] {
+                urls.append(url)
+                continue
+            }
+            guard let image = FeatureImageStorage.shared.load(path: path) else { continue }
             do {
-                let url = try await PhotoUploadService.upload(image, coordinate: coordinate)
+                let url = try await PhotoUploadService.upload(image, coordinate: record.coordinates,
+                                                              capturedAt: record.createdAt,
+                                                              context: .current(source: .newFeature, featureType: record.presetName))
+                DatabaseConnector.shared.attachFeatureDraftPhotoURL(id: record.id, photoIndex: index, url: url)
                 urls.append(url)
             } catch {
                 throw NSError(

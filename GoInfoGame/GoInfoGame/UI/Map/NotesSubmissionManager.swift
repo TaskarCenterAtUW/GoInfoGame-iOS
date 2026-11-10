@@ -63,11 +63,10 @@ enum NotesSubmissionManager {
     /// (already reflected in the sync badge) and is retried by the next trigger.
     fileprivate static func attempt(_ record: StoredNoteDraftSnapshot) async {
         do {
-            let images = record.imagePaths.compactMap { NoteImageStorage.shared.load(path: $0) }
             var finalNoteText = record.noteText
 
-            if !images.isEmpty {
-                let photoURLs = try await uploadPhotos(images, coordinate: record.coordinates)
+            let photoURLs = try await uploadPhotos(for: record)
+            if !photoURLs.isEmpty {
                 finalNoteText += "\n\n" + photoURLs.joined(separator: "\n")
             }
 
@@ -91,12 +90,23 @@ enum NotesSubmissionManager {
         }
     }
 
-    private static func uploadPhotos(_ images: [UIImage], coordinate: CLLocationCoordinate2D) async throws -> [String] {
+    /// Uploads the draft's photos in order and returns their URLs. Each URL is saved on the
+    /// draft as soon as its photo is up, so when a later photo or the note itself fails, the
+    /// retry reuses it instead of putting the same photo on Panoramax again.
+    private static func uploadPhotos(for record: StoredNoteDraftSnapshot) async throws -> [String] {
         var urls: [String] = []
 
-        for (index, image) in images.enumerated() {
+        for (index, path) in record.imagePaths.enumerated() {
+            if let url = record.uploadedPhotoURLs[index] {
+                urls.append(url)
+                continue
+            }
+            guard let image = NoteImageStorage.shared.load(path: path) else { continue }
             do {
-                let url = try await PhotoUploadService.upload(image, coordinate: coordinate)
+                let url = try await PhotoUploadService.upload(image, coordinate: record.coordinates,
+                                                              capturedAt: record.createdAt,
+                                                              context: .current(source: .note))
+                DatabaseConnector.shared.attachNoteDraftPhotoURL(id: record.id, photoIndex: index, url: url)
                 urls.append(url)
             } catch {
                 throw NSError(

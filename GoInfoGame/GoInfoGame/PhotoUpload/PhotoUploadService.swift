@@ -128,22 +128,35 @@ struct PhotoUploadContext: Equatable {
     var elementId: String?
     var question: String?
     var questId: Int?
+    /// Which flow took the photo, so photos can be told apart and searched later.
+    var source: Source? = nil
+    /// The preset of a new element (e.g. "Bench"); its element id isn't known at upload time.
+    var featureType: String? = nil
+
+    enum Source: String {
+        case quest
+        case note
+        case newFeature = "new_feature"
+    }
 
     /// The current workspace. Element and question are added by the caller when the
     /// photo belongs to one.
-    static func current(elementId: String? = nil, question: String? = nil, questId: Int? = nil) -> PhotoUploadContext {
+    static func current(source: Source? = nil, elementId: String? = nil, question: String? = nil,
+                        questId: Int? = nil, featureType: String? = nil) -> PhotoUploadContext {
         PhotoUploadContext(
             workspaceId: KeychainManager.load(key: "workspaceID"),
             elementId: elementId,
             question: question,
-            questId: questId
+            questId: questId,
+            source: source,
+            featureType: featureType
         )
     }
 
     /// Panoramax semantics: one key/value pair per known field, empty ones left out.
     var semantics: [[String: String]] {
         [("workspace_id", workspaceId), ("element_id", elementId), ("quest_id", questId.map(String.init)),
-         ("question", question)]
+         ("question", question), ("source", source?.rawValue), ("feature_type", featureType)]
             .compactMap { key, value in
                 guard let value = value?.trimmingCharacters(in: .whitespacesAndNewlines), !value.isEmpty else { return nil }
                 return ["key": key, "value": value]
@@ -159,13 +172,14 @@ enum PhotoUploadService {
     static var makePanoramaxUploader: () -> PanoramaxUploader = { PanoramaxUploader() }
 
     /// Uploads to Panoramax. `coordinate` is where the photo was taken (the element, note
-    /// or new feature); the device location is used when it is unknown.
-    static func upload(_ image: UIImage, coordinate: CLLocationCoordinate2D?,
+    /// or new feature); the device location is used when it is unknown. `capturedAt` is when
+    /// the photo was taken, which for a queued offline draft is earlier than the upload.
+    static func upload(_ image: UIImage, coordinate: CLLocationCoordinate2D?, capturedAt: Date = Date(),
                        context: PhotoUploadContext = .current()) async throws -> String {
         guard let imageData = image.jpegData(compressionQuality: 0.8) else { throw PanoramaxError.invalidImage }
         let location = try await photoLocation(coordinate)
         return try await makePanoramaxUploader().upload(imageData: imageData, coordinate: location,
-                                                        heading: image.captureHeading,
+                                                        capturedAt: capturedAt, heading: image.captureHeading,
                                                         semantics: context.semantics)
     }
 

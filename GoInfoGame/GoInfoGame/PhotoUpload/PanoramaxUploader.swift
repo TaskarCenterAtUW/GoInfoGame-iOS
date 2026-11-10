@@ -122,7 +122,16 @@ struct PanoramaxUploader {
         body.append("\r\n--\(boundary)--\r\n")
         request.httpBody = body
 
-        let data = try await send(request, accepting: [200, 201, 202])
+        let (data, status) = try await sendReturningStatus(request, accepting: [200, 201, 202, 409])
+        if status == 409 {
+            // The server already has this exact image (same bytes), e.g. a retry after the app
+            // was killed between the upload and saving its URL. Unless the instance sets
+            // API_ACCEPT_DUPLICATE, it refuses a second copy, so reuse the existing picture.
+            guard let existingId = DuplicateResponse.existingPictureId(in: data) else {
+                throw PanoramaxError.server(status: status, message: Self.message(in: data, status: status))
+            }
+            return existingId
+        }
         guard let file = try? JSONDecoder().decode(UploadedFileResponse.self, from: data) else {
             throw PanoramaxError.invalidResponse
         }
@@ -146,14 +155,21 @@ struct PanoramaxUploader {
     }
 
     private func send(_ request: URLRequest, accepting statuses: Set<Int>) async throws -> Data {
+        try await sendReturningStatus(request, accepting: statuses).data
+    }
+
+    private func sendReturningStatus(_ request: URLRequest, accepting statuses: Set<Int>) async throws -> (data: Data, status: Int) {
         let (data, response) = try await session.data(for: request)
         guard let http = response as? HTTPURLResponse else { throw PanoramaxError.invalidResponse }
         guard statuses.contains(http.statusCode) else {
-            let message = (try? JSONDecoder().decode(ErrorResponse.self, from: data))?.message
-                ?? HTTPURLResponse.localizedString(forStatusCode: http.statusCode)
-            throw PanoramaxError.server(status: http.statusCode, message: message)
+            throw PanoramaxError.server(status: http.statusCode, message: Self.message(in: data, status: http.statusCode))
         }
-        return data
+        return (data, http.statusCode)
+    }
+
+    private static func message(in data: Data, status: Int) -> String {
+        (try? JSONDecoder().decode(ErrorResponse.self, from: data))?.message
+            ?? HTTPURLResponse.localizedString(forStatusCode: status)
     }
 }
 
@@ -180,6 +196,26 @@ private struct UploadedFileResponse: Decodable {
 
 private struct ErrorResponse: Decodable {
     let message: String
+}
+
+/// Panoramax's 409 for an image it already has. Same upload set:
+/// `{"existing_item": {"id": "<picture>"}}`. An earlier upload set:
+/// `{"upload_sets": [{"existing_item_id": "<picture>", "upload_set_id": "..."}]}`.
+/// Read leniently, at the top level or under `details`, since only the payload is documented.
+enum DuplicateResponse {
+    static func existingPictureId(in data: Data) -> String? {
+        guard let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any] else { return nil }
+        for object in [json, json["details"] as? [String: Any]].compactMap({ $0 }) {
+            if let id = (object["existing_item"] as? [String: Any])?["id"] as? String, !id.isEmpty {
+                return id
+            }
+            if let sets = object["upload_sets"] as? [[String: Any]],
+               let id = sets.lazy.compactMap({ $0["existing_item_id"] as? String }).first(where: { !$0.isEmpty }) {
+                return id
+            }
+        }
+        return nil
+    }
 }
 
 private extension Data {

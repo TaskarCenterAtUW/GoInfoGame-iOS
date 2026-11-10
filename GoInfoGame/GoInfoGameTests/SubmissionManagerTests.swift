@@ -88,6 +88,35 @@ final class PanoramaxUploaderTests: AppTestCase {
         XCTAssertEqual(context.semantics, [["key": "workspace_id", "value": "222"]])
     }
 
+    func testAPhotoTheServerAlreadyHasFromAnEarlierUploadReusesThatPicture() async throws {
+        MockServer.installPanoramax(.ok)
+        MockHTTP.stub("POST", path: MockServer.panoramaxFilesPath, reply: .statusWithBody(409,
+            #"{"message":"The same picture has already been sent in a past upload","status_code":409,"upload_sets":[{"existing_item_id":"aaaa0000-1111-4222-8333-444455556666","upload_set_id":"bbbb"}]}"#))
+        let url = try await uploader.upload(imageData: photo, coordinate: spot)
+        XCTAssertEqual(url, "\(MockServer.panoramaxBaseURL)/api/pictures/aaaa0000-1111-4222-8333-444455556666/hd.jpg")
+    }
+
+    func testAPhotoAlreadyInTheSameUploadSetReusesThatPicture() async throws {
+        MockServer.installPanoramax(.ok)
+        MockHTTP.stub("POST", path: MockServer.panoramaxFilesPath, reply: .statusWithBody(409,
+            #"{"message":"The item has already been added to this upload set","existing_item":{"id":"cccc0000-1111-4222-8333-444455556666"}}"#))
+        let url = try await uploader.upload(imageData: photo, coordinate: spot)
+        XCTAssertTrue(url.hasSuffix("/api/pictures/cccc0000-1111-4222-8333-444455556666/hd.jpg"))
+    }
+
+    func testAConflictWithoutAnExistingPictureStillFails() async {
+        MockServer.installPanoramax(.ok)
+        MockHTTP.stub("POST", path: MockServer.panoramaxFilesPath, reply: .statusWithBody(409,
+            #"{"message":"A different picture with the same name has already been added to this uploadset"}"#))
+        do {
+            _ = try await uploader.upload(imageData: photo, coordinate: spot)
+            XCTFail("expected a failure")
+        } catch {
+            XCTAssertEqual(error as? PanoramaxError, .server(status: 409,
+                message: "A different picture with the same name has already been added to this uploadset"))
+        }
+    }
+
     func testARejectedPhotoThrowsTheReasonEvenThoughTheStatusIs202() async {
         MockServer.installPanoramax(.rejected)
         do {
@@ -352,7 +381,7 @@ final class QuestSubmissionManagerTests: AppTestCase {
         XCTAssertNil(synced.tags[PhotoTag.kartaview])
         let semantics = try XCTUnwrap(MockHTTP.requests(path: MockServer.panoramaxFilesPath).first).bodyString
         for expected in [#""key":"workspace_id","value":"222""#, #""key":"element_id","value":"way/121949""#, #""key":"quest_id","value":"7""#,
-                         #""key":"question","value":"What is the surface?""#] {
+                         #""key":"question","value":"What is the surface?""#, #""key":"source","value":"quest""#] {
             XCTAssertTrue(semantics.contains(expected), "semantics missing \(expected)")
         }
         XCTAssertFalse(semantics.contains("user_email"), "the user's email is never sent")
@@ -496,6 +525,77 @@ final class NotesSubmissionManagerTests: AppTestCase {
         XCTAssertFalse(FileManager.default.fileExists(atPath: firstPaths[0]), "the superseded photo is deleted")
     }
 
+    func testAPhotoAlreadyUploadedIsNotUploadedAgainWhenTheNoteIsRetried() throws {
+        MockServer.installNotes(success: false)
+        MockServer.installPanoramax(.ok)
+        let draft = NoteDraft(noteText: "retry me", images: [makeImage()], coordinates: here)
+        NotesSubmissionManager.submit(draft)
+        waitUntil(timeout: 12, "the uploaded photo's URL was never saved on the draft") {
+            db.pendingNoteDrafts().first { $0.id == draft.id }?.uploadedPhotoURLs == [0: MockServer.panoramaxPhotoURL]
+        }
+        waitForDrain()
+        XCTAssertEqual(MockHTTP.requests(path: MockServer.panoramaxFilesPath, method: "POST").count, 1)
+
+        MockHTTP.reset()
+        MockServer.installNotes()
+        MockServer.installPanoramax(.ok)
+        NotesSubmissionManager.resumePendingUploads()
+        waitUntil(timeout: 10, "the queued note was never retried") { events.contains("noteSubmitted") }
+
+        XCTAssertTrue(MockHTTP.requests(path: "/api/upload_sets", method: "POST").isEmpty, "the photo is not uploaded twice")
+        let sent = try XCTUnwrap(MockHTTP.requests(path: "\(MockServer.osm)/notes.json").first)
+        let text = (try JSONSerialization.jsonObject(with: try XCTUnwrap(sent.body)) as? [String: Any])?["text"] as? String
+        XCTAssertEqual(text, "retry me\n\n\(MockServer.panoramaxPhotoURL)")
+    }
+
+    func testWhenTheSecondPhotoFailsOnlyThatOneIsUploadedOnRetry() throws {
+        MockServer.installNotes()
+        MockServer.installPanoramax(.ok)
+        let uploads = Counter()
+        MockHTTP.stub("POST", path: MockServer.panoramaxFilesPath) { _ in
+            uploads.increment() == 1
+                ? .json(#"{"file_name":"a.jpg","picture_id":"\#(MockServer.panoramaxPictureID)","rejected":null}"#, status: 202)
+                : .offline
+        }
+        let draft = NoteDraft(noteText: "two photos", images: [makeImage(), makeImage(.blue)], coordinates: here)
+        NotesSubmissionManager.submit(draft)
+        waitForDrain()
+        waitUntil(timeout: 12, "the first photo's URL was never saved on the draft") {
+            (try? Realm(configuration: RealmConfig.configuration))?
+                .object(ofType: StoredNoteDraft.self, forPrimaryKey: draft.id)?.lastError != nil
+        }
+        XCTAssertEqual(db.pendingNoteDrafts().first { $0.id == draft.id }?.uploadedPhotoURLs.count, 1, "the first photo's URL is kept")
+
+        MockHTTP.reset()
+        MockServer.installNotes()
+        MockServer.installPanoramax(.ok)
+        NotesSubmissionManager.resumePendingUploads()
+        waitUntil(timeout: 10, "the queued note was never retried") { events.contains("noteSubmitted") }
+        XCTAssertEqual(MockHTTP.requests(path: MockServer.panoramaxFilesPath, method: "POST").count, 1,
+                       "only the photo that failed is uploaded again")
+    }
+
+    func testAQueuedNotePhotoKeepsItsCaptureTimeAndIsLabelledAsANote() throws {
+        MockServer.installNotes()
+        MockServer.installPanoramax(.offline)
+        NotesSubmissionManager.submit(NoteDraft(noteText: "offline", images: [makeImage()], coordinates: here))
+        waitForDrain()
+        let realm = try Realm(configuration: RealmConfig.configuration)
+        let draft = try XCTUnwrap(realm.objects(StoredNoteDraft.self).first)
+        try realm.write { draft.createdAt = Date(timeIntervalSince1970: 1_767_323_045) } // 2026-01-02T03:04:05Z
+
+        MockHTTP.reset()
+        MockServer.installNotes()
+        MockServer.installPanoramax(.ok)
+        NotesSubmissionManager.resumePendingUploads()
+        waitUntil(timeout: 10, "the queued note was never retried") { events.contains("noteSubmitted") }
+
+        let body = try XCTUnwrap(MockHTTP.requests(path: MockServer.panoramaxFilesPath).first).bodyString
+        XCTAssertTrue(body.contains("name=\"override_capture_time\"\r\n\r\n2026-01-02T03:04:05Z\r\n"))
+        XCTAssertTrue(body.contains(#""key":"source","value":"note""#))
+        XCTAssertTrue(body.contains(#""key":"workspace_id","value":"222""#))
+    }
+
     func testResumingWithNothingQueuedIsSilent() {
         NotesSubmissionManager.resumePendingUploads()
         RunLoop.main.run(until: Date().addingTimeInterval(0.3))
@@ -612,6 +712,29 @@ final class FeatureSubmissionManagerTests: AppTestCase {
         waitForDrain()
         XCTAssertEqual(db.getNode(id: 555)?.tags["ext:image_url1"], MockServer.panoramaxPhotoURL)
         XCTAssertEqual(db.pendingFeatureDraftsCount(), 0)
+        let body = try XCTUnwrap(MockHTTP.requests(path: MockServer.panoramaxFilesPath).first).bodyString
+        XCTAssertTrue(body.contains(#""key":"source","value":"new_feature""#))
+        XCTAssertTrue(body.contains(#""key":"feature_type","value":"Bench""#))
+    }
+
+    func testAPhotoAlreadyUploadedIsNotUploadedAgainWhenTheFeatureIsRetried() throws {
+        MockHTTP.reset()
+        MockServer.installChangesets(createFails: true)
+        MockServer.installPanoramax(.ok)
+        FeatureSubmissionManager.submit(bench(image: makeImage()))
+        waitForDrain()
+        XCTAssertEqual(db.pendingFeatureDraftsCount(), 1)
+        XCTAssertEqual(MockHTTP.requests(path: MockServer.panoramaxFilesPath, method: "POST").count, 1)
+
+        MockHTTP.reset()
+        MockServer.installChangesets(changesetID: 900, upload: .nodeCreated(id: 555, version: 1))
+        MockServer.installPanoramax(.ok)
+        events = recordSheetEvents()
+        FeatureSubmissionManager.resumePendingUploads()
+        waitUntil(timeout: 10, "the queued feature was never retried") { events.contains("featureSubmitted") }
+
+        XCTAssertTrue(MockHTTP.requests(path: "/api/upload_sets", method: "POST").isEmpty, "the photo is not uploaded twice")
+        XCTAssertEqual(db.getNode(id: 555)?.tags["ext:image_url1"], MockServer.panoramaxPhotoURL)
     }
 
     func testAFeatureCreatedOfflineStaysQueuedAndIsRetriedLater() {
@@ -769,5 +892,18 @@ final class PhotoHeadingTests: AppTestCase {
 
         let body = try XCTUnwrap(MockHTTP.requests(path: MockServer.panoramaxFilesPath).first).bodyString
         XCTAssertTrue(body.contains("name=\"\(directionField)\"\r\n\r\n45/1\r\n"))
+    }
+}
+
+/// Thread-safe call counter for stubs that answer differently on later calls.
+final class Counter: @unchecked Sendable {
+    private let lock = NSLock()
+    private var value = 0
+
+    /// Adds one and returns the new count.
+    func increment() -> Int {
+        lock.lock(); defer { lock.unlock() }
+        value += 1
+        return value
     }
 }
