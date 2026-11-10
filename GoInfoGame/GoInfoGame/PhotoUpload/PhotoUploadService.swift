@@ -6,6 +6,8 @@
 import Foundation
 import UIKit
 import CoreLocation
+import ImageIO
+import UniformTypeIdentifiers
 
 /// OSM tags that hold an element's photo URL. New photos go to Panoramax and are written
 /// to `ext:street_images`. `ext:kartaview_url` is read-only: photos uploaded to KartaView
@@ -42,6 +44,77 @@ enum PhotoTag {
         parts[parts.count - 1] = "thumb.jpg"
         components.path = parts.joined(separator: "/")
         return components.string ?? urlString
+    }
+}
+
+/// The compass direction the camera faced when a photo was taken (degrees from true north,
+/// 0..<360). It is attached to the captured `UIImage`, written into the JPEG's EXIF when the
+/// photo is queued on disk, read back when the queue loads it, and sent to Panoramax as
+/// `GPSImgDirection` so the photo shows which way it looks.
+enum PhotoHeading {
+
+    /// Normalizes to 0..<360, or nil for an invalid (negative / non-finite) reading.
+    static func normalized(_ degrees: Double?) -> Double? {
+        guard let degrees, degrees.isFinite, degrees >= 0 else { return nil }
+        let value = degrees.truncatingRemainder(dividingBy: 360)
+        return value
+    }
+
+    /// Panoramax EXIF overrides, in the same form the Android app sends: a whole-degree
+    /// rational and "T" for true north. Empty when the heading is unknown.
+    static func overrideFields(for heading: Double?) -> [String: String] {
+        guard let heading = normalized(heading) else { return [:] }
+        let degrees = Int(heading.rounded()) % 360
+        return [
+            "override_Exif.GPSInfo.GPSImgDirection": "\(degrees)/1",
+            "override_Exif.GPSInfo.GPSImgDirectionRef": "T"
+        ]
+    }
+
+    /// JPEG data for an image, with its capture heading in the EXIF GPS block when it has one.
+    static func jpegData(for image: UIImage, compressionQuality: CGFloat) -> Data? {
+        guard let plain = image.jpegData(compressionQuality: compressionQuality) else { return nil }
+        guard let heading = normalized(image.captureHeading),
+              let source = CGImageSourceCreateWithData(plain as CFData, nil) else { return plain }
+        let output = NSMutableData()
+        guard let destination = CGImageDestinationCreateWithData(output, UTType.jpeg.identifier as CFString, 1, nil) else {
+            return plain
+        }
+        let properties: [CFString: Any] = [
+            kCGImageDestinationLossyCompressionQuality: compressionQuality,
+            kCGImagePropertyGPSDictionary: [
+                kCGImagePropertyGPSImgDirection: heading,
+                kCGImagePropertyGPSImgDirectionRef: "T"
+            ]
+        ]
+        CGImageDestinationAddImageFromSource(destination, source, 0, properties as CFDictionary)
+        guard CGImageDestinationFinalize(destination) else { return plain }
+        return output as Data
+    }
+
+    /// The capture heading stored in a JPEG file's EXIF, if any.
+    static func heading(inFileAt path: String) -> Double? {
+        guard let source = CGImageSourceCreateWithURL(URL(fileURLWithPath: path) as CFURL, nil),
+              let properties = CGImageSourceCopyPropertiesAtIndex(source, 0, nil) as? [CFString: Any],
+              let gps = properties[kCGImagePropertyGPSDictionary] as? [CFString: Any] else { return nil }
+        return normalized((gps[kCGImagePropertyGPSImgDirection] as? NSNumber)?.doubleValue)
+    }
+
+    /// Loads a queued photo from disk with its capture heading attached.
+    static func loadImage(atPath path: String) -> UIImage? {
+        guard let image = UIImage(contentsOfFile: path) else { return nil }
+        image.captureHeading = heading(inFileAt: path)
+        return image
+    }
+}
+
+private var captureHeadingKey: UInt8 = 0
+
+extension UIImage {
+    /// See `PhotoHeading`. Set by `CameraView` when the photo is taken.
+    var captureHeading: Double? {
+        get { (objc_getAssociatedObject(self, &captureHeadingKey) as? NSNumber)?.doubleValue }
+        set { objc_setAssociatedObject(self, &captureHeadingKey, newValue.map { NSNumber(value: $0) }, .OBJC_ASSOCIATION_RETAIN_NONATOMIC) }
     }
 }
 
@@ -92,6 +165,7 @@ enum PhotoUploadService {
         guard let imageData = image.jpegData(compressionQuality: 0.8) else { throw PanoramaxError.invalidImage }
         let location = try await photoLocation(coordinate)
         return try await makePanoramaxUploader().upload(imageData: imageData, coordinate: location,
+                                                        heading: image.captureHeading,
                                                         semantics: context.semantics)
     }
 

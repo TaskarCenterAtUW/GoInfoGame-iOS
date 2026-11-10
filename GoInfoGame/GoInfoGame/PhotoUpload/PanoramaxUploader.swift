@@ -56,12 +56,14 @@ struct PanoramaxUploader {
 
     /// `semantics` are Panoramax semantic tags (`[["key": ..., "value": ...]]`) stored on the
     /// picture, e.g. from `PhotoUploadContext.semantics`.
+    /// `heading` is the compass direction the camera faced (degrees from true north), sent
+    /// as the picture's `GPSImgDirection` when known.
     func upload(imageData: Data, coordinate: CLLocationCoordinate2D, capturedAt: Date = Date(),
-                semantics: [[String: String]] = []) async throws -> String {
+                heading: Double? = nil, semantics: [[String: String]] = []) async throws -> String {
         guard !token.isEmpty else { throw PanoramaxError.missingToken }
         let uploadSetId = try await createUploadSet()
         let pictureId = try await uploadFile(imageData, to: uploadSetId, coordinate: coordinate,
-                                             capturedAt: capturedAt, semantics: semantics)
+                                             capturedAt: capturedAt, heading: heading, semantics: semantics)
         return pictureURL(for: pictureId)
     }
 
@@ -93,7 +95,7 @@ struct PanoramaxUploader {
     }
 
     private func uploadFile(_ imageData: Data, to uploadSetId: String, coordinate: CLLocationCoordinate2D,
-                            capturedAt: Date, semantics: [[String: String]]) async throws -> String {
+                            capturedAt: Date, heading: Double?, semantics: [[String: String]]) async throws -> String {
         let boundary = "Boundary-\(UUID().uuidString)"
         var request = try makeRequest(path: "/api/upload_sets/\(uploadSetId)/files")
         request.setValue("multipart/form-data; boundary=\(boundary)", forHTTPHeaderField: "Content-Type")
@@ -106,6 +108,7 @@ struct PanoramaxUploader {
             "override_longitude": "\(coordinate.longitude)",
             "override_capture_time": ISO8601DateFormatter().string(from: capturedAt)
         ]
+        fields.merge(PhotoHeading.overrideFields(for: heading)) { current, _ in current }
         if !semantics.isEmpty {
             let json = try JSONSerialization.data(withJSONObject: semantics, options: [.sortedKeys, .withoutEscapingSlashes])
             fields["semantics"] = String(decoding: json, as: UTF8.self)

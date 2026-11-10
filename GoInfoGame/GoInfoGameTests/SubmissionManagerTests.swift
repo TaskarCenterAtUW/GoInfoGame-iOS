@@ -700,3 +700,74 @@ final class PhotoThumbnailTests: XCTestCase {
         }
     }
 }
+
+// MARK: - Photo heading (GPSImgDirection)
+
+final class PhotoHeadingTests: AppTestCase {
+
+    private let spot = CLLocationCoordinate2D(latitude: 47.6553, longitude: -122.3035)
+    private let directionField = "override_Exif.GPSInfo.GPSImgDirection"
+    private let directionRefField = "override_Exif.GPSInfo.GPSImgDirectionRef"
+
+    func testTheHeadingIsSentAsAWholeDegreeRationalFromTrueNorth() {
+        XCTAssertEqual(PhotoHeading.overrideFields(for: 87.4), [directionField: "87/1", directionRefField: "T"])
+        XCTAssertEqual(PhotoHeading.overrideFields(for: 359.7)[directionField], "0/1", "rounds up to north, never 360")
+        XCTAssertEqual(PhotoHeading.overrideFields(for: 0)[directionField], "0/1")
+        XCTAssertEqual(PhotoHeading.overrideFields(for: 450)[directionField], "90/1")
+    }
+
+    func testAnUnknownHeadingSendsNothing() {
+        XCTAssertTrue(PhotoHeading.overrideFields(for: nil).isEmpty)
+        XCTAssertTrue(PhotoHeading.overrideFields(for: -1).isEmpty, "Core Location's 'invalid' value")
+        XCTAssertTrue(PhotoHeading.overrideFields(for: .nan).isEmpty)
+    }
+
+    func testTheHeadingSurvivesBeingQueuedOnDisk() throws {
+        let image = makeImage()
+        image.captureHeading = 123.5
+        for (save, load, delete) in [
+            (QuestImageStorage.shared.save, QuestImageStorage.shared.load, QuestImageStorage.shared.delete),
+            (NoteImageStorage.shared.save, NoteImageStorage.shared.load, NoteImageStorage.shared.delete),
+            (FeatureImageStorage.shared.save, FeatureImageStorage.shared.load, FeatureImageStorage.shared.delete)
+        ] as [((UIImage) throws -> String, (String) -> UIImage?, ([String]) -> Void)] {
+            let path = try save(image)
+            let loaded = try XCTUnwrap(load(path))
+            XCTAssertEqual(try XCTUnwrap(loaded.captureHeading), 123.5, accuracy: 0.01)
+            XCTAssertEqual(loaded.size, image.size)
+            delete([path])
+        }
+    }
+
+    func testAPhotoWithoutAHeadingLoadsWithoutOne() throws {
+        let path = try NoteImageStorage.shared.save(makeImage())
+        XCTAssertNil(NoteImageStorage.shared.load(path: path)?.captureHeading)
+        NoteImageStorage.shared.delete(paths: [path])
+    }
+
+    func testTheUploaderSendsTheHeadingOnlyWhenKnown() async throws {
+        MockServer.installPanoramax(.ok)
+        let uploader = PhotoUploadService.makePanoramaxUploader()
+        _ = try await uploader.upload(imageData: Data("jpeg".utf8), coordinate: spot, heading: 271.6)
+        _ = try await uploader.upload(imageData: Data("jpeg".utf8), coordinate: spot)
+
+        let bodies = MockHTTP.requests(path: MockServer.panoramaxFilesPath, method: "POST").map(\.bodyString)
+        XCTAssertEqual(bodies.count, 2)
+        XCTAssertTrue(bodies[0].contains("name=\"\(directionField)\"\r\n\r\n272/1\r\n"))
+        XCTAssertTrue(bodies[0].contains("name=\"\(directionRefField)\"\r\n\r\nT\r\n"))
+        XCTAssertFalse(bodies[1].contains("GPSImgDirection"))
+    }
+
+    func testAQueuedNotePhotoUploadsWithTheHeadingItWasTakenAt() throws {
+        signIn(workspaceID: "222")
+        let events = recordSheetEvents()
+        MockServer.installNotes()
+        MockServer.installPanoramax(.ok)
+        let image = makeImage()
+        image.captureHeading = 45
+        NotesSubmissionManager.submit(NoteDraft(noteText: "facing north-east", images: [image], coordinates: spot))
+        waitUntil(timeout: 12, "the note never synced") { events.contains("noteSubmitted") }
+
+        let body = try XCTUnwrap(MockHTTP.requests(path: MockServer.panoramaxFilesPath).first).bodyString
+        XCTAssertTrue(body.contains("name=\"\(directionField)\"\r\n\r\n45/1\r\n"))
+    }
+}

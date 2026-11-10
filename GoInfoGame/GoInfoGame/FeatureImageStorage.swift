@@ -25,7 +25,8 @@ final class FeatureImageStorage {
 
     @discardableResult
     func save(_ image: UIImage) throws -> String {
-        guard let data = image.jpegData(compressionQuality: 0.9) else {
+        // Keeps the photo's capture heading (if any) in the file's EXIF for the upload.
+        guard let data = PhotoHeading.jpegData(for: image, compressionQuality: 0.9) else {
             throw NSError(domain: "FeatureImageStorage", code: 0, userInfo: [NSLocalizedDescriptionKey: "Failed to encode photo"])
         }
         let fileURL = directoryURL.appendingPathComponent("\(UUID().uuidString).jpg")
@@ -34,7 +35,7 @@ final class FeatureImageStorage {
     }
 
     func load(path: String) -> UIImage? {
-        UIImage(contentsOfFile: path)
+        PhotoHeading.loadImage(atPath: path)
     }
 
     func delete(paths: [String]) {
