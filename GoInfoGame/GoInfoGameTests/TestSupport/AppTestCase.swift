@@ -53,6 +53,7 @@ class AppTestCase: XCTestCase {
         PhotoUploadService.makePanoramaxUploader = {
             PanoramaxUploader(baseURL: MockServer.panoramaxBaseURL, token: MockServer.panoramaxToken)
         }
+        PhotoUploadService.semanticsRetryDelays = [0, 0, 0]
     }
 
     // MARK: Session helpers

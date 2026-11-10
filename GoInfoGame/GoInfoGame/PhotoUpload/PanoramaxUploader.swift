@@ -71,6 +71,33 @@ struct PanoramaxUploader {
         "\(baseURL)/api/pictures/\(pictureId)/hd.jpg"
     }
 
+    /// The picture id in a URL from `pictureURL(for:)` on this instance (`hd`, `sd` or
+    /// `thumb`), or nil for any other URL, such as an old KartaView photo or a picture on
+    /// another environment's instance.
+    func pictureId(fromURL urlString: String) -> String? {
+        let prefix = "\(baseURL)/api/pictures/"
+        guard urlString.hasPrefix(prefix) else { return nil }
+        let parts = urlString.dropFirst(prefix.count).split(separator: "/", omittingEmptySubsequences: false)
+        guard parts.count == 2, !parts[0].isEmpty, ["hd.jpg", "sd.jpg", "thumb.jpg"].contains(parts[1]) else { return nil }
+        return String(parts[0])
+    }
+
+    /// Adds semantic tags to a picture that is already on Panoramax, e.g. the element id of
+    /// a new feature, which is only known once the element is created after the photo upload.
+    /// Tags are added, never replaced (a key can hold several values on Panoramax).
+    /// Panoramax answers 404 until the picture has been dispatched to a collection, a few
+    /// seconds after its upload set completes, so callers should retry that.
+    func addSemantics(_ semantics: [[String: String]], toPicture pictureId: String) async throws {
+        guard !token.isEmpty else { throw PanoramaxError.missingToken }
+        guard !semantics.isEmpty else { return }
+        let payload: [String: Any] = ["semantics": semantics.map { $0.merging(["action": "add"]) { current, _ in current } }]
+        var request = try makeRequest(path: "/api/pictures/\(pictureId)", method: "PATCH")
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.httpBody = try JSONSerialization.data(withJSONObject: payload, options: [.sortedKeys, .withoutEscapingSlashes])
+        // 304: the picture already has these tags, e.g. a retry after an earlier success.
+        _ = try await send(request, accepting: [200, 304])
+    }
+
     // MARK: - Steps
 
     private func createUploadSet() async throws -> String {
@@ -145,10 +172,10 @@ struct PanoramaxUploader {
 
     // MARK: - HTTP
 
-    private func makeRequest(path: String) throws -> URLRequest {
+    private func makeRequest(path: String, method: String = "POST") throws -> URLRequest {
         guard let url = URL(string: baseURL + path) else { throw PanoramaxError.invalidResponse }
         var request = URLRequest(url: url, timeoutInterval: 120)
-        request.httpMethod = "POST"
+        request.httpMethod = method
         request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
         request.setValue("application/json", forHTTPHeaderField: "Accept")
         return request

@@ -89,6 +89,16 @@ enum FeatureSubmissionManager {
             )
             let created = try await DatasyncManager.shared.createNode(node: node)
 
+            // The photos went up before the node existed, so add its id to them now, like a
+            // quest photo's element_id. Detached: it may wait for Panoramax to dispatch the
+            // pictures, and must not hold up the rest of the queue.
+            if !photoURLs.isEmpty {
+                let elementId = "node/\(created.id)"
+                Task.detached(priority: .utility) {
+                    await PhotoUploadService.tagPhotos(photoURLs, withElementId: elementId)
+                }
+            }
+
             // Persist locally under the server's real id/version (never returned any
             // other way — see DatasyncManager.uploadNode), so the element can be
             // matched against LongForm quest_query filters and correctly submitted as

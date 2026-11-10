@@ -717,6 +717,26 @@ final class FeatureSubmissionManagerTests: AppTestCase {
         XCTAssertTrue(body.contains(#""key":"feature_type","value":"Bench""#))
     }
 
+    func testOnceTheNodeIsCreatedItsIdIsAddedToThePhotos() throws {
+        MockServer.installPanoramax(.ok)
+        FeatureSubmissionManager.submit(bench(image: makeImage()))
+        waitForDrain()
+        waitUntil(timeout: 10, "the photo was never tagged with the node") {
+            !MockHTTP.requests(path: MockServer.panoramaxPicturePath, method: "PATCH").isEmpty
+        }
+        let patch = try XCTUnwrap(MockHTTP.requests(path: MockServer.panoramaxPicturePath, method: "PATCH").first)
+        XCTAssertEqual(patch.header("Authorization"), "Bearer \(MockServer.panoramaxToken)")
+        XCTAssertEqual(patch.bodyString, #"{"semantics":[{"action":"add","key":"element_id","value":"node/555"}]}"#)
+    }
+
+    func testAFeatureWithoutPhotosTagsNothing() {
+        MockServer.installPanoramax(.ok)
+        FeatureSubmissionManager.submit(bench())
+        waitForDrain()
+        RunLoop.main.run(until: Date().addingTimeInterval(0.3))
+        XCTAssertTrue(MockHTTP.requests(path: MockServer.panoramaxPicturePath, method: "PATCH").isEmpty)
+    }
+
     func testAPhotoAlreadyUploadedIsNotUploadedAgainWhenTheFeatureIsRetried() throws {
         MockHTTP.reset()
         MockServer.installChangesets(createFails: true)
@@ -772,6 +792,53 @@ final class FeatureSubmissionManagerTests: AppTestCase {
         FeatureSubmissionManager.resumePendingUploads()
         RunLoop.main.run(until: Date().addingTimeInterval(0.3))
         XCTAssertTrue(events.names.isEmpty)
+    }
+}
+
+final class PanoramaxSemanticsUpdateTests: AppTestCase {
+
+    private var uploader: PanoramaxUploader { PhotoUploadService.makePanoramaxUploader() }
+    private var patches: [MockHTTP.Recorded] { MockHTTP.requests(path: MockServer.panoramaxPicturePath, method: "PATCH") }
+
+    func testThePictureIdIsReadOnlyFromThisInstancesPictureURLs() {
+        let id = MockServer.panoramaxPictureID
+        XCTAssertEqual(uploader.pictureId(fromURL: MockServer.panoramaxPhotoURL), id)
+        XCTAssertEqual(uploader.pictureId(fromURL: "\(MockServer.panoramaxBaseURL)/api/pictures/\(id)/thumb.jpg"), id)
+        XCTAssertNil(uploader.pictureId(fromURL: "https://other.panoramax.test/api/pictures/\(id)/hd.jpg"))
+        XCTAssertNil(uploader.pictureId(fromURL: "https://kartaview.org/details/1/2"))
+        XCTAssertNil(uploader.pictureId(fromURL: "\(MockServer.panoramaxBaseURL)/api/pictures//hd.jpg"))
+    }
+
+    func testTaggingRetriesWhileThePictureIsNotDispatchedYet() async {
+        let calls = Counter()
+        MockHTTP.stub("PATCH", path: MockServer.panoramaxPicturePath) { _ in
+            calls.increment() < 3 ? .statusWithBody(404, #"{"message":"Picture not found","status_code":404}"#)
+                                  : .json(#"{"id":"x"}"#, status: 200)
+        }
+        let tagged = await PhotoUploadService.tagPhotos([MockServer.panoramaxPhotoURL], withElementId: "node/7")
+        XCTAssertEqual(tagged, [MockServer.panoramaxPhotoURL])
+        XCTAssertEqual(patches.count, 3)
+    }
+
+    func testTaggingGivesUpAtOnceWhenNotAllowed() async {
+        MockHTTP.stub("PATCH", path: MockServer.panoramaxPicturePath,
+                      reply: .statusWithBody(403, #"{"message":"Forbidden","status_code":403}"#))
+        let tagged = await PhotoUploadService.tagPhotos([MockServer.panoramaxPhotoURL], withElementId: "node/7")
+        XCTAssertTrue(tagged.isEmpty)
+        XCTAssertEqual(patches.count, 1)
+    }
+
+    func testAlreadyTaggedCountsAsDone() async {
+        MockHTTP.stub("PATCH", path: MockServer.panoramaxPicturePath, reply: .statusWithBody(304, ""))
+        let tagged = await PhotoUploadService.tagPhotos([MockServer.panoramaxPhotoURL], withElementId: "node/7")
+        XCTAssertEqual(tagged.count, 1)
+        XCTAssertEqual(patches.count, 1)
+    }
+
+    func testPhotosFromElsewhereAreSkipped() async {
+        let tagged = await PhotoUploadService.tagPhotos(["https://kartaview.org/p/1.jpg"], withElementId: "node/7")
+        XCTAssertTrue(tagged.isEmpty)
+        XCTAssertTrue(patches.isEmpty)
     }
 }
 

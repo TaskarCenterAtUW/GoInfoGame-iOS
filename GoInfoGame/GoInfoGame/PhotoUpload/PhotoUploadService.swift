@@ -183,6 +183,49 @@ enum PhotoUploadService {
                                                         semantics: context.semantics)
     }
 
+    /// Waits before each try of `tagPhotos`. The first try is immediate; Panoramax answers
+    /// 404 until a picture is dispatched to a collection, so later tries wait for that.
+    /// Replaceable so tests don't wait.
+    static var semanticsRetryDelays: [TimeInterval] = [0, 5, 30, 120]
+
+    /// Adds `element_id` to photos that were uploaded before their element existed (a new
+    /// feature's photos), so they can be traced to it the same way quest photos are.
+    /// Best effort: the element is already created, so a failure is logged, never surfaced.
+    /// Returns the URLs that were tagged.
+    @discardableResult
+    static func tagPhotos(_ urls: [String], withElementId elementId: String) async -> [String] {
+        let uploader = makePanoramaxUploader()
+        let semantics = PhotoUploadContext(elementId: elementId).semantics
+        var tagged: [String] = []
+        for url in urls {
+            // Skip photos not on this instance (e.g. uploaded before an environment switch).
+            guard let pictureId = uploader.pictureId(fromURL: url) else { continue }
+            if await addSemanticsRetrying(semantics, to: pictureId, with: uploader) {
+                tagged.append(url)
+            }
+        }
+        return tagged
+    }
+
+    private static func addSemanticsRetrying(_ semantics: [[String: String]], to pictureId: String,
+                                             with uploader: PanoramaxUploader) async -> Bool {
+        for delay in semanticsRetryDelays {
+            if delay > 0 { try? await Task.sleep(nanoseconds: UInt64(delay * 1_000_000_000)) }
+            do {
+                try await uploader.addSemantics(semantics, toPicture: pictureId)
+                return true
+            } catch PanoramaxError.server(let status, let message) where [401, 403].contains(status) {
+                print("Panoramax: not allowed to tag picture \(pictureId): \(message)")
+                return false   // retrying won't help
+            } catch PanoramaxError.missingToken {
+                return false
+            } catch {
+                print("Panoramax: tagging picture \(pictureId) failed, may retry: \(error.localizedDescription)")
+            }
+        }
+        return false
+    }
+
     private static func photoLocation(_ coordinate: CLLocationCoordinate2D?) async throws -> CLLocationCoordinate2D {
         if let coordinate, CLLocationCoordinate2DIsValid(coordinate), coordinate.latitude != 0 || coordinate.longitude != 0 {
             return coordinate

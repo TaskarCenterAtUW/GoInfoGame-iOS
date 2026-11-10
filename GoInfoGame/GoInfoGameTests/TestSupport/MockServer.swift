@@ -118,6 +118,7 @@ enum MockServer {
     static let panoramaxPictureID = "c0ffee00-1111-4222-8333-444455556666"
     static let panoramaxPhotoURL = "\(panoramaxBaseURL)/api/pictures/\(panoramaxPictureID)/hd.jpg"
     static let panoramaxFilesPath = "/api/upload_sets/\(panoramaxUploadSetID)/files"
+    static let panoramaxPicturePath = "/api/pictures/\(panoramaxPictureID)"
 
     enum Panoramax {
         case ok
@@ -143,6 +144,9 @@ enum MockServer {
             MockHTTP.stub("POST", path: panoramaxFilesPath,
                           reply: .json(#"{"file_name":"a.jpg","picture_id":"\#(panoramaxPictureID)","rejected":null}"#, status: 202))
         }
+        // Adding semantics to the uploaded picture.
+        MockHTTP.stub("PATCH", path: panoramaxPicturePath,
+                      reply: .json(#"{"id":"\#(panoramaxPictureID)","type":"Feature"}"#, status: 200))
     }
 
     // MARK: Notes
