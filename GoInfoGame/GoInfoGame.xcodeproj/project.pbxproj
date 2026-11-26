@@ -3315,7 +3315,7 @@
 				CODE_SIGN_ENTITLEMENTS = GoInfoGame/GoInfoGame.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 1;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = G8MQVE5WWW;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
@@ -3347,7 +3347,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.2.12;
+				MARKETING_VERSION = 1.2.13;
 				MTL_HEADER_SEARCH_PATHS = "$(SRCROOT)/PointNMap $(SRCROOT)/PointNMapShaderTypes";
 				OTHER_CFLAGS = "-DACCELERATE_NEW_LAPACK";
 				OTHER_LDFLAGS = (
@@ -3392,7 +3392,7 @@
 				CODE_SIGN_ENTITLEMENTS = GoInfoGame/GoInfoGame.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = G8MQVE5WWW;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -3423,7 +3423,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.2.12;
+				MARKETING_VERSION = 1.2.13;
 				MTL_HEADER_SEARCH_PATHS = "$(SRCROOT)/PointNMap $(SRCROOT)/PointNMapShaderTypes";
 				OTHER_CFLAGS = "-DACCELERATE_NEW_LAPACK";
 				OTHER_LDFLAGS = (
