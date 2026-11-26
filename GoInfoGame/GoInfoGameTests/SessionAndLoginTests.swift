@@ -687,7 +687,7 @@ final class UtilitiesTests: AppTestCase {
     func testCardinalDirectionsAcrossTheCompass() {
         let expected: [(Double, String)] = [
             (0, "North"), (10, "North"), (22.4, "North"), (45, "North East"), (90, "East"), (135, "South East"),
-            (180, "South"), (225, "South West"), (270, "West"), (315, "Noth West"), (350, "North"), (359.9, "North")
+            (180, "South"), (225, "South West"), (270, "West"), (315, "North West"), (350, "North"), (359.9, "North")
         ]
         for (bearing, direction) in expected {
             XCTAssertEqual(Utilities.degreesToCardinalDirection(bearing: bearing), direction, "bearing \(bearing)")
