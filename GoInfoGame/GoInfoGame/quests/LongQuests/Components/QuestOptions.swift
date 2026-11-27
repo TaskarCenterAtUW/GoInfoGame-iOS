@@ -860,7 +860,8 @@ private extension QuestOptions {
                                let aa = accessibilityFeatures.first?.attributeValues.first(where: { attribute in
                                    accessAttribute == attribute.key
                                }) {
-                                   tags[osmTag] = aa.value?.toString() ?? "NA"
+//                                   tags[osmTag] = aa.value?.description ?? "NA"
+                                tags[osmTag] = aa.value?.primitiveValue.oswTagValue ?? "NA"
                             }
                         }
                         newCaptures.append(Capture(osmTags: tags))
