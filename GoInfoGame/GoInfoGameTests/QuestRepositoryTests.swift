@@ -172,10 +172,25 @@ final class LongElementQuestTests: AppTestCase {
 
     func testRefreshingTagsRebuildsTheFormAndKeepsTheNewTags() {
         let copy = sidewalks.copyWithElement(element: way(121949)) as! LongElementQuest
+        XCTAssertNil(copy.internalForm, "a copy exists per map element, so its form is only built on first use")
+        _ = copy.form
         XCTAssertNotNil(copy.internalForm)
         copy.refreshTags(["ext:surface": "gravel"])
         XCTAssertEqual(copy.tags, ["ext:surface": "gravel"])
-        _ = copy.form
+        XCTAssertEqual((copy.internalForm as? LongForm)?.tags, ["ext:surface": "gravel"])
+    }
+
+    func testACopyIsFreedOnceNothingElseHoldsIt() {
+        // Its form's action closure used to capture the quest strongly — a retain cycle
+        // that kept every element's quest copy alive after each map reload.
+        weak var released: LongElementQuest?
+        autoreleasepool {
+            let copy = sidewalks.copyWithElement(element: way(121949)) as! LongElementQuest
+            _ = copy.form
+            copy.annotationCoordinate = CLLocationCoordinate2D(latitude: 1, longitude: 2)
+            released = copy
+        }
+        XCTAssertNil(released)
     }
 
     func testMovingTheAnnotationRebuildsTheFormButAnUnchangedCoordinateDoesNot() {
@@ -198,6 +213,7 @@ final class LongElementQuestTests: AppTestCase {
         let copy = sidewalks.copyWithElement(element: way(121949)) as! LongElementQuest
         var received: LongFormAnswer?
         copy.questAnswersSelected = { received = $0 }
+        _ = copy.form
         let form = copy.internalForm as! LongForm
         let answer = LongFormAnswer(tags: ["ext:surface": "gravel"], capturedImage: nil, imageTagKey: nil)
         form.action?(answer)

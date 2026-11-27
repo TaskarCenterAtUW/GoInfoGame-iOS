@@ -47,8 +47,8 @@ class CrossingIsland: QuestBase, Quest {
   
     override init() {
         super.init()
-        self.internalForm = CrossingIslandForm(action: { [self] answer in
-            self.onAnswer(answer: answer)
+        self.internalForm = CrossingIslandForm(action: { [weak self] answer in
+            self?.onAnswer(answer: answer)
         })
     }
     

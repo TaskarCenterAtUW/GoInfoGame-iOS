@@ -79,6 +79,32 @@ final class DatabaseConnectorElementTests: AppTestCase {
         XCTAssertEqual(stored?.polyline.last?.longitude, 24)
     }
 
+    /// The freshness check when a quest opens saves just the way (no nodes). It used to
+    /// replace the polyline with an empty one, and `fetchQuestsFromDB`'s
+    /// `polyline.@count > 0` filter then dropped the element's pin on the next reload.
+    func testRefreshingASingleWayKeepsItsPolylineAndPin() {
+        db.saveOSMElements([node(33, lat: 10, lon: 20), node(34, lat: 12, lon: 24),
+                            way(35, nodes: [33, 34], tags: ["highway": "footway"], version: 1)])
+
+        db.saveOSMElements([way(35, nodes: [33, 34], tags: ["highway": "footway", "surface": "asphalt"], version: 2)])
+
+        let stored = db.getWay(id: 35)
+        XCTAssertEqual(stored?.version, 2)
+        XCTAssertEqual(stored?.tags["surface"], "asphalt", "the refresh's tags are saved")
+        XCTAssertEqual(stored?.polyline.count, 2)
+        XCTAssertEqual(stored?.polyline.first?.latitude, 10)
+        XCTAssertEqual(db.getWays(NSPredicate(format: "id == 35 AND polyline.@count > 0")).count, 1,
+                       "still matched by the map's pin query")
+    }
+
+    func testAWaySavedWithoutItsNodesTakesTheirStoredCoordinates() {
+        db.saveOSMElements([node(36, lat: 5, lon: 6), node(37, lat: 7, lon: 8)])
+        db.saveOSMElements([way(38, nodes: [36, 37], tags: ["highway": "footway"])])
+        let stored = db.getWay(id: 38)
+        XCTAssertEqual(stored?.polyline.count, 2)
+        XCTAssertEqual(stored?.polyline.last?.longitude, 8)
+    }
+
     func testPredicateQueriesFilterNodesAndWays() {
         seedMap("LongFormOSMElements")
         XCTAssertEqual(db.getNodes(NSPredicate(format: "tags.@count != 0")).count, 1, "only the kerb node carries tags")

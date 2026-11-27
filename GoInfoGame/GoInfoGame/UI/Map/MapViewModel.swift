@@ -22,7 +22,6 @@ class MapViewModel: ObservableObject {
     @Published var isLoading: Bool = false
     @Published var centerCoordinate = CLLocationCoordinate2D()
     private let viewSpanDelta = 0.005
-    @Published var refreshMap = UUID()
     @Published var items: [DisplayUnitWithCoordinate] = []
     @Published var selectedQuest: DisplayUnit?
     let dataSpanDistance: CLLocationDistance = 1000
@@ -33,6 +32,18 @@ class MapViewModel: ObservableObject {
 
     private let dbInstance = DatabaseConnector.shared
     private var allSattileLayers: [SatelliteServer] = []
+
+    /// Areas fetched successfully, and when — lets location updates skip re-downloading
+    /// data the device already has (each fetch is a large download, slow on cellular).
+    private var fetchedAreas: [(bbox: BBox, fetchedAt: Date)] = []
+    /// Location-driven refetches are skipped while the user is still well inside an
+    /// area fetched within this interval; after it, data is refreshed as before.
+    private let fetchedAreaFreshness: TimeInterval = 10 * 60
+    /// A "download this area" request that arrived while another fetch was in flight.
+    /// Run once that fetch finishes instead of being silently dropped.
+    private var pendingBBox: BBox?
+    /// Bumped on every DB reload so only the latest one's result is applied.
+    private var reloadGeneration = 0
 
     @Published var availableOptions: [SatelliteOption] = []
     @Published var selectedOption: SatelliteOption = .none
@@ -53,6 +64,12 @@ class MapViewModel: ObservableObject {
         self.allSattileLayers = workspace.imageryList ?? []
         checkSyncStatus()
     }
+
+    #if DEBUG
+    // Leaving the map (to workspaces/login) should print this; if it doesn't, something
+    // still holds the view model and all of its quests.
+    deinit { print("MapViewModel deinit") }
+    #endif
 
     func checkSyncStatus() {
         self.syncFailedElementsCount = dbInstance.getChangesets(synced: false).count
@@ -89,9 +106,10 @@ class MapViewModel: ObservableObject {
             return displayUnit
         } else {
             if let longElementQuest = selectedQuest?.parent as? LongElementQuest {
-                longElementQuest.questAnswersSelected = { [weak self] answer in
-                    guard let self = self else { return }
-                    longElementQuest.onAnswer(answer: answer)
+                // Weak: the closure is stored on `longElementQuest` itself, so a strong
+                // capture would keep the quest alive forever.
+                longElementQuest.questAnswersSelected = { [weak longElementQuest] answer in
+                    longElementQuest?.onAnswer(answer: answer)
                 }
             }
             return selectedQuest
@@ -99,21 +117,26 @@ class MapViewModel: ObservableObject {
     }
 
     func fetchOSMDataFor(from bboxSource: BBoxSource) {
-        guard !isLoading else { return }
-        isLoading = true
         let bBox: BBox
         switch bboxSource {
         case .currentLocation(let center):
+            guard !isLoading else { return }
             self.centerCoordinate = center
+            guard !isCoveredByRecentFetch(center) else { return }
             bBox = boundingBoxAroundLocation(location: center, distance: dataSpanDistance)
         case .visibleRect(let mapView):
             bBox = boundingBoxFromVisibleMapRect(mapView: mapView)
+            guard !isLoading else {
+                pendingBBox = bBox
+                return
+            }
         }
+        fetchOSMData(in: bBox)
+    }
 
-        guard let workspaceID = KeychainManager.load(key: "workspaceID") else {
-            isLoading = false
-            return
-        }
+    private func fetchOSMData(in bBox: BBox) {
+        guard let workspaceID = KeychainManager.load(key: "workspaceID") else { return }
+        isLoading = true
 
         ApiManager.shared.performRequest(
             to: .fetchOSMElements(bBox.minLon, bBox.minLat, bBox.maxLon, bBox.maxLat, workspaceID),
@@ -125,25 +148,61 @@ class MapViewModel: ObservableObject {
             case .success(let success):
                 let response = Array(success.getOSMElements().values)
                 self.dbInstance.saveOSMElements(response)
-                let items = AppQuestManager.shared.fetchQuestsFromDB()
-                DispatchQueue.main.async { [weak self, items] in
-                    self?.items = items
-                    self?.isLoading = false
-                    if self?.items.count == 0 { self?.refreshMap = UUID() }
+                DispatchQueue.main.async { [weak self] in
+                    guard let self else { return }
+                    self.recordFetchedArea(bBox)
+                    self.reloadItemsFromDB { [weak self] in self?.finishFetch() }
                 }
             case .failure(let failure):
                 // Keep whatever annotations are already showing — a failed background
                 // refresh (e.g. no network) doesn't mean the previously loaded data is gone.
-                DispatchQueue.main.async { [weak self] in
-                    self?.isLoading = false
-                }
                 print(failure)
+                DispatchQueue.main.async { [weak self] in
+                    self?.finishFetch()
+                }
             }
         }
     }
 
+    private func finishFetch() {
+        isLoading = false
+        if let next = pendingBBox {
+            pendingBBox = nil
+            fetchOSMData(in: next)
+        }
+    }
+
+    private func recordFetchedArea(_ bBox: BBox) {
+        let cutoff = Date().addingTimeInterval(-fetchedAreaFreshness)
+        fetchedAreas.removeAll { $0.fetchedAt < cutoff }
+        fetchedAreas.append((bbox: bBox, fetchedAt: Date()))
+    }
+
+    /// True when the area around `location` (half the fetch radius) lies inside an
+    /// area fetched recently — the user hasn't moved far enough for new data.
+    private func isCoveredByRecentFetch(_ location: CLLocationCoordinate2D) -> Bool {
+        let needed = boundingBoxAroundLocation(location: location, distance: dataSpanDistance / 2)
+        let cutoff = Date().addingTimeInterval(-fetchedAreaFreshness)
+        return fetchedAreas.contains { $0.fetchedAt >= cutoff && $0.bbox.contains(needed) }
+    }
+
     func refreshQuests() {
-        self.items = AppQuestManager.shared.fetchQuestsFromDB()
+        reloadItemsFromDB()
+    }
+
+    /// Rebuilds `items` from the DB off the main thread — `fetchQuestsFromDB` walks every
+    /// stored element and can take seconds on large workspaces, freezing the map.
+    private func reloadItemsFromDB(completion: (() -> Void)? = nil) {
+        reloadGeneration += 1
+        let generation = reloadGeneration
+        DispatchQueue.global(qos: .userInitiated).async { [weak self] in
+            let items = AppQuestManager.shared.fetchQuestsFromDB()
+            DispatchQueue.main.async { [weak self] in
+                guard let self else { return }
+                if self.reloadGeneration == generation { self.items = items }
+                completion?()
+            }
+        }
     }
 
     func refreshMapAfterSubmission(elementId: Int) {
@@ -203,5 +262,12 @@ class MapViewModel: ObservableObject {
             minLon: location.longitude - lonDelta,
             maxLon: location.longitude + lonDelta
         )
+    }
+}
+
+private extension BBox {
+    func contains(_ other: BBox) -> Bool {
+        minLat <= other.minLat && maxLat >= other.maxLat &&
+        minLon <= other.minLon && maxLon >= other.maxLon
     }
 }

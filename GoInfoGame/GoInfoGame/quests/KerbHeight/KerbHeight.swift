@@ -57,8 +57,8 @@ class KerbHeight: QuestBase, Quest {
     }
     override init() {
         super.init()
-        self.internalForm = KerbHeightForm(action: { [self] answer in
-            self.onAnswer(answer: answer)
+        self.internalForm = KerbHeightForm(action: { [weak self] answer in
+            self?.onAnswer(answer: answer)
         })
     }
  

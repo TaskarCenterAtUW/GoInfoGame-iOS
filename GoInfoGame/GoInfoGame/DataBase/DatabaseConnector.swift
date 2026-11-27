@@ -74,11 +74,25 @@ class DatabaseConnector {
             stored.timestamp = way.timestamp
             stored.nodes.append(objectsIn: way.nodes.map(Int64.init))
 
+            // A way's geometry comes from its nodes. Area downloads include them, but a
+            // single-way fetch (the freshness check when a quest opens, conflict and sync
+            // refreshes) doesn't — it used to save an empty polyline over the good one, and
+            // `fetchQuestsFromDB` (which needs `polyline.@count > 0`) then dropped the
+            // element's pin until the next area download. Fall back to the stored nodes,
+            // then to the stored polyline.
             let polyline = List<CLLocationCoordinate2D>()
             for nodeId in way.nodes {
                 if let node = nodesDict[nodeId] {
                     polyline.append(CLLocationCoordinate2D(latitude: node.lat, longitude: node.lon))
+                } else if let storedNode = realm.object(ofType: StoredNode.self, forPrimaryKey: Int64(nodeId)) {
+                    polyline.append(CLLocationCoordinate2D(latitude: storedNode.latitude, longitude: storedNode.longitude))
                 }
+            }
+            if polyline.count < way.nodes.count,
+               let existing = realm.object(ofType: StoredWay.self, forPrimaryKey: Int64(way.id)),
+               existing.polyline.count > polyline.count {
+                polyline.removeAll()
+                polyline.append(objectsIn: existing.polyline)
             }
             stored.polyline = polyline
             return stored

@@ -46,8 +46,8 @@ class TactilePavingSteps :QuestBase, Quest {
 
     override init() {
         super.init()
-        self.internalForm = TactilePavingStepsForm(action: { [self] answer in
-            self.onAnswer(answer: answer)
+        self.internalForm = TactilePavingStepsForm(action: { [weak self] answer in
+            self?.onAnswer(answer: answer)
         })
     }
     

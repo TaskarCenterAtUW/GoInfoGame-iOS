@@ -163,12 +163,27 @@ struct MapView: View {
                 .onChange(of: viewModel.selectedQuest) { _ in
                     shouldShowPolyline = false
                 }
-                .id(viewModel.refreshMap)
                 .edgesIgnoringSafeArea(.all)
 
                 if viewModel.isLoading {
-                    Color.black.opacity(0.3).edgesIgnoringSafeArea(.all)
-                    ActivityView(activityText: "Looking for quests...")
+                    // Non-blocking: the map stays pannable/zoomable while a fetch is in
+                    // flight. On slow (cellular) connections a fetch can take many
+                    // seconds, and a full-screen dimmed overlay made the map look frozen.
+                    VStack {
+                        HStack(spacing: 8) {
+                            ProgressView()
+                            Text("Looking for quests...")
+                                .font(.subheadline)
+                                .foregroundColor(.gray)
+                        }
+                        .padding(.horizontal, 14)
+                        .padding(.vertical, 8)
+                        .background(Capsule().fill(Color.white).shadow(radius: 3))
+                        .padding(.top, 24)
+                        Spacer()
+                    }
+                    .allowsHitTesting(false)
+                    .accessibilityElement(children: .combine)
                 }
 
                 if showAlert {

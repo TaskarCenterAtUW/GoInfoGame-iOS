@@ -7,6 +7,7 @@
 //
 
 import XCTest
+import UIKit
 import Combine
 import CoreLocation
 import SceneKit
@@ -234,3 +235,84 @@ final class LoginBiometricOptOutTests: AppTestCase {
         XCTAssertTrue(SessionManager.shared.hasDeclinedBiometric(for: .production))
     }
 }
+
+// MARK: - ImageCache (long form / Add Feature remote images)
+
+final class ImageCacheTests: AppTestCase {
+
+    /// A real JPEG of the given pixel size, like the full-size originals forms link to.
+    private func jpeg(width: CGFloat, height: CGFloat) -> Data {
+        let format = UIGraphicsImageRendererFormat()
+        format.scale = 1
+        let image = UIGraphicsImageRenderer(size: CGSize(width: width, height: height), format: format).image { context in
+            UIColor.orange.setFill()
+            context.fill(CGRect(x: 0, y: 0, width: width, height: height))
+        }
+        return image.jpegData(compressionQuality: 0.8)!
+    }
+
+    private func load(_ url: String, timeout: TimeInterval = 5) -> UIImage? {
+        let done = expectation(description: "loaded")
+        var result: UIImage?
+        ImageCache.shared.loadImage(urlString: url) { image in
+            result = image
+            done.fulfill()
+        }
+        wait(for: [done], timeout: timeout)
+        return result
+    }
+
+    /// Unique per run: the disk cache outlives a test (and a test run).
+    private func uniqueURL(_ name: String = "photo.jpg") -> String {
+        "https://images.example.test/\(UUID().uuidString)/\(name)"
+    }
+
+    func testAFullSizeImageIsShrunkToTheLargestDisplaySize() throws {
+        let image = try XCTUnwrap(ImageCache.downsample(jpeg(width: 3072, height: 4080)))
+        XCTAssertEqual(max(image.size.width, image.size.height) * image.scale, ImageCache.maxPixelSize)
+    }
+
+    func testASmallImageIsNotEnlarged() throws {
+        let image = try XCTUnwrap(ImageCache.downsample(jpeg(width: 720, height: 480)))
+        XCTAssertEqual(image.size.width * image.scale, 720)
+    }
+
+    func testConcurrentRequestsForOneURLShareOneDownload() throws {
+        let url = uniqueURL()
+        MockHTTP.stub("GET", urlContains: url, reply: .json(jpeg(width: 2000, height: 1500)).delayed(0.3))
+
+        let done = expectation(description: "both rows got the image")
+        done.expectedFulfillmentCount = 2
+        var images: [UIImage?] = []
+        for _ in 0..<2 {
+            ImageCache.shared.loadImage(urlString: url) { image in
+                images.append(image)
+                done.fulfill()
+            }
+        }
+        wait(for: [done], timeout: 5)
+
+        XCTAssertEqual(images.compactMap { $0 }.count, 2)
+        XCTAssertEqual(MockHTTP.requests.filter { $0.url.absoluteString == url }.count, 1, "a re-appearing row joins the download in flight")
+    }
+
+    func testALoadedImageIsReusedFromDiskWithoutDownloadingAgain() throws {
+        let url = uniqueURL()
+        MockHTTP.stub("GET", urlContains: url, reply: .json(jpeg(width: 2000, height: 1500)))
+        XCTAssertNotNil(load(url))
+
+        ImageCache.shared.clearMemory()
+        MockHTTP.reset()
+        MockHTTP.stubAll(.offline)
+        let fromDisk = try XCTUnwrap(load(url), "the shrunk copy is read back from disk")
+        XCTAssertEqual(max(fromDisk.size.width, fromDisk.size.height) * fromDisk.scale, ImageCache.maxPixelSize)
+        XCTAssertTrue(MockHTTP.requests.isEmpty)
+    }
+
+    func testAFailedDownloadReportsNil() {
+        let url = uniqueURL()
+        MockHTTP.stub("GET", urlContains: url, reply: .offline)
+        XCTAssertNil(load(url))
+    }
+}
+

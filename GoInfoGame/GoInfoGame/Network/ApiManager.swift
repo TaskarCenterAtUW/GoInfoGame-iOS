@@ -44,7 +44,9 @@ class ApiManager {
         #endif
     }
     
-    func performRequest<T: Decodable>(to endpoint: APIEndpoint, setupType: SetupType, modelType: T.Type, useJSON:Bool = true, completion: @escaping (Result<T, APIError>) -> Void) {
+    /// `isRetryAfterTokenRefresh` marks the single retry made after a 401-triggered token
+    /// refresh, so a request that still gets 401 fails instead of refreshing forever.
+    func performRequest<T: Decodable>(to endpoint: APIEndpoint, setupType: SetupType, modelType: T.Type, useJSON:Bool = true, isRetryAfterTokenRefresh: Bool = false, completion: @escaping (Result<T, APIError>) -> Void) {
         
         var finalUrl: URL?
         switch setupType {
@@ -67,8 +69,12 @@ class ApiManager {
         // A per-request timeout (rather than none) means a hung connection eventually
         // surfaces as a failure instead of leaving callers (e.g. MapViewModel.isLoading,
         // NotesQueueProcessor.isProcessing) stuck waiting on a completion that never fires.
-        // Multipart uploads (photos) get a longer allowance than plain JSON calls.
-        let requestTimeout: TimeInterval = endpoint.formData != nil ? .infinity : 60
+        // Multipart uploads (photos) get a longer allowance than plain JSON calls. This is
+        // an idle timeout (no bytes moving), not a total-duration cap, so a slow upload
+        // that keeps making progress still finishes. It used to be `.infinity`: on a
+        // stalled 3G connection a photo upload then never failed, and the quest queue
+        // stayed busy, blocking every later submission until the app was restarted.
+        let requestTimeout: TimeInterval = endpoint.formData != nil ? 120 : 60
         var request = URLRequest(url: url, timeoutInterval: requestTimeout)
         request.httpMethod = endpoint.method
         debugPrint("URLRequest prepared \(Date())")
@@ -149,7 +155,10 @@ class ApiManager {
                 return
             }
             
+            // Refresh-and-retry only once: a request that still gets 401 with a fresh token
+            // can't be fixed by refreshing again, and used to refresh and retry forever.
             if httpResponse.statusCode == 401,
+               !isRetryAfterTokenRefresh,
                request.url!.lastPathComponent.contains("refresh-token") == false,
                request.url!.lastPathComponent.contains("authenticate") == false {
                 print("Failed requests: \(String(describing: request.url))")
@@ -159,7 +168,12 @@ class ApiManager {
                         var headers = endpoint.headers
                         headers?["Authorization"] = "Bearer \(accessToken)"
                         let urlEndPont = APIEndpoint(path: endpoint.path, method: endpoint.method, body: endpoint.body, headers: headers, formData: endpoint.formData)
-                        self?.performRequest(to: urlEndPont, setupType: setupType, modelType: modelType, completion: completion)
+                        guard let self else {
+                            completion(.failure(APIError.custom("No data returned")))
+                            return
+                        }
+                        self.performRequest(to: urlEndPont, setupType: setupType, modelType: modelType, useJSON: useJSON,
+                                            isRetryAfterTokenRefresh: true, completion: completion)
                     }
                     else {
                         completion(.failure(APIError.custom("Token refresh failed")))

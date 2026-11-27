@@ -23,8 +23,8 @@ final class NoteImageStorage {
 
     @discardableResult
     func save(_ image: UIImage) throws -> String {
-        // Keeps the photo's capture heading (if any) in the file's EXIF for the upload.
-        guard let data = PhotoHeading.jpegData(for: image, compressionQuality: 0.9) else {
+        // Resized for upload, keeping the photo's capture heading (if any) in the file's EXIF.
+        guard let data = image.uploadJPEGData() else {
             throw NSError(domain: "NoteImageStorage", code: 0, userInfo: [NSLocalizedDescriptionKey: "Failed to encode photo"])
         }
         let fileURL = directoryURL.appendingPathComponent("\(UUID().uuidString).jpg")

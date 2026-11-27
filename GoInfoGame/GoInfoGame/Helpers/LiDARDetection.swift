@@ -21,8 +21,12 @@ class LiDARDetection {
             return false
         }
         
-        // Check for depth frame semantics support
-        // This includes LiDAR and any future depth-sensing technology
-        return ARWorldTrackingConfiguration.supportsFrameSemantics(.personSegmentationWithDepth) || ARWorldTrackingConfiguration.supportsFrameSemantics(.sceneDepth)
+        // Scene reconstruction (a 3D mesh) and scene depth both require the LiDAR sensor, and
+        // AutoCapture needs both: its capture requires mesh anchors and its measurements a
+        // depth image. `.personSegmentationWithDepth` must not be used here — it is supported
+        // on every A12+ iPhone without LiDAR (e.g. iPhone 12, iPhone 17), which showed the
+        // AutoCapture question on devices where capturing always fails.
+        return ARWorldTrackingConfiguration.supportsSceneReconstruction(.mesh)
+            && ARWorldTrackingConfiguration.supportsFrameSemantics(.sceneDepth)
     }
 }

@@ -26,10 +26,11 @@ class AppQuestManager {
     private let seedBox = BBox(minLat: 47.70312160869372, maxLat: 47.718964653825054, minLon: -122.20866792353317, maxLon: -122.18570621653987)
     
     func getUpdatedQuest(elementId: String) -> DisplayUnitWithCoordinate? {
-        let nodesFromStorage = dbInstance.getNodes(NSPredicate(format: "tags.@count != 0"))
-        let waysFromStorage = dbInstance.getWays(NSPredicate(format: "tags.@count != 0"))
-        let theWay = waysFromStorage.first(where: {$0.id == Int64(elementId)})
-        let theNode = nodesFromStorage.first(where: {$0.id == Int64(elementId)})
+        // Primary-key lookups — scanning every stored node/way here ran on the main
+        // thread after each answer sync and grew with the workspace size.
+        let id = Int(elementId) ?? -1
+        let theNode = dbInstance.getNode(id: id).flatMap { $0.tags.count == 0 ? nil : $0 }
+        let theWay = dbInstance.getWay(id: id).flatMap { $0.tags.count == 0 ? nil : $0 }
         let allQuests = QuestsRepository.shared.applicableQuests
         // theElement if not equal to nil
         if (theNode != nil) {
@@ -82,75 +83,57 @@ class AppQuestManager {
         let waysFromStorage = dbInstance.getWays(NSPredicate(format: wayPredicateFormat))
         let yetToSyncWayIDs = Set(dbInstance.getChangesets(synced: false, element: .way).compactMap{ Int64($0.elementId) })
         
-        debugPrint("converting to nods: start \(Date())")
-        let nodeElements: [Node] = nodesFromStorage.compactMap { node in
-            if yetToSyncNodeIDs.contains(node.id) {
-                return nil
-            }
-            return node.asNode()
-        }
-        
-        debugPrint("converting to nods: end \(Date())")
-        debugPrint("converting to way: start \(Date())")
-        let wayElements: [Way] = waysFromStorage.compactMap{ way in
-            if yetToSyncWayIDs.contains(way.id) {
-                return nil
-            }
-            return way.asWay()
-        }
-        
-        debugPrint("converting to way: end \(Date())")
-        // Get the quests for nodes
-        var nodeQuests: [any Quest] = []
-        var wayQuests: [any Quest] = []
         let allQuests = QuestsRepository.shared.applicableQuests
+        let hiddenIds = Set(HiddenQuestManager.shared.hiddenQuests.map { $0.id })
         var displayUnits : [DisplayUnitWithCoordinate] = []
-        
+
+        // Each element is converted, matched and released one at a time (inside its own
+        // autorelease pool, which also drains Realm's accessor objects) instead of
+        // converting every stored element up front — with tens of thousands of
+        // elements, holding all the intermediate Node/Way objects at once alongside the
+        // new quest copies roughly doubled the peak memory of every reload.
         debugPrint("process nodes: start: \(Date())")
-        // Get the quests for ways
-        for node in nodeElements {
-            // Get the quests and try to iterate
-            for quest in allQuests {
-                if quest.quest.filter.isEmpty {continue} // Ignore quest
-                if quest.quest.isApplicable(element: node){
-                    // Create a duplicate of the quest
-                    // Create a display Unit
-                    let duplicateQuest = quest.quest.copyWithElement(element: node)
-                    let unit = DisplayUnitWithCoordinate(displayUnit: duplicateQuest.displayUnit, coordinateInfo:  CLLocationCoordinate2D(latitude: node.position.latitude, longitude: node.position.longitude), id: node.id, isHidden: false)
-                    displayUnits.append(unit)
-                    nodeQuests.append(duplicateQuest)
-                    break
-                }
+        for storedNode in nodesFromStorage {
+            if yetToSyncNodeIDs.contains(storedNode.id) || hiddenIds.contains(storedNode.id) { continue }
+            autoreleasepool {
+                let node = storedNode.asNode()
+                guard let quest = firstApplicableQuest(in: allQuests, for: node) else { return }
+                let duplicateQuest = quest.copyWithElement(element: node)
+                let unit = DisplayUnitWithCoordinate(displayUnit: duplicateQuest.displayUnit, coordinateInfo:  CLLocationCoordinate2D(latitude: node.position.latitude, longitude: node.position.longitude), id: node.id, isHidden: false)
+                displayUnits.append(unit)
             }
         }
         debugPrint("process nodes: end: \(Date())")
         debugPrint("process ways: start: \(Date())")
-        for way in wayElements{
-            for quest in allQuests {
-                if quest.quest.filter.isEmpty {continue} // Ignore quest
-                if quest.quest.isApplicable(element: way){
-                    // Create a duplicate of the quest
-                    // Need to add another here.
-                    let duplicateQuest = quest.quest.copyWithElement(element: way)
-                    let position  = dbInstance.getCenterForWay(id: way.id) ?? CLLocationCoordinate2D()
-                    let unit = DisplayUnitWithCoordinate(displayUnit: duplicateQuest.displayUnit, coordinateInfo: position, id: way.id, isHidden: false)
-                    displayUnits.append(unit)
-                    wayQuests.append(duplicateQuest)
-                    break
-                }
+        for storedWay in waysFromStorage {
+            if yetToSyncWayIDs.contains(storedWay.id) || hiddenIds.contains(storedWay.id) { continue }
+            autoreleasepool {
+                let way = storedWay.asWay()
+                guard let quest = firstApplicableQuest(in: allQuests, for: way) else { return }
+                let duplicateQuest = quest.copyWithElement(element: way)
+                let position = center(of: way) ?? dbInstance.getCenterForWay(id: way.id) ?? CLLocationCoordinate2D()
+                let unit = DisplayUnitWithCoordinate(displayUnit: duplicateQuest.displayUnit, coordinateInfo: position, id: way.id, isHidden: false)
+                displayUnits.append(unit)
             }
         }
         debugPrint("process ways: end: \(Date())")
-        print("Sending back items")
-        print(allQuests)
-        
-        
-        // get hidden ids from hiddenElements
-        let hiddenIds = HiddenQuestManager.shared.hiddenQuests.map { $0.id }
-        let unitsToBeDisplayed = displayUnits.filter { !hiddenIds.contains($0.id) }
-        return unitsToBeDisplayed
+        return displayUnits
+    }
+
+    private func firstApplicableQuest(in quests: [ApplicableQuest], for element: osmparser.Element) -> (any Quest)? {
+        quests.first { !$0.quest.filter.isEmpty && $0.quest.isApplicable(element: element) }?.quest
     }
     
+    /// Average of the way's stored polyline points — the same node coordinates
+    /// `getCenterForWay` averages, without one Realm lookup per node.
+    private func center(of way: Way) -> CLLocationCoordinate2D? {
+        guard !way.polyline.isEmpty else { return nil }
+        let count = Double(way.polyline.count)
+        let lat = way.polyline.reduce(0) { $0 + $1.latitude } / count
+        let lon = way.polyline.reduce(0) { $0 + $1.longitude } / count
+        return CLLocationCoordinate2D(latitude: lat, longitude: lon)
+    }
+
     // FIXME: Make this function better
     // Fetches the quest for a specific changeset based on the element
     // If there is no need to show the element after undo, it will return nil

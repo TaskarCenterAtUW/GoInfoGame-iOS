@@ -43,8 +43,8 @@ class StairFlights: QuestBase, Quest {
     
     override init() {
         super.init()
-        self.internalForm = StairFlightsForm(action: { [self] answer in
-            self.onAnswer(answer: answer)
+        self.internalForm = StairFlightsForm(action: { [weak self] answer in
+            self?.onAnswer(answer: answer)
         })
     }
     

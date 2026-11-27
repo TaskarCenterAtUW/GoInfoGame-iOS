@@ -124,7 +124,7 @@ final class ApiManagerTests: AppTestCase {
         let sent = try XCTUnwrap(MockHTTP.requests.first)
         let contentType = try XCTUnwrap(sent.header("Content-Type"))
         XCTAssertTrue(contentType.hasPrefix("multipart/form-data; boundary=Boundary-"))
-        XCTAssertEqual(sent.request.timeoutInterval, .infinity, "multipart uploads must not time out at 60s")
+        XCTAssertEqual(sent.request.timeoutInterval, 120, "multipart uploads get a longer idle timeout, but never an infinite one")
 
         let body = try XCTUnwrap(sent.body)
         let text = String(decoding: body, as: UTF8.self)
@@ -285,6 +285,22 @@ final class ApiManagerTests: AppTestCase {
         XCTAssertEqual(KeychainManager.load(key: "accessToken"), "new.access.token")
         XCTAssertEqual(KeychainManager.load(key: "refreshToken"), "new.refresh.token")
         XCTAssertEqual(UserDefaults.standard.integer(forKey: "accessToken_expire_in"), 3600)
+    }
+
+    func testARequestStillGetting401AfterARefreshFailsInsteadOfRefreshingAgain() {
+        signIn()
+        var calls = 0
+        MockHTTP.stub("GET", path: "/prod/api/0.6/secure.json") { _ in
+            calls += 1
+            return .status(401)
+        }
+        MockHTTP.stub("POST", pathRegex: "refresh-token$", reply: refreshReply())
+
+        let result = perform(get("/secure.json"), as: [String: String].self)
+
+        XCTAssertEqual(customMessage(errorOf(result)), "Client Error. Please try again later.")
+        XCTAssertEqual(calls, 2, "original request + exactly one retry")
+        XCTAssertEqual(MockHTTP.requests(pathRegex: "refresh-token$").count, 1)
     }
 
     func testRefreshAndAuthenticateEndpointsAreNeverRetriedOn401() {
